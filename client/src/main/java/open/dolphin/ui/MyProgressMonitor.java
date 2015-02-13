@@ -1,0 +1,53 @@
+package open.dolphin.ui;
+
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.KeyStroke;
+import javax.swing.ProgressMonitor;
+
+/**
+ * MyProgressMonitor
+ * ProgressMonitor が，エスケープキーを押してキャンセルした場合 isCanceled() が true にならないのを workaround
+ * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6357974
+ * @author pns
+ */
+public class MyProgressMonitor extends ProgressMonitor {
+
+    private boolean isCanceled = false;
+
+    public MyProgressMonitor(Component parentComponent, Object message, String note, int min, int max) {
+        super(parentComponent, message, note, min, max);
+    }
+
+    @Override
+    public void setProgress(int nv) {
+        super.setProgress(nv);
+        JDialog d = (JDialog) this.getAccessibleContext().getAccessibleParent();
+
+        if (d != null) {
+            ActionMap am = d.getRootPane().getActionMap();
+            InputMap im = d.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+            // ESC でキャンセル
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+            am.put("cancel", new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //System.out.println("-----escape----");
+                    isCanceled = true;
+                }
+            });
+        }
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return super.isCanceled() || isCanceled;
+    }
+}

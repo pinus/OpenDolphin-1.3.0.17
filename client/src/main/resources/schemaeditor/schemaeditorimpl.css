@@ -1,0 +1,193 @@
+/**
+ * 
+ */
+.button {
+    -fx-background-color: rgba(0, 0, 0, 0.08), linear-gradient(#9a9a9a, #909090), linear-gradient(white 0%, #f3f3f3 50%, #ececec 51%, #f2f2f2 100%);
+    -fx-background-insets: 0 0 -1 0, 0, 1;
+    -fx-background-radius: 5, 4, 3;
+    -fx-padding: 2 15 3 15;
+    -fx-text-fill: #000000;
+}
+
+.button:default {
+    -fx-background-color: rgba(0, 0, 0, 0.08), linear-gradient(#5a61af, #51536d), linear-gradient(#e4fbff 0%, #cee6fb 10%, #a5d3fb 50%, #88c6fb 51%, #d5faff 100%);
+    -fx-background-insets: 0 0 -1 0, 0, 1;
+    -fx-background-radius: 5, 4, 3;
+}
+
+.button:armed {
+    -fx-background-color: linear-gradient(#5345b0, #464175), #b7d6f1, linear-gradient(#9ebff2 0%, #5c9dee 50%, #328dee 51%, #8ac9f2 100%);
+    -fx-background-insets: 0 0 0 0, 1 1 1 1, 2 1 2 1;
+    -fx-background-radius: 5, 4, 3;
+
+}
+
+.button:focused {
+    -fx-background-color: #C1DDF4, #A0CBEE, #8CB3DF, rgba(0, 0, 0, 0.08), linear-gradient(#669BCC, #6499CA), linear-gradient(white 0%, #f3f3f3 50%, #ececec 51%, #f2f2f2 100%);
+    -fx-background-insets: -3, -2, -1, 0 0 -1 0, 0, 1;
+    -fx-background-radius: 8, 7, 6, 5, 4, 3;
+}
+
+.button:armed:focused {
+    -fx-background-color: #C1DDF4, #A0CBEE, #8CB3DF, linear-gradient(#5486AE, #4C83A8), #b7d6f1, linear-gradient(#9ebff2 0%, #5c9dee 50%, #328dee 51%, #8ac9f2 100%);
+    -fx-background-insets: -3, -2, -1, 0 0 0 0, 1 1 1 1, 2 1 2 1;
+    -fx-background-radius: 8, 7, 6, 5, 4, 3;
+}
+
+/** 
+ * PnsStage の shadow
+ */
+.pns-stage {
+  -fx-padding: 16;
+  -fx-effect: dropshadow( three-pass-box , rgba(0,0,0, 0.6), 16, 0, 0, 4 );
+}
+/** 
+ * PnsStage の title pane: background は 228-180 のグラデーション
+ */
+.pns-stage-title-pane {
+  -fx-background-color: linear-gradient( rgb(228,228,228), rgb(180,180,180) );
+}
+/**
+ * PnsComboBox
+ */
+.pns-combo-box,
+.pns-combo-box:armed {
+  -fx-padding: 0 4 0 4;
+  -fx-border-width: 1;
+  -fx-border-radius: 4;
+  -fx-border-color: rgb(136,136,136);
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(195,195,195) );
+/*  -fx-background-color: linear-gradient( white 0%, rgb(240,240,240) 50%, rgb(231,231,231) 51%, rgb(239,239,239) 100% ); */
+  -fx-background-insets: 1;
+}
+.pns-combo-box-list-cell {
+  -fx-padding: 0 4 0 4;
+  -fx-background-color: transparent;
+  -fx-background-radius: 0;
+}
+.pns-combo-box-list-cell:hover {
+  -fx-background-color: linear-gradient( rgb(108,140,246), rgb(55,102,244) );
+}
+.pns-combo-box-popup {
+  -fx-padding: 4 0 4 0;
+  -fx-background-radius: 4;
+  -fx-background-color: rgba(255,255,255,0.95);
+  -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.2), 16, 0, 0, 4 );
+/*  -fx-border-width: 1;
+  -fx-border-radius: 4;
+  -fx-border-color: rgba(167,167,167,0.5);*/
+}
+/**
+ * PnsToggleSet: normal, selected, disabled
+ */
+.pns-toggle-set {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(195,195,195) );
+  -fx-background-radius: 4;
+  -fx-border-color: rgb(136,136,136);
+  -fx-border-radius: 4;
+  -fx-border-width: 1;
+}
+.pns-toggle-set-separator {
+  -fx-background-color: rgb( 180,180,180 ) ;
+}
+.pns-toggle-set-left {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(195,195,195) );
+  -fx-background-radius: 3 0 0 3;
+  -fx-background-insets: 1 0 2 0;
+}
+.pns-toggle-set-middle {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(195,195,195) );
+  -fx-background-radius: 0 0 0 0;
+  -fx-background-insets: 1 0 2 0;
+}
+.pns-toggle-set-right {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(195,195,195) );
+  -fx-background-radius: 0 3 3 0;
+  -fx-background-insets: 1 0 2 0;
+}
+.pns-toggle-set-single {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(195,195,195) );
+  -fx-background-radius: 3 3 3 3;
+  -fx-background-insets: 1 0 2 0;
+}
+/** disabled */
+.pns-toggle-set:disabled {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(230,230,230) );
+  -fx-border-color: rgb( 200,200,200 ) ;
+}
+.pns-toggle-set-separator:disabled {
+  -fx-background-color: rgb( 220,220,220 ) ;
+}
+.pns-toggle-set-left:disabled {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(230,230,230) );
+}
+.pns-toggle-set-middle:disabled {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(230,230,230) );
+}
+.pns-toggle-set-right:disabled {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(230,230,230) );
+}
+.pns-toggle-set-single:disabled {
+  -fx-background-color: linear-gradient( rgb(242,242,242), rgb(230,230,230) );
+}
+/** pressed, selected */
+.pns-toggle-set-left:selected, 
+.pns-toggle-set-left:pressed {
+  -fx-background-color: linear-gradient( rgb(110,110,110), rgb(130,130,130) ),
+    linear-gradient( rgb(120,120,120), rgb(150,150,150) ),
+    linear-gradient( rgb(140,140,140), rgb(170,170,170) );
+  -fx-background-insets: 1 0 1 0, 1 1 1 0, 2 2 1 1;
+}
+.pns-toggle-set-middle:selected,
+.pns-toggle-set-middle:pressed {
+  -fx-background-color: linear-gradient( rgb(110,110,110), rgb(130,130,130) ),
+    linear-gradient( rgb(120,120,120), rgb(150,150,150) ),
+    linear-gradient( rgb(140,140,140), rgb(170,170,170) );
+  -fx-background-insets: 1 0 1 0, 1 1 1 1, 2 2 1 2;  
+}
+.pns-toggle-set-right:selected,
+.pns-toggle-set-right:pressed {
+  -fx-background-color: linear-gradient( rgb(110,110,110), rgb(130,130,130) ),
+    linear-gradient( rgb(120,120,120), rgb(150,150,150) ),
+    linear-gradient( rgb(140,140,140), rgb(170,170,170) );
+  -fx-background-insets: 1 0 1 0, 1 0 1 1, 2 1 1 2;  
+}
+.pns-toggle-set-single:selected, 
+.pns-toggle-set-single:pressed {
+  -fx-background-color: linear-gradient( rgb(110,110,110), rgb(130,130,130) ),
+    linear-gradient( rgb(120,120,120), rgb(150,150,150) ),
+    linear-gradient( rgb(140,140,140), rgb(170,170,170) );
+  -fx-background-insets: 1 0 1 0, 1 1 1 1, 2 2 1 2;  
+}
+
+/** 
+ * ToolPane の preview button: normal, hover
+ */
+.schema-preview-button {
+  -fx-background-color: white;
+  -fx-background-insets: 0;
+  -fx-border-color: rgb( 192,192,192 );
+  -fx-border-radius: 4;
+}
+/**
+ * ColorChooser の Popup window の装飾
+ */
+.schema-color-chooser {
+  -fx-background-radius:  4; 
+  -fx-background-color: linear-gradient( white, rgb(224,224,224) );
+  -fx-effect: dropshadow( three-pass-box , rgba(0,0,0, 0.6), 16, 0, 0, 4 );
+}
+.schema-preview-button:hover {
+  -fx-background-color: rgba( 255,255,255, 0.5);
+}
+/** 
+ * ColorPalette.ColorLabel: normal, hover, selected
+ */
+.schema-color-label {
+  -fx-background-color: transparent;
+}
+.schema-color-label:hover,
+.schema-color-label:selected {
+  -fx-background-color: transparent;
+  -fx-effect: dropshadow( three-pass-box , blue, 5, 0.4, 0, 0 );
+}

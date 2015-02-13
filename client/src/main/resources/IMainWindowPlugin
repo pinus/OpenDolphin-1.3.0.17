@@ -1,0 +1,3 @@
+open.dolphin.client.WatingListPlugin
+open.dolphin.client.PatientSearchPlugin
+open.dolphin.client.LaboTestImporter
