@@ -126,8 +126,6 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
     @Override
     public void propertyChange(PropertyChangeEvent e) {
         String prop = e.getPropertyName();
-        System.out.println("-^----prop= " + prop);
-        System.out.println("state= " + e.getNewValue());
         if (prop.equals(StampEditor.VALID_DATA_PROP)) {
             boolean state = (Boolean) e.getNewValue();
             rightArrowBtn.setEnabled(state);
