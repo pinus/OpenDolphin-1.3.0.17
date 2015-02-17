@@ -164,7 +164,7 @@ public class WatingListImpl extends AbstractMainComponent {
      * ロガー等を取得する。
      */
     private void setup() {
-        logger = ClientContext.getBootLogger();
+        logger = Logger.getLogger(this.getClass());
         preferences = Preferences.userNodeForPackage(this.getClass());
         sexRenderer = preferences.getBoolean("sexRenderer", false);
         ageDisplay = preferences.getBoolean("ageDisplay", true);
@@ -742,6 +742,7 @@ public class WatingListImpl extends AbstractMainComponent {
     /**
      * チャートステートの状態をデータベースに書き込む。
      * ChartImpl の windowOpened, windowClosed で呼ばれる
+     * @param updated
      */
     public void updateState(final PatientVisitModel updated) {
 
@@ -768,7 +769,6 @@ public class WatingListImpl extends AbstractMainComponent {
                         pdl.updatePvtState(updated.getId(), state);
                         pvtTableModel.fireTableRowsUpdated(row, row);
                     }
-                    //logger.info("Karte state stored to server state="  + state + " row=" + row);
                     startCheckTimer();
                 }
             };

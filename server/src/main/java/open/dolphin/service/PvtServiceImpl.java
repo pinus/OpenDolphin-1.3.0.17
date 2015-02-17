@@ -37,7 +37,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
      */
     @Override
     public int addPvt(PatientVisitModel pvt, String facilityId) {
-        logger.info("PvtServiceImpl.addPvt called: patient id = " + pvt.getPatientId());
+        //logger.info("PvtServiceImpl.addPvt called: patient id = " + pvt.getPatientId());
 
         pvt.setFacilityId(facilityId);
 
