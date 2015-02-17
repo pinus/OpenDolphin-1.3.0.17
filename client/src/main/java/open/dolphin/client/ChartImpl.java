@@ -91,7 +91,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * Creates new ChartService
      */
     public ChartImpl() {
-        logger = ClientContext.getBootLogger();
+        logger = Logger.getLogger(ChartImpl.class);
         prefs = Project.getPreferences();
     }
 
@@ -1536,6 +1536,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      */
     @Override
     public void close() {
+        logger.info("close-1: pvt id = " + this.getPatientVisit().getPatientId() + ", state = " + getPatientVisit().getState());
 
 //pns^  この患者の EditorFrame が開いたままなら，閉じる努力をする。EditorFame 保存がキャンセルされたらあきらめる。
         java.util.List<Chart> editorFrames = new ArrayList<Chart>(EditorFrame.getAllEditorFrames());
@@ -1562,7 +1563,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         java.util.List<UnsavedDocument> dirtyList = dirtyList();
 
         if (dirtyList != null && dirtyList.size() > 0) {
-
+ここでは state = 3
 //pns       String saveAll = resMap.getString("unsavedtask.saveText");     // 保存;
 //pns       String discard = resMap.getString("unsavedtask.discardText");  // 破棄;
 //pns       String question = resMap.getString("unsavedtask.question");    // 未保存のドキュメントがあります。保存しますか ?
@@ -1614,6 +1615,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                     // cancel
                     break;
             }
+        ここで　state = 2 になってる
         } else {
             stop();
         }
