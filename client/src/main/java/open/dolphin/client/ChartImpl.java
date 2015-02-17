@@ -1515,13 +1515,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      */
     public static void windowClosed(ChartImpl closed) {
 
-        // pvt status を変更する（open -> close)
         PatientVisitModel model = closed.getPatientVisit();
+
         if (closed.isReadOnly()) {
             model.setState(KarteState.READ_ONLY);
         } else {
             int oldState = model.getState();
             boolean isEmpty = new DocumentPeeker(model).isKarteEmpty();
+            // pvt status を変更する（open -> close)
             int newState = KarteState.toClosedState(oldState, isEmpty);
             model.setState(newState);
         }

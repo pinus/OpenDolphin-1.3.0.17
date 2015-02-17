@@ -41,6 +41,15 @@ public class PvtDelegater extends BusinessDelegater {
     }
 
     /**
+     * 引数の PatientModel をもつ今日の PatientVisitModel があれば取ってくる
+     * @param patient
+     * @return
+     */
+    public PatientVisitModel getPvt(PatientModel patient) {
+        return getService().getPvtOf(patient);
+    }
+
+    /**
      * 受付情報を削除する。
      * @param id PatientVisitModel の primary key
      * @return 削除件数
@@ -50,31 +59,12 @@ public class PvtDelegater extends BusinessDelegater {
     }
 
     /**
-     * 診察終了情報を書き込む。
-     * @param id PatientVisitModel の primary key
-     * @param state
+     * 受付情報を更新する
+     * @param pvt
      * @return
      */
-    public int updatePvtState(long id, int state) {
-        PvtStateSpec spec = new PvtStateSpec();
-        spec.setPk(id);
-        spec.setState(state);
-        return getService().updatePvtState(spec);
-    }
-
-    /**
-     * 付いている病名数を書き込む
-     * @param pk
-     * @param total 総病名数
-     * @param today 今日付いた病名数
-     * @return 1
-     */
-    public int setByomeiCount(long pk, int total, int today) {
-        PvtStateSpec spec = new PvtStateSpec();
-        spec.setPk(pk);
-        spec.setByomeiCount(total);
-        spec.setByomeiCountToday(today);
-        return getService().setByomeiCount(spec);
+    public int updatePvt(PatientVisitModel pvt) {
+        return getService().updatePvt(pvt);
     }
 
     /**
@@ -92,15 +82,6 @@ public class PvtDelegater extends BusinessDelegater {
      */
     public int getPvtState(long pk) {
         return getService().getPvtState(pk);
-    }
-
-    /**
-     * 引数の PatientModel をもつ今日の PatientVisitModel があれば取ってくる
-     * @param patient
-     * @return
-     */
-    public PatientVisitModel getPvt(PatientModel patient) {
-        return getService().getPvtOf(patient);
     }
 
     private PvtService getService() {

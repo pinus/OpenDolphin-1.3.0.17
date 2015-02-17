@@ -44,6 +44,15 @@ public interface PvtService {
     public int addPvt(PatientVisitModel pvt, String facilityId);
 
     /**
+     * 既存の pvt を update する.
+     * @param pvt
+     * @return
+     */
+    @Path("updatePvt")
+    @POST
+    public int updatePvt(PatientVisitModel pvt);
+
+    /**
      * 施設の患者来院情報を取得する。
      * @param spec 検索仕様オブジェクト
      * @return Collection
@@ -60,25 +69,6 @@ public interface PvtService {
     @Path("removePvt")
     @POST
     public int removePvt(Long id);
-
-    /**
-     * 診察終了の状態を書き込む。
-     * @param spec
-     * @return
-     * @state 診察終了フラグ 1 の時終了
-     */
-    @Path("updatePvtState")
-    @POST
-    public int updatePvtState(PvtStateSpec spec);
-
-    /**
-     * 付いている病名数を書き込む
-     * @param spec
-     * @return
-     */
-    @Path("setByomeiCount")
-    @POST
-    public int setByomeiCount(PvtStateSpec spec);
 
     /**
      * 今日の pvt の state だけもってくる

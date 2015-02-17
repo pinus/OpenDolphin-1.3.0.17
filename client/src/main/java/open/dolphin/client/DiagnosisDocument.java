@@ -22,7 +22,6 @@ import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.delegater.DocumentDelegater;
-import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.helper.DBTask;
@@ -1411,14 +1410,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                     ddl.removeDiagnosis(list);
                 }
             }
-
-            // ByomeiCount の永続化
-            PatientVisitModel pvt = getContext().getPatientVisit();
-            if (pvt.getId() != 0L) { // 今日の受診がなければ(PatientSearchから開いた場合) id=0 になる
-                PvtDelegater pdl = new PvtDelegater();
-                pdl.setByomeiCount(pvt.getId(), pvt.getByomeiCount(), pvt.getByomeiCountToday());
-            }
-
+            
             // 追加・更新病名を CLAIM 送信する
             if (sendClaim) {
                 List<RegisteredDiagnosisModel> sendList = new ArrayList<>();

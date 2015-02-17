@@ -217,7 +217,7 @@ public final class PvtBuilder {
                     // 永続化のためのフォルダ HealthInsuranceModelに変換し
                     // それを患者属性に追加する
                     HealthInsuranceModel insModel = new HealthInsuranceModel();
-                    insModel.setBeanBytes(getXMLBytes(bean));
+                    insModel.setBeanBytes(ModelUtils.xmlEncode(bean));
                     // EJB 3.0 の関連を設定する
                     patientModel.addHealthInsurance(insModel);
                     insModel.setPatient(patientModel);
@@ -270,7 +270,7 @@ public final class PvtBuilder {
     /**
      * MmlBody 要素をパースする。
      *
-     * @param current 要素
+     * @param body 要素
      */
     public void parseBody(Element body) {
 
@@ -623,13 +623,5 @@ public final class PvtBuilder {
         Element memo = appoint.getChild("memo", claim);
         pvtClaim.setClaimAppMemo(memo.getText().trim());
 
-    }
-
-    protected byte[] getXMLBytes(Object bean) {
-        ByteArrayOutputStream bo = new ByteArrayOutputStream();
-        XMLEncoder e = new XMLEncoder(new BufferedOutputStream(bo));
-        e.writeObject(bean);
-        e.close();
-        return bo.toByteArray();
     }
 }

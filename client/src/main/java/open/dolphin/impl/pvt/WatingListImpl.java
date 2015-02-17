@@ -740,8 +740,9 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * チャートステートの状態をデータベースに書き込む。
+     * チャートステートの状態をデータベースに書き込む.
      * ChartImpl の windowOpened, windowClosed で呼ばれる
+     * state, byomeiCount, byomeiCountToday が変化している可能性がある
      * @param updated
      */
     public void updateState(final PatientVisitModel updated) {
@@ -762,13 +763,15 @@ public class WatingListImpl extends AbstractMainComponent {
                 @Override
                 public void run() {
                     PvtDelegater pdl = new PvtDelegater();
-                    // NONE 以外から NONE への状態変更はありえないので無視
-                    // NONE のカルテを強制変更でひらいて，変更しないで終了した場合，他の端末で SAVE になったのを NONE に戻してしまうのを防ぐ
                     int serverState = pdl.getPvtState(updated.getId());
-                    if (KarteState.isNone(serverState) || !KarteState.isNone(state)) {
-                        pdl.updatePvtState(updated.getId(), state);
-                        pvtTableModel.fireTableRowsUpdated(row, row);
+                    // サーバが NONE 以外かつクライアントが NONE の時はサーバの state を優先する
+                    // i.e. NONE のカルテを強制変更でひらいて，変更しないで終了した場合，他の端末で SAVE になったのを NONE に戻してしまうのを防ぐ
+                    if (! KarteState.isNone(serverState) && KarteState.isNone(state)) {
+                        updated.setState(serverState);
                     }
+                    pdl.updatePvt(updated);
+                    pvtTableModel.fireTableRowsUpdated(row, row);
+
                     startCheckTimer();
                 }
             };
@@ -819,8 +822,9 @@ public class WatingListImpl extends AbstractMainComponent {
                     // NONE 以外から NONE への状態変更はありえないので無視
                     // NONE のカルテを強制変更でひらいて，変更しないで終了した場合，他の端末で SAVE になったのを NONE に戻してしまうのを防ぐ
                     int serverState = pdl.getPvtState(pvt.getId());
-                    if (KarteState.isNone(serverState) || !KarteState.isNone(newState)) {
-                        pdl.updatePvtState(pvt.getId(), newState);
+                    if (KarteState.isNone(serverState) || ! KarteState.isNone(newState)) {
+                        pvt.setState(newState);
+                        pdl.updatePvt(pvt);
                     }
                 }
                 return true;
@@ -885,14 +889,14 @@ public class WatingListImpl extends AbstractMainComponent {
             Runnable r = new Runnable() {
                 @Override
                 public void run() {
-                    for (int i=0; i<selectedPvt.length; i++) {
+                    for (PatientVisitModel pvt :selectedPvt) {
                         PvtDelegater pdl = new PvtDelegater();
                         // karte open なら キャンセルできない
-                        if (KarteState.isOpen(pdl.getPvtState(selectedPvt[i].getId()))) {
+                        if (KarteState.isOpen(pdl.getPvtState(pvt.getId()))) {
                             MyJSheet.showMessageSheet(getContext().getFrame(), "編集中のカルテはキャンセルできません");
                         } else {
-                            selectedPvt[i].setState(KarteState.CANCEL_PVT);
-                            pdl.updatePvtState(selectedPvt[i].getId(), KarteState.CANCEL_PVT);
+                            pvt.setState(KarteState.CANCEL_PVT);
+                            pdl.updatePvt(pvt);
                         }
                     }
                     MinMax row = new MinMax(pvtTable.getSelectedRows());
@@ -1069,7 +1073,7 @@ public class WatingListImpl extends AbstractMainComponent {
                 session.addMessageHandler(new MessageHandler.Whole<String>() {
                    @Override
                     public void onMessage(String message) {
-                        logger.debug("WatingListImpl: received pvt = " + message);
+                        // logger.debug("WatingListImpl: received pvt = " + message);
                         PatientVisitModel hostPvt = JsonConverter.fromJson(message, PatientVisitModel.class);
                         // 送られてきた pvt と同じものを local で探す
                         PatientVisitModel localPvt = null;
@@ -1085,6 +1089,8 @@ public class WatingListImpl extends AbstractMainComponent {
                         }
                         int changedRow = -1;
                         if (localPvt != null) {
+                            logger.info("pvt state local = " + localPvt.getState() + ", server = " + hostPvt.getState());
+
                             // localPvt がみつかった場合，State の更新
                             if (localPvt.getState() != hostPvt.getState()) {
                                 localPvt.setState(hostPvt.getState());

@@ -159,7 +159,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
     }
 
     /**
-     * トータル病名数を返す
+     * トータル病名数 - addPvt で使う
      * @param patientPk
      * @param fromDate
      * @return
@@ -172,7 +172,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
     }
 
     /**
-     * 今日の病名数を返す
+     * 今日の病名数 - addPvt で使う
      * @param patientPk
      * @param fromDate
      * @return
@@ -188,6 +188,17 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
             .setParameter("pk", patientPk)
             .setParameter("fromDate", yesterday.getTime())
             .getResultList().size();
+    }
+
+    /**
+     * 既存の pvt を update する.
+     * @param pvt
+     * @return
+     */
+    @Override
+    public int updatePvt(PatientVisitModel pvt) {
+        em.merge(pvt);
+        return 1;
     }
 
     /**
@@ -252,32 +263,6 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
         } catch (IllegalArgumentException e) {
         }
         return 0;
-    }
-
-    /**
-     * 診察終了情報を書き込む。
-     * @param spec
-     */
-    @Override
-    public int updatePvtState(PvtStateSpec spec) {
-        PatientVisitModel exist = em.find(PatientVisitModel.class, spec.getPk());
-        exist.setState(spec.getState());
-        em.merge(exist);
-        return 1;
-    }
-
-    /**
-     * 付いている病名数を書き込む
-     * @param spec
-     * @return 1
-     */
-    @Override
-    public int setByomeiCount(PvtStateSpec spec) {
-        PatientVisitModel exist = em.find(PatientVisitModel.class, spec.getPk());
-        exist.setByomeiCount(spec.getByomeiCount());
-        exist.setByomeiCountToday(spec.getByomeiCountToday());
-        em.merge(exist);
-        return 1;
     }
 
     /**
