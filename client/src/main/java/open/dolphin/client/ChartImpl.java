@@ -1536,7 +1536,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      */
     @Override
     public void close() {
-        logger.info("close-1: pvt id = " + this.getPatientVisit().getPatientId() + ", state = " + getPatientVisit().getState());
 
 //pns^  この患者の EditorFrame が開いたままなら，閉じる努力をする。EditorFame 保存がキャンセルされたらあきらめる。
         java.util.List<Chart> editorFrames = new ArrayList<Chart>(EditorFrame.getAllEditorFrames());
