@@ -19,6 +19,7 @@
         <version.org.hibernate>4.3.7.Final</version.org.hibernate>
         <version.org.hibernate.search>4.5.1.Final</version.org.hibernate.search>
         <version.org.apache.lucene>3.6.2</version.org.apache.lucene>
+        <version.org.jdom>2.0.6</version.org.jdom>
     </properties>
 
     <dependencies>
@@ -172,6 +173,12 @@
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
             <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom2</artifactId>
+            <version>${version.org.jdom}</version>
             <type>jar</type>
         </dependency>
         <dependency>
