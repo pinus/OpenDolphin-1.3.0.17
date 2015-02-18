@@ -6,7 +6,7 @@ import java.util.List;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import org.apache.commons.lang.StringUtils;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 /**
  * Orca API 用の Element を JDOM で作成する

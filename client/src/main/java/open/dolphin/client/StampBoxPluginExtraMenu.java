@@ -25,7 +25,7 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.HexBytesTool;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 /**
  * StampBox の特別(gear)メニュー

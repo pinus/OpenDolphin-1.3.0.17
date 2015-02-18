@@ -9,9 +9,9 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.ProgressCourse;
 import org.apache.log4j.Logger;
-import org.jdom.*;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.*;
+import org.jdom2.Document;
+import org.jdom2.input.SAXBuilder;
 
 /**
  * KarteRenderer_2
@@ -76,9 +76,9 @@ public class KarteRenderer_2 {
 
     private DocumentModel model;
 
-    private KartePane soaPane;
+    private final KartePane soaPane;
 
-    private KartePane pPane;
+    private final KartePane pPane;
 
     private KartePane thePane;
 
@@ -90,15 +90,12 @@ public class KarteRenderer_2 {
 
     private ArrayList<ModuleModel> pModules;
 
-    private Logger logger;
+    private final Logger logger;
 
-
-
-    /** Creates a new instance of TextPaneRestoreBuilder */
     public KarteRenderer_2(KartePane soaPane, KartePane pPane) {
         this.soaPane = soaPane;
         this.pPane = pPane;
-        logger = ClientContext.getBootLogger();
+        logger = Logger.getLogger(KarteRenderer_2.class);
     }
 
     /**
@@ -113,8 +110,8 @@ public class KarteRenderer_2 {
 
         // SOA と P のモジュールをわける
         // また夫々の Pane の spec を取得する
-        soaModules = new ArrayList<ModuleModel>();
-        pModules = new ArrayList<ModuleModel>();
+        soaModules = new ArrayList<>();
+        pModules = new ArrayList<>();
         String soaSpec = null;
         String pSpec = null;
 
@@ -122,17 +119,19 @@ public class KarteRenderer_2 {
 
             String role = bean.getModuleInfo().getStampRole();
 
-            if (role.equals(IInfoModel.ROLE_SOA)) {
-                soaModules.add(bean);
-
-            } else if (role.equals(IInfoModel.ROLE_SOA_SPEC)) {
-                soaSpec = ((ProgressCourse) bean.getModel()).getFreeText();
-
-            } else if (role.equals(IInfoModel.ROLE_P)) {
-                pModules.add(bean);
-
-            } else if (role.equals(IInfoModel.ROLE_P_SPEC)) {
-                pSpec = ((ProgressCourse) bean.getModel()).getFreeText();
+            switch (role) {
+                case IInfoModel.ROLE_SOA:
+                    soaModules.add(bean);
+                    break;
+                case IInfoModel.ROLE_SOA_SPEC:
+                    soaSpec = ((ProgressCourse) bean.getModel()).getFreeText();
+                    break;
+                case IInfoModel.ROLE_P:
+                    pModules.add(bean);
+                    break;
+                case IInfoModel.ROLE_P_SPEC:
+                    pSpec = ((ProgressCourse) bean.getModel()).getFreeText();
+                    break;
             }
         }
 
@@ -153,9 +152,8 @@ public class KarteRenderer_2 {
                 soaPane.stamp(mm);
                 soaPane.makeParagraph();
             }
-//pns^      モジュールのみの場合も dirty にセット
+            // モジュールのみの場合も dirty にセット
             if (soaModules != null) soaPane.setDirty(true);
-//pns$
 
         } else {
             debug("Render SOA Pane");
@@ -174,18 +172,16 @@ public class KarteRenderer_2 {
                 pPane.makeParagraph();
                 pPane.makeParagraph();
             }
-//pns^      モジュールだけの場合も dirty にセット
+            // モジュールだけの場合も dirty にセット
             if (pModules != null && pPane != null) pPane.setDirty(true);
-//pns$
 
         } else {
             bSoaPane = false;
             thePane = pPane;
             renderPane(pSpec);
 
-//masuda^   StampHolder直後の改行がない場合は補う
+            // StampHolder直後の改行がない場合は補う
             pPane.getDocument().fixCrAfterStamp();
-//masuda$
         }
     }
 
@@ -202,15 +198,13 @@ public class KarteRenderer_2 {
         try {
             StringReader sr = new StringReader(xml);
             Document doc = docBuilder.build(new BufferedReader(sr));
-            org.jdom.Element root = doc.getRootElement();
+            org.jdom2.Element root = doc.getRootElement();
 
             writeChildren(root);
         }
         // indicates a well-formedness error
-        catch (JDOMException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        catch (JDOMException | IOException e) {
+            e.printStackTrace(System.err);
         }
     }
 
@@ -218,7 +212,7 @@ public class KarteRenderer_2 {
      * 子要素をパースする。
      * @param current 要素
      */
-    private void writeChildren(org.jdom.Element current) {
+    private void writeChildren(org.jdom2.Element current) {
 
         int eType = -1;
         String eName = current.getName();
@@ -266,7 +260,7 @@ public class KarteRenderer_2 {
             Iterator iterator = children.iterator();
 
             while (iterator.hasNext()) {
-                org.jdom.Element child = (org.jdom.Element) iterator.next();
+                org.jdom2.Element child = (org.jdom2.Element) iterator.next();
                 writeChildren(child);
             }
         }
@@ -313,22 +307,24 @@ public class KarteRenderer_2 {
 
     private void startParagraph(String lStyle, String alignStr) {
 
-        // if (lStyle != null) {
         thePane.setLogicalStyle("default");
         logicalStyle = true;
-        // }
 
         if (alignStr != null) {
             DefaultStyledDocument doc = (DefaultStyledDocument) thePane
                     .getTextPane().getDocument();
             Style style0 = doc.getStyle("default");
             Style style = doc.addStyle("alignment", style0);
-            if (alignStr.equals("0")) {
-                StyleConstants.setAlignment(style, StyleConstants.ALIGN_LEFT);
-            } else if (alignStr.equals("1")) {
-                StyleConstants.setAlignment(style, StyleConstants.ALIGN_CENTER);
-            } else if (alignStr.equals("2")) {
-                StyleConstants.setAlignment(style, StyleConstants.ALIGN_RIGHT);
+            switch (alignStr) {
+                case "0":
+                    StyleConstants.setAlignment(style, StyleConstants.ALIGN_LEFT);
+                    break;
+                case "1":
+                    StyleConstants.setAlignment(style, StyleConstants.ALIGN_CENTER);
+                    break;
+                case "2":
+                    StyleConstants.setAlignment(style, StyleConstants.ALIGN_RIGHT);
+                    break;
             }
             thePane.setLogicalStyle("alignment");
             logicalStyle = true;
@@ -373,19 +369,17 @@ public class KarteRenderer_2 {
 
         // bold 属性を設定する
         if (bold != null) {
-            StyleConstants.setBold(atts, Boolean.valueOf(bold).booleanValue());
+            StyleConstants.setBold(atts, Boolean.valueOf(bold));
         }
 
         // italic 属性を設定する
         if (italic != null) {
-            StyleConstants.setItalic(atts, Boolean.valueOf(italic)
-            .booleanValue());
+            StyleConstants.setItalic(atts, Boolean.valueOf(italic));
         }
 
         // underline 属性を設定する
         if (underline != null) {
-            StyleConstants.setUnderline(atts, Boolean.valueOf(underline)
-            .booleanValue());
+            StyleConstants.setUnderline(atts, Boolean.valueOf(underline));
         }
 
         // テキストを挿入する
@@ -415,14 +409,14 @@ public class KarteRenderer_2 {
                 thePane.flowSchema(model.getSchema(index));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
     }
 
     private void endComponent() {
     }
 
-    private void startIcon(org.jdom.Element current) {
+    private void startIcon(org.jdom2.Element current) {
 
         String name = current.getChildTextTrim("name");
 
