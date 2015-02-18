@@ -13,7 +13,71 @@
         <maven.compiler.target>1.7</maven.compiler.target>
         <!-- versions -->
         <version.org.jboss.resteasy>3.0.10.Final</version.org.jboss.resteasy>
+        <version.org.glassfish.tyrus.bundles>1.10</version.org.glassfish.tyrus.bundles>
+        <version.org.postgresql>9.4-1200-jdbc41</version.org.postgresql>
+
     </properties>
+
+    <dependencies>
+        <!-- Server -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>open.dolphin.server</artifactId>
+            <version>${project.version}</version>
+            <classifier>classes</classifier> <!-- this line is manually added -->
+        </dependency>
+
+        <!-- Resteasy -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${version.org.jboss.resteasy}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <version>${version.org.jboss.resteasy}</version>
+        </dependency>
+
+        <!-- WebSocket -->
+        <dependency>
+            <groupId>org.glassfish.tyrus.bundles</groupId>
+            <artifactId>tyrus-standalone-client-jdk</artifactId>
+            <version>${version.org.glassfish.tyrus.bundles}</version>
+        </dependency>
+
+        <!-- others -->
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>${version.org.postgresql}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.velocity</groupId>
+          <artifactId>velocity</artifactId>
+          <version>1.7</version>
+        </dependency>
+        <dependency>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+          <version>1.4.5</version>
+        </dependency>
+        <dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>glulogic</artifactId>
+          <version>1.0</version>
+        </dependency>
+        <dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>quaqua-pns</artifactId>
+          <version>9.0-pns</version>
+        </dependency>
+    </dependencies>
 
     <build>
       <plugins>
@@ -126,65 +190,4 @@
         </plugin>
       </plugins>
     </build>
-
-    <dependencies>
-        <!-- Server -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>open.dolphin.server</artifactId>
-            <version>${project.version}</version>
-            <classifier>classes</classifier> <!-- this line is manually added -->
-        </dependency>
-
-        <!-- Resteasy -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>${version.org.jboss.resteasy}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson2-provider</artifactId>
-            <version>${version.org.jboss.resteasy}</version>
-        </dependency>
-
-        <!-- WebSocket -->
-        <dependency>
-            <groupId>org.glassfish.tyrus.bundles</groupId>
-            <artifactId>tyrus-standalone-client-jdk</artifactId>
-            <version>1.9</version>
-        </dependency>
-
-        <!-- others -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
-        </dependency>
-        <dependency>
-          <groupId>postgresql</groupId>
-          <artifactId>postgresql</artifactId>
-          <version>9.1-901-1.jdbc4</version>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.velocity</groupId>
-          <artifactId>velocity</artifactId>
-          <version>1.7</version>
-        </dependency>
-        <dependency>
-          <groupId>javax.mail</groupId>
-          <artifactId>mail</artifactId>
-          <version>1.4.5</version>
-        </dependency>
-        <dependency>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>glulogic</artifactId>
-          <version>1.0</version>
-        </dependency>
-        <dependency>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>quaqua-pns</artifactId>
-          <version>9.0-pns</version>
-        </dependency>
-    </dependencies>
 </project>
