@@ -1075,58 +1075,30 @@ public class WatingListImpl extends AbstractMainComponent {
                     public void onMessage(String message) {
                         // logger.debug("WatingListImpl: received pvt = " + message);
                         PatientVisitModel hostPvt = JsonConverter.fromJson(message, PatientVisitModel.class);
+
                         // 送られてきた pvt と同じものを local で探す
+                        // pvtDate で判定する → Patient ID が同じでも，pvtDate が違えば違う受付と判断する
                         PatientVisitModel localPvt = null;
                         int row = -1;
 
                         for (int i=0; i<pvtTableModel.getObjectCount(); i++) {
                             PatientVisitModel p = (PatientVisitModel) pvtTableModel.getObject(i);
-                            if (p.getPatient().getId() == hostPvt.getPatient().getId()) {
+                            if (p.getPvtDate().equals(hostPvt.getPvtDate())) {
                                 localPvt = p;
                                 row = i;
                                 break;
                             }
                         }
-                        int changedRow = -1;
+
                         if (localPvt != null) {
                             logger.info("pvt state local = " + localPvt.getState() + ", server = " + hostPvt.getState());
 
-                            // localPvt がみつかった場合，State の更新
-                            if (localPvt.getState() != hostPvt.getState()) {
-                                localPvt.setState(hostPvt.getState());
-                                changedRow = row;
-                                //logger.info("pvt state updated at row " + row);
+                            // localPvt がみつかった場合，更新である
+                            pvtTableModel.getObjectList().set(row, hostPvt);
+                            // changeRow を fire，ただしカルテが開いていたら fire しない
+                            if (! ChartImpl.isKarteOpened(localPvt)) {
+                                pvtTableModel.fireTableRowsUpdated(row, row);
                             }
-                            // byomeicount の更新
-                            if (localPvt.getByomeiCount() != hostPvt.getByomeiCount()) {
-                                localPvt.setByomeiCount(hostPvt.getByomeiCount());
-                                changedRow = row;
-                                //logger.info("byomeiCount updated at row " + row);
-                            }
-                            // byomeicounttoday の更新
-                            if (localPvt.getByomeiCountToday() != hostPvt.getByomeiCountToday()) {
-                                localPvt.setByomeiCountToday(hostPvt.getByomeiCountToday());
-                                changedRow = row;
-                                //logger.info("byomeiCountToday updated at row " + row);
-                            }
-                            // 患者情報の更新
-                            if (! localPvt.getPatientName().equals(hostPvt.getPatientName())
-                                    || ! localPvt.getPatientBirthday().equals(hostPvt.getPatientBirthday())
-                                    || ! localPvt.getPatientGenderDesc().equals(hostPvt.getPatientGenderDesc())) {
-                                localPvt.setPatient(hostPvt.getPatient());
-                                changedRow = row;
-                            }
-                            // memo の更新
-                            if (! localPvt.getMemo().equals(hostPvt.getMemo())) {
-                                localPvt.setMemo(hostPvt.getMemo());
-                                changedRow = row;
-                            }
-                            // pvt date の更新
-                            if (! localPvt.getPvtDate().equals(hostPvt.getPvtDate())) {
-                                localPvt.setPvtDate(hostPvt.getPvtDate());
-                                changedRow = row;
-                            }
-
                             // 待ち時間更新
                             setPvtCount();
 
@@ -1136,15 +1108,9 @@ public class WatingListImpl extends AbstractMainComponent {
                             // 番号付加
                             hostPvt.setNumber(row+1);
                             pvtTableModel.addRow(hostPvt);
-                            changedRow = row;
                             //logger.info("pvt added at row " + row);
                             // 患者数セット
                             setPvtCount(row+1);
-                        }
-
-                        // changeRow を fire，ただしカルテが開いていたら fire しない
-                        if (changedRow != -1 && !ChartImpl.isKarteOpened(localPvt)) {
-                            pvtTableModel.fireTableRowsUpdated(changedRow, changedRow);
                         }
                     }
                 });
