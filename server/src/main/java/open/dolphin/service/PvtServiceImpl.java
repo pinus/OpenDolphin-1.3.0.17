@@ -98,17 +98,15 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
             existPatient.setTelephone(pvtPatient.getTelephone());
             //exist.setMobilePhone(patient.getMobilePhone());
 
-            // PatientVisit との関係を設定する
-            pvt.setPatient(existPatient);
-
-            // トータルの病名数をセット
-            pvt.setByomeiCount(getByomeiCount(existPatient.getId()));
-
-            // 今日の病名数をセット
-            pvt.setByomeiCountToday(getByomeiCountToday(existPatient.getId()));
-
             // 既存データを更新する
             em.merge(existPatient);
+
+            // PatientVisit との関係を設定する
+            pvt.setPatient(existPatient);
+            // トータルの病名数をセット
+            pvt.setByomeiCount(getByomeiCount(existPatient.getId()));
+            // 今日の病名数をセット
+            pvt.setByomeiCountToday(getByomeiCountToday(existPatient.getId()));
 
         } catch (NoResultException e) {
             // 新規患者であれば登録する
@@ -126,36 +124,23 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
         // CLAIM の仕様により患者情報のみを登録し、来院情報はない場合がある
         // それを pvtDate の属性で判断している
 
-        // 同じ pvt がすでに登録されていないかどうかチェック
-        PatientVisitModel toPersist = checkDuplicate(pvt);
-        em.merge(toPersist); // record がなければ persist 動作になる
-
-        return 1;
-    }
-
-    /**
-     * 同じ pvt がすでに登録されていないかどうかチェック
-     * @param pvtTest
-     * @return
-     */
-    private PatientVisitModel checkDuplicate(PatientVisitModel pvtTest) {
-
-        String ptId = pvtTest.getPatientId();
-        String fid = pvtTest.getFacilityId();
-        String pvtDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        // 同じ pvtDate の pvt がすでに登録されていないかどうかチェック
+        // pvtDate が違えば，同じ patient id でも新たな pvt と判断する
         List<PatientVisitModel> result = em.createQuery(
-            "select p from PatientVisitModel p where p.facilityId = :fid and p.patient.patientId = :ptId and p.pvtDate >= :date", PatientVisitModel.class)
-            .setParameter("fid", fid)
-            .setParameter("ptId", ptId)
-            .setParameter("date", pvtDate)
+            "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate = :date", PatientVisitModel.class)
+            .setParameter("fid", pvt.getFacilityId())
+            .setParameter("date", pvt.getPvtDate())
             .getResultList();
 
         if (! result.isEmpty()) {
             // 重複がある場合は既存の id をコピーして新しい pvt にすげ替える
             PatientVisitModel exist = result.get(0);
-            pvtTest.setId(exist.getId());
+            pvt.setId(exist.getId());
         }
-        return pvtTest;
+
+        em.merge(pvt); // record がなければ persist 動作になる
+
+        return 1;
     }
 
     /**

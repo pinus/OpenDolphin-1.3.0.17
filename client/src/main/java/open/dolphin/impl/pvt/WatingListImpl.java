@@ -1094,6 +1094,7 @@ public class WatingListImpl extends AbstractMainComponent {
                             logger.info("pvt state local = " + localPvt.getState() + ", server = " + hostPvt.getState());
 
                             // localPvt がみつかった場合，更新である
+                            hostPvt.setNumber(localPvt.getNumber());
                             pvtTableModel.getObjectList().set(row, hostPvt);
                             // changeRow を fire，ただしカルテが開いていたら fire しない
                             if (! ChartImpl.isKarteOpened(localPvt)) {
