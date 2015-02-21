@@ -1,0 +1,1 @@
+<jboss-deployment-structure>      <deployment>          <dependencies>              <module name="org.hibernate.search.orm" services="export" />          </dependencies>      </deployment></jboss-deployment-structure>  
