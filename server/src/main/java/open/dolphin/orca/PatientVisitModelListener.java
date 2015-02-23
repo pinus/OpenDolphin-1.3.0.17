@@ -9,7 +9,7 @@ import open.dolphin.infomodel.PatientVisitModel;
 
 /**
  * PatientVisitModel が変化したら通知を受ける Listener.
- * see PatientVisitListener @EntityListeners
+ * see PatientVisitModel @EntityListeners
  * @author pns
  */
 public class PatientVisitModelListener {
