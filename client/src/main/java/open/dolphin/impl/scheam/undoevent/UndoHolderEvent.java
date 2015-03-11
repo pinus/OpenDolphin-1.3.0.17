@@ -34,7 +34,7 @@ public final class UndoHolderEvent implements UndoEvent {
     }
 
     /**
-     * パラメータを入れ変えて描画する
+     * パラメータを入れ変えて描画する.
      */
     @Override
     public void rollback() {
@@ -52,7 +52,7 @@ public final class UndoHolderEvent implements UndoEvent {
     }
 
     /**
-     * Holder からパラメータを吸い取る
+     * Holder からパラメータを吸い取る.
      * @param src
      */
     public void copyFrom(ShapeHolderBase src) {
@@ -79,7 +79,7 @@ public final class UndoHolderEvent implements UndoEvent {
     }
 
     /**
-     * dist Holder にパラメータをコピーする
+     * dist Holder にパラメータをコピーする.
      * @param dist
      */
     public void copyTo(ShapeHolderBase dist) {

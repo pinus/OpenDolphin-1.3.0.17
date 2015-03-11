@@ -16,10 +16,10 @@ import open.dolphin.impl.scheam.undoevent.UndoRotateEvent;
 import open.dolphin.impl.scheam.undoevent.UndoScaleEvent;
 
 /**
- * UndoManager
- * CanvasLayer に DrawLayer を追加・削除する操作はリスナで監視して UndoLayerEvent を作る
- * Holder を選択して色や線の太さを変える操作は Holder の valueChangingProperty を監視して UndoHolderEvent を作る
- * Scale, Rotate, Clip 操作は offerScale, offerRotate, offerClip を呼んでもらって UndoEvent を作る
+ * UndoManager.
+ * CanvasLayer に DrawLayer を追加・削除する操作はリスナで監視して UndoLayerEvent を作る.
+ * Holder を選択して色や線の太さを変える操作は Holder の valueChangingProperty を監視して UndoHolderEvent を作る.
+ * Scale, Rotate, Clip 操作は offerScale, offerRotate, offerClip を呼んでもらって UndoEvent を作る.
  * @author pns
  */
 public class UndoManager {
@@ -34,39 +34,36 @@ public class UndoManager {
 
     public UndoManager(SchemaEditorImpl ctx) {
         context = ctx;
-        properties = context.getProperties();
         canvasPane = context.getCanvasPane();
+        properties = SchemaEditorImpl.getProperties();
         undoQueue = new ObservableDeque<>();
         redoQueue = new ObservableDeque<>();
 
-        canvasPane.getChildren().addListener(new ListChangeListener<Node>(){
-            @Override
-            public void onChanged(ListChangeListener.Change<? extends Node> c) {
-                while(c.next()) {
-                    // Undo 作業中は UndoEvent を offer しない
-                    if (isInRollback) { continue; }
+        canvasPane.getChildren().addListener((ListChangeListener.Change<? extends Node> c) -> {
+            while(c.next()) {
+                // Undo 作業中は UndoEvent を offer しない
+                if (isInRollback) { continue; }
 
-                    // DrawLayers の変化を検出して UndoEvent の offer　〜　新たな offer があった場合，redo は忘れる
-                    undoQueue.offerLast(new UndoLayerEvent(canvasPane, c));
-                    redoQueue.clear();
+                // DrawLayers の変化を検出して UndoEvent の offer　〜　新たな offer があった場合，redo は忘れる
+                undoQueue.offerLast(new UndoLayerEvent(canvasPane, c));
+                redoQueue.clear();
 
-                    // 新たな SchemaLayer が追加された場合，その Holder に Undo 用の Listener を追加
-                    if (c.wasAdded()) {
-                        for (Node n : c.getAddedSubList()) {
-                            ShapeHolderBase h = (ShapeHolderBase) ((SchemaLayer)n).getHolder();
-                            h.valueChangingProperty().addListener(new ValueChangingListener(h));
-                            h.lineWidthProperty().addListener(new LineWidthListener(h));
-                        }
-                    }
+                // 新たな SchemaLayer が追加された場合，その Holder に Undo 用の Listener を追加
+                if (c.wasAdded()) {
+                    c.getAddedSubList().forEach(node -> {
+                        ShapeHolderBase h = (ShapeHolderBase) ((SchemaLayer)node).getHolder();
+                        h.valueChangingProperty().addListener(new ValueChangingListener(h));
+                        h.lineWidthProperty().addListener(new LineWidthListener(h));
+                    });
                 }
             }
         });
     }
 
     /**
-     * Holder の valueChangingProperty を監視して UndoEvent を作成して UndoQueue に積む Listener
+     * Holder の valueChangingProperty を監視して UndoEvent を作成して UndoQueue に積む Listener.
      * TranslateEditor での移動・拡大・回転，ColorPalette, PresetColorCombo でのパラメータ変更はまとめて変更になるので，
-     * valueChangingProperty でひとかたまりにして処理する
+     * valueChangingProperty でひとかたまりにして処理する.
      */
     private class ValueChangingListener implements ChangeListener<Boolean> {
         private final ShapeHolderBase holder;
@@ -92,7 +89,7 @@ public class UndoManager {
 
     /**
      * LineWidth の変更は単一の変更で，しかも LineWidthCombo とショートカットキーの両方から変更されるので
-     * それぞれに valueChangingProperty を管理させるより lineWidthProperty を監視した方がわかりやすい
+     * それぞれに valueChangingProperty を管理させるより lineWidthProperty を監視した方がわかりやすい.
      */
     private class LineWidthListener implements ChangeListener<Number> {
         private final ShapeHolderBase holder;
@@ -113,7 +110,7 @@ public class UndoManager {
     }
 
     /**
-     * RotateEditor でここを呼ぶと Undo できる
+     * RotateEditor でここを呼ぶと Undo できる.
      * @param r
      */
     public void offerRotate(double r) {
@@ -123,7 +120,7 @@ public class UndoManager {
     }
 
     /**
-     * ScaleEditor でここを呼ぶと Undo できる
+     * ScaleEditor でここを呼ぶと Undo できる.
      * @param dx
      * @param dy
      */
@@ -134,7 +131,7 @@ public class UndoManager {
     }
 
     /**
-     * ClipEditor で元の値でここを呼ぶと Undo できる
+     * ClipEditor で元の値でここを呼ぶと Undo できる.
      * @param w
      * @param h
      * @param dx
@@ -147,22 +144,30 @@ public class UndoManager {
     }
 
     /**
-     * Undo: UndoEvent を undoQueue から取り出して rollback して redoQueue に積む
+     * Undo: UndoEvent を undoQueue から取り出して rollback して redoQueue に積む.
+     * 編集中の StateEditor はリセットする.
      */
     public void undo() {
+        StateEditor editor = context.getStateManager().getStateEditor();
+        editor.end();
         if (! undoQueue.isEmpty()) { rollback(undoQueue, redoQueue); }
+        editor.start();
     }
 
     /**
-     * Redo: UndoEvent を redoQueue から取り出して rollback して undoQueue に積む
+     * Redo: UndoEvent を redoQueue から取り出して rollback して undoQueue に積む.
+     * 編集中の StateEditor はリセットする.
      */
     public void redo() {
+        StateEditor editor = context.getStateManager().getStateEditor();
+        editor.end();
         if (! redoQueue.isEmpty()) { rollback(redoQueue, undoQueue); }
+        editor.start();
     }
 
     /**
-     * Recover queue から UndoEvent をとりだして再現する
-     * 現在の状態は StoreQueue に保存する
+     * Recover queue から UndoEvent をとりだして再現する.
+     * 現在の状態は StoreQueue に保存する.
      * @param recover
      * @param store
      */

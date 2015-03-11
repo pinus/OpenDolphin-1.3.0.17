@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
- * 自由描画の Path を線で保持する ShapeHolder
+ * 自由描画の Path を線で保持する ShapeHolder.
  * @author pns
  */
 public class PenHolder extends ShapeHolderBase {

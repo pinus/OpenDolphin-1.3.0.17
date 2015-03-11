@@ -6,12 +6,10 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.SnapshotParametersBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.EllipseBuilder;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.impl.scheam.SchemaEditorProperties;
 import open.dolphin.impl.scheam.SchemaLayer;
@@ -21,8 +19,8 @@ import open.dolphin.impl.scheam.shapeholder.EraserHolder;
 import open.dolphin.impl.scheam.shapeholder.OvalHolder;
 
 /**
- * 不透明の白で上書きする StateEditor
- * 直径は lineWidth の ERASER_WIDTH_FACTOR 倍
+ * 不透明の白で上書きする StateEditor.
+ * 直径は lineWidth の ERASER_WIDTH_FACTOR 倍.
  * @author pns
  */
 public class EraserEditor extends StateEditorBase {
@@ -39,7 +37,7 @@ public class EraserEditor extends StateEditorBase {
     private boolean dragged = false;
 
     public EraserEditor(SchemaEditorImpl context) {
-        properties = context.getProperties();
+        properties = SchemaEditorImpl.getProperties();
         draftLayer = context.getDraftLayer();
         diameter = new SimpleDoubleProperty();
         diameter.bind(properties.lineWidthProperty().multiply(Const.ERASER_WIDTH_FACTOR));
@@ -55,9 +53,11 @@ public class EraserEditor extends StateEditorBase {
             @Override
             protected Cursor computeValue() {
                 double r = diameter.get()/2;
-                Ellipse e = EllipseBuilder.create().radiusX(r).radiusY(r).centerX(r).centerY(r).
-                    fill(eraserFillColor).stroke(eraserStrokeColor).build();
-                SnapshotParameters parameters = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
+                Ellipse e = new Ellipse(r, r, r, r);
+                e.setFill(eraserFillColor);
+                e.setStroke(eraserStrokeColor);
+                SnapshotParameters parameters = new SnapshotParameters();
+                parameters.setFill(Color.TRANSPARENT);
                 Image img = e.snapshot(parameters, null);
 
                 return new ImageCursor(img, r+1, r+1);

@@ -10,11 +10,11 @@ import open.dolphin.impl.scheam.helper.SchemaUtils;
 import open.dolphin.impl.scheam.shapeholder.PolygonDraftHolder;
 
 /**
- * ドラッグの軌跡を DraftLayer に描画する StateEditor の abstract
- * PolygonEditor, DotsEditor, NetEditor で使う
- * クリックすれば多角形の頂点を次々とセットできる (MultiClick Mode）
- * 同じ点をクリックするか，最初の点に戻れば MultiClick Mode 終了
- * ドラッグ中は drawDragFeedback を呼ぶ
+ * ドラッグの軌跡を DraftLayer に描画する StateEditor の abstract.
+ * PolygonEditor, DotsEditor, NetEditor で使う.
+ * クリックすれば多角形の頂点を次々とセットできる (MultiClick Mode）.
+ * 同じ点をクリックするか，最初の点に戻れば MultiClick Mode 終了.
+ * ドラッグ中は drawDragFeedback を呼ぶ.
  * @author pns
  */
 public abstract class PolygonEditorBase extends StateEditorBase {

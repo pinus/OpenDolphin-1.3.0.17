@@ -14,7 +14,7 @@ import open.dolphin.impl.scheam.shapeholder.NetHolder;
 import open.dolphin.impl.scheam.shapeholder.PenHolder;
 
 /**
- * 指定された範囲に網を描く StateEditor
+ * 指定された範囲に網を描く StateEditor.
  * @author pns
  */
 public class NetEditor extends PolygonEditorBase {
@@ -28,7 +28,7 @@ public class NetEditor extends PolygonEditorBase {
     }
 
     /**
-     * PolygonEditorBase から呼ばれて画面に FeedBack を表示する
+     * PolygonEditorBase から呼ばれて画面に FeedBack を表示する.
      * @param e
      */
     @Override
@@ -59,7 +59,7 @@ public class NetEditor extends PolygonEditorBase {
     }
 
     /**
-     * Option, Shift キーで網を増やす処理
+     * Option, Shift キーで網を増やす処理.
      * @param e
      */
     private void adjustInterval(KeyEvent e) {
@@ -81,10 +81,10 @@ public class NetEditor extends PolygonEditorBase {
             NetHolder h = new NetHolder();
             // 網をセット
             List<Point2D> netData = getNet();
-            for (Point2D p : netData) {
+            netData.forEach(p -> {
                 h.addPathX(p.getX());
                 h.addPathY(p.getY());
-            }
+            });
             h.setNetDataSize(netData.size());
             // 輪郭をセット
             for (int i=0; i<draftHolder.getPathSize(); i++) {
@@ -100,7 +100,7 @@ public class NetEditor extends PolygonEditorBase {
     }
 
     /**
-     * 網の座標を作る
+     * 網の座標を作る.
      * Path(0) - line - Path(1)
      * Path(2) - line - Path(3)
      *   :

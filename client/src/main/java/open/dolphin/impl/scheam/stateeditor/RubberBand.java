@@ -1,14 +1,16 @@
 package open.dolphin.impl.scheam.stateeditor;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.paint.Color;
 import open.dolphin.impl.scheam.SchemaLayer;
 import open.dolphin.impl.scheam.State;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 import open.dolphin.impl.scheam.shapeholder.ShapeHolderBase;
 
 /**
- * Translate Editor で選択した ShapeHolder を囲む RubberBand
- * Bounds を線で囲んで，四隅に小さい四角形を出す
+ * Translate Editor で選択した ShapeHolder を囲む RubberBand.
+ * Bounds を線で囲んで，四隅に小さい四角形を出す.
  *
  * @author pns
  */
@@ -18,7 +20,7 @@ public class RubberBand {
 
     private boolean isLine;
     /**
-     * Band の位置
+     * Band の位置.
      * xSyS +--------+ xEyS
      *      |        |
      * xSyE +--------+ xEyE
@@ -31,8 +33,8 @@ public class RubberBand {
     }
 
     /**
-     * 対象となる ShemaLayer をセットする
-     * 選択された対象がない場合は null をセットする
+     * 対象となる ShemaLayer をセットする.
+     * 選択された対象がない場合は null をセットする.
      * @param h
      */
     public void setHolder(ShapeHolderBase h) {
@@ -46,7 +48,10 @@ public class RubberBand {
 
     public void redraw() {
         draftLayer.clear();
+        draftLayer.setBlendMode(BlendMode.DIFFERENCE);
         GraphicsContext gc = draftLayer.getGraphicsContext2D();
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(1.0);
 
         if (isLine) {
             // line の場合は anchor の小さい四角だけ出す
@@ -72,7 +77,7 @@ public class RubberBand {
     }
 
     /**
-     * 小さい Rectangle を描く
+     * 小さい Rectangle を描く.
      * @param gc
      */
     private void drawAnchorRect(GraphicsContext gc, double x, double y) {
@@ -82,7 +87,7 @@ public class RubberBand {
     public boolean isLine() { return isLine; }
 
     /**
-     * x, y 座標が RubberBand のどこを指しているかを返す
+     * x, y 座標が RubberBand のどこを指しているかを返す.
      * @param x
      * @param y
      * @return
@@ -100,10 +105,10 @@ public class RubberBand {
     }
 
     /**
-     * band 内に点が含まれているかどうか
-     * band がかかっていない場合（holder == null）なら false
-     * band がかかっていて line 以外の時：bound に入っていれば true
-     * band がかかっていて line の時：line の contains で判定
+     * band 内に点が含まれているかどうか.
+     * band がかかっていない場合（holder == null）なら false.
+     * band がかかっていて line 以外の時：bound に入っていれば true.
+     * band がかかっていて line の時：line の contains で判定.
      * @param x
      * @param y
      * @return

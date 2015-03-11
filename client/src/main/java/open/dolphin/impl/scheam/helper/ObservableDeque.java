@@ -3,7 +3,6 @@ package open.dolphin.impl.scheam.helper;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
-import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -12,9 +11,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 /**
- * Deque (double ended queue) interface を備えた ObservableList
- * offer/poll/peek 系：取れなければ null または false を返す
- * add/remove/get 系：取れなければ IndexOutOfBoundsException (本物の Deque は NoSuchElementException)
+ * Deque (double ended queue) interface を備えた ObservableList.
+ * offer/poll/peek 系：取れなければ null または false を返す.
+ * add/remove/get 系：取れなければ IndexOutOfBoundsException (本物の Deque は NoSuchElementException).
  * @author pns
  * @param <T>
  */
@@ -26,11 +25,8 @@ public class ObservableDeque<T> implements Deque<T> {
         deque = FXCollections.observableArrayList();
         sizeProperty = new SimpleIntegerProperty();
 
-        deque.addListener(new InvalidationListener(){
-            @Override
-            public void invalidated(Observable o) {
-                sizeProperty.set(deque.size());
-            }
+        deque.addListener((Observable o) -> {
+            sizeProperty.set(deque.size());
         });
     }
 

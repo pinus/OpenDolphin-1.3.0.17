@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import open.dolphin.impl.scheam.ColorModel;
 
 /**
- * プリセット色を作る
+ * プリセット色を作る.
  * @author pns
  */
 public class DefaultPresetColor {
@@ -68,8 +68,8 @@ public class DefaultPresetColor {
     public static List<Color> getColorList() { return Collections.unmodifiableList(colorList); }
 
     /**
-     * Satulation, Brightness を少しずつ変えた Color Series を作る
-     * Opacity 情報は入っていない
+     * Satulation, Brightness を少しずつ変えた Color Series を作る.
+     * Opacity 情報は入っていない.
      * @param series
      * @param fillMode
      * @return
@@ -107,7 +107,7 @@ public class DefaultPresetColor {
     }
 
     /**
-     * 特別な Color Series
+     * 特別な Color Series.
      * 0: 枠が赤で中が茶色
      * 1: 枠が赤で中が紫
      * @param n

@@ -1,9 +1,9 @@
 package open.dolphin.impl.scheam.shapeholder;
 
 /**
- * Polygon の Draft を描くときに MultiClickMode で使う ShapeHolder
+ * Polygon の Draft を描くときに MultiClickMode で使う ShapeHolder.
  * 通常モードは Draft のために PenHolder を使うが，
- * MultiClickMode では MouseMove に合わせてガイドラインを表示する
+ * MultiClickMode では MouseMove に合わせてガイドラインを表示する.
  * @author pns
  */
 public class PolygonDraftHolder extends PenHolder {

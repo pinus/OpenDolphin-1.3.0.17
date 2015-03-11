@@ -1,22 +1,18 @@
 package open.dolphin.impl.scheam;
 
 import javafx.beans.binding.ObjectBinding;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Shape;
 import open.dolphin.impl.scheam.colorchooser.ColorChooser;
-import open.dolphin.impl.scheam.constant.StyleClass;
-import open.dolphin.impl.scheam.helper.ShapeIcon;
+import open.dolphin.impl.scheam.constant.ShapeIcon;
 import open.dolphin.impl.scheam.shapeholder.OvalHolder;
 import open.dolphin.impl.scheam.shapeholder.PolygonHolder;
 
 /**
- * State，FillMode に合わせて Prevew を表示する
- * ボタンになっていて，押すと ColorChooser を起動する
+ * State，FillMode に合わせて Prevew を表示する.
+ * ボタンになっていて，押すと ColorChooser を起動する.
  * @author pns
  */
 public class PreviewPane extends StackPane {
@@ -61,10 +57,10 @@ public class PreviewPane extends StackPane {
         final SchemaLayer polygonSample = new SchemaLayer();
         polygonSample.setWidth(HEIGHT); polygonSample.setHeight(HEIGHT);
         final PolygonHolder polygonHolder = new PolygonHolder();
-        for(Point2D p : ShapeIcon.getPolygonPath(HEIGHT-INSETS*2, HEIGHT-INSETS*2)) {
-            polygonHolder.addPathX(p.getX()+INSETS);
-            polygonHolder.addPathY(p.getY()+INSETS);
-        }
+        ShapeIcon.getPolygonPath(HEIGHT-INSETS*2, HEIGHT-INSETS*2).forEach(path -> {
+            polygonHolder.addPathX(path.getX()+INSETS);
+            polygonHolder.addPathY(path.getY()+INSETS);
+        });
         polygonSample.setHolder(polygonHolder);
         polygonHolder.bind();
         polygonSample.draw();
@@ -75,16 +71,11 @@ public class PreviewPane extends StackPane {
         button.setPrefSize(HEIGHT, HEIGHT);
         button.setMinSize(HEIGHT, HEIGHT);
         button.setMaxSize(HEIGHT, HEIGHT);
-        button.getStyleClass().add(StyleClass.SCHEMA_PREVIEW_BUTTON);
+        button.getStyleClass().add("schema-preview-button");
 
         // preview button を押したときの action
         final ColorChooser chooser = new ColorChooser();
-        button.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t) {
-                chooser.show(button);
-            }
-        });
+        button.setOnAction(e -> chooser.show(button));
 
         // preview button の graphic を関連する properties に bind
         button.graphicProperty().bind(new ObjectBinding<Node>() {

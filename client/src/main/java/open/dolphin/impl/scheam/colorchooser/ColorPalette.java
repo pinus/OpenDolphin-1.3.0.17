@@ -7,11 +7,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Slider;
-import javafx.scene.control.SliderBuilder;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -21,12 +19,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import open.dolphin.impl.scheam.constant.DefaultPresetColor;
-import open.dolphin.impl.scheam.constant.StyleClass;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
- * 色見本のパレットと opacity のスライダからなる color palette
- * opacity は color に含めて扱う
+ * 色見本のパレットと opacity のスライダからなる color palette.
+ * opacity は color に含めて扱う.
  * @author pns
  */
 public class ColorPalette extends Pane {
@@ -44,7 +41,7 @@ public class ColorPalette extends Pane {
     private final BooleanProperty valueChangingProperty = new SimpleBooleanProperty();
 
     /**
-     * ColorPalette のコンストラクタ
+     * ColorPalette のコンストラクタ.
      */
     public ColorPalette() {
         // RadioButton のように Toggle 動作させるための group
@@ -56,63 +53,56 @@ public class ColorPalette extends Pane {
         colorTile.setPrefRows(PALETTE_ROWS);
 
         // colorTile の生成。色見本には opacity は反映しない。
-        for (Color color : DefaultPresetColor.getColorList()) {
+        DefaultPresetColor.getColorList().forEach(color -> {
             ColorLabel label = new ColorLabel(color);
             label.setToggleGroup(group);
             colorTile.getChildren().add(label);
             labelList.add(label);
-        }
+        });
 
         // opacity スライダ
-        Slider slider = SliderBuilder.create()
-                .min(0.0).max(1.0)
-                .majorTickUnit(0.1).minorTickCount(0)
-                .showTickLabels(true).showTickMarks(true).snapToTicks(true).build();
+        Slider slider = new Slider();
+        slider.setMin(0.0);
+        slider.setMax(1.0);
+        slider.setMajorTickUnit(0.1);
+        slider.setMinorTickCount(0);
+        slider.setSnapToTicks(true);
 
         // slider と opacityProperty を bind
         slider.valueProperty().bindBidirectional(opacityProperty);
         slider.valueChangingProperty().bindBidirectional(valueChangingProperty);
 
         // opacityProperty の変化 → colorProperty を設定
-        opacityProperty.addListener(new ChangeListener<Number>(){
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-                Color c = colorProperty.get();
-                colorProperty.set(Color.color(c.getRed(), c.getGreen(), c.getBlue(), (double)t1));
-            }
+        opacityProperty.addListener((ObservableValue<? extends Number> ov, Number t, Number opacity) -> {
+            Color c = colorProperty.get();
+            colorProperty.set(Color.color(c.getRed(), c.getGreen(), c.getBlue(), (double)opacity));
         });
 
         // 色見本の選択 → colorProperty を設定　色見本の色には opacity 情報が入ってないので opacityProperty と合成する
-        group.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
-            @Override
-            public void changed(ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) {
-                // ToggleButton では同じ label を選択すると選択が解除されるので，t1 == null で入ってくる
-                if (t1 == null) {
-                    // 前の Toggle を選択しなおす（RadioButton にすればその必要はないが，RadioButton はボタン画像がが消せない）
-                    t.setSelected(true);
-                } else {
-                    Color c = ((ColorLabel)t1).getColor();
-                    colorProperty.set(Color.color(c.getRed(), c.getGreen(), c.getBlue(), opacityProperty.get()));
-                }
+        group.selectedToggleProperty().addListener((ObservableValue<? extends Toggle> ov, Toggle t, Toggle toggle) -> {
+            // ToggleButton では同じ label を選択すると選択が解除されるので，t1 == null で入ってくる
+            if (toggle == null) {
+                // 前の Toggle を選択しなおす（RadioButton にすればその必要はないが，RadioButton はボタン画像がが消せない）
+                t.setSelected(true);
+            } else {
+                Color c = ((ColorLabel)toggle).getColor();
+                colorProperty.set(Color.color(c.getRed(), c.getGreen(), c.getBlue(), opacityProperty.get()));
             }
         });
 
         // color property の変化 → 色見本を選択　＆　opacityProperty を設定
-        colorProperty.addListener(new ChangeListener<Color>(){
-            @Override
-            public void changed(ObservableValue<? extends Color> ov, Color t, Color t1) {
-                // 色見本の選択
-                for (ColorLabel label : labelList) {
-                    // 同じ色の color label を選択状態にする
-                    if (SchemaUtils.equalsExceptOpacity(label.getColor(), t1)) {
-                        // 同じ色が見つかって，かつ選択状態になければ選択する
-                        if (! label.isSelected()) { group.selectToggle(label); }
-                        break;
-                    }
+        colorProperty.addListener((ObservableValue<? extends Color> ov, Color t, Color color) -> {
+            // 色見本の選択
+            for (ColorLabel label : labelList) {
+                // 同じ色の color label を選択状態にする
+                if (SchemaUtils.equalsExceptOpacity(label.getColor(), color)) {
+                    // 同じ色が見つかって，かつ選択状態になければ選択する
+                    if (! label.isSelected()) { group.selectToggle(label); }
+                    break;
                 }
-                // opacityProperty の設定
-                opacityProperty.set(t1.getOpacity());
             }
+            // opacityProperty の設定
+            opacityProperty.set(color.getOpacity());
         });
 
         // レイアウト
@@ -149,7 +139,7 @@ public class ColorPalette extends Pane {
          * @param c
          */
         public ColorLabel(Color c) {
-            getStyleClass().add(StyleClass.SCHEMA_COLOR_LABEL);
+            getStyleClass().add("schema-color-label");
             // to fix size, all three properties are mandatory
             setPrefSize(PALETTE_LABEL_SIZE, PALETTE_LABEL_SIZE);
             setMaxSize(PALETTE_LABEL_SIZE, PALETTE_LABEL_SIZE);

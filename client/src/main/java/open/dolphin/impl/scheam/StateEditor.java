@@ -4,8 +4,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 /**
- * 各種 State でマウスの動きに応じて図形を編集する Editor
- * できあがった結果を getHolder() で取得する
+ * 各種 State でマウスの動きに応じて図形を編集する Editor.
+ * できあがった結果を getHolder() で取得する.
  * @author pns
  */
 public interface StateEditor {

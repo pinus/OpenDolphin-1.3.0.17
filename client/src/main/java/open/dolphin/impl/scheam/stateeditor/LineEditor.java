@@ -9,9 +9,9 @@ import open.dolphin.impl.scheam.StateManager;
 import open.dolphin.impl.scheam.shapeholder.LineHolder;
 
 /**
- * 線を描く StateEditor
- * Shift を押すと水平線 or 垂直線になる
- * Option を押すと矢印になる
+ * 線を描く StateEditor.
+ * Shift を押すと水平線 or 垂直線になる.
+ * Option を押すと矢印になる.
  * @author pns
  */
 public class LineEditor extends StateEditorBase {
@@ -25,7 +25,7 @@ public class LineEditor extends StateEditorBase {
         draftLayer = context.getDraftLayer();
     }
     /**
-     * Option，Shift キーを押した場合の処理
+     * Option，Shift キーを押した場合の処理.
      * @param e
      */
     @Override
@@ -39,7 +39,7 @@ public class LineEditor extends StateEditorBase {
         draftLayer.redraw();
     }
     /**
-     * キーを放したら元に戻す処理
+     * キーを放したら元に戻す処理.
      * @param e
      */
     @Override
@@ -89,7 +89,7 @@ public class LineEditor extends StateEditorBase {
     }
 
     /**
-     * 線を水平か垂直に adjust する
+     * 線を水平か垂直に adjust する.
      */
     private void adjustHorizontalOrVirtical() {
         double dx = Math.abs(draftHolder.getPathX(1) - draftHolder.getPathX(0));

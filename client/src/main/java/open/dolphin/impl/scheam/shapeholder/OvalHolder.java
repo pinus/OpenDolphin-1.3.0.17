@@ -6,9 +6,9 @@ import open.dolphin.impl.scheam.FillMode;
 import open.dolphin.impl.scheam.ShapeHolderBounds;
 
 /**
- * Oval を保持する ShapeHolder
+ * Oval を保持する ShapeHolder.
  * 回転が必要ないものは OvalHolder で保持して良いが，
- * 回転が必要な場合は Polygon に変換して PolygonHolder として保持しなくてはならない
+ * 回転が必要な場合は Polygon に変換して PolygonHolder として保持しなくてはならない.
  * @author pns
  */
 public class OvalHolder extends ShapeHolderBase {
@@ -31,8 +31,8 @@ public class OvalHolder extends ShapeHolderBase {
         }
     }
     /**
-     * oval -> polygon 変換
-     * 回転させるために Path に変換しておく必要がある
+     * oval -> polygon 変換.
+     * 回転させるために Path に変換しておく必要がある.
      * @return
      */
     public PolygonHolder getPolygonHolder() {

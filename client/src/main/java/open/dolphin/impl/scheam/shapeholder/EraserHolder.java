@@ -4,8 +4,8 @@ import javafx.scene.canvas.GraphicsContext;
 import open.dolphin.impl.scheam.constant.Const;
 
 /**
- * EraserEditor で作られる ShapeHolder
- * 実体は太さ LineWidth * ERASER_WIDTH_FACTOR の PenHolder
+ * EraserEditor で作られる ShapeHolder.
+ * 実体は太さ LineWidth * ERASER_WIDTH_FACTOR の PenHolder.
  * @author pns
  */
 public class EraserHolder extends PenHolder {

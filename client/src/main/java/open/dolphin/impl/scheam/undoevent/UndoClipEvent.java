@@ -1,6 +1,5 @@
 package open.dolphin.impl.scheam.undoevent;
 
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.impl.scheam.SchemaLayer;
@@ -38,11 +37,11 @@ public class UndoClipEvent implements UndoEvent {
         baseLayer.redraw();
 
         // DrawLayers
-        for (Node n : canvasPane.getChildren()) {
-            SchemaLayer layer = (SchemaLayer) n;
+        canvasPane.getChildren().forEach(node -> {
+            SchemaLayer layer = (SchemaLayer) node;
             layer.getHolder().translate(dx, dy);
             layer.redraw();
-        }
+        });
 
         width = prevWidth;
         height = prevHeight;

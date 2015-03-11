@@ -1,6 +1,5 @@
 package open.dolphin.impl.scheam.stateeditor;
 
-import javafx.scene.Node;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -13,8 +12,8 @@ import open.dolphin.impl.scheam.UndoManager;
 import open.dolphin.impl.scheam.shapeholder.PolygonHolder;
 
 /**
- * 選択範囲を切り抜く StateEditor
- * 親の SchemaLayer を選択範囲の大きさにして，そこに選択範囲が入るように translate する
+ * 選択範囲を切り抜く StateEditor.
+ * 親の SchemaLayer を選択範囲の大きさにして，そこに選択範囲が入るように translate する.
  * @author pns
  */
 public class ClipEditor extends StateEditorBase {
@@ -84,11 +83,11 @@ public class ClipEditor extends StateEditorBase {
         baseLayer.redraw();
 
         // DrawLayers
-        for (Node n : canvasPane.getChildren()) {
-            SchemaLayer layer = (SchemaLayer) n;
+        canvasPane.getChildren().forEach(node -> {
+            SchemaLayer layer = (SchemaLayer) node;
             layer.getHolder().translate(dx, dy);
             layer.redraw();
-        }
+        });
     }
 
     @Override

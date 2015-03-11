@@ -1,4 +1,4 @@
-package open.dolphin.impl.scheam.helper;
+package open.dolphin.impl.scheam.constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,22 +10,21 @@ import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.EllipseBuilder;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.FillRule;
-import javafx.scene.shape.LineBuilder;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.RectangleBuilder;
-import javafx.scene.shape.SVGPathBuilder;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import open.dolphin.impl.scheam.constant.Const;
-import open.dolphin.impl.scheam.constant.StyleClass;
+import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
  * ShapeIcons
@@ -38,39 +37,58 @@ public class ShapeIcon {
      * @return
      */
     public static Shape getCheckMark() {
-        return SVGPathBuilder.create().fill(Const.PNS_BLACK)
-                .content("M 0 5 L 3 9 L 4 9 L 9 0 L 7 0  L 3 6 L 2 5 z").build();
+        SVGPath path = new SVGPath();
+        path.setFill(Const.PNS_BLACK);
+        path.setContent("M 0 5 L 3 9 L 4 9 L 9 0 L 7 0  L 3 6 L 2 5 z");
+        return path;
     }
     /**
      * ComboBox の右側の三角矢印
      * @return
      */
     public static Shape getComboBoxArrow() {
-        return SVGPathBuilder.create().fill(Const.PNS_BLACK)
-                .content("M 0 4 L 6 4 L 3 0 M 0 8 L 6 8 L 3 12 z").build();
+        SVGPath path = new SVGPath();
+        path.setFill(Const.PNS_BLACK);
+        path.setContent("M 0 4 L 6 4 L 3 0 M 0 8 L 6 8 L 3 12 z");
+        return path;
     }
     /**
      * 黒線に白抜きのポインター矢印
      * @return
      */
     public static Shape getTranslatePointer() {
-        return SVGPathBuilder.create().stroke(Const.PNS_BLACK).fill(Color.WHITE)
-                .content("M 0 0 L 1 0 L 10 8 L 6 9 L 8 13 L 8 14 L 7 15 L 6 15 L 5 14 L 3 10 L 0 13 L 0 0 z").build();
+        SVGPath path = new SVGPath();
+        path.setFill(Color.WHITE);
+        path.setStroke(Const.PNS_BLACK);
+        path.setStrokeWidth(1);
+        path.setContent("M 0 0 L 1 0 L 10 8 L 6 9 L 8 13 L 8 14 L 7 15 L 6 15 L 5 14 L 3 10 L 0 13 L 0 0 z");
+        return path;
     }
     /**
      * ミミズの這った線アイコン
      * @return
      */
     public static Shape getOpenPath() {
-        return SVGPathBuilder.create().stroke(Const.PNS_BLACK).fill(Color.TRANSPARENT).strokeWidth(2)
-                .content("M 0 7 Q 6 8 7 5 Q 8 0 5 0 Q 0 0 6 5 Q 8 7 15 1").build();
+        SVGPath path = new SVGPath();
+        path.setStroke(Const.PNS_BLACK);
+        path.setFill(Color.TRANSPARENT);
+        path.setStrokeWidth(2);
+        path.setContent("M 0 7 Q 6 8 7 5 Q 8 0 5 0 Q 0 0 6 5 Q 8 7 15 1");
+        return path;
     }
     /**
      * 線アイコン
      * @return
      */
     public static Shape getLine() {
-        return LineBuilder.create().startX(0).startY(8).endX(15).endY(0).strokeWidth(2).stroke(Const.PNS_BLACK).build();
+        Line line = new Line();
+        line.setStartX(0);
+        line.setStartY(8);
+        line.setEndX(15);
+        line.setEndY(0);
+        line.setStrokeWidth(2);
+        line.setStroke(Const.PNS_BLACK);
+        return line;
     }
     /**
      * 線の太さ用アイコン
@@ -79,7 +97,18 @@ public class ShapeIcon {
      * @return
      */
     public static Shape getLine(double width, double height) {
-        return RectangleBuilder.create().fill(Const.PNS_BLACK).width(width).height(height).build();
+        Rectangle rect = new Rectangle();
+        rect.setFill(Const.PNS_BLACK);
+        rect.setWidth(width);
+        rect.setHeight(height);
+        return rect;
+    }
+    /**
+     * 円アイコン
+     * @return
+     */
+    public static Shape getCircle() {
+        return getCircle(6, 6, Const.PNS_BLACK, Color.TRANSPARENT);
     }
     /**
      * 円のアイコン
@@ -90,9 +119,21 @@ public class ShapeIcon {
      * @return
      */
     public static Shape getCircle(double rx, double ry, Paint stroke, Paint fill) {
-        return EllipseBuilder.create().radiusX(rx).radiusY(ry).stroke(stroke).fill(fill).strokeWidth(2).build();
+        Ellipse e = new Ellipse();
+        e.setRadiusX(rx);
+        e.setRadiusY(ry);
+        e.setStroke(stroke);
+        e.setFill(fill);
+        e.setStrokeWidth(2);
+        return e;
     }
-
+    /**
+     * 長方形アイコン
+     * @return
+     */
+    public static Shape getRectangle() {
+        return getRectangle(12, 12, Const.PNS_BLACK, Color.TRANSPARENT);
+    }
     /**
      * 長方形のアイコン
      * @param w
@@ -102,9 +143,21 @@ public class ShapeIcon {
      * @return
      */
     public static Shape getRectangle(double w, double h, Paint stroke, Paint fill) {
-        return RectangleBuilder.create().width(w).height(h).stroke(stroke).fill(fill).strokeWidth(2).build();
+        Rectangle rect = new Rectangle();
+        rect.setWidth(w);
+        rect.setHeight(h);
+        rect.setStroke(stroke);
+        rect.setFill(fill);
+        rect.setStrokeWidth(2);
+        return rect;
     }
-
+    /**
+     * Polygon アイコン
+     * @return
+     */
+    public static Shape getPolygon() {
+        return getPolygon(12, 12, Const.PNS_BLACK, Color.TRANSPARENT);
+    }
     /**
      * Polygon アイコン
      * @param w
@@ -162,12 +215,12 @@ public class ShapeIcon {
         points.add(new Point2D(9.87, 8.46));
         points.add(new Point2D(8.17, 12.03));
 
-        for (Point2D p : points) {
+        points.forEach(p -> {
             if ((size/2 - p.getX())*(size/2 - p.getX()) + (size/2 - p.getY())*(size/2 - p.getY()) < size*size/4) {
                 path.getElements().add(new MoveTo(p.getX(), p.getY()));
                 path.getElements().add(new LineTo(p.getX(), p.getY()));
             }
-        }
+        });
 /*
         List<Point2D> points = SchemaUtils.getRandomPoints(size, size, 4);
         for (Point2D p : points) {
@@ -214,69 +267,97 @@ public class ShapeIcon {
      * @return
      */
     public static Shape getEraser() {
-        return SVGPathBuilder.create().stroke(Const.PNS_BLACK).fill(Color.GREY).strokeWidth(1).fillRule(FillRule.EVEN_ODD)
-                .content("M 0.5 0  L 9.5 0 L 9.5 8 L 0.5 8 L 0.5 0 "
+        SVGPath path = new SVGPath();
+        path.setStroke(Const.PNS_BLACK);
+        path.setFill(Color.GRAY);
+        path.setStrokeWidth(1);
+        path.setFillRule(FillRule.EVEN_ODD);
+        path.setContent("M 0.5 0  L 9.5 0 L 9.5 8 L 0.5 8 L 0.5 0 "
                         + "M 1 9 L 1 11 L 2 12 L 8 12 L 9 11 L 9 9  "
-                        + "M 1 9 L 1 11 L 2 12 L 8 12 L 9 11 L 9 9  "
-                ).build();
+                        + "M 1 9 L 1 11 L 2 12 L 8 12 L 9 11 L 9 9  ");
+        return path;
     }
     /**
      * 虫眼鏡アイコン
      * @return
      */
     public static Shape getLoupe() {
-        return SVGPathBuilder.create().fill(Color.TRANSPARENT).stroke(Const.PNS_BLACK).strokeWidth(2)
-                .content("M 8 8 L 11 11   M 0 4.5 A 4.5 4.5 0 1 1 9 4.5 A 4.5 4.5 0 1 1 0 4.5 ").build();
+        SVGPath path = new SVGPath();
+        path.setFill(Color.TRANSPARENT);
+        path.setStroke(Const.PNS_BLACK);
+        path.setStrokeWidth(2);
+        path.setContent("M 8 8 L 11 11   M 0 4.5 A 4.5 4.5 0 1 1 9 4.5 A 4.5 4.5 0 1 1 0 4.5 ");
+        return path;
     }
     /**
      * [+] 付きの虫眼鏡アイコン
      * @return
      */
     public static Shape getLoupePlus() {
-        return SVGPathBuilder.create().fill(Color.TRANSPARENT).stroke(Const.PNS_BLACK).strokeWidth(2)
-                .content("M 8 8 L 11 11   M 0 4.5 A 4.5 4.5 0 1 1 9 4.5 A 4.5 4.5 0 1 1 0 4.5 "
-                        + "M 2.5 4.5 L 6.5 4.5 M 4.5 2.5 L 4.5 6.5").build();
+        SVGPath path = new SVGPath();
+        path.setFill(Color.TRANSPARENT);
+        path.setStroke(Const.PNS_BLACK);
+        path.setStrokeWidth(2);
+        path.setContent("M 8 8 L 11 11   M 0 4.5 A 4.5 4.5 0 1 1 9 4.5 A 4.5 4.5 0 1 1 0 4.5 "
+                        + "M 2.5 4.5 L 6.5 4.5 M 4.5 2.5 L 4.5 6.5");
+        return path;
     }
     /**
      * [-] 付きの虫眼鏡アイコン
      * @return
      */
     public static Shape getLoupeMinus() {
-        return SVGPathBuilder.create().fill(Color.TRANSPARENT).stroke(Const.PNS_BLACK).strokeWidth(2)
-                .content("M 8 8 L 11 11   M 0 4.5 A 4.5 4.5 0 1 1 9 4.5 A 4.5 4.5 0 1 1 0 4.5 "
-                        + "M 2.5 4.5 L 6.5 4.5").build();
+        SVGPath path = new SVGPath();
+        path.setFill(Color.TRANSPARENT);
+        path.setStroke(Const.PNS_BLACK);
+        path.setStrokeWidth(2);
+        path.setContent("M 8 8 L 11 11   M 0 4.5 A 4.5 4.5 0 1 1 9 4.5 A 4.5 4.5 0 1 1 0 4.5 "
+                        + "M 2.5 4.5 L 6.5 4.5");
+        return path;
     }
     /**
      * 時計回り回転アイコン
      * @return
      */
     public static Shape getRotate() {
-        return SVGPathBuilder.create().fill(Color.TRANSPARENT).stroke(Const.PNS_BLACK).strokeWidth(2)
-                .content("M 7 0 A 5 5 0 1 1 2 4   M 0.5 7 L 2 3 L 4.5 6").build();
+        SVGPath path = new SVGPath();
+        path.setFill(Color.TRANSPARENT);
+        path.setStroke(Const.PNS_BLACK);
+        path.setStrokeWidth(2);
+        path.setContent("M 7 0 A 5 5 0 1 1 2 4   M 0.5 7 L 2 3 L 4.5 6");
+        return path;
     }
     /**
      * Clipping のアイコン
      * @return
      */
     public static Shape getClip() {
-        return SVGPathBuilder.create().fill(Color.TRANSPARENT).stroke(Const.PNS_BLACK).strokeWidth(2)
-                .content("M 0 2.5 L 9.5 2.5 L 9.5 12  M 2.5 0 L 2.5 9.5 L 12 9.5").build();
+        SVGPath path = new SVGPath();
+        path.setFill(Color.TRANSPARENT);
+        path.setStroke(Const.PNS_BLACK);
+        path.setStrokeWidth(2);
+        path.setContent("M 0 2.5 L 9.5 2.5 L 9.5 12  M 2.5 0 L 2.5 9.5 L 12 9.5");
+        return path;
     }
     /**
      * Undo Icon
      * @return
      */
     public static Shape getUndo() {
-        return SVGPathBuilder.create().fill(Const.PNS_BLACK)
-                .content("M 0 4 L 10 0 L 10 8 z").build();
+        SVGPath path = new SVGPath();
+        path.setStroke(Const.PNS_BLACK);
+        path.setContent("M 0 4 L 10 0 L 10 8 z");
+        return path;
     }
     /**
      * Redo Icon
      * @return
      */
     public static Shape getRedo() {
-        return SVGPathBuilder.create().fill(Const.PNS_BLACK)
-                .content("M 0 0 L 0 8 L 10 4 z").build();
+        SVGPath path = new SVGPath();
+        path.setStroke(Const.PNS_BLACK);
+        path.setContent("M 0 0 L 0 8 L 10 4 z");
+        return path;
     }
     /**
      * Clear Icon
@@ -307,50 +388,45 @@ public class ShapeIcon {
         // Mac OS X needs this to avoid HeadlessException
         System.setProperty("java.awt.headless", "false");
 
-        SwingUtilities.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                final JFrame frame = new JFrame();
-                frame.setUndecorated(false);
-                final JFXPanel fxp = new JFXPanel();
-                frame.add(fxp);
+        SwingUtilities.invokeLater(() -> {
+            final JFrame frame = new JFrame();
+            frame.setUndecorated(false);
+            final JFXPanel fxp = new JFXPanel();
+            frame.add(fxp);
 
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        HBox pane = new HBox();
-                        pane.setSpacing(5);
-                        pane.setPadding(new Insets(5));
-                        pane.setPrefSize(150, 100);
-                        pane.getChildren().add(getCheckMark());
-                        pane.getChildren().add(getComboBoxArrow());
-                        pane.getChildren().add(getTranslatePointer());
-                        pane.getChildren().add(getPolygon(16,16,Color.BLACK, Color.TRANSPARENT));
-                        pane.getChildren().add(getOpenPath());
-                        pane.getChildren().add(getLine());
-                        pane.getChildren().add(getDots());
-                        pane.getChildren().add(getNet());
-                        pane.getChildren().add(getText());
-                        pane.getChildren().add(getEraser());
-                        pane.getChildren().add(getLoupe());
-                        pane.getChildren().add(getLoupePlus());
-                        pane.getChildren().add(getLoupeMinus());
-                        pane.getChildren().add(getRotate());
-                        pane.getChildren().add(getClip());
-                        pane.getChildren().add(getUndo());
-                        pane.getChildren().add(getRedo());
-                        pane.getChildren().add(getClear());
+            Platform.runLater(() -> {
+                HBox pane = new HBox();
+                pane.setSpacing(5);
+                pane.setPadding(new Insets(5));
+                pane.setPrefSize(150, 100);
+                pane.getChildren().add(getCheckMark());
+                pane.getChildren().add(getComboBoxArrow());
+                pane.getChildren().add(getTranslatePointer());
+                pane.getChildren().add(getPolygon(12,12,Const.PNS_BLACK, Color.TRANSPARENT));
+                pane.getChildren().add(getOpenPath());
+                pane.getChildren().add(getLine());
+                pane.getChildren().add(getDots());
+                pane.getChildren().add(getNet());
+                pane.getChildren().add(getText());
+                pane.getChildren().add(getEraser());
+                pane.getChildren().add(getLoupe());
+                pane.getChildren().add(getLoupePlus());
+                pane.getChildren().add(getLoupeMinus());
+                pane.getChildren().add(getRotate());
+                pane.getChildren().add(getClip());
+                pane.getChildren().add(getUndo());
+                pane.getChildren().add(getRedo());
+                pane.getChildren().add(getClear());
 
-                        Scene scene = new Scene(pane);
-                        scene.getStylesheets().add(StyleClass.CSS_FILE);
-                        fxp.setScene(scene);
-                    }
-                });
+                Scene scene = new Scene(pane);
+                scene.getStylesheets().add("css/pns-stage.css");
+                scene.getStylesheets().add("css/schemaeditorimpl.css");
+                fxp.setScene(scene);
+            });
 
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.pack();
-                frame.setVisible(true);
-            }
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.pack();
+            frame.setVisible(true);
         });
     }
 }

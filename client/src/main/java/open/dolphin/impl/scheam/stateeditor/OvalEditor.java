@@ -7,9 +7,9 @@ import open.dolphin.impl.scheam.ShapeHolder;
 import open.dolphin.impl.scheam.shapeholder.OvalHolder;
 
 /**
- * Oval を作る StateEditor
+ * Oval を作る StateEditor.
  * Draft は OvalHolder で描いて，
- * 完成品は PolygonHolder に変換してから返す
+ * 完成品は PolygonHolder に変換してから返す.
  * @author pns
  */
 public class OvalEditor extends StateEditorBase {

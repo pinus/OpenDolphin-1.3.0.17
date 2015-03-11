@@ -5,7 +5,7 @@ import open.dolphin.impl.scheam.FillMode;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
- * 複数の点を保持する ShapeHolder
+ * 複数の点を保持する ShapeHolder.
  * @author pns
  */
 public class DotsHolder extends ShapeHolderBase {

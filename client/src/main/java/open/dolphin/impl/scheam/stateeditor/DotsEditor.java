@@ -14,8 +14,8 @@ import open.dolphin.impl.scheam.shapeholder.DotsHolder;
 import open.dolphin.impl.scheam.shapeholder.PenHolder;
 
 /**
- * 指定した範囲内に点をたくさん打つ StateEditor
- * Option キー，Shit キーで点を増やす
+ * 指定した範囲内に点をたくさん打つ StateEditor.
+ * Option キー，Shit キーで点を増やす.
  * @author pns
  */
 public class DotsEditor extends PolygonEditorBase {
@@ -29,7 +29,7 @@ public class DotsEditor extends PolygonEditorBase {
         super(context);
     }
     /**
-     * PolygonEditorBase から呼ばれて FeedBack を画面に表示する
+     * PolygonEditorBase から呼ばれて FeedBack を画面に表示する.
      * @param e
      */
     @Override
@@ -49,11 +49,11 @@ public class DotsEditor extends PolygonEditorBase {
 
         List<Point2D> points = SchemaUtils.getRandomPoints(x, y, width, height, interval);
 
-        for (Point2D p : points) {
+        points.forEach(p -> {
             if (gc.isPointInPath(p.getX(), p.getY())) {
                 gc.fillOval(p.getX()-dotSize/2, p.getY()-dotSize/2, dotSize, dotSize);
             }
-        }
+        });
     }
 
     @Override
@@ -67,7 +67,7 @@ public class DotsEditor extends PolygonEditorBase {
     }
 
     /**
-     * Option, Shift キーで点を増やす処理
+     * Option, Shift キーで点を増やす処理.
      * @param e
      */
     private void adjustInterval(KeyEvent e) {
@@ -99,12 +99,12 @@ public class DotsEditor extends PolygonEditorBase {
             ShapeHolderBounds b = getDraftHolder().getBounds();
             List<Point2D> points = SchemaUtils.getRandomPoints(b.getMinX(), b.getMinY(), b.getWidth(), b.getHeight(), interval);
 
-            for (Point2D p : points) {
+            points.forEach(p -> {
                 if (draftHolder.getGraphicsContext().isPointInPath(p.getX(), p.getY())) {
                     h.addPathX(p.getX());
                     h.addPathY(p.getY());
                 }
-            }
+            });
             h.setDotDataSize(h.getPathSize());
             // 輪郭をセット
             for (int i=0; i<draftHolder.getPathSize(); i++) {

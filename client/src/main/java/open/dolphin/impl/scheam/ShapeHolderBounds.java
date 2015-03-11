@@ -6,8 +6,8 @@ import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.SimpleDoubleProperty;
 
 /**
- * Bounds of ShapeHolders
- * 開始座標(startx, starty), 終了座標(endx, endy), ぼかしの程度 blur (0.0-1.0) をセットして使う
+ * Bounds of ShapeHolders.
+ * 開始座標(startx, starty), 終了座標(endx, endy), ぼかしの程度 blur (0.0-1.0) をセットして使う.
  * @author pns
  */
 public class ShapeHolderBounds {
@@ -29,79 +29,79 @@ public class ShapeHolderBounds {
     private final ReadOnlyDoubleWrapper blurRadius = new ReadOnlyDoubleWrapper();
 
     /**
-     * 開始点の X 座標
+     * 開始点の X 座標.
      * @param x
      */
     public void setStartX(double x) { startx.set(x); }
     /**
-     * 開始点の Y 座標
+     * 開始点の Y 座標.
      * @param y
      */
     public void setStartY(double y) { starty.set(y); }
     /**
-     * 終了点の X 座標
+     * 終了点の X 座標.
      * @param x
      */
     public void setEndX(double x) { endx.set(x); }
     /**
-     * 終了点の Y 座標
+     * 終了点の Y 座標.
      * @param y
      */
     public void setEndY(double y) { endy.set(y); }
     /**
-     * ぼかしの程度をセットする
+     * ぼかしの程度をセットする.
      * @param b
      */
     public void setBlur(double b) { blur.set(b); }
     /**
-     * 開始点と終了点のうち，小さい方の X 座標
+     * 開始点と終了点のうち，小さい方の X 座標.
      * @return
      */
     public double getMinX() { return minx.get(); }
     /**
-     * 開始点と終了点のうち，小さい方の Y 座標
+     * 開始点と終了点のうち，小さい方の Y 座標.
      * @return
      */
     public double getMinY() { return miny.get(); }
     /**
-     * 開始点と終了点のうち，大きい方の X 座標
+     * 開始点と終了点のうち，大きい方の X 座標.
      * @return
      */
     public double getMaxX() { return maxx.get(); }
     /**
-     * 開始点と終了点のうち，大きい方の Y 座標
+     * 開始点と終了点のうち，大きい方の Y 座標.
      * @return
      */
     public double getMaxY() { return maxy.get(); }
     /**
-     * 開始点と終了点から幅を計算
+     * 開始点と終了点から幅を計算.
      * @return
      */
     public double getWidth() { return width.get(); }
     /**
-     * 開始点と終了点から高さを計算
+     * 開始点と終了点から高さを計算.
      * @return
      */
     public double getHeight() { return height.get(); }
     /**
-     * 幅と高さの小さい方を返す
+     * 幅と高さの小さい方を返す.
      * @return
      */
     public double getMinSpan() { return minSpan.get(); }
     /**
-     * 幅と高さの大きい方を返す
+     * 幅と高さの大きい方を返す.
      * @return
      */
     public double getMaxSpan() { return maxSpan.get(); }
     /**
-     * ぼやけの程度 blur から blur radius を計算して返す
-     * 幅と高さの小さい方に blur 係数を掛けたものを blur radius としている
+     * ぼやけの程度 blur から blur radius を計算して返す.
+     * 幅と高さの小さい方に blur 係数を掛けたものを blur radius としている.
      * @return
      */
     public double getBlurRadius() { return blurRadius.get(); }
     /**
-     * 点 (x,y) がこの Bounds に含まれるかどうか
-     * Bounds の幅や高さが 6 未満の場合は，外側 6 ドットの近傍なら含まれると判定する
+     * 点 (x,y) がこの Bounds に含まれるかどうか.
+     * Bounds の幅や高さが 6 未満の場合は，外側 6 ドットの近傍なら含まれると判定する.
      * @param x
      * @param y
      * @return

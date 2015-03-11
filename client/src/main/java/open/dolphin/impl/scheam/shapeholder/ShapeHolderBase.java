@@ -30,8 +30,8 @@ import open.dolphin.impl.scheam.State;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
- * ShapeHolder の Base となる abstract で，変数と Bind を管理する
- * 各 ShapeHolder はこれを extend して，各種パラメータを取得しつつ，draw を Override して描画する
+ * ShapeHolder の Base となる abstract で，変数と Bind を管理する.
+ * 各 ShapeHolder はこれを extend して，各種パラメータを取得しつつ，draw を Override して描画する.
  * @author pns
  */
 public abstract class ShapeHolderBase implements ShapeHolder {
@@ -109,8 +109,8 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * 各 ShapeHolder はこれを Override して描画する
-     * そうすると super.draw() で色や線などの基本的なパラメータをセットすることができる
+     * 各 ShapeHolder はこれを Override して描画する.
+     * そうすると super.draw() で色や線などの基本的なパラメータをセットすることができる.
      */
     @Override
     public void draw() {
@@ -125,14 +125,14 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * BlurRadius セット済みの GaussianBlur を返す
+     * BlurRadius セット済みの GaussianBlur を返す.
      * @return
      */
     public GaussianBlur getBlurEffect() { return gaussianBlur; }
 
     /**
-     * dx, dy ドット分だけ移動
-     * 実データは書き換えないで Translate 要素を設定して，値を読み出すときに Modify する
+     * dx, dy ドット分だけ移動.
+     * 実データは書き換えないで Translate 要素を設定して，値を読み出すときに Modify する.
      * @param dx
      * @param dy
      */
@@ -143,9 +143,9 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * StartX, StartY を基点に EndX, EndY 側を dx, dy ドット分拡大・縮小
+     * StartX, StartY を基点に EndX, EndY 側を dx, dy ドット分拡大・縮小.
      * 実データを書き換えると Path の値が不可逆になってしまうので，
-     * 実データは書き換えないで Scale 要素を設定して，値を読み出すときに Modify する
+     * 実データは書き換えないで Scale 要素を設定して，値を読み出すときに Modify する.
      * @param dx
      * @param dy
      */
@@ -156,11 +156,11 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * 回転は実座標を変換している。
-     * TranslateEditor から呼ばれる通常回転では Shape の中心を中心に回転。
-     * 拡大縮小が入ると変形してしまうが，面倒くさいので無視。
-     * RotateEditor から呼ばれる 90度回転の時は Canvas の中心を中心に回転。
-     * これは変形すると困るので別処理する。
+     * 回転は実座標を変換している.
+     * TranslateEditor から呼ばれる通常回転では Shape の中心を中心に回転.
+     * 拡大縮小が入ると変形してしまうが，面倒くさいので無視.
+     * RotateEditor から呼ばれる 90度回転の時は Canvas の中心を中心に回転.
+     * これは変形すると困るので別処理する.
      * @param r
      */
     @Override
@@ -241,20 +241,20 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * 回転中心の X 座標を返す
+     * 回転中心の X 座標を返す.
      * @return
      */
     public double getPivotX() { return (startx.get() + endx.get()) / 2; }
 
     /**
-     * 回転中心の Y
+     * 回転中心の Y.
      * @return
      */
     public double getPivotY() { return (starty.get() + endy.get()) / 2; }
 
     /**
-     * ShapeHolder の Shape が指定された点を含んでいるかどうか
-     * 矩形領域以外は Override してコーディング必要
+     * ShapeHolder の Shape が指定された点を含んでいるかどうか.
+     * 矩形領域以外は Override してコーディング必要.
      * @param x
      * @param y
      * @return
@@ -265,14 +265,14 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * この ShapeHolder の Bounds を返す
+     * この ShapeHolder の Bounds を返す.
      * @return
      */
     public ShapeHolderBounds getBounds() { return bounds; }
 
     /**
-     * Transform の逆行列を返す
-     * Property ではないので，必要な時にその都度 getInvertAffine して取り直す必要あり
+     * Transform の逆行列を返す.
+     * Property ではないので，必要な時にその都度 getInvertAffine して取り直す必要あり.
      * [ mxx mxy tx ]       1  [  myy -mxy  mxy*ty-myy*tx ]
      * [ myx myy ty ] ->   --- [ -myx  mxx  myx*tx-mxx*ty ]
      * [  0   0   1 ]      det [   0    0         det     ]
@@ -292,7 +292,7 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * SchemaEditorProperties との bind
+     * SchemaEditorProperties との bind.
      */
     public void bind() {
         valueChanging.bind(properties.valueChangingProperty());
@@ -306,7 +306,7 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * SchemaEditorProperties との bind を切る
+     * SchemaEditorProperties との bind を切る.
      */
     public void unbind() {
         valueChanging.unbind();
@@ -320,7 +320,7 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * SchemaEditorProperties の値をこの Holder にセット
+     * SchemaEditorProperties の値をこの Holder にセット.
      */
     public void setProperties() {
         lineWidth.set(properties.getLineWidth());
@@ -401,9 +401,9 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * path が変化したら startx, starty, endx, endy を計算しなおす Listener
-     * path 中の x, y の最大値，最小値を調べて start, end の値とする
-     * path をセットするとき，一つ一つセットすると，そのたび呼ばれて遅くなるので，setAll でセットすること
+     * path が変化したら startx, starty, endx, endy を計算しなおす Listener.
+     * path 中の x, y の最大値，最小値を調べて start, end の値とする.
+     * path をセットするとき，一つ一つセットすると，そのたび呼ばれて遅くなるので，setAll でセットすること.
      */
     private class PathListChangeListener implements ListChangeListener<Double> {
         private final DoubleProperty start, end;
@@ -456,7 +456,7 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * プロパティーの変化により親の SchemaLayer を redraw するリスナ
+     * プロパティーの変化により親の SchemaLayer を redraw するリスナ.
      */
     private class RedrawListener implements InvalidationListener {
         public void add() {
@@ -473,7 +473,7 @@ public abstract class ShapeHolderBase implements ShapeHolder {
     }
 
     /**
-     * ShapeHolderBase の同等性はパラメータの一致で判定する
+     * ShapeHolderBase の同等性はパラメータの一致で判定する.
      * @param obj
      * @return
      */

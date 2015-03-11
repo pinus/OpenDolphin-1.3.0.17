@@ -1,146 +1,161 @@
 package open.dolphin.impl.scheam;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
-import open.dolphin.impl.scheam.iconcallback.IconCallbackPolygon;
-import open.dolphin.impl.scheam.widget.PnsIconCallback;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
+import javafx.util.Callback;
+import open.dolphin.impl.scheam.constant.Const;
+import open.dolphin.impl.scheam.constant.ShapeIcon;
 import open.dolphin.impl.scheam.widget.PnsToggleSet;
-import open.dolphin.impl.scheam.iconcallback.*;
 
 /**
- * State 切換のための Toggle
+ * State 切換のための Toggle.
  * @author pns
  */
 public class StateToggle extends PnsToggleSet<State> {
 
-    public StateToggle(double w, double h) {
-        super(w, h);
+    public StateToggle() {
+        // icon callback
+        setCellFactory(new IconFactory());
 
-        setIconCallback(new StateIconCallback());
-        final SchemaEditorProperties properties = SchemaEditorImpl.getProperties();
+        getItems().addAll(State.values());
 
-        //
-        // Clear, Undo, Redo は State を保持しない
-        //
-        selectionProperty().addListener(new ChangeListener<State>() {
-            @Override
-            public void changed(ObservableValue<? extends State> ov, State t, State t1) {
-                if (t1.equals(State.Clear) || t1.equals(State.Undo) || t1.equals(State.Redo)) {
-                    // 選択して StateEditor に選択があったことを伝えてから
-                    properties.setState(t1);
-                    // 選択をもとに戻す
-                    selectionProperty().set(t);
-                    properties.setState(t);
-                }
-            }
-        });
+        // Clear, Undo, Redo はトグル動作をしない
+        removeFromGroup(State.Clear);
+        removeFromGroup(State.Undo);
+        removeFromGroup(State.Redo);
+        // 最初は disable
+        setDisable(State.Undo, true);
+        setDisable(State.Redo, true);
+        // disable icon に update しておく
+        updateCell(State.Undo);
+        updateCell(State.Redo);
+
+        // Tooltip
+        setTooltip(State.Pen, "F  ");
+        setTooltip(State.Line, "L  ");
+        setTooltip(State.Oval, "O  ");
+        setTooltip(State.Rectangle, "Q  ");
+        setTooltip(State.Polygon, "P  ");
+        setTooltip(State.Dots, "D  ");
+        setTooltip(State.Net, "N  ");
+        setTooltip(State.Text, "X  ");
+        setTooltip(State.Eraser, "E  ");
+        setTooltip(State.Translate, "T  ");
+        setTooltip(State.Rotate, "R  ");
+        setTooltip(State.Clip, "C  ");
+        setTooltip(State.Scale, "Z  ");
     }
 
     /**
-     * State 選択の ToggleBar に表示されるアイコン
+     * Icon 表示のための callback.
      */
-    private class StateIconCallback implements PnsIconCallback<State, Node> {
-        private final PnsIconCallback<FillMode, Node>
-                pen, line, oval, rectangle, polygon, dots, net, text, eraser,
-                translate, scale, rotate, clip, clear,
-                undo, redo;
+    private class IconFactory implements Callback<State, Node> {
+        private final Shape pen, line, oval, rectangle, polygon, dots, net, text, eraser, translate, loupe, rotate, clip, clear, undo, redo;
 
-        public StateIconCallback() {
-            pen = new IconCallbackPen();
-            line = new IconCallbackLine();
-            oval = new IconCallbackOval();
-            rectangle = new IconCallbackRectangle();
-            polygon = new IconCallbackPolygon();
-            dots = new IconCallbackDots();
-            net = new IconCallbackNet();
-            text = new IconCallbackText();
-            eraser = new IconCallbackEraser();
-            translate = new IconCallbackTranslate();
-            scale = new IconCallbackLoupe();
-            rotate = new IconCallbackRotate();
-            clip = new IconCallbackClip();
-            clear = new IconCallbackClear();
-            undo = new IconCallbackUndo();
-            redo = new IconCallbackRedo();
+        private boolean selected;
+        private boolean disabled;
+
+        public IconFactory() {
+            pen = ShapeIcon.getOpenPath();
+            line = ShapeIcon.getLine();
+            oval = ShapeIcon.getCircle();
+            rectangle = ShapeIcon.getRectangle();
+            polygon = ShapeIcon.getPolygon();
+            dots = ShapeIcon.getDots();
+            net = ShapeIcon.getNet();
+            text = ShapeIcon.getText();
+            eraser = ShapeIcon.getEraser();
+            translate = ShapeIcon.getTranslatePointer();
+            loupe = ShapeIcon.getLoupePlus();
+            rotate = ShapeIcon.getRotate();
+            clip = ShapeIcon.getClip();
+            clear = ShapeIcon.getClear();
+            undo = ShapeIcon.getUndo();
+            redo = ShapeIcon.getRedo();
         }
 
         @Override
-        public Node call(State item) {
-            switch(item) {
+        public Node call(State s) {
+            selected = (s == getSelectionModel().getSelectedItem());
+            disabled = (getButton(s) == null)? false : getButton(s).isDisabled();
+
+            switch(s) {
                 case Pen:
-                    return pen.call(FillMode.Line);
+                    setStroke(pen);
+                    return pen;
                 case Line:
-                    return line.call(FillMode.Line);
+                    setStroke(line);
+                    return line;
                 case Oval:
-                    return oval.call(FillMode.Line);
+                    setStroke(oval);
+                    return oval;
                 case Rectangle:
-                    return rectangle.call(FillMode.Line);
+                    setStroke(rectangle);
+                    return rectangle;
                 case Polygon:
-                    return polygon.call(FillMode.Line);
+                    setStroke(polygon);
+                    return polygon;
                 case Dots:
-                    return dots.call(FillMode.Line);
+                    setStroke(dots);
+                    return dots;
                 case Net:
-                    return net.call(FillMode.Line);
+                    setStroke(net);
+                    return net;
                 case Text:
-                    return text.call(FillMode.Line);
+                    setFill(text);
+                    return text;
                 case Eraser:
-                    return eraser.call(FillMode.Line);
+                    if (selected) {
+                        eraser.setStroke(Const.PNS_WHITE);
+                        eraser.setFill(Color.GRAY);
+                    } else {
+                        eraser.setStroke(Const.PNS_BLACK);
+                        eraser.setFill(Color.LIGHTGRAY);
+                    }
+                    return eraser;
                 case Translate:
-                    return translate.call(FillMode.Line);
+                    return translate;
                 case Scale:
-                    return scale.call(FillMode.Line);
+                    setStroke(loupe);
+                    return loupe;
                 case Rotate:
-                    return rotate.call(FillMode.Line);
+                    setStroke(rotate);
+                    return rotate;
                 case Clip:
-                    return clip.call(FillMode.Line);
+                    setStroke(clip);
+                    return clip;
                 case Clear:
-                    return clear.call(FillMode.Line);
+                    setStroke(clear);
+                    return clear;
                 case Undo:
-                    return undo.call(FillMode.Line);
+                    setFill(undo);
+                    setStroke(undo);
+                    return undo;
                 case Redo:
-                    return redo.call(FillMode.Line);
+                    setFill(redo);
+                    setStroke(redo);
+                    return redo;
             }
             return null;
         }
 
-        @Override
-        public Node callSelected(State item) {
-            switch(item) {
-                case Pen:
-                    return pen.callSelected(FillMode.Line);
-                case Line:
-                    return line.callSelected(FillMode.Line);
-                case Oval:
-                    return oval.callSelected(FillMode.Line);
-                case Rectangle:
-                    return rectangle.callSelected(FillMode.Line);
-                case Polygon:
-                    return polygon.callSelected(FillMode.Line);
-                case Dots:
-                    return dots.callSelected(FillMode.Line);
-                case Net:
-                    return net.callSelected(FillMode.Line);
-                case Text:
-                    return text.callSelected(FillMode.Line);
-                case Eraser:
-                    return eraser.callSelected(FillMode.Line);
-                case Translate:
-                    return translate.callSelected(FillMode.Line);
-                case Scale:
-                    return scale.callSelected(FillMode.Line);
-                case Rotate:
-                    return rotate.callSelected(FillMode.Line);
-                case Clip:
-                    return clip.callSelected(FillMode.Line);
-                case Clear:
-                    return clear.callSelected(FillMode.Line);
-                case Undo:
-                    return undo.callSelected(FillMode.Line);
-                case Redo:
-                    return redo.callSelected(FillMode.Line);
+        private void setStroke(Shape shape) {
+            if (disabled) {
+                shape.setStroke(Const.PNS_LIGHT_GLAY);
+            } else {
+                if (selected) { shape.setStroke(Const.PNS_WHITE); }
+                else { shape.setStroke(Const.PNS_BLACK); }
             }
-            return null;
+        }
+
+        private void setFill(Shape shape) {
+            if (disabled) {
+                shape.setFill(Const.PNS_LIGHT_GLAY);
+            } else {
+            if (selected) { shape.setFill(Const.PNS_WHITE); }
+            else { shape.setFill(Const.PNS_BLACK); }
+            }
         }
     }
 }

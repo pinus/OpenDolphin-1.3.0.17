@@ -8,8 +8,8 @@ import open.dolphin.impl.scheam.shapeholder.OvalHolder;
 import open.dolphin.impl.scheam.shapeholder.PenHolder;
 
 /**
- * マウスドラッグで自由に線を引く StateEditor
- * クリックされた場合は点を打つ
+ * マウスドラッグで自由に線を引く StateEditor.
+ * クリックされた場合は点を打つ.
  * @author pns
  */
 public class PenEditor extends StateEditorBase {
