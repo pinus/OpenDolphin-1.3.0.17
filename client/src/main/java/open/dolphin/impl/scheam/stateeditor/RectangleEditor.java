@@ -7,8 +7,8 @@ import open.dolphin.impl.scheam.ShapeHolder;
 import open.dolphin.impl.scheam.shapeholder.PolygonHolder;
 
 /**
- * 四角形を描く StateEditor
- * PolygonHolder の点を４つ使って長方形を描く
+ * 四角形を描く StateEditor.
+ * PolygonHolder の点を４つ使って長方形を描く.
  * @author pns
  */
 public class RectangleEditor extends StateEditorBase {
@@ -21,8 +21,8 @@ public class RectangleEditor extends StateEditorBase {
     }
 
     /**
-     * StateManager から呼ばれる
-     * draftHolder を unbind してから StateManager に渡す
+     * StateManager から呼ばれる.
+     * draftHolder を unbind してから StateManager に渡す.
      * @return
      */
     @Override
@@ -60,7 +60,7 @@ public class RectangleEditor extends StateEditorBase {
         draftLayer.draw();
     }
     /**
-     * 途中経過を draftHolder に入れて draftLayer に描く
+     * 途中経過を draftHolder に入れて draftLayer に描く.
      * @param e
      */
     @Override

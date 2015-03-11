@@ -1,11 +1,8 @@
 package open.dolphin.impl.scheam;
 
-import com.sun.glass.ui.Robot;
-import javafx.application.Platform;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.geometry.Pos;
@@ -13,12 +10,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import open.dolphin.impl.scheam.stateeditor.*;
-import sun.awt.im.InputContext;
 
 /**
  * DraftLayer から MouseEvent, CanvasStage から KeyEvent を
- * 受け取って，State に応じて対応する StateEditor に渡す
- * 完成したら新たな DrawLayer を作って CanvasPane に積む
+ * 受け取って，State に応じて対応する StateEditor に渡す.
+ * 完成したら新たな DrawLayer を作って CanvasPane に積む.
  * @author pns
  */
 public class StateManager {
@@ -39,9 +35,9 @@ public class StateManager {
 
     public StateManager(final SchemaEditorImpl context) {
         this.context = context;
-        properties = context.getProperties();
         baseLayer = context.getBaseLayer();
         canvasPane = context.getCanvasPane();
+        properties = SchemaEditorImpl.getProperties();
         stateEditorProperty = new SimpleObjectProperty<>();
 
         // 選択可能な StateEditor
@@ -58,9 +54,6 @@ public class StateManager {
         final StateEditor scaleEditor = new ScaleEditor(context);
         final StateEditor rotateEditor = new RotateEditor(context);
         final StateEditor clipEditor = new ClipEditor(context);
-        final StateEditor clearEditor = new ClearEditor(context);
-        final StateEditor undoEditor = new UndoEditor(context);
-        final StateEditor redoEditor = new RedoEditor(context);
 
         // StateEditorProperty と StateProperty を bind して，State に応じて StateEditor が切り替わるようにする
         stateEditorProperty.bind(new ObjectBinding<StateEditor>() {
@@ -95,35 +88,26 @@ public class StateManager {
                         return rotateEditor;
                     case Clip:
                         return clipEditor;
-                    case Clear:
-                        return clearEditor;
-                    case Undo:
-                        return undoEditor;
-                    case Redo:
-                        return redoEditor;
                 }
                 return null;
             }
         });
 
         // StateEditor が切り替わった時点で，Start / End を送る
-        stateEditorProperty.addListener(new ChangeListener<StateEditor>(){
-            @Override
-            public void changed(ObservableValue<? extends StateEditor> ov, StateEditor t, StateEditor t1) {
-                if (t != null) {
-                    // Mouse drug 中に State の切換があったら，編集を完了させてしまう
-                    // TrackPad で 3本指ドラッグをしていると，手を放してもすぐには MOUSE_RELEASED が発生しないので
-                    // 編集完了する前にショートカットキーで State 切り替えが発生してしまうことがあるのの対策
-                    if (mouseDragEvent != null) {
-                        t.mouseUp((MouseEvent)mouseDragEvent);
-                        addDrawLayer(t.getHolder());
-                        mousePressed = false;
-                        mouseDragEvent = null;
-                    }
-                    t.end();
+        stateEditorProperty.addListener((ObservableValue<? extends StateEditor> ov, StateEditor t, StateEditor t1) -> {
+            if (t != null) {
+                // Mouse drug 中に State の切換があったら，編集を完了させてしまう
+                // TrackPad で 3本指ドラッグをしていると，手を放してもすぐには MOUSE_RELEASED が発生しないので
+                // 編集完了する前にショートカットキーで State 切り替えが発生してしまうことがあるのの対策
+                if (mouseDragEvent != null) {
+                    t.mouseUp((MouseEvent)mouseDragEvent);
+                    addDrawLayer(t.getHolder());
+                    mousePressed = false;
+                    mouseDragEvent = null;
                 }
-                if (t1 != null) { t1.start(); }
+                t.end();
             }
+            if (t1 != null) { t1.start(); }
         });
     }
 
@@ -133,7 +117,7 @@ public class StateManager {
 
 
     /**
-     * マウスが押された時の処理
+     * マウスが押された時の処理.
      * @param e
      */
     public void mousePressed(MouseEvent e) {
@@ -149,8 +133,8 @@ public class StateManager {
     }
 
     /**
-     * マウスドラッグ処理
-     * 押される前にドラッグに入ってくることがある
+     * マウスドラッグ処理.
+     * 押される前にドラッグに入ってくることがある.
      * @param e
      */
     public void mouseDragged(MouseEvent e) {
@@ -166,7 +150,7 @@ public class StateManager {
     }
 
     /**
-     * マウス移動処理
+     * マウス移動処理.
      * @param e
      */
     public void mouseMoved(MouseEvent e) {
@@ -176,8 +160,8 @@ public class StateManager {
     }
 
     /**
-     * マウスを離した処理
-     * 押されてないのに入ってくることがある
+     * マウスを離した処理.
+     * 押されてないのに入ってくることがある.
      * @param e
      */
     public void mouseReleased(MouseEvent e) {
@@ -190,7 +174,7 @@ public class StateManager {
     }
 
     /**
-     * ショートカットキー処理と StateEditor への KeyPressed 送信
+     * ショートカットキー処理と StateEditor への KeyPressed 送信.
      * @param e
      */
     public void keyPressed(KeyEvent e) {
@@ -300,7 +284,8 @@ public class StateManager {
 //                    }
 //                    break;
                 case Z:
-                    properties.stateProperty().set(State.Undo);
+                    // undo ... マウスドラッグ途中の場合は無視
+                    if (! mousePressed) { context.getUndoManager().undo(); }
                     break;
             }
 
@@ -311,7 +296,8 @@ public class StateManager {
         else if (!e.isAltDown() && !e.isControlDown() && e.isMetaDown() && e.isShiftDown()) {
             switch (e.getCode()) {
                 case Z:
-                    properties.stateProperty().set(State.Redo);
+                    // redo ... マウスドラッグ途中の場合は無視
+                    if (! mousePressed) { context.getUndoManager().redo(); }
                     break;
             }
         }
@@ -352,28 +338,10 @@ public class StateManager {
                     break;
             }
         }
-
-        // ATOK がキー入力の後の Mouse Event を横取りしてしまう問題に対応
-        // antiATOKer(e);
-    }
-
-    private void antiATOKer(KeyEvent e) {
-        if (e.isAltDown() || e.isControlDown() || e.isMetaDown()) { return; }
-        if (!e.getCode().isLetterKey()) { return; }
-
-        InputContext ctx = (InputContext) InputContext.getInstance();
-
-        if (ctx.getInputMethodInfo().contains("ATOK")) {
-            System.out.println("ATOK detected");
-            Robot robot = com.sun.glass.ui.Application.GetApplication().createRobot();
-            robot.mousePress(1);
-            robot.mouseRelease(1);
-            robot.destroy();
-        }
     }
 
     /**
-     * StateEditor に KeyRelased を送る
+     * StateEditor に KeyRelased を送る.
      * @param e
      */
     public void keyReleased(KeyEvent e) {
@@ -381,7 +349,7 @@ public class StateManager {
     }
 
     /**
-     * できあがった SchemaHolder を新たな SchemaLayer を作ってセットする
+     * できあがった SchemaHolder を新たな SchemaLayer を作ってセットする.
      */
     private void addDrawLayer(ShapeHolder holder) {
         if (holder == null) { return; }

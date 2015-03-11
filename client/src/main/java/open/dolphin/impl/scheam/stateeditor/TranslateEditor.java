@@ -17,11 +17,11 @@ import open.dolphin.impl.scheam.shapeholder.LineHolder;
 import open.dolphin.impl.scheam.shapeholder.ShapeHolderBase;
 
 /**
- * 各々の ShapeHolder を選択して，移動，拡大／縮小，回転させる StateEditor
- * Shape をドラッグすると移動
- * 四隅をドラッグすると拡大／縮小
- * Option を押しながら Shape 内を上下ドラッグすると回転
- * Delete キーを押すと削除
+ * 各々の ShapeHolder を選択して，移動，拡大／縮小，回転させる StateEditor.
+ * Shape をドラッグすると移動.
+ * 四隅をドラッグすると拡大／縮小.
+ * Option を押しながら Shape 内を上下ドラッグすると回転.
+ * Delete キーを押すと削除.
  *
  * @author pns
  */
@@ -48,25 +48,14 @@ public class TranslateEditor extends StateEditorBase {
     private State prevPreviewState;
 
     public TranslateEditor(SchemaEditorImpl context) {
-        properties = context.getProperties();
+        properties = SchemaEditorImpl.getProperties();
         draftLayer = context.getDraftLayer();
         canvasPane = context.getCanvasPane();
         band = new RubberBand(draftLayer);
     }
 
     /**
-     * State が Translate に切り替わったときに呼ばれる
-     */
-    @Override
-    public void start() {
-        // RubberBand を描く DraftLayer の準備
-        draftLayer.setBlendMode(BlendMode.DIFFERENCE);
-        draftLayer.getGraphicsContext2D().setStroke(Color.WHITE);
-        draftLayer.getGraphicsContext2D().setLineWidth(1.0);
-    }
-
-    /**
-     * Holder 選択してから DELETE で消去
+     * Holder 選択してから DELETE で消去.
      * @param e
      */
     @Override
@@ -112,7 +101,7 @@ public class TranslateEditor extends StateEditorBase {
     }
 
     /**
-     * 指定ドット移動処理をして UndoManager に登録する
+     * 指定ドット移動処理をして UndoManager に登録する.
      * @param x
      * @param y
      */
@@ -246,7 +235,7 @@ public class TranslateEditor extends StateEditorBase {
     }
 
     /**
-     * 選択された Holder を Properties と Bind する
+     * 選択された Holder を Properties と Bind する.
      */
     private void bind(ShapeHolderBase h) {
         // RubberBand 前のプロパティーを保存

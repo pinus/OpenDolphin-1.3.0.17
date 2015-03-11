@@ -6,7 +6,7 @@ import open.dolphin.impl.scheam.FillMode;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
- * Polygon を保持する ShapeHolder
+ * Polygon を保持する ShapeHolder.
  * @author pns
  */
 public class PolygonHolder extends ShapeHolderBase {

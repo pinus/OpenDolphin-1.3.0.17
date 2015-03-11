@@ -3,19 +3,21 @@ package open.dolphin.impl.scheam;
 import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Callback;
 import open.dolphin.impl.scheam.constant.DefaultPresetColor;
 import open.dolphin.impl.scheam.widget.PnsComboBox;
-import open.dolphin.impl.scheam.widget.PnsIconCallback;
+import open.dolphin.impl.scheam.widget.PnsListCell;
 
 /**
- * Preset Color を選択するための PnsComboBox
+ * Preset Color を選択するための PnsComboBox.
  * @author pns
  */
 public class PresetColorCombo extends PnsComboBox<List<ColorModel>> {
@@ -26,6 +28,7 @@ public class PresetColorCombo extends PnsComboBox<List<ColorModel>> {
     public PresetColorCombo() {
         super();
         setFocusTraversable(false);
+        selectionProxyProperty = new SimpleObjectProperty<>();
 
         List<ColorModel> redFill = DefaultPresetColor.getSeries(DefaultPresetColor.Series.Red, FillMode.Fill);
         List<ColorModel> deepRedFill = DefaultPresetColor.getSeries(DefaultPresetColor.Series.DeepRed, FillMode.Fill);
@@ -53,32 +56,55 @@ public class PresetColorCombo extends PnsComboBox<List<ColorModel>> {
         getItems().add(special1);
         getItems().add(special2);
 
-         setIconCallback(new PnsIconCallback<List<ColorModel>, Node>(){
-            @Override
-            public Node call(List<ColorModel> items) {
-                HBox box = new HBox();
-                box.setSpacing(2);
-                box.setAlignment(Pos.CENTER);
-                for (ColorModel m : items) {
-                    box.getChildren().add(new ColorModelLabel(m));
-                }
-                return box;
-            }
-            @Override
-            public Node callSelected(List<ColorModel> items) {
-                return call(items);
-            }
-        });
+        // MouseEvent で popup を show する
+        setOnMousePressed(this::superShow);
 
-        selectionProxyProperty = new SimpleObjectProperty<>();
+        // アイコン callback
+        Callback<ListView<List<ColorModel>>, ListCell<List<ColorModel>>> cellFactory = p -> new ColorCell();
+        setCellFactory(cellFactory);
+
+        // ComboBoxListViewSkin.updateButtonCell で setMouseTransparent(true) されてしまっているため，
+        // ButtonCell は MouseEvent を受け付けることができない。しかも updateButtonCell は private。
+        // 仕方がないので，むりやり false に戻す。
+        ListCell<List<ColorModel>> buttonCell = new ColorCell();
+        buttonCell.mouseTransparentProperty().addListener(o -> buttonCell.setMouseTransparent(false));
+        setButtonCell(buttonCell);
 
         // 初期値
-        setSelection(redFill);
+        getSelectionModel().select(redFill);
     }
 
     /**
-     * ColorModel を表示するラベル
-     * クリックで Property に ColorModel をセットする
+     * ColorModel のリストから ListCell を作る.
+     * ColorModelLabel を並べて作る.
+     */
+    private class ColorCell extends PnsListCell<List<ColorModel>> {
+        private final HBox box;
+        private final Label cell;
+
+        public ColorCell() {
+            box = new HBox();
+            box.setSpacing(2);
+            box.setAlignment(Pos.CENTER);
+            cell = new Label();
+        }
+
+        @Override
+        public Label getCell(List<ColorModel> list) {
+            if (list == null) { return null; }
+
+            box.getChildren().clear();
+            list.forEach( model -> box.getChildren().add(new ColorModelLabel(model)));
+            cell.setGraphic(box);
+
+            return cell;
+        }
+    }
+
+    /**
+     * ColorModel を表示するラベル.
+     * ColorCell はこれを HBox に並べたもの.
+     * クリックで Property に ColorModel をセットする.
      */
     private class ColorModelLabel extends Rectangle {
         private ColorModel model;
@@ -96,67 +122,34 @@ public class PresetColorCombo extends PnsComboBox<List<ColorModel>> {
                 setFill(model.getFillColor());
             }
 
-            setOnMouseReleased(new EventHandler<MouseEvent>(){
-                @Override
-                public void handle(MouseEvent t) {
-                    selectionProxyProperty.set(model);
-                }
-            });
+            setOnMouseReleased(e -> selectionProxyProperty.set(model));
         }
     }
 
+    @Override
+    public void show() {
+        // ActionEvent での popup はブロックする
+        // MouseEvent で下の superPopup で popup する
+    }
+
     /**
-     * マウスクリックで呼ばれる
-     * super.showPopup すると Popup が開く
+     * 親の show を呼ぶ.
+     * ComboBox の右側の矢印を押したとき: popup を出す
+     * ComboBox の ColorModeLabel を押したとき: ColorModelLabel にイベントを渡す
      * @param e
      */
-    @Override
-    public void showPopup(MouseEvent e) {
-        // 右側の矢印をクリックした場合だけ Popup する
-        if (e.getX() > getWidth() - 12) {
-            super.showPopup(e);
+    public void superShow(MouseEvent e) {
+        // 右側の矢印をクリックした場合 popup する
+        if (e.getX() > getWidth() - 14) {
+            super.show();
         }
     }
 
+    /**
+     * ColorModel のプロパティ.
+     * ColorModelLabel がクリックされるとセットされる
+     * @return
+     */
     public ObjectProperty<ColorModel> selectionProxyProperty() { return selectionProxyProperty; }
 
-
-    /**
-    //-------------------------------------------------------
-    public static void main (String[] argv) {
-        // Mac OS X needs this to avoid HeadlessException
-        System.setProperty("java.awt.headless", "false");
-
-        SwingUtilities.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                final JFrame frame = new JFrame();
-                frame.setUndecorated(false);
-                final JFXPanel fxp = new JFXPanel();
-                frame.add(fxp);
-
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        HBox pane = new HBox();
-                        pane.setSpacing(5);
-                        pane.setPadding(new Insets(5));
-                        pane.setPrefSize(150, 100);
-
-                        PresetColorCombo combo = new PresetColorCombo();
-                        pane.getChildren().add(combo);
-
-                        Scene scene = new Scene(pane);
-                        scene.getStylesheets().add(StyleClass.CSS_FILE);
-                        fxp.setScene(scene);
-                    }
-                });
-
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.pack();
-                frame.setVisible(true);
-            }
-        });
-    }
-    */
 }

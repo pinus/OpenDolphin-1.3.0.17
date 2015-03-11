@@ -1,9 +1,7 @@
 package open.dolphin.impl.scheam.stateeditor;
 
 import javafx.scene.ImageCursor;
-import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.SnapshotParametersBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -14,11 +12,11 @@ import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.impl.scheam.SchemaLayer;
 import open.dolphin.impl.scheam.ShapeHolder;
 import open.dolphin.impl.scheam.UndoManager;
-import open.dolphin.impl.scheam.helper.ShapeIcon;
+import open.dolphin.impl.scheam.constant.ShapeIcon;
 
 /**
- * canvas全体を 右に 90度回転する StateEditor
- * Option キーで左 90度回転
+ * canvas全体を 右に 90度回転する StateEditor.
+ * Option キーで左 90度回転.
  * @author pns
  */
 public class RotateEditor extends StateEditorBase {
@@ -36,7 +34,8 @@ public class RotateEditor extends StateEditorBase {
         canvasPane = context.getCanvasPane();
         undoManager = context.getUndoManager();
 
-        SnapshotParameters parameters = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
+        SnapshotParameters parameters = new SnapshotParameters();
+        parameters.setFill(Color.TRANSPARENT);
         Image img = ShapeIcon.getRotate().snapshot(parameters, null);
         cursor = new ImageCursor(img, img.getWidth()/2, img.getHeight()/2);
         Transform t = Transform.scale(-1, 1);
@@ -48,27 +47,23 @@ public class RotateEditor extends StateEditorBase {
     @Override
     public void start() {
         draftLayer.setCursor(cursor);
-        clearDraftLayer();
     }
 
     @Override
     public void end() {
         draftLayer.setCursor(null);
-        clearDraftLayer();
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.isAltDown()) {
             draftLayer.setCursor(cursorReverse);
-            clearDraftLayer();
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         draftLayer.setCursor(cursor);
-        clearDraftLayer();
     }
 
     @Override
@@ -93,7 +88,7 @@ public class RotateEditor extends StateEditorBase {
     }
 
     /**
-     * 各 Layer を 90度回転する
+     * 各 Layer を 90度回転する.
      * @param dx
      * @param dy
      */
@@ -111,11 +106,11 @@ public class RotateEditor extends StateEditorBase {
         baseLayer.redraw();
 
         // DrawLayers Rotation
-        for (Node n : canvasPane.getChildren()) {
-            SchemaLayer layer = (SchemaLayer) n;
+        canvasPane.getChildren().forEach(node -> {
+            SchemaLayer layer = (SchemaLayer) node;
             layer.getHolder().rotate(r);
             layer.redraw();
-        }
+        });
 
         // this sets cursor to default
         // stage.setHeight(baseLayer.getHeight() + hdiff);
@@ -125,13 +120,5 @@ public class RotateEditor extends StateEditorBase {
     @Override
     public ShapeHolder getHolder() {
         return null;
-    }
-
-    /**
-     * Workaround for bug RT-33412:
-     * The mouse cursor needs to move in order for a setCursor(Cursor) to take effect
-     */
-    private void clearDraftLayer() {
-        draftLayer.getGraphicsContext2D().clearRect(0, 0, draftLayer.getWidth(), draftLayer.getHeight());
     }
 }

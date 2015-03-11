@@ -1,8 +1,6 @@
 package open.dolphin.impl.scheam.colorchooser;
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -12,13 +10,9 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBuilder;
 import javafx.scene.control.Label;
-import javafx.scene.control.LabelBuilder;
 import javafx.scene.control.Separator;
-import javafx.scene.control.SeparatorBuilder;
 import javafx.scene.control.Slider;
-import javafx.scene.control.SliderBuilder;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -28,11 +22,10 @@ import javafx.scene.text.Font;
 import javafx.stage.Popup;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.impl.scheam.SchemaEditorProperties;
-import open.dolphin.impl.scheam.constant.StyleClass;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
- * ColorChooser for line and fill color
+ * ColorChooser for line and fill color.
  * @author pns
  */
 public class ColorChooser extends Popup {
@@ -55,11 +48,17 @@ public class ColorChooser extends Popup {
 
         // fill palette 用のラベル
         Label label = new Label("Fill Color");
+
         // fill blur スライダー
-        blurSlider = SliderBuilder.create()
-            .min(0.0).max(0.8)
-            .majorTickUnit(0.1).minorTickCount(0)
-            .showTickLabels(true).showTickMarks(true).snapToTicks(true).build();
+        blurSlider = new Slider();
+        blurSlider.setMin(0.0);
+        blurSlider.setMax(0.8);
+        blurSlider.setMajorTickUnit(0.1);
+        blurSlider.setMinorTickCount(0);
+        blurSlider.setShowTickLabels(true);
+        blurSlider.setShowTickMarks(true);
+        blurSlider.setSnapToTicks(true);
+
         // ラベル，スライダー付きの fill palette
         VBox fillPalettePane = new VBox();
         fillPalettePane.setSpacing(GAP/2);
@@ -80,31 +79,28 @@ public class ColorChooser extends Popup {
 
         // fill palette と line palette を並べる
         HBox palettePane = new HBox();
-        Separator separator = SeparatorBuilder.create()
-                .orientation(Orientation.VERTICAL).prefWidth(GAP*2).valignment(VPos.CENTER).build();
+        Separator separator = new Separator();
+        separator.setOrientation(Orientation.VERTICAL);
+        separator.setValignment(VPos.CENTER);
+        separator.setPrefWidth(GAP*2);
+
         palettePane.getChildren().addAll(linePalettePane, separator, fillPalettePane);
 
         // Button
-        Button okButton = ButtonBuilder.create()
-                .defaultButton(true).text("OK").build();
-        okButton.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t) {
-                hide();
-            }
-        });
+        Button okButton = new Button();
+        okButton.setDefaultButton(true);
+        okButton.setText("OK");
+        okButton.setOnAction(e -> hide());
 
-        Button cancelButton = ButtonBuilder.create()
-                .cancelButton(true).text("Cancel").build();
-        cancelButton.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t) {
-                // colorProperty は properties にバインドされるので，colorProperty をセットすれば properties に反映される
-                fillPalette.colorProperty().set(origFillColor);
-                // blur は color palette にはない
-                properties.setFillBlur(origFillBlur);
-                hide();
-            }
+        Button cancelButton = new Button();
+        cancelButton.setCancelButton(true);
+        cancelButton.setText("Cancel");
+        cancelButton.setOnAction(e -> {
+            // colorProperty は properties にバインドされるので，colorProperty をセットすれば properties に反映される
+            fillPalette.colorProperty().set(origFillColor);
+            // blur は color palette にはない
+            properties.setFillBlur(origFillBlur);
+            hide();
         });
         // ボタンを入れる pane
         HBox buttonPane = new HBox();
@@ -114,7 +110,7 @@ public class ColorChooser extends Popup {
 
         // 全体をまとめて背景，影をつける pane
         VBox pane = new VBox();
-        pane.getStyleClass().add(StyleClass.SCHEMA_COLOR_PALETTE);
+        pane.getStyleClass().add("schema-color-chooser");
         pane.setPadding(new Insets(GAP));
         pane.getChildren().addAll(palettePane, buttonPane);
 
@@ -154,7 +150,7 @@ public class ColorChooser extends Popup {
     }
 
     /**
-     * 位置補正して show
+     * 位置補正して show.
      * @param source
      */
     public void show(Node source) {
@@ -176,13 +172,13 @@ public class ColorChooser extends Popup {
     }
 
     @Override
-    public void hide() {
+    public final void hide() {
         super.hide();
         properties.valueChangingProperty().set(false);
     }
 
     /**
-     * 色の数値情報を表示する pane
+     * 色の数値情報を表示する pane.
      */
     private class ColorInfoPane extends GridPane {
         private final Font font = new Font(11);
@@ -190,9 +186,14 @@ public class ColorChooser extends Popup {
         public ColorInfoPane() {
             //setGridLinesVisible(true);
             // 文字ラベル
-            Label lineLabel = LabelBuilder.create().text("Line").font(font).prefWidth(30).build();
-            Label fillLabel = LabelBuilder.create().text("Fill").font(font).build();
-            Label blurLabel = LabelBuilder.create().text("Fill Blur").font(font).build();
+            Label lineLabel = new Label("Line");
+            lineLabel.setPrefWidth(30);
+            lineLabel.setFont(font);
+            Label fillLabel = new Label("Fill");
+            fillLabel.setFont(font);
+            Label blurLabel = new Label("Fill Blur");
+            blurLabel.setFont(font);
+
             // 数値ラベル
             final Label lRed = buildLabel();
             final Label lGreen = buildLabel();
@@ -216,27 +217,16 @@ public class ColorChooser extends Popup {
             add(fRed, 2, 2); add(fGreen, 3, 2); add(fBlue, 4, 2); add(fOpacity, 5, 2);
             add(blur, 5, 3);
 
-            properties.lineColorProperty().addListener(new ChangeListener<Color>() {
-                @Override
-                public void changed(ObservableValue<? extends Color> ov, Color t, Color t1) {
-                    setValue(lRed, lGreen, lBlue, lOpacity, t1);
-                }
-            });
-            properties.fillColorProperty().addListener(new ChangeListener<Color>() {
-                @Override
-                public void changed(ObservableValue<? extends Color> ov, Color t, Color t1) {
-                    setValue(fRed, fGreen, fBlue, fOpacity, t1);
-                }
-            });
-            properties.fillBlurProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-                    setValue(blur, (double)t1);
-                }
-            });
+            properties.lineColorProperty().addListener((ObservableValue<? extends Color> ov, Color t, Color col) -> setValue(lRed, lGreen, lBlue, lOpacity, col));
+            properties.fillColorProperty().addListener((ObservableValue<? extends Color> ov, Color t, Color col) -> setValue(fRed, fGreen, fBlue, fOpacity, col));
+            properties.fillBlurProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number b) -> setValue(blur, (double)b));
         }
         private Label buildLabel() {
-            return LabelBuilder.create().prefWidth(28).alignment(Pos.BASELINE_RIGHT).font(font).build();
+            Label label = new Label();
+            label.setPrefWidth(28);
+            label.setAlignment(Pos.BASELINE_RIGHT);
+            label.setFont(font);
+            return label;
         }
         private void setValue(Label red, Label green, Label blue, Label opacity, Color c) {
             red.setText(String.format("%d", (int)(c.getRed()*255)));

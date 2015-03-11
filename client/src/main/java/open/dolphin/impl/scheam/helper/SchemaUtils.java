@@ -22,7 +22,7 @@ import javafx.stage.Window;
 public class SchemaUtils {
 
     /**
-     * Image から BufferedImage に変換
+     * Image から BufferedImage に変換.
      * @param src
      * @return
      */
@@ -44,7 +44,7 @@ public class SchemaUtils {
         return SwingFXUtils.toFXImage(image, null);
     }
     /**
-     * Color -> WebString "#ffffff" 変換
+     * Color -> WebString "#ffffff" 変換.
      * @param color
      * @return string
      */
@@ -57,7 +57,7 @@ public class SchemaUtils {
         return String.format("#%02x%02x%02x%02x", r, g, b, a);
     }
     /**
-     * 与えられた opacity を設定した色を返す
+     * 与えられた opacity を設定した色を返す.
      * @param c
      * @param opacity
      * @return
@@ -66,7 +66,7 @@ public class SchemaUtils {
         return Color.color(c.getRed(), c.getGreen(), c.getBlue(), opacity);
     }
     /**
-     * opacity 以外一致しているかどうかを返す
+     * opacity 以外一致しているかどうかを返す.
      * @param c
      * @param c1
      * @return
@@ -77,7 +77,7 @@ public class SchemaUtils {
                 && c.getBlue() == c1.getBlue();
     }
     /**
-     * Node の左上隅のスクリーン座標での位置を返す
+     * Node の左上隅のスクリーン座標での位置を返す.
      * On Mac, top-left corner of the screen is (0,22) because of the menu bar.
      * In case JFXPanel (com.sun.javafx.stage.EmbeddedWindow) it becomes (0,44) due to title bar.
      * (javafx.stage.Stage includes title bar, while com.sun.javafx.stage.EmbededWindow does not)
@@ -100,7 +100,7 @@ public class SchemaUtils {
     }
 
     /**
-     * 逆行列を作る
+     * 逆行列を作る.
      * [ mxx mxy tx ]       1  [  myy -mxy  mxy*ty-myy*tx ]
      * [ myx myy ty ] ->   --- [ -myx  mxx  myx*tx-mxx*ty ]
      * [  0   0   1 ]      det [   0    0         det     ]
@@ -122,7 +122,7 @@ public class SchemaUtils {
         return invert;
     }
     /**
-     * 点 (x,y) を Affin Transform した Point を返す
+     * 点 (x,y) を Affin Transform した Point を返す.
      * [ mxx mxy tx ]   [ x ]   [ x*mxx + y*mxy + tx ]
      * [ myx myy ty ] * [ y ] = [ x*myx + y*myy + ty ]
      * [  0   0   1 ]   [ 1 ]   [          1         ]
@@ -138,7 +138,7 @@ public class SchemaUtils {
                 x*a.getMyx() + y*a.getMyy() + a.getTy());
     }
     /**
-     * (x1,y1) と (x2,y2) が近いかどうか
+     * (x1,y1) と (x2,y2) が近いかどうか.
      * 10ドット未満なら近いと判断
      * @param x1
      * @param y1
@@ -150,7 +150,7 @@ public class SchemaUtils {
         return Math.abs(x1 - x2) < 10 && Math.abs(y1 - y2) < 10;
     }
     /**
-     * (0,0)と(ux,uy)を通る直線と点(vx,vy)の距離を返す
+     * (0,0)と(ux,uy)を通る直線と点(vx,vy)の距離を返す.
      * u = (ux,uy), v = (vx,vy) とすると，L = u x v / |u|
      * @param ux
      * @param uy
@@ -162,7 +162,7 @@ public class SchemaUtils {
         return Math.abs( (ux*vy - vx*uy) / Math.sqrt(ux*ux + uy*uy) );
     }
     /**
-     * (x,y) を中心とした theta 回転を表す Affine を返す
+     * (x,y) を中心とした theta 回転を表す Affine を返す.
      * [ cosθ -sinθ x(1-cosθ)+ysinθ ]
      * [ sinθ  cosθ y(1-cosθ)-xsinθ ]
      * [   0    0            1      ]
@@ -186,7 +186,7 @@ public class SchemaUtils {
         return a;
     }
     /**
-     * 与えられた範囲内の random dots の点列を返す
+     * 与えられた範囲内の random dots の点列を返す.
      * @param x
      * @param y
      * @param h
@@ -207,7 +207,7 @@ public class SchemaUtils {
         return p;
     }
     /**
-     * 与えられた範囲内の網を表す点列を返す
+     * 与えられた範囲内の網を表す点列を返す.
      * @param x
      * @param y
      * @param width

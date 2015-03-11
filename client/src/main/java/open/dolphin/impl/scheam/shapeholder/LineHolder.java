@@ -4,9 +4,9 @@ import javafx.scene.canvas.GraphicsContext;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
- * 線を保持する ShapeHolder
- * Path(0) と Path(1) を使う
- * DrawArrow を true にセットすると矢印を書く
+ * 線を保持する ShapeHolder.
+ * Path(0) と Path(1) を使う.
+ * DrawArrow を true にセットすると矢印を書く.
  * @author pns
  */
 public class LineHolder extends ShapeHolderBase {

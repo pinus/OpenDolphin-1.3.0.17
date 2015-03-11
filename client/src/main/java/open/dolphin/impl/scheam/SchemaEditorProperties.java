@@ -10,7 +10,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -19,8 +18,8 @@ import open.dolphin.impl.scheam.constant.Default;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
- * SchemaEditorProperties
- * SchemaEditor で使われる変数を一括管理する
+ * SchemaEditorProperties.
+ * SchemaEditor で使われる変数を一括管理する.
  * @author pns
  */
 public class SchemaEditorProperties {
@@ -53,22 +52,19 @@ public class SchemaEditorProperties {
         prefs = Preferences.userNodeForPackage(SchemaEditorImpl.class);
 
         // State 変化で PreviewState も変化
-        state.addListener(new ChangeListener<State>() {
-            @Override
-            public void changed(ObservableValue<? extends State> ov, State t, State t1) {
-                for (State s : drawStates) {
-                    if (t1.equals(s)) {
-                        previewState.set(t1);
-                        break;
-                    }
+        state.addListener((ObservableValue<? extends State> ov, State t, State t1) -> {
+            for (State s : drawStates) {
+                if (t1.equals(s)) {
+                    previewState.set(t1);
+                    break;
                 }
             }
         });
     }
 
     /**
-     * ColorModel に関連したプロパティー
-     * これらのうちどれかが変化すると ColorModel も変化すべき
+     * ColorModel に関連したプロパティー.
+     * これらのうちどれかが変化すると ColorModel も変化すべき.
      * @return
      */
     public Property[] getPropertiesRelatedToColorModel() { return propertiesRelatedToColorModel; }
@@ -82,7 +78,7 @@ public class SchemaEditorProperties {
     public BooleanProperty valueChangingProperty() { return valueChangingProperty; }
 
     /**
-     * 線の太さ
+     * 線の太さ.
      * @return
      */
     public DoubleProperty lineWidthProperty() { return lineWidth; }
@@ -90,7 +86,7 @@ public class SchemaEditorProperties {
     public void setLineWidth(double d) { lineWidth.set(d); }
 
     /**
-     * 線の色
+     * 線の色.
      * @return
      */
     public ObjectProperty<Color> lineColorProperty() { return lineColor; }
@@ -98,7 +94,7 @@ public class SchemaEditorProperties {
     public void setLineColor(Color c) { lineColor.set(c); }
 
     /**
-     * FillColor
+     * FillColor.
      * @return
      */
     public ObjectProperty<Color> fillColorProperty() { return fillColor; }
@@ -106,7 +102,7 @@ public class SchemaEditorProperties {
     public void setFillColor(Color c) { fillColor.set(c); }
 
     /**
-     * blur property　直径に対して 0.0 〜 1.0 倍
+     * blur property　直径に対して 0.0 〜 1.0 倍.
      * @return
      */
     public DoubleProperty fillBlurProperty() { return fillBlur; }
@@ -114,7 +110,7 @@ public class SchemaEditorProperties {
     public void setFillBlur(double d) { fillBlur.set(d); }
 
     /**
-     * 塗りのモード
+     * 塗りのモード.
      * @return
      */
     public ObjectProperty<FillMode> fillModeProperty() { return fillMode; }
@@ -122,7 +118,7 @@ public class SchemaEditorProperties {
     public void setFillMode(FillMode f) { fillMode.set(f); }
 
     /**
-     * フォント名
+     * フォント名.
      * @return
      */
     public StringProperty fontNameProperty() { return fontName; }
@@ -130,7 +126,7 @@ public class SchemaEditorProperties {
     public void setFontName(String s) { fontName.set(s); }
 
     /**
-     * フォントスタイル
+     * フォントスタイル.
      * @return
      */
     public ObjectProperty<FontWeight> fontWeightProperty() { return fontWeight; }
@@ -138,7 +134,7 @@ public class SchemaEditorProperties {
     public void setFontWeight(FontWeight w) { fontWeight.set(w); }
 
     /**
-     * フォントサイズ
+     * フォントサイズ.
      * @return
      */
     public DoubleProperty fontSizeProperty() { return fontSize; }
@@ -146,7 +142,7 @@ public class SchemaEditorProperties {
     public void setFontSize(double d) { fontSize.set(d); }
 
     /**
-     * フォントを作って返す
+     * フォントを作って返す.
      * @return
      */
     public Font getFont() {
@@ -154,7 +150,7 @@ public class SchemaEditorProperties {
     }
 
     /**
-     * 選択されたツールボタンの種類（State）
+     * 選択されたツールボタンの種類（State）.
      * @return
      */
     public ObjectProperty<State> stateProperty() { return state; }
@@ -162,7 +158,7 @@ public class SchemaEditorProperties {
     public void setState(State s) { state.set(s); }
 
     /**
-     * Preview 画面に表示する State : Pen, Line, Oval, Rectangle, Polygon
+     * Preview 画面に表示する State : Pen, Line, Oval, Rectangle, Polygon.
      * @return
      */
     public ObjectProperty<State> previewStateProperty() { return previewState; }
@@ -170,7 +166,7 @@ public class SchemaEditorProperties {
     public void setPreviewState(State s) { previewState.set(s); }
 
     /**
-     * プレファレンスファイルから読み込む
+     * プレファレンスファイルから読み込む.
      */
     public void load() {
         setLineWidth( prefs.getDouble(Default.LINE_WIDTH.key, Default.LINE_WIDTH.value)                         );
@@ -182,7 +178,7 @@ public class SchemaEditorProperties {
         setFontSize(  prefs.getDouble(Default.FONT_SIZE.key, Default.FONT_SIZE.value)                           );
     }
     /**
-     * プレファレンスファイルに保存する
+     * プレファレンスファイルに保存する.
      */
     public void save() {
         prefs.putDouble( Default.LINE_WIDTH.key,    getLineWidth());

@@ -5,19 +5,19 @@ import javafx.scene.input.MouseEvent;
 import open.dolphin.impl.scheam.StateEditor;
 
 /**
- * StateEditor の Adapter abstract
+ * StateEditor の Adapter abstract.
  * @author pns
  */
 public abstract class StateEditorBase implements StateEditor {
     /**
-     * State が自分に切り替わった時に呼ばれる
+     * State が自分に切り替わった時に呼ばれる.
      */
     @Override
     public void start() {}
 
     /**
-     * State が別の State に切り替わった時に呼ばれる
-     * Escape が押されたときにも呼ばれる
+     * State が別の State に切り替わった時に呼ばれる.
+     * Escape が押されたときにも呼ばれる.
      */
     @Override
     public void end() {}

@@ -2,15 +2,14 @@ package open.dolphin.impl.scheam.shapeholder;
 
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.SnapshotParametersBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Transform;
 
 /**
- * Image を保持する ShapeHolder
- * 直接 Image をセットしないで，Image の元となる Node をセットする
- * ShapeHolderBase の translate, scale, rotate は使わずに独自に実装
+ * Image を保持する ShapeHolder.
+ * 直接 Image をセットしないで，Image の元となる Node をセットする.
+ * ShapeHolderBase の translate, scale, rotate は使わずに独自に実装.
  * @author pns
  */
 public class ImageHolder extends ShapeHolderBase {
@@ -32,14 +31,15 @@ public class ImageHolder extends ShapeHolderBase {
     }
 
     /**
-     * Image の元になる Node をセットする
-     * StartX と StartY はあらかじめセットしておく必要あり
-     * Node から Snapshot を取って描画のための Image とする
+     * Image の元になる Node をセットする.
+     * StartX と StartY はあらかじめセットしておく必要あり.
+     * Node から Snapshot を取って描画のための Image とする.
      * @param n
      */
     public void setNode(Node n) {
         node = n;
-        snapshotParameters = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
+        snapshotParameters = new SnapshotParameters();
+        snapshotParameters.setFill(Color.TRANSPARENT);
         image = node.snapshot(snapshotParameters, null);
         setEndX(getStartX() + image.getWidth());
         setEndY(getStartY() + image.getHeight());
@@ -62,7 +62,7 @@ public class ImageHolder extends ShapeHolderBase {
     }
 
     /**
-     * 回転させる場合はその都度 Image を作り直す
+     * 回転させる場合はその都度 Image を作り直す.
      * @param r
      */
     @Override

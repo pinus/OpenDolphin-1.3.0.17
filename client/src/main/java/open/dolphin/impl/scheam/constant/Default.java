@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import open.dolphin.impl.scheam.State;
 
 /**
- * Default 値を入れる
+ * Default 値を入れる.
  * @author pns
  */
 public class Default {

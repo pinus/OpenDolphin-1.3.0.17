@@ -7,13 +7,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.SnapshotParametersBuilder;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -26,17 +23,15 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.stage.WindowEvent;
 import javax.swing.ImageIcon;
 import open.dolphin.client.SchemaEditor;
-import open.dolphin.impl.scheam.constant.StyleClass;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 import open.dolphin.impl.scheam.shapeholder.ImageHolder;
 import open.dolphin.impl.scheam.widget.PnsStage;
 import open.dolphin.infomodel.SchemaModel;
 
 /**
- * SchemaEditorImpl
+ * SchemaEditorImpl.
  *
  *              +-- DraftLayer
  *              |                +- DrawLayer - Holder
@@ -47,7 +42,7 @@ import open.dolphin.infomodel.SchemaModel;
  *              +-- BaseLayer
  * @author pns
  */
-public class SchemaEditorImpl implements SchemaEditor {
+public final class SchemaEditorImpl implements SchemaEditor {
     public static final String DEFAULT_TITLE = "参考画像";
     public static final String DEFAULT_ROLE = "参考図";
 
@@ -87,7 +82,7 @@ public class SchemaEditorImpl implements SchemaEditor {
 
         canvasStage = new PnsStage();
         canvasStage.setTitle("Schema Editor");
-        canvasStage.getScene().getStylesheets().add(StyleClass.CSS_FILE);
+        canvasStage.getScene().getStylesheets().add("css/schemaeditorimpl.css");
 
         undoManager = new UndoManager(this); // should be instantiated before StateManager
         stateManager = new StateManager(this);
@@ -102,40 +97,36 @@ public class SchemaEditorImpl implements SchemaEditor {
         okButton = new Button("カルテに展開");
         okButton.setFocusTraversable(false);
         okButton.setDefaultButton(true);
-        okButton.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t) {
-                SchemaLayer output = new SchemaLayer();
-                GraphicsContext outputGc = output.getGraphicsContext2D();
-                output.setWidth(baseLayer.getWidth());
-                output.setHeight(baseLayer.getHeight());
+        okButton.setOnAction(e -> {
+            SchemaLayer output = new SchemaLayer();
+            GraphicsContext outputGc = output.getGraphicsContext2D();
+            output.setWidth(baseLayer.getWidth());
+            output.setHeight(baseLayer.getHeight());
 
-                ShapeHolder baseHolder = baseLayer.getHolder();
-                baseHolder.setGraphicsContext(outputGc);
-                baseHolder.draw();
+            ShapeHolder baseHolder = baseLayer.getHolder();
+            baseHolder.setGraphicsContext(outputGc);
+            baseHolder.draw();
 
-                for (Node n : canvasPane.getChildren()) {
-                    ShapeHolder holder = ((SchemaLayer)n).getHolder();
-                    holder.setGraphicsContext(outputGc);
-                    holder.draw();
-                }
+            canvasPane.getChildren().forEach(node -> {
+                ShapeHolder holder = ((SchemaLayer)node).getHolder();
+                holder.setGraphicsContext(outputGc);
+                holder.draw();
+            });
 
-                SnapshotParameters parameters = SnapshotParametersBuilder.create().fill(Color.WHITE).build();
-                Image image = output.snapshot(parameters, null);
+            SnapshotParameters parameters = new SnapshotParameters();
+            parameters.setFill(Color.WHITE);
 
-                firePropertyChange(image);
-                canvasStage.hide();
-            }
+            Image image = output.snapshot(parameters, null);
+
+            firePropertyChange(image);
+            canvasStage.hide();
         });
         // 破棄して終了する
         cancelButton = new Button("破棄");
         cancelButton.setFocusTraversable(false);
-        cancelButton.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t) {
-                firePropertyChange(null);
-                canvasStage.hide();
-            }
+        cancelButton.setOnAction(e -> {
+            firePropertyChange(null);
+            canvasStage.hide();
         });
 
         // レイアウト
@@ -152,37 +143,24 @@ public class SchemaEditorImpl implements SchemaEditor {
         StackPane.setAlignment(draftLayer, Pos.CENTER);
         contentPane.getChildren().addAll(baseLayer, canvasPane, draftLayer);
 
-        canvasStage.setTool(new ToolPane(this));
+        canvasStage.addTool(new ToolPane(this));
         canvasStage.addContent(contentPane);
         canvasStage.addFooter(buttonPane);
 
         // MouseListeners
-        draftLayer.setOnMousePressed(new EventHandler<MouseEvent>(){
-            @Override public void handle(MouseEvent t) { stateManager.mousePressed(t); }
-        });
-        draftLayer.setOnMouseDragged(new EventHandler<MouseEvent>(){
-            @Override public void handle(MouseEvent t) { stateManager.mouseDragged(t); }
-        });
-        draftLayer.setOnMouseMoved(new EventHandler<MouseEvent>(){
-            @Override public void handle(MouseEvent t) { stateManager.mouseMoved(t); }
-        });
-        draftLayer.setOnMouseReleased(new EventHandler<MouseEvent>(){
-            @Override public void handle(MouseEvent t) { stateManager.mouseReleased(t); }
-        });
+        draftLayer.setOnMousePressed(stateManager::mousePressed);
+        draftLayer.setOnMouseDragged(stateManager::mouseDragged);
+        draftLayer.setOnMouseMoved(stateManager::mouseMoved);
+        draftLayer.setOnMouseReleased(stateManager::mouseReleased);
         // KeyListeners
-        canvasStage.getScene().setOnKeyPressed(new EventHandler<KeyEvent>(){
-            @Override public void handle(KeyEvent t) {  stateManager.keyPressed(t); }
-        });
-        canvasStage.getScene().setOnKeyReleased(new EventHandler<KeyEvent>(){
-            @Override public void handle(KeyEvent t) { stateManager.keyReleased(t); }
-        });
+        canvasStage.getScene().setOnKeyPressed(stateManager::keyPressed);
+        canvasStage.getScene().setOnKeyReleased(stateManager::keyReleased);
 
         // Editable 処理
         editableProperty.set(true); // 初期値
         editableProperty.addListener(new ChangeListener<Boolean>(){
-            private final EventHandler<InputEvent> consumer = new EventHandler<InputEvent>() {
-                @Override public void handle(InputEvent t) { t.consume(); }
-            };
+            private final EventHandler<InputEvent> consumer = evt -> evt.consume();
+
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
@@ -196,65 +174,62 @@ public class SchemaEditorImpl implements SchemaEditor {
         });
 
         // 終了処理
-        canvasStage.setOnHidden(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent t) {
-                for(PropertyChangeListener l : boundSupport.getPropertyChangeListeners()) {
-                    boundSupport.removePropertyChangeListener(l);
-                }
-                // TranslateEditor で選択したまま終了する可能性がある
-                stateManager.stateProperty().get().end();
-                // 再利用できる可能性もある
-                canvasPane.getChildren().clear();
-                properties.save();
+        canvasStage.setOnHidden(e -> {
+            for(PropertyChangeListener l : boundSupport.getPropertyChangeListeners()) {
+                boundSupport.removePropertyChangeListener(l);
             }
+            // TranslateEditor で選択したまま終了する可能性がある
+            stateManager.stateProperty().get().end();
+            // 再利用できる可能性もある
+            canvasPane.getChildren().clear();
+            properties.save();
         });
     }
     /**
-     * Properties を返す
+     * Properties を返す.
      * @return
      */
     public static SchemaEditorProperties getProperties() {
         return properties;
     }
     /**
-     * CanvasStage を返す
+     * CanvasStage を返す.
      * @return
      */
     public PnsStage getCanvasStage() { return canvasStage; }
     /**
-     * DrawLayers を載せる Pane
+     * DrawLayers を載せる Pane.
      * @return
      */
     public StackPane getCanvasPane() { return canvasPane; }
     /**
-     * CanvasStage の ContentPane を返す
-     * BaseLayer, CanvasPane, DraftLayer を載せる
+     * CanvasStage の ContentPane を返す.
+     * BaseLayer, CanvasPane, DraftLayer を載せる.
      * @return
      */
     public StackPane getContentPane() { return canvasStage.getContentPane(); }
     /**
-     * Mouse Event を受け取って途中経過を描く DraftLayer を返す
+     * Mouse Event を受け取って途中経過を描く DraftLayer を返す.
      * @return
      */
     public SchemaLayer getDraftLayer() { return draftLayer; }
     /**
-     * Base 画像を表示する BaseLayer を返す
+     * Base 画像を表示する BaseLayer を返す.
      * @return
      */
     public SchemaLayer getBaseLayer() { return baseLayer; }
     /**
-     * StateManager を返す
+     * StateManager を返す.
      * @return
      */
     public StateManager getStateManager() { return stateManager; }
     /**
-     * UndoManager を返す
+     * UndoManager を返す.
      * @return
      */
     public UndoManager getUndoManager() { return undoManager; }
     /**
-     * プログラムの入り口
+     * プログラムの入り口.
      */
     @Override
     public void start() {
@@ -277,7 +252,7 @@ public class SchemaEditorImpl implements SchemaEditor {
     }
 
     /**
-     * このリスナは fire するとKartePane の propertyChanged を呼び出す
+     * このリスナは fire するとKartePane の propertyChanged を呼び出す.
      * @param l
      */
     @Override
@@ -297,8 +272,8 @@ public class SchemaEditorImpl implements SchemaEditor {
     }
 
     /**
-     * KartePane に SchemaModel を返す
-     * FXImage → SwingImage 変換する
+     * KartePane に SchemaModel を返す.
+     * FXImage → SwingImage 変換する.
      * 　「カルテに展開」ボタン：　createImage で作った BufferedImage を持ってくる
      * 　「破棄」ボタン　　　　：　null を持ってくる
      * @param image

@@ -1,6 +1,5 @@
 package open.dolphin.impl.scheam.stateeditor;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -14,7 +13,7 @@ import open.dolphin.impl.scheam.ShapeHolder;
 import open.dolphin.impl.scheam.shapeholder.TextHolder;
 
 /**
- * Text 入力用の StateEditor
+ * Text 入力用の StateEditor.
  * @author pns
  */
 public class TextEditor extends StateEditorBase {
@@ -42,37 +41,7 @@ public class TextEditor extends StateEditorBase {
         StackPane.setAlignment(textField, Pos.TOP_LEFT);
         textField.setMaxWidth(TEXTFIELD_WIDTH);
 
-        textField.setOnKeyPressed(new EventHandler<KeyEvent>(){
-            @Override
-            public void handle(KeyEvent t) {
-                switch(t.getCode()) {
-                    case ESCAPE:
-                        end();
-                        break;
-
-                    case ENTER:
-                        // 新しい Layer を加える
-                        // 他の StateEditor の場合は，
-                        // StateManager で MouseReleased でこの仕事をしている
-                        TextHolder holder = new TextHolder();
-                        holder.setStartX(startx);
-                        holder.setStartY(starty);
-                        holder.setProperties();
-                        // setText で TextHolder で終点の path が設定される
-                        holder.setText(textField.getText());
-                        SchemaLayer layer = new SchemaLayer();
-                        layer.widthProperty().bind(baseLayer.widthProperty());
-                        layer.heightProperty().bind(baseLayer.heightProperty());
-                        // Holder セット
-                        layer.setHolder(holder);
-                        layer.draw();
-                        canvasPane.getChildren().add(layer);
-
-                        end();
-                        break;
-                }
-            }
-        });
+        textField.setOnKeyPressed(this::keyPressed);
     }
 
     @Override
@@ -104,6 +73,36 @@ public class TextEditor extends StateEditorBase {
         if (textField != null) {
             contentPane.getChildren().remove(textField);
             textField.setText(null);
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch(e.getCode()) {
+            case ESCAPE:
+                end();
+                break;
+
+            case ENTER:
+                // 新しい Layer を加える
+                // 他の StateEditor の場合は，
+                // StateManager で MouseReleased でこの仕事をしている
+                TextHolder holder = new TextHolder();
+                holder.setStartX(startx);
+                holder.setStartY(starty);
+                holder.setProperties();
+                // setText で TextHolder で終点の path が設定される
+                holder.setText(textField.getText());
+                SchemaLayer layer = new SchemaLayer();
+                layer.widthProperty().bind(baseLayer.widthProperty());
+                layer.heightProperty().bind(baseLayer.heightProperty());
+                // Holder セット
+                layer.setHolder(holder);
+                layer.draw();
+                canvasPane.getChildren().add(layer);
+
+                end();
+                break;
         }
     }
 

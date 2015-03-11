@@ -5,14 +5,14 @@ import open.dolphin.impl.scheam.FillMode;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
- * 網を保持する ShapeHolder
+ * 網を保持する ShapeHolder.
  * データ形式
  * Path(0) - line - Path(1)
  * Path(2) - line - Path(3)
  *   :
  * Path(2n) - line - Path(2n+1)
- * ２つの Path Pair で線を表し，2n+1 = netDataSize とする。
- * netDataSize の後に，輪郭の Path Data が入る
+ * ２つの Path Pair で線を表し，2n+1 = netDataSize とする.
+ * netDataSize の後に，輪郭の Path Data が入る.
  * @author pns
  */
 public class NetHolder extends ShapeHolderBase {

@@ -1,6 +1,5 @@
 package open.dolphin.impl.scheam.undoevent;
 
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.impl.scheam.SchemaLayer;
@@ -38,9 +37,9 @@ public class UndoScaleEvent implements UndoEvent {
         scaleLayers(baseLayer, dx, dy, w, h);
 
         // DrawLayers
-        for (Node n : canvasPane.getChildren()) {
-            scaleLayers((SchemaLayer) n, dx, dy, w, h);
-        }
+        canvasPane.getChildren().forEach(node -> {
+            scaleLayers((SchemaLayer) node, dx, dy, w, h);
+        });
 
         // 拡大縮小反転して保存
         dx = -dx;
@@ -48,7 +47,7 @@ public class UndoScaleEvent implements UndoEvent {
     }
 
     /**
-     * 各 Layer を拡大／縮小する
+     * 各 Layer を拡大／縮小する.
      * @param dx
      * @param dy
      * @param w

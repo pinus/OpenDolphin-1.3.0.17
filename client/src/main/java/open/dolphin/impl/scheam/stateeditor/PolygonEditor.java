@@ -6,7 +6,7 @@ import open.dolphin.impl.scheam.shapeholder.PenHolder;
 import open.dolphin.impl.scheam.shapeholder.PolygonHolder;
 
 /**
- * ドラッグのとおりに描画し，最後に Path を Close する StateEditor
+ * ドラッグのとおりに描画し，最後に Path を Close する StateEditor.
  * @author pns
  */
 public class PolygonEditor extends PolygonEditorBase {

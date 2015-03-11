@@ -3,247 +3,253 @@ package open.dolphin.impl.scheam.widget;
 import java.util.HashMap;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.Toggle;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import open.dolphin.impl.scheam.constant.StyleClass;
+import javafx.util.Callback;
 
 /**
- * ToggleButton をセットにしたもの
+ * ToggleButton をセットにしたもの.
+ * ToggleGroup を設定して，セットの中の１つのボタンのみ選択できる.
+ * <ul>
+ * <li>BindBidirectional できる selectedItemProperty を持つ.</li>
+ * <li>removeFromGroup(item) で ToggleGroup から外すこともできる.
+ *     以下のようにして外した ToggleButton を Button のように扱うことができる.
+ *     <pre>
+ *     toggleSet.removeFromGroup(item);
+ *     toggleSet.getButton(item).setOnMouseClicked(e -> {
+ *         -- process --
+ *         ((ToggleButton)e.getSource()).setSelected(false);
+ *     });
+ *     </pre></li>
+ * <li>アイコンはデフォルトでは Label。css で操作できるように setStyleClass("button-cell")してある.
+ *     setCellFactory(Callback) でカスタマイズすることもできる.</li>
+ * </ul>
+ *
  * @author pns
  * @param <T>
  */
-public class PnsToggleSet<T> extends HBox {
-    private static final double HEIGHT = 22;
-    private static final double BUTTON_WIDTH = 28;
-
-    private final ToggleGroup group;
-    private final ObjectProperty<ObservableList<T>> itemsProperty;
-    /** 選択される (T)item を入れる */
-    private final ObservableList<T> items;
-    /** どの (T)item が選択されているか */
-    private final ObjectProperty<T> selectionProperty;
-    /** (T)item をキーとして対応する Toggle を入れる */
-    private final HashMap<T, Toggle> toggleMap;
-    /** (T)item から icon 用 graphic への callback */
-    private PnsIconCallback<T, Node> iconCallback;
+public class PnsToggleSet<T> extends PnsFlowPane {
+    /** ToggleButton の ToggleGroup */
+    private final ToggleGroup group = new ToggleGroup();
+    /** (T)item を入れる配列 */
+    private final ObservableList<T> items = FXCollections.observableArrayList();
+    /** BindBidirectinal 可能な selectedIndexProperty */
+    private final ObjectProperty<Integer> selectedIndexProperty = new SimpleObjectProperty<>();
+    /** BindBidirectinal 可能な selectedItemProperty */
+    private final ObjectProperty<T> selectedItemProperty = new SimpleObjectProperty<>();
+    /** 使用する SingleSelectionModel。変更不可 */
+    private final SingleSelectionModel<T> selectionModel = new ToggleSetSelectionModel();
+    /** (T)item をキーとして対応する Toggle を入れた Map */
+    private final HashMap<T, ToggleButton> toggleMap = new HashMap<>();
+    /** Toggle から item を逆引きする Map */
+    private final HashMap<ToggleButton, T> itemMap = new HashMap<>();
+    /** button cell のアイコンを作る cell factory */
+    private Callback<T, Node> cellFactory = new DefaultCellFactory();
 
     public PnsToggleSet() {
-        this(BUTTON_WIDTH, HEIGHT);
-    }
+        getStyleClass().add("pns-toggle-set");
 
-    public PnsToggleSet(final double w, final double h) {
-
-        getStyleClass().add(StyleClass.PNS_TOGGLE_SET);
-        setPrefHeight(h); setMinHeight(h); setMaxHeight(h);
-        setAlignment(Pos.CENTER);
-
-        group = new ToggleGroup();
-        itemsProperty = new SimpleObjectProperty<>();
-        selectionProperty = new SimpleObjectProperty<>();
-        toggleMap = new HashMap<>();
-        items = FXCollections.observableArrayList();
-        itemsProperty.set(items);
-
-        iconCallback = new DefaultCallback();
-
-        // binds
-        items.addListener(new ListChangeListener<T>(){
-            @Override
-            public void onChanged(ListChangeListener.Change<? extends T> change) {
-                int size = change.getList().size();
-                int count = 0;
-
-                for (final T item : change.getList()) {
+        // items 追加時の処理
+        items.addListener((ListChangeListener.Change<? extends T> c) -> {
+            while(c.next()) {
+                // 加わった item から Toggle を作成
+                c.getAddedSubList().forEach(item -> {
                     ToggleButton toggle = new ToggleButton();
                     toggle.setToggleGroup(group);
-                    //toggle.setPrefWidth(w); toggle.setMaxWidth(w); toggle.setMinWidth(w);
-                    toggle.setPrefSize(w,h+1); toggle.setMaxSize(w,h); toggle.setMinSize(w,h);
                     toggle.setFocusTraversable(false);
-
-                    toggle.setOnAction(new EventHandler<ActionEvent>(){
-                        @Override
-                        public void handle(ActionEvent t) {
-                            selectionProperty.set(item);
-                        }
-                    });
-                    if (count == 0) {
-                        // 左端
-                        toggle.getStyleClass().add(StyleClass.PNS_TOGGLE_SET_LEFT);
-                    } else if (count == size -1) {
-                        // 右端
-                        toggle.getStyleClass().add(StyleClass.PNS_TOGGLE_SET_RIGHT);
-                    } else {
-                        // 真ん中
-                        toggle.getStyleClass().add(StyleClass.PNS_TOGGLE_SET_MIDDLE);
-                    }
-
-                    if (count != 0) {
-                        Pane separator = new Pane();
-                        separator.getStyleClass().add(StyleClass.PNS_TOGGLE_SET_SEPARATOR);
-                        separator.setPrefSize(1, h-6); separator.setMinSize(1, h-6); separator.setMaxSize(1, h-6);
-                        getChildren().add(separator);
-                    }
-                    count ++;
-                    getChildren().add(toggle);
+                    toggle.setOnAction(t -> selectionModel.select(item));
+                    toggle.setGraphic(cellFactory.call(item));
+                    // Map に登録
                     toggleMap.put(item, toggle);
-                }
-                resetIcon();
+                    itemMap.put(toggle, item);
+                });
             }
+
+            // items をもとに ToggleButton を children に登録
+            getChildren().clear();
+            items.forEach(item -> getChildren().add(toggleMap.get(item)));
         });
-        group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            @Override
-            public void changed(ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) {
-                // 選択された toggle を再選択した場合の処理
-                if (t1 == null) { t.setSelected(true); }
-            }
+
+        // SelctionModel の selection が変更されたら，このクラスの Property を変更する
+        selectionModel.selectedIndexProperty().addListener((ov, oldIndex, newIndex) -> {
+            selectedIndexProperty.set((Integer) newIndex);
         });
-        selectionProperty.addListener(new ChangeListener<T>(){
-            @Override
-            public void changed(ObservableValue<? extends T> ov, T t, T t1) {
-                Toggle selected = toggleMap.get(t1);
-                group.selectToggle(selected);
-                // separator の表示／非表示の切り替え
-                if (t != null) {
-                    Toggle unselected = toggleMap.get(t);
-                    // 選択が解除されたら separator を出す
-                    setSeparatorVisible(unselected, true);
-                    // icon 表示
-                    ((ToggleButton)unselected).setGraphic(iconCallback.call(t));
-                }
-                // 選択されたら両端の separator は消す
-                setSeparatorVisible(selected, false);
-                // icon 表示
-                ((ToggleButton)toggleMap.get(t1)).setGraphic(iconCallback.callSelected(t1));
+        selectionModel.selectedItemProperty().addListener((ov, oldItem, newItem) -> {
+            selectedItemProperty.set(newItem);
+            // ToggleButton も選択する
+            toggleMap.get(newItem).setSelected(true);
+        });
+
+        // このクラスの Property が変更されたら SelectionModel を select する
+        selectedIndexProperty.addListener((ov, oldIndex, newIndex) -> {
+            selectionModel.select(newIndex);
+        });
+        selectedItemProperty.addListener((ov, oldItem, newItem) -> {
+            selectionModel.select(newItem);
+        });
+
+        // ToggleGroup の選択が変わったら SelectionModel の selection 変更
+        group.selectedToggleProperty().addListener((ov, oldValue, newValue) -> {
+            ToggleButton newToggle = (ToggleButton) newValue;
+            ToggleButton oldToggle = (ToggleButton) oldValue;
+
+            if (newToggle == null) {
+                // 選択された Toggle をもう一回押すとオフになって newToggle == null でここに入ってくる
+                oldToggle.setSelected(true);
+            } else {
+                selectionModel.select(itemMap.get(newToggle));
             }
+            // update button icon
+            PnsToggleSet.this.updateCell(oldToggle);
+            PnsToggleSet.this.updateCell(newToggle);
+       });
+    }
+
+    /**
+     * 保持する配列データ.
+     * @return
+     */
+    public ObservableList<T> getItems() { return items; }
+
+    /**
+     * 固定 width を設定するヘルパーメソッド.
+     * @param w
+     */
+    private void setFixedWidth(ToggleButton b, double w) {
+        b.setPrefWidth(w); b.setMaxWidth(w); b.setMinWidth(w);
+    }
+
+    /**
+     * ボタンの高さを固定する.
+     * @param h
+     */
+    public void setAllButtonHeight(double h) {
+        items.forEach(item -> {
+            ToggleButton b = toggleMap.get(item);
+            b.setPrefHeight(h); b.setMinHeight(h); b.setMaxHeight(h);
         });
     }
+
     /**
-     * ToggleButton の両脇の separator を出したり隠したりする
+     * 全ての ToggleButton の幅を一定値に指定する.
+     * @param width
+     */
+    public void setAllButtonWidth(double width) {
+        items.forEach(item -> setButtonWidth(item, width));
+    }
+
+    /**
+     * item の項目の ToggleButton の幅を指定する.
+     * @param item
+     * @param width
+     */
+    public void setButtonWidth(T item, double width) { setFixedWidth(toggleMap.get(item), width); }
+
+    /**
+     * item に対応するボタンを返す.
+     * @param item
+     * @return
+     */
+    public ToggleButton getButton(T item) { return toggleMap.get(item); }
+
+    /**
+     * item に対応するボタンを ToggleGroup から外す.
+     * @param item
+     */
+    public void removeFromGroup(T item) {
+        ToggleButton button = toggleMap.get(item);
+        button.setToggleGroup(null);
+        button.setOnAction(null);
+    }
+
+    /**
+     * 外部から cell factory を登録する.
+     * @param callback
+     */
+    public void setCellFactory(Callback<T, Node> callback) { cellFactory = callback; }
+
+    /**
+     * ToggleButton のアイコンを更新する.
      * @param toggle
-     * @param visible
      */
-    private void setSeparatorVisible(Toggle toggle, boolean visible) {
-        int size = getChildren().size();
-        int index = getChildren().indexOf(toggle);
-
-        if (index == 0) { getChildren().get(1).setVisible(visible); }
-        else if (index == size-1) { getChildren().get(size-2).setVisible(visible);}
-        else { getChildren().get(index-1).setVisible(visible); getChildren().get(index+1).setVisible(visible); }
-    }
-    /**
-     * 非選択時のアイコン画像への callback
-     * @param callback */
-    public void setIconCallback(PnsIconCallback<T, Node> callback) {
-        iconCallback = callback;
-        resetIcon();
-    }
-
-    private void resetIcon() {
-        for (T item : getItems()) {
-            ToggleButton t = (ToggleButton) toggleMap.get(item);
-            if (t.isSelected()) { t.setGraphic(iconCallback.callSelected(item)); }
-            else { t.setGraphic(iconCallback.call(item)); }
-        }
-    }
-
-    public ObservableList<T> getItems() { return itemsProperty.get(); }
-    public ObjectProperty<T> selectionProperty() { return selectionProperty; }
-    public void setSelection(T selection) { selectionProperty.set(selection); }
-
-    /**
-     * アイコン表示のためのデフォルト callback
-     */
-    private class DefaultCallback implements PnsIconCallback<T, Node> {
-        @Override
-        public Node call(T item) {
-            Label l = new Label(item.toString());
-            l.setTextFill(Color.BLACK);
-            return l;
-        }
-        @Override
-        public Node callSelected(T item) {
-            Label l = new Label(item.toString());
-            l.setTextFill(Color.WHITE);
-            return l;
+    public final void updateCell(ToggleButton toggle) {
+        if (toggle != null) {
+            T item = itemMap.get(toggle);
+            toggle.setGraphic(cellFactory.call(item));
         }
     }
 
     /**
-     * 指定した Toggle を enable する
+     * ToggleButton のアイコンを更新する.
      * @param item
      */
-    public void setEnable(T item) {
-        ToggleButton t = (ToggleButton) toggleMap.get(item);
-        t.setDisable(false);
+    public void updateCell(T item) {
+        ToggleButton toggle = toggleMap.get(item);
+        toggle.setGraphic(cellFactory.call(item));
     }
 
     /**
-     * 指定した Toggle を disable する
+     * 指定した Toggle を disable/enable する.
      * @param item
+     * @param disabled
      */
-    public void setDisable(T item) {
-        ToggleButton t = (ToggleButton) toggleMap.get(item);
-        t.setDisable(true);
-    }
+    public void setDisable(T item, boolean disabled) { toggleMap.get(item).setDisable(disabled); }
 
     /**
-     * 指定した Toggle に Tooltip を加える
+     * 指定した Toggle に Tooltip を加える.
      * @param item
      * @param text
      */
-    public void setTooltip(T item, String text) {
-        ToggleButton t = (ToggleButton) toggleMap.get(item);
-        t.setTooltip(new Tooltip(text));
+    public void setTooltip(T item, String text) { toggleMap.get(item).setTooltip(new Tooltip(text)); }
+
+    /**
+     * BindBidirectional 可能な selectedIndexProperty.
+     * @return
+     */
+    public ObjectProperty<Integer> selectedIndexProperty() { return selectedIndexProperty; }
+
+    /**
+     * BindBidirectional 可能な selectedItemProperty.
+     * @return
+     */
+    public ObjectProperty<T> selectedItemProperty() { return selectedItemProperty; }
+
+    /**
+     * SelectionModel を返す.
+     * SelectionModel は変更不可.
+     * @return
+     */
+    public SingleSelectionModel<T> getSelectionModel() { return selectionModel; }
+
+    /**
+     * カスタム SingleSelectionModel.
+     */
+    private class ToggleSetSelectionModel extends SingleSelectionModel<T> {
+
+        @Override
+        protected T getModelItem(int index) { return items.get(index); }
+
+        @Override
+        protected int getItemCount() { return items.size(); }
+
     }
 
-
-/*
-    //ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-    public static void main(String[] s) {
-        // Mac OS X needs this to avoid HeadlessException
-        System.setProperty("java.awt.headless", "false");
-
-        SwingUtilities.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                final JFrame frame = new JFrame();
-                frame.setUndecorated(false);
-                final JFXPanel fxp = new JFXPanel();
-                frame.add(fxp);
-
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        HBox pane = new HBox();
-                        pane.setPrefSize(150, 100);
-                        PnsToggleSet<String> set = new PnsToggleSet<>();
-                        set.getItems().addAll("TEST", "TEST", "TEST");
-                        pane.getChildren().add(set);
-                        Scene scene = new Scene(pane);
-                        scene.getStylesheets().add(StyleClass.CSS_FILE);
-                        fxp.setScene(scene);
-                    }
-                });
-
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.pack();
-                frame.setVisible(true);
-            }
-        });
-    }*/
+    /**
+     * button cell を表示する default の cell factory.
+     */
+    private class DefaultCellFactory implements Callback<T, Node> {
+        @Override
+        public Node call(T item) {
+            Label l = new Label(item.toString());
+            l.getStyleClass().add("button-cell");
+            return l;
+        }
+    }
 }

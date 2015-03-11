@@ -1,6 +1,5 @@
 package open.dolphin.impl.scheam.undoevent;
 
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.impl.scheam.SchemaLayer;
@@ -37,11 +36,11 @@ public class UndoRotateEvent implements UndoEvent {
         baseLayer.redraw();
 
         // DrawLayers Rotation
-        for (Node n : canvasPane.getChildren()) {
-            SchemaLayer layer = (SchemaLayer) n;
+        canvasPane.getChildren().forEach(node -> {
+            SchemaLayer layer = (SchemaLayer) node;
             layer.getHolder().rotate(rotate);
             layer.redraw();
-        }
+        });
 
         // 逆回転にして保存
         rotate = -rotate;

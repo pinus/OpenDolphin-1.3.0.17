@@ -3,7 +3,7 @@ package open.dolphin.impl.scheam;
 import javafx.scene.paint.Color;
 
 /**
- * Color 属性をひとまとめにした Model
+ * Color 属性をひとまとめにした Model.
  * @author pns
  */
 public class ColorModel {

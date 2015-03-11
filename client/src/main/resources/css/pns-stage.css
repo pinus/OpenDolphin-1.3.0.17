@@ -1,0 +1,814 @@
+/*
+    CSS for Mac OS X Yosemite
+*/
+.root {
+  /*
+   * Modena.css に Override するもの
+   */
+  //-fx-font-family: "Hiragino Kaku Gothic Pro";
+  -fx-font-family: "Hiragino Maru Gothic Pro";
+  //-fx-font-family: "YuGothic";
+  -fx-font-size: 13;
+  /*
+   * Focus されたボタン等に付く枠の色。modena.css では２種類の色でグラデーションをつけられるようになっている。
+   * pns-stage では使わない
+   */
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+
+
+  /*
+   * バックグラウンドの色
+   * -pns-base: ウインドウのバックグランド，
+   * -pns-background: UI部品のバックグラウンド
+   * -pns-background-alt: 表などで縞々バックグランドを作るとき
+   * -pns-button-border: 膨らんでいるUI部品のボーダー。これに -pns-background を１ドット小さく重ねてボーダーを作る。
+   * -pns-toggle-button-border: ToggleButton のボーダーは Button より薄い
+   * -pns-toggle-button-border-mono: ToggleSet で複数行になるときのボーダーは単色
+   * -pns-toggle-button-separator: pill button のセパレータ色
+   * -pns-box-border: へこんでいるUI部品のボーダー。これに -pns-background を１ドット小さく重ねてボーダーを作る。
+   * -pns-selected-button-background: 選択ボタンの青い色
+   * -pns-selected-button-border: 選択ボタンの青いボーダー色
+   * -pns-selected-toggle-button-background: 選択 ToggleButton は濃いグレー
+   * -pns-selected-toggle-button-border: 選択 ToggleButton のボーダー色
+   * -pns-selected-box-background: へこんでいるUI部品の選択状態のバックグランド
+   * -pns-selected-box-border: へこんでいるUI部品の選択状態のボーダー。これに -pns-selected-box-background を１ドット小さく重ねてボーダーを作る。
+   * -pns-tab-pane-border-top: TabPane のボーダーは上だけ211で
+   * -pns-tab-pane-border: あとは223というもの
+   * -pns-tab-pane-background: TabPane のバックグランドは226
+   * -pns-separator: トグルセットで使うセパレーターの色
+   */
+  -pns-base: rgb(236,236,236);
+  -pns-background: white;
+  -pns-background-alt: rgb(245,245,245);
+  -pns-button-border: linear-gradient(rgb(200,200,200), rgb(172,172,172));
+  -pns-toggle-button-border: linear-gradient(rgb(225,225,225), rgb(193,193,193));
+  -pns-toggle-button-border-mono: rgb(193,193,193);
+  -pns-box-border: linear-gradient(rgb(156,156,156), rgb(181,181,181));
+  -pns-selected-button-background: linear-gradient(rgb(100,180,247), rgb(0,135,251));
+  -pns-selected-button-border: linear-gradient(rgb(65,164,245),rgb(0,107,250));
+  -pns-selected-toggle-button-background: rgb(100,100,100);
+  -pns-selected-toggle-button-border: rgb(110,110,110);
+  -pns-selected-box-background: rgb(46,158,248);
+  -pns-selected-box-border: rgb(22,150,248);
+  -pns-tab-pane-border-top: rgb(211,211,211);
+  -pns-tab-pane-border: rgb(223,223,223);
+  -pns-tab-pane-background: rgb(226,226,226);
+  -pns-slider-thumb-border: linear-gradient(rgb(192,192,192), rgb(140,140,140));
+  -pns-slider-track-background: rgb(176,176,176);
+  -pns-scroll-bar-track-border: rgb(232,232,232);
+  -pns-scroll-bar-track-background: rgb(250,250,250);
+  -pns-progress-bar-border: rgb(40,137,215);
+  -pns-progress-bar-background: rgb(82,156,250);
+  -pns-progress-bar-track-border: rgb(184,184,184);
+  -pns-progress-bar-track-background: rgb(211,211,211);
+  -pns-popup-background: -pns-base;
+  -pns-popup-border: linear-gradient(rgb(210,210,210), rgb(191,191,191));
+  -pns-separator: rgb(226,226,226);
+  /*
+   * PseudoClass でのバックグランド
+   * ボタンの pressed だけは別で，-pns-selected-button-background になる
+   * -pns-inactivated-selected-background: selected が inactivate された時のバックグランド
+   */
+  -pns-inactivated-selected-background: rgb(229,229,229);
+  -pns-pressed-background: rgb(229,229,229);
+  -pns-hover-background: rgb(54,120,243);
+  /*
+   * StageStyle.UNIFIED で使うバックグランド
+   * -pns-title-bar: タイトルバーと連続する色
+   * -pns-inactivated-title-bar: inactivated の時のタイトルバーの色
+   */
+  -pns-title-bar: rgb(212,212,212);
+  -pns-inactivated-title-bar: rgb(246,246,246);
+
+  /*
+   * テキストのバックグランド
+   * -pns-text-field-background: テキストフィールドのバックグランド
+   * -pns-text-field-border: テキストフィールドの枠
+   * -pns-text-field-focused-border: テキストフィールドフォーカス時の枠
+   * -pns-text-field-focused-ring: テキストフィールドフォーカス時の枠の外の青いリング
+   * -pns-text-highlight: テキストを選択したときのバックグランド
+   */
+  -pns-text-field-background: -pns-background;
+  -pns-text-field-border: rgb(189,189,189);
+  -pns-text-field-focused-border: rgb(134,171,218);
+  -pns-text-field-focused-ring: rgb(159,195,242);
+  -pns-text-highlight: rgb(184,216,254);
+
+
+
+  /*
+   * テキストの色
+   * -pns-dark-text-color: 通常のテキストの色
+   * -pns-mid-text-color: グレーアウトした色
+   * -pns-light-text-color: ハイライト時のテキストの色
+   */
+  -pns-dark-text: black;
+  -pns-mid-text: rgb(185,185,185);
+  -pns-light-text: white;
+  /*
+   * UI部品のマーク（選択時のラジオボタン dot や，チェックボックスのチェックマーク等）の色
+   * -pns-selected-mark: の色
+   * -pns-inactivated-mark: 選択されて inactivated の色
+   * -pns-slider-tick: slider の tick mark の色
+   */
+  -pns-selected-mark: white;
+  -pns-inactivated-mark: rgb(64,64,64);
+  -pns-slider-tick: rgb(144,144,144);
+  -pns-scroll-bar-thumb: rgb(193,193,193);
+}
+
+/*
+ * Button 系共通セッティング
+ */
+.button,
+.toggle-button,
+.combo-box-base,
+.tab,
+.pns-combo-box {
+  -fx-background-color: -pns-button-border, -pns-background;
+  -fx-background-insets: 0, 1;
+  -fx-background-radius: 4, 4;
+  -fx-border-width: 0;
+  -fx-padding: 2 15 3 15;
+  -fx-text-fill: -pns-dark-text;
+}
+
+/*
+ * Button
+ */
+.button:default,
+.button:pressed {
+  -fx-background-color: -pns-selected-button-border, -pns-selected-button-background;
+  -fx-text-fill: -pns-light-text;
+}
+.button:default:inactivated {
+  -fx-background-color: -pns-button-border, -pns-background;
+  -fx-text-fill: -pns-dark-text;
+}
+
+/*
+ * ToggleButton
+ * - pill button に separator を入れるために background-color が三色構成になっている
+ * - TitleBar に組み込むことを想定した色設定になっている
+ * - PnsToggleSet で使うときは，ラベルのテキストは .pns-toggle-set の .button-cell で設定する
+ */
+.toggle-button {
+  -fx-background-color: -pns-toggle-button-border, -pns-background;
+  -fx-padding: 4 10 4 10; // Button よりちょっと高さが高い
+ }
+.toggle-button:inactivated,
+.toggle-button:disabled {
+  -fx-text-fill: -pns-mid-text;
+  -fx-opacity: 1.0; // modena.css では disabled は一律 0.4 にセットされている
+}
+.toggle-button:pressed,
+.toggle-button:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-selected-toggle-button-background;
+  -fx-text-fill: -pns-light-text;
+}
+.toggle-button:selected:inactivated,
+.toggle-button:pressed:inactivated {
+  -fx-background-color: -pns-toggle-button-border, -pns-inactivated-selected-background;
+  -fx-text-fill: -pns-mid-text;
+}
+.toggle-button.left-pill {
+  -fx-background-color: -pns-toggle-button-border, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 1 0 1 1, 1;
+  -fx-background-radius: 4 0 0 4, 4 0 0 4, 4 0 0 4;
+}
+.toggle-button.center-pill {
+  -fx-background-color: -pns-toggle-button-border, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 1 0 1 0, 1 1 1 0;
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.right-pill {
+  -fx-background-color: -pns-toggle-button-border, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 1, 1 1 1 0;
+  -fx-background-radius: 0 4 4 0, 0 4 4 0, 0 4 4 0;
+}
+.toggle-button.left-pill:pressed,
+.toggle-button.left-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: 0, 1, 0 1 0 0;
+  -fx-background-radius: 4 0 0 4, 4 0 0 4, 4 0 0 4;
+}
+.toggle-button.center-pill:pressed,
+.toggle-button.center-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: 0 0 0 -1, 1, 0 1 0 0; // マイナスは，左隣ボタンの右側に出ているセパレータを隠すため
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.right-pill:pressed,
+.toggle-button.right-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: 0 0 0 -1, 1, 0;
+  -fx-background-radius: 0 4 4 0, 0 4 4 0, 0 4 4 0;
+}
+.toggle-button.left-pill:pressed:inactivated,
+.toggle-button.left-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 1 0 1 1, 1;
+  -fx-background-radius: 4 0 0 4, 4 0 0 4, 4 0 0 4;
+}
+.toggle-button.center-pill:pressed:inactivated,
+.toggle-button.center-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 1 0 1 1, 1 1 1 0;
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.right-pill:pressed:inactivated,
+.toggle-button.right-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 1, 1 1 1 0;
+  -fx-background-radius: 0 4 4 0, 0 4 4 0, 0 4 4 0;
+}
+.toggle-button.top-left-pill {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 1 0 0 1, 1; // ボーダーは上と左，セパレーターは右と下
+  -fx-background-radius: 4 0 0 0, 4 0 0 0, 4 0 0 0;
+}
+.toggle-button.top-center-pill {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 1 0 0 0, 1 1 1 0; // ボーダーは上のみ，セパレーターは右と下
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.top-right-pill {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 1 1 0 0, 1 1 1 0; // ボーダーは上と右，セパレータは下
+  -fx-background-radius: 0 4 0 0, 0 4 0 0, 0 4 0 0 ;
+}
+.toggle-button.center-left-pill {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 0 0 0 1, 0 1 1 1; // ボーダーは左のみ，セパレータは右と下
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.center-center-pill {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 0, 0 1 1 0; // ボーダーはなし，セパレータは右と下
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.center-right-pill {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 0 1 0 0, 0 1 1 0; // ボーダーは右のみ，セパレータ下のみ
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.bottom-left-pill {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 0 0 1 1, 0 1 1 1; // ボーダーは左と下，セパレータ右のみ
+  -fx-background-radius: 0 0 0 4, 0 0 0 4, 0 0 0 4;
+}
+.toggle-button.bottom-center-pill {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 0 0 1 0, 0 1 1 0; // ボーダー下のみ，セパレーター右のみ
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.bottom-right-pill {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-background;
+  -fx-background-insets: 0, 0 1 1 0, 0 1 1 0; // ボーダー右と下，セパレータなし
+  -fx-background-radius: 0 0 4 0, 0 0 4 0, 0 0 4 0;
+}
+.toggle-button.top-left-pill:pressed,
+.toggle-button.top-left-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: 0, 1, 0 1 0 0; // ボーダーは右だけ
+  -fx-background-radius: 4 0 0 0, 4 0 0 0, 4 0 0 0;
+}
+.toggle-button.top-center-pill:pressed,
+.toggle-button.top-center-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: 0 0 0 -1, 1, 0 1 0 0; // マイナスは左となりボタンのセパレータを隠すため
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.top-right-pill:pressed,
+.toggle-button.top-right-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: 0 0 0 -1, 1, 0; // マイナスは左のセパレータを隠すため，ボーダーは左だけ
+  -fx-background-radius: 0 4 0 0, 0 4 0 0, 0 4 0 0;
+}
+.toggle-button.center-left-pill:pressed,
+.toggle-button.center-left-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: -1 0 0 0, 1, -1 1 0 0; // マイナスは上のセパレータを隠すため，ボーダーは右のみ
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.center-center-pill:pressed,
+.toggle-button.center-center-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: -1 0 0 -1, 1, -1 1 0 0; // マイナスは上，左のセパレータを隠すため，ボーダーは左右
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.center-right-pill:pressed,
+.toggle-button.center-right-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: -1 0 0 -1, 1, -1 0 0 0; // マイナスは上，左のセパレーターを隠すため，ボーダーは左のみ
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.bottom-left-pill:pressed,
+.toggle-button.bottom-left-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: -1 0 0 0, 1, -1 1 0 0; // マイナスは上のセパレータを隠すため，ボーダーは右のみ
+  -fx-background-radius: 0 0 0 4, 0 0 0 4, 0 0 0 4;
+}
+.toggle-button.bottom-center-pill:pressed,
+.toggle-button.bottom-center-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: -1 0 0 -1, 1, -1 1 0 0; // マイナスは上，左のセパレータを隠すため，ボーダーは左右
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.bottom-right-pill:pressed,
+.toggle-button.bottom-right-pill:selected {
+  -fx-background-color: -pns-selected-toggle-button-border, -pns-separator, -pns-selected-toggle-button-background;
+  -fx-background-insets: -1 0 0 -1, 1, -1 0 0 0; // マイナスは上，左のセパレーターを隠すため，ボーダーは左のみ
+  -fx-background-radius: 0 0 4 0, 0 0 4 0, 0 0 4 0;
+}
+.toggle-button.top-left-pill:pressed:inactivated,
+.toggle-button.top-left-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 1 0 0 1, 1; // ボーダーは上と左，セパレーターは右と下
+  -fx-background-radius: 4 0 0 0, 4 0 0 0, 4 0 0 0;
+}
+.toggle-button.top-center-pill:pressed:inactivated,
+.toggle-button.top-center-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 1 0 0 0, 1 1 1 0; // ボーダーは上のみ，セパレーターは右と下
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.top-right-pill:pressed:inactivated,
+.toggle-button.top-right-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 1 1 0 0, 1 1 1 0; // ボーダーは上と右，セパレータは下
+  -fx-background-radius: 0 4 0 0, 0 4 0 0, 0 4 0 0 ;
+}
+.toggle-button.center-left-pill:pressed:inactivated,
+.toggle-button.center-left-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 0 0 0 1, 0 1 1 1; // ボーダーは左のみ，セパレータは右と下
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.center-center-pill:pressed:inactivated,
+.toggle-button.center-center-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 0, 0 1 1 0; // ボーダーはなし，セパレータは右と下
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.center-right-pill:pressed:inactivated,
+.toggle-button.center-right-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 0 1 0 0, 0 1 1 0; // ボーダーは右のみ，セパレータ下のみ
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.bottom-left-pill:pressed:inactivated,
+.toggle-button.bottom-left-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 0 0 1 1, 0 1 1 1; // ボーダーは左と下，セパレータ右のみ
+  -fx-background-radius: 0 0 0 4, 0 0 0 4, 0 0 0 4;
+}
+.toggle-button.bottom-center-pill:pressed:inactivated,
+.toggle-button.bottom-center-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 0 0 1 0, 0 1 1 0; // ボーダー下のみ，セパレーター右のみ
+  -fx-background-radius: 0, 0, 0;
+}
+.toggle-button.bottom-right-pill:pressed:inactivated,
+.toggle-button.bottom-right-pill:selected:inactivated {
+  -fx-background-color: -pns-toggle-button-border-mono, -pns-separator, -pns-inactivated-selected-background;
+  -fx-background-insets: 0, 0 1 1 0, 0 1 1 0; // ボーダー右と下，セパレータなし
+  -fx-background-radius: 0 0 4 0, 0 0 4 0, 0 0 4 0;
+}
+
+/**
+ * Tooltip
+ * modena.css の方が素敵
+ */
+.tooltip {
+  -fx-background-color: -pns-background;
+  -fx-background-radius: 0;
+  -fx-text-fill: -pns-dark-text;
+  -fx-padding: 8;
+}
+
+/**
+ * Slider
+ */
+.slider .thumb {
+  -fx-shape: "M 0 2 L 2 0 H 14 L 16 2 V 8 L 15 11 L 8 18 L 1 11 L 0 8 z";
+  -fx-scale-shape: true;
+  -fx-position-shape: false;
+  -fx-background-color: -pns-slider-thumb-border, -pns-background;
+  -fx-background-insets: 0, 1;
+  -fx-border-width: 0;
+  -fx-padding: 0 16 18 0; // -fx-scale-shape が true の時はここで大きさを指定できる
+}
+.slider:pressed .thumb {
+  -fx-background-color: -pns-slider-thumb-border, -pns-pressed-background;
+}
+.slider .track {
+  -fx-background-color: -pns-slider-track-background;
+  -fx-background-radius: 1;
+  -fx-border-width: 0;
+  -fx-padding: 1;
+}
+.slider .axis {
+  -fx-tick-label-fill: -pns-dark-text;
+  -fx-translate-y: 7;
+}
+.slider .axis .axis-tick-mark,
+.slider .axis .axis-minor-tick-mark {
+  -fx-stroke: -pns-slider-tick;
+}
+
+/**
+ * ProgressBar
+ */
+.progress-bar .track {
+  -fx-background-color: -pns-progress-bar-track-border, -pns-progress-bar-track-background;
+  -fx-background-insets: 0, 1;
+  -fx-background-radius: 2;
+}
+.progress-bar .bar {
+  -fx-background-color: -pns-progress-bar-border, -pns-progress-bar-background;
+  -fx-background-insets: 0, 1 0 1 1;
+  -fx-background-radius: 2 0 0 2;
+  -fx-padding: 3;
+}
+.progress-bar:indeterminate .track {
+  -fx-background-color: -pns-progress-bar-border, -pns-progress-bar-background;
+}
+.progress-bar:indeterminate .bar {
+  -fx-background-color: linear-gradient(to right, rgb(82,156,250) 0%, rgb(127,186,253) 50%, rgb(82,156,250) 100%);
+  -fx-background-insets: 0;
+  -fx-background-radius: 2;
+}
+
+/**
+ * TextArea
+ */
+.text-area {
+  -fx-wrap-text: true;
+}
+.text-area .content {
+  -fx-background-color: -pns-text-field-background;
+}
+.text-area .scroll-pane {
+  -fx-background-color: -pns-text-field-border, -pns-text-field-background;
+  -fx-background-insets: 0, 1;
+  -fx-border-width: 0;
+}
+
+/**
+ * ScrollBar
+ */
+.scroll-bar .decrement-button,
+.scroll-bar .decrement-arrow,
+.scroll-bar .increment-button,
+.scroll-bar .increment-arrow {
+  -fx-padding: 0;
+}
+.scroll-bar .track {
+  -fx-background-color: -pns-scroll-bar-track-border, -pns-scroll-bar-track-background;
+  -fx-background-insets: 0, 0 1 0 1;
+  -fx-background-radius: 0, 0;
+  -fx-padding: 0;
+
+}
+.scroll-bar .thumb {
+  -fx-background-color: -pns-scroll-bar-thumb;
+  -fx-background-insets: 3;
+  -fx-background-radius: 3;
+}
+
+/**
+ * HTMLEditor
+ */
+
+
+
+/**
+ * Menu
+ */
+.menu:showing,
+.menu:hover {
+  -fx-text-fill: -pns-light-text;
+  -fx-background-color: -pns-hover-background;
+}
+.menu-item:focused {
+  -fx-text-fill: -pns-light-text;
+  -fx-background-color: -pns-hover-background;
+}
+
+/**
+ * ContextMenu
+ */
+.context-menu {
+    -fx-background-color: -pns-popup-border, -pns-popup-background;
+    -fx-background-insets: -5 0 -5 0, -4 1 -4 1;
+    -fx-background-radius: 4;
+    -fx-opacity: 0.95;
+    -fx-padding: 0;
+}
+.context-menu .menu-item {
+    -fx-padding: 2 12 2 12;
+}
+.context-menu .separator {
+    -fx-padding: 4 0 4 0;
+}
+
+/**
+ * CheckBox
+ */
+.check-box .box,
+.check-box:hover .box {
+  -fx-background-color: -pns-box-border, -pns-background;
+  -fx-background-insets: 0, 1;
+  -fx-background-radious: 3;
+  -fx-border-width: 0;
+  -fx-padding: 1;
+}
+.check-box:selected .box {
+  -fx-background-color: -pns-selected-box-border, -pns-selected-box-background;
+}
+.check-box:selected:inactivated .box {
+  -fx-background-color: -pns-box-border, -pns-background;
+}
+.check-box .mark {
+  -fx-background-color: -pns-selected-mark;
+  -fx-background-insets: -1 1 2.5 1;
+}
+.check-box:inactivated:selected .mark {
+  -fx-background-color: -pns-inactivated-mark;
+}
+
+/**
+ * TextField
+ */
+.text-field {
+  -fx-background-color: -pns-text-field-border, -pns-text-field-background;
+  -fx-background-insets: 0, 1;
+  -fx-background-radius: 0;
+  -fx-border-width: 0;
+  -fx-padding: 4;
+}
+.text-field:focused {
+  -fx-background-color: -pns-text-field-focused-ring, -pns-text-field-focused-border, -pns-text-field-background;
+  -fx-background-insets: -3, 0, 1;
+  -fx-background-radius: 3, 0, 0;
+}
+.text-input { // テキスト選択時のハイライトの色
+  -fx-text-fill: -pns-dark-text;
+  -fx-highlight-fill: -pns-text-highlight;
+  -fx-highlight-text-fill: -pns-dark-text;
+}
+
+/**
+ * RadioButton
+ */
+.radio-button .radio {
+  -fx-background-color: -pns-box-border, -pns-background;
+  -fx-background-insets: 1, 2;
+}
+.radio-button:selected .radio {
+  -fx-background-color: -pns-selected-box-border, -pns-selected-box-background;
+  -fx-background-insets: 1, 2;
+}
+.radio-button:inactivated .radio {
+  -fx-background-color: -pns-box-border, -pns-background;
+  -fx-background-insets: 1, 2;
+}
+.radio-button .dot {
+  -fx-background-color: transparent;
+  -fx-background-insets: 2;
+}
+.radio-button:selected .dot {
+  -fx-background-color: -pns-selected-mark;
+}
+.radio-button:selected:inactivated .dot {
+  -fx-background-color: -pns-inactivated-mark;
+}
+
+/**
+ * TabPane
+ */
+.tab-pane {
+  -fx-tab-max-height: 20px;
+  -fx-tab-min-height: 20px; // 同時に指定する必要あり
+}
+.tab-pane .tab { // 文字は tab-label で指定
+  -fx-background-color: -pns-button-border, -pns-separator, -pns-background;
+  -fx-padding: 0 8 1 8;
+}
+.tab-pane .tab:selected {
+  -fx-background-color: -pns-selected-button-border, -pns-selected-button-background;
+}
+.tab-pane .tab:selected:inactivated {
+  -fx-background-color: -pns-button-border, -pns-inactivated-selected-background;
+}
+.tab-pane .tab-header-area { // content area のはみ出した分をシミュレートする
+  -fx-background-color: -pns-tab-pane-border-top, -pns-tab-pane-border, -pns-tab-pane-background;
+  -fx-background-insets: 16 0 0 0, 17 0 0 0, 17 1 0 1;
+  -fx-background-radius: 4 4 0 0, 4 0 0 0, 4 0 0 0;
+}
+.tab-pane .tab-content-area {
+  -fx-background-color: -pns-tab-pane-border, -pns-tab-pane-background;
+  -fx-background-insets: 0, 0 1 1 1;
+  -fx-background-radius: 0 0 4 4, 0 0 4 4;
+  -fx-padding: 10;
+}
+.tab-pane .tab .tab-label {
+  -fx-text-fill: -pns-dark-text;
+  -fx-alignment: center;
+}
+.tab-pane .tab:selected .tab-label {
+  -fx-text-fill: -pns-light-text;
+}
+.tab-pane .tab:selected:inactivated .tab-label {
+  -fx-text-fill: -pns-dark-text;
+}
+// Side.TOP
+.tab-pane .center-pill:top { // .center-pill = .tab.center-pill で .tab を省略して書いた
+  -fx-background-insets: 0, 1 0 1 0, 1 1 1 0;
+  -fx-background-radius: 0;
+}
+.tab-pane .left-pill:top {
+  -fx-background-insets: 0, 1 0 1 1, 1 1 1 1;
+  -fx-background-radius: 4 0 0 4;
+}
+.tab-pane .right-pill:top {
+  -fx-background-insets: 0, 1, 1 1 1 0;
+  -fx-background-radius: 0 4 4 0;
+}
+.tab-pane .center-pill:top:selected {
+  -fx-background-insets: 0, 1 0 1 0;
+  -fx-border-width: 0;
+}
+.tab-pane .left-pill:top:selected {
+  -fx-background-insets: 0, 1 0 1 1;
+}
+.tab-pane .right-pill:top:selected {
+  -fx-background-insets: 0, 1 1 1 0;
+}
+// Side.BOTTOM
+.tab-pane .tab:bottom {
+  -fx-background-color: linear-gradient(rgb(172,172,172), rgb(200,200,200)), -pns-separator, -pns-background;
+  -fx-padding: 1 8 0 8;
+}
+.tab-pane .tab:bottom:selected {
+  -fx-background-color: linear-gradient(rgb(0,107,250), rgb(65,164,245)), linear-gradient(rgb(0,135,251), rgb(100,180,247));
+}
+.tab-pane .center-pill:bottom { // .center-pill = .tab.center-pill で .tab を省略して書いた
+  -fx-background-insets: 0, 1 0 1 0, 1 1 1 0;
+  -fx-background-radius: 0;
+}
+.tab-pane .left-pill:bottom {
+  -fx-background-insets: 0, 1, 1 1 1 0;
+  -fx-background-radius: 0 4 4 0;
+}
+.tab-pane .right-pill:bottom {
+  -fx-background-insets: 0, 1 0 1 1, 1 1 1 1;
+  -fx-background-radius: 4 0 0 4;
+}
+.tab-pane .center-pill:bottom:selected {
+  -fx-background-insets: 0, 1 0 1 0;
+  -fx-border-width: 0;
+}
+.tab-pane .left-pill:bottom:selected {
+  -fx-background-insets: 0, 1 1 1 0;
+}
+.tab-pane .right-pill:bottom:selected {
+  -fx-background-insets: 0, 1 0 1 1;
+}
+/*
+.tab-down-button {
+  -fx-border-color: red;
+}
+.control-buttons-tab {
+  -fx-border-color: blue;
+} */
+
+/**
+ * ComboBox
+ */
+.combo-box .list-cell { // 表示されている部分の list-cell
+  -fx-padding: 3 0 3 9;
+}
+.combo-box-base {
+  -fx-background-color: -pns-button-border, -pns-background;
+  -fx-background-insets: 0, 1;
+  -fx-border-width: 0;
+  -fx-padding: 0;
+}
+.combo-box-base .arrow-button {
+  -fx-background-color: -pns-selected-button-border, -pns-selected-button-background;
+  -fx-background-insets: 0, 1 1 1 0;
+  -fx-border-width: 0;
+  -fx-padding: 6 8 6 8; // modena.css では 6 10 6 10
+}
+.combo-box-base:inactivated .arrow-button {
+  -fx-background-color: -pns-button-border, -pns-background;
+}
+.combo-box-base .arrow { // モノは Region
+  -fx-background-color: transparent;
+  -fx-border-color: -pns-selected-mark;
+  -fx-border-width: 1.2;
+  -fx-shape: "M 0 4 L 4  0 L 4  2 L 1 5 z   M 8 4 L 4  0 L 4  2 L 7 5 z
+              M 0 8 L 4 12 L 4 10 L 1 7 z   M 8 8 L 4 12 L 4 10 L 7 7 z";
+  -fx-scale-shape: false;
+  -fx-position-shape: true;
+  -fx-padding: 0; // scale-shape true の時，padding で shape の大きさを変化させられる
+}
+.combo-box-base:inactivated .arrow {
+  -fx-border-color: -pns-inactivated-mark;
+}
+.combo-box-popup .list-view { // combo-popup window 全体
+  -fx-background-color: -pns-button-border, -pns-base;
+  -fx-background-insets: -5 3 -5 -13, -4 4 -4 -12; // 上下の余裕は角丸のため
+  -fx-background-radius: 4;
+  -fx-opacity: 0.95;
+  -fx-border-width: 0;
+  -fx-padding: 0 4 0 -12; // check mark スペースの分だけ左にずらす
+}
+.combo-box-popup .list-cell { // ポップアップした list-cell
+  -fx-background-color: transparent;
+  -fx-padding: 2 0 2 5;
+}
+.combo-box-popup .list-cell:selected {
+  -fx-text-fill: -pns-dark-text;
+  -fx-background-color: -pns-base;
+}
+.combo-box-popup .list-cell:hover {
+  -fx-text-fill: -pns-light-text;
+  -fx-background-color: -pns-hover-background;
+}
+.combo-box-popup .list-cell:selected:hover {
+  -fx-text-fill: -pns-light-text;
+  -fx-background-color: -pns-hover-background;
+}
+.combo-box-popup .list-cell .check-mark {
+  -fx-padding: 0 0 0 16;
+}
+.combo-box-popup .list-cell:selected .check-mark {
+  -fx-padding: 0 4 0 0;
+  -fx-graphic: url("../images/icons/12x12/check-black.png");
+}
+.combo-box-popup .list-cell:hover .check-mark {
+  -fx-padding: 0 0 0 16;
+}
+.combo-box-popup .list-cell:selected:hover .check-mark {
+  -fx-padding: 0 4 0 0;
+  -fx-graphic: url("../images/icons/12x12/check-white.png");
+}
+
+/**
+ * PnsStage
+ */
+.tool-pane {
+  -fx-background-color: -pns-title-bar;
+  -fx-border-width: 0;
+}
+.tool-pane:inactivated {
+  -fx-background-color: -pns-inactivated-title-bar;
+}
+.menu-pane {
+  -fx-background-color: -pns-base;
+  -fx-border-width: 0;
+}
+.content-pane {
+  -fx-background-color: -pns-base;
+  -fx-border-width: 0;
+}
+.footer-pane {
+  -fx-background-color: -pns-base;
+  -fx-border-width: 0;
+}
+
+/**
+ * PnsToggleSet
+ */
+.pns-toggle-set .toggle-button:inactivated .button-cell {
+  -fx-text-fill: -pns-mid-text;
+}
+.pns-toggle-set .toggle-button:selected .button-cell,
+.pns-toggle-set .toggle-button:pressed .button-cell {
+  -fx-text-fill: -pns-light-text;
+}
+.pns-toggle-set .toggle-button:selected:inactivated .button-cell,
+.pns-toggle-set .toggle-button:pressed:selected:inactivated .button-cell {
+  -fx-text-fill: -pns-mid-text;
+}
+
+/**
+ * Setting Window
+ */
+.setting-window-category-button,
+.setting-window-category-button:pressed {
+  -fx-background-radius: 4 4 0 0;
+  -fx-background-color: transparent;
+  -fx-font-size: 11;
+  -fx-font-weight: normal;
+  -fx-border-color: transparent;
+}
+.setting-window-category-button:selected {
+  -fx-background-color: linear-gradient(rgb(200,200,200), rgb(184,184,184));
+  -fx-border-color: transparent;
+}
+

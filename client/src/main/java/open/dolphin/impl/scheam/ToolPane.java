@@ -1,12 +1,9 @@
 package open.dolphin.impl.scheam;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.Property;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
-import javafx.scene.control.Separator;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -20,11 +17,9 @@ import open.dolphin.impl.scheam.helper.SchemaUtils;
 public class ToolPane extends HBox {
     /** ツールボタンの高さ */
     private final static double BUTTON_HEIGHT = 22;
-    /** プロパティー */
-    private final SchemaEditorProperties properties;
 
     public ToolPane(SchemaEditorImpl context) {
-        properties = context.getProperties();
+        SchemaEditorProperties properties = SchemaEditorImpl.getProperties();
         setSpacing(2);
         setPadding(new Insets(2));
 
@@ -32,9 +27,12 @@ public class ToolPane extends HBox {
         PreviewPane previewPane = new PreviewPane();
 
         // FillMode Toggle Set
-        FillModeToggle fillModeToggle = new FillModeToggle(28, BUTTON_HEIGHT);
+        FillModeToggle fillModeToggle = new FillModeToggle();
         fillModeToggle.getItems().addAll(FillMode.values());
-        fillModeToggle.selectionProperty().bindBidirectional(properties.fillModeProperty());
+        fillModeToggle.setPrefWidth(32*3+2);
+        fillModeToggle.setAllButtonWidth(32);
+        fillModeToggle.setAllButtonHeight(BUTTON_HEIGHT);
+        fillModeToggle.selectedItemProperty().bindBidirectional(properties.fillModeProperty());
 
         // Line Width Combo
         LineWidthCombo lineWidthCombo = new LineWidthCombo();
@@ -44,72 +42,60 @@ public class ToolPane extends HBox {
         // Preset Color Combo
         final PresetColorCombo presetColorCombo = new PresetColorCombo();
         presetColorCombo.setPrefHeight(BUTTON_HEIGHT); lineWidthCombo.setMinHeight(BUTTON_HEIGHT); lineWidthCombo.setMaxHeight(BUTTON_HEIGHT);
-        presetColorCombo.selectionProxyProperty().addListener(new ChangeListener<ColorModel>(){
-            @Override
-            public void changed(ObservableValue<? extends ColorModel> ov, ColorModel t, ColorModel m) {
-                // 下でつけるリスナで invalidate されると null でここに来る
-                if (m == null) { return; }
+        presetColorCombo.selectionProxyProperty().addListener((ObservableValue<? extends ColorModel> ov, ColorModel t, ColorModel m) -> {
+            // 下でつけるリスナで invalidate されると null でここに来る
+            if (m == null) { return; }
 
-                properties.valueChangingProperty().set(true);
+            properties.valueChangingProperty().set(true);
 
-                double lineOpacity = properties.getLineColor().getOpacity();
-                properties.setLineColor(SchemaUtils.mergeOpacity(m.getLineColor(), lineOpacity));
-                double fillOpacity = properties.getFillColor().getOpacity();
-                properties.setFillColor(SchemaUtils.mergeOpacity(m.getFillColor(), fillOpacity));
+            double lineOpacity = properties.getLineColor().getOpacity();
+            properties.setLineColor(SchemaUtils.mergeOpacity(m.getLineColor(), lineOpacity));
+            double fillOpacity = properties.getFillColor().getOpacity();
+            properties.setFillColor(SchemaUtils.mergeOpacity(m.getFillColor(), fillOpacity));
 
-                //properties.setLineWidth(m.getLineWidth());
-                properties.setFillBlur(m.getFillBlur());
-                properties.setFillMode(m.getFillMode());
+            //properties.setLineWidth(m.getLineWidth());
+            properties.setFillBlur(m.getFillBlur());
+            properties.setFillMode(m.getFillMode());
 
-                properties.valueChangingProperty().set(false);
-            }
+            properties.valueChangingProperty().set(false);
         });
+
         // ColorModel 関連の PropertyChange があったら， PresetColorCombo を invalidate する
         for (Property p : properties.getPropertiesRelatedToColorModel()) {
-            p.addListener(new InvalidationListener(){
-                @Override
-                public void invalidated(Observable o) {
-                    presetColorCombo.selectionProxyProperty().set(null);
-                }
-            });
+            p.addListener( o -> presetColorCombo.selectionProxyProperty().set(null));
         }
 
         // State Toggle Set
-        final StateToggle stateToggle = new StateToggle(28, BUTTON_HEIGHT);
-        stateToggle.getItems().addAll(State.values());
-        stateToggle.selectionProperty().bindBidirectional(properties.stateProperty());
-        UndoManager undoManager = context.getUndoManager();
-        // undo/redo ボタン制御
-        stateToggle.setDisable(State.Undo);
-        stateToggle.setDisable(State.Redo);
-        undoManager.undoQueueSizeProperty().addListener(new ChangeListener<Number>(){
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-                if ((int)t1 == 0) { stateToggle.setDisable(State.Undo); }
-                else if ((int)t  == 0) { stateToggle.setEnable(State.Undo); }
-            }
+        final StateToggle stateToggle = new StateToggle();
+        stateToggle.setAllButtonHeight(BUTTON_HEIGHT);
+        stateToggle.setAllButtonWidth(32);
+        stateToggle.setPrefWidth(State.values().length * 32 + 2);
+        stateToggle.selectedItemProperty().bindBidirectional(properties.stateProperty());
+
+        // undo / redo / clear ボタンの処理
+        UndoManager manager = context.getUndoManager();
+        manager.undoQueueSizeProperty().addListener((ObservableValue<? extends Number> o, Number ov, Number nv) -> {
+            if ((int)nv == 0) { stateToggle.setDisable(State.Undo, true); }
+            else if ((int)ov  == 0) { stateToggle.setDisable(State.Undo, false); }
+            stateToggle.updateCell(State.Undo);
         });
-        undoManager.redoQueueSizeProperty().addListener(new ChangeListener<Number>(){
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-                if ((int)t1 == 0) { stateToggle.setDisable(State.Redo); }
-                else if ((int)t  == 0) { stateToggle.setEnable(State.Redo); }
-            }
+        manager.redoQueueSizeProperty().addListener((ObservableValue<? extends Number> o, Number ov, Number nv) -> {
+            if ((int)nv == 0) { stateToggle.setDisable(State.Redo, true); }
+            else if ((int)ov  == 0) { stateToggle.setDisable(State.Redo, false); }
+            stateToggle.updateCell(State.Redo);
         });
-        // Tooltip
-        stateToggle.setTooltip(State.Pen, "F  ");
-        stateToggle.setTooltip(State.Line, "L  ");
-        stateToggle.setTooltip(State.Oval, "O  ");
-        stateToggle.setTooltip(State.Rectangle, "Q  ");
-        stateToggle.setTooltip(State.Polygon, "P  ");
-        stateToggle.setTooltip(State.Dots, "D  ");
-        stateToggle.setTooltip(State.Net, "N  ");
-        stateToggle.setTooltip(State.Text, "X  ");
-        stateToggle.setTooltip(State.Eraser, "E  ");
-        stateToggle.setTooltip(State.Translate, "T  ");
-        stateToggle.setTooltip(State.Rotate, "R  ");
-        stateToggle.setTooltip(State.Clip, "C  ");
-        stateToggle.setTooltip(State.Scale, "Z  ");
+        stateToggle.getButton(State.Undo).setOnAction(e -> {
+            manager.undo();
+            ((ToggleButton)e.getSource()).setSelected(false);
+        });
+        stateToggle.getButton(State.Redo).setOnAction(e -> {
+            manager.redo();
+            ((ToggleButton)e.getSource()).setSelected(false);
+        });
+        stateToggle.getButton(State.Clear).setOnAction(e -> {
+            context.getCanvasPane().getChildren().clear();
+            ((ToggleButton)e.getSource()).setSelected(false);
+        });
 
         // レイアウト
         HBox upper = new HBox();
@@ -125,7 +111,9 @@ public class ToolPane extends HBox {
         lower.getChildren().addAll(stateToggle);
 
         VBox right = new VBox();
-        right.getChildren().addAll(upper, new Separator(), lower);
+        Region spacer3 = new Region();
+        VBox.setVgrow(spacer3, Priority.ALWAYS);
+        right.getChildren().addAll(upper, spacer3, lower);
 
         getChildren().addAll(previewPane, right);
     }

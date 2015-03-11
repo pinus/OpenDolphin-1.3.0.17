@@ -1,9 +1,7 @@
 package open.dolphin.impl.scheam.stateeditor;
 
 import javafx.scene.ImageCursor;
-import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.SnapshotParametersBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -13,13 +11,13 @@ import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.impl.scheam.SchemaLayer;
 import open.dolphin.impl.scheam.ShapeHolder;
 import open.dolphin.impl.scheam.UndoManager;
-import open.dolphin.impl.scheam.helper.ShapeIcon;
+import open.dolphin.impl.scheam.constant.ShapeIcon;
 import open.dolphin.impl.scheam.shapeholder.ShapeHolderBase;
 
 /**
- * Canvas 全部を拡大／縮小する StateEditor
- * 普通は縮小モード，Option を押すと拡大モードになる
- * モードに合わせてカーソルを変化させる
+ * Canvas 全部を拡大／縮小する StateEditor.
+ * 普通は縮小モード，Option を押すと拡大モードになる.
+ * モードに合わせてカーソルを変化させる.
  * @author pns
  */
 public class ScaleEditor extends StateEditorBase {
@@ -39,7 +37,8 @@ public class ScaleEditor extends StateEditorBase {
         canvasPane = context.getCanvasPane();
         undoManager = context.getUndoManager();
 
-        SnapshotParameters parameters = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
+        SnapshotParameters parameters = new SnapshotParameters();
+        parameters.setFill(Color.TRANSPARENT);
         Image plusImage = ShapeIcon.getLoupePlus().snapshot(parameters, null);
         Image minusImage = ShapeIcon.getLoupeMinus().snapshot(parameters, null);
         cursorPlus = new ImageCursor(plusImage, plusImage.getWidth()/2, plusImage.getHeight()/2);
@@ -63,14 +62,12 @@ public class ScaleEditor extends StateEditorBase {
     public void keyPressed(KeyEvent e) {
         if (e.isAltDown()) {
             draftLayer.setCursor(cursorPlus);
-            clearDraftLayer();
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         draftLayer.setCursor(cursorMinus);
-        clearDraftLayer();
     }
 
     @Override
@@ -108,16 +105,16 @@ public class ScaleEditor extends StateEditorBase {
         scaleLayers(baseLayer, dx, dy, w, h);
 
         // DrawLayers
-        for (Node n : canvasPane.getChildren()) {
-            scaleLayers((SchemaLayer) n, dx, dy, w, h);
-        }
+        canvasPane.getChildren().forEach(node -> {
+            scaleLayers((SchemaLayer) node, dx, dy, w, h);
+        });
 
         // UndoManager に登録
         undoManager.offerScale(dx, dy);
     }
 
     /**
-     * 各 Layer を拡大／縮小する
+     * 各 Layer を拡大／縮小する.
      * @param dx
      * @param dy
      * @param w
@@ -145,12 +142,5 @@ public class ScaleEditor extends StateEditorBase {
     @Override
     public ShapeHolder getHolder() {
         return null;
-    }
-    /**
-     * Workaround for bug RT-33412:
-     * The mouse cursor needs to move in order for a setCursor(Cursor) to take effect
-     */
-    private void clearDraftLayer() {
-        draftLayer.getGraphicsContext2D().clearRect(0, 0, draftLayer.getWidth(), draftLayer.getHeight());
     }
 }
