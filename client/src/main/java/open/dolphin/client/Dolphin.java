@@ -10,6 +10,7 @@ import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javafx.application.Platform;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -81,6 +82,9 @@ public class Dolphin implements MainWindow {
     public Dolphin() {}
 
     private void initialize() {
+
+        // JavaFX thread が SchemaEditor 終了後に shutdown してしまわないようにする
+        Platform.setImplicitExit(false);
 
         SettingForMac.set(this);
 

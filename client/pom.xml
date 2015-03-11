@@ -9,8 +9,8 @@
     <name>client</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <!-- versions -->
         <version.org.jboss.resteasy>3.0.10.Final</version.org.jboss.resteasy>
         <version.org.hibernate>4.3.7.Final</version.org.hibernate>
@@ -96,14 +96,7 @@
           <configuration>
             <source>1.8</source>
             <target>1.8</target>
-
-            <!--
-              ln -s /Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home/jre/lib/jfxrt.jar /Library/Java/Extensions/
-            -->
-            <compilerArguments>
-                <bootclasspath>${sun.boot.class.path}${path.separator}${java.home}/lib/jfxrt.jar</bootclasspath>
-            </compilerArguments>
-
+            <compilerArgument>-XDignore.symbol.file</compilerArgument>
           </configuration>
         </plugin>
 
