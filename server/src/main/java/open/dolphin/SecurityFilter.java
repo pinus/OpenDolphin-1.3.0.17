@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,6 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 import open.dolphin.infomodel.InfoModel;
-import open.dolphin.infomodel.RoleModel;
 import open.dolphin.infomodel.UserModel;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.ResourceMethodInvoker;
@@ -116,12 +116,7 @@ public class SecurityFilter implements ContainerRequestFilter {
         if (validUser == null) { return false; }
 
         //Step 2. Verify user role
-        for (RoleModel fetchedRole : validUser.getRoles()) {
-            for (String role : roles) {
-                if (role.equals(fetchedRole.getRole())) { return true; }
-            }
-        }
-        return false;
+        return ! Collections.disjoint(validUser.getRoles(), roles);
     }
 
     /**
