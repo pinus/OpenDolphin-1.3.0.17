@@ -62,10 +62,13 @@ public class SystemServiceImpl extends DolphinService implements SystemService {
         Collection<RoleModel> roles = user.getRoles();
         if (roles != null) {
             for (RoleModel r : roles) {
-                if (r.getRole().equals(InfoModel.ADMIN_ROLE)) {
-                    hasAdminRole = true;
-                } else if (r.getRole().equals(InfoModel.USER_ROLE)) {
-                    hasUserRole = true;
+                switch (r.getRole()) {
+                    case InfoModel.ADMIN_ROLE:
+                        hasAdminRole = true;
+                        break;
+                    case InfoModel.USER_ROLE:
+                        hasUserRole = true;
+                        break;
                 }
             }
         }
@@ -98,9 +101,7 @@ public class SystemServiceImpl extends DolphinService implements SystemService {
     @Override
     public void putRadMethodMaster(List<RadiologyMethodValue> c) {
         if (c != null) {
-            for (RadiologyMethodValue value : c) {
-                em.persist(value);
-            }
+            c.forEach((value) -> em.persist(value));
         }
     }
 
