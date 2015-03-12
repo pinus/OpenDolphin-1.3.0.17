@@ -19,7 +19,6 @@ import open.dolphin.infomodel.UserModel;
 public class SystemServiceImpl extends DolphinService implements SystemService {
     /**
      * 施設と管理者情報を登録する。
-     *
      * @param user 施設管理者
      */
     @Override
