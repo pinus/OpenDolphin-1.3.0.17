@@ -3,6 +3,7 @@ package open.dolphin.infomodel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.*;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -195,17 +196,14 @@ public class DocumentModel extends KarteEntryBean {
 
         if (modules != null) {
 
-            ArrayList<ModuleInfoBean> list = new ArrayList<>(2);
+            List<ModuleInfoBean> list = new ArrayList<>(2);
 
-            for (ModuleModel model : modules) {
+            modules.stream()
+                    .filter(model -> model.getModuleInfo().getEntity().equals(entityName))
+                    .forEach(model -> list.add(model.getModuleInfo()));
 
-                if (model.getModuleInfo().getEntity().equals(entityName)) {
-                    list.add(model.getModuleInfo());
-                }
-            }
-
-            if (list.size() > 0) {
-                return  list.toArray(new ModuleInfoBean[list.size()]);
+            if (! list.isEmpty()) {
+                return list.toArray(new ModuleInfoBean[list.size()]);
             }
         }
 

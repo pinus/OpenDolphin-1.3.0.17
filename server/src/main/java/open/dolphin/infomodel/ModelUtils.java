@@ -436,8 +436,7 @@ public class ModelUtils implements IInfoModel {
         List<PVTHealthInsuranceModel> ret = new ArrayList<>();
 
         if (insurances != null) {
-
-            for (HealthInsuranceModel model : insurances) {
+            insurances.forEach(model -> {
                 try {
                     // byte[] を XMLDecord
                     PVTHealthInsuranceModel hModel = (PVTHealthInsuranceModel)xmlDecode(model.getBeanBytes());
@@ -445,7 +444,7 @@ public class ModelUtils implements IInfoModel {
                 } catch (RuntimeException e) {
                     e.printStackTrace(System.err);
                 }
-            }
+            });
         }
         return ret;
     }

@@ -137,7 +137,7 @@ public class PVTClaim extends InfoModel {
             int len = claimAppName.size();
             for (int i = 0; i < len; i++) {
                 buf.append("ClaimAppName: ");
-                buf.append((String)claimAppName.get(i));
+                buf.append(claimAppName.get(i));
                 buf.append("\n");
             }
         }

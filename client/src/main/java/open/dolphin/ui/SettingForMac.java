@@ -21,10 +21,12 @@ public class SettingForMac {
         // JavaFX settings
         // Mac OS X needs this to avoid HeadlessException
         System.setProperty("java.awt.headless", "false");
-        // necessary to initialize Toolkit
+        // necessary to initialize JavaFX Toolkit
         new JFXPanel();
+        // JavaFX thread が SchemaEditor 終了後に shutdown してしまわないようにする
+        Platform.setImplicitExit(false);
 
-    // apple settings
+        // apple settings
         System.setProperty("apple.laf.useScreenMenuBar","true"); // ClientContextStub でも設定しているが，そこだと遅いようだ
         // quaqua のセットアップ
         setQuaqua(context);

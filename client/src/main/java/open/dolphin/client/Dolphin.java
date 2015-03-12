@@ -83,9 +83,6 @@ public class Dolphin implements MainWindow {
 
     private void initialize() {
 
-        // JavaFX thread が SchemaEditor 終了後に shutdown してしまわないようにする
-        Platform.setImplicitExit(false);
-
         SettingForMac.set(this);
 
         // ClientContext を生成する

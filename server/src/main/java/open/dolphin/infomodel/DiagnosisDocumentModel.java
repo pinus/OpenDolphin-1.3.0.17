@@ -1,6 +1,8 @@
 package open.dolphin.infomodel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Diagnosisドキュメントのモデル
@@ -84,16 +86,13 @@ public class DiagnosisDocumentModel extends InfoModel {
 
         if (moduleModel != null) {
 
-            ArrayList<ModuleInfoBean> list = new ArrayList<>(2);
+            List<ModuleInfoBean> list = new ArrayList<>(2);
 
-            for (ModuleModel model : moduleModel) {
+            Arrays.asList(moduleModel).stream()
+                    .filter(model -> model.getModuleInfo().getEntity().equals(entityName))
+                    .forEach(model -> list.add(model.getModuleInfo()));
 
-                if (model.getModuleInfo().getEntity().equals(entityName)) {
-                    list.add(model.getModuleInfo());
-                }
-            }
-
-            if (list.size() > 0) {
+            if (! list.isEmpty()) {
                 return  list.toArray(new ModuleInfoBean[list.size()]);
             }
         }

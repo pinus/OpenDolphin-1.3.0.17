@@ -5,7 +5,7 @@ import javax.ws.rs.core.Application;
 
 /**
  *
- * @author pinus
+ * @author pns
  */
 @ApplicationPath("/")
 public class DolphinApp extends Application {
