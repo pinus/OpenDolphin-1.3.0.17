@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -115,8 +114,7 @@ public class SecurityFilter implements ContainerRequestFilter {
         UserModel validUser = getValidUserModel(userId, password);
         if (validUser == null) { return false; }
 
-        //Step 2. Verify user role
-        return ! Collections.disjoint(validUser.getRoles(), roles);
+        return validUser.getRoles().stream().anyMatch(roleModel -> roles.contains(roleModel.getRole()));
     }
 
     /**
