@@ -114,6 +114,7 @@ public class SecurityFilter implements ContainerRequestFilter {
         UserModel validUser = getValidUserModel(userId, password);
         if (validUser == null) { return false; }
 
+        //Step 2. Verify user role
         return validUser.getRoles().stream().anyMatch(roleModel -> roles.contains(roleModel.getRole()));
     }
 
