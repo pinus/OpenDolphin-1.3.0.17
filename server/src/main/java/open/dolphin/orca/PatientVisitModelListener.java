@@ -3,7 +3,6 @@ package open.dolphin.orca;
 import open.dolphin.WebSocket;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
-import javax.websocket.Session;
 import open.dolphin.JsonConverter;
 import open.dolphin.infomodel.PatientVisitModel;
 
@@ -21,8 +20,6 @@ public class PatientVisitModelListener {
     @PostPersist
     @PostUpdate
     public void pvtUpdated(final PatientVisitModel pvt) {
-        for (Session session : WebSocket.getSessions()) {
-            session.getAsyncRemote().sendText(JsonConverter.toJson(pvt));
-        }
+        WebSocket.getSessions().forEach(session -> session.getAsyncRemote().sendText(JsonConverter.toJson(pvt)));
     }
 }
