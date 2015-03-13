@@ -101,7 +101,7 @@ public class SystemServiceImpl extends DolphinService implements SystemService {
     @Override
     public void putRadMethodMaster(List<RadiologyMethodValue> c) {
         if (c != null) {
-            c.forEach((value) -> em.persist(value));
+            c.forEach(value -> em.persist(value));
         }
     }
 
