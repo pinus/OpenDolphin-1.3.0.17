@@ -32,7 +32,11 @@ public abstract class OrcaApi {
                 Logger.getLogger(OrcaApi.class).info("orca 4.8 detected");
                 orcaApi = new OrcaApi47();
                 break;
-        }
+            default:
+                Logger.getLogger(OrcaApi.class).info("unknown version: " + dao.getDbVersion());
+                orcaApi = new OrcaApi47();
+                break;
+         }
     }
 
     public static OrcaApi getInstance() {
