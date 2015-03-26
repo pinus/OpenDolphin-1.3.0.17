@@ -24,6 +24,7 @@ public class OrcaDao extends SqlDaoBean {
     //public static final String ORCA_DB_VER_45 = "040500-1";
     public static final String ORCA_DB_VER_46 = "040600-1";
     public static final String ORCA_DB_VER_47 = "040700-1";
+    public static final String ORCA_DB_VER_48 = "040800-1";
 
     private static String dbVersion = null;
     private static int hospNum = 1;
