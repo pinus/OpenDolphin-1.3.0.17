@@ -302,7 +302,7 @@ public class StateManager {
             }
         }
         //
-        // option key
+        // shift key
         //
         else if (!e.isAltDown() && !e.isControlDown() && !e.isMetaDown() && e.isShiftDown()) {
             switch (e.getCode()) {
@@ -335,6 +335,15 @@ public class StateManager {
                     break;
                 case DIGIT9:
                     properties.setFillBlur(0.9);
+                    break;
+                case L:
+                    properties.setFillMode(FillMode.Line);
+                    break;
+                case F:
+                    properties.setFillMode(FillMode.Fill);
+                    break;
+                case M:
+                    properties.setFillMode(FillMode.Mixed);
                     break;
             }
         }
