@@ -44,7 +44,7 @@ public class SettingForMac {
 
         // Lion は自動的に leopard に設定されてしまう
         //System.setProperty("Quaqua.design","snowleopard");
-        System.setProperty("Quaqua.design","mountainlion");
+        //System.setProperty("Quaqua.design","mountainlion");
 
         //java.util.Set<String> includes = new java.util.HashSet<String>();
         java.util.Set<String> excludes = new java.util.HashSet<String>();
@@ -57,7 +57,7 @@ public class SettingForMac {
         //includes.add("");
         //excludes.add("Table");
         excludes.add("ScrollBar");
-        excludes.add("Button");
+        //excludes.add("Button");
         //excludes.add("ComboBox");
         //excludes.add("TabbedPane");
         excludes.add("PopupMenu");
