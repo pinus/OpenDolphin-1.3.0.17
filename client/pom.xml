@@ -81,9 +81,9 @@
           <version>1.0</version>
         </dependency>
         <dependency>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>quaqua-pns</artifactId>
-          <version>9.0-pns</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>quaqua-pns</artifactId>
+            <version>9.1-pns</version>
         </dependency>
     </dependencies>
 
