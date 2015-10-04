@@ -3,5 +3,5 @@ mvn install:install-file -Dfile=glulogic.jar -DgroupId=jp.motomachi-hifuka -Dart
 
 mvn install:install-file -Dfile=quaqua-pns.jar -DgroupId=jp.motomachi-hifuka -DartifactId=quaqua-pns -Dversion=7.3.4-pns -Dpackaging=jar
 
-mvn install:install-file -Dfile=Quaqua.jar -DgroupId=jp.motomachi-hifuka -DartifactId=quaqua-pns -Dversion=9.0-pns -Dpackaging=jar
+mvn install:install-file -Dfile=Quaqua.jar -DgroupId=jp.motomachi-hifuka -DartifactId=quaqua-pns -Dversion=9.1-pns -Dpackaging=jar
 
