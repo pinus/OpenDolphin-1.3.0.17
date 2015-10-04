@@ -109,6 +109,11 @@ public class MasterSearchPanel extends JPanel {
      */
     protected JPanel createNorthPanel() {
         JPanel panel = new JPanel();
+        // 高さを 32 に固定
+        panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, 32));
+        panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, 32));
+        panel.setMinimumSize(new Dimension(panel.getMinimumSize().width, 32));
+
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
         ActionListener listener = new ActionListener() {
@@ -140,6 +145,7 @@ public class MasterSearchPanel extends JPanel {
         searchLabel.setText("マスタ検索：");
 
         keywordField = new JTextField(KEYWORD_FIELD_LENGTH);
+        keywordField.setAlignmentY(0.6f); // tuning for el capitan
         keywordField.setMaximumSize(keywordField.getPreferredSize());
         keywordField.setToolTipText(TOOLTIP_KEYWORD);
         keywordField.addActionListener(listener);
