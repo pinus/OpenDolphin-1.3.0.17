@@ -90,6 +90,9 @@ public class RegionView extends javax.swing.JDialog {
                 input.setSelected(true);
             }
         });
+
+        // default button
+        getRootPane().setDefaultButton(input);
     }
 
     /**
