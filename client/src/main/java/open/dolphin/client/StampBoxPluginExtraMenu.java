@@ -193,8 +193,15 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
                 writer.write(" stampId=");
                 writer.write(addQuote(val));
                 // ここで対応するstampBytesをデータベースから読み込み登録する。
-                String stampHexBytes = getHexStampBytes(val);
-                // 実態のないスタンプの場合があった。なぜゾンビができたのだろう？？
+                // Zombie Stamp だと Exception が発生する
+                String stampHexBytes = null;
+                try {
+                    stampHexBytes = getHexStampBytes(val);
+                } catch (RuntimeException e) {
+                    //e.printStackTrace(System.err);
+                    System.out.println("Zombie Stamp" + toXmlText(node.toString()));
+                }
+                // 実態のないスタンプの場合 null になる
                 if (stampHexBytes != null) {
                     writer.write(" stampBytes=");
                     writer.write(addQuote(stampHexBytes));
@@ -207,15 +214,12 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
         /**
          * StampIdから対応するStampModelを取得してstampBytesのHex文字列を作成する
          */
-        private String getHexStampBytes(String stampId){
-
+        private String getHexStampBytes(String stampId) throws RuntimeException {
             StampDelegater del = new StampDelegater();
             // スタンプの実態を取得
+            // rest 化でゾンビスタンプがあると，ここで InternalServerErrorException が発生するようになった
             StampModel model = del.getStamp(stampId);
-            // データベースにない場合はnullを返す
-            if (model == null){
-                return null;
-            }
+
             // stampBytesを返す
             byte[] stampBytes = ModelUtils.xmlEncode(model.getStamp());
             return HexBytesTool.bytesToHex(stampBytes);
@@ -252,7 +256,14 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
 
             if (id != null) {
                 StampDelegater sdl = new StampDelegater();
-                StampModel model = sdl.getStamp(id);
+
+                // rest 化で，InternalServerErrorException が出るようになった
+                StampModel model = null;
+                try {
+                    model = sdl.getStamp(id);
+                } catch (RuntimeException e) {
+                    System.out.println("adding stamp: " + name);
+                }
 
                 // データベースにスタンプが存在しない場合は新たに作成して登録する。
                 if (model == null) {
