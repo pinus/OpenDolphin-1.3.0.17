@@ -32,7 +32,7 @@ public class AppleScriptExecutor extends Thread {
                 // protection time for waiting events to work before script starts
                 Thread.sleep(ptime);
 
-                return new ScriptEngineManager().getEngineByName("AppleScript").eval(code);
+                return new ScriptEngineManager().getEngineByName("AppleScriptEngine").eval(code);
             }
         };
         worker.execute();
