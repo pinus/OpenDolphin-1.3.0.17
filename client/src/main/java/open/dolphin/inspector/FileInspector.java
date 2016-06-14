@@ -51,18 +51,23 @@ public class FileInspector {
 
     /**
      * 患者 id から，関連文書の path を作る
-     *   000001-005000/${id}
-     *   005001-010000/${id}
-     *   010001-015000/${id}
-     *   015001-020000/${id}
-     *         ：
+     * 関連文書ファイル構造
+     *   １万台フォルダ/千台フォルダ/関連文書
+     *   000001-010000/000001-001000/${id}
+     *   000001-010000/001001-002000/${id}
+     *         :
+     *   010001-020000/010001-011000/${id}
+     *         :
      * @param id
      * @return
      */
     public static String getDocumentPath(String id) {
         // id の範囲によって subfolder を決める
-        int index = (Integer.parseInt(id) - 1) / 5000;
-        String subfolder = String.format("%03d001-%03d000/", index*5, (index+1)*5);
+        int index10k = (Integer.parseInt(id) - 1) / 10000; // 上位2桁
+        int index1k = (Integer.parseInt(id) - 1) / 1000; // 上位3桁
+
+        String subfolder = String.format("%02d0001-%02d0000/%03d001-%03d000/",
+                index10k, (index10k+1), index1k, (index1k+1));
 
         return DEFAULT_DOCUMENT_FOLDER + subfolder + id;
     }
