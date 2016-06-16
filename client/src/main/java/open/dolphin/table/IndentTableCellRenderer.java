@@ -72,7 +72,7 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
     }
 
     /**
-     * Show holizontal grid
+     * Show holizontal grid (Retina 対応)
      * @param graphics
      */
     @Override

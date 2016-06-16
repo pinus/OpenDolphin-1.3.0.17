@@ -1132,35 +1132,78 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 
+     * Retina 対応 Grid を描くレンダラ
      */
-    private class TableCellRendererBase extends DefaultTableCellRenderer {
+    private abstract class TableCellRendererBase extends DefaultTableCellRenderer {
+        private static final long serialVersionUID = 1L;
+
+        protected boolean holizontalGrid = false;
+        protected boolean virticalGrid = false;
+
+        public TableCellRendererBase() { init(); }
+
+        public abstract void init();
 
         /**
-         * Show holizontal grid
+         * Show grids and markings
          * @param graphics
          */
         @Override
         public void paint(Graphics graphics) {
             Graphics2D g = (Graphics2D) graphics;
             super.paint(graphics);
+            if (holizontalGrid) {
+                g.setColor(Color.WHITE);
+                g.drawLine(0, getHeight(), getWidth(), getHeight());
+            }
+            if (virticalGrid) {
+                g.setColor(Color.WHITE);
+                g.drawLine(0, getHeight(), getWidth(), getHeight());
 
-            g.setColor(Color.WHITE);
-            g.drawLine(0, getHeight(), getWidth(), getHeight());
-            g.dispose();
+            }
+        }
+
+        /**
+         * Set background color
+         * @param table
+         * @param value
+         * @param isSelected
+         * @param isFocused
+         * @param row
+         * @param col
+         * @return
+         */
+        public void setBackground(JTable table,
+                Object value,
+                boolean isSelected,
+                boolean isFocused,
+                int row, int col) {
+
+            Color bg = table.getBackground();
+
+            if (isSexRenderer()) {
+                PatientVisitModel pvt = (PatientVisitModel) pvtTableModel.getObject(table.convertRowIndexToModel(row));
+                if (pvt != null) {
+                    String gender = pvt.getPatient().getGender();
+                    if (gender.equals(IInfoModel.MALE)) { bg = MALE_COLOR; }
+                    else if (gender.equals(IInfoModel.FEMALE)) { bg = FEMALE_COLOR; }
+                }
+            }
+            setBackground(bg);
         }
     }
 
     /**
      * KarteStateRenderer
-     * カルテ（チャート）の状態をレンダリングするクラス。 modified by pns
+     * カルテ（チャート）の状態をレンダリングするクラス
      */
     private class KarteStateRenderer extends TableCellRendererBase {
         private static final long serialVersionUID = -7654410476024116413L;
 
-        public KarteStateRenderer() {
-            super();
+        @Override
+        public void init() {
             setHorizontalAlignment(JLabel.CENTER);
+            virticalGrid = true;
         }
 
         @Override
@@ -1173,19 +1216,7 @@ public class WatingListImpl extends AbstractMainComponent {
             PatientVisitModel pvt = (PatientVisitModel) pvtTableModel.getObject(table.convertRowIndexToModel(row));
 
             // 背景色の設定
-            if (isSexRenderer()) {
-
-                if (pvt !=null && pvt.getPatient().getGender().equals(IInfoModel.MALE)) {
-                    this.setBackground(MALE_COLOR);
-                } else if (pvt !=null && pvt.getPatient().getGender().equals(IInfoModel.FEMALE)) {
-                    this.setBackground(FEMALE_COLOR);
-                } else {
-                    this.setBackground(table.getBackground());
-                }
-
-            } else {
-                this.setBackground(table.getBackground());
-            }
+            setBackground(table, value, isSelected, isFocused, row, col);
 
             // 文字色
             Color fore = pvt != null && pvt.getState() == KarteState.CANCEL_PVT ? CANCEL_PVT_COLOR : table.getForeground();
@@ -1193,7 +1224,7 @@ public class WatingListImpl extends AbstractMainComponent {
 
             // state の value チェック，本日のカルテがあるかどうか（今日のカルテはないけど，以前のカルテを編集しただけの場合）
             if (value != null && value instanceof Integer) {
-                int state = ((Integer) value).intValue();
+                int state = (Integer) value;
 
                 switch (state) {
 
@@ -1244,7 +1275,7 @@ public class WatingListImpl extends AbstractMainComponent {
                 if (pvt.getState() != KarteState.CANCEL_PVT) {
                     if (pvt.isShoshin()) { this.setBackground(SHOSHIN_COLOR); }
                     if (!pvt.hasByomei()) { this.setBackground(DIAGNOSIS_EMPTY_COLOR); }
-                }
+                    }
 
                 this.setText("");
 
@@ -1261,9 +1292,12 @@ public class WatingListImpl extends AbstractMainComponent {
      * カルテ（チャート）の状態をレンダリングするクラス。
      */
     private class MaleFemaleRenderer extends TableCellRendererBase {
+        private static final long serialVersionUID = 1L;
 
-        public MaleFemaleRenderer() {
-            super();
+        @Override
+        public void init() {
+            setHorizontalAlignment(JLabel.LEFT);
+            holizontalGrid = true;
         }
 
         @Override
@@ -1281,20 +1315,7 @@ public class WatingListImpl extends AbstractMainComponent {
                 this.setForeground(fore);
 
             } else {
-                if (isSexRenderer()) {
-
-                    if (pvt !=null && pvt.getPatient().getGender().equals(IInfoModel.MALE)) {
-                        this.setBackground(MALE_COLOR);
-                    } else if (pvt !=null && pvt.getPatient().getGender().equals(IInfoModel.FEMALE)) {
-                        this.setBackground(FEMALE_COLOR);
-                    } else {
-                        this.setBackground(table.getBackground());
-                    }
-
-                } else {
-                    this.setBackground(table.getBackground());
-                }
-
+                setBackground(table, value, isSelected, isFocused, row, col);
                 Color fore = pvt != null && pvt.getState() == KarteState.CANCEL_PVT ? CANCEL_PVT_COLOR : table.getForeground();
                 this.setForeground(fore);
             }
@@ -1325,10 +1346,12 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     private class CenterRenderer extends MaleFemaleRenderer {
+        private static final long serialVersionUID = 1L;
 
-        public CenterRenderer() {
-            super();
-            this.setHorizontalAlignment(JLabel.CENTER);
+        @Override
+        public void init() {
+            setHorizontalAlignment(JLabel.CENTER);
+            holizontalGrid = true;
         }
     }
 
