@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.beans.EventHandler;
 import java.beans.PropertyChangeListener;
@@ -1130,10 +1132,30 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
+     * 
+     */
+    private class TableCellRendererBase extends DefaultTableCellRenderer {
+
+        /**
+         * Show holizontal grid
+         * @param graphics
+         */
+        @Override
+        public void paint(Graphics graphics) {
+            Graphics2D g = (Graphics2D) graphics;
+            super.paint(graphics);
+
+            g.setColor(Color.WHITE);
+            g.drawLine(0, getHeight(), getWidth(), getHeight());
+            g.dispose();
+        }
+    }
+
+    /**
      * KarteStateRenderer
      * カルテ（チャート）の状態をレンダリングするクラス。 modified by pns
      */
-    private class KarteStateRenderer extends DefaultTableCellRenderer {
+    private class KarteStateRenderer extends TableCellRendererBase {
         private static final long serialVersionUID = -7654410476024116413L;
 
         public KarteStateRenderer() {
@@ -1238,7 +1260,7 @@ public class WatingListImpl extends AbstractMainComponent {
      * KarteStateRenderer
      * カルテ（チャート）の状態をレンダリングするクラス。
      */
-    private class MaleFemaleRenderer extends DefaultTableCellRenderer {
+    private class MaleFemaleRenderer extends TableCellRendererBase {
 
         public MaleFemaleRenderer() {
             super();
