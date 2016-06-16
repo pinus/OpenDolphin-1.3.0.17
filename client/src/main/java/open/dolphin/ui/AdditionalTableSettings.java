@@ -39,7 +39,9 @@ public class AdditionalTableSettings {
         if (table.getDefaultRenderer(Object.class).getClass().toString().contains("DefaultTableCellRenderer")) {
             overwriteRenderer(table);
         }
-        table.setIntercellSpacing(new Dimension(0,1));
+        // Retina 対応
+        // table.setIntercellSpacing(new Dimension(0,1));
+        table.setIntercellSpacing(new Dimension(0,0));
         table.setRowHeight(ROW_HEIGHT);
 
         //table.setUI(new MyTableUI());

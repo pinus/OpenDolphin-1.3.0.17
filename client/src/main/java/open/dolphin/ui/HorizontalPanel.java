@@ -216,8 +216,9 @@ public class HorizontalPanel extends JPanel {
         Graphics2D g = (Graphics2D) graphics.create();
         g.setColor(shadowColor);
 
-        for(int y=1; y < h-1; y++) {
-
+        // Retina 対応
+        // for(int y=1; y < h-1; y++) {
+        for(int y=1; y < h; y++) {
             if (startAlpha > endAlpha) {
                 alpha = startAlpha - (float)y / (float)h * (startAlpha - endAlpha);
             } else {
@@ -228,7 +229,9 @@ public class HorizontalPanel extends JPanel {
 
         // 上下の線
         drawHorizontalLine(g, w, 0, topLineAlpha);
-        drawHorizontalLine(g, w, h-1, bottomLineAlpha);
+        // Retina 対応
+        // drawHorizontalLine(g, w, h-1, bottomLineAlpha);
+        drawHorizontalLine(g, w, h, bottomLineAlpha);
 
         g.dispose();
     }

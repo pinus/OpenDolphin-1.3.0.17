@@ -228,8 +228,9 @@ public class WatingListImpl extends AbstractMainComponent {
         pvtTable.setRowHeight(rowHeight);
         pvtTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         pvtTable.setRowSelectionAllowed(true);
-        pvtTable.setShowGrid(true);
-        pvtTable.setGridColor(Color.WHITE);
+        // Retina 対応
+        // pvtTable.setShowGrid(true);
+        // pvtTable.setGridColor(Color.WHITE);
         // sorter を設定
         TableRowSorter<ObjectReflectTableModel> sorter = new TableRowSorter<ObjectReflectTableModel>(pvtTableModel) {
             // ASCENDING -> DESENDING -> 初期状態 と切り替える

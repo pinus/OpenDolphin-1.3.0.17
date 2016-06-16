@@ -5,17 +5,15 @@
   /*
    * Modena.css に Override するもの
    */
-  /* -fx-font-family: "Hiragino Kaku Gothic Pro"; */
-  -fx-font-family: "Hiragino Maru Gothic Pro";
-  /* -fx-font-family: "YuGothic"; */
-  -fx-font-size: 13;
+  -fx-font-family: "Hiragino Sans";
+  -fx-font-size: 12;
+
   /*
    * Focus されたボタン等に付く枠の色。modena.css では２種類の色でグラデーションをつけられるようになっている。
    * pns-stage では使わない
    */
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
-
 
   /*
    * バックグラウンドの色
