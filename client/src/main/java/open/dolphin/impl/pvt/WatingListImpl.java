@@ -2,7 +2,6 @@ package open.dolphin.impl.pvt;
 
 import ch.randelshofer.quaqua.SheetEvent;
 import ch.randelshofer.quaqua.SheetListener;
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -1166,7 +1165,7 @@ public class WatingListImpl extends AbstractMainComponent {
             }
             if (marking) {
                 g.setColor(markingColor);
-                g.fillRoundRect(0,0,5,getHeight(),2,2);
+                g.fillRect(0,0,6,getHeight());
             }
             g.dispose();
         }
