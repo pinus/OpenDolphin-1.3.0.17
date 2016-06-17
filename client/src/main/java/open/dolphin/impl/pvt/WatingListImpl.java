@@ -2,6 +2,7 @@ package open.dolphin.impl.pvt;
 
 import ch.randelshofer.quaqua.SheetEvent;
 import ch.randelshofer.quaqua.SheetListener;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -1139,6 +1140,8 @@ public class WatingListImpl extends AbstractMainComponent {
 
         protected boolean holizontalGrid = false;
         protected boolean virticalGrid = false;
+        protected boolean marking = false;
+        protected Color markingColor = Color.WHITE;
 
         public TableCellRendererBase() { init(); }
 
@@ -1158,8 +1161,12 @@ public class WatingListImpl extends AbstractMainComponent {
             }
             if (virticalGrid) {
                 g.setColor(Color.WHITE);
-                g.drawLine(0, getHeight(), getWidth(), getHeight());
+                g.drawLine(0, 0, 0, getHeight());
 
+            }
+            if (marking) {
+                g.setColor(markingColor);
+                g.fillRoundRect(0,0,5,getHeight(),2,2);
             }
             g.dispose();
         }
@@ -1204,6 +1211,7 @@ public class WatingListImpl extends AbstractMainComponent {
         @Override
         public void init() {
             setHorizontalAlignment(JLabel.CENTER);
+            holizontalGrid = true;
             virticalGrid = true;
         }
 
@@ -1272,11 +1280,17 @@ public class WatingListImpl extends AbstractMainComponent {
                         break;
                 }
 
-                // cancel 以外では，バックグランドも設定
+                // マーキングする
+                marking = false;
                 if (pvt.getState() != KarteState.CANCEL_PVT) {
-                    if (pvt.isShoshin()) { this.setBackground(SHOSHIN_COLOR); }
-                    if (!pvt.hasByomei()) { this.setBackground(DIAGNOSIS_EMPTY_COLOR); }
+                    if (!pvt.hasByomei()) {
+                        marking = true;
+                        markingColor = DIAGNOSIS_EMPTY_COLOR;
+                    } else if (pvt.isShoshin()) {
+                        marking = true;
+                        markingColor = SHOSHIN_COLOR;
                     }
+                }
 
                 this.setText("");
 
