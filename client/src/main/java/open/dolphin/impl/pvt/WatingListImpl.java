@@ -1150,7 +1150,7 @@ public class WatingListImpl extends AbstractMainComponent {
          */
         @Override
         public void paint(Graphics graphics) {
-            Graphics2D g = (Graphics2D) graphics;
+            Graphics2D g = (Graphics2D) graphics.create();
             super.paint(graphics);
             if (holizontalGrid) {
                 g.setColor(Color.WHITE);
@@ -1161,6 +1161,7 @@ public class WatingListImpl extends AbstractMainComponent {
                 g.drawLine(0, getHeight(), getWidth(), getHeight());
 
             }
+            g.dispose();
         }
 
         /**

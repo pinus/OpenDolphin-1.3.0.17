@@ -657,10 +657,12 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         JPanel p = new JPanel(new BorderLayout());
         JPanel p1 = new JPanel() {
             @Override
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
+            public void paintComponent(Graphics grahics) {
+                super.paintComponent(grahics);
+                Graphics g = grahics.create();
                 g.setColor(Color.GRAY);
                 g.drawLine(0, 0, getWidth(), 0);
+                g.dispose();
             }
         };
         p1.setPreferredSize(new Dimension(200,100));

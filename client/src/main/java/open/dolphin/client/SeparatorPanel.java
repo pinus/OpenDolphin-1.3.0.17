@@ -31,10 +31,12 @@ public class SeparatorPanel extends JPanel {
     }
 
     @Override
-	public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics graphis) {
+        Graphics g = graphis.create();
         g.setColor(leftColor);
         g.drawLine(0, 0, 0, getHeight());
         g.setColor(rightColor);
         g.drawLine(1, 0, 1, getHeight());
+        g.dispose();
     }
 }

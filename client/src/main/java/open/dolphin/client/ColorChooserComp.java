@@ -131,9 +131,9 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics graphics) {
 
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g = (Graphics2D) graphics.create();
 
         double dx = size.getWidth()*2;
         double offsetX = size.getWidth();
@@ -144,19 +144,19 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
         RenderingHints rh = new RenderingHints(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHints(rh);
+        g.setRenderingHints(rh);
 
         for (int i=0; i < colors.length; i++) {
             double x = offsetX + i * dx;
             double y = offsetY;
             Ellipse2D.Double body = new Ellipse2D.Double(x, y, size.getWidth(), size.getHeight());
             GradientPaint lightToDark = new GradientPaint((int)x, (int)y, colorStart[i], (int)x + size.width, (int)y + size.height, colors[i]);
-            g2.setPaint(lightToDark);
-            g2.fill(body);
+            g.setPaint(lightToDark);
+            g.fill(body);
             if (i == index) {
-                g2.setColor(strokeColor);
-                g2.setStroke(stroke);
-                g2.draw(body);
+                g.setColor(strokeColor);
+                g.setStroke(stroke);
+                g.draw(body);
                 //g2.setColor(colors[i]);
                 //g2.fill(body);
                 //GradientPaint lightToDark = new GradientPaint((int)x, (int)y, Color.LIGHT_GRAY, (int)x, (int)y + size.height, colors[i]);
@@ -170,5 +170,6 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
             //g2.fill(body);
             //}
         }
+        g.dispose();
     }
 }

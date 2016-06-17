@@ -247,7 +247,7 @@ public class BlockGlass extends JComponent implements MouseListener {
 
             double maxY = 0.0;
 
-            Graphics2D g2 = (Graphics2D) g;
+            Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHints(hints);
 
             g2.setColor(new Color(255, 255, 255, (int) (alphaLevel * shield)));
@@ -271,6 +271,7 @@ public class BlockGlass extends JComponent implements MouseListener {
                 layout.draw(g2, (float) (frameWidth - bounds.getWidth()) / 2,
                         (float) (maxY + layout.getLeading() + 2 * layout.getAscent()));
             }
+            g2.dispose();
         }
     }
 

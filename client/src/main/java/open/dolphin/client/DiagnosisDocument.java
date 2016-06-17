@@ -378,8 +378,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         sorter.setComparator(END_DATE_COL, dateComparator);
 
         // table のグリッド設定 (ORCA 病名は stripe にならないので grid だす)
-        diagTable.setShowGrid(true);
-        diagTable.setGridColor(Color.WHITE);
+        // Retina 対応
+        //diagTable.setShowGrid(true);
+        //diagTable.setGridColor(Color.WHITE);
 
         // コラム幅設定
         int[] columnWidth = {150,80,80,120,120};
@@ -1410,7 +1411,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                     ddl.removeDiagnosis(list);
                 }
             }
-            
+
             // 追加・更新病名を CLAIM 送信する
             if (sendClaim) {
                 List<RegisteredDiagnosisModel> sendList = new ArrayList<>();
@@ -1444,6 +1445,19 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         public DolphinOrcaRenderer() {
             super();
+        }
+
+        /**
+         * Retina 対応 - show holizontal grid
+         * @param graphics
+         */
+        @Override
+        public void paint(Graphics graphics) {
+            Graphics2D g = (Graphics2D) graphics.create();
+            super.paint(graphics);
+            g.setColor(Color.WHITE);
+            g.drawLine(0, getHeight(), getWidth(), getHeight());
+            g.dispose();
         }
 
         @Override

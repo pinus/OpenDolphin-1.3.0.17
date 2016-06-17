@@ -162,8 +162,9 @@ public class MemoInspector {
         }
 
         @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
+        public void paintComponent(Graphics graphics) {
+            super.paintComponent(graphics);
+            Graphics g = graphics.create();
             if (shouldAlert) {
                 g.setColor(ALERT_BACK_COLOR);
                 g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 3, 3);
@@ -173,6 +174,7 @@ public class MemoInspector {
                 g.drawRoundRect(i, i, getWidth()-1-2*i, getHeight()-1-2*i, 3-i, 3-i);
                 }
             }
+            g.dispose();
         }
     }
 }

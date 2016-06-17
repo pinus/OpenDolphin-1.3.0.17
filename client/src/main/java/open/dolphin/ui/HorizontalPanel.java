@@ -264,12 +264,14 @@ public class HorizontalPanel extends JPanel {
             setOpaque(false);
         }
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics graphics) {
+            Graphics g = graphics.create();
             int center = SEPARATOR_WIDTH/2;
             g.setColor(leftColor);
             g.drawLine(center, 5, center, getHeight() - 5);
             g.setColor(rightColor);
             g.drawLine(center+1, 5, center+1, getHeight() - 5);
+            g.dispose();
         }
     }
 }

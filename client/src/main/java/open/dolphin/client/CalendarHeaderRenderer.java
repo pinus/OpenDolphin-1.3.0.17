@@ -47,11 +47,13 @@ public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
 
     // バックグランドにグラデーションをつける
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics graphics) {
         for (int y=0; y<getHeight();y++) {
+            Graphics g = graphics.create();
             g.setColor(BGCOL[y]);
             g.drawLine(0, y, getWidth()-1, y);
+            g.dispose();
         }
-        super.paintComponent(g);
+        super.paintComponent(graphics);
     }
 }

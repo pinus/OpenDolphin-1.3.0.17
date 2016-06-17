@@ -138,9 +138,9 @@ public class UltraSonicProgressLabel extends JLabel {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics gracphics) {
 
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g = (Graphics2D) gracphics.create();
         int x = 0;
         int y = 0;
         int width = getWidth();
@@ -149,16 +149,16 @@ public class UltraSonicProgressLabel extends JLabel {
         RenderingHints rh = new RenderingHints(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHints(rh);
+        g.setRenderingHints(rh);
 
         if (started) {
             // Border をペイントする
-            g2.setColor(borderColor);
-            g2.draw(getProgressBorder());
+            g.setColor(borderColor);
+            g.draw(getProgressBorder());
             // 内側をグラデーションする
             GradientPaint borderGradient = new GradientPaint(x+1, height/2, waterColor, width-1, height/2, borderColor);
-            g2.setPaint(borderGradient);
-            g2.fill(getProgressContent());
+            g.setPaint(borderGradient);
+            g.fill(getProgressContent());
 
             // パルスをペイントする
             Area pulse = pulses[frame % pulseCount];
@@ -166,20 +166,21 @@ public class UltraSonicProgressLabel extends JLabel {
             int tail = (int)pulse.getBounds().getX();
             int top = tail + pw;
             GradientPaint pulseGradient = new GradientPaint(top, 0, pulseHeadColor, tail, 0, pulseTailColor);
-            g2.setPaint(pulseGradient);
-            g2.fill(pulse);
+            g.setPaint(pulseGradient);
+            g.fill(pulse);
 
             frame++;
 
         } else {
             // Border をペイントする
-            g2.setColor(Color.LIGHT_GRAY);
-            g2.draw(getProgressBorder());
+            g.setColor(Color.LIGHT_GRAY);
+            g.draw(getProgressBorder());
             // 内側をグラデーションする
             GradientPaint borderGradient = new GradientPaint(x+1, y+1, Color.white, x+1, height-1, Color.LIGHT_GRAY);
-            g2.setPaint(borderGradient);
-            g2.fill(getProgressContent());
+            g.setPaint(borderGradient);
+            g.fill(getProgressContent());
         }
+        g.dispose();
     }
 
     private Area[] buildPulses() {

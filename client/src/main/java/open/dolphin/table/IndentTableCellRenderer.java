@@ -77,7 +77,7 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
      */
     @Override
     public void paint(Graphics graphics) {
-        Graphics2D g = (Graphics2D) graphics;
+        Graphics2D g = (Graphics2D) graphics.create();
         super.paint(g);
 
         g.setColor(Color.WHITE);

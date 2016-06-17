@@ -398,30 +398,31 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics graphics) {
 
-        super.paintComponent(g);
+        super.paintComponent(graphics);
 
         if (data == null) {
             return;
         }
 
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g = (Graphics2D) graphics.create();
         Object aliasing = antiAliasing ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF;
         Object textAl = textAntiAliasing ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aliasing);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, textAl);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aliasing);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, textAl);
 
         if (mode == TT_ABSOLUTE_GRAPH) {
-            setupWorld(g2);
-            drawCoordinate(g2);
-            drawData(g2);
+            setupWorld(g);
+            drawCoordinate(g);
+            drawData(g);
 
         } else {
-            setupRelativeWorld(g2);
-            drawRelativeCoordinate(g2);
-            drawData(g2);
+            setupRelativeWorld(g);
+            drawRelativeCoordinate(g);
+            drawData(g);
         }
+        g.dispose();
     }
 
     // ---------------------------------------------------------------------------------------------

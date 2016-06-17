@@ -324,14 +324,16 @@ public class DiagnosisInspector {
 
         // 罫線を入れる
         @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g;
+        public void paintComponent(Graphics graphics) {
+            super.paintComponent(graphics);
+            Graphics2D g = (Graphics2D) graphics.create();
 
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-            g2.setColor(Color.WHITE);
-            g2.drawLine(0, getHeight()-1, getWidth(), getHeight()-1);
-            g2.dispose();
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+            g.setColor(Color.WHITE);
+            // Retina 対応
+            //g.drawLine(0, getHeight()-1, getWidth(), getHeight()-1);
+            g.drawLine(0, getHeight(), getWidth(), getHeight());
+            g.dispose();
         }
     }
 

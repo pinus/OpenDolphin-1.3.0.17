@@ -67,8 +67,10 @@ public class TablePanelRenderer extends DefaultTableCellRenderer {
         return comp;
     }
     @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+
+        Graphics g = graphics.create();
 
         if (isTargetRow) {
             g.setColor(LINE_COLOR);
@@ -78,5 +80,6 @@ public class TablePanelRenderer extends DefaultTableCellRenderer {
                 g.fillRect(0, 0, getSize().width, 2);
             }
         }
+        g.dispose();
     }
 }
