@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -126,10 +127,12 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
         DateRenderer dateRenderer = new DateRenderer();
 //pns^  dateRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
         dateRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        table.setShowHorizontalLines(true);
-        table.setShowVerticalLines(false);
-        table.setGridColor(new Color(250,250,250));
-        table.setRowSelectionAllowed(false);
+        // for retina iMac
+        //table.setShowHorizontalLines(true);
+        //table.setShowVerticalLines(false);
+        //table.setGridColor(new Color(250,250,250));
+        //table.setRowSelectionAllowed(false);
+        table.setIntercellSpacing(new Dimension(0,0));
         //header
         table.getTableHeader().setDefaultRenderer(new CalendarHeaderRenderer());
         Dimension dim = table.getTableHeader().getPreferredSize();
@@ -546,6 +549,16 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
             this.setOpaque(true);
 //pns       this.setHorizontalAlignment(SwingConstants.RIGHT);
             this.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+
+        // grid for retina iMac
+        @Override
+        public void paint (Graphics graphics) {
+            super.paint(graphics);
+            Graphics g = graphics.create();
+            g.setColor(Color.WHITE);
+            g.drawLine(0, getHeight(), getWidth(), getHeight());
+            g.dispose();
         }
 
         @Override
