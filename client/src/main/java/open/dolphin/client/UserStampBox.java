@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JPopupMenu;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.util.StampTreeUtils;
@@ -107,7 +108,6 @@ public class UserStampBox extends AbstractStampBox {
                             List<ChartImpl> allCharts = ChartImpl.getAllChart();
 
                             if (! allCharts.isEmpty()) {
-                                diagPop.addSeparator();
 
                                 for (ChartImpl chart : allCharts) {
                                     String id = chart.getKarte().getPatient().getPatientId();
@@ -146,7 +146,9 @@ public class UserStampBox extends AbstractStampBox {
                                             doc.importStampList(stampList, 0);
                                         }
                                     };
-                                    diagPop.add(a);
+                                    // 特別メニューは頭に挿入
+                                    diagPop.insert(new JPopupMenu.Separator(), 0);
+                                    diagPop.insert(a,0);
                                 }
                             }
                             // 傷病名の popup
