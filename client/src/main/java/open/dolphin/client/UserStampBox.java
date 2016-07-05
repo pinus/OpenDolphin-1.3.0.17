@@ -1,11 +1,14 @@
 package open.dolphin.client;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.util.StampTreeUtils;
 
@@ -84,14 +87,47 @@ public class UserStampBox extends AbstractStampBox {
 
             final StampTreePopupMenu popup = new StampTreePopupMenu(stampTree);
             stampTree.addMouseListener(new MouseAdapter(){
+                private final StampTree thisTree = stampTree;
+
                 @Override
                 public void mousePressed(MouseEvent e) { showPopup(e);}
+
                 @Override
                 public void mouseReleased(MouseEvent e) { showPopup(e);}
 
                 private void showPopup(MouseEvent e) {
                     if (e.isPopupTrigger()) {
-                        popup.show(stampTree, e.getX(), e.getY());
+                        // 傷病名 Tree に特別メニューを加える
+                        if (IInfoModel.ENTITY_DIAGNOSIS.equals(thisTree.getTreeInfo().getEntity())) {
+                            StampTreePopupMenu diagPop = new StampTreePopupMenu(thisTree);
+                            List<ChartImpl> allCharts = ChartImpl.getAllChart();
+                            if (! allCharts.isEmpty()) {
+                                diagPop.addSeparator();
+                                for (ChartImpl chart : allCharts) {
+                                    String title = chart.getFrame().getTitle();
+                                    diagPop.add(title);
+
+                                    DiagnosisDocument doc = chart.getDiagnosisDocument();
+
+                                    Action a = new AbstractAction() {
+                                        {
+                                            putValue(Action.NAME, title);
+                                            putValue(Action.SMALL_ICON, GUIConst.ICON_EMPTY_22);
+                                        }
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                                        }
+
+                                    };
+                                }
+                            }
+
+                            diagPop.show(stampTree, e.getX(), e.getY());
+
+                        } else {
+                            popup.show(stampTree, e.getX(), e.getY());
+                        }
                     }
                 }
             });
