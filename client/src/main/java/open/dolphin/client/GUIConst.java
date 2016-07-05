@@ -223,6 +223,8 @@ public class GUIConst {
     public static final ImageIcon ICON_REMOVE_22 = ClientContext.getImageIcon("icons/22x22/gtk_cancel.png");
     // 仮保存アイコン
     public static final ImageIcon ICON_ONEDIT_16 = ClientContext.getImageIcon("fugue/16x16/edit-signiture.png");
+    // スタンプ箱からスタンプをカルテに送る
+    public static final ImageIcon ICON_ARROW_UP_LEFT_16 = ClientContext.getImageIcon("fugue/16x16/arrow-135.png");
 
 //  tango series ---------------------
     public static final ImageIcon ICON_SYSTEM_SEARCH_16 = ClientContext.getImageIcon("tango/16x16/actions/system-search.png");

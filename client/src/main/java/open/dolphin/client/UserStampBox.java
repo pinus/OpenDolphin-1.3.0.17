@@ -3,13 +3,16 @@ package open.dolphin.client;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.util.StampTreeUtils;
 
 /**
@@ -97,35 +100,60 @@ public class UserStampBox extends AbstractStampBox {
 
                 private void showPopup(MouseEvent e) {
                     if (e.isPopupTrigger()) {
-                        // 傷病名 Tree に特別メニューを加える
+
+                        // 傷病名の popup に，カルテに病名を挿入する特別メニューを加える
                         if (IInfoModel.ENTITY_DIAGNOSIS.equals(thisTree.getTreeInfo().getEntity())) {
                             StampTreePopupMenu diagPop = new StampTreePopupMenu(thisTree);
                             List<ChartImpl> allCharts = ChartImpl.getAllChart();
+
                             if (! allCharts.isEmpty()) {
                                 diagPop.addSeparator();
+
                                 for (ChartImpl chart : allCharts) {
-                                    String title = chart.getFrame().getTitle();
-                                    diagPop.add(title);
+                                    String id = chart.getKarte().getPatient().getPatientId();
+                                    String name = chart.getKarte().getPatient().getFullName();
+                                    final String title = String.format("%s (%s)", name, id);
+                                    final DiagnosisDocument doc = chart.getDiagnosisDocument();
 
-                                    DiagnosisDocument doc = chart.getDiagnosisDocument();
-
+                                    // DiagnosisDocument に病名を送るアクション
                                     Action a = new AbstractAction() {
-                                        {
-                                            putValue(Action.NAME, title);
-                                            putValue(Action.SMALL_ICON, GUIConst.ICON_EMPTY_22);
+                                        private static final long serialVersionUID = 1L;
+                                        {   putValue(Action.NAME, title);
+                                            putValue(Action.SMALL_ICON, GUIConst.ICON_ARROW_UP_LEFT_16);
                                         }
                                         @Override
-                                        public void actionPerformed(ActionEvent e) {
-                                            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                                        }
+                                        public void actionPerformed(ActionEvent ev) {
+                                            StampTreeNode selected = thisTree.getSelectedNode();
+                                            if (selected == null) { return; }
 
+                                            List<ModuleInfoBean> stampList = new ArrayList<>();
+
+                                            if (selected.isLeaf()) {
+                                                stampList.add(selected.getStampInfo());
+
+                                            } else {
+                                                // ノードの葉を列挙する
+                                                Enumeration e = selected.preorderEnumeration();
+                                                while (e.hasMoreElements()) {
+                                                    StampTreeNode node = (StampTreeNode) e.nextElement();
+                                                    if (node.isLeaf()) {
+                                                        ModuleInfoBean stampInfo = node.getStampInfo();
+                                                        stampList.add(stampInfo);
+                                                    }
+                                                }
+                                            }
+
+                                            doc.importStampList(stampList, 0);
+                                        }
                                     };
+                                    diagPop.add(a);
                                 }
                             }
-
+                            // 傷病名の popup
                             diagPop.show(stampTree, e.getX(), e.getY());
 
                         } else {
+                            // それ以外の popup
                             popup.show(stampTree, e.getX(), e.getY());
                         }
                     }
