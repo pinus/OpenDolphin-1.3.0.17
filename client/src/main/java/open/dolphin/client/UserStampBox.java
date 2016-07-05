@@ -112,7 +112,7 @@ public class UserStampBox extends AbstractStampBox {
                                 for (ChartImpl chart : allCharts) {
                                     String id = chart.getKarte().getPatient().getPatientId();
                                     String name = chart.getKarte().getPatient().getFullName();
-                                    final String title = String.format("%s (%s)", name, id);
+                                    final String title = String.format("%s : %s", name, id);
                                     final DiagnosisDocument doc = chart.getDiagnosisDocument();
 
                                     // DiagnosisDocument に病名を送るアクション
