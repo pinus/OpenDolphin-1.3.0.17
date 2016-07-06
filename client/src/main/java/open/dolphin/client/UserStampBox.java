@@ -108,6 +108,7 @@ public class UserStampBox extends AbstractStampBox {
                             List<ChartImpl> allCharts = ChartImpl.getAllChart();
 
                             if (! allCharts.isEmpty()) {
+                                diagPop.insert(new JPopupMenu.Separator(), 0);
 
                                 for (ChartImpl chart : allCharts) {
                                     String id = chart.getKarte().getPatient().getPatientId();
@@ -147,7 +148,6 @@ public class UserStampBox extends AbstractStampBox {
                                         }
                                     };
                                     // 特別メニューは頭に挿入
-                                    diagPop.insert(new JPopupMenu.Separator(), 0);
                                     diagPop.insert(a,0);
                                 }
                             }
