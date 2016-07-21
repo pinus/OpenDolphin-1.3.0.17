@@ -131,7 +131,7 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
         //table.setShowHorizontalLines(true);
         //table.setShowVerticalLines(false);
         //table.setGridColor(new Color(250,250,250));
-        //table.setRowSelectionAllowed(false);
+        table.setRowSelectionAllowed(false);
         table.setIntercellSpacing(new Dimension(0,0));
         //header
         table.getTableHeader().setDefaultRenderer(new CalendarHeaderRenderer());
