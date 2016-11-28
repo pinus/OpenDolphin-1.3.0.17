@@ -97,7 +97,7 @@ public class UserStampBox extends AbstractStampBox {
 
                         StampTreePopupMenu popup = new StampTreePopupMenu(stampTree);
 
-                        if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getTreeInfo().getEntity())) {
+                        if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
                             // 傷病名の popup に，カルテに病名を挿入する特別メニューを加える
                             List<ChartImpl> allCharts = ChartImpl.getAllChart();
                             if (! allCharts.isEmpty()) {
@@ -225,10 +225,12 @@ public class UserStampBox extends AbstractStampBox {
      */
     private class SendStampAction extends SendStampBase {
         private final KartePane pane;
+        private final String entity;
 
         public SendStampAction(Chart chart, StampTree tree) {
             super(chart, tree);
             pane = ((EditorFrame) chart).getEditor().getPPane();
+            entity = tree.getEntity();
         }
 
         @Override
@@ -240,7 +242,12 @@ public class UserStampBox extends AbstractStampBox {
             JTextPane textPane = pane.getTextPane();
             KarteStyledDocument doc = pane.getDocument();
             textPane.setCaretPosition(doc.getLength());
-            pane.stampInfoDropped(stampList);
+
+            if (IInfoModel.ENTITY_ORCA.equals(entity)) {
+                stampList.forEach(stampInfo -> pane.stampInfoDropped(stampInfo));
+            } else {
+                pane.stampInfoDropped(stampList);
+            }
         }
     }
 }
