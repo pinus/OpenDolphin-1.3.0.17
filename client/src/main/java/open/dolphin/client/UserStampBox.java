@@ -85,39 +85,80 @@ public class UserStampBox extends AbstractStampBox {
                 orcaIndex = index;
             }
 
+            // Stamp を右クリック／ダブルクリックしたときの動作設定
             stampTree.addMouseListener(new MouseAdapter(){
                 @Override
-                public void mousePressed(MouseEvent e) { showPopup(e);}
+                public void mousePressed(MouseEvent e) {
+                    if (e.isPopupTrigger()) { showPopup(e); }
+                    else if (e.getClickCount() == 2) { directInput(e); }
+                }
 
-                @Override
-                public void mouseReleased(MouseEvent e) { showPopup(e);}
-
+                /**
+                 * スタンプを右クリックポップメニューからカルテに入力できるようにする
+                 */
                 private void showPopup(MouseEvent e) {
-                    if (e.isPopupTrigger()) {
+                    StampTreePopupMenu popup = new StampTreePopupMenu(stampTree);
 
-                        StampTreePopupMenu popup = new StampTreePopupMenu(stampTree);
-
-                        if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
-                            // 傷病名の popup に，カルテに病名を挿入する特別メニューを加える
-                            List<ChartImpl> allCharts = ChartImpl.getAllChart();
-                            if (! allCharts.isEmpty()) {
-                                popup.insert(new JPopupMenu.Separator(), 0);
-                                allCharts.forEach(chart -> {
-                                    popup.insert(new SendDiagnosisAction(chart, stampTree), 0);
-                                });
-                            }
-
-                        } else {
-                            // それ以外の popup でも PPane にスタンプを挿入できるようにする
-                            List<Chart> allFrames = EditorFrame.getAllEditorFrames();
-                            if (! allFrames.isEmpty()) {
-                                popup.insert(new JPopupMenu.Separator(), 0);
-                                allFrames.forEach(chart -> {
-                                    popup.insert(new SendStampAction(chart, stampTree), 0);
-                                });
-                            }
+                    if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
+                        // 傷病名の popup に，カルテに病名を挿入する特別メニューを加える
+                        List<ChartImpl> allCharts = ChartImpl.getAllChart();
+                        if (! allCharts.isEmpty()) {
+                            popup.insert(new JPopupMenu.Separator(), 0);
+                            allCharts.forEach(chart -> {
+                                popup.insert(new SendDiagnosisAction(chart, stampTree), 0);
+                            });
                         }
-                        popup.show(stampTree, e.getX(), e.getY());
+
+                    } else {
+                        // それ以外の popup でも PPane にスタンプを挿入できるようにする
+                        List<Chart> allFrames = EditorFrame.getAllEditorFrames();
+                        if (! allFrames.isEmpty()) {
+                            popup.insert(new JPopupMenu.Separator(), 0);
+                            allFrames.forEach(chart -> {
+                                popup.insert(new SendStampAction(chart, stampTree), 0);
+                            });
+                        }
+                    }
+                    popup.show(stampTree, e.getX(), e.getY());
+                }
+
+                /**
+                 * スタンプをダブルクリックでカルテに入力できるようにする
+                 * 入力先が１つの場合はダイレクトに入力，入力先が複数の時はポップアップを出す
+                 */
+                private void directInput(MouseEvent e) {
+                    StampTreeNode selected = stampTree.getSelectedNode();
+                    if (selected == null) { return; }
+
+                    if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
+                        List<ChartImpl> allCharts = ChartImpl.getAllChart();
+                        if (allCharts.size() == 1) {
+                            ChartImpl chart = allCharts.get(0);
+                            DiagnosisDocument doc = chart.getDiagnosisDocument();
+                            doc.importStampList(getStampList(selected), 0);
+                        } else if (! allCharts.isEmpty()) {
+                            showPopup(e);
+                        }
+
+                    } else {
+                        List<Chart> allFrames = EditorFrame.getAllEditorFrames();
+                        if (allFrames.size() == 1) {
+                            Chart frame = allFrames.get(0);
+                            KartePane pane = ((EditorFrame) frame).getEditor().getPPane();
+                            List<ModuleInfoBean> stampList = getStampList(selected);
+                            // caret を最後に送ってから import する
+                            JTextPane textPane = pane.getTextPane();
+                            KarteStyledDocument doc = pane.getDocument();
+                            textPane.setCaretPosition(doc.getLength());
+
+                            if (IInfoModel.ENTITY_ORCA.equals(stampTree.getEntity())) {
+                                stampList.forEach(stampInfo -> pane.stampInfoDropped(stampInfo));
+                            } else {
+                                pane.stampInfoDropped(stampList);
+                            }
+                        } else if (! allFrames.isEmpty()) {
+                            showPopup(e);
+                        }
                     }
                 }
             });
@@ -152,6 +193,32 @@ public class UserStampBox extends AbstractStampBox {
     }
 
     /**
+     * 選択されたスタンプをリストにする
+     * @param selected
+     * @return
+     */
+    public List<ModuleInfoBean> getStampList(StampTreeNode selected) {
+
+        List<ModuleInfoBean> stampList = new ArrayList<>();
+
+        if (selected.isLeaf()) {
+            stampList.add(selected.getStampInfo());
+
+        } else {
+            // ノードの葉を列挙する
+            Enumeration e = selected.preorderEnumeration();
+            while (e.hasMoreElements()) {
+                StampTreeNode node = (StampTreeNode) e.nextElement();
+                if (node.isLeaf()) {
+                    ModuleInfoBean stampInfo = node.getStampInfo();
+                    stampList.add(stampInfo);
+                }
+            }
+        }
+        return stampList;
+    }
+
+    /**
      * AbstractAction which sends Stamps to a Chart
      */
     private abstract class SendStampBase extends AbstractAction {
@@ -174,30 +241,6 @@ public class UserStampBox extends AbstractStampBox {
             String patient = chart.getKarte().getPatient().getFullName();
             return String.format("%s : %s", patient, id);
         }
-        /**
-         * 選択されたスタンプをリストにする
-         * @return
-         */
-        public List<ModuleInfoBean> getStampList(StampTreeNode selected) {
-
-            List<ModuleInfoBean> stampList = new ArrayList<>();
-
-            if (selected.isLeaf()) {
-                stampList.add(selected.getStampInfo());
-
-            } else {
-                // ノードの葉を列挙する
-                Enumeration e = selected.preorderEnumeration();
-                while (e.hasMoreElements()) {
-                    StampTreeNode node = (StampTreeNode) e.nextElement();
-                    if (node.isLeaf()) {
-                        ModuleInfoBean stampInfo = node.getStampInfo();
-                        stampList.add(stampInfo);
-                    }
-                }
-            }
-            return stampList;
-        }
     }
 
     /**
@@ -215,6 +258,7 @@ public class UserStampBox extends AbstractStampBox {
         public void actionPerformed(ActionEvent ev) {
             StampTreeNode selected = tree.getSelectedNode();
             if (selected == null) { return; }
+            
             List<ModuleInfoBean> stampList = getStampList(selected);
             doc.importStampList(stampList, 0);
         }
@@ -237,6 +281,7 @@ public class UserStampBox extends AbstractStampBox {
         public void actionPerformed(ActionEvent ev) {
             StampTreeNode selected = tree.getSelectedNode();
             if (selected == null) { return; }
+
             List<ModuleInfoBean> stampList = getStampList(selected);
             // caret を最後に送ってから import する
             JTextPane textPane = pane.getTextPane();
