@@ -6,8 +6,6 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.TooManyListenersException;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import open.dolphin.client.*;
 import open.dolphin.helper.ActionManager;
 import open.dolphin.helper.ActionManager.Action;
@@ -25,7 +23,7 @@ public class DiagnosisInspector {
     public static final String NAME = "diagnosisInspector";
 
     /** 呼び元の ChartImpl */
-    private ChartImpl context;
+    private final ChartImpl context;
     /** PatientInspector に返すパネル */
     private JPanel diagPanel;
     /** 病名を保持するリスト */
@@ -34,12 +32,15 @@ public class DiagnosisInspector {
     private DefaultListModel listModel;
     /** DiagnosisDocument */
     private DiagnosisDocument doc;
+    /** ListSelectionLisner 循環呼び出し lock */
+    private boolean locked = false;
 
     private static final String SUSPECT = " 疑い";
-    private Logger logger;
+    private final Logger logger;
 
     /**
      * DiagnosisInspectorオブジェクトを生成する。
+     * @param context
      */
     public DiagnosisInspector(ChartImpl context) {
 
@@ -140,26 +141,6 @@ public class DiagnosisInspector {
                     }
                 }
             });
-
-            // DiagnosisInspector の list と DiagnosisDocument の table の選択範囲を一致させる
-            diagList.addListSelectionListener(new ListSelectionListener(){
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-                    DiagnosisDocumentTable table = doc.getDiagnosisTable();
-                    DiagnosisDocumentTableModel model = (DiagnosisDocumentTableModel) table.getModel();
-                    ListSelectionModel selectionModel = table.getSelectionModel();
-                    selectionModel.clearSelection();
-
-                    for(Object o : diagList.getSelectedValuesList()) { // java 7
-                        for(int i=0; i<model.getObjectCount(); i++) {
-                            if (model.getObject(i).equals(o)) {
-                                int row = table.convertRowIndexToView(i);
-                                selectionModel.addSelectionInterval(row,row);
-                            }
-                        }
-                    }
-                }
-            });
         }
 
         // undo/redo のショートカットキー登録
@@ -203,6 +184,12 @@ public class DiagnosisInspector {
         func = "duplicate";
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.META_DOWN_MASK), func);
         am.put(func, map.get(func));
+        func = "suspected";
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), func);
+        am.put(func, map.get(func));
+        func = "mainDiag";
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.SHIFT_DOWN_MASK), func);
+        am.put(func, map.get(func));
 
         // GUI 形成
         diagPanel = new DropPanel(new BorderLayout());
@@ -217,7 +204,47 @@ public class DiagnosisInspector {
         Thread t = new Thread(){
             @Override
             public void run() {
+                // ここで初めて DiagnosisDocument の実体が現れる
                 doc = context.getDiagnosisDocument();
+
+                // DiagnosisInspector の list と DiagnosisDocument の table の選択範囲を一致させる
+                DiagnosisDocumentTable table = doc.getDiagnosisTable();
+                DiagnosisDocumentTableModel model = (DiagnosisDocumentTableModel) table.getModel();
+                ListSelectionModel selectionModel = table.getSelectionModel();
+
+                diagList.addListSelectionListener(e -> {
+                    if (locked) { return; }
+                    locked = true;
+
+                    selectionModel.clearSelection();
+
+                    diagList.getSelectedValuesList().forEach(o -> {
+                        for(int i=0; i<model.getObjectCount(); i++) {
+                            if (model.getObject(i).equals(o)) {
+                                int row = table.convertRowIndexToView(i);
+                                selectionModel.addSelectionInterval(row,row);
+                            }
+                        }
+                    });
+                    locked = false;
+                });
+                selectionModel.addListSelectionListener(e -> {
+                    if (locked) { return; }
+                    locked = true;
+
+                    diagList.clearSelection();
+
+                    int[] rows = table.getSelectedRows();
+                    for (int view : rows) {
+                        int row = table.convertRowIndexToModel(view);
+                        for (int i=0; i<diagList.getModel().getSize(); i++) {
+                            if (diagList.getModel().getElementAt(i).equals(model.getObject(row))) {
+                                diagList.addSelectionInterval(i, i);
+                            }
+                        }
+                    }
+                    locked = false;
+                });
             }
         };
         t.start();
@@ -231,9 +258,13 @@ public class DiagnosisInspector {
         return diagPanel;
     }
 
+    public JList getList() {
+        return diagList;
+    }
+
     /**
      * DiagnosisDocument で，diagList を focasable にしてもらう
-     * @return
+     * @param b
      */
     public void setFocasable(boolean b) {
         diagList.setFocusable(b);
@@ -241,19 +272,20 @@ public class DiagnosisInspector {
 
     /**
      * データのアップデート
+     * @param model
      */
     public void update(DiagnosisDocumentTableModel model) {
         // model から，endDate の有無でリストを分ける
         ArrayList active = new ArrayList();
         ArrayList ended = new ArrayList();
 
-        for (Object o : model.getObjectList()) {
+        model.getObjectList().forEach(o -> {
             RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel)o;
             if (rd.getEndDate() == null) active.add(o);
             else ended.add(o);
-        }
+        });
         // 選択を保存　hashCode を保存しておく
-        ArrayList<Integer> selected = new ArrayList<Integer>();
+        ArrayList<Integer> selected = new ArrayList<>();
         for (int r : diagList.getSelectedIndices()) {
             selected.add(System.identityHashCode(listModel.get(r)));
         }
@@ -263,13 +295,13 @@ public class DiagnosisInspector {
         for (int i=0; i < ended.size(); i++) listModel.addElement(ended.get(i));
 
         // 選択を復元　hashCode で同じオブジェクトを判定
-        for (int h : selected) {
+        selected.forEach(h -> {
             for(int i=0; i<listModel.getSize(); i++) {
                 if (h == System.identityHashCode(listModel.get(i))) {
                     diagList.addSelectionInterval(i, i);
                 }
             }
-        }
+        });
     }
 
     private class DiagnosisListCellRenderer extends DefaultListCellRenderer {
@@ -290,10 +322,9 @@ public class DiagnosisInspector {
                 diagName += SUSPECT;
             }
 
-            boolean deleted = (rd != null && DiagnosisDocument.DELETED_RECORD.equals(rd.getStatus())) ? true : false;
-            boolean ended = (rd != null && rd.getEndDate() != null) ? true : false;
-            boolean ikou = (rd != null && DiagnosisDocument.IKOU_BYOMEI_RECORD.equals(rd.getStatus())) ? true : false;
-
+            boolean deleted = DiagnosisDocument.DELETED_RECORD.equals(rd.getStatus());
+            boolean ended = rd.getEndDate() != null;
+            boolean ikou = DiagnosisDocument.IKOU_BYOMEI_RECORD.equals(rd.getStatus());
 
             if (isSelected) {
                 // foreground
@@ -303,8 +334,11 @@ public class DiagnosisInspector {
                     if ((rgb & 0x00ffffff) > adjust) rgb -= adjust;
                     if ((rgb & 0x00ffffff) < adjust) rgb += adjust;
                     setForeground(new Color(rgb));
+                } else if (ikou) {
+                    setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR);
+                } else {
+                    setForeground(list.getSelectionForeground());
                 }
-                else setForeground(list.getSelectionForeground());
                 // background
                 setBackground(list.getSelectionBackground());
             } else {
@@ -444,5 +478,13 @@ public class DiagnosisInspector {
     @Action
     public void dropPrepos(){
         doc.getDiagnosisDocumentPopup().dropPreposition();
+    }
+    @Action
+    public void suspected() {
+        doc.getDiagnosisDocumentPopup().doClickCategoryPopup("疑い病名");
+    }
+    @Action
+    public void mainDiag() {
+        doc.getDiagnosisDocumentPopup().doClickCategoryPopup("主病名");
     }
 }

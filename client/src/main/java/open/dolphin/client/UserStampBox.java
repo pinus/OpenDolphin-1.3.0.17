@@ -1,6 +1,9 @@
 package open.dolphin.client;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -10,10 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JList;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextPane;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
+import open.dolphin.inspector.DiagnosisInspector;
 import open.dolphin.util.StampTreeUtils;
 
 /**
@@ -90,7 +95,18 @@ public class UserStampBox extends AbstractStampBox {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     if (e.isPopupTrigger()) { showPopup(e); }
-                    else if (e.getClickCount() == 2) { directInput(e); }
+
+                    else if (e.getClickCount() == 2) {
+                        // ダブルクリックしてすぐドラッグした場合はドラッグを優先する
+                        // 200ms 後にマウスが動いていない場合のみダブルクリックと判定する
+                        Point p1 = stampTree.getMousePosition();
+                        try{ Thread.sleep(200); } catch (Exception ex) {}
+                        Point p2 = stampTree.getMousePosition();
+
+                        if (p1 != null && p2 != null && p1.x == p2.x && p1.y == p2.y) {
+                            directInput(e);
+                        }
+                    }
                 }
 
                 /**
@@ -104,9 +120,7 @@ public class UserStampBox extends AbstractStampBox {
                         List<ChartImpl> allCharts = ChartImpl.getAllChart();
                         if (! allCharts.isEmpty()) {
                             popup.insert(new JPopupMenu.Separator(), 0);
-                            allCharts.forEach(chart -> {
-                                popup.insert(new SendDiagnosisAction(chart, stampTree), 0);
-                            });
+                            allCharts.forEach(chart -> popup.insert(new SendDiagnosisAction(chart, stampTree), 0));
                         }
 
                     } else {
@@ -114,9 +128,7 @@ public class UserStampBox extends AbstractStampBox {
                         List<Chart> allFrames = EditorFrame.getAllEditorFrames();
                         if (! allFrames.isEmpty()) {
                             popup.insert(new JPopupMenu.Separator(), 0);
-                            allFrames.forEach(chart -> {
-                                popup.insert(new SendStampAction(chart, stampTree), 0);
-                            });
+                            allFrames.forEach(chart -> popup.insert(new SendStampAction(chart, stampTree), 0));
                         }
                     }
                     popup.show(stampTree, e.getX(), e.getY());
@@ -158,6 +170,26 @@ public class UserStampBox extends AbstractStampBox {
                             }
                         } else if (! allFrames.isEmpty()) {
                             showPopup(e);
+                        }
+                    }
+                }
+            });
+
+            // キーで modified diagnosis を送る
+            stampTree.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
+                        List<ChartImpl> allCharts = ChartImpl.getAllChart();
+                        if (allCharts.size() == 1) {
+                            ChartImpl chart = allCharts.get(0);
+                            DiagnosisInspector inspector = chart.getDiagnosisInspector();
+                            JList diagList = inspector.getList();
+                            int selection = diagList.getSelectedIndex();
+                            if (selection != -1) {
+                                diagList.dispatchEvent(e);
+                                e.consume();
+                            }
                         }
                     }
                 }
@@ -258,7 +290,7 @@ public class UserStampBox extends AbstractStampBox {
         public void actionPerformed(ActionEvent ev) {
             StampTreeNode selected = tree.getSelectedNode();
             if (selected == null) { return; }
-            
+
             List<ModuleInfoBean> stampList = getStampList(selected);
             doc.importStampList(stampList, 0);
         }

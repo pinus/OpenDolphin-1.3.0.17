@@ -97,11 +97,11 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         else leftPressed(e);
     }
     // windows では released で popupTrigger が発生するらしい
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        targetColumn = diagTable.columnAtPoint(e.getPoint());
-        if (e.isPopupTrigger()) rightPressed(e);
-    }
+    //@Override
+    //public void mouseReleased(MouseEvent e) {
+    //    targetColumn = diagTable.columnAtPoint(e.getPoint());
+    //    if (e.isPopupTrigger()) rightPressed(e);
+    //}
 
     /**
      * 右クリックの処理
@@ -427,6 +427,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     /**
      * 外部からポップアップの action を使うためのメソッド群
+     * @param s
      */
     public void doClickDiagPopup(String s) {
         doClickPopup(diagPopup, s);
