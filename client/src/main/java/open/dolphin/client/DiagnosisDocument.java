@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -245,23 +246,20 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // tableModel 用設定
         tableModel.setLastVisit(lastVisitYmd);
-        tableModel.getBoundSupport().addPropertyChangeListener(new PropertyChangeListener(){
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                String prop = evt.getPropertyName();
-                // update があった場合
-                if (ADD_UPDATED_LIST.equals(prop)) {
-                    // tableModel から呼ばれた場合は，update の場合と delete の場合がある
-                    RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) evt.getNewValue();
+        tableModel.getBoundSupport().addPropertyChangeListener(evt -> {
+            String prop = evt.getPropertyName();
+            // update があった場合
+            if (ADD_UPDATED_LIST.equals(prop)) {
+                // tableModel から呼ばれた場合は，update の場合と delete の場合がある
+                RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) evt.getNewValue();
 
-                    if (DELETED_RECORD.equals(rd.getStatus())) addDeletedList(rd);
-                    else addUpdatedList(rd);
+                if (DELETED_RECORD.equals(rd.getStatus())) addDeletedList(rd);
+                else addUpdatedList(rd);
 
                 // insert された場合 → 転帰を空白にして新規病名として使い回す場合は挿入として扱う
-                } else if (ADD_ADDED_LIST.equals(prop)) {
-                    RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) evt.getNewValue();
-                    insertDiagnosis(rd);
-                }
+            } else if (ADD_ADDED_LIST.equals(prop)) {
+                RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) evt.getNewValue();
+                insertDiagnosis(rd);
             }
         });
         // PatientInspector に新しく作った DiagnosisInspector と連絡
@@ -366,13 +364,10 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         diagTable.setRowSorter(sorter);
 
         // 日付でソートしたとき，空白は一番最近のものとしてソート
-        Comparator<String> dateComparator = new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                if (o1 == null || o1.equals("")) o1 = "9999-99-99";
-                if (o2 == null || o2.equals("")) o2 = "9999-99-99";
-                return o2.compareTo(o1);
-            }
+        Comparator<String> dateComparator = (o1, o2) -> {
+            if (o1 == null || o1.equals("")) { o1 = "9999-99-99"; }
+            if (o2 == null || o2.equals("")) { o2 = "9999-99-99"; }
+            return o2.compareTo(o1);
         };
         sorter.setComparator(START_DATE_COL, dateComparator);
         sorter.setComparator(END_DATE_COL, dateComparator);
@@ -578,13 +573,10 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         getContext().enabledAction(GUIConst.ACTION_SAVE, true);
         getContext().enabledAction(GUIConst.ACTION_SEND_CLAIM, true);
         // フォーカスを取る
-        EventQueue.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                diagTable.requestFocusInWindow();
-                // enter のたびに update, delete, undo, redo ボタン制御
-                controlButtons();
-            }
+        EventQueue.invokeLater(() -> {
+            diagTable.requestFocusInWindow();
+            // enter のたびに update, delete, undo, redo ボタン制御
+            controlButtons();
         });
     }
 
@@ -640,10 +632,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // initialDiagnosis の更新
         initialDiagnosis.clear();
-        List list = tableModel.getObjectList();
-        for (RegisteredDiagnosisModel rd : (List<RegisteredDiagnosisModel>) list) {
-            initialDiagnosis.add(new DiagnosisLiteModel(rd));
-        }
+        tableModel.getObjectList().forEach(rd ->
+                initialDiagnosis.add(new DiagnosisLiteModel((RegisteredDiagnosisModel)rd)));
         controlButtons();
     }
 
@@ -709,11 +699,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         // update button
         // initDiagnosis に戻ったものがあれば updatedDiagnosis を削除
         List<RegisteredDiagnosisModel> resumed = new ArrayList<>();
-        for (RegisteredDiagnosisModel rd : updatedDiagnosis) {
-            for (DiagnosisLiteModel init : initialDiagnosis) {
-                if (init.equals(rd)) resumed.add(rd);
-            }
-        }
+        updatedDiagnosis.forEach(rd ->
+            initialDiagnosis.stream().filter(Predicate.isEqual(rd)).forEach(dlm -> resumed.add(rd)));
         updatedDiagnosis.removeAll(resumed);
 
         boolean newDirty = !addedDiagnosis.isEmpty() || !updatedDiagnosis.isEmpty() || !deletedDiagnosis.isEmpty();
@@ -824,6 +811,13 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 }
                 // 病名を drop した場合，ここに入ってくる
                 setDiagnosisCount();
+
+                // 挿入した row を選択する
+                // setDiagnosisCount で DiagnosisInspector の update が行われるので，
+                // その後に選択しないと DiagnosisInspector に伝えられない
+                int row = (ascend)? diagTable.getRowCount()-1 : 0;
+                row = diagTable.convertRowIndexToView(row);
+                diagTable.getSelectionModel().setSelectionInterval(row, row);
             }
         };
 
@@ -885,11 +879,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         if (ascend) tableModel.addRow(module);
         else tableModel.insertRow(0, module);
 
-        // 挿入した row を選択する
-        int row = (ascend)? diagTable.getRowCount()-1 : 0;
-        row = diagTable.convertRowIndexToView(row);
-        diagTable.getSelectionModel().setSelectionInterval(row, row);
-
         addAddedList(module);
     }
 
@@ -921,10 +910,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     @Override
     public void propertyChange(PropertyChangeEvent e) {
-        // フォーカス横取防止対策
-        diagTable.setFocusable(true);
-        diagnosisInspector.setFocasable(true);
-
         getContext().enabledAction(GUIConst.ACTION_CLOSE, true);
 
         String prop = e.getPropertyName();
@@ -966,6 +951,10 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             diagTable.getSelectionModel().setSelectionInterval(row, row);
         }
         setDiagnosisCount();
+
+        // フォーカス横取防止対策解除
+        diagTable.setFocusable(true);
+        diagnosisInspector.setFocasable(true);
     }
 
     private boolean isValidOutcome(RegisteredDiagnosisModel rd) {
@@ -1245,13 +1234,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 // 病名コードを切り出して（接頭語，接尾語は捨てる）コードのリストを作る
                 // 重複は不要なので，HashSet を使う
                 HashSet<String> codeSet = new HashSet<>();
-                for (RegisteredDiagnosisModel rd : rdList) {
-                    String[] codes = rd.getDiagnosisCode().split("\\.");
-                    // codes のうち，７桁のものが srycd コード
-                    for (String code : codes) {
-                        if (code.length() == 7) codeSet.add(code);
-                    }
-                }
+                // codes のうち，７桁のものが srycd コード → これを codeSet にためる
+                rdList.stream().map(rd -> rd.getDiagnosisCode().split("\\.")).forEach(codes ->
+                   Arrays.stream(codes).filter(code -> code.length() == 7).forEach(code -> codeSet.add(code)));
 
                 //dao 取得
                 OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
@@ -1263,7 +1248,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                     if (! entry.getEndDate().equals("99999999")) {
                         // 対応する rd の status に移行病名をセット
                         for (RegisteredDiagnosisModel rd : rdList) {
-                            if (rd.getDiagnosisCode().equals(entry.getCode())) {
+                            if (rd.getDiagnosisCode().contains(entry.getCode())) {
                                 rd.setStatus(IKOU_BYOMEI_RECORD);
                                 found = true;
                             }
@@ -1404,9 +1389,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 logger.debug("ddl.removeDiagnosis");
                 // rd のリストから，id のリストを作成（id=0 はローカルだけなので無視）
                 List<Long> list = new ArrayList<>();
-                for(RegisteredDiagnosisModel rd : deletedDiagnosis) {
-                    if (rd.getId() != 0) list.add(rd.getId());
-                }
+                deletedDiagnosis.stream().filter(rd -> rd.getId() != 0).forEach(rd -> list.add(rd.getId()));
+
                 if (list.size() > 0) {
                     ddl.removeDiagnosis(list);
                 }
