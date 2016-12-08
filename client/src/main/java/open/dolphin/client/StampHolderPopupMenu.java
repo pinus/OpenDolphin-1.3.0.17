@@ -22,7 +22,7 @@ import open.dolphin.util.DailyDoseStringTool;
 public class StampHolderPopupMenu extends MyJPopupMenu {
     private static final long serialVersionUID = 1L;
 
-    private StampHolder ctx;
+    private final StampHolder ctx;
 
     /** メニューに載せる処方日数のリスト */
     private static final int[] BUNDLE_NUMS = {3,4,5,7,10,14,21,28,30,56,60};
@@ -87,7 +87,6 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
 
     /**
      * 内服薬の変更 menu を作る
-     * @return
      */
     public void addBundleChangeMenu() {
 
@@ -144,6 +143,14 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
         for (int n : DOSES) {
             add(new DoseChangeAction(n));
         }
+
+        addSeparator();
+
+        // 量調整メニュー
+        add(new DoseChangeAction2("2"));
+        add(new DoseChangeAction2("3"));
+        add(new DoseChangeAction2("1/2"));
+        add(new DoseChangeAction2("1/3"));
         addSeparator();
 
         // 外用回数変更メニュー
@@ -154,6 +161,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
 
     /**
      * StampHolder に通知
+     * @param stamp
      */
     public void propertyChanged(ModuleModel stamp) {
         firePropertyChange(StampHolder.STAMP_MODIFIED, null, stamp);
@@ -240,7 +248,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     private ClaimItem[] createClaimItemInArray() {
         ClaimItem[] src = ((BundleMed)ctx.getStamp().getModel()).getClaimItem();
 
-        ArrayList<ClaimItem> dist = new ArrayList<ClaimItem>();
+        ArrayList<ClaimItem> dist = new ArrayList<>();
         for(ClaimItem c : src) dist.add(createClaimItem(c));
 
         return dist.toArray(new ClaimItem[dist.size()]);
@@ -262,7 +270,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
      */
     private class BundleChangeAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
-        private int value;
+        private final int value;
 
         public BundleChangeAction(int value) {
             this.value = value;
@@ -293,7 +301,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
      */
     private class AdminChangeAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
-        private Admin admin;
+        private final Admin admin;
 
         public AdminChangeAction(Admin admin) {
             this.admin = admin;
@@ -317,7 +325,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
             int distTimes = getTimes(admin.code);
             double factor = (srcTimes==0)? 1 : (double)distTimes/srcTimes;
 
-            ArrayList<ClaimItem> list = new ArrayList<ClaimItem>();
+            ArrayList<ClaimItem> list = new ArrayList<>();
             // ClaimItem をチェックしながらコピー
             for(ClaimItem src : srcBundle.getClaimItem()) {
                 ClaimItem dist = createClaimItem(src);
@@ -341,7 +349,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
      */
     private class AdminChangeAction2 extends AbstractAction {
         private static final long serialVersionUID = 1L;
-        private Admin2 admin;
+        private final Admin2 admin;
 
         public AdminChangeAction2(Admin2 admin) {
             this.admin = admin;
@@ -370,7 +378,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
      */
     private class DoseChangeAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
-        private int value;
+        private final int value;
 
         public DoseChangeAction(int value) {
             this.value = value;
@@ -385,7 +393,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
             // 新たなスタンプ作成
             ModuleModel stamp = createModuleModel(ctx.getStamp());
             BundleMed bundle = (BundleMed) stamp.getModel();
-            ArrayList<ClaimItem> list = new ArrayList<ClaimItem>();
+            ArrayList<ClaimItem> list = new ArrayList<>();
 
             // ClaimItem をチェックしながらコピー
             boolean changed = false;
@@ -442,7 +450,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
             BundleMed bundle = (BundleMed) stamp.getModel();
 
             // あらたな ClaimItem を作る
-            ArrayList<ClaimItem> list = new ArrayList<ClaimItem>();
+            ArrayList<ClaimItem> list = new ArrayList<>();
 
             // 部位 ClaimItem 以外をコピー  001000607,608,001,002 はマスター設定の問題で別扱い
             for (ClaimItem src : srcBundle.getClaimItem()) {
@@ -473,7 +481,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
      */
     private class DoseChangeAction2 extends AbstractAction {
         private static final long serialVersionUID = 1L;
-        private double value;
+        private final double value;
 
         public DoseChangeAction2(String str) {
             value = stringToDouble(str);
@@ -488,7 +496,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
             BundleMed bundle = (BundleMed) stamp.getModel();
 
             // あらたな ClaimItem を作る
-            ArrayList<ClaimItem> list = new ArrayList<ClaimItem>();
+            ArrayList<ClaimItem> list = new ArrayList<>();
 
             for (ClaimItem src : srcBundle.getClaimItem()) {
                 ClaimItem dist = createClaimItem(src);
@@ -496,7 +504,13 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
                 // 薬剤コードがあれば，その量を調整
                 if (src.getCode().startsWith("6")) {
                     double num = Double.valueOf(src.getNumber());
-                    String s = DailyDoseStringTool.doubleToString(num*value, src.getUnit());
+                    String s;
+                    // 外用剤の場合，最後に ".0" を付けないためのトリック
+                    if (ClaimConst.RECEIPT_CODE_GAIYO.equals(bundle.getClassCode())) {
+                        s = DailyDoseStringTool.doubleToString(num*value, "");
+                    } else {
+                        s = DailyDoseStringTool.doubleToString(num*value, src.getUnit());
+                    }
                     dist.setNumber(String.valueOf(s));
                 }
 
@@ -563,7 +577,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
             ModuleModel stamp = createModuleModel(ctx.getStamp());
             BundleMed bundle = (BundleMed) stamp.getModel();
 
-            ArrayList<ClaimItem> list = new ArrayList<ClaimItem>();
+            ArrayList<ClaimItem> list = new ArrayList<>();
 
             // 既存のコメント以外はそのまま登録，追加登録の場合は既存のコメントも登録
             for(ClaimItem src : srcBundle.getClaimItem()) {
@@ -621,7 +635,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
             ModuleModel stamp = createModuleModel(ctx.getStamp());
             BundleMed bundle = (BundleMed) stamp.getModel();
 
-            ArrayList<ClaimItem> list = new ArrayList<ClaimItem>();
+            ArrayList<ClaimItem> list = new ArrayList<>();
 
             // 薬を検索して，最初に見つかった薬の後に一般名処方を入れる
             boolean found = false;

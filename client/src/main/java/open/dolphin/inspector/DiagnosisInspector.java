@@ -190,6 +190,9 @@ public class DiagnosisInspector {
         func = "mainDiag";
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.SHIFT_DOWN_MASK), func);
         am.put(func, map.get(func));
+        func = "infection";
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, 0), func);
+        am.put(func, map.get(func));
 
         // GUI 形成
         diagPanel = new DropPanel(new BorderLayout());
@@ -486,5 +489,9 @@ public class DiagnosisInspector {
     @Action
     public void mainDiag() {
         doc.getDiagnosisDocumentPopup().doClickCategoryPopup("主病名");
+    }
+    @Action
+    public void infection() {
+        doc.getDiagnosisDocumentPopup().doClickDiagPopup("の二次感染");
     }
 }
