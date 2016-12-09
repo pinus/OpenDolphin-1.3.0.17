@@ -41,7 +41,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
     private ModuleModel stamp;
     private StampRenderingHints hints;
-    private KartePane kartePane;
+    private final KartePane kartePane;
     private Position start;
     private Position end;
     private boolean selected;
@@ -74,37 +74,8 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
     }
 
     /**
-     * TextPane の幅に応じてリアルタイムにスタンプ幅を変える
-     * @param g
-     */
-    //@Override
-    //public void paintComponent(Graphics g) {
-    //    if (stamp != null) {
-    //        int w = getStampWidth();
-    //        if (w != hints.getWidth()) {
-    //            hints.setWidth(w);
-    //            setMyText();
-    //        }
-    //    }
-    //    super.paintComponent(g);
-    //}
-
-    /**
-     * TextPane の幅に応じてリアルタイムにスタンプ幅を計算
-     * @return
-     */
-    //private int getStampWidth() {
-    //    JTextPane textPane = kartePane.getTextPane();
-    //    // width は 0 か，320以上の数になる
-    //    int width = (textPane == null)? 0 : textPane.getWidth();
-    //    if (width < 320) width = 320;
-    //    // これを 20 とかにすると textPane がどんどん広がってしまう
-    //    width -= 30;
-    //    return width;
-    //}
-
-    /**
      * Focusされた場合のメニュー制御とボーダーを表示する。
+     * @param map
      */
     @Override
     public void enter(ActionMap map) {
@@ -126,6 +97,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
     /**
      * Focusがはずれた場合のメニュー制御とボーダーの非表示を行う。
+     * @param map
      */
     @Override
     public void exit(ActionMap map) {
@@ -136,6 +108,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
     /**
      * Popupメニューを表示する。
+     * @param e
      */
     @Override
     public void maybeShowPopup(MouseEvent e) {
@@ -164,6 +137,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
     /**
      * このスタンプホルダのKartePaneを返す。
+     * @return
      */
     @Override
     public KartePane getKartePane() {
@@ -172,6 +146,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
     /**
      * スタンプホルダのコンテントタイプを返す。
+     * @return
      */
     @Override
     public int getContentType() {
@@ -245,12 +220,24 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
             //kartePane.getTextPane().setEditable(false); // こうすると，なぜか focus が次の component にうつってしまう
             this.setEditable(false);
         } else {
-            Toolkit.getDefaultToolkit().beep();
+            // ダブルクリックで EditorFrame に入力
+            java.util.List<Chart> allFrames = EditorFrame.getAllEditorFrames();
+            if (! allFrames.isEmpty()) {
+                Chart frame = allFrames.get(0);
+                KartePane pane = ((EditorFrame) frame).getEditor().getPPane();
+                // caret を最後に送ってから import する
+                JTextPane textPane = pane.getTextPane();
+                KarteStyledDocument doc = pane.getDocument();
+                textPane.setCaretPosition(doc.getLength());
+
+                pane.flowStamp(stamp);
+            }
         }
     }
 
     /**
      * エディタで編集した値を受け取り内容を表示する。
+     * @param e
      */
     @Override
     public void propertyChange(PropertyChangeEvent e) {
@@ -290,6 +277,8 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
     /**
      * TextPane内での開始と終了ポジションを保存する。
+     * @param start
+     * @param end
      */
     @Override
     public void setEntry(Position start, Position end) {
@@ -299,6 +288,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
     /**
      * 開始ポジションを返す。
+     * @return
      */
     @Override
     public int getStartPos() {
@@ -307,6 +297,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
     /**
      * 終了ポジションを返す。
+     * @return
      */
     @Override
     public int getEndPos() {
@@ -334,12 +325,13 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
             // Merge する
             StringWriter sw = new StringWriter();
-            BufferedWriter bw = new BufferedWriter(sw);
-            InputStream instream = ClientContext.getTemplateAsStream(templateFile);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
-            Velocity.evaluate(context, bw, "stmpHolder", reader);
-            bw.flush();
-            bw.close();
+            BufferedReader reader;
+            try (BufferedWriter bw = new BufferedWriter(sw)) {
+                InputStream instream = ClientContext.getTemplateAsStream(templateFile);
+                reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
+                Velocity.evaluate(context, bw, "stmpHolder", reader);
+                bw.flush();
+            }
             reader.close();
 
             // 全角数字とスペースを直す
@@ -363,13 +355,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
             // カルテペインへ展開された時広がるのを防ぐ
             this.setMaximumSize(this.getPreferredSize());
 
-        } catch (IOException ex) {
-            System.out.println("StampHolder.java: " + ex);
-        } catch (ParseErrorException ex) {
-            System.out.println("StampHolder.java: " + ex);
-        } catch (MethodInvocationException ex) {
-            System.out.println("StampHolder.java: " + ex);
-        } catch (ResourceNotFoundException ex) {
+        } catch (IOException | ParseErrorException | MethodInvocationException | ResourceNotFoundException ex) {
             System.out.println("StampHolder.java: " + ex);
         }
     }
@@ -407,12 +393,13 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
 
                         String templateFile = "open.dolphin.infomodel.BundleMed-text.vm";
                         StringWriter sw = new StringWriter();
-                        BufferedWriter bw = new BufferedWriter(sw);
-                        InputStream instream = ClientContext.getTemplateAsStream(templateFile);
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
-                        Velocity.evaluate(context, bw, "stmpHolder", reader);
-                        bw.flush();
-                        bw.close();
+                        BufferedReader reader;
+                        try (BufferedWriter bw = new BufferedWriter(sw)) {
+                            InputStream instream = ClientContext.getTemplateAsStream(templateFile);
+                            reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
+                            Velocity.evaluate(context, bw, "stmpHolder", reader);
+                            bw.flush();
+                        }
                         reader.close();
 
                         // 全角数字とスペースを直す
@@ -425,11 +412,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
                         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                         clipboard.setContents(new StringSelection(text), null);
 
-                    } catch (ParseErrorException ex) {
-                        System.out.println("StampHolder.java: " + ex);
-                    } catch (MethodInvocationException ex) {
-                        System.out.println("StampHolder.java: " + ex);
-                    } catch (ResourceNotFoundException ex) {
+                    } catch (ParseErrorException | MethodInvocationException | ResourceNotFoundException ex) {
                         System.out.println("StampHolder.java: " + ex);
                     } catch (UnsupportedEncodingException ex) {
                         System.out.println("StampHolder.java: " + ex);

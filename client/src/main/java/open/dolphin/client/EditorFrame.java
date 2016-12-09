@@ -5,7 +5,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     public enum EditorMode {BROWSER, EDITOR};
 
     // 全インスタンスを保持するリスト
-    private static List<Chart> allEditorFrames = new ArrayList<Chart>(3);
+    private static final List<Chart> allEditorFrames = new ArrayList<>(3);
 
     // このフレームの実のコンテキストチャート
     private Chart realChart;
@@ -73,12 +72,12 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     private PropertyChangeListener editorListener;
 
     // Preferences と property name
-    private Preferences prefs;
+    private final Preferences prefs;
     private static final String PN_FRAME = "editorFrame.frame";
 
     //private JPanel content;
     // Logger
-    private Logger logger;
+    private final Logger logger;
 
     // masuda
     public KarteEditor getEditor(){
@@ -150,11 +149,8 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * EditorFrame オブジェクトを生成する。
      */
     public EditorFrame() {
-//pns^
         logger = ClientContext.getBootLogger();
         prefs = Preferences.userNodeForPackage(this.getClass());
-//pns$
-        allEditorFrames.add(this);
     }
 
     /**
@@ -261,7 +257,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * ReadOnly 属性を設定する。
-     * @param readOnly の時 true
+     * @param b
      */
     @Override
     public void setReadOnly(boolean b) {
@@ -306,6 +302,8 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * Menu アクションを制御する。
+     * @param name
+     * @param enabled
      */
     @Override
     public void enabledAction(String name, boolean enabled) {
@@ -430,35 +428,40 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             editor.setContext(EditorFrame.this);
             editor.initialize();
             editor.start();
-//pns^      scroller = new JScrollPane(editor.getUI());
+            // scroller = new JScrollPane(editor.getUI());
             scroller = new MyJScrollPane(editor.getUI());
             scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-//pns$
             mediator.enabledAction(GUIConst.ACTION_NEW_KARTE, false);
             mediator.enabledAction(GUIConst.ACTION_NEW_DOCUMENT, false);
 
-//pns       KarteEditor で save が完了したら通知される
-            editorListener = new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    stop();
-                }
-            };
+            // KarteEditor で save が完了したら通知される
+            editorListener = e -> stop();
             editor.getBoundSupport().addPropertyChangeListener(KarteEditor.SAVE_DONE, editorListener);
         }
-        //content.add(scroller, BorderLayout.CENTER);
         mainPanel.add(scroller, BorderLayout.CENTER);
 
-        //frame.getContentPane().setLayout(new BorderLayout(0, 7));
-        //frame.getContentPane().add(content, BorderLayout.CENTER);
-//pns   frame.getContentPane().add((JPanel) statusPanel, BorderLayout.SOUTH);
-//pns   resMap.injectComponents(frame);
-
-
+        //
+        // active window がリストの最初に来るように制御する
+        //
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 processWindowClosing();
+            }
+            @Override
+            public void windowOpened(WindowEvent e) {
+                allEditorFrames.add(0, EditorFrame.this);
+            }
+            @Override
+            public void windowClosed(WindowEvent e) {
+                allEditorFrames.remove(EditorFrame.this);
+            }
+            @Override
+            public void windowActivated(WindowEvent e) {
+                // allEditorFrames の順番処理，新しいものをトップに置く
+                if (allEditorFrames.remove(EditorFrame.this)) {
+                    allEditorFrames.add(0, EditorFrame.this);
+                }
             }
         });
 
@@ -475,17 +478,13 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         frame.setBounds(bounds);
         windowSupport.getFrame().setVisible(true);
 
-        Runnable awt = new Runnable() {
-            @Override
-            public void run() {
-                if (view != null) {
-                    view.getUI().scrollRectToVisible(new Rectangle(0,0,view.getUI().getWidth(), 50));
-                } else if (editor != null) {
-                    editor.getUI().scrollRectToVisible(new Rectangle(0,0,editor.getUI().getWidth(), 50));
-                }
+        EventQueue.invokeLater(() -> {
+            if (view != null) {
+                view.getUI().scrollRectToVisible(new Rectangle(0,0,view.getUI().getWidth(), 50));
+            } else if (editor != null) {
+                editor.getUI().scrollRectToVisible(new Rectangle(0,0,editor.getUI().getWidth(), 50));
             }
-        };
-        EventQueue.invokeLater(awt);
+        });
     }
 
     /**
@@ -494,7 +493,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     @Override
     public void stop() {
         mediator.dispose();
-        allEditorFrames.remove(this);
         editor.getBoundSupport().removePropertyChangeListener(editorListener);
 
         Rectangle bounds = getFrame().getBounds();
@@ -502,7 +500,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
         getFrame().setVisible(false);
         getFrame().dispose();
-//pns
+
         realChart.getFrame().toFront();
     }
 
@@ -539,150 +537,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         }
     }
 
-    /**
-     * コンテンツを KarteView から KarteEditor に切り替える。
-     */
-/*    private void replaceView() {
-        if (editor != null) {
-            // Editor Frame の時、
-            // 新規カルテとドキュメントは不可とする
-            mediator.enabledAction(GUIConst.ACTION_NEW_KARTE, false);
-            mediator.enabledAction(GUIConst.ACTION_NEW_DOCUMENT, false);
-            mode = EditorMode.EDITOR;
-            content.remove(scroller);
-            scroller = new JScrollPane(editor.getUI());
-            content.add(scroller, BorderLayout.CENTER);
-            getFrame().validate();
-        }
-    }
-*/
-    /**
-     * 新規カルテを作成する。
-     */
-/*    public void newKarte() {
-//pns   EditorFrame から newKarte したときに呼ばれる
-        System.out.println("EditorFrame#newKarte()");
-        logger.debug("newKarte() in EditorFrame starts");
-
-        // 新規カルテ作成ダイアログを表示しパラメータを得る
-        String docType = view.getModel().getDocInfo().getDocType();
-
-        final ChartImpl chart = (ChartImpl) realChart;
-        String dept = chart.getPatientVisit().getDepartment();
-        String deptCode = chart.getPatientVisit().getDepartmentCode();
-        String insuranceUid = chart.getPatientVisit().getInsuranceUid();
-
-        NewKarteParams params = null;
-        Preferences prefs = Project.getPreferences();
-
-        if (prefs.getBoolean(Project.KARTE_SHOW_CONFIRM_AT_NEW, true)) {
-
-            params = chart.getNewKarteParams(docType,Chart.NewKarteOption.EDITOR_COPY_NEW, getFrame(), dept, deptCode, insuranceUid);
-
-        } else {
-            //
-            // 手動でパラメータを設定する
-            //
-            params = new NewKarteParams(Chart.NewKarteOption.EDITOR_COPY_NEW);
-            params.setDocType(docType);
-            params.setDepartment(dept);
-            params.setDepartmentCode(deptCode);
-
-            PVTHealthInsuranceModel[] ins = chart.getHealthInsurances();
-            params.setPVTHealthInsurance(ins[0]);
-
-            int cMode = prefs.getInt(Project.KARTE_CREATE_MODE, 0);
-            if (cMode == 0) {
-                params.setCreateMode(Chart.NewKarteMode.EMPTY_NEW);
-            } else if (cMode == 1) {
-                params.setCreateMode(Chart.NewKarteMode.APPLY_RP);
-            } else if (cMode == 2) {
-                params.setCreateMode(Chart.NewKarteMode.ALL_COPY);
-            }
-        }
-
-        if (params == null) {
-            return;
-        }
-
-        // 編集用のモデルを得る
-        DocumentModel editModel = null;
-
-        if (params.getCreateMode() == Chart.NewKarteMode.EMPTY_NEW) {
-            editModel = chart.getKarteModelToEdit(params);
-        } else {
-            editModel = chart.getKarteModelToEdit(view.getModel(), params);
-        }
-
-        final DocumentModel theModel = editModel;
-
-        Runnable r = new Runnable() {
-
-            public void run() {
-
-                editor = chart.createEditor();
-                editor.setModel(theModel);
-                editor.setEditable(true);
-                editor.setContext(EditorFrame.this);
-                editor.setMode(KarteEditor.DOUBLE_MODE);
-
-                Runnable awt = new Runnable() {
-                    public void run() {
-                        editor.initialize();
-                        editor.start();
-                        replaceView();
-                    }
-                };
-
-                EventQueue.invokeLater(awt);
-            }
-        };
-
-        Thread t = new Thread(r);
-        t.setPriority(Thread.NORM_PRIORITY);
-        t.start();
-    }
-*/
-    /**
-     * カルテを修正する。
-     */
-/*    public void modifyKarte() {
-//pns   EditorFrame から　modifyKarte したときに呼ばれる。
-        System.out.println("EditorFrame#modifyKarte()");
-        logger.debug("modifyKarte() in EditorFrame starts");
-
-        Runnable r = new Runnable() {
-
-            public void run() {
-
-                ChartImpl chart = (ChartImpl)realChart;
-                DocumentModel editModel = chart.getKarteModelToEdit(view.getModel());
-                editor = chart.createEditor();
-                editor.setModel(editModel);
-                editor.setEditable(true);
-                editor.setContext(EditorFrame.this);
-                editor.setModify(true);
-                String docType = editModel.getDocInfo().getDocType();
-                int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
-                editor.setMode(mode);
-
-                Runnable awt = new Runnable() {
-                    public void run() {
-                        editor.initialize();
-                        editor.start();
-                        replaceView();
-                    }
-                };
-
-                EventQueue.invokeLater(awt);
-            }
-        };
-
-        Thread t = new Thread(r);
-        t.setPriority(Thread.NORM_PRIORITY);
-        t.start();
-    }
-*/
     private PageFormat getPageFormat() {
         return realChart.getContext().getPageFormat();
     }
@@ -707,7 +561,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 break;
         }
     }
-//pns^
+
     /**
      * クローズする。
      * キャンセル，破棄の処理は editor でまとめてすることにした by pns

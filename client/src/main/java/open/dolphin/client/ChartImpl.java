@@ -486,6 +486,10 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
             @Override
             public void windowActivated(WindowEvent e) {
+                // allCharts の順番処理 → activate されたらトップに置く
+                if (allCharts.remove(ChartImpl.this)) {
+                    allCharts.add(0, ChartImpl.this);
+                }
 
                 // マウスの場所に応じてフォーカス処理を行う
                 Point p = frame.getMousePosition(true);
@@ -1493,7 +1497,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     public static void windowOpened(ChartImpl opened) {
 
         // インスタンスを保持するリストへ追加する
-        allCharts.add(opened);
+        allCharts.add(0, opened);
 
         PatientVisitModel model = opened.getPatientVisit();
         int oldState = model.getState();

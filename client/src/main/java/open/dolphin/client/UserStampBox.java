@@ -137,7 +137,7 @@ public class UserStampBox extends AbstractStampBox {
 
                 /**
                  * スタンプをダブルクリックでカルテに入力できるようにする
-                 * 入力先が１つの場合はダイレクトに入力，入力先が複数の時はポップアップを出す
+                 * 入力先が１つの場合はダイレクトに入力，入力先が複数の時は手前のカルテに送る
                  */
                 private void directInput(MouseEvent e) {
                     StampTreeNode selected = stampTree.getSelectedNode();
@@ -145,17 +145,15 @@ public class UserStampBox extends AbstractStampBox {
 
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
                         List<ChartImpl> allCharts = ChartImpl.getAllChart();
-                        if (allCharts.size() == 1) {
+                        if (! allCharts.isEmpty()) {
                             ChartImpl chart = allCharts.get(0);
                             DiagnosisDocument doc = chart.getDiagnosisDocument();
                             doc.importStampList(getStampList(selected), 0);
-                        } else if (! allCharts.isEmpty()) {
-                            showPopup(e);
                         }
 
                     } else {
                         List<Chart> allFrames = EditorFrame.getAllEditorFrames();
-                        if (allFrames.size() == 1) {
+                        if (! allFrames.isEmpty()) {
                             Chart frame = allFrames.get(0);
                             KartePane pane = ((EditorFrame) frame).getEditor().getPPane();
                             List<ModuleInfoBean> stampList = getStampList(selected);
@@ -169,8 +167,6 @@ public class UserStampBox extends AbstractStampBox {
                             } else {
                                 pane.stampInfoDropped(stampList);
                             }
-                        } else if (! allFrames.isEmpty()) {
-                            showPopup(e);
                         }
                     }
                 }
