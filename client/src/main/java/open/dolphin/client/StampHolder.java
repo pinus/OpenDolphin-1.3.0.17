@@ -230,7 +230,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
                 KarteStyledDocument doc = pane.getDocument();
                 textPane.setCaretPosition(doc.getLength());
 
-                pane.flowStamp(stamp);
+                pane.stampWithDuplicateCheck(stamp);
             }
         }
     }

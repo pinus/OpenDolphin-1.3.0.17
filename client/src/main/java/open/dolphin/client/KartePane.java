@@ -50,7 +50,6 @@ public class KartePane implements DocumentListener, MouseListener,
     // 文書に付けるタイトルを自動で取得する時の長さ
     private static final int TITLE_LENGTH = 15;
     // 編集不可時の背景色
-//  private static final Color UNEDITABLE_COLOR = new Color(227, 250, 207);
     protected static final Color UNEDITABLE_COLOR = new Color(227, 250, 207);
     // JTextPane
     private JTextPane textPane;
@@ -81,7 +80,7 @@ public class KartePane implements DocumentListener, MouseListener,
     private int draggedCount;
     private int droppedCount;
 
-    private Logger logger;
+    private final Logger logger;
 
     public KartePane() {
         logger = ClientContext.getBootLogger();
@@ -321,7 +320,6 @@ public class KartePane implements DocumentListener, MouseListener,
 
         if (editable) {
             getTextPane().getDocument().addDocumentListener(this);
-//pns       getTextPane().addFocusListener(AutoKanjiListener.getInstance());
             IMEControl.setImeOnIfFocused(getTextPane());
             getTextPane().getDocument().addUndoableEditListener(mediator);
             if (myRole.equals(IInfoModel.ROLE_SOA)) {
@@ -333,7 +331,6 @@ public class KartePane implements DocumentListener, MouseListener,
             getTextPane().setOpaque(true);
         } else {
             getTextPane().getDocument().removeDocumentListener(this);
-//pns       getTextPane().removeFocusListener(AutoKanjiListener.getInstance());
             getTextPane().getDocument().removeUndoableEditListener(mediator);
             setBackgroundUneditable();
         }
@@ -356,13 +353,6 @@ public class KartePane implements DocumentListener, MouseListener,
     @Override
     public void changedUpdate(DocumentEvent e) {
     }
-
-//    public void focusGained(FocusEvent e) {
-//        getTextPane().getInputContext().setCharacterSubsets(new Character.Subset[]{InputSubset.KANJI});
-//    }
-//
-//    public void focusLost(FocusEvent e) {
-//    }
 
     @Override
     public void caretUpdate(CaretEvent e) {
@@ -439,14 +429,6 @@ public class KartePane implements DocumentListener, MouseListener,
                     map.get(GUIConst.ACTION_INSERT_STAMP).setEnabled(true);
                 }
                 break;
-
-//pns       case P_TEXT:
-//              // PPaneにFocusがありテキスト選択がある状態
-//              map.get(GUIConst.ACTION_CUT).setEnabled(getTextPane().isEditable());
-//              map.get(GUIConst.ACTION_COPY).setEnabled(true);
-//              pasteOk = (getTextPane().isEditable() && canPaste()) ? true : false;
-//              map.get(GUIConst.ACTION_PASTE).setEnabled(pasteOk);
-//              break;
         }
     }
 
@@ -477,15 +459,11 @@ public class KartePane implements DocumentListener, MouseListener,
         // テキストカラーメニューを追加する
         if (getTextPane().isEditable()) {
             ColorChooserComp ccl = new ColorChooserComp();
-            ccl.addPropertyChangeListener(ColorChooserComp.SELECTED_COLOR, new PropertyChangeListener() {
-
-                @Override
-                public void propertyChange(PropertyChangeEvent e) {
-                    Color selected = (Color) e.getNewValue();
-                    Action action = new StyledEditorKit.ForegroundAction("selected", selected);
-                    action.actionPerformed(new ActionEvent(getTextPane(), ActionEvent.ACTION_PERFORMED, "foreground"));
-                    contextMenu.setVisible(false);
-                }
+            ccl.addPropertyChangeListener(ColorChooserComp.SELECTED_COLOR, e -> {
+                Color selected = (Color) e.getNewValue();
+                Action action = new StyledEditorKit.ForegroundAction("selected", selected);
+                action.actionPerformed(new ActionEvent(getTextPane(), ActionEvent.ACTION_PERFORMED, "foreground"));
+                contextMenu.setVisible(false);
             });
             JLabel l = new JLabel("  カラー:");
             JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
@@ -564,7 +542,6 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     protected void setDirty(boolean newDirty) {
-//pns   if (newDirty != dirty) {
         if (dirty == false && newDirty == true) {
             dirty = newDirty;
             getParent().setDirty(dirty);
@@ -626,7 +603,7 @@ public class KartePane implements DocumentListener, MouseListener,
      */
     public void stamp(final ModuleModel stamp) {
         if (stamp != null) {
-//pns^      text stamp がここに入った時の対策（新規カルテにテキストスタンプ挿入するときここに来る）
+            // text stamp がここに入った時の対策（新規カルテにテキストスタンプ挿入するときここに来る）
             if (stamp.getModuleInfo().getEntity().equals(IInfoModel.ENTITY_TEXT)) {
                 //insertTextStamp(stamp.getModel().toString()); ←これだとキャレット位置がおかしくなる
                 insertFreeString(stamp.getModel().toString(), null);
@@ -635,17 +612,22 @@ public class KartePane implements DocumentListener, MouseListener,
             // 「月　日」の自動挿入
             // replace の場合はここに入らないので，StampHolder#importStamp でセット
             StampModifier.modify(stamp);
-//pns$
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    StampHolder h = new StampHolder(KartePane.this, stamp);
-                    h.setTransferHandler(stampHolderTransferHandler);
-                    KarteStyledDocument doc = getDocument();
-                    doc.stamp(h);
-                }
+            EventQueue.invokeLater(() -> {
+                StampHolder h = new StampHolder(KartePane.this, stamp);
+                h.setTransferHandler(stampHolderTransferHandler);
+                KarteStyledDocument doc = getDocument();
+                doc.stamp(h);
             });
         }
+    }
+
+    /**
+     * 重複をチェックする stamp(ModuleModel) - StampHolder から呼ばれる
+     * @param stamp
+     */
+    public void stampWithDuplicateCheck(final ModuleModel stamp) {
+        stamp(stamp);
+        StampModifier.checkDuplicates(stamp, this);
     }
 
     /**
@@ -654,10 +636,8 @@ public class KartePane implements DocumentListener, MouseListener,
      */
     public void flowStamp(ModuleModel stamp) {
         if (stamp != null) {
-//pns^
             // 外用剤の bundleNumber を補正する
             StampModifier.adjustNumber(stamp);
-//pns$
             StampHolder h = new StampHolder(this, stamp);
             h.setTransferHandler(stampHolderTransferHandler);
             KarteStyledDocument doc = getDocument();
@@ -671,16 +651,11 @@ public class KartePane implements DocumentListener, MouseListener,
      */
     public void stampSchema(final SchemaModel schema) {
         if (schema != null) {
-            EventQueue.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    SchemaHolder h = new SchemaHolder(KartePane.this, schema);
-                    h.setTransferHandler(schemaHolderTransferHandler);
-                    KarteStyledDocument doc = getDocument();
-                    doc.stampSchema(h);
-                }
+            EventQueue.invokeLater(() -> {
+                SchemaHolder h = new SchemaHolder(KartePane.this, schema);
+                h.setTransferHandler(schemaHolderTransferHandler);
+                KarteStyledDocument doc = getDocument();
+                doc.stampSchema(h);
             });
         }
     }
@@ -703,13 +678,9 @@ public class KartePane implements DocumentListener, MouseListener,
      * @param s
      */
     public void insertTextStamp(final String s) {
-        EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                KarteStyledDocument doc = getDocument();
-                doc.insertTextStamp(s);
-            }
+        EventQueue.invokeLater(() -> {
+            KarteStyledDocument doc = getDocument();
+            doc.insertTextStamp(s);
         });
     }
 
@@ -774,7 +745,6 @@ public class KartePane implements DocumentListener, MouseListener,
         }
 
         final StampDelegater sdl = new StampDelegater();
-        final KartePane thisPane = this;
 
         DBTask task = new DBTask<List<StampModel>>(parent.getContext()) {
 
@@ -807,7 +777,7 @@ public class KartePane implements DocumentListener, MouseListener,
 
                     // スタンプ重複チェック
                     for (ModuleModel module : duplicateCheckList) {
-                        int count = StampModifier.checkDuplicates(module, thisPane);
+                        int count = StampModifier.checkDuplicates(module, KartePane.this);
                         if (count > 0) break;
                     }
                 } else {
