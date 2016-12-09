@@ -98,10 +98,9 @@ public class UserStampBox extends AbstractStampBox {
 
                     else if (e.getClickCount() == 2) {
                         // ダブルクリックしてすぐドラッグした場合はドラッグを優先する
-                        // protectionTime ms 後にマウスが動いていない場合のみダブルクリックと判定する
-                        int protectionTime = 50;
+                        // Protection Time ms 後にマウスが動いていない場合のみダブルクリックと判定する
                         Point p1 = stampTree.getMousePosition();
-                        try{ Thread.sleep(protectionTime); } catch (Exception ex) {}
+                        try{ Thread.sleep(GUIConst.PROTECTION_TIME); } catch (Exception ex) {}
                         Point p2 = stampTree.getMousePosition();
 
                         if (p1 != null && p2 != null && p1.x == p2.x && p1.y == p2.y) {

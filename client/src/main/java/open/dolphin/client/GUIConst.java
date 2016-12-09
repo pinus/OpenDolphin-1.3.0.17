@@ -131,6 +131,9 @@ public class GUIConst {
     public static final Border RENDERER_BORDER_NARROW = BorderFactory.createEmptyBorder(0, 6, 0, 6);
     public static final Border RENDERER_BORDER_WIDE = BorderFactory.createEmptyBorder(0, 12, 0, 12);
 
+    // ダブルクリック後の Protection Time：この時間の間にドラッグが始まったらダブルクリックはキャンセルする
+    public static final int PROTECTION_TIME = 50;
+
     //
     // アイコンはここで集中管理
     //

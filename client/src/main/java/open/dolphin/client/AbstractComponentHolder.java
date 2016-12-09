@@ -1,6 +1,7 @@
 package open.dolphin.client;
 
 import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -13,6 +14,7 @@ import javax.swing.*;
  * @author  Kazushi Minagawa modified by pns
  */
 public abstract class AbstractComponentHolder extends JLabel implements MouseListener, MouseMotionListener {
+    private static final long serialVersionUID = 1L;
 
     /** エディタの二重起動を防ぐためのフラグ */
     private boolean isEditable = true;
@@ -67,20 +69,29 @@ public abstract class AbstractComponentHolder extends JLabel implements MouseLis
             c = c.getParent();
         }*/
     }
-    // mac
+
     @Override
     public void mousePressed(MouseEvent e) {
         // requestFocus はここの方がいい。mouseClicked だと，mouseRelease されるまで focus とれないから
         requestFocusInWindow();
         // 右クリックで popup 表示
-        if (e.isPopupTrigger() && e.getClickCount() != 2) maybeShowPopup(e);
+        if (e.isPopupTrigger()) { maybeShowPopup(e); }
         // ダブルクリックでエディタ表示
-        if (!e.isPopupTrigger() && e.getClickCount() == 2) edit();
+        else if (e.getClickCount() == 2) {
+            //ダブルクリックしてすぐドラッグした場合はドラッグを優先する
+            // Protection Time ms 後にマウスが動いていない場合のみダブルクリックと判定する
+            Point p1 = getMousePosition();
+            try{ Thread.sleep(GUIConst.PROTECTION_TIME); } catch (Exception ex) {}
+            Point p2 = getMousePosition();
+
+            if (p1 != null && p2 != null && p1.x == p2.x && p1.y == p2.y) { edit(); }
+        }
     }
-    // windows
+
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (e.isPopupTrigger() && e.getClickCount() != 2) maybeShowPopup(e);
+        //windows
+        //if (e.isPopupTrigger() && e.getClickCount() != 2) maybeShowPopup(e);
     }
 
     @Override
