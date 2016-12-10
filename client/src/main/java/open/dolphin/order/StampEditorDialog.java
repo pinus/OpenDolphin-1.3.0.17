@@ -2,10 +2,7 @@ package open.dolphin.order;
 
 import open.dolphin.order.stampeditor.StampEditor;
 import ch.randelshofer.quaqua.JSheet;
-import ch.randelshofer.quaqua.SheetEvent;
-import ch.randelshofer.quaqua.SheetListener;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.*;
@@ -35,10 +32,10 @@ public class StampEditorDialog implements PropertyChangeListener {
 
     /** target editor */
     private StampEditor editor;
-    private PropertyChangeSupport boundSupport;
+    private final PropertyChangeSupport boundSupport;
 
     private JFrame dialog;
-    private String entity;
+    private final String entity;
     private Object value;
     private BlockGlass glass;
 
@@ -47,8 +44,8 @@ public class StampEditorDialog implements PropertyChangeListener {
     private static final int DEFAULT_WIDTH = 924;
     private static final int DEFAULT_HEIGHT = 616;
 
-    private Logger logger;
-    private boolean isNew; // value が null なら new
+    private final Logger logger;
+    private final boolean isNew; // value が null なら new
 
     public StampEditorDialog(String entity, Object value)  {
         this.entity = entity;
@@ -75,21 +72,15 @@ public class StampEditorDialog implements PropertyChangeListener {
 
         okButton = new JButton("カルテに展開");
         okButton.setEnabled(false);
-        okButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                value = getValue();
-                close();
-            }
+        okButton.addActionListener(e -> {
+            value = getValue();
+            close();
         });
 
         cancelButton = new JButton("キャンセル");
-        cancelButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                value = null;
-                close();
-            }
+        cancelButton.addActionListener(e -> {
+            value = null;
+            close();
         });
 
         // BlockGlass を生成し dialog に設定する
@@ -103,8 +94,6 @@ public class StampEditorDialog implements PropertyChangeListener {
 
         // レアイウトする
         HorizontalPanel lowerPanel = new HorizontalPanel();
-        lowerPanel.setBackgroundColor(Color.black, 0.0f, HorizontalPanel.DEFAULT_STATUS_PANEL_END_ALPHA);
-        //lowerPanel.setTopLineAlpha(0.5f);
         lowerPanel.setPanelHeight(32);
         lowerPanel.addGlue();
         lowerPanel.add(cancelButton);
@@ -145,17 +134,13 @@ public class StampEditorDialog implements PropertyChangeListener {
             private static final long serialVersionUID = 1L;
             @Override
             public void actionPerformed(ActionEvent e) {
-                JSheet.showConfirmSheet(dialog, "カルテに展開しますか？", new SheetListener(){
-                    @Override
-                    public void optionSelected(SheetEvent se) {
-                        // 0=はい, 1=いいえ, 2=キャンセル -1=エスケープキー
-                        // System.out.println("se=" + se.getOption());
-                        if (se.getOption() == 0) {
-                            okButton.doClick();
-                        } else if (se.getOption() == 1) {
-                            value = null;
-                            close();
-                        }
+                JSheet.showConfirmSheet(dialog, "カルテに展開しますか？", sheetEvent -> {
+                    // 0=はい, 1=いいえ, 2=キャンセル -1=エスケープキー
+                    if (sheetEvent.getOption() == 0) {
+                        okButton.doClick();
+                    } else if (sheetEvent.getOption() == 1) {
+                        value = null;
+                        close();
                     }
                 });
             }
@@ -177,6 +162,7 @@ public class StampEditorDialog implements PropertyChangeListener {
 
     /**
      * 編集した Stamp を返す。
+     * @return
      */
     public Object getValue() {
         return editor.getValue();

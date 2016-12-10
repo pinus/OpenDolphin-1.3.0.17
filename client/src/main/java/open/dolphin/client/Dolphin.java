@@ -236,7 +236,6 @@ public class Dolphin implements MainWindow {
         // mainWindowのコンテントGUIを生成しFrameに追加する
         tabbedPane = new PNSTabbedPane();
         tabbedPane.setButtonVgap(4);
-        tabbedPane.getButtonPanel().setBackgroundColor(Color.BLACK, 0f, 0.1f);
 
         MainFrame.MainPanel mainPanel = myFrame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0,0));

@@ -411,7 +411,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         statusPanel.add(patienIdPrefix + " " + getKarte().getPatient().getPatientId());
         statusPanel.addSeparator();
         statusPanel.add(rdPrifix + " " + created);
-        statusPanel.setTopLineAlpha(0.4f);
 
         Date pvtDate = ModelUtils.getDateTimeAsObject(pvt.getPvtDate());
         if (pvtDate != null && pvt.getState() == KarteState.CLOSE_NONE) { // window open 前に呼ばれる
@@ -448,7 +447,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         MainFrame.CommandPanel comPanel = frame.getCommandPanel();
         myToolPanel.setOpaque(false);
         comPanel.add(myToolPanel);
-        comPanel.setBackgroundColor(Color.BLACK, 0f, 0.1f);
 
         final MainFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0,0));
@@ -600,8 +598,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         PNSTabbedPane tab = new PNSTabbedPane();
         tab.getButtonPanel().setPadding(new Dimension(0,4));
-        tab.getButtonPanel().setBackgroundColor(Color.BLACK, 0.1f, 0.2f);
-        tab.getButtonPanel().setBottomLineAlpha(0.4f);
 
         ChartDocument[] plugin = new ChartDocument[5];
         plugin[0] = new DocumentBridgeImpl();

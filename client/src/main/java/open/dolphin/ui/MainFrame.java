@@ -1,13 +1,11 @@
 package open.dolphin.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -45,6 +43,7 @@ public class MainFrame extends JFrame {
     }
 
     public MainFrame(boolean commandPanelNeeded, boolean statusPanelNeeded) {
+        getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
         initComponents(commandPanelNeeded, statusPanelNeeded);
     }
 
@@ -67,11 +66,13 @@ public class MainFrame extends JFrame {
 
         // フォーカスに応じてパネルの影を変える
         this.addWindowFocusListener(new WindowFocusListener(){
+            @Override
             public void windowGainedFocus(WindowEvent e) {
                 setFocusedRecursive(getComponents(), true);
                 repaint();
             }
 
+            @Override
             public void windowLostFocus(WindowEvent e) {
                 setFocusedRecursive(getComponents(), false);
                 repaint();
@@ -99,7 +100,6 @@ public class MainFrame extends JFrame {
         private static final long serialVersionUID = 1L;
 
         public CommandPanel() {
-            this.setBackgroundColor(Color.BLACK, 0.0f, DEFAULT_COMMAND_PANEL_END_ALPHA);
         }
     }
     /**
@@ -111,19 +111,23 @@ public class MainFrame extends JFrame {
         }
     }
 
-    /** CommandPanel を返す */
+    /** CommandPanel を返す
+     * @return  */
     public CommandPanel getCommandPanel() {
         return commandPanel;
     }
-    /** MainPanel を返す */
+    /** MainPanel を返す
+     * @return  */
     public MainPanel getMainPanel() {
         return mainPanel;
     }
-    /** StatusPanel を返す */
+    /** StatusPanel を返す
+     * @return  */
     public StatusPanel getStatusPanel() {
         return statusPanel;
     }
-    /** この frame を返す */
+    /** この frame を返す
+     * @return  */
     public MainFrame getFrame() {
         return this;
     }
@@ -166,7 +170,6 @@ public class MainFrame extends JFrame {
 
         commandPanel.addGlue();
         commandPanel.add(new JButton("TEST"));
-        commandPanel.setBottomLineAlpha(0.4f);
 
         MainPanel mainPanel = f.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0,0));
@@ -181,7 +184,6 @@ public class MainFrame extends JFrame {
         statusPanel.addSeparator();
         statusPanel.add("2011-10-21", "3rdLabel");
         statusPanel.setMargin(8);
-        statusPanel.setTopLineAlpha(0.4f);
 
         statusPanel.setText("ラベル変更", "0");
         statusPanel.setText("ラベル", "1");

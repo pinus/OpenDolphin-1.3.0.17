@@ -1,7 +1,6 @@
 package open.dolphin.client;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.BoxLayout;
@@ -12,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import open.dolphin.ui.HorizontalPanel;
+import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.StatusPanel;
 
 /**
@@ -50,10 +50,6 @@ public class MainComponentPanel extends JPanel {
         add(commandPanel);
         add(mainPanel);
         add(statusPanel);
-
-        commandPanel.setBackgroundColor(Color.BLACK, 0.1f, 0.2f);
-        commandPanel.setBottomLineAlpha(0.4f);
-        statusPanel.setTopLineAlpha(0.4f);
     }
 
     public CommandPanel getCommandPanel() {
@@ -95,7 +91,7 @@ public class MainComponentPanel extends JPanel {
     }
 
     public static void main(String[] argv) {
-        JFrame f = new JFrame();
+        MainFrame f = new MainFrame(false, false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(600, 800);
 
@@ -120,14 +116,12 @@ public class MainComponentPanel extends JPanel {
         status.add(bar);
         status.addSeparator();
         status.add(l3);
-        status.setTopLineAlpha(0.4f);
         status.setMargin(8);
 
         com.add(b1);
         com.addGlue();
         com.add(tf);
         com.add(b2);
-        com.setBottomLineAlpha(0.4f);
 
         f.add(p);
 

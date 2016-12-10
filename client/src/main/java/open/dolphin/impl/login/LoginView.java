@@ -8,6 +8,10 @@ package open.dolphin.impl.login;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import open.dolphin.client.GUIConst;
 
@@ -19,8 +23,23 @@ public class LoginView extends javax.swing.JDialog {
 
     /** Creates new form NewJDialog */
     public LoginView(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
+       super(parent, modal);
+       getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
+       JPanel p = new JPanel();
+       setContentPane(p);
+       initComponents();
+       p.setOpaque(true);
+       p.setBackground((GUIConst.BACKGROUND_FOCUSED));
+       addWindowListener(new WindowAdapter() {
+           @Override
+           public void windowActivated(WindowEvent e) {
+                p.setBackground((GUIConst.BACKGROUND_FOCUSED));
+           }
+           @Override
+           public void windowDeactivated(WindowEvent e) {
+                p.setBackground((GUIConst.BACKGROUND_OFF_FOCUS));
+           }
+       });
     }
 
     public javax.swing.JButton getCancelBtn() {
@@ -71,6 +90,7 @@ public class LoginView extends javax.swing.JDialog {
         savePasswordCbx = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(211, 211, 211));
         setResizable(false);
 
         jLabel1.setIcon(GUIConst.ICON_SPLASH_DOLPHIN);

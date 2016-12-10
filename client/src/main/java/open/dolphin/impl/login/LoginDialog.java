@@ -67,6 +67,7 @@ public class LoginDialog {
 
     /**
      * 認証結果プロパティリスナを登録する。
+     * @param prop
      * @param listener 登録する認証結果リスナ
      */
     public void addPropertyChangeListener(String prop, PropertyChangeListener listener) {
@@ -78,6 +79,7 @@ public class LoginDialog {
 
     /**
      * 認証結果プロパティリスナを登録する。
+     * @param prop
      * @param listener 削除する認証結果リスナ
      */
     public void removePropertyChangeListener(String prop, PropertyChangeListener listener) {
@@ -133,12 +135,7 @@ public class LoginDialog {
      * @param result true 認証が成功した場合
      */
     private void notifyResult(final LoginStatus ret) {
-         SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-               boundSupport.firePropertyChange("LOGIN_PROP", -100, ret);
-            }
-        });
+         SwingUtilities.invokeLater(() -> boundSupport.firePropertyChange("LOGIN_PROP", -100, ret));
     }
 
     /**
@@ -176,7 +173,7 @@ public class LoginDialog {
         String note = "認証中...";
 
         Task task = new Task<UserModel>(view, message, note, maxEstimation) {
-            UserDelegater userDlg;
+            private UserDelegater userDlg;
 
             @Override
             protected UserModel doInBackground() throws Exception {
@@ -279,12 +276,9 @@ public class LoginDialog {
         String title = view.getTitle();
 
         MyJSheet.showMessageDialog(view, msg, title, JOptionPane.WARNING_MESSAGE);
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                view.getPasswordField().requestFocusInWindow();
-                view.getPasswordField().selectAll();
-            }
+        EventQueue.invokeLater(() -> {
+            view.getPasswordField().requestFocusInWindow();
+            view.getPasswordField().selectAll();
         });
     }
 
@@ -409,12 +403,12 @@ public class LoginDialog {
     /**
      * 設定ダイアログから通知を受ける。
      * 有効なプロジェクトでればユーザIDをフィールドに設定しパスワードフィールドにフォーカスする。
+     * @param valid
      **/
-    public void setNewParams(Boolean newValue) {
+    public void setNewParams(Boolean valid) {
 
         blockGlass.unblock();
 
-        boolean valid = newValue.booleanValue();
         if (valid) {
             principal.setUserId(Project.getUserId());
             principal.setFacilityId(Project.getFacilityId());
@@ -437,7 +431,7 @@ public class LoginDialog {
     }
 
     /**
-     * ログインボタンを制御する簡易 StateMgr クラス。
+     * ログインボタンを制御する簡易 StateMgr クラス.
      * ProxyDocumentListener から呼ばれるので，public でなければならない
      */
     public class StateMgr extends WindowAdapter {
@@ -452,10 +446,10 @@ public class LoginDialog {
          */
         public void checkButtons() {
 
-            boolean userEmpty = view.getUserIdField().getText().equals("") ? true : false;
-            boolean passwdEmpty = view.getPasswordField().getPassword().length == 0 ? true : false;
+            boolean userEmpty = view.getUserIdField().getText().equals("");
+            boolean passwdEmpty = view.getPasswordField().getPassword().length == 0;
 
-            boolean newOKState = ( (userEmpty == false) && (passwdEmpty == false) ) ? true : false;
+            boolean newOKState = ( (userEmpty == false) && (passwdEmpty == false) );
 
             if (newOKState != okState) {
                 view.getLoginBtn().setEnabled(newOKState);

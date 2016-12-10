@@ -16,6 +16,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultSingleSelectionModel;
@@ -55,7 +56,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     /** タブの総数 */
     private int tabCount = 0;
     /** １行の最低タブ数 */
-    private static int MIN_TAB_PER_LINE = 3;
+    private static final int MIN_TAB_PER_LINE = 3;
     /** タブの場所　上か下か */
     private int tabPlacement = JTabbedPane.TOP;
     /** ChangeListener */
@@ -82,7 +83,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
         // ボタングループの設定
         buttonGroup = new ButtonGroup();
-        buttonList = new ArrayList<TabButton>();
+        buttonList = new ArrayList<>();
 
         // 全体のレイアウト
         setLayout(new BorderLayout(0,0));
@@ -118,6 +119,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     /**
      * index の card に component をセットする
      * @param index
+     * @param c
      */
     public void setComponentAt(int index, Component c) {
         contentPanel.remove(index);
@@ -268,6 +270,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * selection model が変更されると呼ばれる
      * @param e
      */
+    @Override
     public void stateChanged(ChangeEvent e) {
         if (listener != null) listener.stateChanged(e);
 
@@ -284,7 +287,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         private Dimension padding = new Dimension(0,0);
 
         public ButtonPanel() {
-            this.setBackgroundColor(Color.BLACK, 0f, DEFAULT_COMMAND_PANEL_END_ALPHA);
         }
 
         /**
@@ -305,7 +307,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      */
     private class TabButton extends JToggleButton implements ActionListener {
         private static final long serialVersionUID = 1L;
-        private String name;
+        private final String name;
         private int index;
         public boolean isBottom;
         public boolean isRightEnd;
@@ -441,7 +443,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             int maxButtonWidth = 0;
             int tempButtonCount = 0;
             // wrap した場合の各行のボタン数
-            ArrayList<Integer> buttonCountAtLine = new ArrayList<Integer>(10);
+            List<Integer> buttonCountAtLine = new ArrayList<>(10);
 
             // 行数を計算
             for(int i=0; i< buttonCount; i++) {
@@ -561,7 +563,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
         final PNSTabbedPane tabPane = new PNSTabbedPane();
         // content の command panel と連続にするために alpha セット
-        tabPane.getButtonPanel().setBackgroundColor(Color.BLACK, 0f, 0.1f);
         tabPane.setButtonVgap(4);
         tabPane.addTab("受付リスト", mainComponentPanel_1);
         tabPane.addTab("患者検索", mainComponentPanel_2);
@@ -571,11 +572,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(tabPane, BorderLayout.CENTER);
 
-        tabPane.addChangeListener(new ChangeListener(){
-            public void stateChanged(ChangeEvent e) {
-                tabPane.getSelectedComponent();
-            }
-        });
+        tabPane.addChangeListener(e -> tabPane.getSelectedComponent());
 
         f.setVisible(true);
     }
@@ -591,9 +588,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         commandPanel.add(new JButton("テスト２"));
         commandPanel.addGlue();
         commandPanel.add(new JButton("右端"));
-        // タブの button panel と連続にするために alpha セット
-        commandPanel.setBackgroundColor(Color.BLACK, 0.1f, 0.2f);
-        commandPanel.setBottomLineAlpha(0.4f);
 
         StatusPanel statusPanel = new StatusPanel();
         statusPanel.add("Label1");
@@ -602,7 +596,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         statusPanel.addGlue();
         statusPanel.add("END");
         statusPanel.setMargin(8);
-        statusPanel.setTopLineAlpha(0.4f);
 
         JTable table = new JTable(50,10);
         table.setGridColor(Color.gray);
@@ -634,7 +627,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         f.setSize(800,600);
 
         MainFrame.CommandPanel commandPanel = f.getCommandPanel();
-        commandPanel.setBackgroundColor(Color.BLACK, 0f, 0.1f);
         commandPanel.setPanelHeight(56);
         commandPanel.add(new JButton("FIRST"));
         commandPanel.addSeparator();
@@ -649,13 +641,13 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         statusPanel.addGlue();
         statusPanel.add("END");
         statusPanel.setMargin(8);
-        statusPanel.setTopLineAlpha(0.4f);
 
         MainFrame.MainPanel mainPanel = f.getMainPanel();
         mainPanel.setLayout(new BorderLayout(1,1));
 
         JPanel p = new JPanel(new BorderLayout());
         JPanel p1 = new JPanel() {
+            private static final long serialVersionUID = 1L;
             @Override
             public void paintComponent(Graphics grahics) {
                 super.paintComponent(grahics);
@@ -674,8 +666,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         p.add(p2, BorderLayout.CENTER);
 
         PNSTabbedPane tab = new PNSTabbedPane();
-        tab.getButtonPanel().setBackgroundColor(Color.BLACK, 0.1f, 0.2f);
-        tab.getButtonPanel().setBottomLineAlpha(0.4f);
         tab.setButtonVgap(4);
         tab.addTab("カルテ", new JTextPane());
         JTable table = new JTable(50,10);
@@ -715,8 +705,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         commandPanel.add(new JButton("NEXT"));
         commandPanel.addGlue();
         commandPanel.add(new JButton("END"));
-        // tabbed pane の button panel と連続するようにカラーを設定
-        commandPanel.setBackgroundColor(Color.BLACK, 0f, 0.1f);
 
         // 内側のタブ
         String[] tabStr = {"細菌検査", "注 射", "処 方","初診・再診","指導・在宅",
@@ -739,8 +727,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         PNSTabbedPane tabOut = new PNSTabbedPane();
         // 上下に隙間を入れる
         tabOut.setButtonVgap(4);
-        // tabIn の status panel と連続させる
-        tabOut.getButtonPanel().setBackgroundColor(Color.BLACK, 0.1f, 0.2f);
         // タブ位置は下
         tabOut.setTabPlacement(JTabbedPane.BOTTOM);
         tabOut.addTab("個人用", tabIn1);
@@ -759,10 +745,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     private static PNSTabbedPane createTreeTabPane(String[] tabStr) {
         // 内側の tabbed pane
         PNSTabbedPane tab = new PNSTabbedPane();
-        // command panel と連続するように background カラーを設定
-        tab.getButtonPanel().setBackgroundColor(Color.BLACK, 0.1f, 0.2f);
-        // button panel の下線
-        tab.getButtonPanel().setBottomLineAlpha(0.4f);
         // ボタンパネルの余白設定
         tab.getButtonPanel().setPadding(new Dimension(4,4));
         // status panel を inner tab に設定
@@ -770,10 +752,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         tab.add(statusPanel, BorderLayout.SOUTH);
         statusPanel.add(new JLabel("STATUS PANEL TEST"));
         statusPanel.setMargin(16);
-        // 外側の tab pane の button panel と連続させる
-        statusPanel.setBackgroundColor(Color.BLACK, 0f, 0.1f);
-        // status panel の上の境界線
-        statusPanel.setTopLineAlpha(0.4f);
 
         JTree[] panes = new JTree[tabStr.length];
 

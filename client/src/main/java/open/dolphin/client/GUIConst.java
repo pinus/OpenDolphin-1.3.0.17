@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -37,13 +38,13 @@ public class GUIConst {
     public static final String ACTION_CUT = "cut";
     public static final String ACTION_COPY = "copy";
     public static final String ACTION_PASTE = "paste";
-//pns^
+
     public static final String ACTION_FIND_FIRST = "findFirst";
     public static final String ACTION_FIND_NEXT = "findNext";
     public static final String ACTION_FIND_PREVIOUS = "findPrevious";
     public static final String ACTION_SELECT_ALL = "selectAll";
     public static final String ACTION_SEND_CLAIM = "sendClaim";
-//pns$
+
     public static final String ACTION_ASCENDING = "ascending";
     public static final String ACTION_DESCENDING = "descending";
     public static final String ACTION_SHOW_MODIFIED = "showModified";
@@ -133,6 +134,10 @@ public class GUIConst {
 
     // ダブルクリック後の Protection Time：この時間の間にドラッグが始まったらダブルクリックはキャンセルする
     public static final int PROTECTION_TIME = 50;
+
+    // "apple.awt.brushMetalLook" で連続になる背景色
+    public static final Color BACKGROUND_FOCUSED = new Color(211,211,211);
+    public static final Color BACKGROUND_OFF_FOCUS = new Color(246,246,246);
 
     //
     // アイコンはここで集中管理

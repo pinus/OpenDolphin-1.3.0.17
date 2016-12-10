@@ -98,7 +98,7 @@ public class MasterSearchPanel extends JPanel {
         scroller.isPermanentScrollBar = true;
         AdditionalTableSettings.setOrderTable(table);
 
-        this.setBorder(BorderFactory.createTitledBorder(""));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 1, 0, 1));
         this.add(northPanel, BorderLayout.NORTH);
         this.add(scroller, BorderLayout.CENTER);
     }

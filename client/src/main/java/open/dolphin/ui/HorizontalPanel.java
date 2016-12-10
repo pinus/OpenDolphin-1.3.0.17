@@ -1,18 +1,17 @@
 package open.dolphin.ui;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.HashMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import open.dolphin.client.GUIConst;
 
 /**
  * Command Panel，Status Panel のベースになるパネル
@@ -30,22 +29,13 @@ public class HorizontalPanel extends JPanel {
     private int panelHeight = DEFAULT_PANEL_HEIGHT;
     /** フォントサイズ */
     private int fontSize = 0;
-    /** バックグランドグラデーションの影の始まりのアルファ値 */
-    private float startAlpha = 0f;
-    /** バックグランドグラデーションの影の終わりのアルファ値 */
-    private float endAlpha = DEFAULT_COMMAND_PANEL_END_ALPHA;
-    /** バックグランドグラデーションの影の色 */
-    private Color shadowColor = Color.BLACK;
-    /** 最上線のアルファ値・境界線をつけるのに使う */
-    private float topLineAlpha = startAlpha;
-    /** 最下線のアルファ値・境界線をつけるのに使う */
-    private float bottomLineAlpha = endAlpha;
     /** フォーカスを取ったかどうかを MainFrame から通知してもらう */
     private boolean isFocused = true;
     /** 文字列を挿入した場合は，後からそこに setText できるようにする */
-    private HashMap<String, JLabel> labelMap = new HashMap<String, JLabel>();
+    private final HashMap<String, JLabel> labelMap = new HashMap<>();
 
     public HorizontalPanel() {
+        setOpaque(true);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     }
 
@@ -58,18 +48,6 @@ public class HorizontalPanel extends JPanel {
         this.add(Box.createHorizontalStrut(margin));
     }
 
-    /**
-     * バックグランドを描く色とアルファ値
-     * @param startAlpha
-     * @param endAlpha
-     */
-    public void setBackgroundColor(Color shadowColor, float startAlpha, float endAlpha) {
-        this.shadowColor = shadowColor;
-        this.startAlpha = startAlpha;
-        this.endAlpha = endAlpha;
-        this.topLineAlpha = startAlpha;
-        this.bottomLineAlpha = endAlpha;
-    }
     /**
      * フォーカスを取っているかどうかを返す
      * @return
@@ -84,23 +62,13 @@ public class HorizontalPanel extends JPanel {
      */
     public void setFocused(boolean isFocused) {
         this.isFocused = isFocused;
-        if (isFocused) shadowColor = Color.BLACK;
-        else shadowColor = Color.WHITE;
+        if (isFocused) {
+            setBackground(GUIConst.BACKGROUND_FOCUSED);
+        } else {
+            setBackground(GUIConst.BACKGROUND_OFF_FOCUS);
+        }
     }
-    /**
-     * バックグランドの一番上の線
-     * @param alpha
-     */
-    public void setTopLineAlpha(float alpha) {
-        topLineAlpha = alpha;
-    }
-    /**
-     * バックグランドの一番下の線
-     * @param alpha
-     */
-    public void setBottomLineAlpha(float alpha) {
-        bottomLineAlpha = alpha;
-    }
+
     /**
      * パネルの高さをセットする
      * @param height
@@ -137,6 +105,7 @@ public class HorizontalPanel extends JPanel {
     /**
      * BoxLayout 部分にコンポネントを加える
      * @param c
+     * @return
      */
     @Override
     public Component add(Component c) {
@@ -162,6 +131,7 @@ public class HorizontalPanel extends JPanel {
      * String を add した場合は，JLabel として挿入
      * あとから，setText(String key) でその JLabel の文字列をセットできる
      * @param text
+     * @param key
      */
     public void add(String text, String key) {
         JLabel label = new JLabel(text);
@@ -197,55 +167,10 @@ public class HorizontalPanel extends JPanel {
 
     /**
      * BoxLayout 部分のフォントサイズをセットする
+     * @param size
      */
     public void setFontSize(int size) {
         fontSize = size;
-    }
-
-    /**
-     * startAlpha〜endAlpha でグラデーション影を描く
-     * @param graphics
-     */
-    @Override
-    protected void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-
-        int w = this.getWidth();
-        int h = this.getHeight();
-        float alpha = 0.2f;
-        Graphics2D g = (Graphics2D) graphics.create();
-        g.setColor(shadowColor);
-
-        // Retina 対応
-        // for(int y=1; y < h-1; y++) {
-        for(int y=1; y < h; y++) {
-            if (startAlpha > endAlpha) {
-                alpha = startAlpha - (float)y / (float)h * (startAlpha - endAlpha);
-            } else {
-                alpha = startAlpha + (float)y / (float)h * (endAlpha - startAlpha);
-            }
-            drawHorizontalLine(g, w, y, alpha);
-        }
-
-        // 上下の線
-        drawHorizontalLine(g, w, 0, topLineAlpha);
-        // Retina 対応
-        // drawHorizontalLine(g, w, h-1, bottomLineAlpha);
-        drawHorizontalLine(g, w, h, bottomLineAlpha);
-
-        g.dispose();
-    }
-
-    /**
-     * 陰影をつけるために線を書く
-     * @param g
-     * @param width
-     * @param y
-     * @param alpha
-     */
-    private void drawHorizontalLine(Graphics2D g, int width, int y, float alpha) {
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-        g.drawLine(0, y, width, y);
     }
 
     /**
@@ -254,8 +179,8 @@ public class HorizontalPanel extends JPanel {
     private class SeparatorPanel extends JPanel {
         private static final long serialVersionUID = 1L;
 
-        private Color leftColor = Color.GRAY;
-        private Color rightColor = Color.WHITE;
+        private final Color leftColor = Color.GRAY;
+        private final Color rightColor = Color.WHITE;
 
         public SeparatorPanel() {
             Dimension d = new Dimension(SEPARATOR_WIDTH, panelHeight);

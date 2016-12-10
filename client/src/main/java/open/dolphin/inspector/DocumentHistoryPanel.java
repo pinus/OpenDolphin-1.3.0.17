@@ -1,7 +1,6 @@
 package open.dolphin.inspector;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -63,8 +62,6 @@ public class DocumentHistoryPanel extends JPanel {
 
         StatusPanel statusPanel = new StatusPanel();
         statusPanel.setPanelHeight(26);
-        statusPanel.setBackgroundColor(Color.BLACK, 0f, 0.1f);
-        statusPanel.setTopLineAlpha(0.4f);
         statusPanel.add(periodCombo);
         statusPanel.addGlue();
         statusPanel.add(cntLbl);
@@ -86,7 +83,9 @@ public class DocumentHistoryPanel extends JPanel {
     }
 
     private class SelectPeriodAction extends AbstractAction {
-        private int index;
+
+        private static final long serialVersionUID = 1L;
+        private final int index;
         public SelectPeriodAction(int i) {
             index = i;
         }

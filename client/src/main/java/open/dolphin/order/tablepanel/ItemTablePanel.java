@@ -114,7 +114,7 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
         JComponent southPanel = createSouthPanel();
 
         // 全体を配置する
-        this.setBorder(BorderFactory.createTitledBorder(""));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 1, 0, 1));
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(southPanel, BorderLayout.SOUTH);
         this.setPreferredSize(new Dimension(GUIConst.DEFAULT_EDITOR_WIDTH, GUIConst.DEFAULT_EDITOR_HEIGHT));

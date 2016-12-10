@@ -17,6 +17,7 @@ import open.dolphin.client.StampTreeNode;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
+import open.dolphin.ui.HorizontalPanel;
 
 /**
  * StampMakerPanel.
@@ -64,7 +65,7 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
         editorPanel.setPreferredSize(new Dimension(GUIConst.DEFAULT_EDITOR_WIDTH, GUIConst.DEFAULT_EDITOR_HEIGHT));
 
         // ボタンパネルを作成
-        JPanel btnPanel = new JPanel();
+        JPanel btnPanel = new HorizontalPanel();
         BoxLayout box = new BoxLayout(btnPanel, BoxLayout.Y_AXIS);
         btnPanel.setLayout(box);
         btnPanel.add(Box.createVerticalStrut(100));

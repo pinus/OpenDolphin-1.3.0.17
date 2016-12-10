@@ -21,14 +21,13 @@ public class StatusPanel extends HorizontalPanel {
     private static final long serialVersionUID = 1L;
     private static final int STATUS_PANEL_HEIGHT = 24;
 
-    private JProgressBar progressBar;
+    private final JProgressBar progressBar;
 
     public StatusPanel() {
-        this.setPreferredSize(new Dimension(100, STATUS_PANEL_HEIGHT));
-        this.setMinimumSize(new Dimension(0, STATUS_PANEL_HEIGHT));
-        this.setMaximumSize(new Dimension(Integer.MAX_VALUE, STATUS_PANEL_HEIGHT));
-        this.setFontSize(11);
-        this.setBackgroundColor(Color.black, 0.0f, DEFAULT_STATUS_PANEL_END_ALPHA);
+        setPreferredSize(new Dimension(100, STATUS_PANEL_HEIGHT));
+        setMinimumSize(new Dimension(0, STATUS_PANEL_HEIGHT));
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, STATUS_PANEL_HEIGHT));
+        setFontSize(11);
 
         progressBar = new JProgressBar();
         progressBar.setPreferredSize(new Dimension(100, 12));

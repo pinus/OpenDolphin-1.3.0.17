@@ -9,7 +9,6 @@ import java.beans.PropertyChangeSupport;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import open.dolphin.client.GUIConst;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
@@ -28,14 +27,14 @@ public final class TextStampEditor extends JPanel implements IStampEditor {
 
     public static final String VALID_DATA_PROP = "validData";
 
-    private PropertyChangeSupport boundSupport;
+    private final PropertyChangeSupport boundSupport;
     private String title;
     private JTextPane textPane;
     private JTextField titleField;
     private boolean isValidModel = false;
     private String entity;
     // ItemTablePanel.java の stampNameField.setBackground と同じ色
-    private static Color STAMP_NAME_FIELD_BACKGROUND = new Color(251,239,128);
+    private static final Color STAMP_NAME_FIELD_BACKGROUND = new Color(251,239,128);
 
     public TextStampEditor() {
         entity = IInfoModel.ENTITY_TEXT;
@@ -58,7 +57,6 @@ public final class TextStampEditor extends JPanel implements IStampEditor {
         titleField.setOpaque(false);
 
         HorizontalPanel titlePanel = new HorizontalPanel();
-        titlePanel.setBottomLineAlpha(0.5f);
 
         JLabel label = new JLabel("スタンプ名：");
 
@@ -96,12 +94,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor {
      */
     @Override
     public void enter() {
-        EventQueue.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                textPane.requestFocusInWindow();
-            }
-        });
+        EventQueue.invokeLater(textPane::requestFocusInWindow);
     }
 
     /**
