@@ -6,8 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Window;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import java.util.HashMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -52,7 +52,8 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * 組み込まれるときに addNotify が呼ばれるのを利用して parent に WindowFocusListener を付ける
+     * 組み込まれるときに addNotify が呼ばれるのを利用して parent に WindowAdapter を付ける
+     * ToDo: 素早くウインドウを切り替えたときに windowDeactivated が呼ばれないことがある
      */
     @Override
     public void addNotify() {
@@ -61,14 +62,13 @@ public class HorizontalPanel extends JPanel {
         if (parent == null) {
             parent = SwingUtilities.windowForComponent(this);
             if (parent != null) {
-                // WindowListener だと，アプリ切り替え時に windowDeactivated が取れないことがある
-                parent.addWindowFocusListener(new WindowFocusListener() {
+                parent.addWindowListener(new WindowAdapter() {
                     @Override
-                    public void windowGainedFocus(WindowEvent e) {
+                    public void windowActivated(WindowEvent e) {
                         setBackground(GUIConst.BACKGROUND_FOCUSED);
                     }
                     @Override
-                    public void windowLostFocus(WindowEvent e) {
+                    public void windowDeactivated(WindowEvent e) {
                         setBackground(GUIConst.BACKGROUND_OFF_FOCUS);
                     }
                 });

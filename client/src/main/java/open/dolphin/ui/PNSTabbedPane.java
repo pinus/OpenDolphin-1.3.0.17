@@ -367,7 +367,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             // ボタン枠
-            if (parent.isFocused()) g.setColor(Color.GRAY);
+            if (parent.isActive()) g.setColor(Color.GRAY);
             else g.setColor(Color.LIGHT_GRAY);
 
             //g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
@@ -377,7 +377,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             if (this.isRightEnd || buttonLayout.getHgap() != 0) g.drawLine(w-1, 0, w-1, h-1);
 
             // ボタン中身
-            if (parent.isFocused()) {
+            if (parent.isActive()) {
                 if (this.isSelected()) {
                     g.setColor(Color.BLACK);
                     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
