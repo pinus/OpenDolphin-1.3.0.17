@@ -352,6 +352,42 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
     }
 
     /**
+     * 診断名から postposition を取り去る
+     */
+    public void dropPostposition() {
+        int[] rows = diagTable.getSelectedRows();
+        for (int r : rows) {
+            int row = diagTable.convertRowIndexToModel(r);
+            RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) diagTableModel.getObject(row);
+
+            // 新しく作った診断名を設定
+            String newDiagDesc = null;
+            String newDiagCode = null;
+
+            for (DiagnosisPostposition post : DiagnosisPostposition.values()) {
+                String code = "." + post.code;
+                int index = rd.getDiagnosisCode().indexOf(code);
+
+                if (index != -1) {
+                    newDiagDesc = rd.getDiagnosis().replaceFirst(post.desc, "");
+                    newDiagCode = rd.getDiagnosisCode().replaceFirst(code, "");
+                    break;
+                }
+            }
+
+            if (newDiagDesc != null && newDiagCode != null) {
+                DiagnosisLiteModel newDiag = new DiagnosisLiteModel(rd);
+                newDiag.setDiagnosisDesc(newDiagDesc);
+                newDiag.setDiagnosisCode(newDiagCode);
+                diagTableModel.setValueAt(newDiag, row, DiagnosisDocument.DIAGNOSIS_COL);
+
+                // diagnosisInspector にも知らせる
+                ((ChartImpl)parent.getContext()).getDiagnosisInspector().update(diagTableModel);
+            }
+        }
+    }
+
+    /**
      * 主病名／疑い病名ポップアップを出す
      * @param e
      */
