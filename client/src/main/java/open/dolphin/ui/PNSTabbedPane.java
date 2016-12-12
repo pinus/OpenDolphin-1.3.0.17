@@ -34,8 +34,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.ClientContextStub;
 
 /**
  * JTabbedPane 的な何か
@@ -551,7 +549,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     //================== TEST =================
     public static void main(String[] argv) {
-        ClientContext.setClientContextStub(new ClientContextStub());
+        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
         //testPattern1();
         //testPattern2();
         testPattern3();

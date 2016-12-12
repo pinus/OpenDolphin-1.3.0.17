@@ -175,6 +175,9 @@ public class DiagnosisInspector {
         func = "dropPrepos";
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, 0), func); // togliere
         am.put(func, map.get(func));
+        func = "dropPostpos";
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.SHIFT_DOWN_MASK), func); // togliere
+        am.put(func, map.get(func));
         func = "delete";
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), func);
         am.put(func, map.get(func));
@@ -481,6 +484,10 @@ public class DiagnosisInspector {
     @Action
     public void dropPrepos(){
         doc.getDiagnosisDocumentPopup().dropPreposition();
+    }
+    @Action
+    public void dropPostpos(){
+        doc.getDiagnosisDocumentPopup().dropPostposition();
     }
     @Action
     public void suspected() {

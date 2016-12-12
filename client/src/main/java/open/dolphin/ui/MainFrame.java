@@ -5,8 +5,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.ClientContextStub;
 
 /**
  * ３段構造フレーム
@@ -126,7 +124,7 @@ public class MainFrame extends JFrame {
 
     public static void main(String[] argv) {
 
-        ClientContext.setClientContextStub(new ClientContextStub());
+        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
 
         MainFrame f = new MainFrame();
         f.setSize(600, 700);
