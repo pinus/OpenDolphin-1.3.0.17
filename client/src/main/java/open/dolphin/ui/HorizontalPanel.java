@@ -22,8 +22,6 @@ public class HorizontalPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private static final int SEPARATOR_WIDTH = 16;
     private static final int DEFAULT_PANEL_HEIGHT = 24;
-    public static final float DEFAULT_COMMAND_PANEL_END_ALPHA = 0.1f;
-    public static final float DEFAULT_STATUS_PANEL_END_ALPHA = 0.2f;
 
     /** パネルの高さ */
     private int panelHeight = DEFAULT_PANEL_HEIGHT;
@@ -37,6 +35,7 @@ public class HorizontalPanel extends JPanel {
     public HorizontalPanel() {
         setOpaque(true);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setBackground(GUIConst.BACKGROUND_OFF_FOCUS);
     }
 
     /**

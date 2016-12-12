@@ -3,12 +3,15 @@ package open.dolphin.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
+import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.ClientContextStub;
 
 /**
  * ３段構造フレーム
@@ -64,18 +67,15 @@ public class MainFrame extends JFrame {
         this.add(mainPanel, BorderLayout.CENTER);
         if (statusPanelNeeded) this.add(statusPanel, BorderLayout.SOUTH);
 
-        // フォーカスに応じてパネルの影を変える
-        this.addWindowFocusListener(new WindowFocusListener(){
+        // Window の状態を HolizontalPanel に伝える
+        this.addWindowListener(new WindowAdapter(){
             @Override
-            public void windowGainedFocus(WindowEvent e) {
+            public void windowActivated(WindowEvent e) {
                 setFocusedRecursive(getComponents(), true);
-                repaint();
             }
-
             @Override
-            public void windowLostFocus(WindowEvent e) {
+            public void windowDeactivated(WindowEvent e) {
                 setFocusedRecursive(getComponents(), false);
-                repaint();
             }
         });
     }
@@ -86,11 +86,11 @@ public class MainFrame extends JFrame {
      * @param isFocused
      */
     private static void setFocusedRecursive(Component[] components, boolean isFocused) {
-        for (Component c : components) {
+        Arrays.asList(components).parallelStream().forEach(c -> {
             if (c instanceof HorizontalPanel) ((HorizontalPanel)c).setFocused(isFocused);
             if (c instanceof Container)
                 setFocusedRecursive(((Container)c).getComponents(), isFocused);
-        }
+        });
     }
 
     /**
@@ -155,6 +155,8 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] argv) {
+
+        ClientContext.setClientContextStub(new ClientContextStub());
 
         MainFrame f = new MainFrame();
         f.setSize(600, 700);

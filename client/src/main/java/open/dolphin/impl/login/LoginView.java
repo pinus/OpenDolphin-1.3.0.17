@@ -29,7 +29,7 @@ public class LoginView extends javax.swing.JDialog {
        setContentPane(p);
        initComponents();
        p.setOpaque(true);
-       p.setBackground((GUIConst.BACKGROUND_FOCUSED));
+       p.setBackground((GUIConst.BACKGROUND_OFF_FOCUS));
        addWindowListener(new WindowAdapter() {
            @Override
            public void windowActivated(WindowEvent e) {
