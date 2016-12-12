@@ -13,6 +13,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -29,9 +30,12 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.ClientContextStub;
 
 /**
  * JTabbedPane 的な何か
@@ -61,9 +65,23 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     private int tabPlacement = JTabbedPane.TOP;
     /** ChangeListener */
     private ChangeListener listener = null;
+    /** 親の Window */
+    private Window parent = null;
 
     public PNSTabbedPane() {
         initComponents();
+    }
+
+    /**
+     * 組み込まれるときに addNotify が呼ばれるのを利用して parent を登録する
+     */
+     @Override
+    public void addNotify() {
+        super.addNotify();
+
+        if (parent == null) {
+            parent = SwingUtilities.windowForComponent(this);
+        }
     }
 
     private void initComponents() {
@@ -349,7 +367,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             // ボタン枠
-            if (buttonPanel.isFocused()) g.setColor(Color.GRAY);
+            if (parent.isFocused()) g.setColor(Color.GRAY);
             else g.setColor(Color.LIGHT_GRAY);
 
             //g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
@@ -359,7 +377,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             if (this.isRightEnd || buttonLayout.getHgap() != 0) g.drawLine(w-1, 0, w-1, h-1);
 
             // ボタン中身
-            if (buttonPanel.isFocused()) {
+            if (parent.isFocused()) {
                 if (this.isSelected()) {
                     g.setColor(Color.BLACK);
                     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
@@ -533,6 +551,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     //================== TEST =================
     public static void main(String[] argv) {
+        ClientContext.setClientContextStub(new ClientContextStub());
         //testPattern1();
         //testPattern2();
         testPattern3();

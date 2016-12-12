@@ -5,12 +5,16 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Window;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.HashMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import open.dolphin.client.GUIConst;
 
 /**
@@ -27,10 +31,10 @@ public class HorizontalPanel extends JPanel {
     private int panelHeight = DEFAULT_PANEL_HEIGHT;
     /** フォントサイズ */
     private int fontSize = 0;
-    /** フォーカスを取ったかどうかを MainFrame から通知してもらう */
-    private boolean isFocused = true;
     /** 文字列を挿入した場合は，後からそこに setText できるようにする */
     private final HashMap<String, JLabel> labelMap = new HashMap<>();
+    /** 親の Window */
+    private Window parent = null;
 
     public HorizontalPanel() {
         setOpaque(true);
@@ -48,23 +52,27 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * フォーカスを取っているかどうかを返す
-     * @return
+     * 組み込まれるときに addNotify が呼ばれるのを利用して parent に WindowFocusListener を付ける
      */
-    public boolean isFocused() {
-        return isFocused;
-    }
-    /**
-     * フォーカスを取ったかどうかを，MainFrame からセットしてもらう
-     * 同時に，shadowColor をセットする
-     * @param isFocused
-     */
-    public void setFocused(boolean isFocused) {
-        this.isFocused = isFocused;
-        if (isFocused) {
-            setBackground(GUIConst.BACKGROUND_FOCUSED);
-        } else {
-            setBackground(GUIConst.BACKGROUND_OFF_FOCUS);
+    @Override
+    public void addNotify() {
+        super.addNotify();
+
+        if (parent == null) {
+            parent = SwingUtilities.windowForComponent(this);
+            if (parent != null) {
+                // WindowListener だと，アプリ切り替え時に windowDeactivated が取れないことがある
+                parent.addWindowFocusListener(new WindowFocusListener() {
+                    @Override
+                    public void windowGainedFocus(WindowEvent e) {
+                        setBackground(GUIConst.BACKGROUND_FOCUSED);
+                    }
+                    @Override
+                    public void windowLostFocus(WindowEvent e) {
+                        setBackground(GUIConst.BACKGROUND_OFF_FOCUS);
+                    }
+                });
+            }
         }
     }
 

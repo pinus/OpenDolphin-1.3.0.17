@@ -1,11 +1,6 @@
 package open.dolphin.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -66,31 +61,6 @@ public class MainFrame extends JFrame {
         if (commandPanelNeeded) this.add(commandPanel, BorderLayout.NORTH);
         this.add(mainPanel, BorderLayout.CENTER);
         if (statusPanelNeeded) this.add(statusPanel, BorderLayout.SOUTH);
-
-        // Window の状態を HolizontalPanel に伝える
-        this.addWindowListener(new WindowAdapter(){
-            @Override
-            public void windowActivated(WindowEvent e) {
-                setFocusedRecursive(getComponents(), true);
-            }
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-                setFocusedRecursive(getComponents(), false);
-            }
-        });
-    }
-
-    /**
-     * 含んでいるすべての HorizontalPanel に isFocused を通知する
-     * @param components
-     * @param isFocused
-     */
-    private static void setFocusedRecursive(Component[] components, boolean isFocused) {
-        Arrays.asList(components).parallelStream().forEach(c -> {
-            if (c instanceof HorizontalPanel) ((HorizontalPanel)c).setFocused(isFocused);
-            if (c instanceof Container)
-                setFocusedRecursive(((Container)c).getComponents(), isFocused);
-        });
     }
 
     /**
