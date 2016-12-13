@@ -85,7 +85,7 @@ public class HorizontalPanel extends JPanel {
         super.addNotify();
 
         if (parent == null) {
-            parent = (MainFrame) SwingUtilities.windowForComponent(this);
+            parent = SwingUtilities.windowForComponent(this);
             if (parent != null) {
                 parent.addWindowListener(new WindowAdapter() {
                     @Override
