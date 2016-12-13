@@ -42,7 +42,7 @@ public class DiagnosisInspector {
     /** ショートカットキー定義 */
     private enum Shortcut{
         undo (KeyEvent.VK_Z, InputEvent.META_DOWN_MASK),
-        redo (KeyEvent.VK_Z, InputEvent.META_DOWN_MASK),
+        redo (KeyEvent.VK_Z, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK),
         addLeft (KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK), // sinistro
         addRight (KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK), // destro
         addBoth (KeyEvent.VK_E, InputEvent.SHIFT_DOWN_MASK), // entrambi
