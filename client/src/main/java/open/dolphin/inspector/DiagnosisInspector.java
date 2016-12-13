@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.TooManyListenersException;
 import javax.swing.*;
 import open.dolphin.client.*;
@@ -37,6 +38,31 @@ public class DiagnosisInspector {
 
     private static final String SUSPECT = " 疑い";
     private final Logger logger;
+
+    /** ショートカットキー定義 */
+    private enum Shortcut{
+        undo (KeyEvent.VK_Z, InputEvent.META_DOWN_MASK),
+        redo (KeyEvent.VK_Z, InputEvent.META_DOWN_MASK),
+        addLeft (KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK), // sinistro
+        addRight (KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK), // destro
+        addBoth (KeyEvent.VK_E, InputEvent.SHIFT_DOWN_MASK), // entrambi
+        finish (KeyEvent.VK_F, 0),
+        discontinue (KeyEvent.VK_D, 0),
+        renew (KeyEvent.VK_R, 0),
+        dropPrepos (KeyEvent.VK_T, 0), // togliere
+        dropPostpos (KeyEvent.VK_T, InputEvent.SHIFT_DOWN_MASK), // togliere
+        delete (KeyEvent.VK_BACK_SPACE, 0),
+        sendClaim (KeyEvent.VK_L, InputEvent.META_DOWN_MASK),
+        duplicate (KeyEvent.VK_D, InputEvent.META_DOWN_MASK),
+        suspected (KeyEvent.VK_U, 0), // utagai
+        mainDiag (KeyEvent.VK_U, InputEvent.SHIFT_DOWN_MASK),
+        infection (KeyEvent.VK_I, 0),
+        ;
+        private final int key, mask;
+        private Shortcut(int k, int m) { key = k; mask = m; }
+        public int key() { return key; }
+        public int mask() { return mask; }
+    }
 
     /**
      * DiagnosisInspectorオブジェクトを生成する。
@@ -143,59 +169,15 @@ public class DiagnosisInspector {
             });
         }
 
-        // undo/redo のショートカットキー登録
+        // ショートカットキー登録
         ActionMap map = ActionManager.getActionMap(this);
         InputMap im = diagList.getInputMap();
         ActionMap am = diagList.getActionMap();
 
-        String func = "undo";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.META_DOWN_MASK), func);
-        am.put(func, map.get(func));
-        func = "redo";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), func);
-        am.put(func, map.get(func));
-        func = "addLeft";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK), func); // sinistro
-        am.put(func, map.get(func));
-        func = "addRight";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK), func); // destro
-        am.put(func, map.get(func));
-        func = "addBoth";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.SHIFT_DOWN_MASK), func); // entrambi
-        am.put(func, map.get(func));
-        func = "finish";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F, 0), func);
-        am.put(func, map.get(func));
-        func = "discontinue";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), func);
-        am.put(func, map.get(func));
-        func = "renew";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0), func);
-        am.put(func, map.get(func));
-        func = "dropPrepos";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, 0), func); // togliere
-        am.put(func, map.get(func));
-        func = "dropPostpos";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.SHIFT_DOWN_MASK), func); // togliere
-        am.put(func, map.get(func));
-        func = "delete";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), func);
-        am.put(func, map.get(func));
-        func = "sendClaim";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.META_DOWN_MASK), func);
-        am.put(func, map.get(func));
-        func = "duplicate";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.META_DOWN_MASK), func);
-        am.put(func, map.get(func));
-        func = "suspected";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), func);
-        am.put(func, map.get(func));
-        func = "mainDiag";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.SHIFT_DOWN_MASK), func);
-        am.put(func, map.get(func));
-        func = "infection";
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, 0), func);
-        am.put(func, map.get(func));
+        Arrays.asList(Shortcut.values()).forEach(shortcut -> {
+            im.put(KeyStroke.getKeyStroke(shortcut.key(), shortcut.mask()), shortcut.name());
+            am.put(shortcut.name(), map.get(shortcut.name()));
+        });
 
         // GUI 形成
         diagPanel = new DropPanel(new BorderLayout());
