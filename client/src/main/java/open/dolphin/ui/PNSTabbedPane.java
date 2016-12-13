@@ -570,7 +570,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * +---------------+
      */
     private static void testPattern1() {
-        MainFrame f = new MainFrame(false, false);
+        MainFrame f = new MainFrame("", false, false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(600,800);
 

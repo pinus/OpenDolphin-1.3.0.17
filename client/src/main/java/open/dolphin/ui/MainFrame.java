@@ -30,20 +30,20 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         //setBackground(new Color(0,0,0,0));
         //AWTAccessor.getWindowAccessor().setOpacity(this, 0.5f);
-        this(true,true);
+        this("", true,true);
     }
 
     public MainFrame(String title) {
-        this(true,true);
-        this.setTitle(title);
+        this(title, true,true);
     }
 
-    public MainFrame(boolean commandPanelNeeded, boolean statusPanelNeeded) {
+    public MainFrame(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
+        initComponents(title, commandPanelNeeded, statusPanelNeeded);
+    }
+
+    private void initComponents(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
         getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
-        initComponents(commandPanelNeeded, statusPanelNeeded);
-    }
-
-    private void initComponents(boolean commandPanelNeeded, boolean statusPanelNeeded) {
+        setTitle(title);
 
         // コマンドパネル
         if (commandPanelNeeded) commandPanel = new CommandPanel();
@@ -123,7 +123,6 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] argv) {
-
         open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
 
         MainFrame f = new MainFrame();

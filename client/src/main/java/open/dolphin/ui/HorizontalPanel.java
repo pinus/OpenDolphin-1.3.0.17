@@ -1,5 +1,6 @@
 package open.dolphin.ui;
 
+import com.apple.eawt.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -18,8 +19,9 @@ import javax.swing.SwingUtilities;
 import open.dolphin.client.GUIConst;
 
 /**
- * Command Panel，Status Panel のベースになるパネル
+ * Command Panel，Status Panel のベースになるパネル.
  * 横長のパネルで，左から要素を詰めていく
+ * Window のタイトルバーと連続するように active/deactive に合わせて Background 色を変える
  * @author pns
  */
 public class HorizontalPanel extends JPanel {
@@ -35,11 +37,35 @@ public class HorizontalPanel extends JPanel {
     private final HashMap<String, JLabel> labelMap = new HashMap<>();
     /** 親の Window */
     private Window parent = null;
+    /** アプリケーションとして前面に居るか後面に回っているか */
+    private boolean isAppForeground = true;
 
     public HorizontalPanel() {
+        initComponent();
+    }
+
+    private void initComponent() {
         setOpaque(true);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(GUIConst.BACKGROUND_OFF_FOCUS);
+
+        // アプリケーションとして前面にいるかどうかをセットする
+        // https://coderanch.com/how-to/javadoc/appledoc/api/com/apple/eawt/package-summary.html
+        com.apple.eawt.Application application = com.apple.eawt.Application.getApplication();
+        application.addAppEventListener(new AppForegroundListener() {
+            @Override
+            public void appRaisedToForeground(AppEvent.AppForegroundEvent afe) {
+                isAppForeground = true;
+                if (parent != null) {
+                    if (parent.isActive()) { setActive(true); }
+                    else { setActive(false); }
+                }
+            }
+            @Override
+            public void appMovedToBackground(AppEvent.AppForegroundEvent afe) {
+                isAppForeground = false;
+            }
+        });
     }
 
     /**
@@ -53,27 +79,37 @@ public class HorizontalPanel extends JPanel {
 
     /**
      * 組み込まれるときに addNotify が呼ばれるのを利用して parent に WindowAdapter を付ける
-     * ToDo: 素早くウインドウを切り替えたときに windowDeactivated が呼ばれないことがある
      */
     @Override
     public void addNotify() {
         super.addNotify();
 
         if (parent == null) {
-            parent = SwingUtilities.windowForComponent(this);
+            parent = (MainFrame) SwingUtilities.windowForComponent(this);
             if (parent != null) {
                 parent.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowActivated(WindowEvent e) {
-                        setBackground(GUIConst.BACKGROUND_FOCUSED);
+                        // アプリケーションとしてバックに回っているのに windowActivated が来てしまうことがある対策
+                        if (isAppForeground) { setActive(true); }
+                        //else { System.out.println("windowActivated ignored while appMovedToBackground"); }
                     }
                     @Override
                     public void windowDeactivated(WindowEvent e) {
-                        setBackground(GUIConst.BACKGROUND_OFF_FOCUS);
+                        setActive(false);
                     }
                 });
             }
         }
+    }
+
+    /**
+     * Parent Window に合わせて active/deactive する
+     * @param b
+     */
+    public void setActive(boolean b) {
+        if (b) { setBackground(GUIConst.BACKGROUND_FOCUSED); }
+        else { setBackground(GUIConst.BACKGROUND_OFF_FOCUS); }
     }
 
     /**
@@ -190,11 +226,16 @@ public class HorizontalPanel extends JPanel {
         private final Color rightColor = Color.WHITE;
 
         public SeparatorPanel() {
+            initComponent();
+        }
+
+        private void initComponent() {
             Dimension d = new Dimension(SEPARATOR_WIDTH, panelHeight);
             setPreferredSize(d);
             setMaximumSize(d);
             setOpaque(false);
         }
+
         @Override
         protected void paintComponent(Graphics graphics) {
             Graphics g = graphics.create();

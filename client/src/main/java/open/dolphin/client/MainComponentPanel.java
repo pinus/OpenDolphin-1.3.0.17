@@ -91,7 +91,7 @@ public class MainComponentPanel extends JPanel {
     }
 
     public static void main(String[] argv) {
-        MainFrame f = new MainFrame(false, false);
+        MainFrame f = new MainFrame("", false, false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(600, 800);
 
