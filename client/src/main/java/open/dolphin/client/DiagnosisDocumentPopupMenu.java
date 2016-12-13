@@ -294,14 +294,36 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
                 RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) diagTableModel.getObject(row);
 
                 // 新しく作った診断名を設定
-                final String newDiagDesc;
+                String diagDesc = rd.getDiagnosis();
+                String diagCode = rd.getDiagnosisCode();
+                String newDiagDesc;
                 String newDiagCode;
+
                 if (prep) {
-                    newDiagDesc = ((DiagnosisPreposition)modifier).desc + rd.getDiagnosis();
-                    newDiagCode = ((DiagnosisPreposition)modifier).code + "." + rd.getDiagnosisCode();
+                    String desc = ((DiagnosisPreposition)modifier).desc;
+                    String code = ((DiagnosisPreposition)modifier).code + ".";
+
+                    if (diagCode.contains(code)) {
+                        // すでに入力されていたらそれを消去することにした
+                        newDiagDesc = diagDesc.replaceFirst(desc, "");
+                        newDiagCode = diagCode.replaceFirst(code, "");
+                    } else {
+                        // 重複がなければ追加
+                        newDiagDesc = desc + diagDesc;
+                        newDiagCode = code + diagCode;
+                    }
                 } else {
-                    newDiagDesc = rd.getDiagnosis() + ((DiagnosisPostposition)modifier).desc;
-                    newDiagCode = rd.getDiagnosisCode() + "." + ((DiagnosisPostposition)modifier).code;
+                    String desc = ((DiagnosisPostposition)modifier).desc;
+                    String code = "." + ((DiagnosisPostposition)modifier).code;
+
+                    if (diagCode.contains(code)) {
+                        // すでに入力されていたらそれを消去する
+                        newDiagDesc = diagDesc.replaceFirst(desc, "");
+                        newDiagCode = diagCode.replaceFirst(code, "");
+                    } else {
+                        newDiagDesc = diagDesc + desc;
+                        newDiagCode = diagCode + code;
+                    }
                 }
 
                 DiagnosisLiteModel newDiag = new DiagnosisLiteModel(rd);
