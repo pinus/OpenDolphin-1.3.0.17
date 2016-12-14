@@ -35,6 +35,10 @@ public class ObjectReflectTableModel extends AbstractTableModel {
     // データオブジェクトリスト
     private List<Object> objectList;
 
+    public ObjectReflectTableModel(String[] columnNames, int startNumRows) {
+        this(columnNames, startNumRows, null, null);
+    }
+
     /**
      * ObjectReflectTableModelを生成する。
      * @param columnNames カラム名配列
@@ -140,7 +144,7 @@ public class ObjectReflectTableModel extends AbstractTableModel {
      * データリストを設定する。
      * @param objectList データリスト
      */
-    public void setObjectList(List<Object> objectList) {
+    public void setObjectList(List objectList) {
         if (this.objectList != null) {
             this.objectList.clear();
             this.objectList = null;

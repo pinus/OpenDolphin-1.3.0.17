@@ -10,7 +10,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.table.ObjectTableModel;
+import open.dolphin.table.ObjectReflectTableModel;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -38,7 +38,7 @@ public final class OrderHistoryPanel extends JPanel implements
      */
     private static final long serialVersionUID = -2302784717739085879L;
 
-    private ObjectTableModel tModel;
+    private ObjectReflectTableModel tModel;
 
     private JTable table;
 
@@ -68,7 +68,7 @@ public final class OrderHistoryPanel extends JPanel implements
 
         // オーダの履歴(確定日|スタンプ名)を表示する TableModel
         // 各行は ModuleModel
-        tModel = new ObjectTableModel(columnNames, startNumRows) {
+        tModel = new ObjectReflectTableModel(columnNames, startNumRows) {
 
             private static final long serialVersionUID = 1684645192401100170L;
 

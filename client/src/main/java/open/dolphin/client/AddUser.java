@@ -439,7 +439,7 @@ public class AddUser extends AbstractMainTool {
      */
     protected class UserListPanel extends JPanel {
 
-        private ObjectTableModel tableModel;
+        private ObjectReflectTableModel tableModel;
         private JTable table;
         private JButton getButton;
         private JButton deleteButton;
@@ -450,7 +450,7 @@ public class AddUser extends AbstractMainTool {
             String[] columns = new String[] { "ユーザID", "姓", "名", "医療資格", "診療科" };
 
             // ユーザテーブル
-            tableModel = new ObjectTableModel(columns, 7) {
+            tableModel = new ObjectReflectTableModel(columns, 7) {
 
                 // 編集不可
                 @Override
