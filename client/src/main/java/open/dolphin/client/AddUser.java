@@ -450,7 +450,7 @@ public class AddUser extends AbstractMainTool {
             String[] columns = new String[] { "ユーザID", "姓", "名", "医療資格", "診療科" };
 
             // ユーザテーブル
-            tableModel = new ObjectReflectTableModel(columns, 7) {
+            tableModel = new ObjectReflectTableModel(columns) {
 
                 // 編集不可
                 @Override

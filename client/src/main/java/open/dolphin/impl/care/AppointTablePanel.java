@@ -160,7 +160,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         private static final long serialVersionUID = -5342312972368806563L;
 
         public CareTableModel(String[] columnNames, int numRows) {
-            super(columnNames, numRows);
+            super(columnNames);
         }
 
         @Override

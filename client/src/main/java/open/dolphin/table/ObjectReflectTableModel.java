@@ -4,39 +4,35 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * ObjectReflectTableModel
- *
+ * ObjectReflectTableModel.
+ * Generics 対応 by pns
  * @author Minagawa,Kazushi
+ * @param <T>
  */
-public class ObjectReflectTableModel extends AbstractTableModel {
-
+public class ObjectReflectTableModel<T> extends AbstractTableModel {
     private static final long serialVersionUID = -8280948755982277457L;
 
     // カラム名配列
     private String[] columnNames;
-
-    // 属性値を取得するためのメソッド名
-    private String[] methodNames;
-
     // カラムクラス配列
     private Class[] columnClasses;
-
-    // 開始時行数
-    //private int startNumRows;
-
+    // 属性値を取得するためのメソッド名
+    private String[] methodNames;
     // カラム数
     private int columnCount;
-
     // データオブジェクトリスト
-    private List<Object> objectList;
+    private List<T> objectList;
 
-    public ObjectReflectTableModel(String[] columnNames, int startNumRows) {
-        this(columnNames, startNumRows, null, null);
+    /**
+     * カラム名から TableModel を生成する
+     * @param columnNames
+     */
+    public ObjectReflectTableModel(String[] columnNames) {
+        this(columnNames, 0, null, null);
     }
 
     /**
@@ -46,43 +42,24 @@ public class ObjectReflectTableModel extends AbstractTableModel {
      * @param methodNames メソッド名配列
      * @param columnClasses カラムクラス配列
      */
-    public ObjectReflectTableModel(String[] columnNames, int startNumRows,
-            String[] methodNames, Class[] columnClasses) {
+    public ObjectReflectTableModel(String[] columnNames, int startNumRows, String[] methodNames, Class[] columnClasses) {
         this.columnNames = columnNames;
-        //this.startNumRows = 0;
         this.methodNames = methodNames;
         this.columnClasses = columnClasses;
-        if (this.columnNames != null) {
+        if (columnNames != null) {
             columnCount = columnNames.length;
         }
-        objectList = new ArrayList<Object>();
-    }
-
-    /**
-     * カラム名なしでTableModelを生成する。
-     * @param columnCount カラム数
-     * @param startNumRows 開始時行数
-     * @param methodNames メソッド名配列
-     * @param columnClasses カラムクラス配列
-     */
-    public ObjectReflectTableModel(int columnCount, int startNumRows,
-            String[] methodNames, Class[] columnClasses) {
-        this.columnCount = columnCount;
-        //this.startNumRows = 0;
-        this.methodNames = methodNames;
-        this.columnClasses = columnClasses;
-        objectList = new ArrayList<Object>();
+        objectList = new ArrayList<>();
     }
 
     /**
      * カラム名を返す。
      * @param index カラムインデックス
+     * @return
      */
     @Override
     public String getColumnName(int index) {
-        return (columnNames != null && index < columnNames.length)
-        ? columnNames[index]
-                : null;
+        return (columnNames != null && index < columnNames.length)? columnNames[index] : null;
     }
 
     /**
@@ -100,41 +77,37 @@ public class ObjectReflectTableModel extends AbstractTableModel {
      */
     @Override
     public int getRowCount() {
-//        return (objectList != null && objectList.size() > startNumRows) ? objectList
-//                .size()
-//                : startNumRows;
         return (objectList != null) ? objectList.size() : 0;
     }
 
     /**
      * カラムのクラス型を返す。
-     * @param カラムインデックス
+     * @param index
+     * @return
      */
     @Override
     public Class getColumnClass(int index) {
-        return (columnClasses != null && index < columnClasses.length) ? columnClasses[index]
-                : String.class;
+        return (columnClasses != null && index < columnClasses.length) ? columnClasses[index] : String.class;
     }
 
     /**
      * オブジェクトの値を返す。
      * @param row 行インデックス
-     * @param col　絡むインデックス
+     * @param col 列インデックス
      * @return
      */
     @Override
     public Object getValueAt(int row, int col) {
 
-        Object object = getObject(row);
+        T object = getObject(row);
 
         if (object != null && methodNames != null && col < methodNames.length) {
             try {
-                Method targetMethod = object.getClass().getMethod(
-                        methodNames[col], (Class[])null);
+                Method targetMethod = object.getClass().getMethod(methodNames[col], (Class[])null);
                 return targetMethod.invoke(object, (Object[])null);
-            } catch (NoSuchMethodException e) { System.out.println("ObjectReflectTableModel.java: " + e);
-            } catch (IllegalAccessException e) { System.out.println("ObjectReflectTableModel.java: " + e);
-            } catch (InvocationTargetException e) { System.out.println("ObjectReflectTableModel.java: " + e);
+
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                System.out.println("ObjectReflectTableModel.java: " + e);
             }
         }
         return null;
@@ -142,39 +115,48 @@ public class ObjectReflectTableModel extends AbstractTableModel {
 
     /**
      * データリストを設定する。
-     * @param objectList データリスト
+     * @param otherList データリスト
      */
-    public void setObjectList(List objectList) {
-        if (this.objectList != null) {
-            this.objectList.clear();
-            this.objectList = null;
+    public void setObjectList(List<T> otherList) {
+        if (objectList != null) {
+            objectList.clear();
+            objectList = null;
         }
-        this.objectList = objectList; // 参照しているのみ
-        this.fireTableDataChanged();
+        objectList = otherList; // 参照しているのみ
+        fireTableDataChanged();
     }
 
+    /**
+     * Method 名を帰す
+     * @param index
+     * @return
+     */
     public String getMethodName(int index) {
         return methodNames[index];
     }
 
     /**
      * コンストラクト後にカラム名を変更する。
+     * @param columnName
+     * @param col
      */
     public void setColumnName(String columnName, int col) {
         if (col >=0 && col < columnNames.length) {
             columnNames[col] = columnName;
-            this.fireTableStructureChanged();
+            fireTableStructureChanged();
         }
     }
 
     /**
      * コンストラクト後にメソッドを変更する。
+     * @param methodName
+     * @param col
      */
     public void setMethodName(String methodName, int col) {
         if (col >=0 && col < methodNames.length) {
             methodNames[col] = methodName;
             if(objectList != null) {
-                this.fireTableDataChanged();
+                fireTableDataChanged();
             }
         }
     }
@@ -183,7 +165,7 @@ public class ObjectReflectTableModel extends AbstractTableModel {
      * データリストを返す。
      * @return データリスト
      */
-    public List getObjectList() {
+    public List<T> getObjectList() {
         return objectList;
     }
 
@@ -193,7 +175,7 @@ public class ObjectReflectTableModel extends AbstractTableModel {
     public void clear() {
         if (objectList != null) {
             objectList.clear();
-            this.fireTableDataChanged();
+            fireTableDataChanged();
         }
     }
 
@@ -202,10 +184,8 @@ public class ObjectReflectTableModel extends AbstractTableModel {
      * @param index 行インデックス
      * @return オブジェクト
      */
-    public Object getObject(int index) {
-        return (objectList != null && index >= 0 && index < objectList.size()) ? objectList
-                .get(index)
-                : null;
+    public T getObject(int index) {
+        return (objectList != null && index >= 0 && index < objectList.size()) ? objectList.get(index) : null;
     }
 
     /**
@@ -218,86 +198,80 @@ public class ObjectReflectTableModel extends AbstractTableModel {
 
     // //////// データ追加削除の簡易サポート /////////
 
-    public void addRow(Object add) {
-        if (add != null) {
+    public void addRow(T item) {
+        if (item != null) {
             if (objectList == null) {
-                objectList = new ArrayList<Object>();
+                objectList = new ArrayList<>();
             }
             int index = objectList.size();
-            objectList.add(add);
-            this.fireTableRowsInserted(index, index);
+            objectList.add(item);
+            fireTableRowsInserted(index, index);
         }
     }
 
-    public void addRow(int index, Object add) {
-        if (add != null && index > -1 && objectList != null) {
+    public void addRow(int index, T item) {
+        if (item != null && index > -1 && objectList != null) {
             if ( (objectList.isEmpty() && index == 0) || (index < objectList.size()) ){
-                objectList.add(index, add);
-                this.fireTableRowsInserted(index, index);
+                objectList.add(index, item);
+                fireTableRowsInserted(index, index);
             }
         }
     }
 
-    public void insertRow(int index, Object o) {
-        addRow(index, o);
+    public void insertRow(int index, T item) {
+        addRow(index, item);
     }
 
     public void moveRow(int from, int to) {
-        if (! isValidRow(from) || ! isValidRow(to)) {
+        if (! isValidRow(from) || ! isValidRow(to) || from == to) {
             return;
         }
-        if (from == to) {
-            return;
-        }
-        Object o = objectList.remove(from);
+        T o = objectList.remove(from);
         objectList.add(to, o);
         fireTableRowsUpdated(0, getObjectCount());
     }
 
-    public void addRows(Collection c) {
+    public void addRows(Collection<T> c) {
         if (c != null && !c.isEmpty()) {
             if (objectList == null) {
-                objectList = new ArrayList<Object>();
+                objectList = new ArrayList<>();
             }
             int first = objectList.size();
-            for (Iterator iter = c.iterator(); iter.hasNext(); ) {
-                objectList.add(iter.next());
-            }
-            int last = objectList.size() - 1;
-            this.fireTableRowsInserted(first, last);
+            c.forEach(item -> objectList.add(item));
+            fireTableRowsInserted(first, first + c.size() - 1);
         }
     }
 
     public void deleteRow(int index) {
         if (index > -1 && index < objectList.size()) {
             objectList.remove(index);
-            this.fireTableRowsDeleted(index, index);
+            fireTableRowsDeleted(index, index);
         }
     }
 
-    public void deleteRow(Object delete) {
+    public void deleteRow(T item) {
         if (objectList != null) {
-            if (objectList.remove(delete)) {
-                this.fireTableDataChanged();
+            if (objectList.remove(item)) {
+                fireTableDataChanged();
             }
         }
     }
 
-    public void deleteRows(Collection c) {
+    public void deleteRows(Collection<T> c) {
         if (objectList != null) {
             if (c != null) {
                 objectList.removeAll(c);
-                this.fireTableDataChanged();
+                fireTableDataChanged();
             }
         }
     }
 
-    public int getIndex(Object o) {
+    public int getIndex(T item) {
         int index = 0;
         boolean found = false;
-        if (objectList != null && o != null) {
-            for (Object obj : objectList) {
-                if (obj == o) {
+        if (objectList != null) {
+            for (T obj : objectList) {
+                if (obj.equals(item)) {
                     found = true;
                     break;
                 } else {
@@ -309,6 +283,6 @@ public class ObjectReflectTableModel extends AbstractTableModel {
     }
 
     public boolean isValidRow(int row) {
-        return ( (objectList != null) && (row > -1) && (row < objectList.size()) ) ? true : false;
+        return ( (objectList != null) && (row > -1) && (row < objectList.size()) );
     }
 }

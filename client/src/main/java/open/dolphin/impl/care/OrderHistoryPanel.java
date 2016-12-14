@@ -1,152 +1,108 @@
 package open.dolphin.impl.care;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import open.dolphin.ui.AdditionalTableSettings;
-import javax.swing.*;
-import javax.swing.table.*;
-import javax.swing.event.*;
 import open.dolphin.client.*;
-
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
-import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.table.ObjectReflectTableModel;
-
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-
-import java.awt.*;
-import java.util.*;
-import java.util.List;
-import java.beans.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.TableColumn;
+import open.dolphin.table.IndentTableCellRenderer;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 
 /**
  * オーダ履歴を表示するパネルクラス。 表示するオーダと抽出期間は PropertyChange で通知される。
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
-public final class OrderHistoryPanel extends JPanel implements
-        PropertyChangeListener {
-
-    /**
-     *
-     */
+public final class OrderHistoryPanel extends JPanel implements PropertyChangeListener {
     private static final long serialVersionUID = -2302784717739085879L;
 
-    private ObjectReflectTableModel tModel;
-
+    private ObjectReflectTableModel<ModuleModel> tModel;
     private JTable table;
-
     private JLabel contents;
-
     private String pid;
+    private final Dimension contentSize = new Dimension(240, 300);
 
-    //private String markEvent;
-
-    //private String startDate;
-
-    //private String endDate;
-
-    //private CareMapDocument parent;
-
-    private Dimension contentSize = new Dimension(240, 300);
-
-    /** Creates new OrderHistoryPanel */
     public OrderHistoryPanel() {
-
         super(new BorderLayout(5, 0));
+        initComponents();
+    }
 
-        String[] columnNames = ClientContext
-                .getStringArray("orderhistory.table.columnNames");
-//pns   int startNumRows = 12;
-        int startNumRows = 1;
+    private void initComponents() {
+        String[] columnNames = { "　実施日", "　内   容" };
 
-        // オーダの履歴(確定日|スタンプ名)を表示する TableModel
-        // 各行は ModuleModel
-        tModel = new ObjectReflectTableModel(columnNames, startNumRows) {
-
+        // オーダの履歴(確定日|スタンプ名)を表示する TableModel: 各行は ModuleModel
+        tModel = new ObjectReflectTableModel<ModuleModel>(columnNames) {
             private static final long serialVersionUID = 1684645192401100170L;
 
             @Override
             public boolean isCellEditable(int row, int col) {
                 return false;
             }
-
             @Override
             public Object getValueAt(int row, int col) {
-
-                ModuleModel module = (ModuleModel) getObject(row);
-                if (module == null) {
-                    return null;
-                }
-                ModuleInfoBean info = module.getModuleInfo();
-                String ret = null;
+                ModuleModel module = getObject(row);
 
                 switch (col) {
-
                     case 0:
-                        //ret = ModelUtils.getDateAsString(info.getConfirmDate());
-                        ret = ModelUtils.getDateAsString(module.getConfirmed());
-                        //String val = info.getConfirmDate();
-                        //int index = val.indexOf('T');
-                        //ret = index > 0 ? val.substring(0, index) : val;
-                        break;
-
+                        return ModelUtils.getDateAsString(module.getConfirmed());
                     case 1:
-                        ret = info.getStampName();
-                        break;
+                        return module.getModuleInfo().getStampName();
                 }
-
-                return ret;
+                return null;
             }
         };
 
         table = new JTable(tModel);
-//pns   table.setDefaultRenderer(Object.class, new OddEvenRowRenderer());
+        table.setDefaultRenderer(Object.class, new IndentTableCellRenderer());
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         // 行クリックで内容を表示する
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowSelectionAllowed(true);
         ListSelectionModel m = table.getSelectionModel();
-        m.addListSelectionListener(new ListSelectionListener() {
-
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting() == false) {
-                    int index = table.getSelectedRow();
-                    displayOrder(index);
-                }
+        m.addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting() == false) {
+                int index = table.getSelectedRow();
+                displayOrder(index);
             }
         });
         setColumnWidth(new int[] { 50, 240 });
 
-        JScrollPane scroller = new JScrollPane(table,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scroller = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(scroller, BorderLayout.CENTER);
 
         // 内容表示用 TextArea
         contents = new JLabel();
         contents.setBackground(Color.white);
-        // contents.setEditable(false);
-        // contents.setLineWrap(true);
-        // contents.setMargin(new Insets(3,3,3,3));
-        JScrollPane cs = new JScrollPane(contents,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane cs = new JScrollPane(contents, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         cs.setPreferredSize(contentSize);
         cs.setMaximumSize(contentSize);
         add(cs, BorderLayout.EAST);
-//pns   動的 startNumRows 調節のための設定
-        //tModel.setTable(table);
-//pns^  table の関係ないところをクリックしたら，selection をクリア
         AdditionalTableSettings.setTable(table);
-//pns$
     }
 
     public void setColumnWidth(int[] columnWidth) {
@@ -165,72 +121,45 @@ public final class OrderHistoryPanel extends JPanel implements
         pid = val;
     }
 
-    //public void setParent(CareMapDocument val) {
-    //parent = val;
-    //}
-
-    public void setModuleList(List allModules) {
-
+    /**
+     * allModules から ModuleModel を全部抽出して tModel に加える.
+     * allModules は List＜List＜ModuleModel＞＞
+     * 抽出期間の数だけ List＜ModuleModel＞が List になっている
+     * @param allModules
+     */
+    public void setModuleList(List<List<ModuleModel>> allModules) {
         tModel.clear();
-
-        if (allModules == null || allModules.size() == 0) {
-            return;
-        }
-
-        int size = allModules.size();
-        ArrayList<Object> list = new ArrayList<Object>();
-
-        for (int i = 0; i < size; i++) {
-            List l = (List) allModules.get(i);
-            if (l != null) {
-                for (int j = 0; j < l.size(); j++) {
-                    list.add((Object)l.get(j));
-                }
-            }
-        }
-
-        tModel.setObjectList(list);
+        List<ModuleModel> moduleList = new ArrayList<>();
+        allModules.forEach(list -> list.forEach(model -> moduleList.add(model)));
+        tModel.setObjectList(moduleList);
     }
 
     /**
-     * カレンダーの日が選択されたときに通知を受け、テーブルで日付が一致するオーダの行を選択する。
+     * カレンダーの日が選択されたときに通知を受け、テーブルで日付が一致するオーダの行を選択する.
+     * @param e
      */
+    @Override
     public void propertyChange(PropertyChangeEvent e) {
-
         String prop = e.getPropertyName();
 
         if (prop.equals(CareMapDocument.SELECTED_DATE_PROP)) {
-
             String date = (String) e.getNewValue();
             findDate(date);
-            // if (isMyCode()) {
-            // System.out.println("my propertyChange: " + date);
-            // findDate(date);
-            // }
         }
     }
 
-        /*private boolean isMyCode() {
-                return (markEvent.equals("medOrder")
-                                || markEvent.equals("treatmentOrder") || markEvent
-                                .equals("testOrder")) ? true : false;
-        }*/
-
     /**
-     * オーダ履歴のテーブル行がクリックされたとき、データモデルの ModuleModel を表示する。
+     * オーダ履歴のテーブル行がクリックされたとき、データモデルの ModuleModel を表示する.
      */
     private void displayOrder(int index) {
-
         contents.setText("");
 
-        ModuleModel stamp = (ModuleModel) tModel.getObject(index);
-        if (stamp == null) {
-            return;
-        }
-
-        IInfoModel model = stamp.getModel();
+        ModuleModel stamp = tModel.getObject(index);
+        if (stamp == null) { return; }
 
         try {
+            IInfoModel model = stamp.getModel();
+
             VelocityContext context = ClientContext.getVelocityContext();
             context.put("model", model);
             context.put("stampName", stamp.getModuleInfo().getStampName());
@@ -241,32 +170,32 @@ public final class OrderHistoryPanel extends JPanel implements
 
             // Merge する
             StringWriter sw = new StringWriter();
-            BufferedWriter bw = new BufferedWriter(sw);
-            InputStream instream = ClientContext
-                    .getTemplateAsStream(templateFile);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    instream, "UTF-8"));
-            Velocity.evaluate(context, bw, "stmpHolder", reader);
-            bw.flush();
-            bw.close();
+            BufferedReader reader;
+            try (BufferedWriter bw = new BufferedWriter(sw)) {
+                InputStream instream = ClientContext.getTemplateAsStream(templateFile);
+                reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
+                Velocity.evaluate(context, bw, "stmpHolder", reader);
+                bw.flush();
+            }
             reader.close();
             contents.setText(sw.toString());
 
-        } catch (Exception e) {
-            System.out.println("Execption while setting the stamp text: "
-                    + e.toString());
-            e.printStackTrace();
+        } catch (IOException | ParseErrorException | MethodInvocationException | ResourceNotFoundException e) {
+            System.out.println("OrderHistoryPanel: Execption while setting the stamp text: " + e.toString());
         }
     }
 
+    /**
+     * date の行を選択する.
+     * 日付は column 0 に String として入っている
+     * @param date
+     */
     private void findDate(String date) {
-
-        // System.out.println("selected date = " + date);
         int size = tModel.getObjectCount();
-        for (int i = 0; i < size; i++) {
-            String rowDate = (String) tModel.getValueAt(i, 0);
+        for (int row = 0; row < size; row++) {
+            String rowDate = (String) tModel.getValueAt(row, 0);
             if (rowDate.equals(date)) {
-                table.setRowSelectionInterval(i, i);
+                table.setRowSelectionInterval(row, row);
                 break;
             }
         }
