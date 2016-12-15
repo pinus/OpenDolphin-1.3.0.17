@@ -1,30 +1,21 @@
 package open.dolphin.impl.care;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Insets;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.MyDefaultCellEditor;
+import javax.swing.*;
+import javax.swing.table.*;
+import open.dolphin.client.*;
+
 import open.dolphin.infomodel.AppointmentModel;
+import open.dolphin.util.*;
+
+import java.awt.*;
+import java.beans.*;
+import java.util.*;
 import java.util.List;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import open.dolphin.table.IndentTableCellRenderer;
+import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.util.MMLDate;
 
 /**
  * AppointTablePanel
@@ -32,35 +23,39 @@ import open.dolphin.util.MMLDate;
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
 public class AppointTablePanel extends JPanel implements PropertyChangeListener {
+
     private static final long serialVersionUID = 1013931150179503017L;
 
-    private final String[] COLUMN_NAMES   = new String[] { "　予約日", "　内　　容", "　メ　　モ"};
+    private final String[] COLUMN_NAMES   = ClientContext.getStringArray("appoint.table.columnNames");
     private final int[] COLUMN_WIDTH      = {90, 90,300};
+//pns    private final int NUM_ROWS            = 9;
+    private final int NUM_ROWS            = 1;
     private final int MEMO_COLUMN         = 2;
 
     private CareTableModel tableModel;
     private JTable careTable;
+    private TodayRowRenderer todayRenderer;
+    private String today;   // = "2003-02-21";
     private CareMapDocument parent;
     private boolean dirty;
 
+    /** Creates new AppointTablePanel */
     public AppointTablePanel(JButton updateBtn) {
+
         super(new BorderLayout(0, 5));
-        initComponents(updateBtn);
-    }
 
-    private void initComponents(JButton updateBtn) {
-        IndentTableCellRenderer todayRenderer = new IndentTableCellRenderer();
-        tableModel = new CareTableModel(COLUMN_NAMES);
-        String today = MMLDate.getDate();
-
+        todayRenderer = new TodayRowRenderer();
+        tableModel = new CareTableModel(COLUMN_NAMES, NUM_ROWS);
         careTable = new JTable(tableModel) {
+
             private static final long serialVersionUID = -3446348785385967929L;
 
-            @Override
             public TableCellRenderer getCellRenderer(int row, int col) {
-                AppointmentModel model = tableModel.getObject(row);
-                if (model != null && today.equals(ModelUtils.getDateAsString(model.getDate()))) {
-                    Color c = parent.getAppointColor(model.getName());
+
+                AppointmentModel e = (AppointmentModel)tableModel.getObject(row);
+
+                if (e != null && e.getDate().equals(today)) {
+                    Color c = parent.getAppointColor(e.getName());
                     todayRenderer.setBackground(c);
                     return todayRenderer;
 
@@ -69,28 +64,41 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
                 }
             }
         };
-        careTable.setDefaultRenderer(Object.class, todayRenderer);
         careTable.setSurrendersFocusOnKeystroke(true);
         careTable.setRowSelectionAllowed(true);
+//pns   careTable.setDefaultRenderer(Object.class, new OddEvenRowRenderer());
 
         // CellEditor を設定する
+        // NAME_COL clickCountToStart=1, IME=ON
+        TableColumn column = careTable.getColumnModel().getColumn(MEMO_COLUMN);
+//pns^  column.setCellEditor(new IMECellEditor(new JTextField(), 1, true));
         DefaultCellEditor ce = new MyDefaultCellEditor(new JTextField());
-        ce.setClickCountToStart(1);
-
+        ce.setClickCountToStart(Project.getPreferences().getInt("diagnosis.table.clickCountToStart", 1));
+//pns$
         // Set the column width
         if (COLUMN_WIDTH != null) {
             int len = COLUMN_WIDTH.length;
             for (int i = 0; i < len; i++) {
-                careTable.getColumnModel().getColumn(i).setPreferredWidth(COLUMN_WIDTH[i]);
+                column = careTable.getColumnModel().getColumn(i);
+                column.setPreferredWidth(COLUMN_WIDTH[i]);
             }
         }
+        //careTable.setPreferredSize(new Dimension(500, 200));
 
-        MyJScrollPane scroller = new MyJScrollPane(careTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scroller = new JScrollPane(careTable,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         JPanel cmd = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5,0));
         cmd.add(updateBtn);
         updateBtn.setMargin(new Insets(2,2,2,2));
         this.add(cmd, BorderLayout.NORTH);
         this.add(scroller, BorderLayout.CENTER);
+
+        today = MMLDate.getDate();
+//pns   動的 startNumRows 調節のための設定
+        //tableModel.setTable(careTable);
+//pns^  table の関係ないところをクリックしたら，selection をクリア
         AdditionalTableSettings.setTable(careTable);
     }
 
@@ -98,34 +106,39 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         parent = doc;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
     public void propertyChange(PropertyChangeEvent e) {
 
-        switch (e.getPropertyName()) {
-            case CareMapDocument.CALENDAR_PROP:
-                SimpleCalendarPanel[] calendars = (SimpleCalendarPanel[])e.getNewValue();
-                int len = calendars.length;
-                List list = new ArrayList();
-                for (int i = 0; i < len; i++) {
+        String prop = e.getPropertyName();
 
-                    List results = calendars[i].getAppointDays();
-                    int size = results.size();
-                    //System.out.println("Appoint size = " + size);
-                    for (int k = 0; k < size; k++) {
-                        list.add(results.get(k));
-                    }
+        if (prop.equals(CareMapDocument.CALENDAR_PROP)) {
+
+            SimpleCalendarPanel[] calendars = (SimpleCalendarPanel[])e.getNewValue();
+
+            int len = calendars.length;
+            ArrayList list = new ArrayList();
+
+            for (int i = 0; i < len; i++) {
+
+                ArrayList results = calendars[i].getAppointDays();
+                int size = results.size();
+                //System.out.println("Appoint size = " + size);
+                for (int k = 0; k < size; k++) {
+                    list.add(results.get(k));
                 }
-                tableModel.setObjectList(list);
-                break;
-            case CareMapDocument.APPOINT_PROP:
-                AppointmentModel appoint = (AppointmentModel)e.getNewValue();
-                tableModel.updateAppoint(appoint);
-                break;
-            case CareMapDocument.SELECTED_APPOINT_DATE_PROP:
-                findAppoint((String)e.getNewValue());
-                break;
-            default:
-                break;
+            }
+
+            tableModel.setObjectList(list);
+
+        } else if (prop.equals(CareMapDocument.APPOINT_PROP)) {
+
+            AppointmentModel appoint = (AppointmentModel)e.getNewValue();
+            tableModel.updateAppoint(appoint);
+
+        } else if (prop.equals(CareMapDocument.SELECTED_APPOINT_DATE_PROP)) {
+
+            findAppoint((String)e.getNewValue());
+
         }
     }
 
@@ -142,49 +155,66 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         }
     }
 
-    private class CareTableModel extends ObjectReflectTableModel<AppointmentModel> {
+    protected class CareTableModel extends ObjectReflectTableModel {
+
         private static final long serialVersionUID = -5342312972368806563L;
 
-        public CareTableModel(String[] columnNames) {
+        public CareTableModel(String[] columnNames, int numRows) {
             super(columnNames);
         }
 
         @Override
         public boolean isCellEditable(int row, int col) {
-            return (isValidRow(row) && col == MEMO_COLUMN);
+            return (isValidRow(row) && col == MEMO_COLUMN) ? true : false;
         }
 
         @Override
         public Object getValueAt(int row, int col) {
-            AppointmentModel model = getObject(row);
-            if (model == null) { return null; }
+
+            AppointmentModel e = (AppointmentModel)getObject(row);
+
+            if (e == null) {
+                return null;
+            }
 
             String ret = null;
+
             switch (col) {
-                case 0: // 予約日
-                    ret = ModelUtils.getDateAsString(model.getDate());
+
+                case 0:
+                    ret = ModelUtils.getDateAsString(e.getDate());
                     break;
-                case 1: // 内容
-                    ret = model.getName();
+
+                case 1:
+                    ret = e.getName();
                     break;
-                case 2: // メモ
-                    ret = model.getMemo();
+
+                case 2:
+                    ret = e.getMemo();
                     break;
             }
-            return ret;
+
+            return (Object)ret;
         }
 
         @Override
         public void setValueAt(Object val, int row, int col) {
-            String memo = (String)val;
-            if (col != MEMO_COLUMN || memo == null || memo.trim().equals("")) { return; }
 
-            AppointmentModel entry = getObject(row);
+            String str = (String)val;
+            if (col != MEMO_COLUMN || str == null || str.trim().equals("")) {
+                return;
+            }
+
+            AppointmentModel entry = (AppointmentModel)getObject(row);
+
             if (entry != null) {
-                entry.setMemo(memo);
+
+                entry.setMemo(str);
+
                 if (entry.getState() == AppointmentModel.TT_HAS) {
                     entry.setState(AppointmentModel.TT_REPLACE);
                 }
+
                 fireTableCellUpdated(row, col);
 
                 if (! dirty) {
@@ -203,8 +233,10 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
                 addAppointEntry(appoint);
 
             } else if (row >= 0) {
+
                 if (appoint.getName() != null) {
                     fireTableRowsUpdated(row, row);
+
                 } else {
                     deleteRow(row);
                 }
@@ -213,26 +245,35 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
 
         @SuppressWarnings("unchecked")
         public void addAppointEntry(AppointmentModel entry) {
-            addRow(entry);
+            addRow((Object)entry);
             Collections.sort(getObjectList());
-            int index = getObjectCount() - 1;
+            int index = getObjectCount() -1;
             fireTableRowsUpdated(0, index);
         }
 
         private int findAppointEntry(AppointmentModel appoint) {
-            List<AppointmentModel> models = getObjectList();
-            if (models == null) { return -1; }
 
-            int len = models.size();
+            List objects = getObjectList();
+
+            if (objects == null) {
+                return -1;
+            }
+            int len = objects.size();
             int row = -1;
             for (int i = 0; i < len; i++) {
-                if (appoint == models.get(i)) {
+                if (appoint == (AppointmentModel)objects.get(i)) {
                     row = i;
                     break;
                 }
             }
             return row;
         }
+
+        public Object[] getAppointEntries() {
+            List list = getObjectList();
+            return list != null ? list.toArray() : null;
+        }
+
     }
 
     protected class TodayRowRenderer extends DefaultTableCellRenderer {

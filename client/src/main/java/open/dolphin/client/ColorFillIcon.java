@@ -1,25 +1,19 @@
+/*
+ * ColorFillIcon.java
+ *
+ * Created on 2001/12/08, 13:23
+ */
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import javax.swing.Icon;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Core Java Foundation Class by Kim topley.
  */
 public class ColorFillIcon implements Icon {
-    public static final int BORDER_SIZE = 1;
-    public static final int DEFAULT_SIZE = 10;
 
-    private int width;
-    private int height;
-    private Color fillColor;
-    private Color shadow;
-    private int borderSize;
-    private int fillHeight;
-    private int fillWidth;
-
+    /** Creates new ColorFillIcon */
     public ColorFillIcon(Color fill, int width, int height, int borderSize) {
         super();
 
@@ -48,24 +42,22 @@ public class ColorFillIcon implements Icon {
         fillColor = c;
     }
 
-    @Override
     public int getIconWidth() {
         return width;
     }
 
-    @Override
     public int getIconHeight() {
         return height;
     }
 
-    @Override
     public void paintIcon(Component comp, Graphics g, int x, int y) {
         Color c = g.getColor();
 
         if(borderSize > 0) {
             g.setColor(shadow);
             for (int i = 0; i < borderSize; i++) {
-                g.drawRect(x + i, y + i, width - 2 * i - 1, height - 2 * i -1);
+                g.drawRect(x + i, y + i,
+                           width - 2 * i - 1, height - 2 * i -1);
             }
         }
 
@@ -73,4 +65,16 @@ public class ColorFillIcon implements Icon {
         g.fillRect(x + borderSize, y + borderSize, fillWidth, fillHeight);
         g.setColor(c);
     }
+
+    protected int width;
+    protected int height;
+    protected Color fillColor;
+    protected Color shadow;
+    protected int borderSize;
+    protected int fillHeight;
+    protected int fillWidth;
+
+    public static final int BORDER_SIZE = 2;
+    public static final int DEFAULT_SIZE = 32;
+
 }

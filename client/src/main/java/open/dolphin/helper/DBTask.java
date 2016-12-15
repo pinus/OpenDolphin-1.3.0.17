@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.concurrent.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ClientContext;
@@ -16,8 +17,11 @@ import org.apache.log4j.Logger;
  * @param <T>
  */
 public abstract class DBTask<T> extends SwingWorker<T,Void> implements PropertyChangeListener {
+
     private static long TIMEOUT = 60*1000L;
+
     private Chart context;
+    //private JProgressBar progressBar;
     private Logger logger;
 
     protected DBTask() {
@@ -25,12 +29,10 @@ public abstract class DBTask<T> extends SwingWorker<T,Void> implements PropertyC
 
     public DBTask(Chart context) {
         this.context = context;
-        logger = ClientContext.getBootLogger();
-        connect();
-    }
+        //progressBar = this.context.getStatusPanel().getProgressBar();
 
-    private void connect() {
         addPropertyChangeListener(this);
+        logger = ClientContext.getBootLogger();
     }
 
     @Override
@@ -102,10 +104,12 @@ public abstract class DBTask<T> extends SwingWorker<T,Void> implements PropertyC
 
             } catch (InterruptedException ex) {
                 cancelled();
-            } catch (ExecutionException | RuntimeException ex) {
+            } catch (ExecutionException ex) {
                 failed(ex);
             } catch (TimeoutException ex) {
                 timeout();
+            } catch (RuntimeException ex) {
+                failed(ex);
             }
         }
 
