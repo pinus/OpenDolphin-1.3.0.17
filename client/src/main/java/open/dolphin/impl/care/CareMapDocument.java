@@ -5,11 +5,11 @@ import java.awt.event.*;
 import java.beans.*;
 import java.util.*;
 import java.util.List;
+import java.util.function.Predicate;
 import javax.swing.*;
 import open.dolphin.client.*;
 import open.dolphin.delegater.AppointmentDelegater;
 import open.dolphin.delegater.DocumentDelegater;
-import open.dolphin.dto.ImageSearchSpec;
 import open.dolphin.dto.ModuleSearchSpec;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.AppointmentModel;
@@ -32,47 +32,55 @@ public final class CareMapDocument extends AbstractChartDocument {
     public static final String SELECTED_APPOINT_DATE_PROP = "SELECTED_DATE_PROP";
     public static final String APPOINT_PROP = "APPOINT_PROP";
 
+    private enum Order {
+        処方("medOrder"), 処置("treatmentOrder"), 指導("instractionChargeOrder"),
+        ラボテスト("testOrder"), 生体検査("physiologyOrder"), 放射線("radiologyOrder"),
+        ;
+        private final String code;
+        private Order(String c) { code = c; }
+        public String code() { return code; }
+    }
 
-
-    //private static final String[] orderNames = { "処方", "処置", "指導", "ラボテスト", "生体検査", "放射線"};
-    //private static final String[] orderCodes = { "medOrder", "treatmentOrder", "instractionChargeOrder", "testOrder", "physiologyOrder", "radiologyOrder"};
-    //private static final String[] appointNames = { "再診", "検体検査", "画像診断", "その他" };
-    //private static final Color[] appointColors = {
-    //    new Color(255,165,0), // EXAM_APPO
-    //    new Color(255,69,0), // TEST
-    //    new Color(119,200,211), // IMAGE
-    //    new Color(251, 239, 128) // その他
-    //};
+    private enum Appoint {
+        再診(new Color(255,165,0)), 検体検査(new Color(255,69,0)),
+        画像診断(new Color(119,200,211)), その他(new Color(251, 239, 128)),
+        ;
+        private final Color color;
+        private Appoint(Color c) { color = c; }
+        public Color color() { return color; }
+    }
 
     private static final int IMAGE_WIDTH = 128;
     private static final int IMAGE_HEIGHT = 128;
     private static final String TITLE = "治療履歴";
 
-    private JComboBox<String> orderCombo;
+    //private JComboBox<String> orderCombo;
     private OrderHistoryPanel history;
     private AppointTablePanel appointTable;
-    private ImageHistoryPanel imagePanel;
+    //private ImageHistoryPanel imagePanel;
     private JPanel historyContainer;
-    private final String imageEvent = "image";
+    //private final String imageEvent = "image";
     // Calendars
     private SimpleCalendarPanel c0;
     private SimpleCalendarPanel c1;
     private SimpleCalendarPanel c2;
+    // 抽出期間
     private Period selectedPeriod;
-    private int origin;
+    private int origin; // 基準となる月（今月＝０）
     private PropertyChangeSupport boundSupport;
     // 3ヶ月分のカレンダーセット
     private HashMap<Integer, SimpleCalendarPanel> calendarCache;
     // SimpleCalendarPool のインスタンス
     private SimpleCalendarPanel.SimpleCalendarPool simpleCalendar;
-    //private String selectedEvent;
+    // Order コンボで選択されている event code
+    private String selectedEvent;
 
     private JButton updateAppoBtn; // 予約の更新はこのボタンで行う
 
     // モジュール検索関連
     private List<List<ModuleModel>> allModules;
     private List<List<AppointmentModel>> allAppointments;
-    private List<List<ImageEntry>> allImages;
+    //private List<List<ImageEntry>> allImages;
 
     //private javax.swing.Timer taskTimer;
 
@@ -199,51 +207,26 @@ public final class CareMapDocument extends AbstractChartDocument {
         history.setPid(chartCtx.getPatient().getPatientId());
 
         // 画像履歴用のパネルを生成する
-        imagePanel = new ImageHistoryPanel();
-        imagePanel.setMyParent(this);
-        imagePanel.setPid(chartCtx.getPatient().getPatientId());
+        //imagePanel = new ImageHistoryPanel();
+        //imagePanel.setMyParent(this);
+        //imagePanel.setPid(chartCtx.getPatient().getPatientId());
 
         // 表示するオーダを選択する Combo, カレンダーの送る、戻るボタンを配置するパネル
         JPanel commandPanel = new JPanel();
         commandPanel.setLayout(new BoxLayout(commandPanel, BoxLayout.X_AXIS));
 
         // オーダ選択用のコンボボックス
-        orderCombo = new JComboBox(orderNames);
+        JComboBox<Order> orderCombo = new JComboBox<>(Order.values());
         Dimension dim = new Dimension(100, 26);
         orderCombo.setPreferredSize(dim);
         orderCombo.setMaximumSize(dim);
-        ComboBoxRenderer r = new ComboBoxRenderer();
-        orderCombo.setRenderer(r);
-        orderCombo.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-
-                // オーダ選択が変更されたら
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-
-                    String event = getMarkCode();
-
-                    if (event.equals(imageEvent)) {
-                        // 画像履歴が選択された場合 Image Panel に変更する
-                        historyContainer.removeAll();
-                        historyContainer.add(imagePanel, BorderLayout.CENTER);
-                        historyContainer.revalidate();
-                        // CareMapDocument.this.repaint();
-                        getUI().repaint();
-
-                    } else if (selectedEvent.equals(imageEvent)) {
-                        // 現在のイベントが Image の場合は オーダ履歴用と入れ替える
-                        historyContainer.removeAll();
-                        historyContainer.add(history, BorderLayout.CENTER);
-                        historyContainer.revalidate();
-                        // CareMapDocument.this.repaint();
-                        getUI().repaint();
-                    }
-
-                    // 選択されたオーダをイベント属性に設定する
-                    setSelectedEvent(event);
-                }
+        //ComboBoxRenderer r = new ComboBoxRenderer();
+        //orderCombo.setRenderer(r);
+        orderCombo.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                // 選択されたオーダをイベント属性に設定する
+                String event = ((Order) orderCombo.getSelectedItem()).code();
+                setSelectedEvent(event);
             }
         });
         commandPanel.add(Box.createHorizontalGlue());
@@ -252,27 +235,28 @@ public final class CareMapDocument extends AbstractChartDocument {
         commandPanel.add(orderCombo);
         commandPanel.add(Box.createHorizontalStrut(5));
         commandPanel.add(nextBtn);
-        // cp.add(Box.createHorizontalStrut(30));
         commandPanel.add(Box.createHorizontalGlue());
-        JPanel han = new JPanel();
-        han.setLayout(new BoxLayout(han, BoxLayout.X_AXIS));
-        han.add(new JLabel("予約( "));
-        for (int i = 0; i < appointNames.length; i++) {
-            if (i != 0) {
-                han.add(Box.createHorizontalStrut(7));
-            }
-            AppointLabel dl = new AppointLabel(appointNames[i],
-                    new ColorFillIcon(appointColors[i], 10, 10, 1),
-                    SwingConstants.CENTER);
-            han.add(dl);
-        }
-        han.add(new JLabel(" )"));
-        han.add(Box.createHorizontalStrut(7));
-        Color birthC = ClientContext.getColor("color.BIRTHDAY_BACK");
-        han.add(new JLabel("誕生日", new ColorFillIcon(birthC, 10, 10, 1),
-                SwingConstants.CENTER));
-        han.add(Box.createHorizontalStrut(11));
-        commandPanel.add(han);
+
+        JPanel hanrei = new JPanel();
+        hanrei.setLayout(new BoxLayout(hanrei, BoxLayout.X_AXIS));
+
+        hanrei.add(new JLabel("予約( "));
+        Arrays.asList(Appoint.values()).forEach(appoint -> {
+            Icon icon = new ColorFillIcon(appoint.color());
+            AppointLabel label = new AppointLabel(appoint.name(), icon, SwingConstants.CENTER);
+            hanrei.add(label);
+            hanrei.add(Box.createHorizontalStrut(7));
+        });
+        hanrei.remove(hanrei.getComponentCount()-1); // 最後の Strut を除去
+        hanrei.add(new JLabel(" )"));
+
+        hanrei.add(Box.createHorizontalStrut(7));
+
+        Color birthC = new Color(0,255,255);
+        hanrei.add(new JLabel("誕生日", new ColorFillIcon(birthC), SwingConstants.CENTER));
+        hanrei.add(Box.createHorizontalStrut(11));
+
+        commandPanel.add(hanrei);
 
         myPanel.add(panel);
         myPanel.add(Box.createVerticalStrut(7));
@@ -291,26 +275,12 @@ public final class CareMapDocument extends AbstractChartDocument {
         myPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
 
         // イベントとリスナの関係を設定する
+        addPropertyChangeListenerToCalendarPanel(c0);
+        addPropertyChangeListenerToCalendarPanel(c1);
+        addPropertyChangeListenerToCalendarPanel(c2);
 
         // カレンダーセットの変更通知
         addPropertyChangeListener(CALENDAR_PROP, appointTable);
-
-        c0.addPropertyChangeListener(APPOINT_PROP, appointTable);
-        c1.addPropertyChangeListener(APPOINT_PROP, appointTable);
-        c2.addPropertyChangeListener(APPOINT_PROP, appointTable);
-
-        // カレンダーの日を選択した時に通知されるもの
-        c0.addPropertyChangeListener(SELECTED_DATE_PROP, history);
-        c1.addPropertyChangeListener(SELECTED_DATE_PROP, history);
-        c2.addPropertyChangeListener(SELECTED_DATE_PROP, history);
-        c0.addPropertyChangeListener(SELECTED_DATE_PROP, imagePanel);
-        c1.addPropertyChangeListener(SELECTED_DATE_PROP, imagePanel);
-        c2.addPropertyChangeListener(SELECTED_DATE_PROP, imagePanel);
-
-        // カレンダ上の予約日を選択された時に通知されるもの
-        c0.addPropertyChangeListener(SELECTED_APPOINT_DATE_PROP, appointTable);
-        c1.addPropertyChangeListener(SELECTED_APPOINT_DATE_PROP, appointTable);
-        c2.addPropertyChangeListener(SELECTED_APPOINT_DATE_PROP, appointTable);
     }
 
     /**
@@ -336,12 +306,10 @@ public final class CareMapDocument extends AbstractChartDocument {
      * @param c
      */
     private void addPropertyChangeListenerToCalendarPanel(SimpleCalendarPanel c) {
+        // AppointTablePanel で使う
         c.addPropertyChangeListener(APPOINT_PROP, appointTable);
-
         // カレンダーの日を選択した時に通知されるもの
         c.addPropertyChangeListener(SELECTED_DATE_PROP, history);
-        c.addPropertyChangeListener(SELECTED_DATE_PROP, imagePanel);
-
         // カレンダ上の予約日を選択された時に通知されるもの
         c.addPropertyChangeListener(SELECTED_APPOINT_DATE_PROP, appointTable);
     }
@@ -351,7 +319,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         initialize();
         enter();
         // 最初に選択されているオーダの履歴を表示する
-        setSelectedEvent(getMarkCode());
+        setSelectedEvent(Order.処方.code());
         Period period = new Period(this);
         period.setStartDate(c0.getFirstDate());
         period.setEndDate(c2.getLastDate());
@@ -364,46 +332,27 @@ public final class CareMapDocument extends AbstractChartDocument {
 
     /**
      * オーダを表示するカラーを返す。
-     *
      * @param order
-     *            オーダ名
      * @return カラー
      */
     public Color getOrderColor(String order) {
         Color ret = Color.PINK;
-                /*for (int i = 0; i < orderCodes.length; i++) {
-                        if (order.equals(orderCodes[i])) {
-                                ret = orderColors[i];
-                        }
-                }*/
         return ret;
     }
 
     /**
      * 予約のカラーを返す。
-     *
-     * @param appoint
-     *            予約名
+     * @param target
      * @return カラー
      */
-    public Color getAppointColor(String appoint) {
-
-        if (appoint == null) {
-            return Color.white;
-        }
-
-        Color ret = null;
-        for (int i = 0; i < appointNames.length; i++) {
-            if (appoint.equals(appointNames[i])) {
-                ret = appointColors[i];
-            }
-        }
-        return ret;
+    public Color getAppointColor(String target) {
+        Optional<Appoint> found = Arrays.asList(Appoint.values()).stream()
+                .filter(Predicate.isEqual(target)).findFirst();
+        return found.isPresent()? found.get().color() : Color.WHITE;
     }
 
     /**
-     * プロパティチェンジリスナを追加する。
-     *
+     * プロパティチェンジリスナを追加する.     *
      * @param prop プロパティ名
      * @param l リスナ
      */
@@ -415,8 +364,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * プロパティチェンジリスナを削除する。
-     *
+     * プロパティチェンジリスナを削除する.
      * @param prop プロパティ名
      * @param l リスナ
      */
@@ -429,75 +377,43 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 表示している期間内にあるモジュールの日をマークする。
+     * 表示している期間内にあるモジュールの日をマークする.
      * @param newModules  表示している期間内にあるモジュールのリスト
      */
     public void setAllModules(List<List<ModuleModel>> newModules) {
-
-        if (newModules == null || newModules.isEmpty()) {
-            return;
-        }
+        if (newModules == null || newModules.isEmpty()) { return; }
 
         allModules = newModules;
 
-        c0.setModuleList(selectedEvent, (ArrayList) allModules.get(0));
-        c1.setModuleList(selectedEvent, (ArrayList) allModules.get(1));
-        c2.setModuleList(selectedEvent, (ArrayList) allModules.get(2));
+        c0.setModuleList(selectedEvent, allModules.get(0));
+        c1.setModuleList(selectedEvent, allModules.get(1));
+        c2.setModuleList(selectedEvent, allModules.get(2));
 
         history.setModuleList(allModules);
     }
 
     /**
-     * 表示している期間内にある予約日をマークする。
+     * 表示している期間内にある予約日をマークする.
      * @param allAppo 表示している期間内にある予約日のリスト
      */
     public void setAllAppointments(List<List<AppointmentModel>> allAppo) {
-
-        if (allAppo == null || allAppo.isEmpty()) {
-            return;
-        }
+        if (allAppo == null || allAppo.isEmpty()) { return; }
 
         allAppointments = allAppo;
 
-        c0.setAppointmentList((ArrayList) allAppointments.get(0));
-        c1.setAppointmentList((ArrayList) allAppointments.get(1));
-        c2.setAppointmentList((ArrayList) allAppointments.get(2));
+        c0.setAppointmentList(allAppointments.get(0));
+        c1.setAppointmentList(allAppointments.get(1));
+        c2.setAppointmentList(allAppointments.get(2));
 
         notifyCalendar();
-    }
-
-    /**
-     * 表示している期間内にある画像をマークする。
-     * @param allAppo 表示している期間内にある画像のリスト
-     */
-    public void setAllImages(List images) {
-
-        if (images == null || images.size() == 0) {
-            return;
-        }
-
-        allImages = images;
-
-        c0.setImageList(selectedEvent, (ArrayList) allImages.get(0));
-        c1.setImageList(selectedEvent, (ArrayList) allImages.get(1));
-        c2.setImageList(selectedEvent, (ArrayList) allImages.get(2));
-
-        imagePanel.setImageList(allImages);
     }
 
     /**
      * 抽出期間が変更された場合、現在選択されているイベントに応じ、 モジュールまたは画像履歴を取得する。
      */
     public void setSelectedPeriod(Period p) {
-        //Period old = selectedPeriod;
         selectedPeriod = p;
-
-        if (getSelectedEvent().equals(imageEvent)) {
-            getImageList();
-
-        } else {
-            getModuleList(true);
-        }
+        getModuleList(true);
     }
 
     /**
@@ -517,17 +433,11 @@ public final class CareMapDocument extends AbstractChartDocument {
 
     /**
      * 表示するオーダが変更された場合、選択されたイベントに応じ、 モジュールまたは画像履歴を取得する。
+     * @param code
      */
     public void setSelectedEvent(String code) {
-        //String old = selectedEvent;
         selectedEvent = code;
-
-        if (getSelectedEvent().equals(imageEvent)) {
-            getImageList();
-
-        } else {
-            getModuleList(false);
-        }
+        getModuleList(false);
     }
 
     /**
@@ -535,10 +445,7 @@ public final class CareMapDocument extends AbstractChartDocument {
      * @param withAppo
      */
     private void getModuleList(final boolean withAppo) {
-
-        if (selectedEvent == null || selectedPeriod == null) {
-            return;
-        }
+        if (selectedEvent == null || selectedPeriod == null) { return; }
 
         final ModuleSearchSpec spec = new ModuleSearchSpec();
         spec.setCode(ModuleSearchSpec.ENTITY_SEARCH);
@@ -582,66 +489,6 @@ public final class CareMapDocument extends AbstractChartDocument {
         task.execute();
     }
 
-    /**
-     * 設定されている抽出期間から画像履歴を取得する。
-     */
-    private void getImageList() {
-
-        if (selectedPeriod == null) {
-            return;
-        }
-
-        final ImageSearchSpec spec = new ImageSearchSpec();
-        spec.setCode(ImageSearchSpec.PATIENT_SEARCH);
-        spec.setKarteId(getContext().getKarte().getId());
-        spec.setStatus("F");
-
-        // カレンダ別に検索する
-        Date[] fromDate = new Date[3];
-        fromDate[0] = ModelUtils.getDateTimeAsObject(c0.getFirstDate() + "T00:00:00");
-        fromDate[1] = ModelUtils.getDateTimeAsObject(c1.getFirstDate() + "T00:00:00");
-        fromDate[2] = ModelUtils.getDateTimeAsObject(c2.getFirstDate() + "T00:00:00");
-        spec.setFromDate(fromDate);
-
-        Date[] toDate = new Date[3];
-        toDate[0] = ModelUtils.getDateTimeAsObject(c0.getLastDate() + "T23:59:59");
-        toDate[1] = ModelUtils.getDateTimeAsObject(c1.getLastDate() + "T23:59:59");
-        toDate[2] = ModelUtils.getDateTimeAsObject(c2.getLastDate() + "T23:59:59");
-        spec.setToDate(toDate);
-
-        // カレンダ別に検索する
-                /*String[] fromDate = new String[3];
-                fromDate[0] = c0.getFirstDate() + "T00:00:00";
-                fromDate[1] = c1.getFirstDate() + "T00:00:00";
-                fromDate[2] = c2.getFirstDate() + "T00:00:00";
-                spec.setFromDate(fromDate);
-
-                String[] toDate = new String[3];
-                toDate[0] = c0.getLastDate() + "T23:59:59";
-                toDate[1] = c1.getLastDate() + "T23:59:59";
-                toDate[2] = c2.getLastDate() + "T23:59:59";
-                spec.setToDate(toDate);*/
-
-        spec.setIconSize(new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
-
-        final DocumentDelegater ddl = new DocumentDelegater();
-
-        DBTask task = new DBTask<List>(getContext()) {
-
-            @Override
-            public List doInBackground() throws Exception {
-                return ddl.getImageList(spec);
-            }
-
-            @Override
-            public void succeeded(List result) {
-                setAllImages(result);
-            }
-        };
-
-        task.execute();
-    }
-
     @Override
     public void setDirty(boolean dirty) {
         if (isDirty() != dirty) {
@@ -651,12 +498,11 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 新規及び変更された予約を保存する。
+     * 新規及び変更された予約を保存する.
      */
     @Override
     public void save() {
-
-        final ArrayList<AppointmentModel> results = new ArrayList<AppointmentModel>();
+        final ArrayList<AppointmentModel> results = new ArrayList<>();
 
         // カレンダー単位に抽出する
         for (SimpleCalendarPanel c : calendarCache.values()) {
@@ -711,68 +557,5 @@ public final class CareMapDocument extends AbstractChartDocument {
         };
 
         task.execute();
-    }
-
-    private String getMarkCode() {
-        // 履歴名を検索コード(EntityName)に変換
-        int index = orderCombo.getSelectedIndex();
-        return orderCodes[index];
-    }
-
-    /**
-     * ComboBoxRenderer
-     *
-     */
-    private class ComboBoxRenderer extends JLabel implements ListCellRenderer {
-        private static final long serialVersionUID = 4661822065789099499L;
-
-        public ComboBoxRenderer() {
-            setOpaque(true);
-            // setHorizontalAlignment(CENTER);
-            setVerticalAlignment(CENTER);
-        }
-
-        /*
-         * This method finds the image and text corresponding to the selected
-         * value and returns the label, set up to display the text and image.
-         */
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value,
-                int index, boolean isSelected, boolean cellHasFocus) {
-            // Get the selected index. (The index param isn't
-            // always valid, so just use the value.)
-
-            if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
-            } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
-            }
-
-            // Set the icon and text. If icon was null, say so.
-            Icon icon = getOrderIcon((String) value);
-
-            if (icon != null) {
-                setIcon(icon);
-                setText((String) value);
-            } else {
-                setText((String) value);
-            }
-
-            return (Component) this;
-        }
-
-        private Icon getOrderIcon(String name) {
-            Icon ret = null;
-                        /*for (int i = 0; i < orderNames.length; i++) {
-                                if (appoName.equals(orderNames[i])) {
-                                        ret = orderIcons[i];
-                                        break;
-                                }
-                        }*/
-
-            return ret;
-        }
     }
 }

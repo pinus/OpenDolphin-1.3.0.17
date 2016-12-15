@@ -1,6 +1,7 @@
 package open.dolphin.client;
 
-import java.util.*;
+import java.util.EventObject;
+
 
 /**
  * Period
@@ -8,13 +9,11 @@ import java.util.*;
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
 public class Period extends EventObject {
-
     private static final long serialVersionUID = -8572561462807732975L;
-	
+
     private String startDate;
     private String endDate;
 
-    /** Creates a new instance of Period */
     public Period(Object source) {
         super(source);
     }
