@@ -28,6 +28,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 import open.dolphin.table.IndentTableCellRenderer;
+import open.dolphin.ui.MyJScrollPane;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
@@ -92,13 +93,13 @@ public final class OrderHistoryPanel extends JPanel implements PropertyChangeLis
         });
         setColumnWidth(new int[] { 50, 240 });
 
-        JScrollPane scroller = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scroller = new MyJScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(scroller, BorderLayout.CENTER);
 
         // 内容表示用 TextArea
         contents = new JLabel();
         contents.setBackground(Color.white);
-        JScrollPane cs = new JScrollPane(contents, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane cs = new MyJScrollPane(contents, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         cs.setPreferredSize(contentSize);
         cs.setMaximumSize(contentSize);
         add(cs, BorderLayout.EAST);

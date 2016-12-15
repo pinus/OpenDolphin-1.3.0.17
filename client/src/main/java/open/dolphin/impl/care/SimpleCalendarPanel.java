@@ -1,34 +1,62 @@
 package open.dolphin.impl.care;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.table.*;
-import open.dolphin.client.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import open.dolphin.client.CalendarHeaderRenderer;
+import open.dolphin.client.Chart;
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.GUIFactory;
+import open.dolphin.client.ImageEntry;
+import open.dolphin.client.MedicalEvent;
 import open.dolphin.helper.ReflectAction;
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.ui.MyJPopupMenu;
-import open.dolphin.util.*;
+import open.dolphin.util.MMLDate;
 
 /**
- * SimpleCalendarPanel
+ * SimpleCalendarPanel.
+ * SimpleCalendarPool#acquireSimpleCalendar(int relativeMonth) で取得する
  *
  * @author Kazushi Minagawa
  */
 public final class SimpleCalendarPanel extends JPanel implements DragGestureListener, DropTargetListener, DragSourceListener {
     private static final long serialVersionUID = 3030024622746649784L;
 
-    private String[] columnNames = ClientContext.getStringArray("calendar.day.week");
-
+    private final String[] columnNames = new String[] {"日","月","火","水","木","金","土"};
     private int year;
     private int month;
-    private int numRows;
+    private int numRows; // week number of the month
     private int firstCol;
     private int lastCol;
     private GregorianCalendar firstDay;
@@ -38,22 +66,22 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
     private JTable table;
     private MedicalEvent[][] days;
-    private int rowHeight = ClientContext.getInt("calendar.cell.height");
-    private int columnWidth = ClientContext.getInt("calendar.cell.width");
-    private int horizontalAlignment = SwingConstants.CENTER;
-    private int autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS;
+    private final int rowHeight = 18;
+    private final int columnWidth = 27;
+    private final int horizontalAlignment = SwingConstants.CENTER;
+    private final int autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS;
 
     // Color
-    private Color sundayColor = ClientContext.getColor("color.SUNDAY_FORE");
-    private Color saturdayColor = ClientContext.getColor("color.SATURDAY_FORE");
-    private Color todayBackground = ClientContext.getColor("color.TODAY_BACK");
-    private Color calendarBackground = ClientContext.getColor("color.CALENDAR_BACK");
-    private Color weekdayColor = ClientContext.getColor("color.WEEKDAY_FORE");
-    private Color birthdayColor = ClientContext.getColor("color.BIRTHDAY_BACK");
+    private final Color sundayColor = ClientContext.getColor("color.SUNDAY_FORE");
+    private final Color saturdayColor = ClientContext.getColor("color.SATURDAY_FORE");
+    private final Color todayBackground = ClientContext.getColor("color.TODAY_BACK");
+    private final Color calendarBackground = ClientContext.getColor("color.CALENDAR_BACK");
+    private final Color weekdayColor = ClientContext.getColor("color.WEEKDAY_FORE");
+    private final Color birthdayColor = ClientContext.getColor("color.BIRTHDAY_BACK");
 
     // Font
-    private Font outOfMonthFont = new Font("Dialog", Font.PLAIN, ClientContext.getInt("calendar.font.size.outOfMonth"));
-    private Font inMonthFont = new Font("Dialog", Font.PLAIN, ClientContext.getInt("calendar.font.size"));
+    private final Font outOfMonthFont = new Font("Dialog", Font.PLAIN, 9);
+    private final Font inMonthFont = new Font("Dialog", Font.PLAIN, 12);
 
     // DnD
     private DragSource dragSource;
@@ -79,12 +107,13 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     }
 
     private SimpleCalendarPanel(int n) {
-
         this();
-
         // 今月を基点とした相対月数
         relativeMonth = n;
+        initComponents();
+    }
 
+    private void initComponents() {
         // Get right now
         today = new GregorianCalendar();
         today.clear(Calendar.MILLISECOND);
@@ -95,18 +124,14 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         // Create requested month calendar
         // Add relative number to create
-        gc.add(Calendar.MONTH, n);
-        this.year = gc.get(Calendar.YEAR);
-        this.month = gc.get(Calendar.MONTH);
+        gc.add(Calendar.MONTH, relativeMonth);
+        year = gc.get(Calendar.YEAR);
+        month = gc.get(Calendar.MONTH);
         table = createCalendarTable(gc);
         table.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(MouseEvent e) {
-
-                if (e.getClickCount() != 1) {
-                    return;
-                }
+                if (e.getClickCount() != 1) { return; }
 
                 Point p = e.getPoint();
                 int row = table.rowAtPoint(p);
@@ -166,7 +191,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     }
 
     public boolean isThisMonth() {
-        return relativeMonth == 0 ? true : false;
+        return relativeMonth == 0;
     }
 
     @Override
@@ -197,11 +222,10 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      * 予約のある日をリストで返す。
      * @return 予約日リスト
      */
-    public ArrayList<AppointmentModel> getAppointDays() {
-
-        ArrayList<AppointmentModel> results = new ArrayList<AppointmentModel>();
-        MedicalEvent event = null;
-        AppointmentModel appoint = null;
+    public List<AppointmentModel> getAppointDays() {
+        List<AppointmentModel> results = new ArrayList<>();
+        MedicalEvent event;
+        AppointmentModel appoint;
 
         // 1 週目を調べる
         for (int col = firstCol; col < 7; col++) {
@@ -239,11 +263,10 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      * 更新された予約のリストを返す。
      * @return 更新された予約のリスト
      */
-    public ArrayList<AppointmentModel> getUpdatedAppoints() {
-
-        ArrayList<AppointmentModel> results = new ArrayList<AppointmentModel>();
-        MedicalEvent event = null;
-        AppointmentModel appoint = null;
+    public List<AppointmentModel> getUpdatedAppoints() {
+        List<AppointmentModel> results = new ArrayList<>();
+        MedicalEvent event;
+        AppointmentModel appoint;
 
         // 1 週目を調べる
         for (int col = firstCol; col < 7; col++) {
@@ -277,29 +300,20 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         return results;
     }
 
-    public void setModuleList(String event, ArrayList list) {
-
+    public void setModuleList(String event, List<ModuleModel> list) {
         markEvent = event;
         clearMark();
-
-        if (list == null || list.isEmpty()) {
-            return;
-        }
+        if (list == null || list.isEmpty()) { return; }
 
         int size = list.size();
-        String mkDate = null;
-        MedicalEvent me = null;
-        int index = 0;
-        int[] ymd = null;
-        int row = 0;
-        int col = 0;
-
-        ModuleModel module = null;
+        int index, row, col;
+        int[] ymd;
+        String mkDate;
+        MedicalEvent me;
+        ModuleModel module;
 
         for (int i = 0; i < size; i++) {
-
-            module = (ModuleModel)list.get(i);
-            //mkDate = ModelUtils.getDateAsString(module.getModuleInfo().getConfirmDate());
+            module = list.get(i);
             mkDate = ModelUtils.getDateAsString(module.getConfirmed());
             index = mkDate.indexOf('T');
             if (index > 0) {
@@ -318,34 +332,27 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
     }
 
-    public void setImageList(String event, ArrayList list) {
-
+    public void setImageList(String event, List<ImageEntry> list) {
         markEvent = event;
         clearMark();
-
-        if (list == null || list.isEmpty()) {
-            return;
-        }
+        if (list == null || list.isEmpty()) { return; }
 
         int size = list.size();
-        String mkDate = null;
-        MedicalEvent me = null;
-        int index = 0;
+        int index, row, col;
         int[] ymd = null;
-        int row = 0;
-        int col = 0;
+        String mkDate;
+        MedicalEvent me;
 
-        ImageEntry image = null;
+        ImageEntry image;
 
         for (int i = 0; i < size; i++) {
 
-            image = (ImageEntry)list.get(i);
+            image = list.get(i);
             mkDate = image.getConfirmDate();
             index = mkDate.indexOf('T');
             if (index > 0) {
                 mkDate = mkDate.substring(0, index);
             }
-            //System.out.println("PVT date: " + pvtDate);
             ymd = MMLDate.getCalendarYMD(mkDate);
 
             int shiftDay = ymd[2] + (firstCol -1);
@@ -359,17 +366,9 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
     }
 
-    public void setAppointmentList(ArrayList list) {
-
+    public void setAppointmentList(List<AppointmentModel> list) {
         // 当月以降のカレンダのみ検索する
-        if (relativeMonth < 0 ) {
-            return;
-        }
-
-        // 空ならリターン
-        if ( list == null || list.isEmpty() ) {
-            return;
-        }
+        if (relativeMonth < 0 || list == null || list.isEmpty() ) { return; }
 
         // 当月であれば本日の３日前から検索、そうでない場合はカレンダの最初の日から検索する
         String startDate = isThisMonth() ? MMLDate.getDayFromToday(-3) : MMLDate.getDate(firstDay);
@@ -377,7 +376,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         // 表示する
         int size = list.size();
         for (int i = 0; i < size; i++) {
-            AppointmentModel ae = (AppointmentModel)list.get(i);
+            AppointmentModel ae = list.get(i);
             ae.setState(AppointmentModel.TT_HAS);
             String date = ModelUtils.getDateAsString(ae.getDate());
             int index = date.indexOf('T');
@@ -407,29 +406,22 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      * 現在の表示をクリアする
      */
     private void clearMark() {
-        MedicalEvent me = null;
+        MedicalEvent me;
         boolean exit = false;
-        //String val = null;
 
         for (int row = 0; row < numRows; row++) {
-
             for (int col = 0; col < 7; col++) {
-
                 me = days[row][col];
 
                 if (me.isToday()) {
                     exit = true;
                     break;
-
                 } else if (me.getMedicalCode() != null) {
-
                     me.setMedicalCode(null);
                     ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
                 }
             }
-            if (exit) {
-                break;
-            }
+            if (exit) { break; }
         }
     }
 
@@ -537,18 +529,14 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         AppointmentModel source = null;
         try {
             source = (AppointmentModel)tr.getTransferData(AppointEntryTransferable.appointFlavor);
-
-        } catch (Exception ue) {
+        } catch (UnsupportedFlavorException | IOException ue) {
             System.out.println(ue);
-            source = null;
         }
         if (source == null) {
             e.getDropTargetContext().dropComplete(false);
             return;
         }
-
         processAppoint(row, col, source.getName(), source.getMemo());
-
         e.getDropTargetContext().dropComplete(true);
     }
 
@@ -560,7 +548,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         return (evt.getDropAction() & DnDConstants.ACTION_COPY_OR_MOVE) != 0;
     }
 
-    /** DropTaregetListener interface method */
+    /** DropTaregetListener interface method
+     * @param e */
     @Override
     public void dragEnter(DropTargetDragEvent e) {
         if (! isDragAcceptable(e)) {
@@ -568,13 +557,15 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
     }
 
-    /** DropTaregetListener interface method */
+    /** DropTaregetListener interface method
+     * @param e */
     @Override
     public void dragExit(DropTargetEvent e) {
         setDropTargetBorder(false);
     }
 
-    /** DropTaregetListener interface method */
+    /** DropTaregetListener interface method
+     * @param e */
     @Override
     public void dragOver(DropTargetDragEvent e) {
         if (isDragAcceptable(e)) {
@@ -587,7 +578,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
     }
 
-    /** DropTaregetListener interface method */
+    /** DropTaregetListener interface method
+     * @param e */
     @Override
     public void dropActionChanged(DropTargetDragEvent e) {
         if (! isDragAcceptable(e)) {
@@ -600,43 +592,35 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         table.setBorder(BorderFactory.createLineBorder(c, 2));
     }
 
-
     /**
      * カレンダーテーブルを生成する
      */
     private JTable createCalendarTable(GregorianCalendar gc) {
-
         days = createDays(gc);
 
         AbstractTableModel model = new AbstractTableModel() {
-
             private static final long serialVersionUID = -6437119956252935580L;
 
             @Override
             public int getRowCount() {
                 return days.length;
             }
-
             @Override
             public int getColumnCount() {
                 return days[0].length;
             }
-
             @Override
             public Object getValueAt(int row, int col) {
                 return days[row][col];
             }
-
             @Override
             public String getColumnName(int col) {
                 return columnNames[col];
             }
-
             @Override
-            public Class getColumnClass(int col) {
+            public Class<String> getColumnClass(int col) {
                 return java.lang.String.class;
             }
-
             @Override
             public boolean isCellEditable(int row, int col) {
                 return false;
@@ -657,7 +641,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         tbl.getTableHeader().setDefaultRenderer(new CalendarHeaderRenderer());
 
         // Set ColumnWidth
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < 7; i++) {
             column = tbl.getColumnModel().getColumn(i);
             column.setMinWidth(columnWidth);
@@ -668,14 +652,12 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         // Embed popupMenu
         tbl.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.isPopupTrigger()) {
                     doPopup(e);
                 }
             }
-
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()) {
@@ -683,12 +665,10 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
                 }
             }
         });
-
         return tbl;
     }
 
     private void doPopup(MouseEvent e) {
-
         // ReadOnly 時の予約は不可
         if (context.isReadOnly()) {
             return;
@@ -834,7 +814,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      */
     private MedicalEvent[][] createDays(GregorianCalendar gc) {
 
-        MedicalEvent[][] data = null;
+        MedicalEvent[][] data;
 
         // Ｎケ月前／先の今日と同じ日
         int dayOfMonth = gc.get(Calendar.DAY_OF_MONTH);
@@ -880,11 +860,11 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
                         gc.get(Calendar.DAY_OF_WEEK));
 
                 // 月外の日か
-                b = month == gc.get(Calendar.MONTH) ? true : false;
+                b = month == gc.get(Calendar.MONTH);
                 me.setOutOfMonth(!b);
 
                 // 今日か
-                b = today.equals(gc) ? true : false;
+                b = today.equals(gc);
                 me.setToday(b);
 
                 data[i][j] = me;
@@ -900,11 +880,14 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      * Custom table cell renderer for the carendar panel.
      */
     private class DateRenderer extends DefaultTableCellRenderer {
-
         private static final long serialVersionUID = -5061911803358533448L;
 
         public DateRenderer() {
             super();
+            initComponents();
+        }
+
+        private void initComponents() {
             setOpaque(true);
         }
 
@@ -923,51 +906,41 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
                 MedicalEvent me = (MedicalEvent)value;
                 String eventCode = me.getMedicalCode();
 
-                int dayOfWeek = me.getDayOfWeek();
-
-                if (dayOfWeek == 1) {
-                    this.setForeground(sundayColor);
-
-                } else if (dayOfWeek == 7) {
-                    this.setForeground(saturdayColor);
-
-                } else {
-                    this.setForeground(weekdayColor);
+                switch (me.getDayOfWeek()) {
+                    case 1:
+                        this.setForeground(sundayColor);
+                        break;
+                    case 7:
+                        this.setForeground(saturdayColor);
+                        break;
+                    default:
+                        this.setForeground(weekdayColor);
+                        break;
                 }
-
                 if (me.isOutOfMonth()) {
                     this.setFont(outOfMonthFont);
 
                 } else {
                     this.setFont(inMonthFont);
                 }
-
                 // 誕生日
                 if (me.getDisplayDate().endsWith(birthday)) {
                     this.setBackground(birthdayColor);
-
-                    // 本日
+                // 本日
                 } else if (me.isToday() && (!me.isOutOfMonth())) {
                     this.setBackground(todayBackground);
-
-                    // 実施オーダのある日
+                // 実施オーダのある日
                 } else if (eventCode != null) {
                     Color c = parent.getOrderColor(eventCode);
                     this.setBackground(c);
-
-                    // 予約のある日
+                // 予約のある日
                 } else if (me.getAppointEntry() != null) {
-
                     String appoName = me.getAppointmentName();
-
                     if (appoName == null) {
                         // Cancel
                         this.setBackground(calendarBackground);
-
                     } else {
-
                         Color c = parent.getAppointColor(appoName);
-
                         // 本日以前
                         if (me.before(today)) {
                             this.setBackground(calendarBackground);
@@ -978,15 +951,11 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
                             this.setBackground(c);
                         }
                     }
-
-                    // 何もない日
+                // 何もない日
                 } else {
-
                     this.setBackground(calendarBackground);
                 }
-
                 ((JLabel)compo).setText(me.toString());
-
             }
             return compo;
         }
@@ -997,8 +966,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      */
     public static class SimpleCalendarPool {
 
-        private static SimpleCalendarPool instance = new SimpleCalendarPool();
-        private HashMap<String, ArrayList> poolDictionary = new HashMap<String, ArrayList>();
+        private static final SimpleCalendarPool instance = new SimpleCalendarPool();
+        private final HashMap<Integer, List<SimpleCalendarPanel>> poolDictionary = new HashMap<>();
 
         private SimpleCalendarPool() {
         }
@@ -1008,22 +977,21 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
 
         public synchronized SimpleCalendarPanel acquireSimpleCalendar(int n) {
-            ArrayList pool = poolDictionary.get(String.valueOf(n));
+            List<SimpleCalendarPanel> pool = poolDictionary.get(n);
             if (pool != null) {
                 int size = pool.size();
                 size--;
-                return (SimpleCalendarPanel)pool.remove(size);
+                return pool.remove(size);
             }
-            return new SimpleCalendarPanel(n);
-        }
+                return new SimpleCalendarPanel(n);
+            }
 
         public synchronized void releaseSimpleCalendar(SimpleCalendarPanel c) {
             int n = c.getRelativeMonth();
-            String key = String.valueOf(n);
-            ArrayList pool = poolDictionary.get(key);
+            List<SimpleCalendarPanel> pool = poolDictionary.get(n);
             if (pool == null) {
-                pool = new ArrayList<SimpleCalendarPanel>(5);
-                poolDictionary.put(key, pool);
+                pool = new ArrayList<>(5);
+                poolDictionary.put(n, pool);
             }
             pool.add(c);
         }
