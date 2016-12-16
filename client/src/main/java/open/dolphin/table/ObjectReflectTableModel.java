@@ -19,7 +19,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     // カラム名配列
     private String[] columnNames;
     // カラムクラス配列
-    private Class[] columnClasses;
+    private Class<?>[] columnClasses;
     // 属性値を取得するためのメソッド名
     private String[] methodNames;
     // カラム数
@@ -42,7 +42,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      * @param methodNames メソッド名配列
      * @param columnClasses カラムクラス配列
      */
-    public ObjectReflectTableModel(String[] columnNames, int startNumRows, String[] methodNames, Class[] columnClasses) {
+    public ObjectReflectTableModel(String[] columnNames, int startNumRows, String[] methodNames, Class<?>[] columnClasses) {
         this.columnNames = columnNames;
         this.methodNames = methodNames;
         this.columnClasses = columnClasses;
@@ -86,7 +86,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      * @return
      */
     @Override
-    public Class getColumnClass(int index) {
+    public Class<?> getColumnClass(int index) {
         return (columnClasses != null && index < columnClasses.length) ? columnClasses[index] : String.class;
     }
 

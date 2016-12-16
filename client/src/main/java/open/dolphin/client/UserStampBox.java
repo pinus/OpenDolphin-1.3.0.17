@@ -177,7 +177,7 @@ public class UserStampBox extends AbstractStampBox {
                 public void keyPressed(KeyEvent e) {
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
                         List<ChartImpl> allCharts = ChartImpl.getAllChart();
-                        if (allCharts.size() == 1) {
+                        if (! allCharts.isEmpty()) {
                             ChartImpl chart = allCharts.get(0);
                             DiagnosisInspector inspector = chart.getDiagnosisInspector();
                             JList diagList = inspector.getList();
@@ -250,15 +250,22 @@ public class UserStampBox extends AbstractStampBox {
      * AbstractAction which sends Stamps to a Chart
      */
     private abstract class SendStampBase extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
         public final Chart chart;
         public final StampTree tree;
 
         public SendStampBase(Chart chart, StampTree tree) {
             this.chart = chart;
             this.tree = tree;
+            initComponent();
+        }
+
+        private void initComponent() {
             putValue(Action.NAME, getName(chart));
             putValue(Action.SMALL_ICON, GUIConst.ICON_ARROW_UP_LEFT_16);
         }
+
         /**
          * アクションの名前（メニューに表示される文字列）
          * @param chart
@@ -275,6 +282,8 @@ public class UserStampBox extends AbstractStampBox {
      * DiagnosisDocument に StampTree から Diagnosis を送る Action
      */
     private class SendDiagnosisAction extends SendStampBase {
+        private static final long serialVersionUID = 1L;
+
         private final DiagnosisDocument doc;
 
         public SendDiagnosisAction(Chart chart, StampTree tree) {
@@ -296,6 +305,8 @@ public class UserStampBox extends AbstractStampBox {
      * Action which sends selected Stamps to PPane
      */
     private class SendStampAction extends SendStampBase {
+        private static final long serialVersionUID = 1L;
+        
         private final KartePane pane;
         private final String entity;
 
