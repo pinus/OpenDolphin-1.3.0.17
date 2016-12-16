@@ -1,19 +1,34 @@
-/*
- * ColorFillIcon.java
- *
- * Created on 2001/12/08, 13:23
- */
 package open.dolphin.client;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import javax.swing.Icon;
+
 
 /**
  * Core Java Foundation Class by Kim topley.
  */
 public class ColorFillIcon implements Icon {
 
-    /** Creates new ColorFillIcon */
+    public static final int BORDER_SIZE = 2;
+    public static final int DEFAULT_SIZE = 32;
+
+    private int width;
+    private int height;
+    private Color fillColor;
+    private Color shadow;
+    private int borderSize;
+    private int fillHeight;
+    private int fillWidth;
+
+    /**
+     * Creates new ColorFillIcon.
+     * @param fill
+     * @param width
+     * @param height
+     * @param borderSize
+     */
     public ColorFillIcon(Color fill, int width, int height, int borderSize) {
         super();
 
@@ -26,10 +41,19 @@ public class ColorFillIcon implements Icon {
         this.fillHeight = height - 2 * borderSize;
     }
 
+    /**
+     * Creates new ColorFillIcon.
+     * @param fill
+     * @param size
+     */
     public ColorFillIcon(Color fill, int size) {
         this(fill, size, size, BORDER_SIZE);
     }
 
+    /**
+     * Creates new ColorFillIcon.
+     * @param fill
+     */
     public ColorFillIcon(Color fill) {
         this(fill, DEFAULT_SIZE, DEFAULT_SIZE, BORDER_SIZE);
     }
@@ -42,14 +66,17 @@ public class ColorFillIcon implements Icon {
         fillColor = c;
     }
 
+    @Override
     public int getIconWidth() {
         return width;
     }
 
+    @Override
     public int getIconHeight() {
         return height;
     }
 
+    @Override
     public void paintIcon(Component comp, Graphics g, int x, int y) {
         Color c = g.getColor();
 
@@ -65,16 +92,4 @@ public class ColorFillIcon implements Icon {
         g.fillRect(x + borderSize, y + borderSize, fillWidth, fillHeight);
         g.setColor(c);
     }
-
-    protected int width;
-    protected int height;
-    protected Color fillColor;
-    protected Color shadow;
-    protected int borderSize;
-    protected int fillHeight;
-    protected int fillWidth;
-
-    public static final int BORDER_SIZE = 2;
-    public static final int DEFAULT_SIZE = 32;
-
 }

@@ -18,6 +18,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextPane;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
+import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.inspector.DiagnosisInspector;
 import open.dolphin.util.StampTreeUtils;
 
@@ -180,7 +181,7 @@ public class UserStampBox extends AbstractStampBox {
                         if (! allCharts.isEmpty()) {
                             ChartImpl chart = allCharts.get(0);
                             DiagnosisInspector inspector = chart.getDiagnosisInspector();
-                            JList diagList = inspector.getList();
+                            JList<RegisteredDiagnosisModel> diagList = inspector.getList();
                             int selection = diagList.getSelectedIndex();
                             if (selection != -1) {
                                 diagList.dispatchEvent(e);
@@ -306,7 +307,7 @@ public class UserStampBox extends AbstractStampBox {
      */
     private class SendStampAction extends SendStampBase {
         private static final long serialVersionUID = 1L;
-        
+
         private final KartePane pane;
         private final String entity;
 
