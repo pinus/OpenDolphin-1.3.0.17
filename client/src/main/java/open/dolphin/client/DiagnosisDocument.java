@@ -41,7 +41,13 @@ import open.dolphin.util.MMLDate;
  */
 public final class DiagnosisDocument extends AbstractChartDocument implements PropertyChangeListener {
 
+    // 定数
     private static final String TITLE = "傷病名";
+
+    // propertyChange 用
+    public static final String ADD_UPDATED_LIST = "addUpdatedList";
+    public static final String ADD_ADDED_LIST = "addAddedList";
+
     // 傷病名テーブルのカラム番号定義
     public static final int DIAGNOSIS_COL = 0;
     public static final int CATEGORY_COL = 1;
@@ -49,8 +55,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     public static final int START_DATE_COL = 3;
     public static final int END_DATE_COL = 4;
 
-    // 抽出期間コンボボックスデータ
-    private final NameValuePair[] extractionObjects = ClientContext.getNameValuePair("diagnosis.combo.period");
+    // 病名 Category
+    public static final String MAIN_DIAGNOSIS = "主病名";
+    public static final String SUSPECTED_DIAGNOSIS = "疑い病名";
 
     // GUI コンポーネント定義
     private static final ImageIcon DELETE_BUTTON_IMAGE = GUIConst.ICON_REMOVE_16;
@@ -70,6 +77,44 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     public static final Color DELETED_COLOR = new Color(192,192,192); // silver
     public static final Color ENDED_COLOR = new Color(119,136,153); // light slate gray
     public static final Color ENDED_SELECTION_COLOR = new Color(220,220,220);// grains boro
+
+    // Enum
+    // for 抽出期間 comboBox
+    //private final NameValuePair[] extractionObjects = ClientContext.getNameValuePair("diagnosis.combo.period");
+    private enum ExtractionPeriod {
+        all("全て", 0), one("１年", -12), two("２年", -24), three("３年", -36), five("５年", -60)
+        ;
+        private final String name;
+        private final int value;
+        private ExtractionPeriod (String n, int v) { name = n; value = v; }
+        @Override
+        public String toString() { return name; }
+        public int value() { return value; }
+    }
+    // for categoryCombo (主病名 or 疑い病名)
+    public enum DiagnosisCategory {
+        none("", ""), mainDiagnosis(MAIN_DIAGNOSIS, "MML0012"), suspectedDiagnosis(SUSPECTED_DIAGNOSIS, "MML0015")
+        ;
+        private final DiagnosisCategoryModel model = new DiagnosisCategoryModel();
+        private DiagnosisCategory(String desc, String codeSys) {
+            model.setDiagnosisCategory(toString().equals("none")? "": name());
+            model.setDiagnosisCategoryDesc(desc);
+            model.setDiagnosisCategoryCodeSys(codeSys);
+        }
+        public DiagnosisCategoryModel model() { return model; }
+    }
+    // for outcomeCombo : ORCA の CLAIM では 1.治癒，2.死亡，3.中止，4.移行 の４つしか判定しない
+    public enum DiagnosisOutcome {
+        none("", ""), fullyRecovered("全治", "MML0016"), end("終了", "MML0016"), pause("中止", "MML0016")
+        ;
+        private final DiagnosisOutcomeModel model = new DiagnosisOutcomeModel();
+        private DiagnosisOutcome(String desc, String codeSys) {
+            model.setOutcome(toString().equals("none")? "": name());
+            model.setOutcomeDesc(desc);
+            model.setOutcomeCodeSys(codeSys);
+        }
+        public DiagnosisOutcomeModel model() { return model; }
+    }
 
     private JButton addButton;                  // 新規病名エディタボタン
     private JButton updateButton;               // 既存傷病名の転帰等の更新ボタン
@@ -102,33 +147,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     // Stamp から drop を受け取る場合のアクション : DiagnosisInspector でも使うので，public にした
     public int action; // 通常は MOVE で，ALT が押されていたら COPY になる
 
-    // propertyChange 用
-    public static final String ADD_UPDATED_LIST = "addUpdatedList";
-    public static final String ADD_ADDED_LIST = "addAddedList";
-
-    // 分類・転帰 comboBox 用 enum
-    // category (主病名 or 疑い病名)
-    public static final String MAIN_DIAGNOSIS = "主病名";
-    public static final String SUSPECTED_DIAGNOSIS = "疑い病名";
-    public enum DiagnosisCategory {
-        none("", ""), mainDiagnosis(MAIN_DIAGNOSIS, "MML0012"), suspectedDiagnosis(SUSPECTED_DIAGNOSIS, "MML0015");
-        public final DiagnosisCategoryModel model = new DiagnosisCategoryModel();
-        private DiagnosisCategory(String desc, String codeSys) {
-            model.setDiagnosisCategory(toString().equals("none")? "": name());
-            model.setDiagnosisCategoryDesc(desc);
-            model.setDiagnosisCategoryCodeSys(codeSys);
-        }
-    }
-    // outcome: ORCA の CLAIM では 1.治癒，2.死亡，3.中止，4.移行 の４つしか判定しない
-    public enum DiagnosisOutcome {
-        none("", ""), fullyRecovered("全治", "MML0016"), end("終了", "MML0016"), pause("中止", "MML0016");
-        public final DiagnosisOutcomeModel model = new DiagnosisOutcomeModel();
-        private DiagnosisOutcome(String desc, String codeSys) {
-            model.setOutcome(toString().equals("none")? "": name());
-            model.setOutcomeDesc(desc);
-            model.setOutcomeCodeSys(codeSys);
-        }
-    }
     // DiagnosisInspector
     private DiagnosisInspector diagnosisInspector;
     // DiagnosisDocumentPopupMenu
