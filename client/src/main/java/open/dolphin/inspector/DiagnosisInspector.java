@@ -389,14 +389,14 @@ public class DiagnosisInspector {
                     @Override
                     public void dragEnter(DropTargetDragEvent dtde) {
                         // ALT キーを押していると「疑い」が入力される
-                        doc.action = dtde.getDropAction();
+                        doc.setDropAction(dtde.getDropAction());
                         showFeedback = true;
                         repaint();
                     }
 
                     @Override
                     public void dropActionChanged(DropTargetDragEvent dtde) {
-                        doc.action = dtde.getDropAction();
+                        doc.setDropAction(dtde.getDropAction());
                     }
 
                     @Override
