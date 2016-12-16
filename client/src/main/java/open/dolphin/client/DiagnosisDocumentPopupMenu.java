@@ -18,7 +18,6 @@ import open.dolphin.ui.MyJPopupMenu;
  * @author pns
  */
 public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMotionListener,PropertyChangeListener {
-    private static final long serialVersionUID = 1L;
 
     private DiagnosisDocument diagnosisDocument;
     private DiagnosisDocumentTable diagTable;
@@ -93,15 +92,9 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         // マウスがクリックされた column を記録
         targetColumn = diagTable.columnAtPoint(e.getPoint());
 
-        if (e.isPopupTrigger()) rightPressed(e);
-        else leftPressed(e);
+        if (e.isPopupTrigger()) { rightPressed(e); }
+        else { leftPressed(e); }
     }
-    // windows では released で popupTrigger が発生するらしい
-    //@Override
-    //public void mouseReleased(MouseEvent e) {
-    //    targetColumn = diagTable.columnAtPoint(e.getPoint());
-    //    if (e.isPopupTrigger()) rightPressed(e);
-    //}
 
     /**
      * 右クリックの処理
@@ -167,7 +160,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
             if (column == DiagnosisDocument.DIAGNOSIS_COL) {
                 int row = diagTable.getSelectedRow();
                 row = diagTable.convertRowIndexToModel(row);
-                RegisteredDiagnosisModel model = (RegisteredDiagnosisModel) diagTableModel.getObject(row);
+                RegisteredDiagnosisModel model = diagTableModel.getObject(row);
                 diagnosisDocument.openEditor3(model);
             }
         }
@@ -183,7 +176,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         GregorianCalendar gc = new GregorianCalendar();
         int this_month = gc.get(Calendar.MONTH);
         int dif = lastVisitYmd[1] - this_month; //lastVisit, this_month は gc なので，両者とも値が0-11 になる
-        if (dif > 0) dif -= 12;
+        if (dif > 0) { dif -= 12; }
         CalendarCardPanel cc = new CalendarCardPanel(ClientContext.getEventColorTable(), dif);
 
         cc.addPropertyChangeListener(CalendarCardPanel.PICKED_DATE, this);
@@ -291,7 +284,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
             int[] rows = diagTable.getSelectedRows();
             for (int r : rows) {
                 int row = diagTable.convertRowIndexToModel(r);
-                RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) diagTableModel.getObject(row);
+                RegisteredDiagnosisModel rd = diagTableModel.getObject(row);
 
                 // 新しく作った診断名を設定
                 String diagDesc = rd.getDiagnosis();
@@ -344,7 +337,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         int[] rows = diagTable.getSelectedRows();
         for (int r : rows) {
             int row = diagTable.convertRowIndexToModel(r);
-            RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) diagTableModel.getObject(row);
+            RegisteredDiagnosisModel rd = diagTableModel.getObject(row);
 
             // 新しく作った診断名を設定
             String newDiagDesc = null;
@@ -380,7 +373,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         int[] rows = diagTable.getSelectedRows();
         for (int r : rows) {
             int row = diagTable.convertRowIndexToModel(r);
-            RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) diagTableModel.getObject(row);
+            RegisteredDiagnosisModel rd = diagTableModel.getObject(row);
 
             // 新しく作った診断名を設定
             String newDiagDesc = null;
@@ -503,12 +496,13 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         JMenuItem m = null;
         for(Component c : popup.getComponents()) {
             if (c instanceof JMenuItem) {
-                if (s.equals(((JMenuItem)c).getText())) {
-                    m = (JMenuItem) c;
+                JMenuItem item = (JMenuItem) c;
+                if (s.equals(item.getText())) {
+                    m = item;
                     break;
                 }
             }
         }
-        if (m != null) m.doClick();
+        if (m != null) { m.doClick(); }
     }
 }
