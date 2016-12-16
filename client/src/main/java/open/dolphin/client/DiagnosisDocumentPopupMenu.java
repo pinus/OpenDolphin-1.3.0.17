@@ -39,23 +39,19 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     // 病名修飾語リスト
     private enum DiagnosisPreposition {
-        RIGHT("右", "2056"), LEFT("左", "2049"), BOTH("両", "2057");
-        public final String desc;
-        public final String code;
-        private DiagnosisPreposition(String desc, String code) {
-            this.desc = desc;
-            this.code = code;
-        }
+        右("2056"), 左("2049"), 両 ("2057");
+        private final String code;
+        private DiagnosisPreposition(String code) { this.code = code; }
+        public String desc() { return name(); }
+        public String code() { return code; }
     }
+
     private enum DiagnosisPostposition {
-        EXACERBATION("の急性増悪", "8061"), INFECTION("の二次感染", "8069"), RECURRENCE("の再発", "8065"),
-        POSTOPERATIVE("の術後", "8048"), POSTTREATMENT("の治療後", "8075");
-        public final String desc;
-        public final String code;
-        private DiagnosisPostposition(String desc, String code) {
-            this.desc = desc;
-            this.code = code;
-        }
+        の急性増悪("8061"), の二次感染("8069"),の再発("8065"), の術後("8048"),の治療後("8075");
+        private final String code;
+        private DiagnosisPostposition(String code) { this.code = code; }
+        public String desc() { return name(); }
+        public String code() { return code; }
     }
 
     public DiagnosisDocumentPopupMenu(DiagnosisDocument parent) {
@@ -225,7 +221,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
         // Diagnosis preposition 項目の作成
         for (DiagnosisPreposition p : DiagnosisPreposition.values()) {
-            JMenuItem item = new JMenuItem(p.desc);
+            JMenuItem item = new JMenuItem(p.desc());
             item.addActionListener(new DiagAction(p));
             diagPopup.add(item);
         }
@@ -233,7 +229,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
         // Diagnosis postposition 項目の作成
         for (DiagnosisPostposition p : DiagnosisPostposition.values()) {
-            JMenuItem item = new JMenuItem(p.desc);
+            JMenuItem item = new JMenuItem(p.desc());
             item.addActionListener(new DiagAction(p));
             diagPopup.add(item);
         }
@@ -293,8 +289,8 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
                 String newDiagCode;
 
                 if (prep) {
-                    String desc = ((DiagnosisPreposition)modifier).desc;
-                    String code = ((DiagnosisPreposition)modifier).code + ".";
+                    String desc = ((DiagnosisPreposition)modifier).desc();
+                    String code = ((DiagnosisPreposition)modifier).code() + ".";
 
                     if (diagCode.contains(code)) {
                         // すでに入力されていたらそれを消去することにした
@@ -306,8 +302,8 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
                         newDiagCode = code + diagCode;
                     }
                 } else {
-                    String desc = ((DiagnosisPostposition)modifier).desc;
-                    String code = "." + ((DiagnosisPostposition)modifier).code;
+                    String desc = ((DiagnosisPostposition)modifier).desc();
+                    String code = "." + ((DiagnosisPostposition)modifier).code();
 
                     if (diagCode.contains(code)) {
                         // すでに入力されていたらそれを消去する
@@ -344,11 +340,11 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
             String newDiagCode = null;
 
             for (DiagnosisPreposition prep : DiagnosisPreposition.values()) {
-                String code = prep.code + ".";
+                String code = prep.code() + ".";
                 int index = rd.getDiagnosisCode().indexOf(code);
 
                 if (index == 0) {
-                    newDiagDesc = rd.getDiagnosis().replaceFirst(prep.desc, "");
+                    newDiagDesc = rd.getDiagnosis().replaceFirst(prep.desc(), "");
                     newDiagCode = rd.getDiagnosisCode().substring(code.length());
                     break;
                 }
@@ -380,11 +376,11 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
             String newDiagCode = null;
 
             for (DiagnosisPostposition post : DiagnosisPostposition.values()) {
-                String code = "." + post.code;
+                String code = "." + post.code();
                 int index = rd.getDiagnosisCode().indexOf(code);
 
                 if (index != -1) {
-                    newDiagDesc = rd.getDiagnosis().replaceFirst(post.desc, "");
+                    newDiagDesc = rd.getDiagnosis().replaceFirst(post.desc(), "");
                     newDiagCode = rd.getDiagnosisCode().replaceFirst(code, "");
                     break;
                 }
