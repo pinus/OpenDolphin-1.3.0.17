@@ -1,10 +1,19 @@
 package open.dolphin.inspector;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.LayoutManager;
+import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TooManyListenersException;
 import javax.swing.*;
 import open.dolphin.client.*;
@@ -16,7 +25,7 @@ import open.dolphin.ui.MyJScrollPane;
 import org.apache.log4j.Logger;
 
 /**
- * 病名を表示するクラス
+ * インスペクタに病名を表示するクラス.
  * @author pns
  */
 public class DiagnosisInspector {
@@ -28,9 +37,9 @@ public class DiagnosisInspector {
     /** PatientInspector に返すパネル */
     private JPanel diagPanel;
     /** 病名を保持するリスト */
-    private JList diagList;
-    /** 病名を保持するモデル <RegisteredDiagnosisModel> */
-    private DefaultListModel listModel;
+    private JList<RegisteredDiagnosisModel> diagList;
+    /** 病名を保持するモデル */
+    private DefaultListModel<RegisteredDiagnosisModel> listModel;
     /** DiagnosisDocument */
     private DiagnosisDocument doc;
     /** ListSelectionLisner 循環呼び出し lock */
@@ -80,8 +89,8 @@ public class DiagnosisInspector {
      */
     private void initComponents() {
 
-        listModel = new DefaultListModel();
-        diagList = new JList(listModel);
+        listModel = new DefaultListModel<>();
+        diagList = new JList<>(listModel);
         diagList.setName(NAME);
         diagList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         diagList.putClientProperty("Quaqua.List.style", "striped");
@@ -125,7 +134,7 @@ public class DiagnosisInspector {
                         diagList.clearSelection();
                     }
                     // ポップアップメニュー
-                    if (e.isPopupTrigger()) maybeShowPopup(e);
+                    if (e.isPopupTrigger()) { maybeShowPopup(e); }
 
                     // 診断が一つでもある場合はこちらに入る
                     // ダブルクリックならエディタを立ち上げる
@@ -138,6 +147,7 @@ public class DiagnosisInspector {
 
                         // こちらも，setFocasable で対応することにした
                         diagList.setFocusable(false);
+                        try{Thread.sleep(10);} catch (InterruptedException ex){}
 
                         int sel = diagList.getSelectedIndex();
                         if (sel < 0) {
@@ -145,14 +155,14 @@ public class DiagnosisInspector {
                             doc.openEditor2();
                         } else {
                             // 項目があるところをダブルクリックした場合
-                            RegisteredDiagnosisModel model = (RegisteredDiagnosisModel) listModel.get(sel);
+                            RegisteredDiagnosisModel model = listModel.get(sel);
                             doc.openEditor3(model);
                         }
                     }
                 }
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    if (e.isPopupTrigger()) maybeShowPopup(e);
+                    if (e.isPopupTrigger()) { maybeShowPopup(e); }
                 }
                 private void maybeShowPopup(MouseEvent e) {
                     if ((e.getModifiers() & InputEvent.ALT_MASK) != 0) {
@@ -160,10 +170,13 @@ public class DiagnosisInspector {
                         doc.getDiagnosisDocumentPopup().getCategoryPopup().show(diagList, e.getX(), e.getY());
                     } else {
                         // 右端の方が押されていたら outcome：全治，中止
-                        if (e.getX() > diagList.getWidth() - 48)
+                        if (e.getX() > diagList.getWidth() - 48) {
                             doc.getDiagnosisDocumentPopup().getOutcomePopup().show(diagList, e.getX(), e.getY());
+                        }
                         // それ以外は病名修飾
-                        else doc.getDiagnosisDocumentPopup().getDiagPopup().show(diagList, e.getX(), e.getY());
+                        else {
+                            doc.getDiagnosisDocumentPopup().getDiagPopup().show(diagList, e.getX(), e.getY());
+                        }
                     }
                 }
             });
@@ -246,7 +259,7 @@ public class DiagnosisInspector {
         return diagPanel;
     }
 
-    public JList getList() {
+    public JList<RegisteredDiagnosisModel> getList() {
         return diagList;
     }
 
@@ -264,23 +277,23 @@ public class DiagnosisInspector {
      */
     public void update(DiagnosisDocumentTableModel model) {
         // model から，endDate の有無でリストを分ける
-        ArrayList active = new ArrayList();
-        ArrayList ended = new ArrayList();
+        List<RegisteredDiagnosisModel> active = new ArrayList<>();
+        List<RegisteredDiagnosisModel> ended = new ArrayList<>();
 
         model.getObjectList().forEach(o -> {
-            RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel)o;
-            if (rd.getEndDate() == null) active.add(o);
-            else ended.add(o);
+            RegisteredDiagnosisModel rd = o;
+            if (rd.getEndDate() == null) { active.add(rd); }
+            else { ended.add(rd); }
         });
         // 選択を保存　hashCode を保存しておく
-        ArrayList<Integer> selected = new ArrayList<>();
+        List<Integer> selected = new ArrayList<>();
         for (int r : diagList.getSelectedIndices()) {
             selected.add(System.identityHashCode(listModel.get(r)));
         }
         // listModel にセット
         listModel.clear();
-        for (int i=0; i < active.size(); i++) listModel.addElement(active.get(i));
-        for (int i=0; i < ended.size(); i++) listModel.addElement(ended.get(i));
+        for (int i=0; i < active.size(); i++) { listModel.addElement(active.get(i)); }
+        for (int i=0; i < ended.size(); i++) { listModel.addElement(ended.get(i)); }
 
         // 選択を復元　hashCode で同じオブジェクトを判定
         selected.forEach(h -> {
@@ -297,7 +310,7 @@ public class DiagnosisInspector {
 
         @Override
         public Component getListCellRendererComponent(
-            JList list,              // the diagList
+            JList<?> list,           // the diagList
             Object value,            // value to display
             int index,               // cell index
             boolean isSelected,      // is the cell selected
@@ -319,8 +332,8 @@ public class DiagnosisInspector {
                 if (deleted || ended) {
                     int rgb = list.getSelectionForeground().getRGB();
                     int adjust = 0x2f2f2f;
-                    if ((rgb & 0x00ffffff) > adjust) rgb -= adjust;
-                    if ((rgb & 0x00ffffff) < adjust) rgb += adjust;
+                    if ((rgb & 0x00ffffff) > adjust) { rgb -= adjust; }
+                    if ((rgb & 0x00ffffff) < adjust) { rgb += adjust; }
                     setForeground(new Color(rgb));
                 } else if (ikou) {
                     setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR);
@@ -331,10 +344,10 @@ public class DiagnosisInspector {
                 setBackground(list.getSelectionBackground());
             } else {
                 // foreground
-                if (deleted) setForeground(DiagnosisDocument.DELETED_COLOR);
-                else if (ended) setForeground(DiagnosisDocument.ENDED_COLOR);
-                else if (ikou) setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR);
-                else setForeground(list.getForeground());
+                if (deleted) { setForeground(DiagnosisDocument.DELETED_COLOR); }
+                else if (ended) { setForeground(DiagnosisDocument.ENDED_COLOR); }
+                else if (ikou) { setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR); }
+                else { setForeground(list.getForeground()); }
                 // background
                 setBackground(list.getBackground());
             }
@@ -363,6 +376,8 @@ public class DiagnosisInspector {
      * ドロップするとき，Border にフィードバックを出すパネル
      */
     private class DropPanel extends JPanel {
+        private static final long serialVersionUID = 1L;
+
         private boolean showFeedback = false;
 
         public DropPanel(LayoutManager layout) {

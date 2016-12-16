@@ -17,23 +17,23 @@ import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.util.MMLDate;
 
 /**
- * DiagnosisDocumentTableModel を独立させて，undo/redo に対応した
+ * DiagnosisDocumentTableModel を独立させて，undo/redo に対応した.
  * @author pns
  */
-public class DiagnosisDocumentTableModel extends ObjectReflectTableModel {
+public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<RegisteredDiagnosisModel> {
     private static final long serialVersionUID = 1L;
 
-    private boolean isReadOnly;
-    private int[] lastVisitYmd = new int[3];
+    private final boolean isReadOnly;
+    private final int[] lastVisitYmd = new int[3];
     private DiagnosisDocumentTable diagTable;
-    private PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());
+    private final PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());
 
     // undo/redo 用 map（rd ごとに queue を作っておく）
-    private Map<Integer, Deque<DiagnosisLiteModel>> undoMap = new HashMap<Integer, Deque<DiagnosisLiteModel>>();
-    private Map<Integer, Deque<DiagnosisLiteModel>> redoMap = new HashMap<Integer, Deque<DiagnosisLiteModel>>();
+    private final Map<Integer, Deque<DiagnosisLiteModel>> undoMap = new HashMap<>();
+    private final Map<Integer, Deque<DiagnosisLiteModel>> redoMap = new HashMap<>();
     private enum PollResult { succeeded, noMore };
 
-    public DiagnosisDocumentTableModel(String[] columnNames, int startNumRows, String[] methodNames, Class[] columnClasses, boolean readOnly) {
+    public DiagnosisDocumentTableModel(String[] columnNames, int startNumRows, String[] methodNames, Class<?>[] columnClasses, boolean readOnly) {
         super(columnNames, startNumRows, methodNames, columnClasses);
         isReadOnly = readOnly;
     }
@@ -62,22 +62,20 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel {
     @Override
     public boolean isCellEditable(int row, int col) {
         // licenseCodeで制御
-        if (isReadOnly) return false;
+        if (isReadOnly) { return false; }
 
         // 病名レコードが存在しない場合は false
-        RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) getObject(row);
-        if (rd == null) return false;
+        RegisteredDiagnosisModel rd = getObject(row);
+        if (rd == null) { return false; }
 
         // ORCA に登録されている病名の場合
-        if (rd.getStatus() != null && rd.getStatus().equals(DiagnosisDocument.ORCA_RECORD)) return false;
+        if (rd.getStatus() != null && rd.getStatus().equals(DiagnosisDocument.ORCA_RECORD)) { return false; }
 
         // 診断名 column は直接編集不可（編集は popup，エディタでの編集はできる）
-        if (col == DiagnosisDocument.DIAGNOSIS_COL) return false;
+        if (col == DiagnosisDocument.DIAGNOSIS_COL) { return false; }
 
         // DELETED_RECORD フラグが立っていたら cell editor による編集不可
-        if (DiagnosisDocument.DELETED_RECORD.equals(rd.getStatus())) {
-            return false;
-        }
+        if (DiagnosisDocument.DELETED_RECORD.equals(rd.getStatus())) { return false; }
 
         return true;
     }
@@ -86,11 +84,11 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel {
     @Override
     public void setValueAt(Object value, int row, int col) {
 
-        RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) getObject(row);
+        RegisteredDiagnosisModel rd = getObject(row);
 
-        if (value == null || rd == null) return;
+        if (value == null || rd == null) { return; }
         String status = rd.getStatus();
-        if (status != null && status.equals(DiagnosisDocument.ORCA_RECORD)) return;
+        if (status != null && status.equals(DiagnosisDocument.ORCA_RECORD)) { return; }
 
         // value = DELETED_RECORD で呼ばれた場合は DELETED_RECORD をセットする
         if (DiagnosisDocument.DELETED_RECORD.equals(value)) {
@@ -276,18 +274,18 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel {
     /**
      * 加えられた病名は undo で delete されるようにする
      * @param row
-     * @param obj
+     * @param rd
      */
     @Override
-    public void insertRow(int row, Object obj) {
-        super.insertRow(row, obj);
-        addDeletedRecordForUndo((RegisteredDiagnosisModel)obj);
+    public void insertRow(int row, RegisteredDiagnosisModel rd) {
+        super.insertRow(row, rd);
+        addDeletedRecordForUndo(rd);
     }
 
     @Override
-    public void addRow(Object obj) {
-        super.addRow(obj);
-        addDeletedRecordForUndo((RegisteredDiagnosisModel)obj);
+    public void addRow(RegisteredDiagnosisModel rd) {
+        super.addRow(rd);
+        addDeletedRecordForUndo(rd);
     }
 
     /**
@@ -297,10 +295,10 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel {
         int[] rows = diagTable.getSelectedRows();
         for (int r : rows) {
             int row = diagTable.convertRowIndexToModel(r);
-            RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) getObject(row);
+            RegisteredDiagnosisModel rd = getObject(row);
             offerQueue(redoMap, rd);
-            if (pollQueue(undoMap, rd) == PollResult.succeeded) update(row, rd);
-            else cancelOffer(redoMap, rd); // poll に失敗した場合は offer した分は取り消す
+            if (pollQueue(undoMap, rd) == PollResult.succeeded) { update(row, rd); }
+            else { cancelOffer(redoMap, rd); } // poll に失敗した場合は offer した分は取り消す
         }
     }
 
@@ -311,10 +309,10 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel {
         int[] rows = diagTable.getSelectedRows();
         for (int r : rows) {
             int row = diagTable.convertRowIndexToModel(r);
-            RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) getObject(row);
+            RegisteredDiagnosisModel rd = getObject(row);
             offerQueue(undoMap, rd);
-            if (pollQueue(redoMap, rd) == PollResult.succeeded) update(row, rd);
-            else cancelOffer(undoMap, rd); // poll に失敗したときは，offer した分は取り消す
+            if (pollQueue(redoMap, rd) == PollResult.succeeded) { update(row, rd); }
+            else { cancelOffer(undoMap, rd); } // poll に失敗したときは，offer した分は取り消す
         }
     }
 
@@ -338,7 +336,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel {
         int id = System.identityHashCode(rd);
         Deque<DiagnosisLiteModel> dq = dequeMap.get(id);
         if (dq == null) {
-            dq = new LinkedList<DiagnosisLiteModel>();
+            dq = new LinkedList<>();
             dequeMap.put(id, dq);
         }
         dq.offerFirst(new DiagnosisLiteModel(rd));
@@ -369,6 +367,6 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel {
      */
     private void cancelOffer(Map<Integer, Deque<DiagnosisLiteModel>> dequeMap, RegisteredDiagnosisModel rd) {
         Deque<DiagnosisLiteModel> dq = dequeMap.get(System.identityHashCode(rd));
-        if (dq != null) dq.removeFirst();
+        if (dq != null) { dq.removeFirst(); }
     }
 }
