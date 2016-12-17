@@ -55,13 +55,19 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     public static final String MAIN_DIAGNOSIS = "主病名";
     public static final String SUSPECTED_DIAGNOSIS = "疑い病名";
 
-    // 抽出期間コンボボックスデータ
-    private final NameValuePair[] extractionObjects = ClientContext.getNameValuePair("diagnosis.combo.period");
-
     // RegisteredDiagnosisModel の Status
     public static final String ORCA_RECORD = "ORCA"; // ORCA 病名
     public static final String DELETED_RECORD = "DELETED"; // 削除病名
     public static final String IKOU_BYOMEI_RECORD = "IKOU_BYOMEI"; // 移行病名
+
+    // 抽出期間コンボボックスデータ
+    private final List<PNSPair<String,Integer>> extractionPeriods = Arrays.asList(
+        new PNSPair<>("全て", 0),
+        new PNSPair<>("1年", -12),
+        new PNSPair<>("2年", -24),
+        new PNSPair<>("3年", -36),
+        new PNSPair<>("5年", -60)
+    );
 
     // GUI コンポーネント定義
     private static final ImageIcon DELETE_BUTTON_IMAGE = GUIConst.ICON_REMOVE_16;
@@ -81,7 +87,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private JButton orcaButton;                 // ORCA View ボタン
     private DiagnosisDocumentTable diagTable;   // 病歴テーブル
     private DiagnosisDocumentTableModel tableModel; // TableModel
-    private JComboBox extractionCombo;          // 抽出期間コンボ
+    private JComboBox<PNSPair<String,Integer>> extractionCombo;          // 抽出期間コンボ
     private JTextField countField;              // 件数フィールド
     private JTextField startDateField;
     private JTextField endDateField;
@@ -215,15 +221,15 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // tableModel 用設定
         tableModel.setLastVisit(lastVisitYmd);
-        tableModel.getBoundSupport().addPropertyChangeListener(evt -> {
+        tableModel.getBoundSupport().addPropertyChangeListener (evt -> {
             String prop = evt.getPropertyName();
             // update があった場合
             if (ADD_UPDATED_LIST.equals(prop)) {
                 // tableModel から呼ばれた場合は，update の場合と delete の場合がある
                 RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) evt.getNewValue();
 
-                if (DELETED_RECORD.equals(rd.getStatus())) addDeletedList(rd);
-                else addUpdatedList(rd);
+                if (DELETED_RECORD.equals(rd.getStatus())) { addDeletedList(rd); }
+                else { addUpdatedList(rd); }
 
                 // insert された場合 → 転帰を空白にして新規病名として使い回す場合は挿入として扱う
             } else if (ADD_ADDED_LIST.equals(prop)) {
@@ -372,20 +378,12 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         });
 
         // Category comboBox 設定
-        List<DiagnosisCategoryModel> categoryList = new ArrayList<>();
-        for (DiagnosisCategory category : DiagnosisCategory.values()) {
-            categoryList.add(category.model());
-        }
-        JComboBox categoryCombo = new JComboBox(categoryList.toArray());
+        JComboBox<DiagnosisCategoryModel> categoryCombo = new JComboBox<>(DiagnosisCategory.models());
         TableColumn column = diagTable.getColumnModel().getColumn(CATEGORY_COL);
         column.setCellEditor(new MyCellEditor(categoryCombo));
 
         // Outcome comboBox 設定
-        List<DiagnosisOutcomeModel> outcomeList = new ArrayList<>();
-        for (DiagnosisOutcome outcome : DiagnosisOutcome.values()) {
-            outcomeList.add(outcome.model());
-        }
-        JComboBox outcomeCombo = new JComboBox(outcomeList.toArray());
+        JComboBox<DiagnosisOutcomeModel> outcomeCombo = new JComboBox<>(DiagnosisOutcome.models());
         column = diagTable.getColumnModel().getColumn(OUTCOME_COL);
         column.setCellEditor(new MyCellEditor(outcomeCombo));
 
@@ -474,27 +472,15 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         // 抽出期間コンボボックス
         p.add(new JLabel("抽出期間(過去)"));
         p.add(Box.createRigidArea(new Dimension(5, 0)));
-        extractionCombo = new JComboBox(extractionObjects);
+        extractionCombo = new JComboBox<>();
+        extractionPeriods.forEach(periodPair -> extractionCombo.addItem(periodPair));
+
         Preferences prefs = Project.getPreferences();
         int currentDiagnosisPeriod = prefs.getInt(Project.DIAGNOSIS_PERIOD, 0);
-        int selectIndex = NameValuePair.getIndex(String.valueOf(currentDiagnosisPeriod), extractionObjects);
+        int selectIndex = PNSPair.getIndex(currentDiagnosisPeriod, extractionPeriods);
         extractionCombo.setSelectedIndex(selectIndex);
         extractionCombo.addItemListener(e ->  {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                NameValuePair pair = (NameValuePair) extractionCombo.getSelectedItem();
-                int past = Integer.parseInt(pair.getValue());
-                if (past != 0) {
-                    GregorianCalendar today = new GregorianCalendar();
-                    today.add(GregorianCalendar.MONTH, past);
-                    today.clear(Calendar.HOUR_OF_DAY);
-                    today.clear(Calendar.MINUTE);
-                    today.clear(Calendar.SECOND);
-                    today.clear(Calendar.MILLISECOND);
-                    getDiagnosisHistory(today.getTime());
-                } else {
-                    getDiagnosisHistory(new Date(0L));
-                }
-            }
+            if (e.getStateChange() == ItemEvent.SELECTED) { updateDiagnosisHistory(); }
         });
 
         JPanel comboPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -519,11 +505,16 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     @Override
     public void start() {
-
         initialize();
+        updateDiagnosisHistory();
+    }
 
-        NameValuePair pair = (NameValuePair) extractionCombo.getSelectedItem();
-        int past = Integer.parseInt(pair.getValue());
+    /**
+     * extraction ComboBox の選択値に応じて DiagnosisHistory を更新する
+     */
+    private void updateDiagnosisHistory() {
+
+        int past = extractionPeriods.get(extractionCombo.getSelectedIndex()).getValue();
 
         Date date;
         if (past != 0) {
@@ -539,7 +530,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         }
 
         getDiagnosisHistory(date);
-        //enter();
     }
 
     @Override
@@ -575,7 +565,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private void addAddedList(RegisteredDiagnosisModel added) {
         // 同じものは update しない -> RegisteredDiagnosis#equals の変更が必要
         // オリジナルでは equals は id で比較しているので，id=0 は全部 contains=true になってしまう
-        if (!addedDiagnosis.contains(added)) addedDiagnosis.add(added);
+        if (!addedDiagnosis.contains(added)) { addedDiagnosis.add(added); }
         controlButtons();
     }
 
@@ -586,9 +576,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private void addUpdatedList(RegisteredDiagnosisModel updated) {
         // addedDiagnosis を編集／undo した場合ここに入ってくる
         if (updated.getId() == 0L) { // addedDiagnosis は id=0
-            if (!addedDiagnosis.contains(updated)) addedDiagnosis.add(updated);
+            if (!addedDiagnosis.contains(updated)) { addedDiagnosis.add(updated); }
         } else {
-            if (!updatedDiagnosis.contains(updated)) updatedDiagnosis.add(updated);
+            if (!updatedDiagnosis.contains(updated)) { updatedDiagnosis.add(updated); }
         }
         // 削除を undo した場合は deletedDiagnosis から削除
         if (deletedDiagnosis.contains(updated)) {
@@ -604,8 +594,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private void addDeletedList(RegisteredDiagnosisModel deleted) {
         deletedDiagnosis.add(deleted);
         // delete したら 他のリストからも削除
-        if (addedDiagnosis.contains(deleted)) addedDiagnosis.remove(deleted);
-        if (updatedDiagnosis.contains(deleted)) updatedDiagnosis.remove(deleted);
+        if (addedDiagnosis.contains(deleted)) { addedDiagnosis.remove(deleted); }
+        if (updatedDiagnosis.contains(deleted)) { updatedDiagnosis.remove(deleted); }
         controlButtons();
     }
 
@@ -648,7 +638,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     private void controlButtons() {
         //showList(); //デバッグ用
-        if (isReadOnly()) return;
+        if (isReadOnly()) { return; }
 
         // update button
         // initDiagnosis に戻ったものがあれば updatedDiagnosis を削除
@@ -661,7 +651,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         setDirty(newDirty);
 
         // タブが選択されていない場合（DiagnosisInspector で操作した場合）はボタンのコントロールはしない
-        if (getUI().isShowing()) updateButton.setEnabled(isDirty());
+        if (getUI().isShowing()) { updateButton.setEnabled(isDirty()); }
 
         // delete button : 選択中に null や ORCA や DELETED が１つでもあれば disable する
         // undo/redo     : 選択内に１つでも undo/redo 可能なものがあれば enable
@@ -677,9 +667,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 int r = diagTable.convertRowIndexToModel(row);
                 RegisteredDiagnosisModel rd = tableModel.getObject(r);
 
-                if (rd == null || ORCA_RECORD.equals(rd.getStatus()) || DELETED_RECORD.equals(rd.getStatus())) isDeletable = false;
-                if (tableModel.isUndoable(rd)) isUndoable = true;
-                if (tableModel.isRedoable(rd)) isRedoable = true;
+                isDeletable = rd != null && ! ORCA_RECORD.equals(rd.getStatus()) && ! DELETED_RECORD.equals(rd.getStatus());
+                isUndoable = tableModel.isUndoable(rd);
+                isRedoable = tableModel.isRedoable(rd);
             }
         }
         // タブが選択されていない場合（DiagnosisInspector で操作した場合）はボタンのコントロールはしない
@@ -711,7 +701,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             RegisteredDiagnosisModel rd = tableModel.getObject(row);
             if (!DELETED_RECORD.equals(rd.getStatus())) {
                 diagnosisCount++;
-                if (today.equals(rd.getStartDate())) diagnosisCountToday++;
+                if (today.equals(rd.getStartDate())) { diagnosisCountToday++; }
             }
         }
 
@@ -744,7 +734,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                     stampList.size() + "個のスタンプが同時にドロップされましたが続けますか", "スタンプ挿入確認",
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE
                     );
-            if (ans != JOptionPane.YES_OPTION) return;
+            if (ans != JOptionPane.YES_OPTION) { return; }
         }
 
         final StampDelegater sdl = new StampDelegater();
@@ -830,8 +820,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         checkIkouByomei(modules);
 
         // module 挿入
-        if (ascend) tableModel.addRow(module);
-        else tableModel.insertRow(0, module);
+        if (ascend) { tableModel.addRow(module); }
+        else { tableModel.insertRow(0, module); }
 
         addAddedList(module);
     }
@@ -869,7 +859,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         String prop = e.getPropertyName();
         if (!StampEditorDialog.VALUE_PROP.equals(prop)) { return; }
 
-        List<RegisteredDiagnosisModel> list = (List<RegisteredDiagnosisModel>) e.getNewValue();
+        List<RegisteredDiagnosisModel> list = (List) e.getNewValue();
         if (list == null || list.isEmpty()) { return; }
 
         boolean isAddedDiagnosis = (Boolean) e.getOldValue(); // openEditor2 からよばれると true になるようにした
@@ -882,8 +872,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             if (isAddedDiagnosis) {
                 // エディタから新規に挿入された場合（openEditor2）
                 rd.setStartDate(today); // startDate は LastVisit に設定
-                if (ascend) tableModel.addRow(rd); // 昇順はテーブルの最後へ追加する
-                else tableModel.insertRow(0, rd); // 降順はテーブルの先頭へ追加する
+                if (ascend) { tableModel.addRow(rd); } // 昇順はテーブルの最後へ追加する
+                else { tableModel.insertRow(0, rd); } // 降順はテーブルの先頭へ追加する
                 addAddedList(rd);
             } else {
                 // openEditor3 のデータの場合ー必ず選択が起きている
@@ -1015,7 +1005,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     @Override
     public void save() {
 
-        if (addedDiagnosis.isEmpty() && updatedDiagnosis.isEmpty() && deletedDiagnosis.isEmpty()) return;
+        if (addedDiagnosis.isEmpty() && updatedDiagnosis.isEmpty() && deletedDiagnosis.isEmpty()) { return; }
 
         final boolean sendDiagnosis = Project.getSendDiagnosis() &&
                 ((ChartImpl) getContext()).getCLAIMListener() != null;
@@ -1134,8 +1124,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 // if (list == null) { list = new ArrayList<>(); } // null にはならない
 
                 if (ddl.isNoError() && list.size() > 0) {
-                    if (ascend) Collections.sort(list);
-                    else Collections.sort(list, Collections.reverseOrder());
+                    if (ascend) { Collections.sort(list); }
+                    else { Collections.sort(list, Collections.reverseOrder()); }
                 }
                 // addedDiagnosis がある場合は list に追加
                 if (addedDiagnosis.size() > 0) {
@@ -1251,8 +1241,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         final String patientId = getContext().getPatient().getPatientId();
 
         // 抽出期間から検索範囲の最初の日を取得する
-        NameValuePair pair = (NameValuePair) extractionCombo.getSelectedItem();
-        int past = Integer.parseInt(pair.getValue());
+        int past = extractionPeriods.get(extractionCombo.getSelectedIndex()).getValue();
 
         Date date;
         if (past != 0) {
@@ -1352,7 +1341,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 List<RegisteredDiagnosisModel> sendList = new ArrayList<>();
                 sendList.addAll(updatedDiagnosis);
                 sendList.addAll(addedDiagnosis);
-                if (! sendList.isEmpty()) sendClaim(sendList);
+                if (! sendList.isEmpty()) { sendClaim(sendList); }
             }
 
             return result;
@@ -1441,7 +1430,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             // インデントを入れる
             if (value != null) {
                 if (value instanceof String) {
-                    comp.setText("  " + (String) value);
+                    comp.setText("  " + value);
                 } else {
                     comp.setText("  " + value.toString());
                 }
@@ -1553,7 +1542,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             rd.setUserLiteModel(Project.getUserModel().getLiteModel());
 
             // 転帰をチェックする
-            if (!isValidOutcome(rd)) return;
+            if (!isValidOutcome(rd)) { return; }
 
             diagList.add(rd);
         }

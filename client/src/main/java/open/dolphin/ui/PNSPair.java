@@ -2,6 +2,7 @@ package open.dolphin.ui;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JComboBox;
 
 /**
  * PNSPair.
@@ -117,28 +118,33 @@ public class PNSPair<N,V extends Comparable<V>> implements Comparable<PNSPair<N,
     }
 
     public static void main(String[] args) {
-        List<PNSPair<String,Integer>> pairList = Arrays.asList(new PNSPair<>("String1", 1),
+
+        List<PNSPair<String,Integer>> pairs = Arrays.asList(
+            new PNSPair<>("String1", 1),
             new PNSPair<>("String2", 2),
             new PNSPair<>("String3", 3),
             new PNSPair<>("String4", 4),
             new PNSPair<>("String5", 1)
         );
-        int index = PNSPair.<String,Integer>getIndex(2, pairList);
+        int index = PNSPair.<String,Integer>getIndex(2, pairs);
         System.out.println(index);
 
-        PNSPair<String,Integer> test = pairList.get(3);
-        index = PNSPair.<String,Integer>getIndex(test, pairList);
+        PNSPair<String,Integer> test = pairs.get(3);
+        index = PNSPair.<String,Integer>getIndex(test, pairs);
         System.out.println(index);
 
-        System.out.println("equal = " + pairList.get(3).equals(pairList.get(3)));
-        System.out.println("equal = " + pairList.get(3).equals(pairList.get(0)));
-        System.out.println("equal = " + pairList.get(4).equals(pairList.get(0)));
+        System.out.println("equal = " + pairs.get(3).equals(pairs.get(3)));
+        System.out.println("equal = " + pairs.get(3).equals(pairs.get(0)));
+        System.out.println("equal = " + pairs.get(4).equals(pairs.get(0)));
 
-        System.out.println("compareTo = " + pairList.get(0).compareTo(pairList.get(0)));
-        System.out.println("compareTo = " + pairList.get(0).compareTo(pairList.get(2)));
-        System.out.println("compareTo = " + pairList.get(3).compareTo(pairList.get(2)));
-        System.out.println("compareTo = " + pairList.get(0).compareTo(pairList.get(4)));
+        System.out.println("compareTo = " + pairs.get(0).compareTo(pairs.get(0)));
+        System.out.println("compareTo = " + pairs.get(0).compareTo(pairs.get(2)));
+        System.out.println("compareTo = " + pairs.get(3).compareTo(pairs.get(2)));
+        System.out.println("compareTo = " + pairs.get(0).compareTo(pairs.get(4)));
 
          System.out.println("toString " + test);
+
+         JComboBox<PNSPair<String,Integer>> combo = new JComboBox<>();
+         pairs.forEach(pair -> combo.addItem(pair));
     }
 }

@@ -27,6 +27,13 @@ public enum DiagnosisOutcome {
         return model;
     }
 
+    public static DiagnosisOutcomeModel[] models() {
+        DiagnosisOutcomeModel[] models = new DiagnosisOutcomeModel[values().length];
+        for (int i=0; i<models.length; i++) {
+            models[i] = values()[i].model();
+        }
+        return models;
+    }
     @Override
     public String toString() {
         return model.getOutcomeDesc();
