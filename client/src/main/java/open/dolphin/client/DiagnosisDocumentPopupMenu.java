@@ -419,7 +419,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
     private void createCategoryPopupMenu() {
         categoryPopup = new MyJPopupMenu();
 
-        for (DiagnosisDocument.DiagnosisCategory c : DiagnosisDocument.DiagnosisCategory.values()) {
+        for (DiagnosisCategory c : DiagnosisCategory.values()) {
             JMenuItem item = new JMenuItem(c.model().getDiagnosisCategoryDesc());
             item.addActionListener(new CategoryOutcomeAction(c.model()));
             categoryPopup.add(item);
@@ -431,7 +431,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
     private void createOutcomePopupMenu() {
         outcomePopup = new MyJPopupMenu();
 
-        for (DiagnosisDocument.DiagnosisOutcome o : DiagnosisDocument.DiagnosisOutcome.values()) {
+        for (DiagnosisOutcome o : DiagnosisOutcome.values()) {
             JMenuItem item = new JMenuItem(o.model().getOutcomeDesc());
             item.addActionListener(new CategoryOutcomeAction(o.model()));
             outcomePopup.add(item);

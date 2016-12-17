@@ -3,7 +3,6 @@ package open.dolphin.client;
 import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
-import java.beans.EventHandler;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
@@ -13,8 +12,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -42,6 +39,7 @@ import open.dolphin.util.MMLDate;
 public final class DiagnosisDocument extends AbstractChartDocument implements PropertyChangeListener {
 
     private static final String TITLE = "傷病名";
+
     // 傷病名テーブルのカラム番号定義
     public static final int DIAGNOSIS_COL = 0;
     public static final int CATEGORY_COL = 1;
@@ -53,35 +51,17 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     public static final String ADD_UPDATED_LIST = "addUpdatedList";
     public static final String ADD_ADDED_LIST = "addAddedList";
 
-    // 抽出期間コンボボックスデータ
-    private final NameValuePair[] extractionObjects = ClientContext.getNameValuePair("diagnosis.combo.period");
-
-    // DiagnosisCategory
+    // DiagnosisCategory 用
     public static final String MAIN_DIAGNOSIS = "主病名";
     public static final String SUSPECTED_DIAGNOSIS = "疑い病名";
 
-    // enum for category (主病名 or 疑い病名)
-    public enum DiagnosisCategory {
-        none("", ""), mainDiagnosis(MAIN_DIAGNOSIS, "MML0012"), suspectedDiagnosis(SUSPECTED_DIAGNOSIS, "MML0015");
-        private final DiagnosisCategoryModel model = new DiagnosisCategoryModel();
-        private DiagnosisCategory(String desc, String codeSys) {
-            model.setDiagnosisCategory(toString().equals("none")? "": name());
-            model.setDiagnosisCategoryDesc(desc);
-            model.setDiagnosisCategoryCodeSys(codeSys);
-        }
-        public DiagnosisCategoryModel model() { return model; }
-    }
-    // for outcomeCombo : ORCA の CLAIM では 1.治癒，2.死亡，3.中止，4.移行 の４つしか判定しない
-    public enum DiagnosisOutcome {
-        none("", ""), fullyRecovered("全治", "MML0016"), end("終了", "MML0016"), pause("中止", "MML0016");
-        private final DiagnosisOutcomeModel model = new DiagnosisOutcomeModel();
-        private DiagnosisOutcome(String desc, String codeSys) {
-            model.setOutcome(toString().equals("none")? "": name());
-            model.setOutcomeDesc(desc);
-            model.setOutcomeCodeSys(codeSys);
-        }
-        public DiagnosisOutcomeModel model() { return model; }
-    }
+    // 抽出期間コンボボックスデータ
+    private final NameValuePair[] extractionObjects = ClientContext.getNameValuePair("diagnosis.combo.period");
+
+    // RegisteredDiagnosisModel の Status
+    public static final String ORCA_RECORD = "ORCA"; // ORCA 病名
+    public static final String DELETED_RECORD = "DELETED"; // 削除病名
+    public static final String IKOU_BYOMEI_RECORD = "IKOU_BYOMEI"; // 移行病名
 
     // GUI コンポーネント定義
     private static final ImageIcon DELETE_BUTTON_IMAGE = GUIConst.ICON_REMOVE_16;
@@ -89,13 +69,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private static final ImageIcon UPDATE_BUTTON_IMAGE = GUIConst.ICON_FLOPPY_16;
     private static final ImageIcon ORCA_VIEW_IMAGE = GUIConst.ICON_FOLDER_REMOTE_16;
     private static final String ORCA_VIEW = "ORCA View";
-
-    // RegisteredDiagnosisModel の Status
-    public static final String ORCA_RECORD = "ORCA"; // ORCA 病名
-    public static final String DELETED_RECORD = "DELETED"; // 削除病名
-    public static final String IKOU_BYOMEI_RECORD = "IKOU_BYOMEI"; // 移行病名
-
-    // GUI Component
     private static final Color ORCA_BACK_COLOR = ClientContext.getColor("color.CALENDAR_BACK");
     public static final Color IKOU_BYOMEI_COLOR = Color.red;
     public static final Color DELETED_COLOR = new Color(192,192,192); // silver
@@ -123,21 +96,16 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private final List<RegisteredDiagnosisModel> deletedDiagnosis = new ArrayList<>();
     // 初期状態の病名リストを保存しておく（undoの際，保存している状態に戻ったかどうか判定して controlUpdate を制御する）
     private final List<DiagnosisLiteModel> initialDiagnosis = new ArrayList<>();
-
     // 傷病名件数
     private int diagnosisCount;
-
     // 最終受診日＝今日受診している場合は今日，していないばあいは最後の受診日
     private int[] lastVisitYmd = {2008,2,1};
-
     // Stamp から drop を受け取る場合のアクション : DiagnosisInspector でも使うので，public にした
     private int dropAction; // 通常は MOVE で，ALT が押されていたら COPY になる
-
     // DiagnosisInspector
     private DiagnosisInspector diagnosisInspector;
     // DiagnosisDocumentPopupMenu
     private DiagnosisDocumentPopupMenu popup;
-
     // ChartImpl#close() で isValidOutcome でない時，DiagnosisDocument に戻れるようにするために使う
     private boolean isValidOutcome = true;
 
@@ -216,15 +184,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         // ポップアップメニュー用設定 (isReadOnly対応)
         if (!getContext().isReadOnly()) {
             popup = new DiagnosisDocumentPopupMenu(this);
-/*            popup.getBoundSupport().addPropertyChangeListener(new PropertyChangeListener(){
-                public void propertyChange(PropertyChangeEvent evt) {
-                    String prop = evt.getPropertyName();
-                    if (ADD_UPDATED_LIST.equals(prop)) {
-                        addUpdatedList((RegisteredDiagnosisModel) evt.getNewValue());
-                        controlDeleteButton();
-                    }
-                }
-            });*/
         }
 
         // ショートカット登録
@@ -281,15 +240,16 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     private JPanel createButtonPanel2() {
 
-        // 更新ボタン (ActionListener) EventHandler.create(ActionListener.class, this, "save")
+        // 更新ボタン
         updateButton = new JButton(UPDATE_BUTTON_IMAGE);
-        updateButton.addActionListener(EventHandler.create(ActionListener.class, this, "save"));
+        updateButton.addActionListener(e -> save());
+
         updateButton.setEnabled(false);
         updateButton.setToolTipText("追加変更した傷病名をデータベースに反映します。");
 
         // 削除ボタン
         deleteButton = new JButton(DELETE_BUTTON_IMAGE);
-        deleteButton.addActionListener(EventHandler.create(ActionListener.class, this, "delete"));
+        deleteButton.addActionListener(e -> delete());
         deleteButton.setEnabled(false);
         deleteButton.setToolTipText("選択した傷病名を削除します。");
 
@@ -324,7 +284,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // ORCA View
         orcaButton = new JButton(ORCA_VIEW_IMAGE);
-        orcaButton.addActionListener(EventHandler.create(ActionListener.class, this, "viewOrca"));
+        orcaButton.addActionListener(e -> viewOrca());
         orcaButton.setToolTipText("ORCAに登録してある病名を取り込みます。");
 
         // ボタンパネル
@@ -407,12 +367,14 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // 行選択が起った時のリスナを設定する
         ListSelectionModel m = diagTable.getSelectionModel();
-        m.addListSelectionListener(EventHandler.create(ListSelectionListener.class, this, "rowSelectionChanged", ""));
+        m.addListSelectionListener(e -> {
+            if (! e.getValueIsAdjusting()) { controlButtons(); }
+        });
 
         // Category comboBox 設定
         List<DiagnosisCategoryModel> categoryList = new ArrayList<>();
         for (DiagnosisCategory category : DiagnosisCategory.values()) {
-            categoryList.add(category.model);
+            categoryList.add(category.model());
         }
         JComboBox categoryCombo = new JComboBox(categoryList.toArray());
         TableColumn column = diagTable.getColumnModel().getColumn(CATEGORY_COL);
@@ -421,7 +383,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         // Outcome comboBox 設定
         List<DiagnosisOutcomeModel> outcomeList = new ArrayList<>();
         for (DiagnosisOutcome outcome : DiagnosisOutcome.values()) {
-            outcomeList.add(outcome.model);
+            outcomeList.add(outcome.model());
         }
         JComboBox outcomeCombo = new JComboBox(outcomeList.toArray());
         column = diagTable.getColumnModel().getColumn(OUTCOME_COL);
@@ -517,7 +479,23 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         int currentDiagnosisPeriod = prefs.getInt(Project.DIAGNOSIS_PERIOD, 0);
         int selectIndex = NameValuePair.getIndex(String.valueOf(currentDiagnosisPeriod), extractionObjects);
         extractionCombo.setSelectedIndex(selectIndex);
-        extractionCombo.addItemListener(EventHandler.create(ItemListener.class, this, "extPeriodChanged", ""));
+        extractionCombo.addItemListener(e ->  {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                NameValuePair pair = (NameValuePair) extractionCombo.getSelectedItem();
+                int past = Integer.parseInt(pair.getValue());
+                if (past != 0) {
+                    GregorianCalendar today = new GregorianCalendar();
+                    today.add(GregorianCalendar.MONTH, past);
+                    today.clear(Calendar.HOUR_OF_DAY);
+                    today.clear(Calendar.MINUTE);
+                    today.clear(Calendar.SECOND);
+                    today.clear(Calendar.MILLISECOND);
+                    getDiagnosisHistory(today.getTime());
+                } else {
+                    getDiagnosisHistory(new Date(0L));
+                }
+            }
+        });
 
         JPanel comboPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         comboPanel.add(extractionCombo);
@@ -644,39 +622,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         initialDiagnosis.clear();
         tableModel.getObjectList().forEach(rd -> initialDiagnosis.add(new DiagnosisLiteModel(rd)));
         controlButtons();
-    }
-
-    /**
-     * 行選択が起った時のボタン制御を行う。
-     * @param e
-     */
-    public void rowSelectionChanged(ListSelectionEvent e) {
-        if (e.getValueIsAdjusting() == false) {
-            controlButtons();
-        }
-    }
-
-    /**
-     * 抽出期間を変更した場合に再検索を行う。
-     * ORCA 病名ボタンが disable であれば検索後に enable にする。
-     * @param e
-     */
-    public void extPeriodChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-            NameValuePair pair = (NameValuePair) extractionCombo.getSelectedItem();
-            int past = Integer.parseInt(pair.getValue());
-            if (past != 0) {
-                GregorianCalendar today = new GregorianCalendar();
-                today.add(GregorianCalendar.MONTH, past);
-                today.clear(Calendar.HOUR_OF_DAY);
-                today.clear(Calendar.MINUTE);
-                today.clear(Calendar.SECOND);
-                today.clear(Calendar.MILLISECOND);
-                getDiagnosisHistory(today.getTime());
-            } else {
-                getDiagnosisHistory(new Date(0L));
-            }
-        }
     }
 
     /**
@@ -922,10 +867,10 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         getContext().enabledAction(GUIConst.ACTION_CLOSE, true);
 
         String prop = e.getPropertyName();
-        if (!StampEditorDialog.VALUE_PROP.equals(prop)) return;
+        if (!StampEditorDialog.VALUE_PROP.equals(prop)) { return; }
 
-        ArrayList list = (ArrayList) e.getNewValue();
-        if (list == null || list.isEmpty()) return;
+        List<RegisteredDiagnosisModel> list = (List<RegisteredDiagnosisModel>) e.getNewValue();
+        if (list == null || list.isEmpty()) { return; }
 
         boolean isAddedDiagnosis = (Boolean) e.getOldValue(); // openEditor2 からよばれると true になるようにした
         GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
@@ -933,7 +878,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         for (int i = 0; i < list.size(); i++) { // list.size() は常に 1 では？
             // ここで get する rd には 病名とコードしか入っていない
-            RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) list.get(i);
+            RegisteredDiagnosisModel rd = list.get(i);
             if (isAddedDiagnosis) {
                 // エディタから新規に挿入された場合（openEditor2）
                 rd.setStartDate(today); // startDate は LastVisit に設定
