@@ -7,6 +7,7 @@ import java.util.Deque;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import open.dolphin.infomodel.DiagnosisCategoryModel;
 import open.dolphin.infomodel.DiagnosisLiteModel;
@@ -15,6 +16,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.util.MMLDate;
+import open.dolphin.util.PNSTriple;
 
 /**
  * DiagnosisDocumentTableModel を独立させて，undo/redo に対応した.
@@ -32,6 +34,11 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     private final Map<Integer, Deque<DiagnosisLiteModel>> undoMap = new HashMap<>();
     private final Map<Integer, Deque<DiagnosisLiteModel>> redoMap = new HashMap<>();
     private enum PollResult { succeeded, noMore };
+
+    public DiagnosisDocumentTableModel(List<PNSTriple<String,Class,String>> triples, boolean readOnly) {
+        super (triples);
+        isReadOnly = readOnly;
+    }
 
     public DiagnosisDocumentTableModel(String[] columnNames, int startNumRows, String[] methodNames, Class<?>[] columnClasses, boolean readOnly) {
         super(columnNames, startNumRows, methodNames, columnClasses);

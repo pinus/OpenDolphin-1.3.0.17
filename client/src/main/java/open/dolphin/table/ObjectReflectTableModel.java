@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import open.dolphin.util.PNSTriple;
 
 /**
  * ObjectReflectTableModel.
@@ -26,6 +27,19 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     private int columnCount;
     // データオブジェクトリスト
     private List<T> objectList;
+
+    public ObjectReflectTableModel(List<PNSTriple<String,Class, String>> reflectionList) {
+        columnCount = reflectionList.size();
+        columnNames = new String[columnCount];
+        columnClasses = new Class<?>[columnCount];
+        methodNames = new String[columnCount];
+
+        for (int i=0; i<columnCount; i++) {
+            columnNames[i] = reflectionList.get(i).getFirst();
+            columnClasses[i] = reflectionList.get(i).getSecond();
+            methodNames[i] = reflectionList.get(i).getThird();
+        }
+    }
 
     /**
      * カラム名から TableModel を生成する

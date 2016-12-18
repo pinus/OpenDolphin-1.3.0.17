@@ -1,6 +1,7 @@
 package open.dolphin.util;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * PNSPair.
@@ -86,19 +87,28 @@ public class PNSPair<N,V extends Comparable<V>> implements Comparable<PNSPair<N,
         return value.hashCode() + 15;
     }
 
+
     /**
      * value を比較して同じなら equal とする
-     * @param other
+     * @param obj
      * @return
      */
     @Override
-    public boolean equals(Object other) {
-        if (other != null && other.getClass() == PNSPair.class) {
-            PNSPair<?,?> otherPair = (PNSPair<?,?>) other;
-            Object otherValue = otherPair.getValue();
-            return otherValue.equals(value);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
-        return false;
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PNSPair<?, ?> other = (PNSPair<?, ?>) obj;
+        if (!Objects.equals(this.value, other.value)) {
+            return false;
+        }
+        return true;
     }
 
     /**

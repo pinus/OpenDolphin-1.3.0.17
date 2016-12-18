@@ -32,6 +32,7 @@ import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import open.dolphin.util.MMLDate;
+import open.dolphin.util.PNSTriple;
 
 /**
  * DiagnosisDocument
@@ -308,14 +309,17 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     private JPanel createDiagnosisPanel() {
 
-        String[] columnNames = ClientContext.getStringArray("diagnosis.columnNames");
-        String[] methodNames = ClientContext.getStringArray("diagnosis.methodNames");
-        Class[] columnClasses = new Class[]{String.class, String.class, String.class, String.class, String.class};
-        int startNumRows = ClientContext.getInt("diagnosis.startNumRows");
         int clickCountToStart = Project.getPreferences().getInt("diagnosis.table.clickCountToStart", 1);
 
         // Diagnosis テーブルモデルを生成する
-        tableModel = new DiagnosisDocumentTableModel(columnNames, startNumRows, methodNames, columnClasses, isReadOnly());
+        List<PNSTriple<String,Class,String>> reflectionList = Arrays.asList(
+                new PNSTriple<>("　疾患名/修飾語", String.class, "getAliasOrName"),
+                new PNSTriple<>("　分 類",        String.class, "getCategoryDesc"),
+                new PNSTriple<>("　転 帰",        String.class, "getOutcomeDesc"),
+                new PNSTriple<>("　疾患開始日",    String.class, "getStartDate"),
+                new PNSTriple<>("　疾患終了日",    String.class, "getEndDate")
+        );
+        tableModel = new DiagnosisDocumentTableModel(reflectionList, isReadOnly());
 
         // 傷病歴テーブルを生成する
         diagTable = new DiagnosisDocumentTable(tableModel);
