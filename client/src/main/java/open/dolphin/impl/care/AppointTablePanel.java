@@ -28,8 +28,6 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
 
     private final String[] COLUMN_NAMES   = ClientContext.getStringArray("appoint.table.columnNames");
     private final int[] COLUMN_WIDTH      = {90, 90,300};
-//pns    private final int NUM_ROWS            = 9;
-    private final int NUM_ROWS            = 1;
     private final int MEMO_COLUMN         = 2;
 
     private CareTableModel tableModel;
@@ -45,7 +43,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         super(new BorderLayout(0, 5));
 
         todayRenderer = new TodayRowRenderer();
-        tableModel = new CareTableModel(COLUMN_NAMES, NUM_ROWS);
+        tableModel = new CareTableModel(COLUMN_NAMES);
         careTable = new JTable(tableModel) {
 
             private static final long serialVersionUID = -3446348785385967929L;
@@ -159,7 +157,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
 
         private static final long serialVersionUID = -5342312972368806563L;
 
-        public CareTableModel(String[] columnNames, int numRows) {
+        public CareTableModel(String[] columnNames) {
             super(columnNames);
         }
 

@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.util.PNSPair;
 import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.event.*;

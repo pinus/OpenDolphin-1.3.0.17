@@ -17,7 +17,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     private static final long serialVersionUID = -8280948755982277457L;
 
     // カラム名配列
-    private String[] columnNames;
+    private final String[] columnNames;
     // カラムクラス配列
     private Class<?>[] columnClasses;
     // 属性値を取得するためのメソッド名
@@ -32,7 +32,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      * @param columnNames
      */
     public ObjectReflectTableModel(String[] columnNames) {
-        this(columnNames, 0, null, null);
+        this.columnNames = columnNames;
     }
 
     /**

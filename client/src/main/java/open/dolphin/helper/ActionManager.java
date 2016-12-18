@@ -22,7 +22,7 @@ public class ActionManager {
     @Target(ElementType.METHOD)
     public @interface Action {}
 
-    private ActionMap actionMap;
+    private final ActionMap actionMap;
 
     public ActionManager(Object obj) {
         actionMap = getActionMap(obj);
@@ -49,11 +49,7 @@ public class ActionManager {
                         try {
                             method.invoke(obj, (Object[]) null);
 
-                        } catch (IllegalAccessException ex) {
-                            System.out.println("ActionManager.java: " + ex);
-                        } catch (IllegalArgumentException ex) {
-                            System.out.println("ActionManager.java: " + ex);
-                        } catch (InvocationTargetException ex) {
+                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                             System.out.println("ActionManager.java: " + ex);
                         }
                     }
