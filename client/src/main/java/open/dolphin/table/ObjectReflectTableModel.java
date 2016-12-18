@@ -28,6 +28,10 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     // データオブジェクトリスト
     private List<T> objectList;
 
+    /**
+     * PNSTriple<columnName,columnClass,methodName> から TableModel を生成する.
+     * @param reflectionList
+     */
     public ObjectReflectTableModel(List<PNSTriple<String,Class, String>> reflectionList) {
         columnCount = reflectionList.size();
         columnNames = new String[columnCount];
@@ -42,7 +46,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * カラム名から TableModel を生成する
+     * カラム名から TableModel を生成する.
      * @param columnNames
      */
     public ObjectReflectTableModel(String[] columnNames) {

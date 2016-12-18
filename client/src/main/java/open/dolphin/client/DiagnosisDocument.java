@@ -62,15 +62,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     public static final String DELETED_RECORD = "DELETED"; // 削除病名
     public static final String IKOU_BYOMEI_RECORD = "IKOU_BYOMEI"; // 移行病名
 
-    // 抽出期間コンボボックスデータ
-    private final List<PNSPair<String,Integer>> extractionPeriods = Arrays.asList(
-        new PNSPair<>("全て", 0),
-        new PNSPair<>("1年", -12),
-        new PNSPair<>("2年", -24),
-        new PNSPair<>("3年", -36),
-        new PNSPair<>("5年", -60)
-    );
-
     // GUI コンポーネント定義
     private static final ImageIcon DELETE_BUTTON_IMAGE = GUIConst.ICON_REMOVE_16;
     private static final ImageIcon ADD_BUTTON_IMAGE = GUIConst.ICON_LIST_ADD_16;
@@ -477,12 +468,18 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         // 抽出期間コンボボックス
         p.add(new JLabel("抽出期間(過去)"));
         p.add(Box.createRigidArea(new Dimension(5, 0)));
-        extractionCombo = new JComboBox<>();
-        extractionPeriods.forEach(periodPair -> extractionCombo.addItem(periodPair));
+        extractionCombo = ComboBoxFactory.getDiagnosisExtractionPeriodCombo();
 
         Preferences prefs = Project.getPreferences();
         int currentDiagnosisPeriod = prefs.getInt(Project.DIAGNOSIS_PERIOD, 0);
-        int selectIndex = PNSPair.getIndex(currentDiagnosisPeriod, extractionPeriods);
+
+        int selectIndex = 0;
+        for (int i=0; i<extractionCombo.getItemCount(); i++) {
+            if (currentDiagnosisPeriod == extractionCombo.getItemAt(i).getValue()) {
+                selectIndex = i;
+                break;
+            }
+        }
         extractionCombo.setSelectedIndex(selectIndex);
         extractionCombo.addItemListener(e ->  {
             if (e.getStateChange() == ItemEvent.SELECTED) { updateDiagnosisHistory(); }
@@ -519,7 +516,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     private void updateDiagnosisHistory() {
 
-        int past = extractionPeriods.get(extractionCombo.getSelectedIndex()).getValue();
+        int index = extractionCombo.getSelectedIndex();
+        int past = extractionCombo.getItemAt(index).getValue();
 
         Date date;
         if (past != 0) {
@@ -1246,7 +1244,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         final String patientId = getContext().getPatient().getPatientId();
 
         // 抽出期間から検索範囲の最初の日を取得する
-        int past = extractionPeriods.get(extractionCombo.getSelectedIndex()).getValue();
+        int index = extractionCombo.getSelectedIndex();
+        int past = extractionCombo.getItemAt(index).getValue();
 
         Date date;
         if (past != 0) {
