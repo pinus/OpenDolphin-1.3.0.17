@@ -26,13 +26,13 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     // カラム数
     private int columnCount;
     // データオブジェクトリスト
-    private List<T> objectList;
+    private List<T> objectList = new ArrayList<>();
 
     /**
      * PNSTriple<columnName,columnClass,methodName> から TableModel を生成する.
      * @param reflectionList
      */
-    public ObjectReflectTableModel(List<PNSTriple<String,Class, String>> reflectionList) {
+    public ObjectReflectTableModel(List<PNSTriple<String,Class<?>,String>> reflectionList) {
         columnCount = reflectionList.size();
         columnNames = new String[columnCount];
         columnClasses = new Class<?>[columnCount];
@@ -51,6 +51,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      */
     public ObjectReflectTableModel(String[] columnNames) {
         this.columnNames = columnNames;
+        this.columnCount = columnNames.length;
     }
 
     /**
@@ -67,7 +68,6 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
         if (columnNames != null) {
             columnCount = columnNames.length;
         }
-        objectList = new ArrayList<>();
     }
 
     /**
@@ -136,10 +136,6 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      * @param otherList データリスト
      */
     public void setObjectList(List<T> otherList) {
-        if (objectList != null) {
-            objectList.clear();
-            objectList = null;
-        }
         objectList = otherList; // 参照しているのみ
         fireTableDataChanged();
     }

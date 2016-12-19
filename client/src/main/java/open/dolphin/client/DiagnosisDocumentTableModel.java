@@ -35,7 +35,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     private final Map<Integer, Deque<DiagnosisLiteModel>> redoMap = new HashMap<>();
     private enum PollResult { succeeded, noMore };
 
-    public DiagnosisDocumentTableModel(List<PNSTriple<String,Class,String>> triples, boolean readOnly) {
+    public DiagnosisDocumentTableModel(List<PNSTriple<String,Class<?>,String>> triples, boolean readOnly) {
         super (triples);
         isReadOnly = readOnly;
     }

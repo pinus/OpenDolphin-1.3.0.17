@@ -47,7 +47,8 @@ public final class CareMapDocument extends AbstractChartDocument {
         ClientContext.getColor("color.EXAM_APPO"),
         ClientContext.getColor("color.TEST"),
         ClientContext.getColor("color.IMAGE"),
-        new Color(251, 239, 128) };
+        ClientContext.getColor("color.MISC")
+    };
 
         /*private static final Icon[] orderIcons = {
                         new ColorFillIcon(orderColors[0], 10, 10, 1),
@@ -413,8 +414,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     /**
      * 予約のカラーを返す。
      *
-     * @param appoint
-     *            予約名
+     * @param appoint 予約名
      * @return カラー
      */
     public Color getAppointColor(String appoint) {
@@ -539,7 +539,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         sc[0] = c0;
         sc[1] = c1;
         sc[2] = c2;
-        boundSupport.firePropertyChange("CALENDAR_PROP", null, sc);
+        boundSupport.firePropertyChange(CALENDAR_PROP, null, sc);
     }
 
     public String getSelectedEvent() {

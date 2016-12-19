@@ -25,7 +25,7 @@ public class AdditionalTableSettings {
             @Override
             public void mouseClicked(MouseEvent e) {
                 table.clearSelection();
-                table.getParent().requestFocusInWindow();
+                //table.getParent().requestFocusInWindow();
             }
         });
     }
@@ -49,6 +49,7 @@ public class AdditionalTableSettings {
 
     /**
      * Order のテーブルは intercellSpacing 入れると renderer の line が残ってしまう
+     * @param table
      */
     public static void setOrderTable(JTable table) {
         setTable(table);

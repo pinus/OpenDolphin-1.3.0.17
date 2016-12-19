@@ -303,7 +303,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         int clickCountToStart = Project.getPreferences().getInt("diagnosis.table.clickCountToStart", 1);
 
         // Diagnosis テーブルモデルを生成する
-        List<PNSTriple<String,Class,String>> reflectionList = Arrays.asList(
+        List<PNSTriple<String,Class<?>,String>> reflectionList = Arrays.asList(
                 new PNSTriple<>("　疾患名/修飾語", String.class, "getAliasOrName"),
                 new PNSTriple<>("　分 類",        String.class, "getCategoryDesc"),
                 new PNSTriple<>("　転 帰",        String.class, "getOutcomeDesc"),
