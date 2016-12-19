@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
@@ -15,9 +13,9 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.Preferences;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -49,8 +47,8 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     private static final String PREFS = "prefs";
 
     private Completer completer;
-    private JList completionList;
-    private DefaultListModel completionListModel;
+    private JList<String> completionList;
+    private DefaultListModel<String> completionListModel;
     private JWindow listWindow;
     private Window parentFrame;
     private int keyCode;
@@ -64,8 +62,8 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
 
     private void initComponents() {
         completer = new Completer();
-        completionListModel = new DefaultListModel();
-        completionList = new JList(completionListModel);
+        completionListModel = new DefaultListModel<>();
+        completionList = new JList<>(completionListModel);
         completionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listWindow = new JWindow();
         listWindow.setOpacity(0.7f);
@@ -96,18 +94,15 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     private void savePrefs() {
         StringBuilder sb = new StringBuilder();
         List<String> items = getCompletions();
-        for (String s : items) {
-            sb.append(s).append("\t");
-        }
+        items.stream().forEach(s -> sb.append(s).append("\t"));
+
         prefs.put(PREFS, StringUtils.chop(sb.toString()));
     }
 
     private void loadPrefs() {
         String str = prefs.get(PREFS, "");
         String[] items = str.split("\t");
-        for(String s : items) {
-            if (! s.equals("")) { completer.addCompletion(s); }
-        }
+        Arrays.asList(items).stream().filter(s -> !s.equals("")).forEach(s -> completer.addCompletion(s));
     }
 
     public void addCompletion(String s) {
@@ -150,18 +145,15 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     public void valueChanged(final ListSelectionEvent e) {
         if (e.getValueIsAdjusting() || completionList.getModel().getSize() == 0) { return; }
 
-        final String completionString = (String) completionList.getSelectedValue();
+        final String completionString = completionList.getSelectedValue();
         if (completionString == null) { return; }
 
-        SwingUtilities.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                // リストが選択されたら，選択された文字を text field に挿入
-                // その間，completer には止まっていてもらう必要がある
-                completer.setUpdate(false);
-                setText(completionString);
-                completer.setUpdate(true);
-            }
+        SwingUtilities.invokeLater(() -> {
+            // リストが選択されたら，選択された文字を text field に挿入
+            // その間，completer には止まっていてもらう必要がある
+            completer.setUpdate(false);
+            setText(completionString);
+            completer.setUpdate(true);
         });
     }
 
@@ -233,6 +225,11 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
                 }
                 e.consume();
             }
+        } else {
+            // リストが表示されていないとき，下キーで候補を全部出す
+            if (keyCode == KeyEvent.VK_DOWN && getText().length() < 1) {
+                completer.showAll();
+            }
         }
     }
 
@@ -274,9 +271,9 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
 
         private boolean update = true;
         private Pattern pattern;
-        private ArrayList<String> completions;
+        private final ArrayList<String> completions;
         public Completer() {
-            completions = new ArrayList<String>();
+            completions = new ArrayList<>();
         }
 
         public void addCompletion(String s) {
@@ -317,15 +314,8 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
             //pattern = Pattern.compile(getText() + ".*");
             pattern = Pattern.compile(getText() + ".+");
 
-            for(String completion: completions) {
-                Matcher matcher = pattern.matcher(completion);
-                 if (matcher.matches()) {
-                    //System.out.println("matched "+ completion);
-                    completionListModel.add(completionListModel.getSize(), completion);
-                } else {
-                    //System.out.println("pattern " + pattern.pattern() + " does not match " + completion);
-                }
-            }
+            completions.stream().filter(completion -> pattern.matcher(completion).matches())
+                    .forEach(completion -> completionListModel.add(completionListModel.getSize(), completion));
         }
 
         private void showPopup() {
@@ -344,6 +334,13 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
                 return;
             }
             buildPopup();
+            showPopup();
+        }
+
+        private void showAll() {
+            // complitionListModel に completions 全部入れる
+            completionListModel.clear();
+            completions.forEach(completion -> completionListModel.add(completionListModel.getSize(), completion));
             showPopup();
         }
 
@@ -366,14 +363,14 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     public static void main(String[] argv) {
         try {
             UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
-        } catch (ClassNotFoundException e) { System.out.println("Dolphin.java: " + e);
-        } catch (IllegalAccessException e) { System.out.println("Dolphin.java: " + e);
-        } catch (UnsupportedLookAndFeelException e) { System.out.println("Dolphin.java: " + e);
-        } catch (InstantiationException e) { System.out.println("Dolphin.java: " + e);}
+        } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException e) {
+            System.out.println("Dolphin.java: " + e);
+        }
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         final CompletableJTextField completableField = new CompletableJTextField(75) {
+            private static final long serialVersionUID = 1L;
             @Override
             protected void paintBorder(Graphics g) {
                 super.paintBorder(g);
@@ -392,21 +389,15 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
         JPanel bottom = new JPanel();
         bottom.add(new JLabel("Completion:"));
         final JTextField completionField = new JTextField(40);
-        completionField.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                completableField.addCompletion(completionField.getText());
-                completionField.setText("");
-            }
+        completionField.addActionListener(e -> {
+            completableField.addCompletion(completionField.getText());
+            completionField.setText("");
         });
         bottom.add(completionField);
         JButton addButton = new JButton("Add");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                completableField.addCompletion(completionField.getText());
-                completionField.setText("");
-            }
+        addButton.addActionListener(e -> {
+            completableField.addCompletion(completionField.getText());
+            completionField.setText("");
         });
         bottom.add(addButton);
         panel.add(bottom);

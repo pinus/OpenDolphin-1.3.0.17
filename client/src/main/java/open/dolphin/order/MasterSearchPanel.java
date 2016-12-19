@@ -359,12 +359,12 @@ public class MasterSearchPanel extends JPanel {
 
             // 点数コラムは右寄せ
             if (column == TENSU_COL) {
-                comp.setText(text + " ");
+                comp.setText(text + " "); // 偽インデント
                 comp.setHorizontalAlignment(JLabel.RIGHT);
 
             // それ以外は左寄せ
             } else {
-                comp.setText(text);
+                comp.setText(" " + text); // 偽インデント
                 comp.setHorizontalAlignment(JLabel.LEFT);
             }
 

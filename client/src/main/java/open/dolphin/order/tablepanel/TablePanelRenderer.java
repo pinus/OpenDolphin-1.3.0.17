@@ -18,10 +18,14 @@ public class TablePanelRenderer extends DefaultTableCellRenderer {
 
     private boolean isTargetRow;
     private boolean isUnderline;
-    private Color LINE_COLOR = new Color(0x0A,0x53,0xB6);
+    private final Color LINE_COLOR = new Color(0x0A,0x53,0xB6);
 
     public TablePanelRenderer() {
-        this.setBorder(GUIConst.RENDERER_BORDER_NARROW);
+        initComponents();
+    }
+
+    private void initComponents() {
+        setBorder(GUIConst.RENDERER_BORDER_NARROW);
     }
 
     @Override
@@ -41,7 +45,8 @@ public class TablePanelRenderer extends DefaultTableCellRenderer {
         text = StringTool.toHankakuUpperLower(text);
         text = text.replaceAll("　", " ");
 
-        this.setText(text);
+        // 偽インデント
+        this.setText(" " + text);
 
         if (isSelected) {
             comp.setBackground(table.getSelectionBackground());
@@ -66,6 +71,7 @@ public class TablePanelRenderer extends DefaultTableCellRenderer {
 
         return comp;
     }
+    
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
