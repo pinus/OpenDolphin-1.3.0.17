@@ -40,11 +40,6 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
         isReadOnly = readOnly;
     }
 
-    public DiagnosisDocumentTableModel(String[] columnNames, int startNumRows, String[] methodNames, Class<?>[] columnClasses, boolean readOnly) {
-        super(columnNames, startNumRows, methodNames, columnClasses);
-        isReadOnly = readOnly;
-    }
-
     public PropertyChangeSupport getBoundSupport() {
         return boundSupport;
     }
