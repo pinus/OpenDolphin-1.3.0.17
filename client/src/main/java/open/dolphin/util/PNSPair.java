@@ -10,7 +10,7 @@ import java.util.Objects;
  * @param <N>
  * @param <V>
  */
-public class PNSPair<N,V extends Comparable<V>> implements Comparable<PNSPair<N,V>> {
+public class PNSPair<N,V> implements Comparable<PNSPair<N,V>>{
 
     private N name;
     private V value;
@@ -105,7 +105,7 @@ public class PNSPair<N,V extends Comparable<V>> implements Comparable<PNSPair<N,
             return false;
         }
         final PNSPair<?, ?> other = (PNSPair<?, ?>) obj;
-        if (!Objects.equals(this.value, other.value)) {
+        if (!Objects.equals(this.value, other.getValue())) {
             return false;
         }
         return true;
@@ -120,7 +120,9 @@ public class PNSPair<N,V extends Comparable<V>> implements Comparable<PNSPair<N,
     public int compareTo(PNSPair<N,V> other) {
         if (other != null) {
             V otherValue = other.getValue();
-            return value.compareTo(otherValue);
+            if (value instanceof Comparable<?>) {
+                return ((Comparable)value).compareTo(otherValue);
+            }
         }
         return -1;
     }

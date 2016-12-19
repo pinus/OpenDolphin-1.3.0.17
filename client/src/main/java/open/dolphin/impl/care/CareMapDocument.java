@@ -16,6 +16,7 @@ import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.project.Project;
+import open.dolphin.util.PNSPair;
 
 /**
  * CareMap Document.
@@ -31,30 +32,25 @@ public final class CareMapDocument extends AbstractChartDocument {
     public static final String SELECTED_APPOINT_DATE_PROP = "SELECTED_DATE_PROP";
     public static final String APPOINT_PROP = "APPOINT_PROP";
 
+    private static final List<PNSPair<String,String>> Orders = Arrays.asList(
+            new PNSPair<>("処方", IInfoModel.ENTITY_MED_ORDER),
+            new PNSPair<>("処置", IInfoModel.ENTITY_TREATMENT),
+            new PNSPair<>("指導", IInfoModel.ENTITY_INSTRACTION_CHARGE_ORDER),
+            new PNSPair<>("ラボテスト", IInfoModel.ENTITY_LABO_TEST),
+            new PNSPair<>("生体検査", IInfoModel.ENTITY_PHYSIOLOGY_ORDER),
+            new PNSPair<>("放射線", IInfoModel.ENTITY_RADIOLOGY_ORDER)
+    );
+
+    private static final List<PNSPair<String,Color>> AppointNameColor = Arrays.asList(
+            new PNSPair<>("再診", ClientContext.getColor("color.EXAM_APPO")),
+            new PNSPair<>("検体検査", ClientContext.getColor("color.TEST")),
+            new PNSPair<>("画像検査", ClientContext.getColor("color.IMAGE")),
+            new PNSPair<>("その他", ClientContext.getColor("color.MISC"))
+    );
+
     private static final String[] orderNames = { "処方", "処置", "指導", "ラボテスト", "生体検査", "放射線"};
 
     private static final String[] orderCodes = { "medOrder", "treatmentOrder", "instractionChargeOrder", "testOrder", "physiologyOrder", "radiologyOrder"};
-
-        /*private static final Color[] orderColors = {
-                        ClientContext.getColor("color.RP"),
-                        ClientContext.getColor("color.TREATMENT"),
-                        ClientContext.getColor("color.TEST"),
-                        ClientContext.getColor("color.IMAGE") };*/
-
-    private static final String[] appointNames = { "再診", "検体検査", "画像診断", "その他" };
-
-    private static final Color[] appointColors = {
-        ClientContext.getColor("color.EXAM_APPO"),
-        ClientContext.getColor("color.TEST"),
-        ClientContext.getColor("color.IMAGE"),
-        ClientContext.getColor("color.MISC")
-    };
-
-        /*private static final Icon[] orderIcons = {
-                        new ColorFillIcon(orderColors[0], 10, 10, 1),
-                        new ColorFillIcon(orderColors[1], 10, 10, 1),
-                        new ColorFillIcon(orderColors[2], 10, 10, 1),
-                        new ColorFillIcon(orderColors[3], 10, 10, 1) };*/
 
     private static final int IMAGE_WIDTH = 128;
     private static final int IMAGE_HEIGHT = 128;
@@ -319,23 +315,22 @@ public final class CareMapDocument extends AbstractChartDocument {
         cp.add(nextBtn);
         // cp.add(Box.createHorizontalStrut(30));
         cp.add(Box.createHorizontalGlue());
+
+        // 凡例パネル
         JPanel han = new JPanel();
         han.setLayout(new BoxLayout(han, BoxLayout.X_AXIS));
+
         han.add(new JLabel("予約( "));
-        for (int i = 0; i < appointNames.length; i++) {
-            if (i != 0) {
-                han.add(Box.createHorizontalStrut(7));
-            }
-            AppointLabel dl = new AppointLabel(appointNames[i],
-                    new ColorFillIcon(appointColors[i], 10, 10, 1),
-                    SwingConstants.CENTER);
-            han.add(dl);
-        }
+        AppointNameColor.forEach(pair -> {
+            han.add(new AppointLabel(pair.getName(), new ColorFillIcon(pair.getValue(), 10, 10, 1), SwingConstants.CENTER));
+            han.add(Box.createHorizontalStrut(7));
+        });
+        han.remove(han.getComponentCount()-1); // 最後の Strut を削除
         han.add(new JLabel(" )"));
+
         han.add(Box.createHorizontalStrut(7));
-        Color birthC = ClientContext.getColor("color.BIRTHDAY_BACK");
-        han.add(new JLabel("誕生日", new ColorFillIcon(birthC, 10, 10, 1),
-                SwingConstants.CENTER));
+        Color birthdayColor = ClientContext.getColor("color.BIRTHDAY_BACK");
+        han.add(new JLabel("誕生日", new ColorFillIcon(birthdayColor, 10, 10, 1), SwingConstants.CENTER));
         han.add(Box.createHorizontalStrut(11));
         cp.add(han);
 
@@ -418,18 +413,12 @@ public final class CareMapDocument extends AbstractChartDocument {
      * @return カラー
      */
     public Color getAppointColor(String appoint) {
-
-        if (appoint == null) {
-            return Color.white;
-        }
-
-        Color ret = null;
-        for (int i = 0; i < appointNames.length; i++) {
-            if (appoint.equals(appointNames[i])) {
-                ret = appointColors[i];
+        if (appoint != null) {
+            for (PNSPair<String,Color> pair : AppointNameColor) {
+                if (appoint.equals(pair.getName())) { return pair.getValue(); }
             }
         }
-        return ret;
+        return Color.WHITE;
     }
 
     /**
