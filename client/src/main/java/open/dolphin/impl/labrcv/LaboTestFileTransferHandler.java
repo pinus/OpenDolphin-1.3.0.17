@@ -11,77 +11,59 @@ import open.dolphin.delegater.LaboDelegater;
 import open.dolphin.infomodel.LaboImportSummary;
 
 /**
- * LaboTestFileTransferHandler
+ * LaboTestFileTransferHandler.
  *
  * @author kazushi Minagawa
- *
  */
 class LaboTestFileTransferHandler extends TransferHandler {
-
     private static final long serialVersionUID = 2942768324728994019L;
 
-    private DataFlavor fileFlavor;
-    private LaboTestImporter context;
-    private LinkedList<List<File>> queue;
-    private ImportThread importThread;
+    private final DataFlavor fileFlavor;
+    private final LaboTestImporter context;
+    private final LinkedList<List<File>> queue;
 
-    public LaboTestFileTransferHandler(LaboTestImporter context) {
+    public LaboTestFileTransferHandler(LaboTestImporter ctx) {
         fileFlavor = DataFlavor.javaFileListFlavor;
-        this.context = context;
-        queue = new LinkedList<List<File>>();
-        importThread = new ImportThread();
+        context = ctx;
+        queue = new LinkedList<>();
+        start();
+    }
+
+    private void start() {
+        ImportThread importThread = new ImportThread();
         importThread.start();
     }
 
     @Override
     public boolean importData(JComponent c, Transferable t) {
 
-        if (!canImport(c, t.getTransferDataFlavors())) {
-            return false;
-        }
+        if (!canImport(c, t.getTransferDataFlavors())) { return false; }
 
         try {
             if (hasFileFlavor(t.getTransferDataFlavors())) {
+                List<File> files = (List<File>) t.getTransferData(fileFlavor);
+                List<File> xmlFiles = new ArrayList<>(files.size());
 
-                java.util.List<File> files = (java.util.List<File>) t.getTransferData(fileFlavor);
-
-                List<File> xmlFiles = new ArrayList<File>(files.size());
-
-                for (File file : files) {
-
-                    if (!file.isDirectory() && file.getName().endsWith(".xml")) {
-                        xmlFiles.add(file);
-                    }
-                }
-
-                if (xmlFiles != null && xmlFiles.size() > 0) {
-                    addFiles(xmlFiles);
-                }
+                files.stream().filter(file -> !file.isDirectory() && file.getName().endsWith(".xml")).forEach(file -> xmlFiles.add(file));
+                if (! xmlFiles.isEmpty()) { addFiles(xmlFiles); }
 
                 return true;
             }
 
-        } catch (UnsupportedFlavorException ufe) {
-            ufe.printStackTrace();
-
-        } catch (IOException ieo) {
-            ieo.printStackTrace();
-
+        } catch (UnsupportedFlavorException | IOException ex) {
+            ex.printStackTrace(System.err);
         }
         return false;
     }
 
     @Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {
-        if (hasFileFlavor(flavors)) {
-            return true;
-        }
-        return false;
+        return hasFileFlavor(flavors);
     }
 
     private boolean hasFileFlavor(DataFlavor[] flavors) {
-        for (int i = 0; i < flavors.length; i++) {
-            if (fileFlavor.equals(flavors[i])) {
+        for (DataFlavor flavor : flavors) {
+            if (fileFlavor.equals(flavor)) {
                 return true;
             }
         }
@@ -94,7 +76,7 @@ class LaboTestFileTransferHandler extends TransferHandler {
      */
     public synchronized void addFiles(List<File> xmlFiles) {
         queue.addLast(xmlFiles);
-        notify();
+        notify(); // wait() 解除
     }
 
     /**
@@ -103,46 +85,42 @@ class LaboTestFileTransferHandler extends TransferHandler {
      */
     public synchronized List<File> getFiles() {
 
-        while (queue.size() == 0) {
+        while (queue.isEmpty()) {
             try {
                 wait();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
         }
-        return (List<File>) queue.removeFirst();
+        return queue.removeFirst(); // last in first out
     }
 
     /**
      * ファイルをパースしデータベースへ登録するコンシューマスレッドクラス。
      */
-    class ImportThread extends Thread {
+    private class ImportThread extends Thread {
 
         @Override
         public void run() {
             while (! interrupted()) {
                 try {
-                    List<File> files = getFiles();
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            context.getProgressBar().setIndeterminate(true);
-                        }
-                    });
+                    List<File> files = getFiles(); // ここで wait()
+
+                    SwingUtilities.invokeLater(() -> context.getProgressBar().setIndeterminate(true));
+
                     LaboModuleBuilder builder = new LaboModuleBuilder();
                     builder.setLogger(ClientContext.getLaboTestLogger());
-                    builder.setEncoding(ClientContext.getString("laboTestImport.mmlFile.encoding"));
+                    builder.setEncoding(ClientContext.getString("laboTestImport.mmlFile.encoding")); // UTF-8
                     builder.setLaboDelegater(new LaboDelegater());
+
                     final List<LaboImportSummary> result = builder.build(files);
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            context.getProgressBar().setIndeterminate(false);
-                            context.getProgressBar().setValue(0);
-                            context.getLaboListTable().getTableModel().addRows(result);
-                            context.updateCount();
-                        }
+                    SwingUtilities.invokeLater(() -> {
+                        context.getProgressBar().setIndeterminate(false);
+                        context.getProgressBar().setValue(0);
+                        context.getTableModel().addRows(result);
+                        context.updateCount();
                     });
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    e.printStackTrace(System.err);
                 }
             }
         }

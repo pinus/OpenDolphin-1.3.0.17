@@ -10,7 +10,7 @@ import javax.swing.JTable;
 public class DiagnosisDocumentTable extends JTable {
     private static final long serialVersionUID = 1L;
 
-    private DiagnosisDocumentTableModel model;
+    private final DiagnosisDocumentTableModel model;
 
     public DiagnosisDocumentTable(DiagnosisDocumentTableModel model) {
         super(model);
@@ -29,7 +29,7 @@ public class DiagnosisDocumentTable extends JTable {
 
     public int convertHashToModelRow(int hash) {
         for (int row = 0; row < model.getObjectCount(); row++) {
-            if (System.identityHashCode(model.getObject(row)) == hash) return row;
+            if (System.identityHashCode(model.getObject(row)) == hash) { return row; }
         }
         // 見つからなかった
         return -1;
