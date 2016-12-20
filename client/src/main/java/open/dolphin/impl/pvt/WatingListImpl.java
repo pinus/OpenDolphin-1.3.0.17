@@ -1374,14 +1374,16 @@ public class WatingListImpl extends AbstractMainComponent {
      * modified by pns
      */
     private class ContextListener extends AbstractMainComponent.ContextListener<PatientVisitModel> {
+        private final JPopupMenu contextMenu;
 
         public ContextListener(JTable table) {
             super(table);
+            contextMenu = getContextMenu();
         }
 
         @Override
-        public void openKarteCommand(PatientVisitModel pvt) {
-            openKarte(pvt);
+        public void openKarte(PatientVisitModel pvt) {
+            WatingListImpl.this.openKarte(pvt);
         }
 
         @Override

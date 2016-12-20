@@ -621,14 +621,16 @@ public class PatientSearchImpl extends AbstractMainComponent {
      * modified by pns
      */
     private class ContextListener extends AbstractMainComponent.ContextListener<PatientModel> {
+        private final JPopupMenu contextMenu;
 
         public ContextListener(JTable table) {
             super(table);
+            contextMenu = getContextMenu();
         }
 
         @Override
-        public void openKarteCommand(PatientModel pvt) {
-            openKarte(pvt);
+        public void openKarte(PatientModel pvt) {
+            PatientSearchImpl.this.openKarte(pvt);
         }
 
         @Override

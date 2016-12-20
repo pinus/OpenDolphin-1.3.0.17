@@ -91,8 +91,8 @@ public class LaboTestImporter extends AbstractMainComponent {
         }
 
         @Override
-        public void openKarteCommand(LaboImportSummary value) {
-            openKarte(value.getPatient());
+        public void openKarte(LaboImportSummary value) {
+            LaboTestImporter.this.openKarte(value.getPatient());
         }
 
         @Override

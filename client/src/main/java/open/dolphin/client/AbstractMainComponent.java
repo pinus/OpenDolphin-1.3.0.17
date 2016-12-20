@@ -1,7 +1,5 @@
 package open.dolphin.client;
 
-import ch.randelshofer.quaqua.SheetEvent;
-import ch.randelshofer.quaqua.SheetListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.Callable;
@@ -30,7 +28,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     private String icon;
     private MainWindow context;
     private JPanel ui;
-    private int number = 900000; // pvt がない場合の受付番号 900000から連番で作る
+    private int number = 10000; // pvt がない場合の受付番号 10000から連番で作る
 
     public AbstractMainComponent() {
     }
@@ -99,47 +97,45 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     // 必要に応じて extend 側でオーバーライドする
 
     /**
-     * PatientModel のカルテを開く。
-     * @param value 対象患者
+     * PatientModel のカルテを開く.
+     * PatientSearchImpl, LaboTestImporter
+     * @param patient 対象患者
      */
     public void openKarte(final PatientModel patient) {
         if (canOpen(patient)) {
-            Thread t = new Thread() {
-                @Override
-                public void run() {
+            Thread t = new Thread(() -> {
+                // 健康保険情報をフェッチする
+                PatientDelegater pdl = new PatientDelegater();
+                pdl.fetchHealthInsurance(patient);
 
-                    // 健康保険情報をフェッチする
-                    PatientDelegater pdl = new PatientDelegater();
-                    pdl.fetchHealthInsurance(patient);
+                // pvt 情報があるかどうかチェック
+                PvtDelegater pvtdl = new PvtDelegater();
+                PatientVisitModel pvtModel = pvtdl.getPvt(patient);
 
-                    // pvt 情報があるかどうかチェック
-                    PvtDelegater pvtdl = new PvtDelegater();
-                    PatientVisitModel pvtModel = pvtdl.getPvt(patient);
+                // 来院がない場合
+                if (pvtModel == null) {
+                    // 来院情報を生成する
+                    pvtModel = new PatientVisitModel();
+                    pvtModel.setId(0L);
+                    pvtModel.setNumber(getNewPvtNumber()); //10000から割り当て
+                    pvtModel.setPatient(patient);
 
-                    // 来院がない場合
-                    if (pvtModel == null) {
-                        // 来院情報を生成する
-                        pvtModel = new PatientVisitModel();
-                        pvtModel.setId(0L);
-                        pvtModel.setNumber(getNewPvtNumber()); //10000から割り当て
-                        pvtModel.setPatient(patient);
+                    // 受け付けを通していないのでログイン情報及び設定ファイルを使用する
+                    // 診療科名、診療科コード、医師名、医師コード、JMARI
+                    pvtModel.setDepartment(constarctDept());
+                    getContext().openKarte(pvtModel);
 
-                        // 受け付けを通していないのでログイン情報及び設定ファイルを使用する
-                        // 診療科名、診療科コード、医師名、医師コード、JMARI
-                        pvtModel.setDepartment(constarctDept());
-                        getContext().openKarte(pvtModel);
-
-                    // 来院している場合
-                    } else {
-                        int state = pvtModel.getState();
-                        // すでに OPEN ならどっかで開いているということなので編集不可に設定
-                        if (KarteState.isOpen(state)) openReadOnlyKarte(pvtModel, state); //
-                        // OPEN でなければ，通常どおりオープン
-                        else getContext().openKarte(pvtModel);
-                    }
+                // 来院している場合
+                } else {
+                    int state = pvtModel.getState();
+                    // すでに OPEN ならどっかで開いているということなので編集不可に設定
+                    if (KarteState.isOpen(state)) { openReadOnlyKarte(pvtModel, state); } //
+                    // OPEN でなければ，通常どおりオープン
+                    else { getContext().openKarte(pvtModel); }
                 }
-            };
+            });
             t.start();
+
         } else {
             // 既に開かれていれば，そのカルテを前に
             ChartImpl.toFront(patient);
@@ -165,20 +161,18 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
             "<p><nobr>閲覧のみで、編集はできません<nobr></p></html>";
 
         MyJSheet.showConfirmSheet(SwingUtilities.getWindowAncestor(getUI()), message,
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, new SheetListener() {
-            @Override
-            public void optionSelected(SheetEvent se) {
-                int result = se.getOption();
-                if (result == 0) { // OK
-                    pvtModel.setState(KarteState.READ_ONLY);
-                    getContext().openKarte(pvtModel);
-                }
-            }
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, sheetEvent -> {
+                    int result = sheetEvent.getOption();
+                    if (result == 0) { // OK
+                        pvtModel.setState(KarteState.READ_ONLY);
+                        getContext().openKarte(pvtModel);
+                    }
         });
     }
 
     /**
      * カルテを開くことが可能かどうかを返す。
+     * @param patient
      * @return 開くことが可能な時 true
      */
     public boolean canOpen(PatientModel patient) {
@@ -209,48 +203,56 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     }
 
     /**
-     * MainComponent (WatingList, PatientSearch, LaboImporter) で使われる ContextListener
+     * MainComponent (WatingList, PatientSearch, LaboImporter) で使われる ContextListener.
      * @param <T>
      */
     public abstract class ContextListener<T> extends MouseAdapter {
 
-        protected MyJPopupMenu contextMenu = new MyJPopupMenu();
+        private final JTable table;
+        private final ObjectReflectTableModel<T> tableModel;
+        private final MyJPopupMenu contextMenu = new MyJPopupMenu();
 
-        private JTable table;
-        private ObjectReflectTableModel tableModel;
 
         public ContextListener(JTable table) {
             this.table = table;
-            tableModel = (ObjectReflectTableModel) table.getModel();
+            tableModel = (ObjectReflectTableModel<T>) table.getModel();
+            connect();
+        }
+
+        /**
+         * ObjectReflectTableModel&lt;T&gt; に格納されている T からカルテを開く.
+         * @param value
+         */
+        public abstract void openKarte(T value);
+
+        /**
+         * PopupMenu を表示する.
+         * @param e
+         */
+        public abstract void maybeShowPopup(MouseEvent e);
+        private void connect() {
             table.addMouseListener(this);
         }
 
-        public abstract void openKarteCommand(T value);
-        public abstract void maybeShowPopup(MouseEvent e);
+        public MyJPopupMenu getContextMenu() {
+            return contextMenu;
+        }
 
         @Override
         public void mouseClicked(MouseEvent e) {
+            // ダブルクリック
             if (e.getClickCount() == 2 && !contextMenu.isShowing() && e.getSource() instanceof JTable) {
-              int row = table.convertRowIndexToModel(table.getSelectedRow());
-              T value = (T) tableModel.getObject(row);
-              if (value != null) {
-                  openKarteCommand(value);
-              }
-    //        複数行選択対応 〜 機能しない（どうやっても複数選択のまま double click はできない）
-    //          int[] rows = table.getSelectedRows();
-    //          for (int i=0; i < rows.length; i++) {
-    //              rows[i] = table.convertRowIndexToModel(rows[i]);
-    //              T value = (T) tableModel.getObject(rows[i]);
-    //              if (value != null) {
-    //                  openKarteCommand(value);
-    //              }
-    //           }
+                int row = table.convertRowIndexToModel(table.getSelectedRow());
+                T value = tableModel.getObject(row);
+                if (value != null) {
+                    openKarte(value);
+                }
             }
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
-//      public void mouseReleased(MouseEvent e) { // windows はこちら
+        // public void mouseReleased(MouseEvent e) { // windows はこちら
 
             int clickedRow = table.rowAtPoint(e.getPoint());
 
