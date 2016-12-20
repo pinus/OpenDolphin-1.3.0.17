@@ -307,7 +307,10 @@ public class WatingListImpl extends AbstractMainComponent {
         setCheckInterval(checkInterval);
         // 来院数を設定する
         setPvtCount(0);
-    }
+
+        // 追加のテーブル設定
+        AdditionalTableSettings.setTable(pvtTable);
+   }
 
     /**
      * コンポーネントにイベントハンドラーを登録し相互に接続する。
@@ -322,9 +325,8 @@ public class WatingListImpl extends AbstractMainComponent {
         // 靴のアイコンをクリックした時来院情報を検索する
         view.getKutuBtn().addActionListener(EventHandler.create(ActionListener.class, this, "checkFullPvt"));
 
-        // コンテキストメニューを登録する
-        ContextListener l = new ContextListener(pvtTable);
-        AdditionalTableSettings.setTable(view.getTable(), l);
+        // コンテキストリスナを登録する
+        pvtTable.addMouseListener(new ContextListener());
 
         // ListSelectionListener を組み込む
         pvtTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
@@ -1376,8 +1378,7 @@ public class WatingListImpl extends AbstractMainComponent {
     private class ContextListener extends AbstractMainComponent.ContextListener<PatientVisitModel> {
         private final JPopupMenu contextMenu;
 
-        public ContextListener(JTable table) {
-            super(table);
+        public ContextListener() {
             contextMenu = getContextMenu();
         }
 

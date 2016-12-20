@@ -208,15 +208,11 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
      */
     public abstract class ContextListener<T> extends MouseAdapter {
 
-        private final JTable table;
-        private final ObjectReflectTableModel<T> tableModel;
+        private JTable table;
+        private ObjectReflectTableModel<T> tableModel;
         private final MyJPopupMenu contextMenu = new MyJPopupMenu();
 
-
-        public ContextListener(JTable table) {
-            this.table = table;
-            tableModel = (ObjectReflectTableModel<T>) table.getModel();
-            connect();
+        public ContextListener() {
         }
 
         /**
@@ -230,9 +226,6 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
          * @param e
          */
         public abstract void maybeShowPopup(MouseEvent e);
-        private void connect() {
-            table.addMouseListener(this);
-        }
 
         public MyJPopupMenu getContextMenu() {
             return contextMenu;
@@ -242,6 +235,9 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
         public void mouseClicked(MouseEvent e) {
             // ダブルクリック
             if (e.getClickCount() == 2 && !contextMenu.isShowing() && e.getSource() instanceof JTable) {
+                table = (JTable) e.getSource();
+                tableModel = (ObjectReflectTableModel<T>) table.getModel();
+
                 int row = table.convertRowIndexToModel(table.getSelectedRow());
                 T value = tableModel.getObject(row);
                 if (value != null) {
@@ -252,34 +248,39 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
 
         @Override
         public void mousePressed(MouseEvent e) {
-        // public void mouseReleased(MouseEvent e) { // windows はこちら
+     // public void mouseReleased(MouseEvent e) { // windows はこちら
 
-            int clickedRow = table.rowAtPoint(e.getPoint());
+            if (e.getSource() instanceof JTable) {
+                table = (JTable) e.getSource();
+                tableModel = (ObjectReflectTableModel<T>) table.getModel();
 
-            // テーブル以外の場所がクリックされていたら選択クリア（popup はのぞく）
-            if (clickedRow < 0 && !e.isPopupTrigger()) {
-                table.clearSelection();
-                e.getComponent().requestFocusInWindow();
+                int clickedRow = table.rowAtPoint(e.getPoint());
 
-            // 選択のない位置で右クリックされていたら選択する（popup用）
-            } else {
-                if (e.isPopupTrigger()) {
-                    // クリックされた場所が選択されているかどうか
-                    boolean isSelected = false;
-                    for (int row : table.getSelectedRows()) {
-                        if (row == clickedRow) {
-                            isSelected = true;
-                            break;
+                // テーブル以外の場所がクリックされていたら選択クリア（popup はのぞく）
+                if (clickedRow < 0 && !e.isPopupTrigger()) {
+                    table.clearSelection();
+                    e.getComponent().requestFocusInWindow();
+
+                // 選択のない位置で右クリックされていたら選択する（popup用）
+                } else {
+                    if (e.isPopupTrigger()) {
+                        // クリックされた場所が選択されているかどうか
+                        boolean isSelected = false;
+                        for (int row : table.getSelectedRows()) {
+                            if (row == clickedRow) {
+                                isSelected = true;
+                                break;
+                            }
+                        }
+                        // 選択されていない場所でクリックした場合は選択し直す
+                        if (!isSelected){
+                            table.getSelectionModel().setSelectionInterval(clickedRow, clickedRow);
+                            table.requestFocusInWindow();
                         }
                     }
-                    // 選択されていない場所でクリックした場合は選択し直す
-                    if (!isSelected){
-                        table.getSelectionModel().setSelectionInterval(clickedRow, clickedRow);
-                        table.requestFocusInWindow();
-                    }
                 }
+                maybeShowPopup(e);
             }
-            maybeShowPopup(e);
         }
     }
 }

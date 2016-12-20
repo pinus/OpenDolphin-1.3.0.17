@@ -168,7 +168,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         }
 
         // レンダラを設定する
-        view.getTable().setDefaultRenderer(Object.class, new IndentTableCellRenderer(7));
+        table.setDefaultRenderer(Object.class, new IndentTableCellRenderer(7));
 
         // 日付を設定する
         String formatStr = "yyyy-M-d (EEE)";
@@ -195,12 +195,18 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         // 絞り込み検索ボタンの初期値
         view.getNarrowingSearchCb().setSelected(prefs.getBoolean(NARROWING_SEARCH, false));
+
+        // 追加のテーブル設定
+        AdditionalTableSettings.setTable(table);
     }
 
     /**
      * コンポネントにリスナを登録し接続する。
      */
     private void connect() {
+        // コンテキスト・リスナを登録する
+        view.getTable().addMouseListener(new ContextListener());
+
         // カレンダによる日付検索を設定する
         new PopupListener(view.getKeywordFld());
         keyBlocker = new KeyBlocker(view.getKeywordFld());
@@ -299,10 +305,6 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 }
             }
         });
-
-        // コンテキストメニューを設定する
-        ContextListener l = new ContextListener(table);
-        AdditionalTableSettings.setTable(table, l);
     }
 
     /**
@@ -623,8 +625,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     private class ContextListener extends AbstractMainComponent.ContextListener<PatientModel> {
         private final JPopupMenu contextMenu;
 
-        public ContextListener(JTable table) {
-            super(table);
+        public ContextListener() {
             contextMenu = getContextMenu();
         }
 

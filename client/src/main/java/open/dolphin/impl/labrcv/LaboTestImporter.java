@@ -70,41 +70,6 @@ public class LaboTestImporter extends AbstractMainComponent {
         return tableModel.getObject(row);
     }
 
-    /**
-     * 受付リストのコンテキストメニュークラス.
-     */
-    private class ContextListener extends AbstractMainComponent.ContextListener<LaboImportSummary> {
-
-        public ContextListener(JTable table) {
-            super(table);
-        }
-
-        @Override
-        public void openKarte(LaboImportSummary value) {
-            LaboTestImporter.this.openKarte(value.getPatient());
-        }
-
-        @Override
-        public void maybeShowPopup(MouseEvent e) {
-
-            if (e.isPopupTrigger()) {
-
-                MyJPopupMenu contextMenu = getContextMenu();
-
-                int row = table.rowAtPoint(e.getPoint());
-                LaboImportSummary obj = tableModel.getObject(row);
-                int selected = table.getSelectedRow();
-
-                if (row == selected && obj != null) {
-                    JMenuItem menuItem = new JMenuItem("カルテを開く");
-                    menuItem.addActionListener(a -> openKarte(tableModel.getObject(table.getSelectedRow())));
-                    contextMenu.add(menuItem);
-                    contextMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        }
-    }
-
     public ObjectReflectTableModel<LaboImportSummary> getTableModel() {
         return tableModel;
     }
@@ -156,8 +121,8 @@ public class LaboTestImporter extends AbstractMainComponent {
         table.setDefaultRenderer(Object.class, new IndentTableCellRenderer());
 
         table.getSelectionModel().addListSelectionListener(e -> controlMenu());
-        table.addMouseListener(new ContextListener(table));
-        
+        table.addMouseListener(new ContextListener());
+
         table.setTransferHandler(new LaboTestFileTransferHandler(this));
 
         // カラム幅を変更する
@@ -223,5 +188,40 @@ public class LaboTestImporter extends AbstractMainComponent {
         });
         dt.setActive(true);
         AdditionalTableSettings.setTable(table);
+    }
+
+    /**
+     * 受付リストのコンテキストメニュークラス.
+     */
+    private class ContextListener extends AbstractMainComponent.ContextListener<LaboImportSummary> {
+        private final MyJPopupMenu contextMenu;
+
+        public ContextListener() {
+            contextMenu = getContextMenu();
+        }
+
+        @Override
+        public void openKarte(LaboImportSummary value) {
+            LaboTestImporter.this.openKarte(value.getPatient());
+        }
+
+        @Override
+        public void maybeShowPopup(MouseEvent e) {
+
+            if (e.isPopupTrigger()) {
+
+                int row = table.rowAtPoint(e.getPoint());
+                LaboImportSummary obj = tableModel.getObject(row);
+                int selected = table.getSelectedRow();
+
+                if (row == selected && obj != null) {
+                    contextMenu.removeAll();
+                    JMenuItem menuItem = new JMenuItem("カルテを開く");
+                    menuItem.addActionListener(a -> openKarte(tableModel.getObject(table.getSelectedRow())));
+                    contextMenu.add(menuItem);
+                    contextMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        }
     }
 }
