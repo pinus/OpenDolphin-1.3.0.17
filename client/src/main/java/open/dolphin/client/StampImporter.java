@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import open.dolphin.table.ObjectListTable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -10,9 +9,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -28,12 +26,15 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.ComponentMemory;
-import open.dolphin.helper.ProxyActionListener;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.infomodel.SubscribedTreeModel;
 import open.dolphin.project.Project;
+import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.AdditionalTableSettings;
+import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.util.PNSTriple;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,19 +43,8 @@ import org.apache.log4j.Logger;
  * @author Minagawa,Kazushi
  */
 public class StampImporter {
+    private static final String TITLE = "スタンプインポート";
 
-    private static final String[] COLUMN_NAMES = {
-        "名  称", "カテゴリ", "公開者", "説  明", "公開先", "インポート"
-    };
-    private static final String[] METHOD_NAMES = {
-        "getName", "getCategory", "getPartyName", "getDescription", "getPublishType", "isImported"
-    };
-    private static final Class[] CLASSES = {
-        String.class, String.class, String.class, String.class, String.class, Boolean.class
-    };
-    private static final int[] COLUMN_WIDTH = {
-        120, 90, 170, 270, 40, 40
-    };
     private static final Color ODD_COLOR = ClientContext.getColor("color.odd");
     private static final Color EVEN_COLOR = ClientContext.getColor("color.even");
     private static final ImageIcon WEB_ICON = GUIConst.ICON_EARTH_16;
@@ -64,9 +54,10 @@ public class StampImporter {
     private static final int WIDTH = 780;
     private static final int HEIGHT = 380;
 
-    private final String title = "スタンプインポート";
     private JFrame frame;
-    private ObjectListTable browseTable;
+    //private ObjectListTable browseTable;
+    private JTable table;
+    private ObjectReflectTableModel<PublishedTreeModel> tableModel;
     private JButton importBtn;
     private JButton deleteBtn;
     private JButton cancelBtn;
@@ -123,11 +114,11 @@ public class StampImporter {
                             }
                         }
                     }
-                    browseTable.setObjectList((List) result);
+                    tableModel.setObjectList(result);
                 } else {
                     JOptionPane.showMessageDialog(frame,
                             sdl.getErrorMessage(),
-                            ClientContext.getFrameTitle(title),
+                            ClientContext.getFrameTitle(TITLE),
                             JOptionPane.WARNING_MESSAGE);
                 }
             }
@@ -140,7 +131,7 @@ public class StampImporter {
      * GUIコンポーネントを初期化する。
      */
     public void initComponent() {
-        frame = new JFrame(ClientContext.getFrameTitle(title));
+        frame = new JFrame(ClientContext.getFrameTitle(TITLE));
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -178,8 +169,24 @@ public class StampImporter {
 
         JPanel browsePane = new JPanel();
 
-        browseTable = new ObjectListTable(COLUMN_NAMES, 10, METHOD_NAMES, CLASSES);
-        browseTable.setColumnWidth(COLUMN_WIDTH);
+        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+                new PNSTriple<>("名  称", String.class, "getName"),
+                new PNSTriple<>("カテゴリ", String.class, "getCategory"),
+                new PNSTriple<>("公開者", String.class, "getPartyName"),
+                new PNSTriple<>("説  明", String.class, "getDescription"),
+                new PNSTriple<>("公開先", String.class, "getPublishType"),
+                new PNSTriple<>("インポート", Boolean.class, "isImported")
+        );
+
+        table = new JTable();
+        tableModel = new ObjectReflectTableModel<>(reflectList);
+        table.setModel(tableModel);
+
+        int[] columnWidth = { 120, 90, 170, 270, 40, 40 };
+        for (int i=0; i<columnWidth.length; i++) {
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnWidth[i]);
+        }
+
         importBtn = new JButton("インポート");
         importBtn.setEnabled(false);
         cancelBtn = new JButton("ダイアログを閉じる");
@@ -198,67 +205,63 @@ public class StampImporter {
         flagPanel.add(importedLabel);
         JPanel cmdPanel = GUIFactory.createCommandButtonPanel(new JButton[]{cancelBtn, deleteBtn, importBtn});
         browsePane.add(flagPanel, BorderLayout.NORTH);
-        browsePane.add(browseTable.getScroller(), BorderLayout.CENTER);
+        browsePane.add(new MyJScrollPane(table), BorderLayout.CENTER);
         browsePane.add(cmdPanel, BorderLayout.SOUTH);
 
         // レンダラを設定する
         PublishTypeRenderer pubTypeRenderer = new PublishTypeRenderer();
-        browseTable.getTable().getColumnModel().getColumn(4).setCellRenderer(pubTypeRenderer);
+        table.getColumnModel().getColumn(4).setCellRenderer(pubTypeRenderer);
         ImportedRenderer importedRenderer = new ImportedRenderer();
-        browseTable.getTable().getColumnModel().getColumn(5).setCellRenderer(importedRenderer);
+        table.getColumnModel().getColumn(5).setCellRenderer(importedRenderer);
 
         // BrowseTableをシングルセレクションにする
-        browseTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // コンポーネント間のイベント接続を行う
-        PropertyChangeListener pl = new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                Object[] selected = (Object[]) e.getNewValue();
-                if (selected != null && selected.length > 0) {
-                    PublishedTreeModel model = (PublishedTreeModel) selected[0];
-                    if (model.isImported()) {
-                        importBtn.setEnabled(false);
-                        deleteBtn.setEnabled(true);
-                    } else {
-                        importBtn.setEnabled(true);
-                        deleteBtn.setEnabled(false);
-                    }
-
-                } else {
-                    importBtn.setEnabled(false);
-                    deleteBtn.setEnabled(false);
-                }
-            }
-        };
-        browseTable.addPropertyChangeListener(ObjectListTable.SELECTED_OBJECT, pl);
+        table.getSelectionModel().addListSelectionListener(e -> controlButtons());
 
         // import
-        importBtn.addActionListener(ProxyActionListener.create(this, "importPublishedTree"));
+        importBtn.addActionListener(e -> importPublishedTree());
         // remove
-        deleteBtn.addActionListener(ProxyActionListener.create(this, "removeImportedTree"));
+        deleteBtn.addActionListener(e -> removeImportedTree());
         // キャンセル
-        cancelBtn.addActionListener(ProxyActionListener.create(this, "stop"));
+        cancelBtn.addActionListener(e -> stop());
 
+        AdditionalTableSettings.setTable(table);
         return browsePane;
+    }
+
+    private void controlButtons() {
+        int row = table.getSelectedRow();
+        if (row != -1) {
+            PublishedTreeModel model = tableModel.getObject(row);
+            if (model.isImported()) {
+                importBtn.setEnabled(false);
+                deleteBtn.setEnabled(true);
+            } else {
+                importBtn.setEnabled(true);
+                deleteBtn.setEnabled(false);
+            }
+
+        } else {
+            importBtn.setEnabled(false);
+            deleteBtn.setEnabled(false);
+        }
     }
 
     /**
      * ブラウザテーブルで選択した公開Treeをインポートする。
      */
     public void importPublishedTree() {
+        int row = table.getSelectedRow();
+        PublishedTreeModel importTree = tableModel.getObject(row);
+        if (importTree == null) { return; }
 
-        Object[] objects = browseTable.getSelectedObject();
-        if (objects == null || objects.length == 0) {
-            return;
-        }
-        // テーブルはシングルセレクションである
-        final PublishedTreeModel importTree = (PublishedTreeModel) objects[0];
         // サブスクライブリストに追加する
         SubscribedTreeModel sm = new SubscribedTreeModel();
         sm.setUser(Project.getUserModel());
         sm.setTreeId(importTree.getId());
-        final List<SubscribedTreeModel> subscribeList = new ArrayList<>(1);
+        List<SubscribedTreeModel> subscribeList = new ArrayList<>(1);
         subscribeList.add(sm);
 
         // デリゲータを生成する
@@ -286,12 +289,12 @@ public class StampImporter {
                     stampBox.importPublishedTree(importTree);
                     // Browser表示をインポート済みにする
                     importTree.setImported(true);
-                    browseTable.getTableModel().fireTableDataChanged();
+                    tableModel.fireTableDataChanged();
 
                 } else {
                     JOptionPane.showMessageDialog(frame,
                             sdl.getErrorMessage(),
-                            ClientContext.getFrameTitle(title),
+                            ClientContext.getFrameTitle(TITLE),
                             JOptionPane.WARNING_MESSAGE);
                 }
             }
@@ -304,14 +307,10 @@ public class StampImporter {
      * インポートしているスタンプを削除する。
      */
     public void removeImportedTree() {
+        int row = table.getSelectedRow();
+        PublishedTreeModel removeTree = tableModel.getObject(row);
+        if (removeTree == null) { return; }
 
-        Object[] objects = browseTable.getSelectedObject();
-        if (objects == null || objects.length == 0) {
-            return;
-        }
-
-        // 削除するTreeを取得する
-        final PublishedTreeModel removeTree = (PublishedTreeModel) objects[0];
         SubscribedTreeModel sm = new SubscribedTreeModel();
         sm.setTreeId(removeTree.getId());
         sm.setUser(Project.getUserModel());
@@ -343,12 +342,12 @@ public class StampImporter {
                     stampBox.removeImportedTree(removeTree.getId());
                     // ブラウザ表示を変更する
                     removeTree.setImported(false);
-                    browseTable.getTableModel().fireTableDataChanged();
+                    tableModel.fireTableDataChanged();
 
                 } else {
                     JOptionPane.showMessageDialog(frame,
                             sdl.getErrorMessage(),
-                            ClientContext.getFrameTitle(title),
+                            ClientContext.getFrameTitle(TITLE),
                             JOptionPane.WARNING_MESSAGE);
                 }
             }
@@ -407,7 +406,6 @@ public class StampImporter {
     private class ImportedRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
 
-        /** Creates new IconRenderer */
         public ImportedRenderer() {
             super();
             setOpaque(true);
