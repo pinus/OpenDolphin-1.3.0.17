@@ -13,7 +13,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
@@ -102,7 +102,10 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     private void loadPrefs() {
         String str = prefs.get(PREFS, "");
         String[] items = str.split("\t");
-        Arrays.asList(items).stream().filter(s -> !s.equals("")).forEach(s -> completer.addCompletion(s));
+        // 古い方から登録
+        for(int i=items.length-1; i>=0; i--) {
+            completer.addCompletion(items[i]);
+        }
     }
 
     public void addCompletion(String s) {
@@ -118,7 +121,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
         completer.clearCompletions();
     }
 
-    public List<String> getCompletions() {
+    private List<String> getCompletions() {
         return completer.getCompletions();
     }
 
@@ -271,7 +274,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
 
         private boolean update = true;
         private Pattern pattern;
-        private final ArrayList<String> completions;
+        private final List<String> completions;
         public Completer() {
             completions = new ArrayList<>();
         }
@@ -301,7 +304,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
         }
 
         public List<String> getCompletions() {
-            return completions;
+            return Collections.unmodifiableList(completions);
         }
 
         public void setUpdate(boolean b) {
