@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.table.ObjectListTable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;

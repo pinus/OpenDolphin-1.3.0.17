@@ -29,7 +29,6 @@ import open.dolphin.infomodel.RoleModel;
 import open.dolphin.project.AbstractProjectFactory;
 import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
-import open.dolphin.server.PVTServer;
 import open.dolphin.setting.ProjectSettingDialog;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSTabbedPane;
@@ -67,8 +66,6 @@ public class Dolphin implements MainWindow {
     private ImageBox imageBox;
     // StampBox
     private StampBoxPlugin stampBox;
-    // 受付受信サーバ
-    private PVTServer pvtServer;
     // CLAIM リスナ
     private ClaimMessageListener sendClaim;
     // MML リスナ

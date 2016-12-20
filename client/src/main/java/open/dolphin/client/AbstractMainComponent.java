@@ -20,8 +20,9 @@ import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
 
 /**
- * Main Window コンポーネントプラグインの抽象クラス。
- * 具象クラスは start()、stop() を実装する。
+ * Main Window コンポーネントプラグインの抽象クラス.
+ * WatingListImpl, PatientSearchImpl, LaboTestImpoter で これを extends している.
+ * AbstractMainComponent > MainComponent > MainTool > MainService
  */
 public abstract class AbstractMainComponent extends MouseAdapter implements MainComponent {
 
@@ -29,7 +30,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     private String icon;
     private MainWindow context;
     private JPanel ui;
-    private int number = 10000; // pvt がない場合の受付番号 10000から連番で作る
+    private int number = 900000; // pvt がない場合の受付番号 900000から連番で作る
 
     public AbstractMainComponent() {
     }
@@ -40,7 +41,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     }
 
     @Override
-    public void setName(String name) {
+    public final void setName(String name) {
         this.name = name;
     }
 

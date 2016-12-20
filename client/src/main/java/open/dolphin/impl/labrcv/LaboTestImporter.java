@@ -31,7 +31,7 @@ import open.dolphin.client.AbstractMainComponent;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
-import open.dolphin.client.ObjectListTable;
+import open.dolphin.table.ObjectListTable;
 import open.dolphin.helper.ReflectAction;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.ui.MyJPopupMenu;

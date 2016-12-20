@@ -22,7 +22,7 @@ public abstract class AbstractMainTool implements MainTool {
     }
 
     @Override
-    public void setName(String name) {
+    public final void setName(String name) {
         this.name = name;
     }
 

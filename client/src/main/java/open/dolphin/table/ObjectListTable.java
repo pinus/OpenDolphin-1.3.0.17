@@ -1,18 +1,12 @@
-package open.dolphin.client;
-
-//pns   import open.dolphin.table.OddEvenRowRenderer;
-import javax.swing.*;
-import javax.swing.event.*;
-
-import open.dolphin.table.ObjectReflectTableModel;
+package open.dolphin.table;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.TableColumnModel;
 import open.dolphin.ui.MyJScrollPane;
 
@@ -47,66 +41,9 @@ public class ObjectListTable {
     // このクラスの JTable
     private JTable table;
 
-    /**
-     * Creates new ObjectListTable
-     */
     public ObjectListTable(String[] columnNames, int startNumRows,
             String[] methodNames, Class[] classes) {
         this(columnNames, startNumRows, methodNames, classes, true);
-    }
-
-
-    /**
-     * Creates new ObjectListTable
-     */
-    public ObjectListTable(String[] columnNames, int startNumRows,
-            final String[] methodNames, Class[] classes, final int[] editableColumns) {
-
-        tableModel = new ObjectReflectTableModel(columnNames, startNumRows, methodNames, classes);
-
-        table = new JTable(tableModel) {
-
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                boolean editable = false;
-                for (int i : editableColumns) {
-                    if (i == col) {
-                        editable = true;
-                        break;
-                    }
-                }
-                return editable;
-            }
-
-            @Override
-            public void setValueAt(Object value, int row, int col) {
-
-                if (value == null) {
-                    return;
-                }
-
-                Object o = tableModel.getObject(row);
-                if (o == null) {
-                    return;
-                }
-
-                try {
-                    String setter = "set" + methodNames[col].substring(3);
-                    Method method = o.getClass().getMethod(setter, new Class[]{value.getClass()});
-                    method.invoke(o, new Object[]{value});
-                    notifyObjectValue(o);
-
-                } catch (IllegalAccessException ex) { System.out.println("ObjectListTable.java: " + ex);
-                } catch (IllegalArgumentException ex) { System.out.println("ObjectListTable.java: " + ex);
-                } catch (InvocationTargetException ex) { System.out.println("ObjectListTable.java: " + ex);
-                } catch (NoSuchMethodException ex) { System.out.println("ObjectListTable.java: " + ex);
-                } catch (SecurityException ex) { System.out.println("ObjectListTable.java: " + ex);
-                }
-            }
-        };
-        connect();
-//pns   table.setDefaultRenderer(Object.class, new OddEvenRowRenderer());
-        table.putClientProperty("Quaqua.Table.style", "striped");
     }
 
     /**
