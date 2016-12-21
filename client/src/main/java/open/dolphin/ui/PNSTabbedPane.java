@@ -44,7 +44,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     /** タブ切り替えボタン格納パネル */
     private ButtonPanel buttonPanel;
     /** 切り替えボタンを入れておくリスト */
-    private ArrayList<TabButton> buttonList;
+    private List<TabButton> buttonList;
     /** 切り替えボタン格納パネルのレイアウト */
     private RightJustifiedFlowLayout buttonLayout;
     /** コンテント表示パネル */
@@ -128,7 +128,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         buttonGroup.add(button);
         buttonList.add(button);
 
-        if (tabCount == 0) selectionModel.setSelectedIndex(0);
+        if (tabCount == 0) { selectionModel.setSelectedIndex(0); }
         tabCount++;
     }
 
@@ -195,7 +195,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * @param index
      */
     public void setSelectedIndex(int index) {
-        if (buttonList.get(index).isEnabled()) selectionModel.setSelectedIndex(index);
+        if (buttonList.get(index).isEnabled()) { selectionModel.setSelectedIndex(index); }
     }
 
     /**
@@ -264,6 +264,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         buttonList.remove(index);
         buttonPanel.remove(index);
         contentPanel.remove(index);
+
+        buttonPanel.revalidate();
+        buttonPanel.repaint();
     }
 
     /**
@@ -288,7 +291,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      */
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (listener != null) listener.stateChanged(e);
+        if (listener != null) { listener.stateChanged(e); }
 
         int index = selectionModel.getSelectedIndex();
         card.show(contentPanel, String.valueOf(index));
@@ -334,13 +337,16 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         //public Dimension margin = new Dimension(0,4); // quaqua 7.2
 
         public TabButton(String name, int index) {
-            this.addActionListener(this);
-            this.setFocusable(false);
             this.name = name;
-            this.setName(name);
-            this.setText(name);
             this.index = index;
-            this.setBorderPainted(false);
+            initComponent();
+        }
+        private void initComponent() {
+            setName(name);
+            setText(name);
+            addActionListener(this);
+            setFocusable(false);
+            setBorderPainted(false);
         }
         public void setIndex(int index) {
             this.index = index;
@@ -365,14 +371,14 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             // ボタン枠
-            if (parent.isActive()) g.setColor(Color.GRAY);
-            else g.setColor(Color.LIGHT_GRAY);
+            if (parent.isActive()) { g.setColor(Color.GRAY); }
+            else { g.setColor(Color.LIGHT_GRAY); }
 
             //g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
             g.drawLine(0, 0, w-1, 0);
             g.drawLine(0, 0, 0, h-1);
-            if (this.isBottom || buttonLayout.getVgap() != 0) g.drawLine(0, h-1, w-1, h-1);
-            if (this.isRightEnd || buttonLayout.getHgap() != 0) g.drawLine(w-1, 0, w-1, h-1);
+            if (this.isBottom || buttonLayout.getVgap() != 0) { g.drawLine(0, h-1, w-1, h-1); }
+            if (this.isRightEnd || buttonLayout.getHgap() != 0) { g.drawLine(w-1, 0, w-1, h-1); }
 
             // ボタン中身
             if (parent.isActive()) {
@@ -380,16 +386,16 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                     g.setColor(Color.BLACK);
                     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
                     for(int y=0; y< h; y++) {
-                        int rgb = (int)((float)y / (float)h * 70f + 50f);
+                        int rgb = (int)(y / (float)h * 70f + 50f);
                         g.setColor(new Color(rgb,rgb,rgb));
                         g.drawLine(0, y, w, y);
                     }
                 } else {
                     g.setColor(Color.WHITE);
                     float endAlpha = 0.4f;
-                    if (this.isEnabled()) endAlpha = 0.8f;
+                    if (this.isEnabled()) { endAlpha = 0.8f; }
                     for(int y=1; y< h-1; y++) {
-                        float alpha = (float)y / (float)h * endAlpha;
+                        float alpha = y / (float)h * endAlpha;
                         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
                         g.drawLine(1, h-y, w-2, h-y);
 
@@ -399,7 +405,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                 if (this.isSelected()) {
                     g.setColor(Color.BLACK);
                     for(int y=0; y< h; y++) {
-                        float alpha = (float)y / (float)h * 0.2f + 0.1f;
+                        float alpha = y / (float)h * 0.2f + 0.1f;
                         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
                         g.drawLine(0, h-y, w, h-y);
                     }
@@ -420,8 +426,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                 g.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));
                 g.setColor(Color.WHITE);
             } else {
-                if (this.isEnabled()) g.setColor(Color.BLACK);
-                else g.setColor(Color.GRAY);
+                if (this.isEnabled()) { g.setColor(Color.BLACK); }
+                else { g.setColor(Color.GRAY); }
             }
 
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
@@ -445,7 +451,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         public Dimension preferredLayoutSize(Container buttonPanel) {
             Dimension padding = ((ButtonPanel)buttonPanel).getPadding();
             int width = buttonPanel.getWidth() - padding.width;
-            if (width <= 0) return new Dimension(1,1);
+            if (width <= 0) { return new Dimension(1,1); }
 
             int hgap = this.getHgap();
             int vgap = this.getVgap();
@@ -537,7 +543,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                         TabButton b = (TabButton) buttonPanel.getComponent(i + offset);
                         b.margin.width = delta;
                         gap -= delta;
-                        if (i == bc - 1) b.margin.width += gap;
+                        if (i == bc - 1) { b.margin.width += gap; }
                     }
 
                     offset += buttonCountAtLine.get(line);

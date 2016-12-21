@@ -32,7 +32,6 @@ import javax.swing.WindowConstants;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.ComponentMemory;
 import open.dolphin.helper.GridBagBuilder;
-import open.dolphin.helper.ProxyActionListener;
 import open.dolphin.helper.ProxyDocumentListener;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.FacilityModel;
@@ -78,7 +77,7 @@ public class StampPublisher {
 
     private JCheckBox[] entities;
 
-    private JComboBox category;
+    private JComboBox<String> category;
 
     private PublishType publishType = PublishType.TT_NONE;
     private boolean okState;
@@ -160,7 +159,7 @@ public class StampPublisher {
 
         String[] categories = ClientContext.getStringArray("stamp.publish.categories");
         //医薬品,ジェネリック医薬品,検査,器材,パス,地域連携,調査,治験,院内シェア,スタンプ大作戦
-        category = new JComboBox(categories);
+        category = new JComboBox<>(categories);
         JPanel categoryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         categoryPanel.add(category);
 
@@ -368,15 +367,15 @@ public class StampPublisher {
         publc.addActionListener(pl);
 
         // CheckBox listener
-        ActionListener cbListener = ProxyActionListener.create(this, "checkButton");
+        ActionListener cbListener = this::checkCheckBox;
         for (JCheckBox cb : entities) {
             cb.addActionListener(cbListener);
         }
 
         // publish & cancel
-        publish.addActionListener(ProxyActionListener.create(this, "publish"));
-        cancelPublish.addActionListener(ProxyActionListener.create(this, "cancelPublish"));
-        cancel.addActionListener(ProxyActionListener.create(this, "stop"));
+        publish.addActionListener(e -> publish());
+        cancelPublish.addActionListener(e -> cancelPublish());
+        cancel.addActionListener(e -> stop());
 
         return contentPane;
     }
@@ -593,6 +592,22 @@ public class StampPublisher {
         };
         // task.setMillisToPopup(delay);
         task.execute();
+    }
+
+    /**
+     * META クリックで CheckBox 全部の ON/OFF
+     * @param e
+     */
+    private void checkCheckBox(ActionEvent e) {
+        if ((e.getModifiers() & ActionEvent.META_MASK) != 0) {
+            JCheckBox cb = (JCheckBox) e.getSource();
+            for (int i=0; i < IInfoModel.STAMP_NAMES.length; i++) {
+                if (! IInfoModel.STAMP_NAMES[i].equals(IInfoModel.TABNAME_ORCA)) {
+                    entities[i].setSelected(cb.isSelected());
+                }
+            }
+        }
+        checkButton();
     }
 
     private void checkButton() {

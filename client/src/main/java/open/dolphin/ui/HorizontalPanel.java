@@ -155,7 +155,7 @@ public class HorizontalPanel extends JPanel {
         // statusPanel でフォントサイズを小さくしたかった
         if (fontSize != 0) {
             Font f = c.getFont();
-            if (f != null) c.setFont(new Font(f.getFontName(), f.getStyle(), fontSize));
+            if (f != null) { c.setFont(new Font(f.getFontName(), f.getStyle(), fontSize)); }
         }
         return super.add(c);
     }
@@ -178,7 +178,7 @@ public class HorizontalPanel extends JPanel {
      */
     public void add(String text, String key) {
         JLabel label = new JLabel(text);
-        if (text != null && !text.isEmpty()) label.setToolTipText(text);
+        if (text != null && !text.isEmpty()) { label.setToolTipText(text); }
         this.add(label);
         labelMap.put(key, label);
     }
@@ -190,7 +190,7 @@ public class HorizontalPanel extends JPanel {
     public void add(String text) {
         int count = 0;
         for(Component c : this.getComponents()) {
-            if (c instanceof JLabel) count++;
+            if (c instanceof JLabel) { count++; }
         }
         this.add(text, String.valueOf(count));
     }
@@ -202,10 +202,10 @@ public class HorizontalPanel extends JPanel {
      */
     public void setText(String text, String key) {
         JLabel label = labelMap.get(key);
-        if (text != null && !text.isEmpty()) label.setToolTipText(text);
-        if (label != null) label.setText(text);
+        if (text != null && !text.isEmpty()) { label.setToolTipText(text); }
+        if (label != null) { label.setText(text); }
 
-        else System.out.println("HorizontalPanel#setText: null label (key=" + key + ")");
+        else { System.out.println("HorizontalPanel#setText: null label (key=" + key + ")"); }
     }
 
     /**
