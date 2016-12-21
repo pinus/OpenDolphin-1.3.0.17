@@ -177,7 +177,7 @@ public class PCodeHelper extends AbstractCodeHelper {
                             menus.addFirst(subMenu);
                             parents.addFirst(node);
                             JMenuItem item = new JMenuItem(folderName);
-                            item.setIcon(icon);
+                            item.setIcon(ICON);
                             subMenu.add(item);
                             addActionListner(item, node);
 
@@ -222,7 +222,7 @@ public class PCodeHelper extends AbstractCodeHelper {
                                 // フォルダ選択のアイテムを生成しサブメニューの要素にする
                                 //
                                 JMenuItem item = new JMenuItem(folderName);
-                                item.setIcon(icon);
+                                item.setIcon(ICON);
                                 subMenu.add(item);
                                 addActionListner(item, node);
                             }

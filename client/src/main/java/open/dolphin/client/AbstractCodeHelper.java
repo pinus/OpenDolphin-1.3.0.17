@@ -7,7 +7,6 @@ import java.awt.event.KeyEvent;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.prefs.Preferences;
-import java.util.regex.Pattern;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -17,50 +16,38 @@ import javax.swing.JTextPane;
 import javax.swing.TransferHandler;
 import javax.swing.text.BadLocationException;
 import javax.swing.tree.DefaultMutableTreeNode;
-import open.dolphin.helper.ProxyActionListener;
 import open.dolphin.infomodel.ModuleInfoBean;
 
 /**
- * KartePane の抽象コードヘルパークラス。
- *
+ * KartePane の抽象コードヘルパークラス.
+ * meta + enter 入力でポップアップを出す
  * @author Kazyshi Minagawa
  */
 public abstract class AbstractCodeHelper {
 
+    static final Icon ICON = GUIConst.ICON_FOLDER_16;
+
     /** キーワードの境界となる文字 */
     static final String[] WORD_SEPARATOR = {" ", " ", "，", "," , "、", "。", "\n", "\t"};
 
-    static final String LISTENER_METHOD = "importStamp";
-
-    static final Icon icon = GUIConst.ICON_FOLDER_16;
-
     /** 対象の KartePane */
-    KartePane kartePane;
+    private final KartePane kartePane;
 
     /** KartePane の JTextPane */
-    JTextPane textPane;
+    private final JTextPane textPane;
 
     /** 補完リストメニュー */
-    JPopupMenu popup;
+    private JPopupMenu popup;
 
-    /** キーワードパターン */
-    Pattern pattern;
-
-    /** キーワードの開始位置 */
-    int start;
-
-    /** キーワードの終了位置 */
-    int end;
+    /** キーワードの開始・終了位置 */
+    private int start, end;
 
     /** ChartMediator */
-    ChartMediator mediator;
+    private final ChartMediator mediator;
 
     /** 修飾キー */
-    int MODIFIER;
+    private int modifier;
 
-    /**
-     * Creates a new instance of CodeHelper
-     */
     public AbstractCodeHelper(KartePane kartePane, ChartMediator mediator) {
 
         this.kartePane = kartePane;
@@ -68,19 +55,19 @@ public abstract class AbstractCodeHelper {
         this.textPane = kartePane.getTextPane();
 
         Preferences prefs = Preferences.userNodeForPackage(AbstractCodeHelper.class);
-        String modifier = prefs.get("modifier", "ctrl");
+        String mod = prefs.get("modifier", "ctrl");
 
-        if (modifier.equals("ctrl")) {
-            MODIFIER =  KeyEvent.CTRL_DOWN_MASK;
-        } else if (modifier.equals("meta")) {
-            MODIFIER =  KeyEvent.META_DOWN_MASK;
+        if (mod.equals("ctrl")) {
+            modifier =  KeyEvent.CTRL_DOWN_MASK;
+        } else if (mod.equals("meta")) {
+            modifier =  KeyEvent.META_DOWN_MASK;
         }
 
         this.textPane.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 // if ((e.getModifiersEx() == MODIFIER) && e.getKeyCode() == KeyEvent.VK_SPACE) {
-                if ((e.getModifiersEx() == MODIFIER) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if ((e.getModifiersEx() == modifier) && e.getKeyCode() == KeyEvent.VK_ENTER) {
                     buildAndShowPopup();
                 }
             }
@@ -133,7 +120,7 @@ public abstract class AbstractCodeHelper {
 
                     // 配下の子を全て列挙しJmenuItemにまとめる
                     JMenuItem item = new JMenuItem(node.getUserObject().toString());
-                    item.setIcon(icon);
+                    item.setIcon(ICON);
                     subMenu.add(item);
 
                     addActionListner(item, node);
@@ -159,6 +146,7 @@ public abstract class AbstractCodeHelper {
     }
 
     protected void addActionListner(JMenuItem item, StampTreeNode node) {
+        ActionListener a = e -> importStamp(textPane, textPane.getTransferHandler(), new LocalStampTreeNodeTransferable(node));
 
         ActionListener ral = ProxyActionListener.create(this, LISTENER_METHOD,
                             new Class[]{JComponent.class, TransferHandler.class, LocalStampTreeNodeTransferable.class},
