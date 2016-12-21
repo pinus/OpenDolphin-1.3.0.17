@@ -1,54 +1,24 @@
 package open.dolphin.helper;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
- * CallbackDocumentListener
- *
- * @author Minagawa,Kazushi
+ * ProxyDocumentListener.
+ * 全ての update で anyUpdate だけを呼ぶ DocumentListener
+ * ProxyDocumentListener = e -> ... と書ける
+ * @author pns
  */
-public class ProxyDocumentListener {
+public interface ProxyDocumentListener extends DocumentListener {
 
-    public static DocumentListener create(final Object target, final String methodName) {
+    @Override
+    public default void insertUpdate(DocumentEvent e) { anyUpdate(e); }
 
-        Class cls = DocumentListener.class;
-        ClassLoader cl = cls.getClassLoader();
+    @Override
+    public default void removeUpdate(DocumentEvent e) { anyUpdate(e); }
 
-        InvocationHandler handler = new InvocationHandler() {
+    @Override
+    public default void changedUpdate(DocumentEvent e) { anyUpdate(e); }
 
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) {
-
-                Object result = null;
-
-                try {
-
-                    Method targetMethod = target.getClass().getMethod(methodName, (Class[]) null);
-                    //System.out.println("target=" + targetMethod);
-
-                    result = targetMethod.invoke(target, (Object[]) null);
-
-                } catch (IllegalArgumentException ex) {
-                    ex.printStackTrace(System.err);
-                } catch (SecurityException ex) {
-                    ex.printStackTrace(System.err);
-                } catch (InvocationTargetException ex) {
-                    ex.printStackTrace(System.err);
-                } catch (IllegalAccessException ex) {
-                    ex.printStackTrace(System.err);
-                } catch (NoSuchMethodException ex) {
-                    ex.printStackTrace(System.err);
-                }
-
-                return result;
-            }
-        };
-
-        return (DocumentListener) Proxy.newProxyInstance(cl, new Class[]{cls}, handler);
-
-    }
+    public void anyUpdate(DocumentEvent e);
 }

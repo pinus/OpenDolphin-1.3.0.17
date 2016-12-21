@@ -205,7 +205,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
         //
         // DocumentListener
         //
-        DocumentListener dl = ProxyDocumentListener.create(this, "checkState");
+        ProxyDocumentListener dl = e -> checkState();
 
         text.getDocument().addDocumentListener(dl);
         path.getDocument().addDocumentListener(dl);

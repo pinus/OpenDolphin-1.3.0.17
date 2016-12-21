@@ -165,7 +165,7 @@ public class SaveDialog2 {
 
         // ComboBox のエディタコンポーネントへリスナを設定する
         titleField = (JTextField) titleCombo.getEditor().getEditorComponent();
-        titleField.getDocument().addDocumentListener(ProxyDocumentListener.create(this, "checkTitle"));
+        titleField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkTitle());
 
         // 診療科、印刷部数を表示するラベルとパネルを生成する
         JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));

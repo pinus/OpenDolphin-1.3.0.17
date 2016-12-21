@@ -248,27 +248,24 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         stateMgr = new StateMgr();
 
         // DocumentListener
-        DocumentListener dl = ProxyDocumentListener.create(stateMgr, "checkState");
+        ProxyDocumentListener dl = e -> stateMgr.checkState();
         String jmariPattern = "[0-9]*";
         RegexConstrainedDocument jmariDoc = new RegexConstrainedDocument(jmariPattern);
         jmariField.setDocument(jmariDoc);
         jmariField.getDocument().addDocumentListener(dl);
         jmariField.setEnabled(true);
-//pns   jmariField.addFocusListener(AutoRomanListener.getInstance());
         IMEControl.setImeOffIfFocused(jmariField);
 
         String portPattern = "[0-9]*";
         RegexConstrainedDocument portDoc = new RegexConstrainedDocument(portPattern);
         claimPortField.setDocument(portDoc);
         claimPortField.getDocument().addDocumentListener(dl);
-//pns   claimPortField.addFocusListener(AutoRomanListener.getInstance());
         IMEControl.setImeOffIfFocused(claimPortField);
 
         String ipPattern = "[A-Za-z0-9.]*";
         RegexConstrainedDocument ipDoc = new RegexConstrainedDocument(ipPattern);
         claimAddressField.setDocument(ipDoc);
         claimAddressField.getDocument().addDocumentListener(dl);
-//pns   claimAddressField.addFocusListener(AutoRomanListener.getInstance());
         IMEControl.setImeOffIfFocused(claimAddressField);
 
         // アクションリスナ

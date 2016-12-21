@@ -236,7 +236,7 @@ public class SaveDialog {
         titleField = (JTextField) titleCombo.getEditor().getEditorComponent();
 //pns   titleField.addFocusListener(AutoKanjiListener.getInstance());
         IMEControl.setImeOnIfFocused(titleField);
-        titleField.getDocument().addDocumentListener(ProxyDocumentListener.create(this, "checkTitle"));
+        titleField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkTitle());
 
         // 診療科、印刷部数を表示するラベルとパネルを生成する
         JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));

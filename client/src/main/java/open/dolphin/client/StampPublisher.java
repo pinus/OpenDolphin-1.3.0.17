@@ -29,7 +29,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.event.DocumentListener;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.ComponentMemory;
 import open.dolphin.helper.GridBagBuilder;
@@ -54,11 +53,9 @@ import org.apache.log4j.Logger;
  */
 public class StampPublisher {
 
-    public enum PublishedState {NONE, SAVED_NONE, LOCAL, GLOBAL};
+    private enum PublishedState {NONE, SAVED_NONE, LOCAL, GLOBAL};
+    private enum PublishType {TT_NONE, TT_LOCAL, TT_PUBLIC}
 
-    private static final int TT_NONE = -1;
-    private static final int TT_LOCAL = 0;
-    private static final int TT_PUBLIC = 1;
     private static final int WIDTH = 845;
     private static final int HEIGHT = 477;
 
@@ -83,7 +80,7 @@ public class StampPublisher {
 
     private JComboBox category;
 
-    private int publishType = TT_NONE;
+    private PublishType publishType = PublishType.TT_NONE;
     private boolean okState;
 
     private StampDelegater sdl;
@@ -162,6 +159,7 @@ public class StampPublisher {
         JPanel chkPanel2 = GUIFactory.createCheckBoxPanel(new JCheckBox[]{entities[8], entities[9], entities[10], entities[11], entities[12], entities[13], entities[14], entities[15]});
 
         String[] categories = ClientContext.getStringArray("stamp.publish.categories");
+        //医薬品,ジェネリック医薬品,検査,器材,パス,地域連携,調査,治験,院内シェア,スタンプ大作戦
         category = new JComboBox(categories);
         JPanel categoryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         categoryPanel.add(category);
@@ -282,7 +280,7 @@ public class StampPublisher {
                 stampBoxName.setText(stmpTree.getName());
                 local.setSelected(true);
                 publc.setSelected(false);
-                publishType = TT_LOCAL;
+                publishType = PublishType.TT_LOCAL;
 
                 //
                 // Publish している Entity をチェックする
@@ -325,7 +323,7 @@ public class StampPublisher {
                 partyName.setText(stmpTree.getPartyName());
                 contact.setText(stmpTree.getUrl());
                 description.setText(stmpTree.getDescription());
-                publishType = TT_PUBLIC;
+                publishType = PublishType.TT_PUBLIC;
 
                 published = ((PersonalTreeModel) stmpTree).getPublished();
                 if (published != null) {
@@ -355,7 +353,7 @@ public class StampPublisher {
 
         // コンポーネントのイベント接続を行う
         // Text入力をチェックする
-        DocumentListener dl = ProxyDocumentListener.create(this, "checkButton");
+        ProxyDocumentListener dl = e -> checkButton();
         stampBoxName.getDocument().addDocumentListener(dl);
         partyName.getDocument().addDocumentListener(dl);
         contact.getDocument().addDocumentListener(dl);
@@ -388,10 +386,10 @@ public class StampPublisher {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (local.isSelected()) {
-                publishType = TT_LOCAL;
-                category.setSelectedIndex(ClientContext.getInt("stamp.publish.categories.localItem"));
+                publishType = PublishType.TT_LOCAL;
+                category.setSelectedIndex(ClientContext.getInt("stamp.publish.categories.localItem")); //8
             } else if (publc.isSelected()) {
-                publishType = TT_PUBLIC;
+                publishType = PublishType.TT_PUBLIC;
             }
             checkButton();
         }
@@ -597,7 +595,7 @@ public class StampPublisher {
         task.execute();
     }
 
-    public void checkButton() {
+    private void checkButton() {
 
         switch (publishType) {
             case TT_NONE:

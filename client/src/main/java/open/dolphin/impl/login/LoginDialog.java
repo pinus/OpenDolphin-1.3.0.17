@@ -331,15 +331,16 @@ public class LoginDialog {
         //
         // フィールドにリスナを登録する
         //
+        // User ID Field
         JTextField userIdField = view.getUserIdField();
-        userIdField.getDocument().addDocumentListener(ProxyDocumentListener.create(stateMgr, "checkButtons"));
+        userIdField.getDocument().addDocumentListener((ProxyDocumentListener) e -> stateMgr.checkButtons());
         IMEControl.setImeOffIfFocused(userIdField);
-        userIdField.addActionListener(ProxyActionListener.create(stateMgr, "onUserIdAction"));
-
+        userIdField.addActionListener(e -> stateMgr.onUserIdAction());
+        // Password Field
         JPasswordField passwdField = view.getPasswordField();
-        passwdField.getDocument().addDocumentListener(ProxyDocumentListener.create(stateMgr, "checkButtons"));
+        passwdField.getDocument().addDocumentListener((ProxyDocumentListener) e -> stateMgr.checkButtons());
         IMEControl.setImeOffIfFocused(passwdField);
-        passwdField.addActionListener(ProxyActionListener.create(stateMgr, "onPasswordAction"));
+        passwdField.addActionListener(e -> stateMgr.onPasswordAction());
 
         //
         // ボタンに ActionListener を登録する
@@ -446,10 +447,9 @@ public class LoginDialog {
          */
         public void checkButtons() {
 
-            boolean userEmpty = view.getUserIdField().getText().equals("");
+            boolean userEmpty = view.getUserIdField().getText().length() == 0;
             boolean passwdEmpty = view.getPasswordField().getPassword().length == 0;
-
-            boolean newOKState = ( (userEmpty == false) && (passwdEmpty == false) );
+            boolean newOKState = !userEmpty && !passwdEmpty;
 
             if (newOKState != okState) {
                 view.getLoginBtn().setEnabled(newOKState);
