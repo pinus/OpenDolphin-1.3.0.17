@@ -5,13 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.*;
-import javax.swing.event.DocumentListener;
 import open.dolphin.client.*;
 import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.helper.GridBagBuilder;
-import open.dolphin.helper.ProxyActionListener;
 import open.dolphin.helper.ProxyDocumentListener;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.IMEControl;
@@ -269,7 +267,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         IMEControl.setImeOffIfFocused(claimAddressField);
 
         // アクションリスナ
-        ActionListener al = ProxyActionListener.create(stateMgr, "controlClaim");
+        ActionListener al = e -> stateMgr.controlClaim();
         sendClaimYes.addActionListener(al);
         sendClaimNo.addActionListener(al);
 
@@ -279,7 +277,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         //v40.addActionListener(al2);
 
         // orca api
-        ActionListener al2 = ProxyActionListener.create(stateMgr, "useOrcaApi");
+        ActionListener al2 = e -> stateMgr.useOrcaApi();
         useOrcaApi.addActionListener(al2);
         useClaim.addActionListener(al2);
         orcaUserIdField.getDocument().addDocumentListener(dl);

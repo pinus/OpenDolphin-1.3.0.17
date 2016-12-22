@@ -17,7 +17,6 @@ import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
-import open.dolphin.helper.ProxyActionListener;
 import open.dolphin.helper.ProxyDocumentListener;
 import open.dolphin.helper.ProxyPropertyChangeListener;
 import open.dolphin.helper.Task;
@@ -345,9 +344,9 @@ public class LoginDialog {
         //
         // ボタンに ActionListener を登録する
         //
-        view.getSettingBtn().addActionListener(ProxyActionListener.create(this, "doSettingDialog"));
-        view.getCancelBtn().addActionListener(ProxyActionListener.create(this, "doCancel"));
-        view.getLoginBtn().addActionListener(ProxyActionListener.create(this, "tryLogin"));
+        view.getSettingBtn().addActionListener(ev -> doSettingDialog());
+        view.getCancelBtn().addActionListener(ev -> doCancel());
+        view.getLoginBtn().addActionListener(ev -> tryLogin());
         view.getLoginBtn().setEnabled(false);
 
         //

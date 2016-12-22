@@ -11,9 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import open.dolphin.helper.ProxyActionListener;
+import open.dolphin.helper.ProxyDocumentListener;
 import open.dolphin.ui.MyJSheet;
 
 /**
@@ -23,7 +21,7 @@ import open.dolphin.ui.MyJSheet;
 public class FindDialog {
 
     private MyJSheet sheet;
-    private Frame parent;
+    private final Frame parent;
     private boolean isSearchReady;
     private boolean isTextReady;
     private boolean isSoapBoxReady;
@@ -103,30 +101,22 @@ public class FindDialog {
         });
 
         // 検索文字列があれば，検索ボタンを有効化する　入力中にチェックする
-        searchTextField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) { checkState(); }
-            @Override
-            public void removeUpdate(DocumentEvent e) { checkState(); }
-            @Override
-            public void changedUpdate(DocumentEvent e) { checkState(); }
-        });
+        searchTextField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkState());
 
         // リターンが押されたときの処理
-        searchTextField.addActionListener(ProxyActionListener.create(this, "onTextAction"));
+        searchTextField.addActionListener(e -> onTextAction());
 
         // ボタン類
-        searchButton.addActionListener(ProxyActionListener.create(this, "doSearch"));
-        cancelButton.addActionListener(ProxyActionListener.create(this, "doCancel"));
+        searchButton.addActionListener(e -> doSearch());
+        cancelButton.addActionListener(e -> doCancel());
 
-        pBox.addActionListener(ProxyActionListener.create(this, "checkState"));
-        soaBox.addActionListener(ProxyActionListener.create(this, "checkState"));
+        pBox.addActionListener(e -> checkState());
+        soaBox.addActionListener(e -> checkState());
     }
 
     // 検索ボタンの ON/OFF 制御
     private void setSearchButtonState() {
-        if (isSoapBoxReady && isTextReady) isSearchReady = true;
-        else isSearchReady = false;
+        isSearchReady = isSoapBoxReady && isTextReady;
         searchButton.setEnabled(isSearchReady);
         searchButton.setSelected(isSearchReady);
     }
@@ -156,13 +146,10 @@ public class FindDialog {
 
     // 検索ボタンの状態を制御
     public void checkState () {
-        if (searchTextField.getText().equals("")) isTextReady = false;
-        else isTextReady = true;
-
+        isTextReady = !searchTextField.getText().equals("");
         isSoaBoxChecked = soaBox.isSelected();
         isPBoxChecked = pBox.isSelected();
-        if (isSoaBoxChecked || isPBoxChecked) isSoapBoxReady = true;
-        else isSoapBoxReady = false;
+        isSoapBoxReady = isSoaBoxChecked || isPBoxChecked;
 
         setSearchButtonState();
     }

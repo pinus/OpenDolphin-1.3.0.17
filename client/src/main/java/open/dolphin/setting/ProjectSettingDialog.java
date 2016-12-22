@@ -11,7 +11,6 @@ import java.util.Iterator;
 import javax.swing.*;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIFactory;
-import open.dolphin.helper.ProxyActionListener;
 import open.dolphin.project.Project;
 import org.apache.log4j.Logger;
 
@@ -257,11 +256,11 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
         allBtns.stream().forEach((btn) -> btn.addActionListener(al));
 
         // Save
-        okButton.addActionListener(ProxyActionListener.create(this, "doOk"));
+        okButton.addActionListener(e -> doOk());
         okButton.setEnabled(false);
 
         // Cancel
-        cancelButton.addActionListener(ProxyActionListener.create(this, "doCancel"));
+        cancelButton.addActionListener(e -> doCancel());
 
         // ESC でウインドウクローズ
         InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);

@@ -1,7 +1,6 @@
 package open.dolphin.client;
 
 import javax.swing.tree.*;
-
 import open.dolphin.infomodel.ModuleInfoBean;
 
 /**
@@ -10,9 +9,11 @@ import open.dolphin.infomodel.ModuleInfoBean;
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
 public class StampTreeNode extends DefaultMutableTreeNode {
+    private static final long serialVersionUID = 1L;
 
     /**
      * コンストラクタ
+     * @param userObject
      */
     public StampTreeNode(Object userObject) {
 
@@ -26,6 +27,7 @@ public class StampTreeNode extends DefaultMutableTreeNode {
 
     /**
      * 葉かどうかを返す
+     * @return
      */
     @Override
     public boolean isLeaf() {
@@ -34,6 +36,7 @@ public class StampTreeNode extends DefaultMutableTreeNode {
 
     /**
      * StampInfo を返す
+     * @return
      */
     public ModuleInfoBean getStampInfo() {
         return (ModuleInfoBean) userObject;

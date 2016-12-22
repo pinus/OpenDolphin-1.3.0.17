@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-// import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
@@ -15,15 +14,12 @@ import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.util.StringTool;
 
 /**
- * SOAペインのコードヘルパークラス。
+ * SOAペインのコードヘルパークラス.
  *
  * @author Kazyshi Minagawa
  */
 public class SOACodeHelper extends AbstractCodeHelper {
 
-    /**
-     * Creates a new instance of CodeHelper
-     */
     public SOACodeHelper(KartePane pPane, ChartMediator mediator) {
         super(pPane, mediator);
     }
@@ -113,7 +109,7 @@ public class SOACodeHelper extends AbstractCodeHelper {
                         menus.addFirst(subMenu);
                         parents.addFirst(node);
                         JMenuItem item = new JMenuItem(folderName);
-                        item.setIcon(ICON);
+                        item.setIcon(icon);
                         subMenu.add(item);
                         addActionListner(item, node);
 
@@ -158,7 +154,7 @@ public class SOACodeHelper extends AbstractCodeHelper {
                             // フォルダ選択のアイテムを生成しサブメニューの要素にする
                             //
                             JMenuItem item = new JMenuItem(folderName);
-                            item.setIcon(ICON);
+                            item.setIcon(icon);
                             subMenu.add(item);
                             addActionListner(item, node);
                         }
