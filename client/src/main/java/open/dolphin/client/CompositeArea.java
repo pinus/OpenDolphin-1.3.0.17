@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -14,7 +13,7 @@ import open.dolphin.ui.MyJPopupMenu;
  *
  * @author kazm
  */
-public class CompositeArea extends JTextArea implements KarteComposite, CaretListener {
+public class CompositeArea extends JTextArea implements KarteComposite<JTextArea>, CaretListener {
     private static final long serialVersionUID = 1L;
 
     private boolean hasSelection;
@@ -42,13 +41,13 @@ public class CompositeArea extends JTextArea implements KarteComposite, CaretLis
     }
 
     @Override
-    public Component getComponent() {
+    public JTextArea getComponent() {
         return this;
     }
 
     @Override
     public void caretUpdate(CaretEvent e) {
-        boolean newSelection =  (e.getDot() != e.getMark()) ? true : false;
+        boolean newSelection =  (e.getDot() != e.getMark());
         if (newSelection != hasSelection) {
             hasSelection = newSelection;
             map.get(GUIConst.ACTION_PASTE).setEnabled(canPaste());
@@ -65,10 +64,6 @@ public class CompositeArea extends JTextArea implements KarteComposite, CaretLis
             return false;
         }
 
-        if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            return true;
-        }
-
-        return false;
+        return t.isDataFlavorSupported(DataFlavor.stringFlavor);
     }
 }

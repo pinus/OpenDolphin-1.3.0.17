@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
-public final class SchemaHolder extends AbstractComponentHolder implements ComponentHolder {
+public final class SchemaHolder extends AbstractComponentHolder {
     private static final long serialVersionUID = 1777560751402251092L;
 
     private static final Color SELECTED_BORDER = new Color(255, 0, 153);
@@ -91,8 +91,8 @@ public final class SchemaHolder extends AbstractComponentHolder implements Compo
     }
 
     @Override
-    public int getContentType() {
-        return ComponentHolder.TT_IMAGE;
+    public ContentType getContentType() {
+        return ContentType.TT_IMAGE;
     }
 
     @Override
@@ -144,7 +144,7 @@ public final class SchemaHolder extends AbstractComponentHolder implements Compo
     }
 
     @Override
-    public Component getComponent() {
+    public JLabel getComponent() {
         return this;
     }
 

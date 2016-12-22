@@ -30,7 +30,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc. modified by pns
  */
-public final class StampHolder extends AbstractComponentHolder implements ComponentHolder {
+public final class StampHolder extends AbstractComponentHolder {
     private static final long serialVersionUID = 5853431116398862958L;
 
     public static final String STAMP_MODIFIED = "stampModified";
@@ -131,7 +131,7 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
     }
 
     @Override
-    public Component getComponent() {
+    public JLabel getComponent() {
         return this;
     }
 
@@ -149,8 +149,8 @@ public final class StampHolder extends AbstractComponentHolder implements Compon
      * @return
      */
     @Override
-    public int getContentType() {
-        return ComponentHolder.TT_STAMP;
+    public ContentType getContentType() {
+        return ContentType.TT_STAMP;
     }
 
     /**

@@ -9,11 +9,11 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.*;
 
 /**
- * ComponentHolder
- *
+ * ComponentHolder.
+ * StampHolder と SchemaHolder
  * @author  Kazushi Minagawa modified by pns
  */
-public abstract class AbstractComponentHolder extends JLabel implements MouseListener, MouseMotionListener {
+public abstract class AbstractComponentHolder extends JLabel implements ComponentHolder<JLabel>, MouseListener, MouseMotionListener {
     private static final long serialVersionUID = 1L;
 
     /** エディタの二重起動を防ぐためのフラグ */
@@ -24,19 +24,15 @@ public abstract class AbstractComponentHolder extends JLabel implements MouseLis
     }
 
     private void initialize() {
-        this.setFocusable(true);
-        this.addMouseListener(this);
-        this.addMouseMotionListener(this);
-        this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        setFocusable(true);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         ActionMap map = this.getActionMap();
         map.put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
         map.put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
         map.put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
-
-        // set ime off to reduce ATOK memory consumption
-        // これを入れると，focus が当たっていない状態からダブルクリックをしても e.getClickCount() が 2 にならない
-        // IMEControl.setImeOffIfFocused(this);
-    }
+   }
 
     public boolean isEditable() {
         return isEditable;
@@ -55,12 +51,12 @@ public abstract class AbstractComponentHolder extends JLabel implements MouseLis
 
     @Override
     public void mouseEntered(MouseEvent e) {
-//        requestFocusInWindow(); // 自動的にフォーカス取るようにしたら，うざかった
+        // requestFocusInWindow(); // 自動的にフォーカス取るようにしたら，うざかった
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-/*        Component c = getParent(); // うざかったのでやめた
+     /* Component c = getParent(); // うざかったのでやめた
         while ( c != null) {
             if (c instanceof JTextPane) {
                 c.requestFocusInWindow();
@@ -112,6 +108,8 @@ public abstract class AbstractComponentHolder extends JLabel implements MouseLis
     @Override
     public void mouseMoved(MouseEvent e) { }
 
+    @Override
     public abstract void edit();
+
     public abstract void maybeShowPopup(MouseEvent e);
 }

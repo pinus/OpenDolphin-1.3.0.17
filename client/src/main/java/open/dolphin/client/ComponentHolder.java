@@ -5,17 +5,16 @@ import java.beans.PropertyChangeListener;
 import javax.swing.text.Position;
 
 /**
- * IComponentHolder
- *
+ * ComponentHolder.
+ * StampHolder と SchemHolder （いずれも JLabel）
  * @author  Kauzshi Minagawa
+ * @param <T>
  */
-public interface ComponentHolder extends PropertyChangeListener, KarteComposite {
+public interface ComponentHolder<T> extends PropertyChangeListener, KarteComposite<T> {
 
-    public static final int TT_STAMP = 0;
+    public static enum ContentType { TT_STAMP, TT_IMAGE }
 
-    public static final int TT_IMAGE = 1;
-
-    public int getContentType();
+    public ContentType getContentType();
 
     public KartePane getKartePane();
 
