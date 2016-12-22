@@ -8,7 +8,7 @@ import open.dolphin.infomodel.ModuleInfoBean;
 import org.apache.log4j.Logger;
 
 /**
- * StampTree Builder クラス。
+ * StampTree Builder クラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -45,7 +45,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     }
 
     /**
-     * build を開始する。
+     * build を開始する.
      */
     @Override
     public void buildStart() {
@@ -56,7 +56,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     }
 
     /**
-     * Root を生成する。
+     * Root を生成する.
      * @param name root名
      * @param entity Stamptree の Entity
      */
@@ -80,7 +80,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     }
 
     /**
-     * ノードを生成する。
+     * ノードを生成する.
      * @param name ノード名
      */
     @Override
@@ -99,7 +99,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     }
 
     /**
-     * StampInfo を UserObject にするノードを生成する。
+     * StampInfo を UserObject にするノードを生成する.
      * @param name ノード名
      * @param role
      * @param entity エンティティ
@@ -158,7 +158,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     }
 
     /**
-     * Node の生成を終了する。
+     * Node の生成を終了する.
      */
     @Override
     public void buildNodeEnd() {
@@ -169,7 +169,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     }
 
     /**
-     * Root Node の生成を終了する。
+     * Root Node の生成を終了する.
      */
     @Override
     public void buildRootEnd() {
@@ -201,7 +201,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     }
 
     /**
-     * build を終了する。
+     * build を終了する.
      */
     @Override
     public void buildEnd() {
@@ -233,7 +233,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     }
 
     /**
-     * リストから先頭の StampTreeNode を取り出す。
+     * リストから先頭の StampTreeNode を取り出す.
      */
     private StampTreeNode getCurrentNode() {
         return linkedList.getFirst();

@@ -12,7 +12,7 @@ import open.dolphin.service.StampService;
 public class StampDelegater extends BusinessDelegater {
 
     /**
-     * StampTree を保存/更新する。
+     * StampTree を保存/更新する.
      * @param model 保存する StampTree
      * @return 永続化された StampTreeBean の primary key
      */
@@ -37,7 +37,7 @@ public class StampDelegater extends BusinessDelegater {
             treeList.add(personal);
             treeList.addAll(subscribed);
         }
-        // personal == null の場合は空のリストを返す。StampBoxPlugin が新規 StampTree を作ってくれる。
+        // personal == null の場合は空のリストを返す. StampBoxPlugin が新規 StampTree を作ってくれる.
         return treeList;
     }
 
@@ -61,7 +61,7 @@ public class StampDelegater extends BusinessDelegater {
     }
 
     /**
-     * 公開されている PublishedTree のリストを取得する。
+     * 公開されている PublishedTree のリストを取得する.
      * @return ローカル及びパブリックTreeのリスト
      */
     public List<PublishedTreeModel> getPublishedTrees() {
@@ -69,7 +69,7 @@ public class StampDelegater extends BusinessDelegater {
     }
 
     /**
-     * 公開 Tree をサブスクライブする。
+     * 公開 Tree をサブスクライブする.
      * @param subscribeList サブスクライブする SubscribedTreeModel の List
      * @return
      */
@@ -78,7 +78,7 @@ public class StampDelegater extends BusinessDelegater {
     }
 
     /**
-     * 公開 Tree をアンサブスクライブする。
+     * 公開 Tree をアンサブスクライブする.
      * @param removeList アンサブスクライブする PublishedTree の Id リスト
      * @return
      */
@@ -87,7 +87,7 @@ public class StampDelegater extends BusinessDelegater {
     }
 
     /**
-     * Stampを保存する。
+     * Stampを保存する.
      * @param list StampModel の List
      * @return 保存件数
      */
@@ -96,7 +96,7 @@ public class StampDelegater extends BusinessDelegater {
     }
 
     /**
-     * Stampを保存する。
+     * Stampを保存する.
      * @param model StampModel
      * @return 保存件数
      */
@@ -105,7 +105,7 @@ public class StampDelegater extends BusinessDelegater {
     }
 
     /**
-     * Stampを取得する。
+     * Stampを取得する.
      * @param stampId 取得する StampModel の id
      * @return StampModel
      */
@@ -114,7 +114,7 @@ public class StampDelegater extends BusinessDelegater {
     }
 
     /**
-     * Stampを取得する。
+     * Stampを取得する.
      * @param list 取得する ModuleInfoBean の list
      * @return StampModel の list
      */
@@ -130,7 +130,7 @@ public class StampDelegater extends BusinessDelegater {
     }
 
     /**
-     * Stampを削除する。
+     * Stampを削除する.
      * @param stampId 削除する StampModel の id
      * @return 削除件数
      */
@@ -139,7 +139,7 @@ public class StampDelegater extends BusinessDelegater {
     }
 
     /**
-     * Stampを削除する。
+     * Stampを削除する.
      * @param ids 削除する StampModel の id リスト
      * @return 削除件数
      */

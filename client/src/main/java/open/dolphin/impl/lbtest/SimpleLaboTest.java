@@ -9,7 +9,7 @@ package open.dolphin.impl.lbtest;
 import java.util.*;
 
 /**
- * １検体につき、テストされた項目の TreeSet を保持するクラス。
+ * １検体につき，テストされた項目の TreeSet を保持するクラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

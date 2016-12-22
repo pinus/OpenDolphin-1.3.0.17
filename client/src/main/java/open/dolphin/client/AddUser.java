@@ -133,7 +133,7 @@ public class AddUser extends AbstractMainTool {
     }
 
     /**
-     * 施設（医療機関）情報を変更するクラス。
+     * 施設（医療機関）情報を変更するクラス.
      */
     protected class FacilityInfoPanel extends JPanel {
 
@@ -434,7 +434,7 @@ public class AddUser extends AbstractMainTool {
     }
 
     /**
-     * ユーザリストを取得するクラス。名前がいけない。
+     * ユーザリストを取得するクラス. 名前がいけない.
      */
     protected class UserListPanel extends JPanel {
 
@@ -564,7 +564,7 @@ public class AddUser extends AbstractMainTool {
         }
 
         /**
-         * 医療資格が other 以外は削除できない。
+         * 医療資格が other 以外は削除できない.
          * @param user
          */
         private void controleDelete(UserModel user) {
@@ -573,7 +573,7 @@ public class AddUser extends AbstractMainTool {
         }
 
         /**
-         * 施設内の全ユーザを取得する。
+         * 施設内の全ユーザを取得する.
          */
         private void getUsers() {
 
@@ -612,7 +612,7 @@ public class AddUser extends AbstractMainTool {
         }
 
         /**
-         * 選択したユーザを削除する。
+         * 選択したユーザを削除する.
          *
          */
         private void deleteUser() {
@@ -681,7 +681,7 @@ public class AddUser extends AbstractMainTool {
     }
 
     /**
-     * 施設内ユーザ登録クラス。
+     * 施設内ユーザ登録クラス.
      */
     protected class AddUserPanel extends JPanel {
 
@@ -1057,7 +1057,7 @@ public class AddUser extends AbstractMainTool {
     }
 
     /**
-     * タイムアウト警告表示を行う。
+     * タイムアウト警告表示を行う.
      */
     private void wraningTimeOut() {
         StringBuilder sb = new StringBuilder();
@@ -1071,7 +1071,7 @@ public class AddUser extends AbstractMainTool {
     }
 
     /**
-     * OSがmacかどうかを返す。
+     * OSがmacかどうかを返す.
      * @return mac の時 true
      */
     private boolean isMac() {

@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 
 
 /**
- * チャートドキュメントが実装するインターフェイス。
+ * チャートドキュメントが実装するインターフェイス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

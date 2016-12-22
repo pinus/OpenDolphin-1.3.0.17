@@ -68,7 +68,7 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // requestFocus はここの方がいい。mouseClicked だと，mouseRelease されるまで focus とれないから
+        // requestFocus はここの方がいい. mouseClicked だと，mouseRelease されるまで focus とれないから
         requestFocusInWindow();
         // 右クリックで popup 表示
         if (e.isPopupTrigger()) { maybeShowPopup(e); }

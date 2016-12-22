@@ -19,7 +19,7 @@ import open.dolphin.ui.MyJScrollPane;
 import org.apache.log4j.Logger;
 
 /**
- * 患者のメモを表示し編集するクラス。 modified by pns
+ * 患者のメモを表示し編集するクラス.  modified by pns
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -38,7 +38,7 @@ public class MemoInspector {
     private static final Color ALERT_BACK_COLOR = new Color(255,240,240);
 
     /**
-     * MemoInspectorオブジェクトを生成する。
+     * MemoInspectorオブジェクトを生成する.
      */
     public MemoInspector(ChartImpl context) {
 
@@ -50,7 +50,7 @@ public class MemoInspector {
     }
 
     /**
-     * レイアウト用のパネルを返す。
+     * レイアウト用のパネルを返す.
      * @return レイアウトパネル
      */
     public JPanel getPanel() {
@@ -58,7 +58,7 @@ public class MemoInspector {
     }
 
     /**
-     * GUI コンポーネントを初期化する。
+     * GUI コンポーネントを初期化する.
      */
     private void initComponents() {
 
@@ -83,7 +83,7 @@ public class MemoInspector {
     }
 
     /**
-     * 患者メモを表示する。
+     * 患者メモを表示する.
      */
     private void update() {
         //List list = context.getKarte().getEntryCollection("patientMemo");
@@ -99,7 +99,7 @@ public class MemoInspector {
     }
 
     /**
-     * 患者メモを更新する。
+     * 患者メモを更新する.
      */
     public void updateMemo() {
         // メモ内容に変更がなければ何もしない

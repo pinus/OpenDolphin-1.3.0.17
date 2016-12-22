@@ -23,7 +23,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 /**
- * DML を 任意のMessage に翻訳するクラス。
+ * DML を 任意のMessage に翻訳するクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  *

@@ -165,7 +165,7 @@ public class FindAndView {
             return;
         }
 
-        // scrollerPanel が変化していなければ次を探す。変化していたらクリア。
+        // scrollerPanel が変化していなければ次を探す. 変化していたらクリア.
         if (panel == scrollerPanel) {
 
             // 次の検索の前に onCursorAttr を foundAttr に戻す

@@ -4,7 +4,7 @@ import javax.swing.tree.*;
 import open.dolphin.infomodel.ModuleInfoBean;
 
 /**
- * StampTree のノードクラス。
+ * StampTree のノードクラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

@@ -33,7 +33,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 /**
- * オーダ履歴を表示するパネルクラス。 表示するオーダと抽出期間は PropertyChange で通知される。
+ * オーダ履歴を表示するパネルクラス.  表示するオーダと抽出期間は PropertyChange で通知される.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -135,7 +135,7 @@ public final class OrderHistoryPanel extends JPanel implements PropertyChangeLis
     }
 
     /**
-     * カレンダーの日が選択されたときに通知を受け、テーブルで日付が一致するオーダの行を選択する.
+     * カレンダーの日が選択されたときに通知を受け，テーブルで日付が一致するオーダの行を選択する.
      * @param e
      */
     @Override
@@ -149,7 +149,7 @@ public final class OrderHistoryPanel extends JPanel implements PropertyChangeLis
     }
 
     /**
-     * オーダ履歴のテーブル行がクリックされたとき、データモデルの ModuleModel を表示する.
+     * オーダ履歴のテーブル行がクリックされたとき，データモデルの ModuleModel を表示する.
      */
     private void displayOrder(int index) {
         contents.setText("");

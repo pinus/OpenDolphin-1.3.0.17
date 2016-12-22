@@ -101,7 +101,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
         super.exportAsDrag(comp, e, action);
     }
     /**
-     * 選択されたノードでDragを開始する。
+     * 選択されたノードでDragを開始する.
      */
     @Override
     protected Transferable createTransferable(JComponent c) {
@@ -116,7 +116,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
     }
 
     /**
-     * DropされたFlavorをStampTreeにインポートする。
+     * DropされたFlavorをStampTreeにインポートする.
      */
     @Override
     public boolean importData(JComponent c, Transferable tr) {
@@ -202,7 +202,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
                     OrderList list = (OrderList) tr.getTransferData(OrderListTransferable.orderListFlavor);
                     ModuleModel droppedStamp = list.orderList[0];
 
-                    // 同一エンティティの場合、選択は必ず起っている
+                    // 同一エンティティの場合，選択は必ず起っている
                     if (droppedStamp.getModuleInfo().getEntity().equals(targetEntity)) {
                         return tree.addStamp(droppedStamp, targetNode);
 
@@ -252,14 +252,14 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
     }
 
     /**
-     * DnD後、Dragしたノードを元のStamptreeから削除する。
+     * DnD後，Dragしたノードを元のStamptreeから削除する.
      */
     @Override
     protected void exportDone(JComponent c, Transferable data, int action) {
     }
 
     /**
-     * インポート可能かどうかを返す。
+     * インポート可能かどうかを返す.
      */
     @Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {

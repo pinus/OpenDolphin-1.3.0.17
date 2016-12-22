@@ -7,14 +7,14 @@ import open.dolphin.infomodel.PatientModel;
 import open.dolphin.service.LaboService;
 
 /**
- * Labo 関連の Delegater クラス。
+ * Labo 関連の Delegater クラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class LaboDelegater extends BusinessDelegater {
 
     /**
-     * LaboModule を保存する。
+     * LaboModule を保存する.
      * @param value
      * @return LaboModule を保存した PatientModel
      */
@@ -23,7 +23,7 @@ public class LaboDelegater extends BusinessDelegater {
     }
 
     /**
-     * 患者の検体検査モジュールを取得する。
+     * 患者の検体検査モジュールを取得する.
      * @param spec LaboSearchSpec 検索仕様
      * @return laboModule の Collection
      */

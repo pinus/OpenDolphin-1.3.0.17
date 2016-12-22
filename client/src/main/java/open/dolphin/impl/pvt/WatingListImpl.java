@@ -48,7 +48,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 
 /**
- * 受付リスト。
+ * 受付リスト.
  * @author Kazushi Minagawa, Digital Globe, Inc.,
  * @author pns
  */
@@ -131,7 +131,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * プログラムを開始する。
+     * プログラムを開始する.
      */
     @Override
     public void start() {
@@ -148,7 +148,7 @@ public class WatingListImpl extends AbstractMainComponent {
 
         if (checkInterval == 0) {
             // 定期チェック off の場合 (checkInterval = 0)
-            // 初回のチェック。以後は ReceivePvtBroadcast と，下のタイマーで更新
+            // 初回のチェック. 以後は ReceivePvtBroadcast と，下のタイマーで更新
             checkFullPvt();
             // １分ごとに setPvtCount() を呼んで待ち時間を更新
             Runnable r = new Runnable() {
@@ -163,7 +163,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * ロガー等を取得する。
+     * ロガー等を取得する.
      */
     private void setup() {
         logger = Logger.getLogger(this.getClass());
@@ -174,7 +174,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * GUI コンポーネントを初期化しレアイアウトする。
+     * GUI コンポーネントを初期化しレアイアウトする.
      */
     private void initComponents() {
 
@@ -313,7 +313,7 @@ public class WatingListImpl extends AbstractMainComponent {
    }
 
     /**
-     * コンポーネントにイベントハンドラーを登録し相互に接続する。
+     * コンポーネントにイベントハンドラーを登録し相互に接続する.
      */
     private void connect() {
 
@@ -352,7 +352,7 @@ public class WatingListImpl extends AbstractMainComponent {
 
     /**
      * メインウインドウのタブで受付リストに切り替わった時
-     * コールされる。
+     * コールされる.
      */
     @Override
     public void enter() {
@@ -361,14 +361,14 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * プログラムを終了する。
+     * プログラムを終了する.
      */
     @Override
     public void stop() {
     }
 
     /**
-     * 選択されている来院情報の患者オブジェクトを返す。
+     * 選択されている来院情報の患者オブジェクトを返す.
      * 複数行対応 by pns
      * @return 患者オブジェクト
      */
@@ -383,7 +383,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 性別レンダラかどうかを返す。
+     * 性別レンダラかどうかを返す.
      * @return 性別レンダラの時 true
      */
     public boolean isSexRenderer() {
@@ -391,7 +391,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * レンダラをトグルで切り替える。
+     * レンダラをトグルで切り替える.
      */
     public void switchRenderere() {
         sexRenderer = !sexRenderer;
@@ -402,7 +402,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 年齢表示をオンオフする。
+     * 年齢表示をオンオフする.
      */
     public void switchAgeDisplay() {
         ageDisplay = !ageDisplay;
@@ -414,7 +414,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 来院情報を取得する日を設定する。
+     * 来院情報を取得する日を設定する.
      * @param date 取得する日
      */
     private void setOperationDate(Date date) {
@@ -425,7 +425,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 来院情報をチェックした時刻を設定する。
+     * 来院情報をチェックした時刻を設定する.
      * @param date チェックした時刻
      */
     private void setCheckedTime(Date date) {
@@ -436,7 +436,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 来院情報のチェック間隔(Timer delay)を設定する。
+     * 来院情報のチェック間隔(Timer delay)を設定する.
      * @param interval チェック間隔 sec
      */
     public void setCheckInterval(int interval) {
@@ -452,7 +452,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 来院数を設定する。
+     * 来院数を設定する.
      * @param cnt 来院数
      */
     public void setPvtCount(int cnt) {
@@ -499,7 +499,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * テーブル及び靴アイコンの enable/diable 制御を行う。
+     * テーブル及び靴アイコンの enable/diable 制御を行う.
      * 複数行選択対応 by pns
      * @param busy pvt 検索中は true
      */
@@ -522,7 +522,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 選択されている来院情報を設定返す。
+     * 選択されている来院情報を設定返す.
      * 複数行選択対応 by pns
      * @return 選択されている来院情報
      */
@@ -531,7 +531,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 選択された来院情報を設定する。
+     * 選択された来院情報を設定する.
      * 複数行選択対応 by pns
      * @param 選択された来院情報
      */
@@ -541,7 +541,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * カルテオープンメニューを制御する。
+     * カルテオープンメニューを制御する.
      * 複数行選択対応 by pns
      */
     private void controlMenu() {
@@ -564,7 +564,7 @@ public class WatingListImpl extends AbstractMainComponent {
     //}
 
     /**
-     * Popupメニューから，現在選択されている全ての患者のカルテを開く。
+     * Popupメニューから，現在選択されている全ての患者のカルテを開く.
      * 複数行選択対応 by pns
      */
     public void openKarte() {
@@ -728,7 +728,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 指定されたカルテを開くことが可能かどうかを返す。
+     * 指定されたカルテを開くことが可能かどうかを返す.
      * @return 開くことが可能な時 true
      */
     private boolean canOpen(PatientVisitModel pvt) {
@@ -737,7 +737,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 受付がキャンセルされているかどうかを返す。
+     * 受付がキャンセルされているかどうかを返す.
      * @return キャンセルされている時 true
      */
     private boolean isKarteCanceled(PatientVisitModel pvtModel) {
@@ -841,7 +841,7 @@ public class WatingListImpl extends AbstractMainComponent {
 
     /**
      * 与えられた pvt に対応する TableModel の行を返す
-     * 要素が別オブジェクトになっている場合があるため、レコードIDで探す
+     * 要素が別オブジェクトになっている場合があるため，レコードIDで探す
      * @param pvt
      * @return
      */
@@ -861,7 +861,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 選択した患者の受付をキャンセルする。
+     * 選択した患者の受付をキャンセルする.
      * 複数行選択対応 by pns
      */
     public void cancelVisit() {
@@ -913,7 +913,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * チェックタイマーをリスタートする。
+     * チェックタイマーをリスタートする.
      */
     public void restartCheckTimer() {
         stopCheckTimer();
@@ -955,7 +955,7 @@ public class WatingListImpl extends AbstractMainComponent {
         startCheckTimer((intervalToNextCheck > 0)? intervalToNextCheck : 0);
     }
     /**
-     * 更新ボタンで呼ばれる。定期チェックの方はリセットする
+     * 更新ボタンで呼ばれる. 定期チェックの方はリセットする
      */
     public void checkFullPvt() {
         stopCheckTimer();
@@ -1305,7 +1305,7 @@ public class WatingListImpl extends AbstractMainComponent {
 
     /**
      * KarteStateRenderer
-     * カルテ（チャート）の状態をレンダリングするクラス。
+     * カルテ（チャート）の状態をレンダリングするクラス.
      */
     private class MaleFemaleRenderer extends TableCellRendererBase {
         private static final long serialVersionUID = 1L;
@@ -1372,7 +1372,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 受付リストのコンテキストメニュークラス。
+     * 受付リストのコンテキストメニュークラス.
      * modified by pns
      */
     private class ContextListener extends AbstractMainComponent.ContextListener<PatientVisitModel> {

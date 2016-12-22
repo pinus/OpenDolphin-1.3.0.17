@@ -240,7 +240,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * text をタイトルに持つタブ番号を返す。ない場合は -1 を返す
+     * text をタイトルに持つタブ番号を返す. ない場合は -1 を返す
      * @param title
      * @return
      */

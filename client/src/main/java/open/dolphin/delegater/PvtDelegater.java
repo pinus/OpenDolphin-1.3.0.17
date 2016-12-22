@@ -14,7 +14,7 @@ import open.dolphin.service.PvtService;
 public class PvtDelegater extends BusinessDelegater {
 
     /**
-     * 受付情報 PatientVisitModel をデータベースに登録する。
+     * 受付情報 PatientVisitModel をデータベースに登録する.
      * @param pvtModel   受付情報 PatientVisitModel
      * @return 保存に成功した個数
      */
@@ -23,7 +23,7 @@ public class PvtDelegater extends BusinessDelegater {
     }
 
     /**
-     * 来院情報をデータベースから取得する。
+     * 来院情報をデータベースから取得する.
      * @param date     検索する来院日
      * @param firstRecord 何番目のレコードから取得するか
      * @return PatientVisitModel の List
@@ -50,7 +50,7 @@ public class PvtDelegater extends BusinessDelegater {
     }
 
     /**
-     * 受付情報を削除する。
+     * 受付情報を削除する.
      * @param id PatientVisitModel の primary key
      * @return 削除件数
      */

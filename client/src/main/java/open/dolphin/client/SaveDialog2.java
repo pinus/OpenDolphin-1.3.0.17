@@ -145,7 +145,7 @@ public class SaveDialog2 {
 
 
     /**
-     * GUIコンポーネントを初期化する。
+     * GUIコンポーネントを初期化する.
      */
     private void initComponent() {
 
@@ -167,7 +167,7 @@ public class SaveDialog2 {
         titleField = (JTextField) titleCombo.getEditor().getEditorComponent();
         titleField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkTitle());
 
-        // 診療科、印刷部数を表示するラベルとパネルを生成する
+        // 診療科，印刷部数を表示するラベルとパネルを生成する
         JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         departmentLabel = new JLabel();
         p1.add(new JLabel("診療科:"));
@@ -183,7 +183,7 @@ public class SaveDialog2 {
 
         // CLAIM 送信ありなし
         sendClaim = new JCheckBox("診療行為を送信する (仮保存の場合は送信しない)");
-        // quaqua-7.4.2 にしたら，なぜか診察室の iMac １台だけ isFocusable = false になる。何で？
+        // quaqua-7.4.2 にしたら，なぜか診察室の iMac １台だけ isFocusable = false になる. 何で？
         sendClaim.setFocusable(true);
 
         JPanel p5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -277,7 +277,7 @@ public class SaveDialog2 {
     }
 
     /**
-     * タイトルフィールドの有効性をチェックする。
+     * タイトルフィールドの有効性をチェックする.
      */
     public void checkTitle() {
         boolean enabled = titleField.getText().trim().equals("") ? false : true;
@@ -286,7 +286,7 @@ public class SaveDialog2 {
     }
 
     /**
-     * GUIコンポーネントから値を取得し、saveparamsに設定する。
+     * GUIコンポーネントから値を取得し，saveparamsに設定する.
      */
     private void doOk() {
 
@@ -321,7 +321,7 @@ public class SaveDialog2 {
     }
 
     /**
-     * 仮保存の場合のパラメータを設定する。
+     * 仮保存の場合のパラメータを設定する.
      */
     private void doTemp() {
         //

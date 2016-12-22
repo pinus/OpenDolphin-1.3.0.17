@@ -38,7 +38,7 @@ public class BasicInfoInspector {
 
 
     /**
-     * BasicInfoInspectorオブジェクトを生成する。
+     * BasicInfoInspectorオブジェクトを生成する.
      */
     public BasicInfoInspector(ChartImpl context) {
         this.context = context;
@@ -47,7 +47,7 @@ public class BasicInfoInspector {
     }
 
     /**
-     * レイウアトのためにこのインスペクタのコンテナパネルを返す。
+     * レイウアトのためにこのインスペクタのコンテナパネルを返す.
      * @return コンテナパネル
      */
     public JPanel getPanel() {
@@ -56,7 +56,7 @@ public class BasicInfoInspector {
     }
 
     /**
-     * 患者の基本情報を表示する。
+     * 患者の基本情報を表示する.
      */
     private void update() {
 
@@ -87,7 +87,7 @@ public class BasicInfoInspector {
     }
 
     /**
-     * GUI コンポーネントを初期化する。
+     * GUI コンポーネントを初期化する.
      */
     private void initComponent() {
 

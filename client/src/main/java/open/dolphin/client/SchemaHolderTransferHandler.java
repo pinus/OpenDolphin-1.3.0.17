@@ -63,7 +63,7 @@ public class SchemaHolderTransferHandler extends PatchedTransferHandler {
     }
 
     /**
-     * スタンプをクリップボードへ転送する。
+     * スタンプをクリップボードへ転送する.
      */
     @Override
 	public void exportToClipboard(JComponent comp, Clipboard clip, int action) {

@@ -17,7 +17,7 @@ import open.dolphin.project.Project;
 import org.apache.log4j.Logger;
 
 /**
- * MML 送信サービス。
+ * MML 送信サービス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

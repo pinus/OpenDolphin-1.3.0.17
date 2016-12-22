@@ -39,7 +39,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
 
     /**
-     * CalendarTableModel を生成する。
+     * CalendarTableModel を生成する.
      * @param year   カレンダの年
      * @param month　 カレンダの月
      */
@@ -75,7 +75,7 @@ public class CalendarTableModel extends AbstractTableModel {
         lastCell += (numRows-1)*numCols; // table のセル番号へ変換する
 
         // このカレンダの表示開始日を求める
-        // 一度一日に戻し、それからさらにカラム番号分の日数を引く
+        // 一度一日に戻し，それからさらにカラム番号分の日数を引く
         gc.add(Calendar.DAY_OF_MONTH, 1 - numDaysOfMonth);
         gc.add(Calendar.DAY_OF_MONTH, -firstCell);
         startDate = (GregorianCalendar) gc.clone();

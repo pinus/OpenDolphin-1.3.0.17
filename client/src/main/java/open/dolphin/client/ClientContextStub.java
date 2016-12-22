@@ -30,7 +30,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 
 /**
- * Dolphin Client のコンテキストクラス。
+ * Dolphin Client のコンテキストクラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -53,7 +53,7 @@ public class ClientContextStub {
     private HashMap<String, Color> eventColorTable;
 
     /**
-     * ClientContextStub オブジェクトを生成する。
+     * ClientContextStub オブジェクトを生成する.
      */
     public ClientContextStub() {
 
@@ -580,7 +580,7 @@ public class ClientContextStub {
     }
 
     /**
-     * Windows のデフォルトフォントを設定する。
+     * Windows のデフォルトフォントを設定する.
      */
     private void setUIFonts() {
 

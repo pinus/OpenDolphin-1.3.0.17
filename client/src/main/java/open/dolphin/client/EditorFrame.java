@@ -129,7 +129,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     // masuda
 
     /**
-     * 全インスタンスを保持するリストを返す。
+     * 全インスタンスを保持するリストを返す.
      * @return 全インスタンスを保持するリスト
      */
     public static List<Chart> getAllEditorFrames() {
@@ -146,7 +146,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * EditorFrame オブジェクトを生成する。
+     * EditorFrame オブジェクトを生成する.
      */
     public EditorFrame() {
         logger = ClientContext.getBootLogger();
@@ -154,7 +154,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * IChart コンテキストを設定する。
+     * IChart コンテキストを設定する.
      * @param chartCtx IChart コンテキスト
      */
     public void setChart(Chart chartCtx) {
@@ -168,7 +168,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 表示する KarteViewer オブジェクトを設定する。
+     * 表示する KarteViewer オブジェクトを設定する.
      * @param view 表示する KarteView
      */
     public void setKarteViewer(KarteViewer view) {
@@ -176,7 +176,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 編集する KarteEditor オブジェクトを設定する。
+     * 編集する KarteEditor オブジェクトを設定する.
      * @param editor 編集する KarteEditor
      */
     public void setKarteEditor(KarteEditor editor) {
@@ -184,7 +184,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 患者モデルを返す。
+     * 患者モデルを返す.
      * @return 患者モデル
      */
     @Override
@@ -193,7 +193,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 対象としている KarteBean オブジェクトを返す。
+     * 対象としている KarteBean オブジェクトを返す.
      * @return KarteBean オブジェクト
      */
     @Override
@@ -202,7 +202,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 対象となる KarteBean オブジェクトを設定する。
+     * 対象となる KarteBean オブジェクトを設定する.
      * @param karte KarteBean オブジェクト
      */
     @Override
@@ -211,7 +211,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 来院情報を返す。
+     * 来院情報を返す.
      * @return 来院情報
      */
     @Override
@@ -220,7 +220,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 来院情報を設定する。
+     * 来院情報を設定する.
      * @param model 来院情報モデル
      */
     @Override
@@ -229,7 +229,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * Chart state を返す。
+     * Chart state を返す.
      * @return Chart の state 属性
      */
     @Override
@@ -238,7 +238,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * Chart state を設定する。
+     * Chart state を設定する.
      * @param state Chart の state
      */
     @Override
@@ -247,7 +247,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * ReadOnly かどうかを返す。
+     * ReadOnly かどうかを返す.
      * @return readOnly の時 true
      */
     @Override
@@ -256,7 +256,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * ReadOnly 属性を設定する。
+     * ReadOnly 属性を設定する.
      * @param b
      */
     @Override
@@ -265,7 +265,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * このオブジェクトの JFrame を返す。
+     * このオブジェクトの JFrame を返す.
      * @return JFrame オブジェクト
      */
     @Override
@@ -274,7 +274,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * StatusPanel を返す。
+     * StatusPanel を返す.
      * @return StatusPanel
      */
     @Override
@@ -283,7 +283,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * StatusPanel を設定する。
+     * StatusPanel を設定する.
      * @param statusPanel StatusPanel オブジェクト
      */
     @Override
@@ -292,7 +292,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * ChartMediator を返す。
+     * ChartMediator を返す.
      * @return ChartMediator
      */
     @Override
@@ -301,7 +301,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * Menu アクションを制御する。
+     * Menu アクションを制御する.
      * @param name
      * @param enabled
      */
@@ -316,7 +316,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * DocumentHistory を返す。
+     * DocumentHistory を返す.
      * @return DocumentHistory
      */
     @Override
@@ -325,7 +325,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 引数のタブ番号にあるドキュメントを表示する。
+     * 引数のタブ番号にあるドキュメントを表示する.
      * @param index 表示するドキュメントのタブ番号
      */
     @Override
@@ -334,7 +334,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * dirty かどうかを返す。
+     * dirty かどうかを返す.
      * @return dirty の時 true
      */
     @Override
@@ -353,7 +353,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * プログラムを開始する。
+     * プログラムを開始する.
      */
     @Override
     public void start() {
@@ -361,7 +361,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 初期化する。
+     * 初期化する.
      */
     private void initialize() {
 
@@ -487,7 +487,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * プログラムを終了する。
+     * プログラムを終了する.
      */
     @Override
     public void stop() {
@@ -504,20 +504,20 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * ウインドウの close box が押された時の処理を実行する。
+     * ウインドウの close box が押された時の処理を実行する.
      */
     public void processWindowClosing() {
         close();
     }
 
     /**
-     * ウインドウオープン時の処理を行う。
+     * ウインドウオープン時の処理を行う.
      */
     public void processWindowOpened() {
     }
 
     /**
-     * Focus ゲインを得た時の処理を行う。
+     * Focus ゲインを得た時の処理を行う.
      */
     public void processGainedFocus() {
 
@@ -541,7 +541,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * 印刷する。
+     * 印刷する.
      */
     public void print() {
 
@@ -562,7 +562,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     }
 
     /**
-     * クローズする。
+     * クローズする.
      * キャンセル，破棄の処理は editor でまとめてすることにした by pns
      */
     @Override

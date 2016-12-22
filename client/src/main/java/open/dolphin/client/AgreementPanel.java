@@ -39,7 +39,7 @@ public class AgreementPanel extends JPanel {
 	private JRadioButton disagreeBtn;
 	
 	/**
-	 * AgreementPanelを生成する。
+	 * AgreementPanelを生成する.
 	 * @param model AgreementModel
 	 */
 	public AgreementPanel(AgreementModel model) {

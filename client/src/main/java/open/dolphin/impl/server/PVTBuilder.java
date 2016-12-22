@@ -129,7 +129,7 @@ public final class PVTBuilder {
     }
 
     /**
-     * CLAIM モジュールをパースする。
+     * CLAIM モジュールをパースする.
      *
      * @param reader CLAIM モジュールへの Reader
      */
@@ -149,7 +149,7 @@ public final class PVTBuilder {
     }
 
     /**
-     * CLAIM モジュールをパースして得た PatientVisitModel オブジェクトを返す。
+     * CLAIM モジュールをパースして得た PatientVisitModel オブジェクトを返す.
      *
      * @return パース結果の PatientVisitModel
      */
@@ -217,7 +217,7 @@ public final class PVTBuilder {
             // 健康保険モジュールを設定する
             if (pvtInsurnaces != null && pvtInsurnaces.size() > 0) {
                 for (PVTHealthInsuranceModel bean : pvtInsurnaces) {
-                    // 健康保険モジュールの BeanXml byte を生成し、
+                    // 健康保険モジュールの BeanXml byte を生成し，
                     // 永続化のためのフォルダ HealthInsuranceModelに変換し
                     // それを患者属性に追加する
                     HealthInsuranceModel insModel = new HealthInsuranceModel();
@@ -231,7 +231,7 @@ public final class PVTBuilder {
 
         //------------------------------------------------------
         // 受付情報を設定する
-        // status=info ありだって、ヤレヤレ...
+        // status=info ありだって，ヤレヤレ...
         //------------------------------------------------------
         if (pvtClaim != null) {
 
@@ -272,7 +272,7 @@ public final class PVTBuilder {
     }
 
     /**
-     * MmlBody 要素をパースする。
+     * MmlBody 要素をパースする.
      *
      * @param current 要素
      */
@@ -345,7 +345,7 @@ public final class PVTBuilder {
     }
 
     /**
-     * 患者モジュールをパースする。
+     * 患者モジュールをパースする.
      *
      * @param content 患者要素
      */
@@ -506,7 +506,7 @@ public final class PVTBuilder {
     }
 
     /**
-     * 健康保険モジュールをパースする。
+     * 健康保険モジュールをパースする.
      *
      * @param content 健康保険要素
      */
@@ -656,7 +656,7 @@ public final class PVTBuilder {
     }
 
     /**
-     * 受付情報をパースする。
+     * 受付情報をパースする.
      *
      * @param content 受付情報要素
      */

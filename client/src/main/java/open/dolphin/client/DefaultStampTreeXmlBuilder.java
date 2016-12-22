@@ -205,7 +205,7 @@ public class DefaultStampTreeXmlBuilder {
     }
 
     /**
-     * 特殊文字を変換する。
+     * 特殊文字を変換する.
      */
 //  private String toXmlText(String text) {
     protected String toXmlText(String text) {

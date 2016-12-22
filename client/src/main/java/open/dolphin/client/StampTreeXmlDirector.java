@@ -20,7 +20,7 @@ public class StampTreeXmlDirector {
     }
 
     /**
-     * スタンプツリー全体をXMLにエンコードする。
+     * スタンプツリー全体をXMLにエンコードする.
      * @param allTrees StampTreeのリスト
      * @return XML
      */

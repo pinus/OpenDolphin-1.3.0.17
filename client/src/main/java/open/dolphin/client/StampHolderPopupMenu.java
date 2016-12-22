@@ -181,7 +181,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * スタンプを複製して返す。bundle もコピーされる。ただし ClaimItem は空。
+     * スタンプを複製して返す. bundle もコピーされる. ただし ClaimItem は空.
      * @return
      */
     private ModuleModel createModuleModel(ModuleModel src) {
@@ -204,7 +204,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * BundleMed を複製して返す。ただし ClaimItem は空。
+     * BundleMed を複製して返す. ただし ClaimItem は空.
      * @param src
      * @return
      */
@@ -477,7 +477,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * 内服薬の用量を変更するアクション。何倍にするかで指定する
+     * 内服薬の用量を変更するアクション. 何倍にするかで指定する
      */
     private class DoseChangeAction2 extends AbstractAction {
         private static final long serialVersionUID = 1L;

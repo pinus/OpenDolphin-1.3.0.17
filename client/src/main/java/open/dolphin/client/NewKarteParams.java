@@ -10,10 +10,10 @@ import open.dolphin.infomodel.PVTHealthInsuranceModel;
  */
 public final class NewKarteParams {
 
-    // ベースのカルテがあるかどうか、タブ及びEditorFrameの別、修正かどうか
+    // ベースのカルテがあるかどうか，タブ及びEditorFrameの別，修正かどうか
     private Chart.NewKarteOption option;
 
-    // 空白、全コピー、前回処方適用のフラグ
+    // 空白，全コピー，前回処方適用のフラグ
     private Chart.NewKarteMode createMode;
 
     // 診療科
@@ -35,7 +35,7 @@ public final class NewKarteParams {
     private boolean openFrame;
 
     // 生成するドキュメントの種類
-    // 2号カルテ、シングル、紹介状等
+    // 2号カルテ，シングル，紹介状等
     private String docType;
 
     // 不明

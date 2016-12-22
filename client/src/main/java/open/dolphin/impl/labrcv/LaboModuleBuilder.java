@@ -306,19 +306,19 @@ public class LaboModuleBuilder {
                 // 解析するモジュールはmmlLb:TestModule
                 Element testModule = content.getChild("TestModule", mmlLb);
 
-                // この要素に対応するオブジェクトを生成し、リストへ加える
+                // この要素に対応するオブジェクトを生成し，リストへ加える
                 laboModule = new LaboModuleValue();
                 allModules.add(laboModule);
 
                 // これまでに取得した基本情報を設定する
-                // 患者ID、ModuleUUID、確定日を設定する
+                // 患者ID，ModuleUUID，確定日を設定する
                 laboModule.setCreator(Project.getUserModel());
                 laboModule.setPatientId(patientId);
                 laboModule.setPatientIdType(patientIdType);
                 laboModule.setPatientIdTypeCodeSys(patientIdTypeTableId);
                 laboModule.setDocId(moduleUUID);
 
-                // 確定日、適合開始日、記録日を設定する
+                // 確定日，適合開始日，記録日を設定する
                 Date confirmed = ModelUtils.getDateTimeAsObject(confirmDate);
                 laboModule.setConfirmed(confirmed);
                 laboModule.setStarted(confirmed);
@@ -333,7 +333,7 @@ public class LaboModuleBuilder {
 
     /**
      * Content要素をパースする.
-     * クライアント情報、ラボセンター情報、検体情報、検査項目情報を取得する.
+     * クライアント情報，ラボセンター情報，検体情報，検査項目情報を取得する.
      * @param content 検査結果があるコンテント要素
      */
     private void parseTestModule(Element testModule) {

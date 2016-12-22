@@ -64,7 +64,7 @@ public class StampEditor extends JPanel implements IStampEditor {
         tablePanel.setClassCodeId(ClaimConst.CLASS_CODE_ID);
         tablePanel.setSubClassCodeId(ClaimConst.SUBCLASS_CODE_ID);
 
-        // 上にスタンプのセットパネル、下にマスタのセットパネルを配置する
+        // 上にスタンプのセットパネル，下にマスタのセットパネルを配置する
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(tablePanel);
         add(masterSearchPanel);

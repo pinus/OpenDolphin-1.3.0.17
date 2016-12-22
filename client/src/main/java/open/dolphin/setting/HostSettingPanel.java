@@ -67,7 +67,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * サーバ設定画面を開始する。
+     * サーバ設定画面を開始する.
      */
     @Override
     public void start() {
@@ -82,7 +82,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * GUI コンポーネントを初期化する。
+     * GUI コンポーネントを初期化する.
      */
     private void initComponents() {
 
@@ -183,13 +183,13 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * コンポーネントのリスナ接続を行う。
+     * コンポーネントのリスナ接続を行う.
      */
     private void connect() {
 
         stateMgr = new StateMgr();
 
-        // TextField へ入力または削除があった場合、cutState へ checkState() を送る
+        // TextField へ入力または削除があった場合，cutState へ checkState() を送る
         //DocumentListener dl = ProxyDocumentListener.create(stateMgr, "checkState");
         DocumentListener dl = new DocumentListener() {
             @Override
@@ -257,7 +257,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
             }
         });
 
-        // ログインしている状態の場合、この設定はできないようにする
+        // ログインしている状態の場合，この設定はできないようにする
         if (isLoginState()) {
             facilityUser.setEnabled(false);
             aspMember.setEnabled(false);
@@ -288,7 +288,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * Model 値を表示する。
+     * Model 値を表示する.
      */
     private void bindModelToView() {
 
@@ -332,7 +332,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * Viewの値をモデルへ設定する。
+     * Viewの値をモデルへ設定する.
      */
     private void bindViewToModel() {
 
@@ -365,7 +365,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * 5分間評価用のアカウントを作成する。
+     * 5分間評価用のアカウントを作成する.
      */
     public void make5TestAccount() {
         //masuda アカウント作成前にホストアドレスを保存するため
@@ -384,7 +384,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * 管理者登録ダイアログの結果を受け取り情報を表示する。
+     * 管理者登録ダイアログの結果を受け取り情報を表示する.
      */
     public void newAccount(ServerInfo info) {
 
@@ -398,7 +398,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * 設定値を保存する。
+     * 設定値を保存する.
      */
     @Override
     public void save() {
@@ -407,7 +407,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * サーバ画面設定用のモデルクラス。
+     * サーバ画面設定用のモデルクラス.
      */
     private class ServerModel {
 
@@ -423,7 +423,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
         }
 
         /**
-         * ProjectStub からポピュレイトする。
+         * ProjectStub からポピュレイトする.
          */
         public void populate(ProjectStub stub) {
             // userId設定する
@@ -443,7 +443,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
         }
 
         /**
-         * ProjectStubへリストアする。
+         * ProjectStubへリストアする.
          */
         public void restore(ProjectStub stub) {
 
@@ -512,7 +512,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * Mediator 的 StateMgr クラス。
+     * Mediator 的 StateMgr クラス.
      */
     private class StateMgr {
 

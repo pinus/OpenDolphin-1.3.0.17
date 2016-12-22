@@ -21,7 +21,7 @@ public class DolphinPrincipal implements Serializable {
 	private String facilityId;
 	
 	/**
-	 * ユーザIDを返す。
+	 * ユーザIDを返す.
 	 * @return ユーザID
 	 */
 	public String getUserId() {
@@ -29,7 +29,7 @@ public class DolphinPrincipal implements Serializable {
 	}
 	
 	/**
-	 * ユーザIDを設定する。
+	 * ユーザIDを設定する.
 	 * @param uid ユーザID
 	 */
 	public void setUserId(String uid) {
@@ -37,7 +37,7 @@ public class DolphinPrincipal implements Serializable {
 	}
 	
 	/**
-	 * 施設IDを設定する。
+	 * 施設IDを設定する.
 	 * @param facilityId 施設ID
 	 */
 	public void setFacilityId(String facilityId) {
@@ -45,7 +45,7 @@ public class DolphinPrincipal implements Serializable {
 	}
 	
 	/**
-	 * 施設IDを返す。
+	 * 施設IDを返す.
 	 * @return 施設ID
 	 */
 	public String getFacilityId() {

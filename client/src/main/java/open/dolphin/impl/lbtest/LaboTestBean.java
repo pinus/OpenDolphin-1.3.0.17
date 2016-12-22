@@ -214,12 +214,12 @@ public class LaboTestBean extends AbstractChartDocument {
     }
 
     /**
-     * テーブルデータを設定する。
+     * テーブルデータを設定する.
      */
     public void generateObjectsForTable() {
 
         if (laboModules == null || laboModules.size() == 0) {
-            //statusPanel.setMessage("該当する検査結果はありません。");
+            //statusPanel.setMessage("該当する検査結果はありません. ");
             statusPanel.setText("該当する検査結果はありません。", "message");
             laboModules = null;
             return;
@@ -262,7 +262,7 @@ public class LaboTestBean extends AbstractChartDocument {
     }
 
     /**
-     * テーブルを生成する。
+     * テーブルを生成する.
      */
     public void constructTable() {
 
@@ -341,7 +341,7 @@ public class LaboTestBean extends AbstractChartDocument {
     }
 
     /**
-     * GUIコンポーネントを初期化する。
+     * GUIコンポーネントを初期化する.
      */
     private void initialize() {
 
@@ -403,7 +403,7 @@ public class LaboTestBean extends AbstractChartDocument {
     }
 
     /**
-     * LaboTest の検索タスクをコールする。
+     * LaboTest の検索タスクをコールする.
      */
     private void searchLaboTest(String fromDate) {
 
@@ -434,7 +434,7 @@ public class LaboTestBean extends AbstractChartDocument {
                 }
                 laboModules = new Vector<SimpleLaboModule>();
 
-                // LaboModuleValueをイテレートし、テーブルへ表示できるデータに分解する
+                // LaboModuleValueをイテレートし，テーブルへ表示できるデータに分解する
                 for (LaboModuleValue moduleValue : results) {
 
                     // LaboModuleValuの簡易版オブジェクトを生成しベクトルに加える

@@ -26,7 +26,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 /**
- * KartePane に Component　として挿入されるスタンプを保持するクラス。
+ * KartePane に Component　として挿入されるスタンプを保持するクラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc. modified by pns
  */
@@ -74,7 +74,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * Focusされた場合のメニュー制御とボーダーを表示する。
+     * Focusされた場合のメニュー制御とボーダーを表示する.
      * @param map
      */
     @Override
@@ -96,7 +96,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * Focusがはずれた場合のメニュー制御とボーダーの非表示を行う。
+     * Focusがはずれた場合のメニュー制御とボーダーの非表示を行う.
      * @param map
      */
     @Override
@@ -107,7 +107,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * Popupメニューを表示する。
+     * Popupメニューを表示する.
      * @param e
      */
     @Override
@@ -136,7 +136,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * このスタンプホルダのKartePaneを返す。
+     * このスタンプホルダのKartePaneを返す.
      * @return
      */
     @Override
@@ -145,7 +145,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * スタンプホルダのコンテントタイプを返す。
+     * スタンプホルダのコンテントタイプを返す.
      * @return
      */
     @Override
@@ -154,7 +154,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * このホルダのモデルを返す。
+     * このホルダのモデルを返す.
      * @return
      */
     public ModuleModel getStamp() {
@@ -162,7 +162,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * このホルダのモデルを設定する。
+     * このホルダのモデルを設定する.
      * @param stamp
      */
     public void setStamp(ModuleModel stamp) {
@@ -179,7 +179,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * 選択されているかどうかを返す。
+     * 選択されているかどうかを返す.
      * @return 選択されている時 true
      */
     @Override
@@ -188,7 +188,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * 選択属性を設定する。
+     * 選択属性を設定する.
      * @param selected 選択の時 true
      */
     @Override
@@ -205,8 +205,8 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * KartePane でこのスタンプがダブルクリックされた時コールされる。
-     * StampEditor を開いてこのスタンプを編集する。
+     * KartePane でこのスタンプがダブルクリックされた時コールされる.
+     * StampEditor を開いてこのスタンプを編集する.
      */
     @Override
     public void edit() {
@@ -236,7 +236,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * エディタで編集した値を受け取り内容を表示する。
+     * エディタで編集した値を受け取り内容を表示する.
      * @param e
      */
     @Override
@@ -261,7 +261,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * スタンプの内容を置き換える。
+     * スタンプの内容を置き換える.
      * @param newStamp
      */
     public void importStamp(ModuleModel newStamp) {
@@ -276,7 +276,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * TextPane内での開始と終了ポジションを保存する。
+     * TextPane内での開始と終了ポジションを保存する.
      * @param start
      * @param end
      */
@@ -287,7 +287,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * 開始ポジションを返す。
+     * 開始ポジションを返す.
      * @return
      */
     @Override
@@ -296,7 +296,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * 終了ポジションを返す。
+     * 終了ポジションを返す.
      * @return
      */
     @Override
@@ -305,7 +305,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * Velocity を利用してスタンプの内容を表示する。
+     * Velocity を利用してスタンプの内容を表示する.
      */
     private void setMyText() {
 

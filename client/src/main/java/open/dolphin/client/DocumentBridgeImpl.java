@@ -15,8 +15,8 @@ import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.ui.MyJScrollPane;
 
 /**
- * 参照タブ画面を提供する Bridge クラス。このクラスの scroller へ
- * カルテ、紹介状等のどきゅめんとが表示される。
+ * 参照タブ画面を提供する Bridge クラス. このクラスの scroller へ
+ * カルテ，紹介状等のどきゅめんとが表示される.
  *
  * @author kazushi Minagawa, Digital Globe, Inc.
  */
@@ -93,7 +93,7 @@ public class DocumentBridgeImpl extends AbstractChartDocument
     }
 
     /**
-     * Bridge 機能を提供する。選択された文書のタイプに応じてビューへブリッジする。
+     * Bridge 機能を提供する. 選択された文書のタイプに応じてビューへブリッジする.
      * @param docs 表示する文書の DocInfo 配列
      */
     @Override

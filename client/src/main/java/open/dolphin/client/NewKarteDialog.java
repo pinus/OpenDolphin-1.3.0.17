@@ -14,7 +14,7 @@ import open.dolphin.project.Project;
 
 
 /**
- * 新規カルテ作成のダイアログ。
+ * 新規カルテ作成のダイアログ.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -298,14 +298,14 @@ public final class NewKarteDialog {
     }
 
     /**
-     * 保険選択リストにフォーカスする。
+     * 保険選択リストにフォーカスする.
      */
     public void controlFocus(WindowEvent e) {
         insuranceList.requestFocusInWindow();
     }
 
     /**
-     * 保険選択の変更を処理する。
+     * 保険選択の変更を処理する.
      */
     public void insuranceSelectionChanged(boolean adjusting) {
         if (adjusting == false) {
@@ -316,7 +316,7 @@ public final class NewKarteDialog {
     }
 
     /**
-     * カルテの作成方法をプレファレンスに記録する。
+     * カルテの作成方法をプレファレンスに記録する.
      */
     public void memoryMode() {
 
@@ -330,7 +330,7 @@ public final class NewKarteDialog {
     }
 
     /**
-     * カルテフレーム(ウインドウ)の作成方法をプレファレンスに記録する。
+     * カルテフレーム(ウインドウ)の作成方法をプレファレンスに記録する.
      */
     public void memoryFrame() {
         boolean openFrame = openAnother.isSelected();
@@ -340,7 +340,7 @@ public final class NewKarteDialog {
     }
 
     /**
-     * パラーメータを取得しダイアログの値に設定する。
+     * パラーメータを取得しダイアログの値に設定する.
      */
     public void doOk() {
         params.setDepartment(departmentLabel.getText());
@@ -353,7 +353,7 @@ public final class NewKarteDialog {
     }
 
     /**
-     * キャンセルする。ダイアログを閉じる。
+     * キャンセルする. ダイアログを閉じる.
      */
     public void doCancel() {
         value = null;

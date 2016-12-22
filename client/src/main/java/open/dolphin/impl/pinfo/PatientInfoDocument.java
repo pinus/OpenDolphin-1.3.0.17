@@ -131,7 +131,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
     }
 
     /**
-     * 患者情報を更新する。
+     * 患者情報を更新する.
      */
     @Override
     public void save() {
@@ -210,7 +210,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
     }
 
     /**
-     * 患者情報を表示する TableModel クラス。
+     * 患者情報を表示する TableModel クラス.
      */
     protected class PatientInfoTableModel extends AbstractTableModel {
 
@@ -334,7 +334,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
 
 
         /**
-         * 属性値を変更する。
+         * 属性値を変更する.
          * @param value 属性値
          * @param row 行
          * @param col 列
@@ -394,7 +394,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
     }
 
     /**
-     * 保険情報を表示する TableModel クラス。
+     * 保険情報を表示する TableModel クラス.
      */
     protected class HealthInsuranceTableModel extends AbstractTableModel {
 

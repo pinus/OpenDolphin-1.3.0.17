@@ -25,7 +25,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 /**
- * Dolphin用のマスタを登録する。
+ * Dolphin用のマスタを登録する.
  *
  * @author Minagawa,Kazushi
  * @author pns
@@ -197,14 +197,14 @@ public class InitDatabase {
     }
 
     /**
-     * マスタを登録する。
+     * マスタを登録する.
      */
     public void addDolphinMaster() {
         addRdMethod(RAD_METHOD_RESOURCE);
     }
 
     /**
-     * 放射線メソッドマスタを登録する。
+     * 放射線メソッドマスタを登録する.
      * @param name 放射線メソッドマスタリソース名
      */
     private void addRdMethod(String name) {
@@ -252,7 +252,7 @@ public class InitDatabase {
     }
 
     /**
-     * 文字を整形する。
+     * 文字を整形する.
      */
     private String format(String d) {
         if (d == null) {
@@ -265,7 +265,7 @@ public class InitDatabase {
     }
 
     /**
-     * リソースファイルから読み込んだタブ区切りの１行をパースし、 String 配列のデータにして返す。
+     * リソースファイルから読み込んだタブ区切りの１行をパースし， String 配列のデータにして返す.
      * @param line　パースするライン
      * @return データ配列
      */

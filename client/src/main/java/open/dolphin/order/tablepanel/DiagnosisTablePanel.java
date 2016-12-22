@@ -150,7 +150,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * マスタ検索テーブルで選択されたアイテムを編集テーブルへ取り込む。
+     * マスタ検索テーブルで選択されたアイテムを編集テーブルへ取り込む.
      * @param e PropertyChangeEvent
      */
     @Override
@@ -172,7 +172,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * テーブルをスキャンし、傷病名コンポジットして combinedDiagnosis に表示する
+     * テーブルをスキャンし，傷病名コンポジットして combinedDiagnosis に表示する
      */
     public void reconstractDiagnosis() {
 
@@ -186,7 +186,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * 修飾語をふくんでいるかどうかを返す。
+     * 修飾語をふくんでいるかどうかを返す.
      */
     private boolean hasModifier() {
         boolean hasModifier = false;
@@ -267,7 +267,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
             } else {
                 // 修飾語でないものがみつかったら，基本病名と見なしパラメータを設定する
-                // 修飾語がある場合は，基本病名は必ず１つのはず。
+                // 修飾語がある場合は，基本病名は必ず１つのはず.
                 rd.setDiagnosisCodeSystem(mItem.getMasterTableId());
                 rd.setCategory(open.dolphin.infomodel.IInfoModel.DEFAULT_DIAGNOSIS_CATEGORY);
                 rd.setCategoryDesc(open.dolphin.infomodel.IInfoModel.DEFAULT_DIAGNOSIS_CATEGORY_DESC);
@@ -326,7 +326,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         // . で区切られたコードを分解してコード配列を作る
         final String[] codes = rd.getDiagnosisCode().split("\\.");
         for (int i = 0; i < codes.length; ++i){
-            // 修飾語は４桁。コードにZZZを追加する。
+            // 修飾語は４桁. コードにZZZを追加する.
             if (codes[i].length() == 4){
                 codes[i] = "ZZZ" + codes[i];
             }

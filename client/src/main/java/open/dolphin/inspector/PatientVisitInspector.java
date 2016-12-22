@@ -21,7 +21,7 @@ public class PatientVisitInspector {
     private ChartImpl context;
 
     /**
-     * PatientVisitInspector を生成する。
+     * PatientVisitInspector を生成する.
      */
     public PatientVisitInspector(ChartImpl context) {
         this.context = context;
@@ -30,7 +30,7 @@ public class PatientVisitInspector {
     }
 
     /**
-     * レイアウトパネルを返す。
+     * レイアウトパネルを返す.
      * @return レイアウトパネル
      */
     public JPanel getPanel() {
@@ -38,7 +38,7 @@ public class PatientVisitInspector {
     }
 
     /**
-     * GUIコンポーネントを初期化する。
+     * GUIコンポーネントを初期化する.
      */
     private void initComponent() {
         pvtEvent = ClientContext.getString("eventCode.pvt"); // PVT

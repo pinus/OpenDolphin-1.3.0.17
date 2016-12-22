@@ -99,7 +99,7 @@ public class KarteRenderer_2 {
     }
 
     /**
-     * DocumentModel をレンダリングする。
+     * DocumentModel をレンダリングする.
      * @param model レンダリングする DocumentModel
      */
     public void render(DocumentModel model) {
@@ -186,7 +186,7 @@ public class KarteRenderer_2 {
     }
 
     /**
-     * TextPane Dump の XML を解析する。
+     * TextPane Dump の XML を解析する.
      * @param xml TextPane Dump の XML
      */
     private void renderPane(String xml) {
@@ -209,7 +209,7 @@ public class KarteRenderer_2 {
     }
 
     /**
-     * 子要素をパースする。
+     * 子要素をパースする.
      * @param current 要素
      */
     private void writeChildren(org.jdom2.Element current) {

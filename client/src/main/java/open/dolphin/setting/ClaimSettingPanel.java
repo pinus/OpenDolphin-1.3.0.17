@@ -58,7 +58,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * GUI 及び State を生成する。
+     * GUI 及び State を生成する.
      */
     @Override
     public void start() {
@@ -81,7 +81,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * 設定値を保存する。
+     * 設定値を保存する.
      */
     @Override
     public void save() {
@@ -146,7 +146,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         // 01 小児科等
         claim01 = new JCheckBox("デフォルト01を使用");
 
-        // JMARI、ホスト名、アドレス、ポート番号
+        // JMARI，ホスト名，アドレス，ポート番号
         String[] hostNames = ClientContext.getStringArray("settingDialog.claim.hostNames");
         claimHostCombo = new JComboBox(hostNames);
         jmariField = GUIFactory.createTextField(10, null, null, null);
@@ -239,7 +239,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * リスナを接続する。
+     * リスナを接続する.
      */
     private void connect() {
 
@@ -353,7 +353,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
      */
     private void bindViewToModel() {
         //
-        // 診療行為送信、仮保存時、修正時、病名送信
+        // 診療行為送信，仮保存時，修正時，病名送信
         // の設定を保存する
         //
         model.setSendClaim(sendClaimYes.isSelected());
@@ -406,7 +406,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * 画面モデルクラス。
+     * 画面モデルクラス.
      */
     private class ClaimModel {
 
@@ -603,7 +603,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
 
             //
             // 診療行為の送信を行う場合のみ
-            // 仮保存、修正、病名送信、ホスト選択、ポートがアクティブになる
+            // 仮保存，修正，病名送信，ホスト選択，ポートがアクティブになる
             //
             boolean b = sendClaimYes.isSelected();
 

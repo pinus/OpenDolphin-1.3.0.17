@@ -84,7 +84,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
     Color lowerLimitColor = new Color(19, 100, 250);
     float valueAreaAlpha = 0.5F;
 
-    // 相対表示の時 true、絶対表示の時 false;
+    // 相対表示の時 true，絶対表示の時 false;
     int mode = 1;
     private Object[] yScales;
     // paint
@@ -351,7 +351,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
     }
 
     /**
-     * プロット用のサークル 2D オブジェクトを返す。
+     * プロット用のサークル 2D オブジェクトを返す.
      */
     protected Ellipse2D getPlotCircle2D(Point2D point) {
         return new Ellipse2D.Float((float) point.getX() - plotCircleRadius / 2.0F, (float) point.getY() - plotCircleRadius / 2.0F,
@@ -693,7 +693,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
                     g2.fill(getPlotCircle2D(fromP));
                 }
 
-                // プロットの終点も nul でない時、線で結ぶ
+                // プロットの終点も nul でない時，線で結ぶ
                 if (data[index][j + 1] != DUMMY_VALUE) {
                     x = getPixelsForSample(j + 1);
                     y = (data[index][j + 1] - low) / scale;
@@ -960,7 +960,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
                     g2.fill(getPlotCircle2D(fromP));
                 }
 
-                // プロットの終点も nul でない時、線で結ぶ
+                // プロットの終点も nul でない時，線で結ぶ
                 if (data[index][j + 1] != DUMMY_VALUE) {
                     x = getPixelsForSample(j + 1);
                     y = data[index][j + 1];

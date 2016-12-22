@@ -204,7 +204,7 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
     }
 
     /**
-     * インポート可能かどうかを返す。
+     * インポート可能かどうかを返す.
      * @param c
      * @param flavors
      * @return
@@ -226,7 +226,7 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
     }
 
     /**
-     * スタンプをクリップボードへ転送する。
+     * スタンプをクリップボードへ転送する.
      */
     @Override
     public void exportToClipboard(JComponent comp, Clipboard clip, int action) {

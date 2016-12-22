@@ -139,7 +139,7 @@ public class RecipeTablePanel extends ItemTablePanel {
     }
 
     /**
-     * MasterPanel から医薬品及び用法の通知を受け、データをセットする。
+     * MasterPanel から医薬品及び用法の通知を受け，データをセットする.
      * @param e PropertyChangeEvent
      */
     @Override
@@ -364,7 +364,7 @@ public class RecipeTablePanel extends ItemTablePanel {
                     if (bundle.getClassCode() == null) {
                         String rCode; // レセプトコード（= 診療種別区分）
 
-                        // 薬剤区分（内用1、外用6、注射薬4）がセットされていればそれを使う
+                        // 薬剤区分（内用1，外用6，注射薬4）がセットされていればそれを使う
                         if (mItem.getYkzKbn() != null) {
                             rCode = mItem.getYkzKbn().equals(ClaimConst.YKZ_KBN_NAIYO)
                                         ? ClaimConst.RECEIPT_CODE_NAIYO     // 210 診療種別区分
@@ -421,7 +421,7 @@ public class RecipeTablePanel extends ItemTablePanel {
     }
 
     /**
-     * 編集するスタンプを表示する。
+     * 編集するスタンプを表示する.
      * @param theStamp 編集するスタンプ
      */
     @Override
@@ -560,7 +560,7 @@ public class RecipeTablePanel extends ItemTablePanel {
         for (Object i : tableModel.getObjectList()) {
             MasterItem mItem = (MasterItem)i;
 
-            // 器材または医薬品の場合、数量を調べる
+            // 器材または医薬品の場合，数量を調べる
             if (mItem.getClassCode() == ClaimConst.YAKUZAI || mItem.getClassCode() == ClaimConst.ZAIRYO) {
                 if (!isNumber(mItem.getNumber().trim())) return false;
 

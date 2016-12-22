@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 
 /**
- * MML イベントリスナ。
+ * MML イベントリスナ.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

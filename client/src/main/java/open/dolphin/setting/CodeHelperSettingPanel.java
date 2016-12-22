@@ -12,7 +12,7 @@ import open.dolphin.project.ProjectStub;
 import open.dolphin.setting.AbstractSettingPanel.State;
 
 /**
- * コードヘルパー設定パネル。
+ * コードヘルパー設定パネル.
  *
  * @author Kazushi Minagawa
  */
@@ -71,7 +71,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * GUI を生成しプログラムを開始する。
+     * GUI を生成しプログラムを開始する.
      */
     @Override
     public void start() {
@@ -94,7 +94,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * 保存する。
+     * 保存する.
      */
     @Override
     public void save() {
@@ -261,7 +261,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
     class HelperModel {
 
         /**
-         * 設定した値をプレファレンスに保存する。
+         * 設定した値をプレファレンスに保存する.
          */
         public void restore(ProjectStub stub) {
 
@@ -303,7 +303,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
         }
 
         /**
-         * プレファレンスから値をGUIにセットする。
+         * プレファレンスから値をGUIにセットする.
          */
         public void populate(ProjectStub stub) {
 

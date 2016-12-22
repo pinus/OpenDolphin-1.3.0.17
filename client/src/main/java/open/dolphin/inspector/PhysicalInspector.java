@@ -39,7 +39,7 @@ import open.dolphin.ui.MyJPopupMenu;
 import org.apache.log4j.Logger;
 
 /**
- * 身長体重インスペクタクラス。
+ * 身長体重インスペクタクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -54,7 +54,7 @@ public class PhysicalInspector {
     private Logger logger;
 
     /**
-     * PhysicalInspectorオブジェクトを生成する。
+     * PhysicalInspectorオブジェクトを生成する.
      */
     public PhysicalInspector(ChartImpl context) {
         this.context = context;
@@ -72,7 +72,7 @@ public class PhysicalInspector {
     }
 
     /**
-     * レイアウトパネルを返す。
+     * レイアウトパネルを返す.
      * @return レイアウトパネル
      */
     public JPanel getPanel() {
@@ -80,7 +80,7 @@ public class PhysicalInspector {
     }
 
     /**
-     * GUIコンポーネントを初期化する。
+     * GUIコンポーネントを初期化する.
      */
     private void initComponents() {
 
@@ -186,7 +186,7 @@ public class PhysicalInspector {
     }
 
     /**
-     * 身長体重データを表示する。
+     * 身長体重データを表示する.
      */
     public void update() {
         List list = context.getKarte().getPhysicalEntry();
@@ -207,7 +207,7 @@ public class PhysicalInspector {
     }
 
     /**
-     * 身長体重データを追加する。
+     * 身長体重データを追加する.
      */
     public void add(final PhysicalModel model) {
 
@@ -292,7 +292,7 @@ public class PhysicalInspector {
     }
 
     /**
-     * テーブルで選択した身長体重データを削除する。
+     * テーブルで選択した身長体重データを削除する.
      */
     public void delete(final int row) {
 
@@ -334,7 +334,7 @@ public class PhysicalInspector {
     }
 
     /**
-     * BMI値 を表示するレンダラクラス。
+     * BMI値 を表示するレンダラクラス.
      */
     protected class BMIRenderer extends DefaultTableCellRenderer {
 

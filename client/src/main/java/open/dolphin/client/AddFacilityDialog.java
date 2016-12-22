@@ -35,7 +35,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 /**
- * 医療機関と管理責任者を登録するクラス。
+ * 医療機関と管理責任者を登録するクラス.
  *
  * @Author Kazushi Minagawa, Digital Globe, Inc.
  *
@@ -99,7 +99,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
     }
 
     /**
-     * GUIコンポーネントを初期化する。
+     * GUIコンポーネントを初期化する.
      */
     private void initialize() {
 
@@ -201,7 +201,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
     }
 
     /**
-     * イベント接続を行う。
+     * イベント接続を行う.
      */
     private void connect() {
 
@@ -316,7 +316,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
     }
 
     /**
-     * 施設及び管理者アカウントを登録する。
+     * 施設及び管理者アカウントを登録する.
      */
     private void addFacilityAdmin() {
 

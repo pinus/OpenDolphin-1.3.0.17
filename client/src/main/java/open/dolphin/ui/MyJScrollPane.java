@@ -84,7 +84,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
     private boolean mouseDragging = false;
     // drag する場合のマウスポイントと scrollBar value のオフセット
     private int mouseDragOffset = 0;
-    // スクロールバー操作でのマウスキャプチャのためのダミーパネル。
+    // スクロールバー操作でのマウスキャプチャのためのダミーパネル.
     // JLayeredPane に透明な Panel を配置し，そこでスクロールバーに対するマウス動作をキャプチャする
     protected JLayeredPane parentLayer;
     private JPanel verticalBarPanel;
@@ -334,7 +334,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
             // fade アニメーションする場合こちらにくる
             // ScrollBar を常に表示する場合でも，スクロールの際は濃く表示して，fade アニメーションする
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-            // 枠は，マウスがスクロールバー領域に乗ったときに表示。ScrollBar を常に表示する場合は常に表示する
+            // 枠は，マウスがスクロールバー領域に乗ったときに表示. ScrollBar を常に表示する場合は常に表示する
             if (shouldShowScrollBarFrame || isPermanentScrollBar) {
                 g.setColor(Color.GRAY);
                 g.fillRoundRect(fr.x, fr.y, fr.width, fr.height, scrollBarWidth, scrollBarWidth);
@@ -664,7 +664,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
             int verticalLimit = compSize.height - r.height;
             int unitIncrement = verticalScrollBar.getUnitIncrement(orientation);
 
-            // Touchpad がはなされていたら不応期にする。触ってたら不応期を解除する
+            // Touchpad がはなされていたら不応期にする. 触ってたら不応期を解除する
             // overshoot 不応期の解除
             if (overshootReady == false && TouchpadTest.isPressed()) {
                 overshootReady = true;
@@ -806,7 +806,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
         }
 
         /**
-         * scrollable なものは，ここに value をセットするだけで viewport が書き換わるので，JScrollPane の paint は呼ばれない。
+         * scrollable なものは，ここに value をセットするだけで viewport が書き換わるので，JScrollPane の paint は呼ばれない.
          * それだと LionScrollBar が書けないので，無理矢理 repaint して書かせる
          * @param value
          */

@@ -10,7 +10,7 @@ import open.dolphin.helper.MenuSupport;
 import open.dolphin.infomodel.PatientVisitModel;
 
 /**
- * アプリケーションのメインウインドウインターフェイスクラス。
+ * アプリケーションのメインウインドウインターフェイスクラス.
  *
  * @author Minagawa, Kazushi. Digital Globe, Inc.
  */

@@ -64,8 +64,8 @@ public class PresetColorCombo extends PnsComboBox<List<ColorModel>> {
         setCellFactory(cellFactory);
 
         // ComboBoxListViewSkin.updateButtonCell で setMouseTransparent(true) されてしまっているため，
-        // ButtonCell は MouseEvent を受け付けることができない。しかも updateButtonCell は private。
-        // 仕方がないので，むりやり false に戻す。
+        // ButtonCell は MouseEvent を受け付けることができない. しかも updateButtonCell は private.
+        // 仕方がないので，むりやり false に戻す.
         ListCell<List<ColorModel>> buttonCell = new ColorCell();
         buttonCell.mouseTransparentProperty().addListener(o -> buttonCell.setMouseTransparent(false));
         setButtonCell(buttonCell);

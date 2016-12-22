@@ -147,7 +147,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * GUI コンポーネントを生成初期化する。
+     * GUI コンポーネントを生成初期化する.
      */
     private void initialize() {
 
@@ -186,7 +186,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         }
 
         // ショートカット登録
-        // Windows XP で全画面表示すると、getRootPane() が null になる
+        // Windows XP で全画面表示すると，getRootPane() が null になる
         //ActionMap am = myPanel.getRootPane().getActionMap();
         //InputMap im = myPanel.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = myPanel.getActionMap();
@@ -235,7 +235,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * コマンドボタンパネルをする。
+     * コマンドボタンパネルをする.
      */
     private JPanel createButtonPanel2() {
 
@@ -296,7 +296,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 既傷病歴テーブルを生成する。
+     * 既傷病歴テーブルを生成する.
      */
     private JPanel createDiagnosisPanel() {
 
@@ -360,7 +360,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             }
         }
 
-        // 奇数、偶数行の色分けをする
+        // 奇数，偶数行の色分けをする
         diagTable.setDefaultRenderer(Object.class, new DolphinOrcaRenderer());
 
         // 複数選択可能にした
@@ -457,7 +457,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 抽出期間パネルを生成する。
+     * 抽出期間パネルを生成する.
      */
     private JPanel createFilterPanel() {
 
@@ -562,7 +562,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 新規傷病名リストに追加する。
+     * 新規傷病名リストに追加する.
      * @param added 追加されたRegisteredDiagnosisModel
      */
     private void addAddedList(RegisteredDiagnosisModel added) {
@@ -573,7 +573,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 更新リストに追加する。
+     * 更新リストに追加する.
      * @param updated 更新されたRegisteredDiagnosisModel
      */
     private void addUpdatedList(RegisteredDiagnosisModel updated) {
@@ -603,7 +603,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 追加及び更新リストをクリアする。
+     * 追加及び更新リストをクリアする.
      */
     private void clearDiagnosisList() {
 
@@ -684,7 +684,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 傷病名件数を返す。
+     * 傷病名件数を返す.
      * @return 傷病名件数
      */
     public int getDiagnosisCount() {
@@ -692,7 +692,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 傷病名件数を設定する。 modified by pns
+     * 傷病名件数を設定する.  modified by pns
      * DELETED_RECORD はカウントしない
      */
     public void setDiagnosisCount() {
@@ -726,7 +726,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 傷病名スタンプを取得する worker を起動する。
+     * 傷病名スタンプを取得する worker を起動する.
      * @param stampList
      * @param insertRow
      */
@@ -772,7 +772,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 傷病名スタンプをデータベースから取得しテーブルへ挿入する。Worker Thread で実行される。
+     * 傷病名スタンプをデータベースから取得しテーブルへ挿入する. Worker Thread で実行される.
      * @param stampInfo
      * @param row 自動判定するので使っていない
      */
@@ -830,7 +830,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 傷病名エディタを開く。
+     * 傷病名エディタを開く.
      * 傷病名エディタから追加した場合 openEditor2
      * 傷病名エディタで既にある病名を編集した場合は openEditor3 が呼ばれる　　thx masuda sensei
      */
@@ -846,13 +846,13 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         StampEditorDialog stampEditor = new StampEditorDialog("diagnosis", rd);
 
-        // 編集終了、値の受け取りにこのオブジェクトを設定する
+        // 編集終了，値の受け取りにこのオブジェクトを設定する
         stampEditor.addPropertyChangeListener(StampEditorDialog.VALUE_PROP, this);
         stampEditor.start();
     }
 
     /**
-     * 傷病名エディタからデータを受け取りテーブルへ追加する。
+     * 傷病名エディタからデータを受け取りテーブルへ追加する.
      * @param e
      */
     @Override
@@ -1002,7 +1002,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 新規及び変更された傷病名を保存する。
+     * 新規及び変更された傷病名を保存する.
      * deletedDiagnosis 対応 by pns
      */
     @Override
@@ -1028,7 +1028,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 logger.debug("added rd = " + rd.getDiagnosis());
                 logger.debug("id = " + rd.getId());
 
-                // 開始日、終了日はテーブルから取得している
+                // 開始日，終了日はテーブルから取得している
                 // TODO confirmed, recorded
                 rd.setKarte(getContext().getKarte());           // Karte
                 rd.setCreator(Project.getUserModel());          // Creator
@@ -1095,8 +1095,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 指定期間以降の傷病名を検索してテーブルへ表示する。
-     * バッググランドスレッドで実行される。
+     * 指定期間以降の傷病名を検索してテーブルへ表示する.
+     * バッググランドスレッドで実行される.
      * addedDiagnosis, updatedDiagnossis, deletedDiagnosis 対応 by pns
      * @param past
      */
@@ -1218,7 +1218,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 選択された行のデータを削除する。
+     * 選択された行のデータを削除する.
      * 複数行対応と，いきなり消さないで，save() 時にまとめて消すようにする by pns
      */
     public void delete() {
@@ -1235,8 +1235,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * ORCAに登録されている病名を取り込む。（テーブルへ追加する）
-     * 検索後、ボタンを disabled にする。
+     * ORCAに登録されている病名を取り込む. （テーブルへ追加する）
+     * 検索後，ボタンを disabled にする.
      */
     public void viewOrca() {
 

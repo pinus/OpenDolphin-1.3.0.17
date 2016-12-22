@@ -62,7 +62,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     private boolean isVerticalScroll = true;
 
     /**
-     * DocumentViewerオブジェクトを生成する。
+     * DocumentViewerオブジェクトを生成する.
      */
     public KarteDocumentViewer() {
         super();
@@ -114,7 +114,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * busy かどうかを返す。
+     * busy かどうかを返す.
      * @return busy の時 true
      */
     public boolean isBusy() {
@@ -148,7 +148,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * 選択されているKarteViwerを返す。
+     * 選択されているKarteViwerを返す.
      * @return 選択されているKarteViwer
      */
     public KarteViewer getSelectedKarte() {
@@ -165,9 +165,9 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * マウスクリック(選択)されたKarteViwerをselectedKarteに設定する。
-     * 他のカルテが選択されている場合はそれを解除する。
-     * StateMgrを Haskarte State にする。
+     * マウスクリック(選択)されたKarteViwerをselectedKarteに設定する.
+     * 他のカルテが選択されている場合はそれを解除する.
+     * StateMgrを Haskarte State にする.
      * @param view 選択されたKarteViwer
      */
     public void setSelectedKarte(KarteViewer view) {
@@ -194,7 +194,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * 新規カルテ作成の元になるカルテを返す。
+     * 新規カルテ作成の元になるカルテを返す.
      * @return 作成の元になるカルテ
      */
     public KarteViewer getBaseKarte() {
@@ -208,8 +208,8 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * 文書履歴の抽出期間が変更された場合、
-     * karteList をclear、選択されているkarteViewerを解除、sateMgrをNoKarte状態に設定する。
+     * 文書履歴の抽出期間が変更された場合，
+     * karteList をclear，選択されているkarteViewerを解除，sateMgrをNoKarte状態に設定する.
      */
     @Override
     public void historyPeriodChanged() {
@@ -221,14 +221,14 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * GUIコンポーネントにリスナを設定する。
+     * GUIコンポーネントにリスナを設定する.
      *
      */
     private void connect() {
 
-        // 文書履歴に昇順／降順、修正履歴表示の設定をする
-        // この値の初期値はデフォル値であり、個々のドキュメント（画面）単位にメニューで変更できる。（適用されるのは個々のドキュメントのみ）
-        // デフォルト値の設定は環境設定で行う。
+        // 文書履歴に昇順／降順，修正履歴表示の設定をする
+        // この値の初期値はデフォル値であり，個々のドキュメント（画面）単位にメニューで変更できる. （適用されるのは個々のドキュメントのみ）
+        // デフォルト値の設定は環境設定で行う.
         ascending = getContext().getDocumentHistory().isAscending();
         showModified = getContext().getDocumentHistory().isShowModified();
     }
@@ -256,7 +256,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * データベースで検索した KarteModelを Viewer で表示する。
+     * データベースで検索した KarteModelを Viewer で表示する.
      * KarteTask から呼ばれる
      * @param models KarteModel
      * @param docInfos DocInfo
@@ -320,7 +320,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
                     break;
                 }
 
-                // シングル及び２号用紙の判定を行い、KarteViewer を生成する
+                // シングル及び２号用紙の判定を行い，KarteViewer を生成する
                 final KarteViewer karteViewer = (docInfo.getDocType().equals(IInfoModel.DOCTYPE_S_KARTE))?
                         new KarteViewer() : new KarteViewer2();
 
@@ -384,7 +384,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * カルテを修正する。
+     * カルテを修正する.
      */
     public void modifyKarte() {
         logger.debug("modifyKarte() in KarteDocumentViewer starts");
@@ -445,11 +445,11 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     @Override
     public void print() {
 
-        // インスペクタに表示されているカルテをまとめて印刷する。
-        // ブザイクなんだけど、あまり使わない機能なのでこれでヨシとする masuda
+        // インスペクタに表示されているカルテをまとめて印刷する.
+        // ブザイクなんだけど，あまり使わない機能なのでこれでヨシとする masuda
         // modifyed by pns
 
-        // 背景色が緑だとインクがもったいないので白にする。選択も解除しておく。
+        // 背景色が緑だとインクがもったいないので白にする. 選択も解除しておく.
         for (KarteViewer kv : karteList) {
             //kv.panel2.setBorder(BorderFactory.createEmptyBorder());
             KartePane kp = kv.getSOAPane();
@@ -483,7 +483,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * 昇順表示にする。
+     * 昇順表示にする.
      */
     public void ascending() {
         ascending = true;
@@ -491,7 +491,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * 降順表示にする。
+     * 降順表示にする.
      */
     public void descending() {
         ascending = false;
@@ -499,7 +499,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * 修正履歴の表示モードにする。
+     * 修正履歴の表示モードにする.
      */
     public void showModified() {
         showModified = !showModified;
@@ -507,7 +507,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * karteList 内でダブルクリックされたカルテ（文書）を EditorFrame で開く。
+     * karteList 内でダブルクリックされたカルテ（文書）を EditorFrame で開く.
      */
     public void openKarte() {
         // ダブルクリックで modifyKarte することにした (isReadOnly対応)
@@ -515,8 +515,8 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * 表示選択されているカルテを論理削除する。
-     * 患者を間違えた場合等に履歴に表示されないようにするため。
+     * 表示選択されているカルテを論理削除する.
+     * 患者を間違えた場合等に履歴に表示されないようにするため.
      */
     public void delete() {
 
@@ -584,7 +584,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * 文書をデータベースから取得するタスククラス。
+     * 文書をデータベースから取得するタスククラス.
      */
     private class KarteTask extends SwingWorker<Integer, List<DocumentModel>> {
         private final int FRACTION = 10;
@@ -767,7 +767,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
 */
 
     /**
-     * カルテの削除タスククラス。
+     * カルテの削除タスククラス.
      */
     private class DeleteTask extends DBTask<Boolean> {
 
@@ -800,7 +800,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
     }
 
     /**
-     * 抽象状態クラス。
+     * 抽象状態クラス.
      */
     private abstract class BrowserState {
 
@@ -811,7 +811,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
     }
 
     /**
-     * 表示するカルテがない状態を表す。
+     * 表示するカルテがない状態を表す.
      */
     private final class EmptyState extends BrowserState {
 
@@ -838,7 +838,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
     }
 
     /**
-     * カルテが表示されている状態を表す。
+     * カルテが表示されている状態を表す.
      */
     private final class ClaenState extends BrowserState {
 
@@ -881,7 +881,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
     }
 
     /**
-     * StateContext クラス。
+     * StateContext クラス.
      */
     private final class StateMgr {
 

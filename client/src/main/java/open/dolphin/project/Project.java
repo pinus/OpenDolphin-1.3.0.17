@@ -8,7 +8,7 @@ import open.dolphin.infomodel.ID;
 import open.dolphin.infomodel.UserModel;
 
 /**
- * プロジェクト情報管理クラス。
+ * プロジェクト情報管理クラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -194,7 +194,7 @@ public class Project  {
     //
 
     /**
-     * 診療行為の送信を行うかどうかを返す。
+     * 診療行為の送信を行うかどうかを返す.
      * @return 行うとき true
      */
     public static boolean getSendClaim() {
@@ -202,7 +202,7 @@ public class Project  {
     }
 
     /**
-     * 保存時に送信を行うかどうかを返す。
+     * 保存時に送信を行うかどうかを返す.
      * @return 行うとき true
      */
     public static boolean getSendClaimSave() {
@@ -210,7 +210,7 @@ public class Project  {
     }
 
     /**
-     * 仮保存時に診療行為の送信を行うかどうかを返す。
+     * 仮保存時に診療行為の送信を行うかどうかを返す.
      * @return 行うとき true
      */
     public static boolean getSendClaimTmp() {
@@ -218,7 +218,7 @@ public class Project  {
     }
 
     /**
-     * 修正時に診療行為の送信を行うかどうかを返す。
+     * 修正時に診療行為の送信を行うかどうかを返す.
      * @return 行うとき true
      */
     public static boolean getSendClaimModify() {
@@ -226,7 +226,7 @@ public class Project  {
     }
 
     /**
-     * 病名の送信を行うかどうかを返す。
+     * 病名の送信を行うかどうかを返す.
      * @return 行うとき true
      */
     public static boolean getSendDiagnosis() {
@@ -234,7 +234,7 @@ public class Project  {
     }
 
     /**
-     * CLAIM のホスト名を返す。
+     * CLAIM のホスト名を返す.
      * @return return CLAIM のホスト名
      */
     public static String getClaimHostName() {
@@ -242,7 +242,7 @@ public class Project  {
     }
 
     /**
-     * 受付情報を受信するかどうかを返す。
+     * 受付情報を受信するかどうかを返す.
      * @return 行うとき true
      */
     public static boolean getUseAsPVTServer() {
@@ -254,7 +254,7 @@ public class Project  {
     }
 
     /**
-     * CLAIM ホストの IP アドレスを返す。
+     * CLAIM ホストの IP アドレスを返す.
      * @return CLAIM ホストの IP アドレス
      */
     public static String getClaimAddress() {
@@ -262,7 +262,7 @@ public class Project  {
     }
 
     /**
-     * CLAIM ホストの診療行為送信先ポート番号を返す。
+     * CLAIM ホストの診療行為送信先ポート番号を返す.
      * @return CLAIM ホスト名の診療行為送信先ポート番号
      */
     public static int getClaimPort() {
@@ -270,7 +270,7 @@ public class Project  {
     }
 
     /**
-     * CLAIM 送信時のXMLエンコーディングを返す。
+     * CLAIM 送信時のXMLエンコーディングを返す.
      * @return CLAIM エンコーディング
      */
     public static String getClaimEncoding() {
@@ -294,7 +294,7 @@ public class Project  {
     }
 
     /**
-     * ProjectFactoryを返す。
+     * ProjectFactoryを返す.
      * @return Project毎に異なる部分の情報を生成するためのFactory
      */
     public static AbstractProjectFactory getProjectFactory() {
@@ -302,7 +302,7 @@ public class Project  {
     }
 
     /**
-     * 地域連携に参加するかどうかを返す。
+     * 地域連携に参加するかどうかを返す.
      * @return 参加する時 true
      */
     public static boolean getJoinAreaNetwork() {
@@ -310,7 +310,7 @@ public class Project  {
     }
 
     /**
-     * 地域連携用の施設IDを返す。
+     * 地域連携用の施設IDを返す.
      * @return 地域連携で使用する施設ID
      */
     public static String getAreaNetworkFacilityId() {
@@ -318,7 +318,7 @@ public class Project  {
     }
 
     /**
-     * 地域連携用のCreatorIDを返す。
+     * 地域連携用のCreatorIDを返す.
      * @return 地域連携で使用するCreatorId
      */
     public static String getAreaNetworkCreatorId() {
@@ -326,7 +326,7 @@ public class Project  {
     }
 
     /**
-     * 地域連携用の患者MasterIdを返す。
+     * 地域連携用の患者MasterIdを返す.
      * @return 地域連携で使用する患者MasterId
      */
     public static ID getMasterId(String pid) {
@@ -335,8 +335,8 @@ public class Project  {
     }
 
     /**
-     * CLAIM送信に使用する患者MasterIdを返す。
-     * 地域連携ルールと異なるため。
+     * CLAIM送信に使用する患者MasterIdを返す.
+     * 地域連携ルールと異なるため.
      */
     public static ID getClaimMasterId(String pid) {
         return new ID(pid, "facility", "MML0024");
@@ -347,7 +347,7 @@ public class Project  {
     }
 
     /**
-     * CSGW(Client Side Gate Way)へのパスを返す。
+     * CSGW(Client Side Gate Way)へのパスを返す.
      */
     public static String getCSGWPath() {
         String uploader = getUploaderIPAddress();

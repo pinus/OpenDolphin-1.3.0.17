@@ -58,7 +58,7 @@ public class UserStampBox extends AbstractStampBox {
     }
 
     /**
-     * StampBox を構築する。
+     * StampBox を構築する.
      */
     @Override
     protected void buildStampBox() {
@@ -84,7 +84,7 @@ public class UserStampBox extends AbstractStampBox {
             StampTreePanel treePanel = new StampTreePanel(stampTree);
             this.addTab(stampTree.getTreeName(), treePanel);
 
-            // Path、ORCA のタブ番号を保存する
+            // Path，ORCA のタブ番号を保存する
             if (stampTree.getEntity().equals(IInfoModel.ENTITY_PATH)) {
                 pathIndex = index;
             } else if (stampTree.getEntity().equals(IInfoModel.ENTITY_ORCA)) {
@@ -197,7 +197,7 @@ public class UserStampBox extends AbstractStampBox {
     }
 
     /**
-     * 引数のタブ番号に対応するStampTreeにエディタから発行があるかどうかを返す。
+     * 引数のタブ番号に対応するStampTreeにエディタから発行があるかどうかを返す.
      * @param index タブ番号
      * @return エディタから発行がある場合に true
      */

@@ -7,7 +7,7 @@ import java.io.IOException;
 import open.dolphin.order.MasterItem;
 
 /**
- * マスタアイテム Transferable クラス。
+ * マスタアイテム Transferable クラス.
  * @author kazm
  */
 public class MasterItemTransferable implements Transferable {

@@ -71,7 +71,7 @@ class LaboTestFileTransferHandler extends TransferHandler {
     }
 
     /**
-     * Queueへドロップされたファイルを加える。
+     * Queueへドロップされたファイルを加える.
      * @param xmlFiles ドロップされたファイルのリスト
      */
     public synchronized void addFiles(List<File> xmlFiles) {
@@ -80,7 +80,7 @@ class LaboTestFileTransferHandler extends TransferHandler {
     }
 
     /**
-     * Queueからファイルリストを取り出す。
+     * Queueからファイルリストを取り出す.
      * @return ドロップされたファイルのリスト
      */
     public synchronized List<File> getFiles() {
@@ -94,7 +94,7 @@ class LaboTestFileTransferHandler extends TransferHandler {
     }
 
     /**
-     * ファイルをパースしデータベースへ登録するコンシューマスレッドクラス。
+     * ファイルをパースしデータベースへ登録するコンシューマスレッドクラス.
      */
     private class ImportThread extends Thread {
 

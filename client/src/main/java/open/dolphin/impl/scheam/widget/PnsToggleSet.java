@@ -28,7 +28,7 @@ import javafx.util.Callback;
  *         ((ToggleButton)e.getSource()).setSelected(false);
  *     });
  *     </pre></li>
- * <li>アイコンはデフォルトでは Label。css で操作できるように setStyleClass("button-cell")してある.
+ * <li>アイコンはデフォルトでは Label. css で操作できるように setStyleClass("button-cell")してある.
  *     setCellFactory(Callback) でカスタマイズすることもできる.</li>
  * </ul>
  *
@@ -44,7 +44,7 @@ public class PnsToggleSet<T> extends PnsFlowPane {
     private final ObjectProperty<Integer> selectedIndexProperty = new SimpleObjectProperty<>();
     /** BindBidirectinal 可能な selectedItemProperty */
     private final ObjectProperty<T> selectedItemProperty = new SimpleObjectProperty<>();
-    /** 使用する SingleSelectionModel。変更不可 */
+    /** 使用する SingleSelectionModel. 変更不可 */
     private final SingleSelectionModel<T> selectionModel = new ToggleSetSelectionModel();
     /** (T)item をキーとして対応する Toggle を入れた Map */
     private final HashMap<T, ToggleButton> toggleMap = new HashMap<>();

@@ -37,7 +37,7 @@ public class PTransferHandler extends TransferHandler {
     }
 
     /**
-     * DropされたFlavorをインポートする。
+     * DropされたFlavorをインポートする.
      */
     @Override
     public boolean importData(JComponent c, Transferable tr) {
@@ -132,7 +132,7 @@ public class PTransferHandler extends TransferHandler {
     }
 
     /**
-     * インポート可能かどうかを返す。
+     * インポート可能かどうかを返す.
      */
     @Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {
@@ -144,7 +144,7 @@ public class PTransferHandler extends TransferHandler {
     }
 
     /**
-     * Flavorリストのなかに受け入れられものがあるかどうかを返す。
+     * Flavorリストのなかに受け入れられものがあるかどうかを返す.
      */
     protected boolean hasFlavor(DataFlavor[] flavors) {
 
@@ -166,7 +166,7 @@ public class PTransferHandler extends TransferHandler {
     }
 
     /**
-     * DropされたModuleInfo(StampInfo)をインポートする。
+     * DropされたModuleInfo(StampInfo)をインポートする.
      * @param tr Transferable
      * @return 成功した時 true
      */
@@ -229,7 +229,7 @@ public class PTransferHandler extends TransferHandler {
     }
 
     /**
-     * DropされたStamp(ModuleModel)をインポートする。
+     * DropされたStamp(ModuleModel)をインポートする.
      * カルテに実体化された stamp が drop された場合
      * @param tr Transferable
      * @return インポートに成功した時 true
@@ -272,7 +272,7 @@ public class PTransferHandler extends TransferHandler {
     }
 
     /**
-     * クリップボードへデータを転送する。
+     * クリップボードへデータを転送する.
      */
     @Override
     public void exportToClipboard(JComponent comp, Clipboard clip, int action) {

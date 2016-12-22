@@ -159,7 +159,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * 設定画面を開始する。
+     * 設定画面を開始する.
      */
     @Override
     public void start() {
@@ -179,7 +179,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * 設定値を保存する。
+     * 設定値を保存する.
      */
     @Override
     public void save() {
@@ -188,7 +188,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * GUI を構築する。
+     * GUI を構築する.
      */
     private void initComponents() {
 
@@ -869,7 +869,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         //
         // CLAIM 送信関係
-        // 仮保存の時は送信できない。理由は CRC 等の入力するケース。
+        // 仮保存の時は送信できない. 理由は CRC 等の入力するケース.
         //
         noSendAtTmp.doClick();
         sendAtTmp.setEnabled(false);
@@ -1130,7 +1130,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * 画面モデルクラス。
+     * 画面モデルクラス.
      */
     private class KarteModel {
 
@@ -1180,7 +1180,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         private int printKarteCount;
 
         /**
-         * ProjectStub から populate する。
+         * ProjectStub から populate する.
          */
         public void populate(ProjectStub stub) {
 

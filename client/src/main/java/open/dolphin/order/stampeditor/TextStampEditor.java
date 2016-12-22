@@ -42,7 +42,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * エディタを開始する。
+     * エディタを開始する.
      */
     @Override
     public void start() {

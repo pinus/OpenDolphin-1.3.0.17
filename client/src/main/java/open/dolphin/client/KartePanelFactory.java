@@ -86,7 +86,7 @@ public class KartePanelFactory {
         public Dimension getPreferredSize() {
             Dimension d = super.getPreferredSize();
             // やっぱり soaTextPane.getPreferredSize().height が正しくない場合がある
-            // その場合，modelToView が null になる。つまり，コンポネントのサイズが決定されていない
+            // その場合，modelToView が null になる. つまり，コンポネントのサイズが決定されていない
             // eg) 13842, 15571
             // その場合，コンポネントサイズが決定されるまでやり直しする
             // ・textPane.setSize(1,1) したら workaround できた
@@ -96,7 +96,7 @@ public class KartePanelFactory {
             //   if (soaTextPane.modelToView(0) == null) { revalidateAndRepaint(); }
             //} catch (Exception e) {}
 
-            // h は textPane の高さ これに timeStamp 部分足すと1枚のカルテの高さ。ぎりぎりにならないように 10 だけ余裕
+            // h は textPane の高さ これに timeStamp 部分足すと1枚のカルテの高さ. ぎりぎりにならないように 10 だけ余裕
             d.height = Math.max(soaTextPane.getPreferredSize().height, pTextPane.getPreferredSize().height)
                     + TIMESTAMP_PANEL_HEIGHT + 10;
             return d;
@@ -190,7 +190,7 @@ public class KartePanelFactory {
         soaTextPane.setMargin(new Insets(10, 10, 10, 10));
         soaTextPane.setMinimumSize(new Dimension(340, 1));
         //soaTextPane.setPreferredSize(new Dimension(340, 500));
-        soaTextPane.setSize(1, 1); // なぜかこれでうまくいく。謎。
+        soaTextPane.setSize(1, 1); // なぜかこれでうまくいく。謎.
 
         pTextPane = new JTextPane();
         pTextPane.setEditorKit(new WrapEditorKit());
@@ -199,7 +199,7 @@ public class KartePanelFactory {
         //pTextPane.setPreferredSize(new Dimension(340, 500));
         pTextPane.setSize(1, 1);
 
-        // これをセットしないと，勝手に cut copy paste のポップアップがセットされてしまう。
+        // これをセットしないと，勝手に cut copy paste のポップアップがセットされてしまう.
         soaTextPane.putClientProperty("Quaqua.TextComponent.showPopup", false);
         pTextPane.putClientProperty("Quaqua.TextComponent.showPopup", false);
 

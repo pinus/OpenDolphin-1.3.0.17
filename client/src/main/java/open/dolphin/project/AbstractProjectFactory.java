@@ -26,7 +26,7 @@ import open.dolphin.client.*;
 import open.dolphin.infomodel.ID;
 
 /**
- * プロジェクトに依存するオブジェクトを生成するファクトリクラス。
+ * プロジェクトに依存するオブジェクトを生成するファクトリクラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

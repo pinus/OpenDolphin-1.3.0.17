@@ -45,7 +45,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
     }
 
     /**
-     * 引数のカテゴリに対応するTreeを返す。
+     * 引数のカテゴリに対応するTreeを返す.
      * @param entity
      * @return カテゴリにマッチするStampTree
      */
@@ -81,7 +81,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
     }
 
     /**
-     * スタンプボックスに含まれる全treeのTreeInfoリストを返す。
+     * スタンプボックスに含まれる全treeのTreeInfoリストを返す.
      * @return TreeInfoのリスト
      */
     public List<TreeInfo> getAllTreeInfos() {
@@ -98,7 +98,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
     }
 
     /**
-     * スタンプボックスに含まれる全treeを返す。
+     * スタンプボックスに含まれる全treeを返す.
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllTrees() {
@@ -114,7 +114,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
     }
 
     /**
-     * スタンプボックスに含まれる病名以外のStampTreeを返す。
+     * スタンプボックスに含まれる病名以外のStampTreeを返す.
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllPTrees() {
@@ -136,8 +136,8 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
     }
 
     /**
-     * 引数のエンティティ配下にある全てのスタンプを返す。
-     * これはメニュー等で使用する。
+     * 引数のエンティティ配下にある全てのスタンプを返す.
+     * これはメニュー等で使用する.
      * @param entity Treeのエンティティ
      * @return 全てのスタンプのリスト
      */

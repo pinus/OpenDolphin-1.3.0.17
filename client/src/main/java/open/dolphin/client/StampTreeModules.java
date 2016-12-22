@@ -35,7 +35,7 @@ public class StampTreeModules {
     }
 
     /**
-     * entity のスタンプ箱から key に一致する module を探して返す。無ければ null が返る
+     * entity のスタンプ箱から key に一致する module を探して返す. 無ければ null が返る
      * ただし，フォルダの中身までは検索しない
      * @param entity
      * @param key

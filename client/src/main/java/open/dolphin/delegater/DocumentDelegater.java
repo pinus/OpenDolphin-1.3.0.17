@@ -16,7 +16,7 @@ import open.dolphin.service.KarteService;
 public class  DocumentDelegater extends BusinessDelegater {
 
     /**
-     * 患者のカルテを取得する。
+     * 患者のカルテを取得する.
      * @param patientPk 患者PK
      * @param fromDate 履歴の検索開始日
      * @return KarteBean
@@ -29,12 +29,12 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * Documentを保存する。
+     * Documentを保存する.
      * @param karteModel KarteModel
      * @return 保存した document の primary key
      */
     public long putKarte(DocumentModel karteModel) {
-        // 確定日、適合開始日、記録日、ステータスを DocInfo から DocumentModel(KarteEntry) に移す
+        // 確定日，適合開始日，記録日，ステータスを DocInfo から DocumentModel(KarteEntry) に移す
         karteModel.toPersist();
         // 保存する
         long documentPk = getService().addDocument(karteModel);
@@ -64,7 +64,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * 文書履歴を検索して返す。
+     * 文書履歴を検索して返す.
      * @param spec DocumentSearchSpec 検索仕様
      * @return DocInfoModel の List
      */
@@ -74,7 +74,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * ドキュメントを論理削除する。
+     * ドキュメントを論理削除する.
      * @param pk 論理削除するドキュメントの prmary key
      * @return 削除件数
      */
@@ -83,7 +83,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * 文書履歴のタイトルを変更する。
+     * 文書履歴のタイトルを変更する.
      * @param docInfo DocInfoModel
      * @return 変更した件数
      */
@@ -105,7 +105,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * イメージを取得する。
+     * イメージを取得する.
      * @param id 画像のId
      * @return SchemaModel
      */
@@ -122,7 +122,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * Imageを検索して返す。
+     * Imageを検索して返す.
      * @param spec ImageSearchSpec 検索仕様
      * @return ImageEntryリストのリスト
      */
@@ -149,7 +149,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * SchemaModel を ImageEntry に変換する。
+     * SchemaModel を ImageEntry に変換する.
      * @param schema シェーマモデル
      * @param iconSize アイコンのサイズ
      * @return ImageEntry
@@ -233,7 +233,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * Diagnosisを検索して返す。
+     * Diagnosisを検索して返す.
      * @param spec DiagnosisSearchSpec 検索仕様
      * @return DiagnosisModel の Collection
      */
@@ -242,7 +242,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * Observationを追加する。
+     * Observationを追加する.
      * @param observations 追加するObservationのリスト
      * @return 追加したObservationのIdリスト
      */
@@ -251,7 +251,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * Observationを取得する。
+     * Observationを取得する.
      * @param spec 検索仕様
      * @return Observationのリスト
      */
@@ -260,7 +260,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * Observationを更新する。
+     * Observationを更新する.
      * @param observations 更新するObservationのリスト
      * @return 更新した数
      */
@@ -269,7 +269,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * Observationを削除する。
+     * Observationを削除する.
      * @param ids 削除する Observation の primary key リスト
      * @return 削除した数
      */
@@ -278,7 +278,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * 患者メモを更新する。
+     * 患者メモを更新する.
      * @param memo 更新するメモ
      * @return 更新した数 1
      */
@@ -287,7 +287,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     }
 
     /**
-     * 予約を検索する。
+     * 予約を検索する.
      * @param spec 検索仕様
      * @return 予約の List
      */

@@ -100,7 +100,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneのオーナを設定する。
+     * このPaneのオーナを設定する.
      * @param parent KarteEditorオーナ
      */
     public void setParent(ChartDocument parent) {
@@ -108,7 +108,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneのオーナを返す。
+     * このPaneのオーナを返す.
      * @return KarteEditorオーナ
      */
     public ChartDocument getParent() {
@@ -116,7 +116,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * 編集不可を表すカラーを設定する。
+     * 編集不可を表すカラーを設定する.
      * @param uneditableColor 編集不可を表すカラー
      */
     public void setUneditableColor(Color uneditableColor) {
@@ -124,7 +124,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * 編集不可を表すカラーを返す。
+     * 編集不可を表すカラーを返す.
      * @return 編集不可を表すカラー
      */
     public Color getUneditableColor() {
@@ -132,7 +132,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneで生成するDocumentModelの文書IDを設定する。
+     * このPaneで生成するDocumentModelの文書IDを設定する.
      * @param docId 文書ID
      */
     protected void setDocId(String docId) {
@@ -140,7 +140,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneで生成するDocumentModelの文書IDを返す。
+     * このPaneで生成するDocumentModelの文書IDを返す.
      * @return 文書ID
      */
     protected String getDocId() {
@@ -148,7 +148,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * ChartMediatorを設定する。
+     * ChartMediatorを設定する.
      * @param mediator ChartMediator
      */
     protected void setMediator(ChartMediator mediator) {
@@ -156,7 +156,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * ChartMediatorを返す。
+     * ChartMediatorを返す.
      * @return ChartMediator
      */
     protected ChartMediator getMediator() {
@@ -164,7 +164,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneのロールを設定する。
+     * このPaneのロールを設定する.
      * @param myRole SOAまたはPのロール
      */
     public void setMyRole(String myRole) {
@@ -172,7 +172,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     *  このPaneのロールを返す。
+     *  このPaneのロールを返す.
      * @return SOAまたはPのロール
      */
     public String getMyRole() {
@@ -180,7 +180,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * JTextPaneを設定する。
+     * JTextPaneを設定する.
      * @param textPane JTextPane
      */
     public void setTextPane(JTextPane textPane) {
@@ -197,7 +197,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * JTextPaneを返す。
+     * JTextPaneを返す.
      * @return JTextPane
      */
     public JTextPane getTextPane() {
@@ -205,7 +205,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * JTextPaneのStyledDocumentを返す。
+     * JTextPaneのStyledDocumentを返す.
      * @return JTextPaneのStyledDocument
      */
     protected KarteStyledDocument getDocument() {
@@ -213,7 +213,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * 初期長を設定する。
+     * 初期長を設定する.
      * @param initialLength Documentの初期長
      */
     public void setInitialLength(int initialLength) {
@@ -221,7 +221,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * 初期長を返す。
+     * 初期長を返す.
      * @return Documentの初期長
      */
     public int getInitialLength() {
@@ -229,7 +229,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneからDragされたスタンプ数を返す。
+     * このPaneからDragされたスタンプ数を返す.
      * @return このPaneからDragされたスタンプ数
      */
     protected int getDraggedCount() {
@@ -237,7 +237,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneからDragされたスタンプ数を設定する。
+     * このPaneからDragされたスタンプ数を設定する.
      * @param draggedCount このPaneからDragされたスタンプ数
      */
     protected void setDraggedCount(int draggedCount) {
@@ -245,7 +245,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneにDropされたスタンプ数を返す。
+     * このPaneにDropされたスタンプ数を返す.
      * @return このPaneにDropされたスタンプ数
      */
     protected int getDroppedCount() {
@@ -253,7 +253,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneにDropされたスタンプ数を設定する。
+     * このPaneにDropされたスタンプ数を設定する.
      * @param droppedCount このPaneにDropされたスタンプ数
      */
     protected void setDroppedCount(int droppedCount) {
@@ -261,7 +261,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneからDragされたスタンプを返す。
+     * このPaneからDragされたスタンプを返す.
      * @return このPaneからDragされたスタンプ配列
      */
     protected ComponentHolder[] getDrragedStamp() {
@@ -269,7 +269,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このPaneからDragされたスタンプを設定（記録）する。
+     * このPaneからDragされたスタンプを設定（記録）する.
      * @param drragedStamp このPaneからDragされたスタンプ配列
      */
     protected void setDrragedStamp(ComponentHolder[] drragedStamp) {
@@ -277,7 +277,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * 初期化する。
+     * 初期化する.
      * @param editable 編集可能かどうかのフラグ
      * @param mediator チャートメディエータ（実際にはメニューサポート）
      */
@@ -371,7 +371,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * リソースをclearする。
+     * リソースをclearする.
      */
     public void clear() {
         JTextPane pane = getTextPane();
@@ -392,7 +392,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * メニューを制御する。
+     * メニューを制御する.
      *
      */
     private void controlMenus(ActionMap map) {
@@ -518,7 +518,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * 背景を編集不可カラーに設定する。
+     * 背景を編集不可カラーに設定する.
      */
     protected void setBackgroundUneditable() {
         getTextPane().setBackground(getUneditableColor());
@@ -526,7 +526,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * ロールとパートナを設定する。
+     * ロールとパートナを設定する.
      * @param role このペインのロール
      */
     public void setRole(String role) {
@@ -534,7 +534,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * Dirtyかどうかを返す。
+     * Dirtyかどうかを返す.
      * @return dirty の時 true
      */
     protected boolean isDirty() {
@@ -549,7 +549,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * 保存時につけるドキュメントのタイトルをDocument Objectから抽出する。
+     * 保存時につけるドキュメントのタイトルをDocument Objectから抽出する.
      * @return 先頭から指定された長さを切り出した文字列
      */
     protected String getTitle() {
@@ -567,7 +567,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * Documentの段落スタイルを設定する。
+     * Documentの段落スタイルを設定する.
      * @param str スタイル
      */
     public void setLogicalStyle(String str) {
@@ -575,21 +575,21 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * Documentの段落論理スタイルをクリアする。
+     * Documentの段落論理スタイルをクリアする.
      */
     public void clearLogicalStyle() {
         getDocument().clearLogicalStyle();
     }
 
     /**
-     * 段落を構成する。
+     * 段落を構成する.
      */
     public void makeParagraph() {
         getDocument().makeParagraph();
     }
 
     /**
-     * Documentに文字列を挿入する。
+     * Documentに文字列を挿入する.
      * @param s 挿入する文字列
      * @param a 属性
      */
@@ -598,7 +598,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このペインに Stamp を挿入する。(drag & drop した場合)
+     * このペインに Stamp を挿入する. (drag & drop した場合)
      * @param stamp
      */
     public void stamp(final ModuleModel stamp) {
@@ -631,7 +631,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このペインに Stamp を挿入する。(KarteRenderer_2 から呼ばれる)
+     * このペインに Stamp を挿入する. (KarteRenderer_2 から呼ばれる)
      * @param stamp
      */
     public void flowStamp(ModuleModel stamp) {
@@ -646,7 +646,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このペインにシェーマを挿入する。
+     * このペインにシェーマを挿入する.
      * @param schema シェーマ
      */
     public void stampSchema(final SchemaModel schema) {
@@ -661,7 +661,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このペインにシェーマを挿入する。
+     * このペインにシェーマを挿入する.
      * @param schema  シェーマ
      */
     public void flowSchema(SchemaModel schema) {
@@ -674,7 +674,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このペインに TextStamp を挿入する。
+     * このペインに TextStamp を挿入する.
      * @param s
      */
     public void insertTextStamp(final String s) {
@@ -685,7 +685,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * StampInfoがDropされた時、そのデータをペインに挿入する。
+     * StampInfoがDropされた時，そのデータをペインに挿入する.
      * ドロップされたスタンプが１個の時
      * @param stampInfo ドロップされたスタンプ情報
      */
@@ -730,7 +730,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * StampInfo（スタンプ箱の項目）が 複数 Drop された時、そのデータをペインに挿入する。
+     * StampInfo（スタンプ箱の項目）が 複数 Drop された時，そのデータをペインに挿入する.
      * 複数がドロップされたときはこちらが呼ばれる
      * @param addList スタンプ情報のリスト
      */
@@ -790,7 +790,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * TextStampInfo が Drop された時の処理を行なう。
+     * TextStampInfo が Drop された時の処理を行なう.
      * @param addList
      */
     public void textStampInfoDropped(final List<ModuleInfoBean> addList) {
@@ -832,7 +832,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * ORCA の入力セットを取得してこのペインに展開する。
+     * ORCA の入力セットを取得してこのペインに展開する.
      */
     private void applyOrcaSet(final ModuleInfoBean stampInfo) {
 
@@ -1008,7 +1008,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * Schema が DnD された場合、シェーマエディタを開いて編集する。
+     * Schema が DnD された場合，シェーマエディタを開いて編集する.
      * @param path
      */
     public void insertImage(String path) {
@@ -1060,8 +1060,8 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * StampEditor の編集が終了するとここへ通知される。
-     * 通知されたスタンプをペインに挿入する。
+     * StampEditor の編集が終了するとここへ通知される.
+     * 通知されたスタンプをペインに挿入する.
      * @param e
      */
     @Override
@@ -1085,12 +1085,12 @@ public class KartePane implements DocumentListener, MouseListener,
                 }
                 break;
         }
-//pns   stamp が挿入されたら toFront する。
+//pns   stamp が挿入されたら toFront する.
         this.getParent().getContext().getFrame().toFront();
     }
 
     /**
-     * メニュー制御のため、ペースト可能かどうかを返す。
+     * メニュー制御のため，ペースト可能かどうかを返す.
      * @return ペースト可能な時 true
      */
     protected boolean canPaste() {
@@ -1118,7 +1118,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このペインからスタンプを削除する。
+     * このペインからスタンプを削除する.
      * @param sh 削除するスタンプのホルダ
      */
     public void removeStamp(StampHolder sh) {
@@ -1126,7 +1126,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このペインからスタンプを削除する。
+     * このペインからスタンプを削除する.
      * @param sh 削除するスタンプのホルダリスト
      */
     public void removeStamp(StampHolder[] sh) {
@@ -1138,7 +1138,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このペインからシェーマを削除する。
+     * このペインからシェーマを削除する.
      * @param sh 削除するシェーマのホルダ
      */
     public void removeSchema(SchemaHolder sh) {
@@ -1146,7 +1146,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     /**
-     * このペインからシェーマを削除する。
+     * このペインからシェーマを削除する.
      * @param sh 削除するシェーマのホルダリスト
      */
     public void removeSchema(SchemaHolder[] sh) {

@@ -102,7 +102,7 @@ public class StampTreeDropTargetListener implements DropTargetListener {
         else return Position.CENTER;
     }
     private void targetWithUpperLine() {
-        // 一番上か，上と親が違う場合は UpperLine で処理。それ以外は UnderLine に変換
+        // 一番上か，上と親が違う場合は UpperLine で処理. それ以外は UnderLine に変換
         int row = tree.getRowForPath(target);
         boolean parentIsDifferent;
         if (row == 0 ) {

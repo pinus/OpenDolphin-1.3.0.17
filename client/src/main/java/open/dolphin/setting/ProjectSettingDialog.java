@@ -15,7 +15,7 @@ import open.dolphin.project.Project;
 import org.apache.log4j.Logger;
 
 /**
- * 環境設定ダイアログ。
+ * 環境設定ダイアログ.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -84,7 +84,7 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
     }
 
     /**
-     * オープン時に表示する設定画面をセットする。
+     * オープン時に表示する設定画面をセットする.
      * @param startSettingName
      */
     public void setProject(String startSettingName) {
@@ -92,7 +92,7 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
     }
 
     /**
-     * 設定画面を開始する。
+     * 設定画面を開始する.
      */
     public void start() {
 
@@ -139,7 +139,7 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
     }
 
     /**
-     * GUI を構築する。
+     * GUI を構築する.
      */
     private void initComponents() {
 
@@ -229,7 +229,7 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
     }
 
     /**
-     * GUI コンポーネントのイベント接続を行う。
+     * GUI コンポーネントのイベント接続を行う.
      */
     private void connect() {
 
@@ -323,8 +323,8 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
     }
 
     /**
-     * SettingPanel の state が変化した場合に通知を受け、
-     * 全てのカードをスキャンして OK ボタンをコントロールする。
+     * SettingPanel の state が変化した場合に通知を受け，
+     * 全てのカードをスキャンして OK ボタンをコントロールする.
      * @param e
      */
     @Override

@@ -30,7 +30,7 @@ public class KartePanel1 extends Panel2 {
                 return 0;
             }
         });
-        // これをセットしないと，勝手に cut copy paste のポップアップがセットされてしまう。
+        // これをセットしないと，勝手に cut copy paste のポップアップがセットされてしまう.
         soaTextPane.putClientProperty("Quaqua.TextComponent.showPopup", false);
     }
 

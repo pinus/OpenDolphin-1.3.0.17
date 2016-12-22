@@ -8,7 +8,7 @@ import javax.swing.text.*;
 import open.dolphin.project.Project;
 
 /**
- * KartePane の StyledDocument class。
+ * KartePane の StyledDocument class.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -95,7 +95,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     }
 
     /**
-     * Stamp を挿入する。
+     * Stamp を挿入する.
      * @param sh 挿入するスタンプホルダ
      */
     public void stamp(final StampHolder sh) {
@@ -130,7 +130,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     }
 
     /**
-     * Stamp を挿入する。
+     * Stamp を挿入する.
      * @param sh 挿入するスタンプホルダ
      */
     public void flowStamp(final StampHolder sh) {
@@ -162,7 +162,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     }
 
     /**
-     * Stampを削除する。
+     * Stampを削除する.
      * @param start 削除開始のオフセット位置
      * @param len
      */
@@ -184,7 +184,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     }
 
     /**
-     * Stampを指定されたポジションに挿入する。
+     * Stampを指定されたポジションに挿入する.
      * @param inPos　挿入ポジション
      * @param sh　挿入する StampHolder
      */
@@ -278,7 +278,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
         }
     }
 
-//masuda^   KarteStyledDocument内のStampHolderを取得する。pns先生のコード
+//masuda^   KarteStyledDocument内のStampHolderを取得する. pns先生のコード
     public List<StampHolder> getStampHolders() {
 
         List<StampHolder> list = new ArrayList<StampHolder>();

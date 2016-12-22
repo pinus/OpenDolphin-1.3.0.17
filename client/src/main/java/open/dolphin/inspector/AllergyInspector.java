@@ -48,7 +48,7 @@ public class AllergyInspector {
     private ChartImpl context;
 
     /**
-     * AllergyInspectorオブジェクトを生成する。
+     * AllergyInspectorオブジェクトを生成する.
      */
     public AllergyInspector(ChartImpl context) {
         this.context = context;
@@ -61,7 +61,7 @@ public class AllergyInspector {
     }
 
     /**
-     * レイアウトパネルを返す。
+     * レイアウトパネルを返す.
      * @return
      */
     public JPanel getPanel() {
@@ -73,7 +73,7 @@ public class AllergyInspector {
     }
 
     /**
-     * GUIコンポーネントを初期化する。
+     * GUIコンポーネントを初期化する.
      */
     private void initComponents() {
 
@@ -174,7 +174,7 @@ public class AllergyInspector {
     }
 
     /**
-     * アレルギー情報を表示する。
+     * アレルギー情報を表示する.
      */
     public void update() {
         //List list = context.getKarte().getEntryCollection("allergy");
@@ -192,7 +192,7 @@ public class AllergyInspector {
     }
 
     /**
-     * アレルギーデータを追加する。
+     * アレルギーデータを追加する.
      */
     public void add(final AllergyModel model) {
 
@@ -242,7 +242,7 @@ public class AllergyInspector {
     }
 
     /**
-     * テーブルで選択したアレルギーを削除する。
+     * テーブルで選択したアレルギーを削除する.
      */
     public void delete(final int row) {
 

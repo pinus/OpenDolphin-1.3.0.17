@@ -18,8 +18,8 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.ui.MainFrame;
 
 /**
- * Window Menu をサポートするためのクラス。
- * Factory method で WindowMenu をもつ JFrame を生成する。
+ * Window Menu をサポートするためのクラス.
+ * Factory method で WindowMenu をもつ JFrame を生成する.
  *
  * @author Minagawa,Kazushi
  */
@@ -50,7 +50,7 @@ public class WindowSupport implements MenuListener {
     final private Action windowAction;
 
     /**
-     * WindowSupportを生成する。
+     * WindowSupportを生成する.
      * @param title フレームタイトル
      * @return WindowSupport
      */
@@ -163,8 +163,8 @@ public class WindowSupport implements MenuListener {
     }
 
     /**
-     * ウインドウメニューが選択された場合、現在オープンしているウインドウのリストを使用し、
-     * それらを選択するための MenuItem を追加する。
+     * ウインドウメニューが選択された場合，現在オープンしているウインドウのリストを使用し，
+     * それらを選択するための MenuItem を追加する.
      * リストをインスペクタとカルテに整理 by pns
      */
     public void menuSelected(MenuEvent e) {

@@ -69,7 +69,7 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * 左右のマージンを入れる。必ず最後に呼ぶ。
+     * 左右のマージンを入れる. 必ず最後に呼ぶ.
      * @param margin
      */
     public void setMargin(int margin) {

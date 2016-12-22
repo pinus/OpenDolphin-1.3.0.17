@@ -252,7 +252,7 @@ public class OrcaMasterDao extends OrcaDao {
             + "where hospnum = ? and (inputcd like 'P%' or inputcd like 'S%') order by inputcd";
 
     /**
-     * TBL_INPUTCD を検索してから入力セット（約束処方、診療セット）のリストを返す
+     * TBL_INPUTCD を検索してから入力セット（約束処方，診療セット）のリストを返す
      * OrcaTree から呼ばれる
      * @return 入力セットコード(inputcd)の昇順リスト
      */
@@ -500,7 +500,7 @@ public class OrcaMasterDao extends OrcaDao {
     }
 
     /**
-     * スタンプ名，診療区分から Stamp のひな形を生成する。
+     * スタンプ名，診療区分から Stamp のひな形を生成する.
      * @param stampName Stamp名
      * @param kbn 診療区分コード（３桁のコード kbn）
      * @return Stamp

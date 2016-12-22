@@ -3,8 +3,8 @@ package open.dolphin.client;
 import java.util.concurrent.Callable;
 
 /**
- * MainWindow Toolプラグインの抽象クラス。
- * 具象クラスは start()、stop() を実装する。
+ * MainWindow Toolプラグインの抽象クラス.
+ * 具象クラスは start()，stop() を実装する.
  */
 public abstract class AbstractMainTool implements MainTool {
 

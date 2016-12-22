@@ -192,7 +192,7 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
                 val = info.getStampId();
                 writer.write(" stampId=");
                 writer.write(addQuote(val));
-                // ここで対応するstampBytesをデータベースから読み込み登録する。
+                // ここで対応するstampBytesをデータベースから読み込み登録する.
                 // Zombie Stamp だと Exception が発生する
                 String stampHexBytes = null;
                 try {
@@ -265,7 +265,7 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
                     System.out.println("adding stamp: " + name);
                 }
 
-                // データベースにスタンプが存在しない場合は新たに作成して登録する。
+                // データベースにスタンプが存在しない場合は新たに作成して登録する.
                 if (model == null) {
                     model = new StampModel();
                     long userId = Project.getUserModel().getId();
@@ -403,7 +403,7 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
     }
 
     /**
-     * ファイル上書き確認ダイアログを表示する。
+     * ファイル上書き確認ダイアログを表示する.
      * @param file 上書き対象ファイル
      * @return 上書きOKが指示されたらtrue
      */

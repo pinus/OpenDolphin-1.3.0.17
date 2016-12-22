@@ -58,7 +58,7 @@ public class SOACodeHelper extends AbstractCodeHelper {
         LinkedList parents = new LinkedList();
 
         //
-        // Stamp の名前がキーワードで始まり、それが１個以上あるものを補完メニューに加える
+        // Stamp の名前がキーワードで始まり，それが１個以上あるものを補完メニューに加える
         //
         pattern = Pattern.compile("^" + text + ".*");
 

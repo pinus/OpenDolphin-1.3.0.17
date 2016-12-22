@@ -44,7 +44,7 @@ public class StampTreePanel extends JPanel implements TreeSelectionListener {
     }
 
     /**
-     * このパネルのStampTreeを返す。
+     * このパネルのStampTreeを返す.
      * @return StampTree
      */
     public StampTree getTree() {
@@ -52,7 +52,7 @@ public class StampTreePanel extends JPanel implements TreeSelectionListener {
     }
 
     /**
-     * スタンプツリーで選択されたスタンプの情報を表示する。
+     * スタンプツリーで選択されたスタンプの情報を表示する.
      */
     @Override
     public void valueChanged(TreeSelectionEvent e) {

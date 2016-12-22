@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 
 /**
- * CLAIM イベントリスナ。
+ * CLAIM イベントリスナ.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

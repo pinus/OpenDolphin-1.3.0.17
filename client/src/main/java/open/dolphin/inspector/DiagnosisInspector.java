@@ -74,7 +74,7 @@ public class DiagnosisInspector {
     }
 
     /**
-     * DiagnosisInspectorオブジェクトを生成する。
+     * DiagnosisInspectorオブジェクトを生成する.
      * @param context
      */
     public DiagnosisInspector(ChartImpl context) {
@@ -85,7 +85,7 @@ public class DiagnosisInspector {
     }
 
     /**
-     * GUI コンポーネントを初期化する。
+     * GUI コンポーネントを初期化する.
      */
     private void initComponents() {
 
@@ -140,7 +140,7 @@ public class DiagnosisInspector {
                     // ダブルクリックならエディタを立ち上げる
                     else if (e.getClickCount() == 2) {
 
-                        // sleep を入れないと，なぜか diagList がフォーカスを横取りしてしまい，エディタがフォーカスを取れない。
+                        // sleep を入れないと，なぜか diagList がフォーカスを横取りしてしまい，エディタがフォーカスを取れない.
                         // 同じ現象は DiagnosisDocument からエディタを立ち上げた場合にもおこるが，
                         // そちらは diagTable.setFocasable(false) を一時的に設定することで回避している
                         //try{Thread.sleep(10);} catch (InterruptedException ex){}
@@ -252,7 +252,7 @@ public class DiagnosisInspector {
     }
 
     /**
-     * PaientInspector にレイアウト用のパネルを返す。
+     * PaientInspector にレイアウト用のパネルを返す.
      * @return レイアウトパネル
      */
     public JPanel getPanel() {

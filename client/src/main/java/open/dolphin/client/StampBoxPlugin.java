@@ -115,7 +115,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * 現在の StampBox を返す。
+     * 現在の StampBox を返す.
      * @return 現在選択されているStampBox
      */
     public AbstractStampBox getCurrentBox() {
@@ -123,7 +123,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * 現在の StampBox を設定する。
+     * 現在の StampBox を設定する.
      * @param curBox 選択されたStampBox
      */
     public void setCurrentBox(AbstractStampBox curBox) {
@@ -131,7 +131,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * User(個人用)の StampBox を返す。
+     * User(個人用)の StampBox を返す.
      * @return User(個人用)のStampBox
      */
     public AbstractStampBox getUserStampBox() {
@@ -139,7 +139,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * User(個人用)の StampBox を設定する。
+     * User(個人用)の StampBox を設定する.
      * @param userBox User(個人用)のStampBox
      */
     public void setUserStampBox(AbstractStampBox userBox) {
@@ -147,7 +147,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * StampBox の JFrame を返す。
+     * StampBox の JFrame を返す.
      * @return StampBox の JFrame
      */
     public MainFrame getFrame() {
@@ -155,7 +155,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * インポートしている StampTree のリストを返す。
+     * インポートしている StampTree のリストを返す.
      * @return インポートしているStampTreeのリスト
      */
     public List<Long> getImportedTreeList() {
@@ -163,7 +163,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * Block用GlassPaneを返す。
+     * Block用GlassPaneを返す.
      * @return Block用GlassPane
      */
     public BlockGlass getBlockGlass() {
@@ -171,8 +171,8 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * StampTree をデータベースまたはリソースから読み込む。
-     * アプリケーションの起動時に一括してコールされる。
+     * StampTree をデータベースまたはリソースから読み込む.
+     * アプリケーションの起動時に一括してコールされる.
      * @return
      */
     @Override
@@ -248,7 +248,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * プログラムを開始する。
+     * プログラムを開始する.
      */
     @Override
     public void start() {
@@ -332,7 +332,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         parentBox.getButtonPanel().setPadding(new Dimension(0,4));
 
         //
-        // 読み込んだStampTreeをTabbedPaneに格納し、さらにそれをparentBoxに追加する
+        // 読み込んだStampTreeをTabbedPaneに格納し，さらにそれをparentBoxに追加する
         //
         for (StampTreeBean model : stampTreeModels) {
 
@@ -522,7 +522,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * 選択されているIndexでボタンを制御する。
+     * 選択されているIndexでボタンを制御する.
      */
     private void boxChanged() {
 
@@ -544,7 +544,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * ImportしたStampBoxの選択可能を制御する。
+     * ImportしたStampBoxの選択可能を制御する.
      * @param enabled 選択可能な時 true
      */
     private void enabledImportBox(boolean enabled) {
@@ -558,7 +558,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * TabChangeListener
-     * User用StampBoxのTab切り替えリスナクラス。
+     * User用StampBoxのTab切り替えリスナクラス.
      */
     private class TabChangeListener implements ChangeListener {
 
@@ -601,7 +601,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * ParentBox の TabChangeListenerクラス。
+     * ParentBox の TabChangeListenerクラス.
      */
     private class BoxChangeListener implements ChangeListener {
         @Override
@@ -611,7 +611,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * スタンプメーカを起動する。
+     * スタンプメーカを起動する.
      */
     public void startStampMake() {
 
@@ -650,7 +650,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         mainPanel.add(parentBox, BorderLayout.EAST);
         mainPanel.add(stampMaker, BorderLayout.CENTER);
 
-        // parentBox は EAST に入れ直したのでサイズ固定になる。現在のサイズに固定する
+        // parentBox は EAST に入れ直したのでサイズ固定になる. 現在のサイズに固定する
         parentBox.setMaximumSize(parentBox.getSize());
         parentBox.setMinimumSize(parentBox.getSize());
         parentBox.setPreferredSize(parentBox.getSize());
@@ -684,7 +684,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * スタンプメーカを終了する。
+     * スタンプメーカを終了する.
      */
     public void stopStampMake() {
 
@@ -732,7 +732,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * EditorValueListener
-     * エディタで作成したスタンプをStampTreeに加える。
+     * エディタで作成したスタンプをStampTreeに加える.
      */
     private class EditorValueListener implements PropertyChangeListener {
 
@@ -788,7 +788,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * スタンプパブリッシャーを起動する。
+     * スタンプパブリッシャーを起動する.
      */
     public void publishStamp() {
         StampPublisher publisher = new StampPublisher(this);
@@ -796,7 +796,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * スタンプインポーターを起動する。
+     * スタンプインポーターを起動する.
      */
     public void importStamp() {
         StampImporter importer = new StampImporter(this);
@@ -804,7 +804,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * 公開されているスタンプTreeをインポートする。
+     * 公開されているスタンプTreeをインポートする.
      * @param importTree インポートする公開Tree
      */
     public void importPublishedTree(StampTreeBean importTree) {
@@ -828,7 +828,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * インポートしている公開Treeを削除する。
+     * インポートしている公開Treeを削除する.
      * @param removeId 削除する公開TreeのId
      */
     public void removeImportedTree(long removeId) {
@@ -846,7 +846,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * プログラムを終了する。
+     * プログラムを終了する.
      */
     @Override
     public void stop() {
@@ -855,7 +855,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * フレームを前面に出す。
+     * フレームを前面に出す.
      */
     @Override
     public void enter() {
@@ -871,7 +871,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         String name = (StampBoxPlugin.this).getClass().getName();
 
-        // StampMeker modeで終了した場合、
+        // StampMeker modeで終了した場合，
         // 次回起動時に通常モードの位置と大きさで表示するため
         if (editing) {
             prefs.putInt(name + "_x", stampBoxLoc.x);
@@ -924,7 +924,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * 引数のカテゴリに対応するTreeを返す。
+     * 引数のカテゴリに対応するTreeを返す.
      * @param entity Treeのカテゴリ
      * @return カテゴリにマッチするStampTree
      */
@@ -937,7 +937,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * スタンプボックスに含まれる全treeのTreeInfoリストを返す。
+     * スタンプボックスに含まれる全treeのTreeInfoリストを返す.
      * @return TreeInfoのリスト
      */
     public List<TreeInfo> getAllTress() {
@@ -945,7 +945,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * スタンプボックスに含まれる全treeを返す。
+     * スタンプボックスに含まれる全treeを返す.
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllTrees() {
@@ -953,7 +953,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * スタンプボックスに含まれる全treeを返す。
+     * スタンプボックスに含まれる全treeを返す.
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllAllPTrees() {
@@ -970,7 +970,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * Currentボックスの P 関連Staptreeを返す。
+     * Currentボックスの P 関連Staptreeを返す.
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllPTrees() {
@@ -980,8 +980,8 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * 引数のエンティティ配下にある全てのスタンプを返す。
-     * これはメニュー等で使用する。
+     * 引数のエンティティ配下にある全てのスタンプを返す.
+     * これはメニュー等で使用する.
      * @param entity Treeのエンティティ
      * @return 全てのスタンプのリスト
      */

@@ -16,7 +16,7 @@ import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.ui.MyBorderFactory;
 
 /**
- * シングルドキュメントのビュワークラス。
+ * シングルドキュメントのビュワークラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -98,7 +98,7 @@ public class KarteViewer extends AbstractChartDocument implements Comparable {
     }
 
     /**
-     * SOA Pane を返す。
+     * SOA Pane を返す.
      * @return soaPane
      */
     public KartePane getSOAPane() {
@@ -107,7 +107,7 @@ public class KarteViewer extends AbstractChartDocument implements Comparable {
 
     /**
      * コンテナからコールされる enter() メソッドで
-     * メニューを制御する。
+     * メニューを制御する.
      */
     @Override
     public void enter() {
@@ -133,7 +133,7 @@ public class KarteViewer extends AbstractChartDocument implements Comparable {
     }
 
     /**
-     * シングルカルテで初期化する。
+     * シングルカルテで初期化する.
      */
     private void initialize() {
 
@@ -162,7 +162,7 @@ public class KarteViewer extends AbstractChartDocument implements Comparable {
     }
 
     /**
-     * プログラムを開始する。
+     * プログラムを開始する.
      */
     @Override
     public void start() {
@@ -199,7 +199,7 @@ public class KarteViewer extends AbstractChartDocument implements Comparable {
     }
 
     /**
-     * 表示するモデルを設定する。
+     * 表示するモデルを設定する.
      * @param model 表示するDocumentModel
      */
     public void setModel(DocumentModel model) {
@@ -207,7 +207,7 @@ public class KarteViewer extends AbstractChartDocument implements Comparable {
     }
 
     /**
-     * 表示するモデルを返す。
+     * 表示するモデルを返す.
      * @return 表示するDocumentModel
      */
     public DocumentModel getModel() {
@@ -215,8 +215,8 @@ public class KarteViewer extends AbstractChartDocument implements Comparable {
     }
 
     /**
-     * 選択状態を設定する。
-     * 選択状態によりViewのボーダの色を変える。
+     * 選択状態を設定する.
+     * 選択状態によりViewのボーダの色を変える.
      * @param selected 選択された時 true
      */
     public void setSelected(boolean selected) {
@@ -229,7 +229,7 @@ public class KarteViewer extends AbstractChartDocument implements Comparable {
     }
 
     /**
-     * 選択されているかどうかを返す。
+     * 選択されているかどうかを返す.
      * @return 選択されている時 true
      */
     public boolean isSelected() {

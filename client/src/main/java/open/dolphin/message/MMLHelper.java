@@ -61,7 +61,7 @@ public class MMLHelper {
     }
 
     /**
-     * 経過記録モジュールの自由記載表現を生成する。
+     * 経過記録モジュールの自由記載表現を生成する.
      */
     public void buildText() {
 
@@ -119,7 +119,7 @@ public class MMLHelper {
     }
 
     /**
-     * 患者IDを返す。
+     * 患者IDを返す.
      * @return 患者ID
      */
     public String getPatientId() {
@@ -131,8 +131,8 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携用の患者IDを返す。
-     * 実装ルール  施設内のIDであることを示す。
+     * 地域連携用の患者IDを返す.
+     * 実装ルール  施設内のIDであることを示す.
      * <mmlCm:Id mmlCm:type="facility" mmlCm:tableId="JPN452015100001">12345</mmlCm:Id>
      */
     public String getCNPatientId() {
@@ -140,7 +140,7 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携用の患者IDTypeを返す。
+     * 地域連携用の患者IDTypeを返す.
      * 実装ルール facility
      */
     public String getCNPatientIdType() {
@@ -148,7 +148,7 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携用の患者ID TableIdを返す。
+     * 地域連携用の患者ID TableIdを返す.
      * 実装ルール その施設のJMARIコード
      */
     public String getCNPatientIdTableId() {
@@ -156,7 +156,7 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携で使用する施設名を返す。
+     * 地域連携で使用する施設名を返す.
      * @return 施設名
      */
     public String getCNFacilityName() {
@@ -164,7 +164,7 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携用の施設IDを返す。
+     * 地域連携用の施設IDを返す.
      * 実装ルール JMARIコードを適用する
      * <mmlCm:Id mmlCm:type="JMARI" mmlCm:tableId="MML0027">JPN452015100001</mmlCm:Id>
      */
@@ -177,7 +177,7 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携用の施設ID Typeを返す。
+     * 地域連携用の施設ID Typeを返す.
      * 実装ルール JMARI
      */
     public String getCNFacilityIdType() {
@@ -185,7 +185,7 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携用の施設ID tableIdを返す。
+     * 地域連携用の施設ID tableIdを返す.
      * 実装ルール MML0027
      */
     public String getCNFacilityIdTableId() {
@@ -193,7 +193,7 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携用のCreatorIdを返す。
+     * 地域連携用のCreatorIdを返す.
      * 実装ルール
      * <mmlCm:Id mmlCm:type="local" mmlCm:tableId="MML0024">12345</mmlCm:Id>
      */
@@ -205,7 +205,7 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携用のCreatorId Typeを返す。
+     * 地域連携用のCreatorId Typeを返す.
      * 実装ルール local
      */
     public String getCNCreatorIdType() {
@@ -213,7 +213,7 @@ public class MMLHelper {
     }
 
     /**
-     * 地域連携用のCreatorId TableIdを返す。
+     * 地域連携用のCreatorId TableIdを返す.
      * 実装ルール MML0024
      */
     public String getCNCreatorIdTableId() {
@@ -270,7 +270,7 @@ public class MMLHelper {
     }
 
     /**
-     * 経過記録モジュールの自由記載表現を返す。
+     * 経過記録モジュールの自由記載表現を返す.
      */
     public String getFreeExpression() {
         String ret = freeExp.toString();
@@ -280,7 +280,7 @@ public class MMLHelper {
     }
 
     /**
-     * soaSpec 及び pSpecをパースし xhtml の自由記載表現に変換する。
+     * soaSpec 及び pSpecをパースし xhtml の自由記載表現に変換する.
      */
     private void parse(String spec) {
 
@@ -301,7 +301,7 @@ public class MMLHelper {
     }
 
     /**
-     * 子要素を再帰的にパースする。
+     * 子要素を再帰的にパースする.
      */
     private void parseChildren(Element current) {
 
@@ -360,7 +360,7 @@ public class MMLHelper {
     }
 
     /**
-     * Schema の extRef Info を返す。
+     * Schema の extRef Info を返す.
      */
     private String getSchemaInfo(SchemaModel schema) {
         String contentType = schema.getExtRef().getContentType();
@@ -382,7 +382,7 @@ public class MMLHelper {
     }
 
     /**
-     * スタンプの文字列表現を返す。
+     * スタンプの文字列表現を返す.
      */
     private String getStampInfo(ModuleModel module) {
 

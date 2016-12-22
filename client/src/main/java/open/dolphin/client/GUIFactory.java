@@ -151,7 +151,7 @@ public class GUIFactory {
     }
 
     /**
-     * FlowLayout にボタンを配置したパネルを生成する。
+     * FlowLayout にボタンを配置したパネルを生成する.
      * @param btns 配置する Button の配列
      * @param align 配置する方向（FlowLayout.RIGHT/LEFT）
      * @return 5 ピクセル間隔でボタンが配置されたパネル
@@ -165,9 +165,9 @@ public class GUIFactory {
     }
 
     /**
-     * 右ずめにボタンを配置したパネルを生成する。
+     * 右ずめにボタンを配置したパネルを生成する.
      * @param btns 配置する Button の配列
-     * @return ボタンが配列されたパネル（左に水平 Glue、右はマージンなし）
+     * @return ボタンが配列されたパネル（左に水平 Glue，右はマージンなし）
      */
     public static JPanel createCommandButtonPanel(JButton[] btns) {
         JPanel p = new JPanel();

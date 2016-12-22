@@ -52,7 +52,7 @@ public class StampTree extends JTree implements TreeModelListener {
     private final Logger logger;
 
     /**
-     * StampTreeオブジェクトを生成する。
+     * StampTreeオブジェクトを生成する.
      *
      * @param model TreeModel
      */
@@ -163,7 +163,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * このStampTreeのTreeInfoを返す。
+     * このStampTreeのTreeInfoを返す.
      * @return Tree情報
      */
     public TreeInfo getTreeInfo() {
@@ -173,7 +173,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * このStampTreeのエンティティを返す。
+     * このStampTreeのエンティティを返す.
      * @return エンティティ
      */
     public String getEntity() {
@@ -181,7 +181,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * このStampTreeの名前を返す。
+     * このStampTreeの名前を返す.
      * @return 名前
      */
     public String getTreeName() {
@@ -189,7 +189,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * UserTreeかどうかを返す。
+     * UserTreeかどうかを返す.
      * @return UserTreeの時true
      */
     public boolean isUserTree() {
@@ -197,7 +197,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * UserTreeかどうかを設定する。
+     * UserTreeかどうかを設定する.
      * @param userTree UserTreeの時true
      */
     public void setUserTree(boolean userTree) {
@@ -233,7 +233,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * 選択されているノードを返す。
+     * 選択されているノードを返す.
      * @return
      */
     public StampTreeNode getSelectedNode() {
@@ -241,7 +241,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * 引数のポイント位置のノードを返す。
+     * 引数のポイント位置のノードを返す.
      * @param p
      * @return
      */
@@ -253,7 +253,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * このStampTreeにenter()する。
+     * このStampTreeにenter()する.
      */
     public void enter() {
         //experimental---
@@ -262,7 +262,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * KartePaneから drop されたスタンプをツリーに加える。
+     * KartePaneから drop されたスタンプをツリーに加える.
      * replace 対応 by pns
      * @param droppedStamp
      * @param selected
@@ -336,7 +336,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * StampTree に新しいノードを加える。
+     * StampTree に新しいノードを加える.
      * replace 対応 by pns
      * @param info 追加するノードの情報
      * @param selected カーソルの下にあるノード(Drop 位置のノード）
@@ -377,11 +377,11 @@ public class StampTree extends JTree implements TreeModelListener {
         } else {
 
             // Drop 位置のノードが null でコールされるケースがある
-            // 1. このtreeのスタンプではない場合、該当するTreeのルートに加える
-            // 2. パス Tree など、まだノードを持たない初期状態の時
+            // 1. このtreeのスタンプではない場合，該当するTreeのルートに加える
+            // 2. パス Tree など，まだノードを持たない初期状態の時
             // Stamp ボックスから entity に対応する tree を得る
             // stamp の名前を編集しようとして，テキストを選択したまま操作ミスでスタンプ箱にドロップしてしまうと
-            // テキストスタンプとしてスタンプ箱が認識してしまう。TODO
+            // テキストスタンプとしてスタンプ箱が認識してしまう. TODO
 
             StampTree another = stampBox.getStampTree(info.getEntity());
             boolean myTree = (another == this);
@@ -417,7 +417,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * Diagnosis Table から Drag & Drop された RegisteredDiagnosis をスタンプ化する。
+     * Diagnosis Table から Drag & Drop された RegisteredDiagnosis をスタンプ化する.
      * @param rd
      * @param selected
      * @return
@@ -492,7 +492,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * エディタで生成した病名リストを登録する。
+     * エディタで生成した病名リストを登録する.
      * @param list
      */
     public void addDiagnosis(List<RegisteredDiagnosisModel> list) {
@@ -583,7 +583,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * テキストスタンプを追加する。
+     * テキストスタンプを追加する.
      * @param text
      * @param selected
      * @return
@@ -650,7 +650,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * スタンプの情報を表示するための文字列を生成する。
+     * スタンプの情報を表示するための文字列を生成する.
      * @param stamp 情報を生成するスタンプ
      * @return スタンプの情報文字列
      */
@@ -681,7 +681,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * スタンプタスク共通の warning ダイアログを表示する。
+     * スタンプタスク共通の warning ダイアログを表示する.
      * @param title  ダイアログウインドウに表示するタイトル
      * @param message　エラーメッセージ
      */
@@ -695,7 +695,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * ノードの名前を変更する。
+     * ノードの名前を変更する.
      */
     public void renameNode() {
 
@@ -718,7 +718,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * ノードを削除する。
+     * ノードを削除する.
      */
     public void deleteNode() {
         logger.debug("stampTree deleteNode");
@@ -734,8 +734,8 @@ public class StampTree extends JTree implements TreeModelListener {
             return;
         }
 
-        // このノードをルートにするサブツリーを前順走査する列挙を生成して返します。
-        // 列挙の nextElement() メソッドによって返される最初のノードは、この削除するノードです。
+        // このノードをルートにするサブツリーを前順走査する列挙を生成して返します.
+        // 列挙の nextElement() メソッドによって返される最初のノードは，この削除するノードです.
         Enumeration e = theNode.preorderEnumeration();
 
         // このリストのなかに削除するノードとその子を含める
@@ -839,13 +839,13 @@ public class StampTree extends JTree implements TreeModelListener {
             model.insertNodeInto(folder,(MutableTreeNode) model.getRoot(), ((TreeNode) model.getRoot()).getChildCount());
 
         } else if (selected.isLeaf()) {
-            // 選択位置のノードが葉の場合、その前に挿入する
+            // 選択位置のノードが葉の場合，その前に挿入する
             StampTreeNode newParent = (StampTreeNode) selected.getParent();
             int index = newParent.getIndex(selected);
             model.insertNodeInto(folder, newParent, index);
 
         } else {
-            // 選択位置のノードが子を持つ時、最後の子として挿入する
+            // 選択位置のノードが子を持つ時，最後の子として挿入する
             model.insertNodeInto(folder, selected, selected.getChildCount());
             expandPath(selectedPath);
         }

@@ -194,7 +194,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     }
 
     /**
-     * 予約のある日をリストで返す。
+     * 予約のある日をリストで返す.
      * @return 予約日リスト
      */
     public ArrayList<AppointmentModel> getAppointDays() {
@@ -236,7 +236,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     }
 
     /**
-     * 更新された予約のリストを返す。
+     * 更新された予約のリストを返す.
      * @return 更新された予約のリスト
      */
     public ArrayList<AppointmentModel> getUpdatedAppoints() {
@@ -371,7 +371,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             return;
         }
 
-        // 当月であれば本日の３日前から検索、そうでない場合はカレンダの最初の日から検索する
+        // 当月であれば本日の３日前から検索，そうでない場合はカレンダの最初の日から検索する
         String startDate = isThisMonth() ? MMLDate.getDayFromToday(-3) : MMLDate.getDate(firstDay);
 
         // 表示する

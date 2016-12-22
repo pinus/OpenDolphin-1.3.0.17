@@ -30,7 +30,7 @@ public class MasterItem implements java.io.Serializable {
     //private String claimDiseaseCode;
     /** 診療行為区分(Claim 007)・点数集計先 */
     private String claimClassCode;
-    /** 薬剤の場合の区分 内用1、外用6、注射薬4 */
+    /** 薬剤の場合の区分 内用1，外用6，注射薬4 */
     private String ykzKbn;
     /** X の表示に使う */
     private String dummy;
@@ -181,11 +181,11 @@ public class MasterItem implements java.io.Serializable {
     }
 
     /**
-     * 内服薬かどうかは用法のコードで判断する。
-     * ykzKbn は stamp の編集の場合はセットされていないので null になっているので使えない。
+     * 内服薬かどうかは用法のコードで判断する.
+     * ykzKbn は stamp の編集の場合はセットされていないので null になっているので使えない.
      * setValue 時に，ModuleModel#getModel で BundleMed を取り出して，getClassCode() を
      * ClaimConst.RECEIPT_CODE_GAIYO/NAIYO と比較して ClaimConst.YKZ_KBN_GAIYO/NAIYO を
-     * セットすればいいかもしれないがめんどくさい。自分専用だからこれでいいのだ。
+     * セットすればいいかもしれないがめんどくさい. 自分専用だからこれでいいのだ.
      * @return
      */
     public boolean isNaiyo() {

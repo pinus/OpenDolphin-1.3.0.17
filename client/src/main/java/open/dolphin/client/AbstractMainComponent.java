@@ -121,7 +121,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
                     pvtModel.setPatient(patient);
 
                     // 受け付けを通していないのでログイン情報及び設定ファイルを使用する
-                    // 診療科名、診療科コード、医師名、医師コード、JMARI
+                    // 診療科名，診療科コード，医師名，医師コード，JMARI
                     pvtModel.setDepartment(constarctDept());
                     getContext().openKarte(pvtModel);
 
@@ -171,7 +171,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     }
 
     /**
-     * カルテを開くことが可能かどうかを返す。
+     * カルテを開くことが可能かどうかを返す.
      * @param patient
      * @return 開くことが可能な時 true
      */

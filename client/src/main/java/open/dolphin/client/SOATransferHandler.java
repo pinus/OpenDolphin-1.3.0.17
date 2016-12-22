@@ -40,7 +40,7 @@ public class SOATransferHandler extends TransferHandler {
     }
 
     /**
-     * DropされたFlavorをインポートする。
+     * DropされたFlavorをインポートする.
      */
     @Override
     public boolean importData(JComponent c, Transferable tr) {
@@ -135,7 +135,7 @@ public class SOATransferHandler extends TransferHandler {
     }
 
     /**
-     * インポート可能かどうかを返す。
+     * インポート可能かどうかを返す.
      */
     @Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {
@@ -147,7 +147,7 @@ public class SOATransferHandler extends TransferHandler {
     }
 
     /**
-     * Flavorリストのなかに受け入れられものがあるかどうかを返す。
+     * Flavorリストのなかに受け入れられものがあるかどうかを返す.
      */
     protected boolean hasFlavor(DataFlavor[] flavors) {
 
@@ -173,7 +173,7 @@ public class SOATransferHandler extends TransferHandler {
     }
 
     /**
-     * DropされたModuleInfo(StampInfo)をインポートする。
+     * DropされたModuleInfo(StampInfo)をインポートする.
      * @param tr Transferable
      * @return 成功した時 true
      */
@@ -228,7 +228,7 @@ public class SOATransferHandler extends TransferHandler {
     }
 
     /**
-     * Dropされたシェーマをインポーオする。
+     * Dropされたシェーマをインポーオする.
      * @param tr
      * @return
      */
@@ -254,7 +254,7 @@ public class SOATransferHandler extends TransferHandler {
     }
 
     /**
-     * Dropされたイメージをインポートする。
+     * Dropされたイメージをインポートする.
      */
     private boolean doImageEntryDrop(final Transferable tr) {
 
@@ -272,7 +272,7 @@ public class SOATransferHandler extends TransferHandler {
     }
 
     /**
-     * クリップボードへデータを転送する。
+     * クリップボードへデータを転送する.
      */
     @Override
     public void exportToClipboard(JComponent comp, Clipboard clip, int action) {

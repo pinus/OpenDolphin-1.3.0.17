@@ -6,7 +6,7 @@ import javax.swing.tree.TreePath;
 import open.dolphin.infomodel.ModuleInfoBean;
 
 /**
- * スタンプツリーのモデルクラス。
+ * スタンプツリーのモデルクラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

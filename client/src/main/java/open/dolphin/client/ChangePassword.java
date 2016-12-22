@@ -126,7 +126,7 @@ public class ChangePassword extends AbstractMainTool {
     }
 
     /**
-     * パスワード変更クラス。
+     * パスワード変更クラス.
      */
     protected class ChangePasswordPanel extends JPanel {
 
@@ -365,7 +365,7 @@ public class ChangePassword extends AbstractMainTool {
         }
 
         /**
-         * GUI へ値を設定する。
+         * GUI へ値を設定する.
          */
         public void get() {
 
@@ -398,7 +398,7 @@ public class ChangePassword extends AbstractMainTool {
         }
 
         /**
-         * パスワードを変更する。
+         * パスワードを変更する.
          */
         private void changePassword() {
 
@@ -566,7 +566,7 @@ public class ChangePassword extends AbstractMainTool {
         }
 
         /**
-         * パスワードの有効性をチェックする。
+         * パスワードの有効性をチェックする.
          */
         private boolean passwordOk() {
 
@@ -591,7 +591,7 @@ public class ChangePassword extends AbstractMainTool {
         }
 
         /**
-         * ボタンの enable/disable をコントロールする。
+         * ボタンの enable/disable をコントロールする.
          */
         private void checkButton() {
 
@@ -611,7 +611,7 @@ public class ChangePassword extends AbstractMainTool {
     }
 
     /**
-     * TextField を生成する。
+     * TextField を生成する.
      */
     private JTextField createTextField(int val, Insets margin, FocusAdapter fa, DocumentListener dl) {
 
@@ -637,7 +637,7 @@ public class ChangePassword extends AbstractMainTool {
     }
 
     /**
-     * パスワードフィールドを生成する。
+     * パスワードフィールドを生成する.
      */
     private JPasswordField createPassField(int val, Insets margin, FocusAdapter fa, DocumentListener dl) {
 
@@ -663,7 +663,7 @@ public class ChangePassword extends AbstractMainTool {
     }
 
     /**
-     * GridBagLayout を使用してコンポーネントを配置する。
+     * GridBagLayout を使用してコンポーネントを配置する.
      */
     private void constrain(JPanel container, Component cmp, int x, int y,
             int width, int height, int fill, int anchor) {
@@ -682,7 +682,7 @@ public class ChangePassword extends AbstractMainTool {
     }
 
     /**
-     * OSがmacかどうかを返す。
+     * OSがmacかどうかを返す.
      * @return mac の時 true
      */
     private boolean isMac() {

@@ -40,7 +40,7 @@ public class KartePaneDumper_2 {
     }
 
     /**
-     * ダンプした Document の XML 定義を返す。
+     * ダンプした Document の XML 定義を返す.
      *
      * @return Documentの内容を XML で表したもの
      */
@@ -50,7 +50,7 @@ public class KartePaneDumper_2 {
     }
 
     /**
-     * ダンプした Documentに含まれている ModuleModelを返す。
+     * ダンプした Documentに含まれている ModuleModelを返す.
      *
      * @return
      */
@@ -65,7 +65,7 @@ public class KartePaneDumper_2 {
     }
 
     /**
-     * ダンプした Documentに含まれている SchemaModel を返す。
+     * ダンプした Documentに含まれている SchemaModel を返す.
      *
      * @return
      */
@@ -81,7 +81,7 @@ public class KartePaneDumper_2 {
     }
 
     /**
-     * 引数の Document をダンプする。
+     * 引数の Document をダンプする.
      *
      * @param doc ダンプするドキュメント
      */
@@ -108,7 +108,7 @@ public class KartePaneDumper_2 {
     }
 
     /**
-     * 要素を再帰的にダンプする。
+     * 要素を再帰的にダンプする.
      * @param element 要素
      * @param writer	出力ライター
      * @throws IOException

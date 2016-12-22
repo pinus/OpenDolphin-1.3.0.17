@@ -13,7 +13,7 @@ import open.dolphin.ui.MyBorderFactory;
 import org.apache.log4j.Logger;
 
 /**
- * スタンプのデータを保持するコンポーネントで TextPane に挿入される。
+ * スタンプのデータを保持するコンポーネントで TextPane に挿入される.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

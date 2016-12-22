@@ -45,7 +45,7 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
     }
 
     /**
-     * GUI コンポーネントを生成する。
+     * GUI コンポーネントを生成する.
      */
     private void initComponent() {
 
@@ -84,7 +84,7 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
     }
 
     /**
-     * StampBoxPlugin のタブが切り替えられた時、対応するエディタを show する。
+     * StampBoxPlugin のタブが切り替えられた時，対応するエディタを show する.
      * @param entity するエディタのエンティティ名
      */
     public void show(String entity) {
@@ -102,7 +102,7 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
     }
 
     /**
-     * プロパティチェンジリスナを登録する。
+     * プロパティチェンジリスナを登録する.
      * @param prop プロパティ名
      * @param listener プロパティチェンジリスナ
      */
@@ -112,7 +112,7 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
     }
 
     /**
-     * プロパティチェンジリスナを削除する。
+     * プロパティチェンジリスナを削除する.
      * @param prop プロパティ名
      * @param listener プロパティチェンジリスナ
      */
@@ -121,7 +121,7 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
     }
 
     /**
-     * 編集中のスタンプの有効/無効の属性通知を受け，右向きボタンを制御する。
+     * 編集中のスタンプの有効/無効の属性通知を受け，右向きボタンを制御する.
      * @param e
      */
     @Override
@@ -136,7 +136,7 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
     /**
      * スタンプツリーで選択が変わると呼ばれる
      * StampBoxPlugin で，全 StampTree に addTreeSelectionListener(StampMakerPanel) されている
-     * 選択されたスタンプに応じて左ボタンを制御する。
+     * 選択されたスタンプに応じて左ボタンを制御する.
      */
     @Override
     public void valueChanged(TreeSelectionEvent e) {
@@ -160,7 +160,7 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
     }
 
     /**
-     * 編集したスタンプをボックスへ通知するためのアクションリスナ。
+     * 編集したスタンプをボックスへ通知するためのアクションリスナ.
      * 右向きボタンのリスナでエディタの編集値をgetして StampBoxPlugin のリスナに伝える
      * fire で StampBoxPlugin#EditorValueListener が呼ばれる
      */
@@ -172,7 +172,7 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
     }
 
     /**
-     * スタンプボックスで選択されているスタンプをエディタへ取り込んで編集するための左向きボタンのリスナ。
+     * スタンプボックスで選択されているスタンプをエディタへ取り込んで編集するための左向きボタンのリスナ.
      */
     private class FromStampBoxPlugin implements ActionListener {
         @Override

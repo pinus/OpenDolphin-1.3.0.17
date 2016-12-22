@@ -160,7 +160,7 @@ public class FindDialog {
     }
 
     /**
-     * Text フィールドでリターンキーが押された時の処理を行う。
+     * Text フィールドでリターンキーが押された時の処理を行う.
      */
     public void onTextAction() {
         if (isTextReady && isSearchReady) {

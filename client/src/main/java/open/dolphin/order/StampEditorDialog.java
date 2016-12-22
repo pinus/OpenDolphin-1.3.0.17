@@ -56,14 +56,14 @@ public class StampEditorDialog implements PropertyChangeListener {
     }
 
     /**
-     * エディタを開始する。
+     * エディタを開始する.
      */
     public void start() {
         initialize();
     }
 
     /**
-     * GUIコンポーネントを初期化する。
+     * GUIコンポーネントを初期化する.
      */
     private void initialize() {
 
@@ -161,7 +161,7 @@ public class StampEditorDialog implements PropertyChangeListener {
     }
 
     /**
-     * 編集した Stamp を返す。
+     * 編集した Stamp を返す.
      * @return
      */
     public Object getValue() {
@@ -169,7 +169,7 @@ public class StampEditorDialog implements PropertyChangeListener {
     }
 
     /**
-     * プロパティチェンジリスナを登録する。
+     * プロパティチェンジリスナを登録する.
      * @param prop プロパティ名
      * @param listener プロパティチェンジリスナ
      */
@@ -178,7 +178,7 @@ public class StampEditorDialog implements PropertyChangeListener {
     }
 
     /**
-     * プロパティチェンジリスナを削除する。
+     * プロパティチェンジリスナを削除する.
      * @param prop プロパティ名
      * @param listener プロパティチェンジリスナ
      */
@@ -187,7 +187,7 @@ public class StampEditorDialog implements PropertyChangeListener {
     }
 
     /**
-     * 編集中のモデル値が有効な値かどうかの通知を受け、
+     * 編集中のモデル値が有効な値かどうかの通知を受け，
      * カルテに展開ボタンを enable/disable にする
      */
     @Override

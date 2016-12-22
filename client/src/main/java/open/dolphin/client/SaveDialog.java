@@ -74,7 +74,7 @@ public class SaveDialog {
     private Window parent;
 //pns ダイアログ → JSheet で置き換える
 //  Quaqua 6.5 から，JSheet に focus がとれなくなった
-//  後ろの textPane にカーソルがうつってしまうのだが，focus 自体は JSheet にあることになっている。
+//  後ろの textPane にカーソルがうつってしまうのだが，focus 自体は JSheet にあることになっている.
 //
 //    private MyJSheet dialog;
 
@@ -149,7 +149,7 @@ public class SaveDialog {
     }
 
     /**
-     * コンポーネントにSaveParamsの値を設定する。
+     * コンポーネントにSaveParamsの値を設定する.
      */
     public void setValue(SaveParams params) {
 
@@ -212,7 +212,7 @@ public class SaveDialog {
 
 
     /**
-     * GUIコンポーネントを初期化する。
+     * GUIコンポーネントを初期化する.
      */
     private JPanel createComponent() {
 
@@ -238,7 +238,7 @@ public class SaveDialog {
         IMEControl.setImeOnIfFocused(titleField);
         titleField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkTitle());
 
-        // 診療科、印刷部数を表示するラベルとパネルを生成する
+        // 診療科，印刷部数を表示するラベルとパネルを生成する
         JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         departmentLabel = new JLabel();
         p1.add(new JLabel("診療科:"));
@@ -287,7 +287,7 @@ public class SaveDialog {
     }
 
     /**
-     * タイトルフィールドの有効性をチェックする。
+     * タイトルフィールドの有効性をチェックする.
      */
     public void checkTitle() {
         boolean enabled = titleField.getText().trim().equals("") ? false : true;
@@ -297,7 +297,7 @@ public class SaveDialog {
 
 
     /**
-     * GUIコンポーネントから値を取得し、saveparamsに設定する。
+     * GUIコンポーネントから値を取得し，saveparamsに設定する.
      */
     public void doOk() {
 
@@ -338,7 +338,7 @@ public class SaveDialog {
 
 
     /**
-     * 仮保存の場合のパラメータを設定する。
+     * 仮保存の場合のパラメータを設定する.
      */
     public void doTemp() {
 
@@ -384,7 +384,7 @@ public class SaveDialog {
     }
 
     /**
-     * キャンセルしたことを設定する。
+     * キャンセルしたことを設定する.
      */
     public void doCancel() {
         value = null;

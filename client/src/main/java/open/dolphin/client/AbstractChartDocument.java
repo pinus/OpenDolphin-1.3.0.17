@@ -8,7 +8,7 @@ import open.dolphin.ui.MyJSheet;
 import org.apache.log4j.Logger;
 
 /**
- * チャートドキュメントのルートクラス。
+ * チャートドキュメントのルートクラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -107,7 +107,7 @@ public abstract class AbstractChartDocument implements ChartDocument {
     }
 
     /**
-     * 共通の警告表示を行う。
+     * 共通の警告表示を行う.
      * @param message
      */
     protected void warning(String title, String message) {

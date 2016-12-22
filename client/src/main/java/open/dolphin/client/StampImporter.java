@@ -78,7 +78,7 @@ public class StampImporter {
     }
 
     /**
-     * 公開されているTreeのリストを取得しテーブルへ表示する。
+     * 公開されているTreeのリストを取得しテーブルへ表示する.
      */
     public void start() {
 
@@ -128,7 +128,7 @@ public class StampImporter {
     }
 
     /**
-     * GUIコンポーネントを初期化する。
+     * GUIコンポーネントを初期化する.
      */
     public void initComponent() {
         frame = new JFrame(ClientContext.getFrameTitle(TITLE));
@@ -155,7 +155,7 @@ public class StampImporter {
     }
 
     /**
-     * 終了する。
+     * 終了する.
      */
     public void stop() {
         frame.setVisible(false);
@@ -163,7 +163,7 @@ public class StampImporter {
     }
 
     /**
-     * 公開スタンプブラウズペインを生成する。
+     * 公開スタンプブラウズペインを生成する.
      */
     private JPanel createBrowsePane() {
 
@@ -250,7 +250,7 @@ public class StampImporter {
     }
 
     /**
-     * ブラウザテーブルで選択した公開Treeをインポートする。
+     * ブラウザテーブルで選択した公開Treeをインポートする.
      */
     public void importPublishedTree() {
         int row = table.getSelectedRow();
@@ -304,7 +304,7 @@ public class StampImporter {
     }
 
     /**
-     * インポートしているスタンプを削除する。
+     * インポートしているスタンプを削除する.
      */
     public void removeImportedTree() {
         int row = table.getSelectedRow();

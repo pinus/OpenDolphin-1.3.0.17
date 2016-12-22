@@ -30,7 +30,7 @@ import open.dolphin.ui.MyJSheet;
 import org.apache.log4j.Logger;
 
 /**
- * ログインダイアログ　クラス。
+ * ログインダイアログ　クラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -65,7 +65,7 @@ public class LoginDialog {
     }
 
     /**
-     * 認証結果プロパティリスナを登録する。
+     * 認証結果プロパティリスナを登録する.
      * @param prop
      * @param listener 登録する認証結果リスナ
      */
@@ -77,7 +77,7 @@ public class LoginDialog {
     }
 
     /**
-     * 認証結果プロパティリスナを登録する。
+     * 認証結果プロパティリスナを登録する.
      * @param prop
      * @param listener 削除する認証結果リスナ
      */
@@ -89,7 +89,7 @@ public class LoginDialog {
     }
 
     /**
-     * ログイン画面を開始する。
+     * ログイン画面を開始する.
      */
     public void start() {
 
@@ -122,7 +122,7 @@ public class LoginDialog {
     }
 
     /**
-     * 認証が成功したかどうかを返す。
+     * 認証が成功したかどうかを返す.
      * @return true 認証が成功した場合
      */
     public LoginStatus getResult() {
@@ -130,7 +130,7 @@ public class LoginDialog {
     }
 
     /**
-     * PropertyChange で結果を受け取るアプリに通知する。
+     * PropertyChange で結果を受け取るアプリに通知する.
      * @param result true 認証が成功した場合
      */
     private void notifyResult(final LoginStatus ret) {
@@ -138,9 +138,9 @@ public class LoginDialog {
     }
 
     /**
-     * 認証を試みる。
-     * DatabaseLoginModule を使用、UserValueが取得できた場合に認証が成功したとみなす。
-     * 詳細はBusiness Delegater へ委譲。
+     * 認証を試みる.
+     * DatabaseLoginModule を使用，UserValueが取得できた場合に認証が成功したとみなす.
+     * 詳細はBusiness Delegater へ委譲.
      */
     public void tryLogin() {
 
@@ -200,7 +200,7 @@ public class LoginDialog {
                     String time = ModelUtils.getDateTimeAsString(new Date());
                     part11Logger.info(time + ": " + userModel.getUserId() + " がログインしました");
 
-                    // ユーザID、施設ID、ユーザモデルを rojectStub へ保存する
+                    // ユーザID，施設ID，ユーザモデルを rojectStub へ保存する
                     Project.getProjectStub().setUserId(principal.getUserId());
                     Project.getProjectStub().setUserModel(userModel);
                     Project.getProjectStub().setDolphinPrincipal(principal);
@@ -268,7 +268,7 @@ public class LoginDialog {
     }
 
     /**
-     * 警告メッセージを表示する。
+     * 警告メッセージを表示する.
      * @param msg 表示するメッセージ
      */
     private void showMessageDialog(String msg) {
@@ -282,7 +282,7 @@ public class LoginDialog {
     }
 
     /**
-     * ログインダイアログを終了する。
+     * ログインダイアログを終了する.
      * @param result
      */
     private void notifyClose(LoginStatus result) {
@@ -292,7 +292,7 @@ public class LoginDialog {
     }
 
     /**
-     * GUI を構築する。
+     * GUI を構築する.
      */
     private void initComponents() {
 
@@ -318,7 +318,7 @@ public class LoginDialog {
     }
 
     /**
-     * イベント接続を行う。
+     * イベント接続を行う.
      */
     private void connect() {
 
@@ -356,7 +356,7 @@ public class LoginDialog {
     }
 
     /**
-     * モデルを表示する。
+     * モデルを表示する.
      */
     private void bindModelToView() {
 
@@ -372,7 +372,7 @@ public class LoginDialog {
     }
 
     /**
-     * モデル値を取得する。
+     * モデル値を取得する.
      */
     private void bindViewToModel() {
 
@@ -387,7 +387,7 @@ public class LoginDialog {
 
 
     /**
-     * 設定ボタンがおされた時、設定画面を開始する。
+     * 設定ボタンがおされた時，設定画面を開始する.
      */
     public void doSettingDialog() {
 
@@ -401,8 +401,8 @@ public class LoginDialog {
     }
 
     /**
-     * 設定ダイアログから通知を受ける。
-     * 有効なプロジェクトでればユーザIDをフィールドに設定しパスワードフィールドにフォーカスする。
+     * 設定ダイアログから通知を受ける.
+     * 有効なプロジェクトでればユーザIDをフィールドに設定しパスワードフィールドにフォーカスする.
      * @param valid
      **/
     public void setNewParams(Boolean valid) {
@@ -419,7 +419,7 @@ public class LoginDialog {
     }
 
     /**
-     * ログインをキャンセルする。
+     * ログインをキャンセルする.
      */
     public void doCancel() {
         view.setVisible(false);
@@ -442,7 +442,7 @@ public class LoginDialog {
         }
 
         /**
-         * ログインボタンの enable/disable を制御する。
+         * ログインボタンの enable/disable を制御する.
          */
         public void checkButtons() {
 
@@ -457,14 +457,14 @@ public class LoginDialog {
         }
 
         /**
-         * UserId フィールドでリターンきーが押された時の処理を行う。
+         * UserId フィールドでリターンきーが押された時の処理を行う.
          */
         public void onUserIdAction() {
             view.getPasswordField().requestFocus();
         }
 
         /**
-         * Password フィールドでリターンきーが押された時の処理を行う。
+         * Password フィールドでリターンきーが押された時の処理を行う.
          */
         public void onPasswordAction() {
 

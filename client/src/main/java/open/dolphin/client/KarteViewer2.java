@@ -6,7 +6,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
 
 /**
- * 2号カルテクラス。
+ * 2号カルテクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -18,7 +18,7 @@ public class KarteViewer2 extends KarteViewer {
     public KarteViewer2() {}
 
     /**
-     * P Pane を返す。
+     * P Pane を返す.
      * @return pPane
      */
     public KartePane getPPane() {
@@ -26,7 +26,7 @@ public class KarteViewer2 extends KarteViewer {
     }
 
     /**
-     * ２号カルテで初期化する。
+     * ２号カルテで初期化する.
      */
     private void initialize() {
 
@@ -58,7 +58,7 @@ public class KarteViewer2 extends KarteViewer {
     }
 
     /**
-     * プログラムを開始する。
+     * プログラムを開始する.
      */
     @Override
     public void start() {

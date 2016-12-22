@@ -34,7 +34,7 @@ public class AspStampTreeBuilder extends AbstractStampTreeBuilder  {
     }
 
     /**
-     * build を開始する。
+     * build を開始する.
      */
     @Override
     public void buildStart() {
@@ -61,7 +61,7 @@ public class AspStampTreeBuilder extends AbstractStampTreeBuilder  {
     }
 
     /**
-     * ノードを生成する。
+     * ノードを生成する.
      * @param name ノード名
      */
     @Override
@@ -140,7 +140,7 @@ public class AspStampTreeBuilder extends AbstractStampTreeBuilder  {
     }
 
     /**
-     * Node の生成を終了する。
+     * Node の生成を終了する.
      */
     @Override
     public void buildNodeEnd() {

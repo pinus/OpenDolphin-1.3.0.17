@@ -51,7 +51,7 @@ public abstract class AbstractStampTreeBuilder {
     }
 
     /**
-     * 特殊文字を変換する。
+     * 特殊文字を変換する.
      */
     protected String toXmlText(String text) {
         for (int i = 0; i < REPLACES.length; i++) {

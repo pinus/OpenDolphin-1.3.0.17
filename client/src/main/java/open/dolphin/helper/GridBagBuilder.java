@@ -70,7 +70,7 @@ public class GridBagBuilder {
     }
 
     /**
-     * タイトルボーダを設定する。
+     * タイトルボーダを設定する.
      */
     public void setTitle(String title) {
 
@@ -87,14 +87,14 @@ public class GridBagBuilder {
     }
 
     /**
-     * 座標(x, y) anchor の位置に長さ一のコンポーネントを追加する。
+     * 座標(x, y) anchor の位置に長さ一のコンポーネントを追加する.
      */
     public void add(Component c, int x, int y, int anchor) {
         add(c, x, y, 1, 1, anchor);
     }
 
     /**
-     * 座標(x, y) anchor の位置にスパン(width, height)のコンポーネントを追加する。
+     * 座標(x, y) anchor の位置にスパン(width, height)のコンポーネントを追加する.
      */
     public void add(Component cmp, int x, int y, int width, int height, int anchor) {
 
@@ -119,14 +119,14 @@ public class GridBagBuilder {
     }
 
     /**
-     * 座標(x, y)の位置にスパン１で重み(wx, wy)のコンポーネントを追加する。
+     * 座標(x, y)の位置にスパン１で重み(wx, wy)のコンポーネントを追加する.
      */
     public void add(Component cmp, int x, int y, int fill, double wx, double wy) {
         add(cmp, x, y, 1, 1, fill, wx, wy);
     }
 
     /**
-     * 座標(x, y)の位置にスパン(width, height)で重み(wx, wy)のコンポーネントを追加する。
+     * 座標(x, y)の位置にスパン(width, height)で重み(wx, wy)のコンポーネントを追加する.
      */
     public void add(Component cmp, int x, int y, int width, int height, int fill, double wx, double wy) {
 

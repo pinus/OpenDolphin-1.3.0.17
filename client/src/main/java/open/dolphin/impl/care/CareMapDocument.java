@@ -89,7 +89,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 初期化する。
+     * 初期化する.
      */
     private void initialize() {
 
@@ -99,7 +99,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         JPanel myPanel = getUI();
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
 
-        // 先月、今月、来月のカレンダーを生成する
+        // 先月，今月，来月のカレンダーを生成する
         SimpleCalendarPanel.SimpleCalendarPool pool = SimpleCalendarPanel.SimpleCalendarPool
                 .getInstance();
         c0 = pool.acquireSimpleCalendar(origin - 1);
@@ -264,7 +264,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         imagePanel.setMyParent(this);
         imagePanel.setPid(chartCtx.getPatient().getPatientId());
 
-        // 表示するオーダを選択する Combo, カレンダーの送る、戻るボタンを配置するパネル
+        // 表示するオーダを選択する Combo, カレンダーの送る，戻るボタンを配置するパネル
         JPanel cp = new JPanel();
         cp.setLayout(new BoxLayout(cp, BoxLayout.X_AXIS));
 
@@ -390,7 +390,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * オーダを表示するカラーを返す。
+     * オーダを表示するカラーを返す.
      *
      * @param order
      *            オーダ名
@@ -407,7 +407,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 予約のカラーを返す。
+     * 予約のカラーを返す.
      *
      * @param appoint 予約名
      * @return カラー
@@ -422,7 +422,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * プロパティチェンジリスナを追加する。
+     * プロパティチェンジリスナを追加する.
      *
      * @param prop プロパティ名
      * @param l リスナ
@@ -435,7 +435,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * プロパティチェンジリスナを削除する。
+     * プロパティチェンジリスナを削除する.
      *
      * @param prop プロパティ名
      * @param l リスナ
@@ -449,7 +449,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 表示している期間内にあるモジュールの日をマークする。
+     * 表示している期間内にあるモジュールの日をマークする.
      * @param newModules  表示している期間内にあるモジュールのリスト
      */
     public void setAllModules(List newModules) {
@@ -468,7 +468,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 表示している期間内にある予約日をマークする。
+     * 表示している期間内にある予約日をマークする.
      * @param allAppo 表示している期間内にある予約日のリスト
      */
     public void setAllAppointments(List allAppo) {
@@ -487,7 +487,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 表示している期間内にある画像をマークする。
+     * 表示している期間内にある画像をマークする.
      * @param allAppo 表示している期間内にある画像のリスト
      */
     public void setAllImages(List images) {
@@ -506,7 +506,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 抽出期間が変更された場合、現在選択されているイベントに応じ、 モジュールまたは画像履歴を取得する。
+     * 抽出期間が変更された場合，現在選択されているイベントに応じ， モジュールまたは画像履歴を取得する.
      */
     public void setSelectedPeriod(Period p) {
         //Period old = selectedPeriod;
@@ -521,7 +521,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * カレンダーセットの変更通知をする。
+     * カレンダーセットの変更通知をする.
      */
     private void notifyCalendar() {
         SimpleCalendarPanel[] sc = new SimpleCalendarPanel[3];
@@ -536,7 +536,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 表示するオーダが変更された場合、選択されたイベントに応じ、 モジュールまたは画像履歴を取得する。
+     * 表示するオーダが変更された場合，選択されたイベントに応じ， モジュールまたは画像履歴を取得する.
      */
     public void setSelectedEvent(String code) {
         //String old = selectedEvent;
@@ -551,7 +551,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 設定されている curEvent と抽出期間からモジュールのリストを取得する。
+     * 設定されている curEvent と抽出期間からモジュールのリストを取得する.
      */
     private void getModuleList(final boolean appo) {
 
@@ -619,7 +619,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 設定されている抽出期間から画像履歴を取得する。
+     * 設定されている抽出期間から画像履歴を取得する.
      */
     private void getImageList() {
 
@@ -687,7 +687,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * 新規及び変更された予約を保存する。
+     * 新規及び変更された予約を保存する.
      */
     @Override
     public void save() {
@@ -710,7 +710,7 @@ public final class CareMapDocument extends AbstractChartDocument {
                     }
                     appo.setCreator(Project.getUserModel());
 
-                    // 確定日、記録日、開始日
+                    // 確定日，記録日，開始日
                     // 現状の実装はここまで
                     Date confirmed = new Date();
                     appo.setConfirmed(confirmed);

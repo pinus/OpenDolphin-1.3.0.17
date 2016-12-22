@@ -40,7 +40,7 @@ public class FileInspector {
     private static final String DEFAULT_DOCUMENT_FOLDER = "/Volumes/documents/";
 
     /**
-     * MemoInspectorオブジェクトを生成する。
+     * MemoInspectorオブジェクトを生成する.
      */
     public FileInspector(ChartImpl context) {
 
@@ -73,7 +73,7 @@ public class FileInspector {
     }
 
     /**
-     * GUI コンポーネントを初期化する。
+     * GUI コンポーネントを初期化する.
      */
     private void initComponents() {
 
@@ -103,7 +103,7 @@ public class FileInspector {
     }
 
     /**
-     * PaientInspector にレイアウト用のパネルを返す。
+     * PaientInspector にレイアウト用のパネルを返す.
      * @return レイアウトパネル
      */
     public JPanel getPanel() {

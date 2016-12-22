@@ -602,7 +602,7 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * マスターテーブルで選択されたアイテムの通知を受け、セットテーブルへ追加する。
+     * マスターテーブルで選択されたアイテムの通知を受け，セットテーブルへ追加する.
      * ItemTablePanel, RadiologyTablePanel 共通
      * @param e
      */
@@ -650,7 +650,7 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * エディタで編集したスタンプの値を返す。
+     * エディタで編集したスタンプの値を返す.
      * ItemTablePanel, RadiologyTablePanel 共通
      * @return スタンプ(ModuleMode = ModuleInfo + InfoModel)
      */
@@ -690,7 +690,7 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
                 MasterItem mItem = (MasterItem) iter.next();
                 ClaimItem item = new ClaimItem();
 
-                // 名称、コードを設定する
+                // 名称，コードを設定する
                 item.setName(mItem.getName()); // 名称
                 item.setCode(mItem.getCode()); // コード
 
@@ -709,7 +709,7 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
 
                     if (mItem.getClaimClassCode() != null) {
 
-                        // 注射の場合、点数集計先コードから新たに診療行為コードを生成する
+                        // 注射の場合，点数集計先コードから新たに診療行為コードを生成する
                         // ------- INJECTION_311 とかになることはないのでは？
                         // Kirishima ver. より
                         if (mItem.getClaimClassCode().equals(ClaimConst.INJECTION_311)) {
@@ -759,9 +759,9 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * 編集するスタンプの内容を表示する。
+     * 編集するスタンプの内容を表示する.
      * ItemTablePanel, RadiologyTablePanel 共通
-     * @param theStamp 編集するスタンプ、戻り値は常に新規スタンプである。
+     * @param theStamp 編集するスタンプ，戻り値は常に新規スタンプである.
      */
     public void setValue(Object theStamp) {
 

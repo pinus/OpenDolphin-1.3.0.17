@@ -17,7 +17,7 @@ import open.dolphin.ui.MyProgressMonitor;
  */
 public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionListener, PropertyChangeListener {
 
-    /** 起動している Task instance のリスト。表示される ProgressMonitor を１つにするのに使う */
+    /** 起動している Task instance のリスト. 表示される ProgressMonitor を１つにするのに使う */
     private static ArrayList<Task> taskList = new ArrayList<Task>();
 
     /** ProgressMonitor のレンジは 0-100 で固定なので MAX は 100 で固定する */

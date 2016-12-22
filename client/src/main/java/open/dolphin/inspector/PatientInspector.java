@@ -73,7 +73,7 @@ public class PatientInspector {
     }
 
     /**
-     * 患者インスペクタクラスを生成する。
+     * 患者インスペクタクラスを生成する.
      *
      * @param context インスペクタの親コンテキスト
      */
@@ -97,21 +97,21 @@ public class PatientInspector {
     }
 
     /**
-     * コンテキストを返す。
+     * コンテキストを返す.
      */
     public ChartImpl getContext() {
         return context;
     }
 
     /**
-     * コンテキストを設定する。
+     * コンテキストを設定する.
      */
     public void setContext(ChartImpl context) {
         this.context = context;
     }
 
     /**
-     * 患者カルテを返す。
+     * 患者カルテを返す.
      * @return  患者カルテ
      */
     public KarteBean getKarte() {
@@ -119,7 +119,7 @@ public class PatientInspector {
     }
 
     /**
-     * 患者を返す。
+     * 患者を返す.
      * @return 患者
      */
     public PatientModel getPatient() {
@@ -127,7 +127,7 @@ public class PatientInspector {
     }
 
     /**
-     * 基本情報インスペクタを返す。
+     * 基本情報インスペクタを返す.
      * @return 基本情報インスペクタ
      */
     public BasicInfoInspector getBasicInfoInspector() {
@@ -135,7 +135,7 @@ public class PatientInspector {
     }
 
     /**
-     * 来院歴インスペクタを返す。
+     * 来院歴インスペクタを返す.
      * @return 来院歴インスペクタ
      */
     public PatientVisitInspector getPatientVisitInspector() {
@@ -143,7 +143,7 @@ public class PatientInspector {
     }
 
     /**
-     * 患者メモインスペクタを返す。
+     * 患者メモインスペクタを返す.
      * @return 患者メモインスペクタ
      */
     public MemoInspector getMemoInspector() {
@@ -151,7 +151,7 @@ public class PatientInspector {
     }
 
     /**
-     * 文書履歴インスペクタを返す。
+     * 文書履歴インスペクタを返す.
      * @return 文書履歴インスペクタ
      */
     public DocumentHistory getDocumentHistory() {
@@ -159,7 +159,7 @@ public class PatientInspector {
     }
 
     /**
-     * レイアウトのためにインスペクタのコンテナパネルを返す。
+     * レイアウトのためにインスペクタのコンテナパネルを返す.
      * @return インスペクタのコンテナパネル
      */
     public JPanel getPanel() {
@@ -203,7 +203,7 @@ public class PatientInspector {
         diagnosisInspector = new DiagnosisInspector(context);
         fileInspector = new FileInspector(context);
 
-        // タブパネルへ格納する(文書履歴、健康保険、アレルギ、身長体重はタブパネルで切り替え表示する)
+        // タブパネルへ格納する(文書履歴，健康保険，アレルギ，身長体重はタブパネルで切り替え表示する)
         //tabbedPane = new MyJTabbedPane(new Insets(5,5,5,5));
         tabbedPane = new PNSTabbedPane();
         tabbedPane.setBorder(BorderFactory.createTitledBorder(""));

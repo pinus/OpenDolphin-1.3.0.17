@@ -12,7 +12,7 @@ import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.project.Project;
 
 /**
- * ORCA StampTree クラス。
+ * ORCA StampTree クラス.
  *
  * @author Kazushi Minagawa
  */
@@ -30,7 +30,7 @@ public class OrcaTree extends StampTree {
     }
 
     /**
-     * StampBox のタブでこのTreeが選択された時コールされる。
+     * StampBox のタブでこのTreeが選択された時コールされる.
      */
     @Override
     public void enter() {

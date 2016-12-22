@@ -234,7 +234,7 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
     }
 
     /**
-     * 選択された日を通知する。
+     * 選択された日を通知する.
      */
     public void setSelectedDate(Object o) {
         Object old = selectedDate;

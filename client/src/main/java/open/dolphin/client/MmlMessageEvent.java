@@ -5,7 +5,7 @@ import open.dolphin.infomodel.SchemaModel;
 
 
 /**
- * MML インスタンスを通知するイベントクラス。
+ * MML インスタンスを通知するイベントクラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

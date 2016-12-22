@@ -33,7 +33,7 @@ import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJPopupMenu;
 
 /**
- * アレルギデータを編集するエディタクラス。
+ * アレルギデータを編集するエディタクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

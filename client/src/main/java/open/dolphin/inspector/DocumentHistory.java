@@ -43,7 +43,7 @@ import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyDefaultCellEditor;
 
 /**
- * 文書履歴を取得し、表示するクラス。
+ * 文書履歴を取得し，表示するクラス.
  *
  * @author Minagawa,Kazushi
  */
@@ -97,11 +97,11 @@ public class DocumentHistory {
     };
     // Key入力をブロックするリスナ
     private BlockKeyListener blockKeyListener;
-    // 編集終了したカルテの日付を保存する。編集終了した時に必ず選択するために使う
+    // 編集終了したカルテの日付を保存する. 編集終了した時に必ず選択するために使う
     private String editDate = null;
 
     /**
-     * 文書履歴オブジェクトを生成する。
+     * 文書履歴オブジェクトを生成する.
      * @param owner コンテキシト
      */
     public DocumentHistory(ChartImpl context) {
@@ -123,7 +123,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 履歴テーブルのコレクションを clear する。
+     * 履歴テーブルのコレクションを clear する.
      */
     public void clear() {
         tableModel.clear();
@@ -144,7 +144,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 束縛プロパティリスナを登録する。
+     * 束縛プロパティリスナを登録する.
      * @param propName プロパティ名
      * @param listener リスナ
      */
@@ -156,7 +156,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 束縛プロパティを削除する。
+     * 束縛プロパティを削除する.
      * @param propName プロパティ名
      * @param listener リスナ
      */
@@ -168,7 +168,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 選択された文書履歴(複数)を返す。
+     * 選択された文書履歴(複数)を返す.
      * @return 選択された文書履歴(複数)
      */
     public DocInfoModel[] getSelectedHistories() {
@@ -176,7 +176,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 束縛プロパティの選択された文書履歴(複数)を設定する。通知を行う。
+     * 束縛プロパティの選択された文書履歴(複数)を設定する. 通知を行う.
      * @param newSelected 選択された文書履歴(複数)
      */
     public void setSelectedHistories(DocInfoModel[] newSelected) {
@@ -192,7 +192,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 履歴の検索時にテーブルのキー入力をブロックする。
+     * 履歴の検索時にテーブルのキー入力をブロックする.
      * @param busy true の時検索中
      */
     public void blockHistoryTable(boolean busy) {
@@ -209,7 +209,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 文書履歴を Karte から取得し表示する。
+     * 文書履歴を Karte から取得し表示する.
      */
     public void showHistory() {
         //List list = context.getKarte().getEntryCollection("docInfo");
@@ -218,10 +218,10 @@ public class DocumentHistory {
     }
 
     /**
-     * 文書履歴を取得する。
-     * 取得するパラメータ(患者ID、文書タイプ、抽出期間)はこのクラスの属性として
-     * 定義されている。これらのパラメータは comboBox等で選択される。値が変化する度に
-     * このメソッドがコールされる。
+     * 文書履歴を取得する.
+     * 取得するパラメータ(患者ID，文書タイプ，抽出期間)はこのクラスの属性として
+     * 定義されている. これらのパラメータは comboBox等で選択される. 値が変化する度に
+     * このメソッドがコールされる.
      */
     public void getDocumentHistory() {
 
@@ -252,7 +252,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 抽出期間等が変化し、履歴を再取得した場合等の処理で、履歴テーブルの更新、 最初の行の自動選択、束縛プロパティの変化通知を行う。
+     * 抽出期間等が変化し，履歴を再取得した場合等の処理で，履歴テーブルの更新， 最初の行の自動選択，束縛プロパティの変化通知を行う.
      * DocInfoTask から呼ばれる
      */
     private void updateHistory(List newHistory) {
@@ -343,7 +343,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 文書履歴のタイトルを変更する。
+     * 文書履歴のタイトルを変更する.
      */
     public void titleChanged(DocInfoModel docInfo) {
 
@@ -354,7 +354,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 抽出期間を変更し再検索する。
+     * 抽出期間を変更し再検索する.
      */
     public void periodChanged(int state) {
         if (state == ItemEvent.SELECTED) {
@@ -373,7 +373,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 文書種別を変更し再検索する。
+     * 文書種別を変更し再検索する.
      */
     public void contentChanged(int state) {
         if (state == ItemEvent.SELECTED) {
@@ -384,7 +384,7 @@ public class DocumentHistory {
     }
 
     /**
-     * GUI コンポーネントを生成する。
+     * GUI コンポーネントを生成する.
      */
     private void initComponent() {
 
@@ -466,7 +466,7 @@ public class DocumentHistory {
     }
 
     /**
-     * レイアウトパネルを返す。
+     * レイアウトパネルを返す.
      * @return
      */
     public JPanel getPanel() {
@@ -541,7 +541,7 @@ public class DocumentHistory {
     }
 
     /**
-     * キーボード入力をブロックするリスナクラス。
+     * キーボード入力をブロックするリスナクラス.
      */
     private class BlockKeyListener implements KeyListener {
         @Override
@@ -559,7 +559,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 検索パラメータの文書タイプを設定する。。
+     * 検索パラメータの文書タイプを設定する. .
      * @param extractionContent 文書タイプ
      */
     public void setExtractionContent(String extractionContent) {
@@ -571,7 +571,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 検索パラメータの文書タイプを返す。
+     * 検索パラメータの文書タイプを返す.
      * @return 文書タイプ
      */
     public String getExtractionContent() {
@@ -579,7 +579,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 検索パラメータの抽出期間を設定する。
+     * 検索パラメータの抽出期間を設定する.
      * @param extractionPeriod 抽出期間
      */
     public void setExtractionPeriod(Date extractionPeriod) {
@@ -588,7 +588,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 検索パラメータの抽出期間を返す。
+     * 検索パラメータの抽出期間を返す.
      * @return 抽出期間
      */
     public Date getExtractionPeriod() {
@@ -596,7 +596,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 文書履歴表示の昇順/降順を設定する。
+     * 文書履歴表示の昇順/降順を設定する.
      * @param ascending 昇順の時 true
      */
     public void setAscending(boolean ascending) {
@@ -605,7 +605,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 文書履歴表示の昇順/降順を返す。
+     * 文書履歴表示の昇順/降順を返す.
      * @return 昇順の時 true
      */
     public boolean isAscending() {
@@ -613,7 +613,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 修正版を表示するかどうかを設定する。
+     * 修正版を表示するかどうかを設定する.
      * @param showModifyed 表示する時 true
      */
     public void setShowModified(boolean showModifyed) {
@@ -622,7 +622,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 修正版を表示するかどうかを返す。
+     * 修正版を表示するかどうかを返す.
      * @return 表示する時 true
      */
     public boolean isShowModified() {
@@ -630,7 +630,7 @@ public class DocumentHistory {
     }
 
     /**
-     * 検索タスク。
+     * 検索タスク.
      */
     private class DocInfoTask extends DBTask<List<DocInfoModel>> {
 
@@ -666,7 +666,7 @@ public class DocumentHistory {
     }
 
     /**
-     * タイトル変更タスククラス。
+     * タイトル変更タスククラス.
      */
     private class ChangeTitleTask extends DBTask<Boolean> {
 

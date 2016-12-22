@@ -102,7 +102,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * GUI コンポーネントを初期化する。
+     * GUI コンポーネントを初期化する.
      */
     private void initComponents() {
 
@@ -201,7 +201,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * コンポネントにリスナを登録し接続する。
+     * コンポネントにリスナを登録し接続する.
      */
     private void connect() {
         // コンテキスト・リスナを登録する
@@ -334,7 +334,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * 年齢表示をオンオフする。
+     * 年齢表示をオンオフする.
      */
     public void switchAgeDisplay() {
         ageDisplay = !ageDisplay;
@@ -390,7 +390,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * リストで選択された患者を受付に登録する。
+     * リストで選択された患者を受付に登録する.
      * 複数行選択対応 by pns
      */
     public void addAsPvt() {
@@ -619,7 +619,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * 受付リストのコンテキストメニュークラス。
+     * 受付リストのコンテキストメニュークラス.
      * modified by pns
      */
     private class ContextListener extends AbstractMainComponent.ContextListener<PatientModel> {
@@ -711,7 +711,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         });
     }
     /**
-     * ファイル上書き確認ダイアログを表示する。
+     * ファイル上書き確認ダイアログを表示する.
      * @param file 上書き対象ファイル
      * @return 上書きOKが指示されたらtrue
      */
@@ -731,7 +731,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * テキストフィールドへ日付を入力するためのカレンダーポップアップメニュークラス。
+     * テキストフィールドへ日付を入力するためのカレンダーポップアップメニュークラス.
      */
     private class PopupListener extends MouseAdapter implements PropertyChangeListener {
 

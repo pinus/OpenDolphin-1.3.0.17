@@ -206,8 +206,8 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     }
 
     /**
-     * メニューリスナの実装。
-     * 挿入及びテキストメニューが選択された時の処理を行う。
+     * メニューリスナの実装.
+     * 挿入及びテキストメニューが選択された時の処理を行う.
      */
     @Override
     public void menuSelected(MenuEvent e) {
@@ -234,12 +234,12 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
                 String entity = tree.getEntity();
 
                 if (entity.equals(IInfoModel.ENTITY_DIAGNOSIS)) {
-                    // 傷病名の時、傷病名メニューを構築し追加する
+                    // 傷病名の時，傷病名メニューを構築し追加する
                     selectedMenu.add(createDiagnosisMenu(tree));
                     selectedMenu.addSeparator();
 
                 } else if (entity.equals(IInfoModel.ENTITY_TEXT)) {
-                    // テキストの時、テキストメニューを構築し追加する
+                    // テキストの時，テキストメニューを構築し追加する
                     selectedMenu.add(createTextMenu(tree));
                     selectedMenu.addSeparator();
 
@@ -254,7 +254,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
 
         else if (cmd.equals(GUIConst.MENU_TEXT)) {
             //
-            // テキストメニューの場合、スタイルを制御する
+            // テキストメニューの場合，スタイルを制御する
             //
             adjustStyleMenu();
         }
@@ -269,7 +269,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     }
 
     /**
-     * フォーマット関連メニューを調整する。
+     * フォーマット関連メニューを調整する.
      * @param kartePane
      */
     private void adjustStyleMenu() {
@@ -313,7 +313,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     }
 
     /**
-     * スタンプTreeから傷病名メニューを構築する。
+     * スタンプTreeから傷病名メニューを構築する.
      * @param insertMenu テキストメニュー
      */
     private JMenu createDiagnosisMenu(StampTree stampTree) {
@@ -336,7 +336,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
             myMenu.setEnabled(false);
 
         } else {
-            // 傷病名Tree、テーブル、ハンドラからメニューを構築する
+            // 傷病名Tree，テーブル，ハンドラからメニューを構築する
             JComponent comp = diagnosis.getDiagnosisTable();
             TransferHandler handler = comp.getTransferHandler();
             StampTreeMenuBuilder builder = new StampTreeMenuBuilder();
@@ -346,7 +346,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     }
 
     /**
-     * スタンプTreeからテキストメニューを構築する。
+     * スタンプTreeからテキストメニューを構築する.
      * @param insertMenu テキストメニュー
      */
     private JMenu createTextMenu(StampTree stampTree) {
@@ -370,7 +370,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
 
         } else {
             //
-            // TextTree、JTextPane、handler からメニューを構築する
+            // TextTree，JTextPane，handler からメニューを構築する
             // PPane にも落とさなければならない TODO
             //JComponent comp = kartePane.getTextPane();
             // TransferHandler handler = comp.getTransferHandler();
@@ -391,7 +391,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     }
 
     /**
-     * スタンプメニューを構築する。
+     * スタンプメニューを構築する.
      * @param insertMenu スタンプメニュー
      */
     private JMenu createStampMenu(StampTree stampTree) {
@@ -414,7 +414,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
             myMenu.setEnabled(false);
 
         } else {
-            // StampTree、JTextPane、Handler からメニューを構築する
+            // StampTree，JTextPane，Handler からメニューを構築する
             JComponent comp = kartePane.getTextPane();
             TransferHandler handler = comp.getTransferHandler();
             StampTreeMenuBuilder builder = new StampTreeMenuBuilder();
@@ -426,7 +426,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     ////////////////////////////////////////////////////////////////////////////
 
     /**
-     * 引数のポップアップメニューへ傷病名メニューを追加する。
+     * 引数のポップアップメニューへ傷病名メニューを追加する.
      * @param popup 傷病名メニューを追加するポップアップメニュー
      */
     public void addDiseaseMenu(MyJPopupMenu popup) {
@@ -459,7 +459,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     }
 
     /**
-     * 引数のポップアップメニューへテキストメニューを追加する。
+     * 引数のポップアップメニューへテキストメニューを追加する.
      * @param popup テキストメニューを追加するポップアップメニュー
      */
     public void addTextMenu(MyJPopupMenu popup) {
@@ -499,7 +499,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     }
 
     /**
-     * PPane のコンテキストメニューまたはツールバーの stampIcon へスタンプメニューを追加する。
+     * PPane のコンテキストメニューまたはツールバーの stampIcon へスタンプメニューを追加する.
      * @param menu Ppane のコンテキストメニュー
      * @param kartePane PPnae
      */
@@ -533,8 +533,8 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     }
 
     /**
-     * 引数のポップアップメニューへスタンプメニューを追加する。
-     * このメソッドはツールバーの stamp icon の actionPerformed からコールされる。
+     * 引数のポップアップメニューへスタンプメニューを追加する.
+     * このメソッドはツールバーの stamp icon の actionPerformed からコールされる.
      * @param popup
      */
     public void addStampMenu(MyJPopupMenu popup) {

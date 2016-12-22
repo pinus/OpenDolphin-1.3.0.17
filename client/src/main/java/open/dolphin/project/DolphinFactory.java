@@ -6,7 +6,7 @@ import open.dolphin.client.*;
 import open.dolphin.infomodel.ID;
 
 /**
- * プロジェクトに依存するオブジェクトを生成するファクトリクラス。
+ * プロジェクトに依存するオブジェクトを生成するファクトリクラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -19,14 +19,14 @@ public class DolphinFactory extends AbstractProjectFactory {
     }
 
     /**
-     * 地域連携用の患者のMasterIdを返す。
+     * 地域連携用の患者のMasterIdを返す.
      */
     public ID createMasterId(String pid, String facilityId) {
         return new ID(pid, "facility", facilityId);
     }
 
     /**
-     * CSGW(Client Side Gate Way) のパスを返す。
+     * CSGW(Client Side Gate Way) のパスを返す.
      *
      * @param  uploaderAddress MMLアップローダのIP Address
      * @param  share Samba 共有ディレクトリ

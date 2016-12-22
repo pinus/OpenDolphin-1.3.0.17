@@ -93,7 +93,7 @@ public class SendClaimImpl implements ClaimMessageListener {
     }
 
     /**
-     * プログラムを開始する。
+     * プログラムを開始する.
      */
     @Override
     public void start() {
@@ -107,7 +107,7 @@ public class SendClaimImpl implements ClaimMessageListener {
     }
 
     /**
-     * プログラムを終了する。
+     * プログラムを終了する.
      */
     @Override
     public void stop() {
@@ -175,7 +175,7 @@ public class SendClaimImpl implements ClaimMessageListener {
     }
 
     /**
-     * カルテで CLAIM データが生成されるとこの通知を受ける。
+     * カルテで CLAIM データが生成されるとこの通知を受ける.
      */
     @Override
     public void claimMessageEvent(ClaimMessageEvent e) {
@@ -183,7 +183,7 @@ public class SendClaimImpl implements ClaimMessageListener {
     }
 
     /**
-     * Queue から取り出す。
+     * Queue から取り出す.
      */
     public Object getCLAIM() throws InterruptedException {
         return queue.take();
@@ -194,7 +194,7 @@ public class SendClaimImpl implements ClaimMessageListener {
     }
 
     /**
-     * Queue内の CLAIM message をログへ出力する。
+     * Queue内の CLAIM message をログへ出力する.
      */
     public void logDump() {
 
@@ -318,7 +318,7 @@ public class SendClaimImpl implements ClaimMessageListener {
     }
 
     /**
-     * CLAIM 送信スレッド。
+     * CLAIM 送信スレッド.
      */
     private class Consumer implements Runnable {
 

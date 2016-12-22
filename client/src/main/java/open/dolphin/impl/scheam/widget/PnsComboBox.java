@@ -13,12 +13,12 @@ import javafx.util.Callback;
 /**
  * Customized ComboBox.
  * <ul>
- * <li> 選択項目にチェックマークをつける：css で list-cell に graphic を付ける。</li>
+ * <li> 選択項目にチェックマークをつける：css で list-cell に graphic を付ける. </li>
  * <li> ボタンクリックしたときに選択項目がボタン上の位置に一致するようにする：
  *      createDefaultSkin をフックして，カスタム ComboBoxListViewSkin を作り，
- *      その中で PopupWindow の位置を調節している。</li>
+ *      その中で PopupWindow の位置を調節している. </li>
  * <li> SelectionModel の selectedItemProperty, selectedIndexProperty は ReadOnly で
- *      BindBidrectional ができないので BindBidrectional できる Property を提供する。</li>
+ *      BindBidrectional ができないので BindBidrectional できる Property を提供する. </li>
  * </ul>
  * @author pns
  * @param <T>

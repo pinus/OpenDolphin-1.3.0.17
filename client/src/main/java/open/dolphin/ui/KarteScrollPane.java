@@ -46,7 +46,7 @@ public class KarteScrollPane extends MyJScrollPane {
     private static final long serialVersionUID = 1L;
 
     // 最初は viewport.getView() を一気に BufferedImage にしようとしたが，カルテが多くなると OutOfMemorryError になってしまった
-    // モニタの広さだけのバッファを１つ用意して，それを使い回すようにした。それでも，heap は -Xmx512m 以上にしないときつい
+    // モニタの広さだけのバッファを１つ用意して，それを使い回すようにした. それでも，heap は -Xmx512m 以上にしないときつい
     // ここのメモリ使い方はもう少し工夫の余地がありそう
     // private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
     // その後，メモリ節約バージョン作成：カルテサイズ変更しなければ大幅メモリ節約だがサイズ変更すると結構大変バージョン

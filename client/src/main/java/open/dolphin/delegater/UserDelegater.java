@@ -12,7 +12,7 @@ import open.dolphin.service.UserService;
 public class UserDelegater extends BusinessDelegater {
 
     /**
-     * ユーザを検索して返す。
+     * ユーザを検索して返す.
      * @param uid facilityId:username 型式の userId
      * @return UserModel
      */
@@ -31,7 +31,7 @@ public class UserDelegater extends BusinessDelegater {
     }
 
     /**
-     * ユーザを保存する。
+     * ユーザを保存する.
      * @param userModel
      * @return
      */

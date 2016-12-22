@@ -20,7 +20,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import open.dolphin.infomodel.ModuleInfoBean;
 
 /**
- * KartePane の抽象コードヘルパークラス。
+ * KartePane の抽象コードヘルパークラス.
  *
  * @author Kazyshi Minagawa
  */
@@ -195,8 +195,8 @@ public abstract class AbstractCodeHelper {
     }
 
     /**
-     * 単語の境界からキャレットの位置までのテキストを取得し、
-     * 長さがゼロ以上でれば補完メニューをポップアップする。
+     * 単語の境界からキャレットの位置までのテキストを取得し，
+     * 長さがゼロ以上でれば補完メニューをポップアップする.
      */
     protected void buildAndShowPopup() {
 

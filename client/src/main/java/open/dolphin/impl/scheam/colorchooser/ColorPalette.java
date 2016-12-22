@@ -35,7 +35,7 @@ public class ColorPalette extends Pane {
     private final ArrayList<ColorLabel> labelList = new ArrayList<>();
     /** opacity を管理するスライダー */
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty();
-    /** 選択した色を保持する property。これは opacity も保持する。 */
+    /** 選択した色を保持する property. これは opacity も保持する.  */
     private final ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>();
     /** Slider の valueChangingProperty に連動 */
     private final BooleanProperty valueChangingProperty = new SimpleBooleanProperty();
@@ -52,7 +52,7 @@ public class ColorPalette extends Pane {
         colorTile.setOrientation(Orientation.VERTICAL);
         colorTile.setPrefRows(PALETTE_ROWS);
 
-        // colorTile の生成。色見本には opacity は反映しない。
+        // colorTile の生成. 色見本には opacity は反映しない.
         DefaultPresetColor.getColorList().forEach(color -> {
             ColorLabel label = new ColorLabel(color);
             label.setToggleGroup(group);

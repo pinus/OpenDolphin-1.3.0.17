@@ -35,7 +35,7 @@ public class AccountInfoPanel extends JPanel {
 
     public static final String VALID_INFO_PROP = "validInfoProp";
 
-//masuda^   FACILITY_USERにしておく。FACILITY_OIDはデフォを使う
+//masuda^   FACILITY_USERにしておく. FACILITY_OIDはデフォを使う
     //private static final String MEMBER_TYPE = "ASP_TESTER";
     private static final String MEMBER_TYPE = "FACILITY_USER";
     private static final String DEFAULT_FACILITY_OID = IInfoModel.DEFAULT_FACILITY_OID;

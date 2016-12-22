@@ -35,7 +35,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 /**
- * 2号カルテクラス。
+ * 2号カルテクラス.
  *
  * @author Kazushi Minagawa
  */
@@ -113,7 +113,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * DocumentModelを返す。
+     * DocumentModelを返す.
      * @return DocumentModel
      */
     public DocumentModel getModel() {
@@ -121,7 +121,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * DocumentModelを設定する。
+     * DocumentModelを設定する.
      * @param model DocumentModel
      */
     public void setModel(DocumentModel model) {
@@ -181,7 +181,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * SOAPaneを返す。
+     * SOAPaneを返す.
      * @return SOAPane
      */
     protected KartePane getSOAPane() {
@@ -189,7 +189,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * PPaneを返す。
+     * PPaneを返す.
      * @return PPane
      */
     protected KartePane getPPane() {
@@ -197,7 +197,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * 編集可能属性を設定する。
+     * 編集可能属性を設定する.
      * @param b 編集可能な時true
      */
     protected void setEditable(boolean b) {
@@ -205,7 +205,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * MMLリスナを追加する。
+     * MMLリスナを追加する.
      * @param listener MMLリスナリスナ
      */
     public void addMMLListner(MmlMessageListener listener) throws TooManyListenersException {
@@ -216,7 +216,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * MMLリスナを削除する。
+     * MMLリスナを削除する.
      * @param listener MMLリスナリスナ
      */
     public void removeMMLListener(MmlMessageListener listener) {
@@ -226,7 +226,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * CLAIMリスナを追加する。
+     * CLAIMリスナを追加する.
      * @param listener CLAIMリスナ
      * @throws TooManyListenersException
      */
@@ -235,7 +235,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * CLAIMリスナを削除する。
+     * CLAIMリスナを削除する.
      * @param listener 削除するCLAIMリスナ
      */
     public void removeCLAIMListener(ClaimMessageListener listener) {
@@ -243,7 +243,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * 修正属性を設定する。
+     * 修正属性を設定する.
      * @param b 修正する時true
      */
     protected void setModify(boolean b) {
@@ -274,7 +274,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * 初期化する。
+     * 初期化する.
      */
     public void initialize() {
 
@@ -286,7 +286,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * シングルモードで初期化する。
+     * シングルモードで初期化する.
      */
     private void initialize1() {
 
@@ -319,13 +319,13 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
         getUI().setLayout(new BorderLayout());
         getUI().add(scroller, BorderLayout.CENTER);
 
-        // 初期化の前にモデルがセットしてある。
+        // 初期化の前にモデルがセットしてある.
         // Model を表示する
         displayModel();
     }
 
     /**
-     * 2号カルテモードで初期化する。
+     * 2号カルテモードで初期化する.
      */
     private void initialize2() {
 
@@ -363,7 +363,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
 
         setUI(kp2);
 
-        // 初期化の前にモデルがセットしてある。
+        // 初期化の前にモデルがセットしてある.
         // Model を表示する
         displayModel();
     }
@@ -385,7 +385,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
    }
 
     /**
-     * シングルモードを開始する。初期化の後コールされる。
+     * シングルモードを開始する. 初期化の後コールされる.
      */
     private void start1() {
         // モデル表示後にリスナ等を設定する
@@ -395,7 +395,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * ２号カルテモードを開始する。初期化の後コールされる。
+     * ２号カルテモードを開始する. 初期化の後コールされる.
      */
     private void start2() {
         // モデル表示後にリスナ等を設定する
@@ -404,7 +404,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
         pPane.init(editable, mediator);
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                // キャレットを先頭にリセット。
+                // キャレットを先頭にリセット.
                 getSOAPane().getTextPane().setCaretPosition(0);
                 getPPane().getTextPane().setCaretPosition(0);
                 getSOAPane().getTextPane().requestFocusInWindow();
@@ -414,7 +414,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * DocumentModelを表示する。
+     * DocumentModelを表示する.
      */
     private void displayModel() {
 
@@ -542,7 +542,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * 保存ダイアログを表示し保存時のパラメータを取得する。
+     * 保存ダイアログを表示し保存時のパラメータを取得する.
      * @params sendMML MML送信フラグ 送信するとき true
      */
     private SaveParams getSaveParams(boolean joinAreaNetwork) {
@@ -601,7 +601,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
         // 確認ダイアログを表示するかどうか
 //        if (Project.getPreferences().getBoolean(Project.KARTE_SHOW_CONFIRM_AT_SAVE, true)) {
 
-            // ダイアログを表示し、アクセス権等の保存時のパラメータを取得する
+            // ダイアログを表示し，アクセス権等の保存時のパラメータを取得する
             params = new SaveParams(joinAreaNetwork);
             params.setTitle(text);
             params.setDepartment(model.getDocInfo().getDepartmentDesc());
@@ -654,7 +654,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
             }
 
             //
-            // 患者参照、施設参照不可
+            // 患者参照，施設参照不可
             //
             params.setAllowClinicRef(false);
             params.setAllowPatientRef(false);
@@ -686,7 +686,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
             // この段階での CLAIM 送信 = 診療行為送信かつclaimListener!=null
             sendClaim = (Project.getSendClaim() && claimSender.getListener() != null);
 
-            // 保存ダイアログを表示し、パラメータを得る
+            // 保存ダイアログを表示し，パラメータを得る
             // 地域連携に参加もしくはMML送信を行う場合は患者及び診療歴のある施設への参照許可
             // パラメータが設定できるようにする
             // boolean karteKey = (Project.getJoinAreaNetwork() || sendMml) ? true : false;
@@ -709,7 +709,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     }
 
     /**
-     * 保存処理の主な部分を実行する。
+     * 保存処理の主な部分を実行する.
      */
     private void save2(final SaveParams params) throws Exception {
 
@@ -1472,7 +1472,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
         }
 */
 /*
-        // いっそのことこれでもいい。20個の改行削除に7msec でも…
+        // いっそのことこれでもいい. 20個の改行削除に7msec でも…
         try {
             while ("\n".equals(kd.getText(kd.getLength() - 1, 1))) {
                 kd.remove(kd.getLength() - 1, 1);

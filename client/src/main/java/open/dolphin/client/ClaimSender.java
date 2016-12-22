@@ -44,7 +44,7 @@ public class ClaimSender {
     }
 
     /**
-     * CLAIMリスナを追加する。
+     * CLAIMリスナを追加する.
      * @param listener CLAIMリスナ
      * @throws TooManyListenersException
      */
@@ -57,7 +57,7 @@ public class ClaimSender {
     }
 
     /**
-     * CLAIM リスナを削除する。
+     * CLAIM リスナを削除する.
      * @param listener 削除するCLAIMリスナ
      */
     public void removeCLAIMListener(ClaimMessageListener listener) {
@@ -86,7 +86,7 @@ public class ClaimSender {
     }
 
     /**
-     * DocumentModel の CLAIM 送信を行う。
+     * DocumentModel の CLAIM 送信を行う.
      */
     public void send(DocumentModel sendModel) {
 

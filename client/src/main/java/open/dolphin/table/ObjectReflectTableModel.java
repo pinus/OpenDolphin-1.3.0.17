@@ -55,7 +55,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * ObjectReflectTableModelを生成する。
+     * ObjectReflectTableModelを生成する.
      * @param columnNames カラム名配列
      * @param startNumRows	開始時行数
      * @param methodNames メソッド名配列
@@ -71,7 +71,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * カラム名を返す。
+     * カラム名を返す.
      * @param index カラムインデックス
      * @return
      */
@@ -81,7 +81,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * カラム数を返す。
+     * カラム数を返す.
      * @return カラム数
      */
     @Override
@@ -90,7 +90,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * 行数を返す。
+     * 行数を返す.
      * @return 行数
      */
     @Override
@@ -99,7 +99,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * カラムのクラス型を返す。
+     * カラムのクラス型を返す.
      * @param index
      * @return
      */
@@ -109,7 +109,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * オブジェクトの値を返す。
+     * オブジェクトの値を返す.
      * @param row 行インデックス
      * @param col 列インデックス
      * @return
@@ -132,7 +132,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * データリストを設定する。
+     * データリストを設定する.
      * @param otherList データリスト
      */
     public void setObjectList(List<T> otherList) {
@@ -150,7 +150,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * コンストラクト後にカラム名を変更する。
+     * コンストラクト後にカラム名を変更する.
      * @param columnName
      * @param col
      */
@@ -162,7 +162,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * コンストラクト後にメソッドを変更する。
+     * コンストラクト後にメソッドを変更する.
      * @param methodName
      * @param col
      */
@@ -176,7 +176,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * データリストを返す。
+     * データリストを返す.
      * @return データリスト
      */
     public List<T> getObjectList() {
@@ -184,7 +184,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * データリストをクリアする。
+     * データリストをクリアする.
      */
     public void clear() {
         if (objectList != null) {
@@ -194,7 +194,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * 指定された行のオブジェクトを返す。
+     * 指定された行のオブジェクトを返す.
      * @param index 行インデックス
      * @return オブジェクト
      */

@@ -3,7 +3,7 @@ package open.dolphin.order;
 import java.beans.PropertyChangeListener;
 
 /**
- * Stamp Model Editor が実装するインターフェイス。
+ * Stamp Model Editor が実装するインターフェイス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  **/

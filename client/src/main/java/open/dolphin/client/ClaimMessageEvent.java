@@ -1,7 +1,7 @@
 package open.dolphin.client;
 
 /**
- * CLAIM インスタンスを通知するイベント。
+ * CLAIM インスタンスを通知するイベント.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

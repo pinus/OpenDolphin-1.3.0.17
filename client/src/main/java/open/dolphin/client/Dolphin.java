@@ -36,7 +36,7 @@ import open.dolphin.ui.SettingForMac;
 import org.apache.log4j.Logger;
 
 /**
- * アプリケーションのメインウインドウクラス。
+ * アプリケーションのメインウインドウクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -56,7 +56,7 @@ public class Dolphin implements MainWindow {
     private javax.swing.Timer taskTimer;
     // ロガー
     private Logger bootLogger;
-    // プリンターセットアップはMainWindowのみで行い、設定された PageFormat各プラグインが使用する
+    // プリンターセットアップはMainWindowのみで行い，設定された PageFormat各プラグインが使用する
     private PageFormat pageFormat;
     // 環境設定用の Properties
     private Properties saveEnv;
@@ -137,7 +137,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * 起動時のバックグラウンドで実行されるべきタスクを行う。
+     * 起動時のバックグラウンドで実行されるべきタスクを行う.
      */
     private void startServices() {
 
@@ -349,7 +349,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * カルテをオープンする。
+     * カルテをオープンする.
      * @param pvt 患者来院情報
      */
     @Override
@@ -363,7 +363,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * 新規診療録を作成する。使ってない？ (MainWindow の implement に必要)
+     * 新規診療録を作成する. 使ってない？ (MainWindow の implement に必要)
      */
     @Override
     public void addNewPatient() {
@@ -376,7 +376,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * MainWindow のアクションを返す。
+     * MainWindow のアクションを返す.
      * @param name Action名
      * @return Action
      */
@@ -417,7 +417,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * ブロックする。
+     * ブロックする.
      */
     @Override
     public void block() {
@@ -425,7 +425,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * ブロックを解除する。
+     * ブロックを解除する.
      */
     @Override
     public void unblock() {
@@ -433,7 +433,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * PVTServer を開始する。
+     * PVTServer を開始する.
      */
     //private void startPvtServer() {
     //    pvtServer = new PVTClientServer();
@@ -444,7 +444,7 @@ public class Dolphin implements MainWindow {
     //}
 
     /**
-     * CLAIM 送信を開始する。
+     * CLAIM 送信を開始する.
      */
     private void startSendClaim() {
         sendClaim = new SendClaimImpl();
@@ -455,7 +455,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * MML送信を開始する。
+     * MML送信を開始する.
      */
     //private void startSendMml() {
     //    sendMml = new SendMmlImpl();
@@ -466,7 +466,7 @@ public class Dolphin implements MainWindow {
     //}
 
     /**
-     * プリンターをセットアップする。
+     * プリンターをセットアップする.
      */
     public void printerSetup() {
 
@@ -488,7 +488,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * カルテの環境設定を行う。
+     * カルテの環境設定を行う.
      */
     public void setKarteEnviroment() {
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
@@ -500,7 +500,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * 環境設定を行う。
+     * 環境設定を行う.
      */
     public void doPreference() {
         //ログイン画面の段階で，メニューから環境設定を選択すると null のまま入ってくる
@@ -513,7 +513,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * 環境設定のリスナクラス。環境設定が終了するとここへ通知される。
+     * 環境設定のリスナクラス. 環境設定が終了するとここへ通知される.
      */
     private class PreferenceListener implements PropertyChangeListener {
         @Override
@@ -525,7 +525,7 @@ public class Dolphin implements MainWindow {
 
                 if (valid) {
 
-                    // 設定の変化を調べ、サービスの制御を行う
+                    // 設定の変化を調べ，サービスの制御を行う
                     ArrayList<String> messages = new ArrayList<String>(2);
 
                     // PvtServer はサーバに移動したので，client での起動は廃止
@@ -536,12 +536,12 @@ public class Dolphin implements MainWindow {
 
                     //if (start) {
                     //    startPvtServer();
-                    //    messages.add("受付受信を開始しました。");
+                    //    messages.add("受付受信を開始しました. ");
                     //} else if (stop && pvtServer != null) {
                     //    pvtServer.stop();
                     //    pvtServer = null;
                     //    saveEnv.put(GUIConst.KEY_PVT_SERVER, GUIConst.SERVICE_NOT_RUNNING);
-                    //    messages.add("受付受信を停止しました。");
+                    //    messages.add("受付受信を停止しました. ");
                     //}
 
                     // SendClaim
@@ -593,21 +593,21 @@ public class Dolphin implements MainWindow {
                     //if (start) {
                     //    startSendMml();
                     //    saveEnv.put(GUIConst.CSGW_PATH, newAddress);
-                    //    messages.add("MML送信を開始しました。(送信アドレス=" + newAddress + ")");
+                    //    messages.add("MML送信を開始しました. (送信アドレス=" + newAddress + ")");
 
                     //} else if (stop && sendMml != null) {
                     //    sendMml.stop();
                     //    sendMml = null;
                     //    saveEnv.put(GUIConst.KEY_SEND_MML, GUIConst.SERVICE_NOT_RUNNING);
                     //    saveEnv.put(GUIConst.CSGW_PATH, newAddress);
-                    //    messages.add("MML送信を停止しました。");
+                    //    messages.add("MML送信を停止しました. ");
 
                     //} else if (restart) {
                     //    sendMml.stop();
                     //    sendMml = null;
                     //    startSendMml();
                     //    saveEnv.put(GUIConst.CSGW_PATH, newAddress);
-                    //    messages.add("MML送信をリスタートしました。(送信アドレス=" + newAddress + ")");
+                    //    messages.add("MML送信をリスタートしました. (送信アドレス=" + newAddress + ")");
                     //}
 
                     if (messages.size() > 0) {
@@ -759,7 +759,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * 終了処理中にエラーが生じた場合の警告をダイアログを表示する。
+     * 終了処理中にエラーが生じた場合の警告をダイアログを表示する.
      * @param errorTask エラーが生じたタスク
      * @return ユーザの選択値
      */
@@ -820,7 +820,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * ユーザのパスワードを変更する。
+     * ユーザのパスワードを変更する.
      */
     public void changePassword() {
         ChangePassword cp = new ChangePassword();
@@ -829,7 +829,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * ユーザ登録を行う。管理者メニュー。
+     * ユーザ登録を行う. 管理者メニュー.
      */
     public void addUser() {
         AddUser au = new AddUser();
@@ -854,35 +854,35 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * ドルフィンサポートをオープンする。
+     * ドルフィンサポートをオープンする.
      */
     public void browseDolphinSupport() {
         browseURL(ClientContext.getString("menu.dolphinSupportUrl"));
     }
 
     /**
-     * ドルフィンプロジェクトをオープンする。
+     * ドルフィンプロジェクトをオープンする.
      */
     public void browseDolphinProject() {
         browseURL(ClientContext.getString("menu.dolphinUrl"));
     }
 
     /**
-     * MedXMLをオープンする。
+     * MedXMLをオープンする.
      */
     public void browseMedXml() {
         browseURL(ClientContext.getString("menu.medXmlUrl"));
     }
 
     /**
-     * SGをオープンする。
+     * SGをオープンする.
      */
     public void browseSeaGaia() {
         browseURL(ClientContext.getString("menu.seaGaiaUrl"));
     }
 
     /**
-     * URLをオープンする。
+     * URLをオープンする.
      * @param url URL
      */
     private void browseURL(String url) {
@@ -920,7 +920,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * About を表示する。
+     * About を表示する.
       */
     public void showAbout() {
         Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
@@ -930,7 +930,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * シェーマボックスを表示する。
+     * シェーマボックスを表示する.
      */
     @Override
     public void showSchemaBox() {
@@ -944,7 +944,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * スタンプボックスを表示する。
+     * スタンプボックスを表示する.
      */
     @Override
     public void showStampBox() {

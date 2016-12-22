@@ -15,7 +15,7 @@ import open.dolphin.service.PatientService;
 public class  PatientDelegater extends BusinessDelegater {
 
     /**
-     * 患者を登録する。
+     * 患者を登録する.
      * @param patient PatientModel
      * @return PatientModel の primary key
      */
@@ -24,7 +24,7 @@ public class  PatientDelegater extends BusinessDelegater {
     }
 
     /**
-     * 患者情報を検索して返す。
+     * 患者情報を検索して返す.
      * 検索高速化のため，健康保険情報は持っていない (@OneToMany のため lazy fetch になっている)
      * カルテオープン時（AbstractMainComponent#openKarte）に fetchHealthInsurance する必要あり
      * @param spec PatientSearchSpec 検索仕様
@@ -51,7 +51,7 @@ public class  PatientDelegater extends BusinessDelegater {
     }
 
     /**
-     * 患者情報を更新する。
+     * 患者情報を更新する.
      * @param patient 更新する患者
      * @return 更新数 1
      */

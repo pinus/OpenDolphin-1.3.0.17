@@ -395,7 +395,7 @@ public class StampPublisher {
     }
 
     /**
-     * スタンプを公開する。
+     * スタンプを公開する.
      */
     public void publish() {
 
@@ -510,7 +510,7 @@ public class StampPublisher {
     }
 
     /**
-     * 公開しているTreeを取り消す。
+     * 公開しているTreeを取り消す.
      */
     public void cancelPublish() {
 

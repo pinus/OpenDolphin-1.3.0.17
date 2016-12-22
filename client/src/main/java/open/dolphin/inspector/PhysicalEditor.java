@@ -33,7 +33,7 @@ import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJPopupMenu;
 
 /**
- * 身長体重データを編集するエディタクラス。
+ * 身長体重データを編集するエディタクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

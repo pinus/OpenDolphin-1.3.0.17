@@ -39,7 +39,7 @@ public class SchemaEditorProperties {
     private final StringProperty fontName = new SimpleStringProperty(Default.FONT_NAME.value);
     private final ObjectProperty<FontWeight> fontWeight = new SimpleObjectProperty<>(FontWeight.BOLD);
 
-    // UndoManager で使う。これが true なら properties が変更中。Holder の valueChangingProperty に bind される。
+    // UndoManager で使う. これが true なら properties が変更中. Holder の valueChangingProperty に bind される.
     private final BooleanProperty valueChangingProperty = new SimpleBooleanProperty();
 
     // ColorModel に関連したプロパティー

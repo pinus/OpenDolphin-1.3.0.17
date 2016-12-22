@@ -87,7 +87,7 @@ public class DaoBean {
     }
 
     /**
-     * 例外を解析しエラーコードとエラーメッセージを設定する。
+     * 例外を解析しエラーコードとエラーメッセージを設定する.
      *
      * @param e Exception
      */
@@ -120,7 +120,7 @@ public class DaoBean {
     }
 
     /**
-     * 例外の持つ情報を加える。
+     * 例外の持つ情報を加える.
      * @param e 例外
      */
     protected String appenExceptionInfo(Exception e) {

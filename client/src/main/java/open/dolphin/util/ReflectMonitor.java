@@ -14,7 +14,7 @@ import javax.swing.ProgressMonitor;
 import javax.swing.Timer;
 
 /**
- * Reflection を使用してメソッドを実行し、ProgressMonitor を表示するクラス。
+ * Reflection を使用してメソッドを実行し，ProgressMonitor を表示するクラス.
  *
  * @author Kazushi Minagawa
  */
@@ -119,7 +119,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 結果プロパティの束縛リスナを追加する。
+     * 結果プロパティの束縛リスナを追加する.
      * @param l 追加する束縛リスナ
      */
     public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -127,7 +127,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 結果プロパティの束縛リスナを削除する。
+     * 結果プロパティの束縛リスナを削除する.
      * @param l 削除する束縛リスナ
      */
     public void removePropertyChangeListener(PropertyChangeListener l) {
@@ -135,7 +135,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * メソッドの実行結果を返す。
+     * メソッドの実行結果を返す.
      * @return メソッドの実行結果オブジェクト
      */
     public Object getResult() {
@@ -143,7 +143,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 結果 Status を返す。
+     * 結果 Status を返す.
      * @return 結果Status
      */
     public int getState() {
@@ -151,7 +151,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 結果 Status を設定する。
+     * 結果 Status を設定する.
      * @param result 結果Status
      */
     public void setState(int result) {
@@ -161,7 +161,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * Reflection のパラメータを設定する。
+     * Reflection のパラメータを設定する.
      * @param target Reflection の対象オブジェクト
      * @param method 実行するメソッド
      * @param argClasses メソッド引数の Class 配列
@@ -175,7 +175,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * ProgressMonitor のパラメータを設定する。
+     * ProgressMonitor のパラメータを設定する.
      * @param cmp ProgressMonitor の Component
      * @param message ProgressMonitor の Message
      * @param note ProgressMonitor の note
@@ -191,7 +191,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 遅延時間を返す。
+     * 遅延時間を返す.
      * @return 遅延時間
      */
     public int getDelay() {
@@ -199,7 +199,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 遅延時間を設定する。
+     * 遅延時間を設定する.
      * @param delay 遅延時間
      */
     public void setDelay(int delay) {
@@ -207,7 +207,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 見積もり時間を返す。
+     * 見積もり時間を返す.
      * @return 見積もり時間
      */
     public int getMaxEstimation() {
@@ -215,7 +215,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 見積もり時間を設定する。
+     * 見積もり時間を設定する.
      * @param maxEstimation 見積もり時間
      */
     public void setMaxEstimation(int maxEstimation) {
@@ -239,7 +239,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * キャンセル可能かどうかを返す。
+     * キャンセル可能かどうかを返す.
      * @return キャンセル可能な時 true
      */
     public boolean isCancelOk() {
@@ -247,7 +247,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * キャンセル可能かどうかを設定する。
+     * キャンセル可能かどうかを設定する.
      * @param ok キャンセル可能な時 true
      */
     public void setCancelOk(boolean ok) {
@@ -255,7 +255,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * タイムアウトするかどうかを返す。
+     * タイムアウトするかどうかを返す.
      * @return タイムアウトする時 true
      */
     public boolean isTimeoutOk() {
@@ -263,7 +263,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * タイムアウトするかどうかを設定する。
+     * タイムアウトするかどうかを設定する.
      * @param タイムアウトする時 true
      */
     public void setTimeoutOk(boolean timeout) {
@@ -271,7 +271,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * Reflection のメソッドが終了したかどうかを返す。
+     * Reflection のメソッドが終了したかどうかを返す.
      * @return 終了している時 true
      */
     public boolean isDone() {
@@ -279,7 +279,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * Reflection のメソッドが終了を設定する。
+     * Reflection のメソッドが終了を設定する.
      * @param 終了した時 true
      */
     public void setDone(boolean done) {
@@ -287,7 +287,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * メソッドの実行を開始する。
+     * メソッドの実行を開始する.
      */
     public void start() {
 
@@ -336,8 +336,8 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 終了処理を行う。
-     * タイマー及びモニタをクローズする。
+     * 終了処理を行う.
+     * タイマー及びモニタをクローズする.
      */
     private void stop() {
 
@@ -351,7 +351,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 実行スレッドに割り込む。
+     * 実行スレッドに割り込む.
      */
     private void interrupt() {
         if (exec != null) {
@@ -360,7 +360,7 @@ public class ReflectMonitor implements ActionListener {
     }
 
     /**
-     * 進捗状況を管理する。
+     * 進捗状況を管理する.
      * @param e ActionEvent
      */
     public void actionPerformed(ActionEvent e) {

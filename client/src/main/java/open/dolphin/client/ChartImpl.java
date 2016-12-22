@@ -32,7 +32,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 
 /**
- * 2号カルテ、傷病名、検査結果履歴等、患者の総合的データを提供するクラス。
+ * 2号カルテ，傷病名，検査結果履歴等，患者の総合的データを提供するクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -93,7 +93,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * このチャートのカルテを返す。
+     * このチャートのカルテを返す.
      * @return カルテ
      */
     @Override
@@ -102,7 +102,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * このチャートのカルテを設定する。
+     * このチャートのカルテを設定する.
      * @param karte このチャートのカルテ
      */
     @Override
@@ -111,7 +111,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * Chart の JFrame を返す。
+     * Chart の JFrame を返す.
      * @return チャートウインドウno JFrame
      */
     @Override
@@ -120,7 +120,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * Chart内ドキュメントが共通に使用する Status パネルを返す。
+     * Chart内ドキュメントが共通に使用する Status パネルを返す.
      * @return IStatusPanel
      */
     @Override
@@ -129,7 +129,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * Chart内ドキュメントが共通に使用する Status パネルを設定する。
+     * Chart内ドキュメントが共通に使用する Status パネルを設定する.
      * @param statusPanel IStatusPanel
      */
     @Override
@@ -138,7 +138,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 来院情報を設定する。
+     * 来院情報を設定する.
      * @param pvt 来院情報
      */
     @Override
@@ -147,7 +147,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 来院情報を返す。
+     * 来院情報を返す.
      * @return 来院情報
      */
     @Override
@@ -156,7 +156,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * ReadOnly かどうかを返す。
+     * ReadOnly かどうかを返す.
      * @return ReadOnlyの時 true
      */
     @Override
@@ -165,7 +165,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * ReadOnly 属性を設定する。
+     * ReadOnly 属性を設定する.
      * @param readOnly ReadOnly user の時 true
      */
     @Override
@@ -174,7 +174,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * このチャートが対象としている患者モデルを返す。
+     * このチャートが対象としている患者モデルを返す.
      * @return チャートが対象としている患者モデル
      */
     @Override
@@ -183,7 +183,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * このチャートが対象としている患者モデルを設定する。
+     * このチャートが対象としている患者モデルを設定する.
      * @param patientModel チャートが対象とする患者モデル
      */
     public void setPatientModel(PatientModel patientModel) {
@@ -191,7 +191,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャートのステート属性を返す。
+     * チャートのステート属性を返す.
      * @return チャートのステート属性
      */
     @Override
@@ -200,7 +200,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャートのステートを設定する。
+     * チャートのステートを設定する.
      * @param chartState チャートステート
      */
     @Override
@@ -214,7 +214,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャート内で共通に使用する Mediator を返す。
+     * チャート内で共通に使用する Mediator を返す.
      * @return ChartMediator
      */
     @Override
@@ -223,7 +223,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャート内で共通に使用する Mediator を設定する。
+     * チャート内で共通に使用する Mediator を設定する.
      * @param mediator ChartMediator
      */
     public void setChartMediator(ChartMediator mediator) {
@@ -231,7 +231,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * Menu アクションを制御する。
+     * Menu アクションを制御する.
      * @param name
      * @param enabled
      */
@@ -246,7 +246,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 文書ヒストリオブジェクトを返す。
+     * 文書ヒストリオブジェクトを返す.
      * @return 文書ヒストリオブジェクト DocumentHistory
      */
     @Override
@@ -268,7 +268,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 //pns$
 
     /**
-     * 引数で指定されたタブ番号のドキュメントを表示する。
+     * 引数で指定されたタブ番号のドキュメントを表示する.
      * @param index 表示するドキュメントのタブ番号
      */
     @Override
@@ -280,7 +280,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャート内に未保存ドキュメントがあるかどうかを返す。
+     * チャート内に未保存ドキュメントがあるかどうかを返す.
      * @return 未保存ドキュメントがある時 true
      */
     @Override
@@ -358,12 +358,12 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 患者のカルテを検索取得し、GUI を構築する。
-     * このメソッドはバックグランドスレッドで実行される。
+     * 患者のカルテを検索取得し，GUI を構築する.
+     * このメソッドはバックグランドスレッドで実行される.
      */
     public void initComponents() {
 
-        // このチャート の Frame を生成し初期化する。
+        // このチャート の Frame を生成し初期化する.
         // Frame のタイトルを
         // 患者氏名(カナ):患者ID に設定する
         //
@@ -567,7 +567,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * MML送信リスナを返す。
+     * MML送信リスナを返す.
      * @return MML送信リスナ
      */
     public MmlMessageListener getMMLListener() {
@@ -575,7 +575,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * CLAIM送信リスナを返す。
+     * CLAIM送信リスナを返す.
      * @return CLAIM送信リスナ
      */
     public ClaimMessageListener getCLAIMListener() {
@@ -583,14 +583,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * メニューを制御する。
+     * メニューを制御する.
      */
     public void controlMenu() {
         stateMgr.controlMenu();
     }
 
     /**
-     * ドキュメントタブを生成する。
+     * ドキュメントタブを生成する.
      */
     private PNSTabbedPane loadDocuments() {
 
@@ -633,7 +633,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * ドキュメントタブにプラグインを遅延生成し追加する。
+     * ドキュメントタブにプラグインを遅延生成し追加する.
      * @param e
      */
     public void tabChanged(ChangeEvent e) {
@@ -676,7 +676,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 新規カルテを作成する。
+     * 新規カルテを作成する.
      */
     public void newKarte() {
 
@@ -736,12 +736,12 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         if (prefs.getBoolean(Project.KARTE_SHOW_CONFIRM_AT_NEW, true)) {
 
-            // 新規カルテダイアログへパラメータを渡し、コピー新規のオプションを制御する
+            // 新規カルテダイアログへパラメータを渡し，コピー新規のオプションを制御する
             logger.debug("show newKarteDialog");
             params = getNewKarteParams(docType, option, null, dept, deptCode, insuranceUid);
 
         } else {
-            // 保険、作成モード、配置方法を手動で設定する
+            // 保険，作成モード，配置方法を手動で設定する
             params = new NewKarteParams(option);
             params.setDocType(docType);
             params.setDepartment(dept);
@@ -835,7 +835,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * EmptyNew 新規カルテのモデルを生成する。
+     * EmptyNew 新規カルテのモデルを生成する.
      * @param params 作成パラメータセット
      * @return 新規カルテのモデル
      */
@@ -877,14 +877,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * コピーして新規カルテを生成する場合のカルテモデルを生成する。
+     * コピーして新規カルテを生成する場合のカルテモデルを生成する.
      * @param oldModel コピー元のカルテモデル
      * @param params 生成パラメータセット
      * @return 新規カルテのモデル
      */
     public DocumentModel getKarteModelToEdit(DocumentModel oldModel, NewKarteParams params) {
 
-        // 新規モデルを作成し、表示されているモデルの内容をコピーする
+        // 新規モデルを作成し，表示されているモデルの内容をコピーする
         DocumentModel newModel = new DocumentModel();
         boolean applyRp = params.getCreateMode() == Chart.NewKarteMode.APPLY_RP;
         copyModel(oldModel, newModel, applyRp);
@@ -927,7 +927,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 修正の場合のカルテモデルを生成する。
+     * 修正の場合のカルテモデルを生成する.
      * @param oldModel 修正対象のカルテモデル
      * @return 新しい版のカルテモデル
      */
@@ -991,7 +991,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * カルテエディタを生成する。
+     * カルテエディタを生成する.
      * @return カルテエディタ
      */
     public KarteEditor createEditor() {
@@ -1046,7 +1046,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * カルテ作成時にダアイログをオープンし、保険を選択させる。
+     * カルテ作成時にダアイログをオープンし，保険を選択させる.
      *
      * @param docType
      * @param option
@@ -1076,7 +1076,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             insurances.add(model);
         }
 
-        // 保険コレクションを配列に変換し、パラメータにセットする
+        // 保険コレクションを配列に変換し，パラメータにセットする
         // ユーザがこの中の保険を選択する
         PVTHealthInsuranceModel[] insModels = insurances.toArray(new PVTHealthInsuranceModel[insurances.size()]);
         params.setInsurances(insModels);
@@ -1111,7 +1111,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 患者の健康保険を返す。
+     * 患者の健康保険を返す.
      * @return 患者の健康保険配列
      */
     @Override
@@ -1134,7 +1134,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 選択された保険を特定する
-     * UUID が見つかったらそれを返す。なかったら最初に見つかった保険を返す。
+     * UUID が見つかったらそれを返す. なかったら最初に見つかった保険を返す.
      * @param uuid 選択された保険のUUID
      * @return 選択された保険
      */
@@ -1162,7 +1162,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * タブにドキュメントを追加する。
+     * タブにドキュメントを追加する.
      * @param doc 追加するドキュメント
      * @param params 追加するドキュメントの情報を保持する NewKarteParams
      */
@@ -1180,7 +1180,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * タブにドキュメントを追加する。
+     * タブにドキュメントを追加する.
      * @param doc
      * @param title タブタイトル
      */
@@ -1212,7 +1212,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 全てのドキュメントを保存する。
+     * 全てのドキュメントを保存する.
      * @param dirtyList 未保存ドキュメントのリスト
      */
     private void saveAll(java.util.List<UnsavedDocument> dirtyList) {
@@ -1234,7 +1234,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * ドキュメントのなかにdirtyのものがあるかどうかを返す。
+     * ドキュメントのなかにdirtyのものがあるかどうかを返す.
      * @return dirtyの時true
      */
     private java.util.List<UnsavedDocument> dirtyList() {
@@ -1254,19 +1254,19 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * CloseBox がクリックされた時の処理を行う。
+     * CloseBox がクリックされた時の処理を行う.
      */
     public void processWindowClosing() {
         close();
     }
 
     /**
-     * チャートウインドウを閉じる。
+     * チャートウインドウを閉じる.
      */
     @Override
     public void close() {
 
-        // この患者の EditorFrame が開いたままなら，閉じる努力をする。EditorFame 保存がキャンセルされたらあきらめる。
+        // この患者の EditorFrame が開いたままなら，閉じる努力をする. EditorFame 保存がキャンセルされたらあきらめる.
         java.util.List<Chart> editorFrames = new ArrayList<>(EditorFrame.getAllEditorFrames());
         if (editorFrames.size() > 0) {
             String patientId = this.getKarte().getPatient().getPatientId();
@@ -1276,7 +1276,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                     chart.close();
 
                     if (EditorFrame.getAllEditorFrames().contains(chart)) {
-                        // EditorFrame が消えていないと言うことは，キャンセルされたと言うこと。この場合，chart 終了もキャンセル。
+                        // EditorFrame が消えていないと言うことは，キャンセルされたと言うこと. この場合，chart 終了もキャンセル.
                         // logger.info("ChartImpl#close : canceled");
                         return;
                     }
@@ -1372,7 +1372,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * ReadOnly ユーザの State クラス。
+     * ReadOnly ユーザの State クラス.
      */
     private final class ReadOnlyState extends ChartState {
 
@@ -1380,7 +1380,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         }
 
         /**
-         * 新規カルテ作成及び修正メニューを disable にする。
+         * 新規カルテ作成及び修正メニューを disable にする.
          */
         @Override
         public void controlMenu() {
@@ -1390,7 +1390,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 保険証がない場合の State クラス。
+     * 保険証がない場合の State クラス.
      */
     private final class NoInsuranceState extends ChartState {
 
@@ -1404,7 +1404,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 通常の State クラス。
+     * 通常の State クラス.
      */
     private final class OrdinalyState extends ChartState {
 
@@ -1418,7 +1418,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * State Manager クラス。
+     * State Manager クラス.
      */
     private final class StateMgr {
 
@@ -1457,7 +1457,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**** Chart Instance を管理するための static クラス **/
     /**
-     * オープンしている全インスタンスを保持するリストを返す。
+     * オープンしている全インスタンスを保持するリストを返す.
      * @return オープンしている ChartPlugin のリスト
      */
     public static ArrayList<ChartImpl> getAllChart() {
@@ -1465,7 +1465,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャートステートの束縛リスナを登録する。
+     * チャートステートの束縛リスナを登録する.
      * @param prop 束縛プロパティ名
      * @param l 束縛リスナ
      */
@@ -1475,7 +1475,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャートステートの束縛リスナを削除する。
+     * チャートステートの束縛リスナを削除する.
      * @param prop 束縛プロパティ名
      * @param l 束縛リスナ
      */
@@ -1485,7 +1485,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャートウインドウのオープンを通知する。
+     * チャートウインドウのオープンを通知する.
      * CLOSE -> OPEN に変換する操作，ReadOnly の場合は WatingList に通知しない
      * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WatingList に通知しない
      * @param opened オープンした Chart(=this)
@@ -1508,7 +1508,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャートウインドウのクローズを通知する。
+     * チャートウインドウのクローズを通知する.
      * OPEN -> CLOSE に変更する操作   ReadOnly のときも WatingList に通知する
      * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WatingList に通知しない
      * @param closed クローズした Chart(=this)
@@ -1541,7 +1541,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * チャート状態の変化を通知する。
+     * チャート状態の変化を通知する.
      * @param changed 変化のあった ChartPlugin
      */
     public static void fireChanged(ChartImpl changed) {
