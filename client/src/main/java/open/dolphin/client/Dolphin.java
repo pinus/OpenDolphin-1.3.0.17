@@ -396,8 +396,8 @@ public class Dolphin implements MainWindow {
     }
 
     @Override
-    public void enabledAction(String name, boolean b) {
-        mediator.enabledAction(name, b);
+    public void enableAction(String name, boolean b) {
+        mediator.enableAction(name, b);
     }
 
     @Override

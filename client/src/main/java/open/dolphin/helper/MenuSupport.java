@@ -2,38 +2,44 @@ package open.dolphin.helper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+import java.util.Arrays;
+import java.util.Objects;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 /**
- * MenuSupport
+ * MenuSupport.
+ * Object に対して順番にリフレクションで method を実行していく
+ * chains[0] = addChain で登録した Object
+ * chains[1] = this
+ * chains[2] = コンストラクタで指定した owner
  *
  * @author Minagawa,Kazushi
- *
  */
 public class MenuSupport implements MenuListener {
 
     private ActionMap actions;
-    private Object[] chains;
+    private final Object[] chains = new Object[3];
 
     public MenuSupport(Object owner) {
-        Object[] chs = new Object[3];
-        chs[1] = this;
-        chs[2] = owner;
-        setChains(chs);
+        setInitialChains(owner);
     }
 
-    public void menuSelected(MenuEvent e) {
+    private void setInitialChains(Object owner) {
+        chains[1] = this;
+        chains[2] = owner;
     }
 
-    public void menuDeselected(MenuEvent e) {
-    }
+    @Override
+    public void menuSelected(MenuEvent e) {}
 
-    public void menuCanceled(MenuEvent e) {
-    }
+    @Override
+    public void menuDeselected(MenuEvent e) {}
+
+    @Override
+    public void menuCanceled(MenuEvent e) {}
 
     public void registerActions(ActionMap actions) {
         this.actions = actions;
@@ -52,50 +58,34 @@ public class MenuSupport implements MenuListener {
 
     public void disableAllMenus() {
         if (actions != null) {
-            Object[] keys = actions.keys();
-            for (Object o : keys) {
-                actions.get(o).setEnabled(false);
-            }
+            Arrays.asList(actions.keys()).forEach(obj -> actions.get(obj).setEnabled(false));
         }
     }
 
     public void disableMenus(String[] menus) {
-        if (actions != null && menus != null) {
-            for (String name : menus) {
-                Action action = actions.get(name);
-                if (action != null) {
-                    action.setEnabled(false);
-                }
-            }
-        }
+        enableMenus(menus, false);
     }
 
     public void enableMenus(String[] menus) {
+        enableMenus(menus, true);
+    }
+
+    public void enableMenus(String[] menus, boolean enable) {
         if (actions != null && menus != null) {
-            for (String name : menus) {
-                Action action = actions.get(name);
-                if (action != null) {
-                    action.setEnabled(true);
-                }
-            }
+            Arrays.asList(menus).stream()
+                    .map(name -> actions.get(name))
+                    .filter(Objects::nonNull)
+                    .forEach(action -> action.setEnabled(enable));
         }
     }
 
-    public void enabledAction(String name, boolean enabled) {
+    public void enableAction(String name, boolean enabled) {
         if (actions != null) {
             Action action = actions.get(name);
             if (action != null) {
                 action.setEnabled(enabled);
             }
         }
-    }
-
-    public void setChains(Object[] chains) {
-        this.chains = chains;
-    }
-
-    public Object[] getChains() {
-        return chains;
     }
 
     public void addChain(Object obj) {
@@ -109,11 +99,11 @@ public class MenuSupport implements MenuListener {
     }
 
     /**
-     * chain にそってリフレクションでメソッドを実行する。
-     * メソッドを実行するオブジェクトがあればそこで終了する。
-     * メソッドを実行するオブジェクトが存在しない場合もそこで終了する。
-     * コマンドチェインパターンのリフレクション版。
-     * @param obj
+     * chain にそってリフレクションでメソッドを実行する.
+     * メソッドを実行するオブジェクトがあればそこで終了する.
+     * メソッドを実行するオブジェクトが存在しない場合もそこで終了する.
+     * コマンドチェインパターンのリフレクション版.
+     * @param method
      * @return メソッドが実行された時 true
      */
     public boolean sendToChain(String method) {
@@ -132,48 +122,15 @@ public class MenuSupport implements MenuListener {
                         handled = true;
                         break;
                     // この target では実行できない。NoSuchMethodException が出るのは問題なし。
-                    } catch (IllegalAccessException ex) { System.out.println("MenuSupport.java: " + ex);
-                    } catch (IllegalArgumentException ex) { System.out.println("MenuSupport.java: " + ex);
-                    } catch (InvocationTargetException ex) { System.out.println("MenuSupport.java: " + ex); ex.printStackTrace();
+                    } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) { System.out.println("MenuSupport.java: " + ex);
+                    } catch (InvocationTargetException ex) { System.out.println("MenuSupport.java: " + ex); ex.printStackTrace(System.err);
                     } catch (NoSuchMethodException ex) { //System.out.println("MenuSupport.java: " + ex);
-                    } catch (SecurityException ex) { System.out.println("MenuSupport.java: " + ex);
                     }
                 }
             }
         }
-
         return handled;
     }
-
-    public boolean sendToChain(String method, String arg) {
-
-        boolean handled = false;
-
-        if (chains != null) {
-
-            for (Object target : chains) {
-
-                if (target != null) {
-                    try {
-                        Method mth = target.getClass().getMethod(method, new Class[]{String.class});
-                        mth.invoke(target, new Object[]{arg});
-                        handled = true;
-                        break;
-
-                    // この target では実行できない
-                    } catch (IllegalAccessException ex) { System.out.println("MenuSupport.java: " + ex);
-                    } catch (IllegalArgumentException ex) { System.out.println("MenuSupport.java: " + ex);
-                    } catch (InvocationTargetException ex) { System.out.println("MenuSupport.java: " + ex);
-                    } catch (NoSuchMethodException ex) { System.out.println("MenuSupport.java: " + ex);
-                    } catch (SecurityException ex) { System.out.println("MenuSupport.java: " + ex);
-                    }
-                }
-            }
-        }
-
-        return handled;
-    }
-
 
     public void cut() {}
 

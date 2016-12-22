@@ -124,14 +124,14 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
             if (old != null) {
                 old.exit(getActions());
             }
-            enabledAction(GUIConst.ACTION_CUT, false);
-            enabledAction(GUIConst.ACTION_COPY, false);
-            enabledAction(GUIConst.ACTION_PASTE, false);
-            enabledAction(GUIConst.ACTION_UNDO, false);
-            enabledAction(GUIConst.ACTION_REDO, false);
-            enabledAction(GUIConst.ACTION_INSERT_TEXT, false);
-            enabledAction(GUIConst.ACTION_INSERT_SCHEMA, false);
-            enabledAction(GUIConst.ACTION_INSERT_STAMP, false);
+            enableAction(GUIConst.ACTION_CUT, false);
+            enableAction(GUIConst.ACTION_COPY, false);
+            enableAction(GUIConst.ACTION_PASTE, false);
+            enableAction(GUIConst.ACTION_UNDO, false);
+            enableAction(GUIConst.ACTION_REDO, false);
+            enableAction(GUIConst.ACTION_INSERT_TEXT, false);
+            enableAction(GUIConst.ACTION_INSERT_SCHEMA, false);
+            enableAction(GUIConst.ACTION_INSERT_STAMP, false);
             if (curKarteComposit != null) {
                 logger.debug("ChartMediator curKarteComposit != null");
                 curKarteComposit.enter(getActions());
@@ -708,7 +708,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
                         null));
             }
             if (curSize == 6) {
-                enabledAction("fontLarger", false);
+                enableAction("fontLarger", false);
             }
         }
     }
@@ -727,7 +727,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
                         null));
             }
             if (curSize == 0) {
-                enabledAction("fontSmaller", false);
+                enableAction("fontSmaller", false);
             }
         }
     }
@@ -743,8 +743,8 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
                         ActionEvent.ACTION_PERFORMED,
                         null));
             }
-            enabledAction("fontSmaller", true);
-            enabledAction("fontLarger", true);
+            enableAction("fontSmaller", true);
+            enableAction("fontLarger", true);
         }
     }
 

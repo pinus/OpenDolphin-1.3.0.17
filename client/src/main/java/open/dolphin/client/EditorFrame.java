@@ -420,7 +420,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             view.setContext(EditorFrame.this);
             view.start();
             scroller = new JScrollPane(view.getUI());
-            mediator.enabledAction(GUIConst.ACTION_NEW_DOCUMENT, false);
+            mediator.enableAction(GUIConst.ACTION_NEW_DOCUMENT, false);
 
         } else if (editor != null) {
             mode = EditorMode.EDITOR;
@@ -430,8 +430,8 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             // scroller = new JScrollPane(editor.getUI());
             scroller = new MyJScrollPane(editor.getUI());
             scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-            mediator.enabledAction(GUIConst.ACTION_NEW_KARTE, false);
-            mediator.enabledAction(GUIConst.ACTION_NEW_DOCUMENT, false);
+            mediator.enableAction(GUIConst.ACTION_NEW_KARTE, false);
+            mediator.enableAction(GUIConst.ACTION_NEW_DOCUMENT, false);
 
             // KarteEditor で save が完了したら通知される
             editorListener = e -> stop();

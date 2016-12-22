@@ -91,7 +91,7 @@ public class LaboTestImporter extends AbstractMainComponent {
      */
     private void controlMenu() {
         PatientModel patientModel = getSelectedObject() != null? getSelectedObject().getPatient() : null;
-        getContext().enabledAction(GUIConst.ACTION_OPEN_KARTE, canOpen(patientModel));
+        getContext().enableAction(GUIConst.ACTION_OPEN_KARTE, canOpen(patientModel));
     }
 
     /**

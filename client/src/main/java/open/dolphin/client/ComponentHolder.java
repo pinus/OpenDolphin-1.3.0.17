@@ -25,6 +25,7 @@ public interface ComponentHolder extends PropertyChangeListener, KarteComposite 
 
     public void edit();
 
+    @Override
     public void propertyChange(PropertyChangeEvent e);
 
     public void setEntry(Position start, Position end);

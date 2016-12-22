@@ -313,7 +313,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
      * １つでも開けられないものがあれば false とする
      */
     private void controlMenu() {
-        getContext().enabledAction(GUIConst.ACTION_OPEN_KARTE, canOpen());
+        getContext().enableAction(GUIConst.ACTION_OPEN_KARTE, canOpen());
     }
 
     /**

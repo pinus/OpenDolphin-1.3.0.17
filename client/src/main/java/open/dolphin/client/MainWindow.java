@@ -28,7 +28,7 @@ public interface MainWindow {
 
     public Action getAction(String name);
 
-    public void enabledAction(String name, boolean b);
+    public void enableAction(String name, boolean b);
 
     public void openKarte(PatientVisitModel pvt);
 
@@ -48,6 +48,5 @@ public interface MainWindow {
 
     public void showSchemaBox();
 
-    //pns
     public JFrame getFrame();
 }

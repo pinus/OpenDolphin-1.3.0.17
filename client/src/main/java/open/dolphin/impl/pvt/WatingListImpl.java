@@ -545,7 +545,7 @@ public class WatingListImpl extends AbstractMainComponent {
      * 複数行選択対応 by pns
      */
     private void controlMenu() {
-        getContext().enabledAction(GUIConst.ACTION_OPEN_KARTE, canOpen());
+        getContext().enableAction(GUIConst.ACTION_OPEN_KARTE, canOpen());
     }
 
     /**
