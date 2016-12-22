@@ -5,15 +5,14 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import javax.swing.ActionMap;
 import javax.swing.JTextArea;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import open.dolphin.ui.MyJPopupMenu;
 
 /**
- *
+ * CompositeArea.
+ * KarteComposite インターフェースを持つ JTextArea - Memo で使っている
  * @author kazm
  */
-public class CompositeArea extends JTextArea implements KarteComposite<JTextArea>, CaretListener {
+public class CompositeArea extends JTextArea implements KarteComposite<JTextArea> {
     private static final long serialVersionUID = 1L;
 
     private boolean hasSelection;
@@ -21,8 +20,21 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
 
     public CompositeArea(int row, int col) {
         super(row, col);
-        //this.addCaretListener(this);
-        this.putClientProperty("Quaqua.TextComponent.showPopup ", false);
+        putClientProperty("Quaqua.TextComponent.showPopup ", false);
+        connect();
+    }
+
+    private void connect() {
+        addCaretListener(e -> {
+            boolean newSelection =  (e.getDot() != e.getMark());
+
+            if (newSelection != hasSelection) {
+                hasSelection = newSelection;
+                map.get(GUIConst.ACTION_PASTE).setEnabled(canPaste());
+                map.get(GUIConst.ACTION_CUT).setEnabled(hasSelection);
+                map.get(GUIConst.ACTION_COPY).setEnabled(hasSelection);
+            }
+        });
     }
 
     @Override
@@ -45,25 +57,8 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
         return this;
     }
 
-    @Override
-    public void caretUpdate(CaretEvent e) {
-        boolean newSelection =  (e.getDot() != e.getMark());
-        if (newSelection != hasSelection) {
-            hasSelection = newSelection;
-            map.get(GUIConst.ACTION_PASTE).setEnabled(canPaste());
-            map.get(GUIConst.ACTION_CUT).setEnabled(hasSelection);
-            map.get(GUIConst.ACTION_COPY).setEnabled(hasSelection);
-        }
-    }
-
     private boolean canPaste() {
-
-        boolean ret = false;
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-        if (t == null) {
-            return false;
-        }
-
-        return t.isDataFlavorSupported(DataFlavor.stringFlavor);
+        return t == null? false : t.isDataFlavorSupported(DataFlavor.stringFlavor);
     }
 }

@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Mediator class to control Karte Window Menu.
- *
+ * KarteComposite インターフェースを持つクラスで，メニューをコントロールする
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class ChartMediator extends MenuSupport implements UndoableEditListener, ActionListener {
