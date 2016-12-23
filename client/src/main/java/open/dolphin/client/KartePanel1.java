@@ -14,7 +14,7 @@ import javax.swing.JComponent;
  *
  * @author  kazm
  */
-public class KartePanel1 extends Panel2 {
+public class KartePanel1 extends PrintablePanel {
 
     /** Creates new form NewJPanel */
     public KartePanel1() {

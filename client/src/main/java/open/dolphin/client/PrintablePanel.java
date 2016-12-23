@@ -12,16 +12,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 /**
+ * PrintablePanel.
  *
  * @author  Junzo SATO
  */
-public class Panel2 extends JPanel implements Printable {
+public class PrintablePanel extends JPanel implements Printable {
     private static final long serialVersionUID = 1L;
-	
+
     private String patientName;
     private int height;
 
-    public Panel2() {}
+    public PrintablePanel() {}
 
     // Junzo SATO
     public void printPanel(
@@ -47,14 +48,14 @@ public class Panel2 extends JPanel implements Printable {
                     try {
                         pj.print();
                     } catch (PrinterException printErr) {
-                        printErr.printStackTrace();
+                        printErr.printStackTrace(System.err);
                     }
                 }
             } else {
                 try {
                     pj.print();
                 } catch (PrinterException printErr) {
-                    printErr.printStackTrace();
+                    printErr.printStackTrace(System.err);
                 }
             }
         }
@@ -62,6 +63,7 @@ public class Panel2 extends JPanel implements Printable {
         this.setDoubleBuffered(buffered);
     }
 
+    @Override
     public int print(Graphics g, PageFormat pf, int pi) throws PrinterException {
 
         Graphics2D g2 = (Graphics2D) g;
@@ -77,7 +79,7 @@ public class Panel2 extends JPanel implements Printable {
         double pageHeight = pf.getImageableHeight() - footerHeight;
         double pageWidth = pf.getImageableWidth();
         //
-        double componentHeight = height == 0 ? this.getSize().getHeight() : (double) height;
+        double componentHeight = height == 0 ? this.getSize().getHeight() : height;
         double componentWidth = this.getSize().getWidth();
 
         //

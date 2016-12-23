@@ -1,6 +1,7 @@
 package open.dolphin.client;
 
 /**
+ * MainService.
  *
  * @author kazm
  */

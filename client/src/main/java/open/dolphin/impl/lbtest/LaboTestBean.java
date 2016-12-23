@@ -721,6 +721,6 @@ public class LaboTestBean extends AbstractChartDocument {
         String name = getContext().getPatient().getFullName();
         PageFormat pageFormat = getContext().getContext().getPageFormat();
         int height = getUI().getSize().height;
-        ((Panel2)getUI()).printPanel(pageFormat, 1, true, name, height);
+        ((PrintablePanel)getUI()).printPanel(pageFormat, 1, true, name, height);
     }
 }

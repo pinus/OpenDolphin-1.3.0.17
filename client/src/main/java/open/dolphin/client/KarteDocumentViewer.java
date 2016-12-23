@@ -424,11 +424,6 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
         int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
         editor.setMode(mode);
 
-        // Single Karte の場合 EF させない
-        if (mode == KarteEditor.SINGLE_MODE) {
-            params.setOpenFrame(false);
-        }
-
         if (params.isOpenFrame()) {
             EditorFrame editorFrame = new EditorFrame();
             editorFrame.setChart(getContext());

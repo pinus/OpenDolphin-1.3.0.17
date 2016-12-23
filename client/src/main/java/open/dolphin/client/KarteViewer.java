@@ -51,7 +51,7 @@ public class KarteViewer extends AbstractChartDocument implements Comparable {
     // SOA Pane
     protected KartePane soaPane;
     // 2号カルテパネル
-    protected Panel2 panel2;
+    protected PrintablePanel panel2;
     // タイムスタンプの foreground カラー
     protected Color timeStampFore = TIMESTAMP_FORE;
     // タイムスタンプのフォント

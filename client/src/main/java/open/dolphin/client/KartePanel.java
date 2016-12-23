@@ -5,11 +5,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
 /**
- * KartePanel interface (abstract) for KarteViewer and KarteEditor
+ * KartePanel abstract for KarteViewer and KarteEditor.
  * 実体は KartePanelFactory で作る
  * @author pns
  */
-public abstract class KartePanel extends Panel2 {
+public abstract class KartePanel extends PrintablePanel {
+    private static final long serialVersionUID = 1L;
 
     public abstract JTextPane getPTextPane();
 

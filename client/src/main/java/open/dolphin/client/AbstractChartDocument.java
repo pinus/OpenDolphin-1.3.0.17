@@ -30,7 +30,7 @@ public abstract class AbstractChartDocument implements ChartDocument {
     protected Logger logger;
 
     public AbstractChartDocument() {
-        setUI(new Panel2());
+        setUI(new PrintablePanel());
         logger = ClientContext.getBootLogger();
     }
 

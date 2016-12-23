@@ -66,7 +66,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     // P Pane
     private KartePane pPane;
     // 2号カルテ JPanel
-    private Panel2 panel2;
+    private PrintablePanel panel2;
     // タイムスタンプの foreground
     private Color timeStampFore = TIMESTAMP_FORE;
     // タイムスタンプフォント

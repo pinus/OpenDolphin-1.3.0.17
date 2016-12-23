@@ -9,7 +9,6 @@ import java.awt.Rectangle;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BoxView;
 import javax.swing.text.ComponentView;
@@ -26,14 +25,13 @@ import open.dolphin.ui.MyBorderFactory;
 import open.dolphin.ui.MyJScrollPane;
 
 /**
- * KartePanel をつくるファクトリー
+ * KartePanel をつくるファクトリー.
  * @author pns
  */
 public class KartePanelFactory {
-    private static final long serialVersionUID = 1L;
     private static final int TIMESTAMP_PANEL_HEIGHT = 22; // 22で固定
 
-    private KartePanel kartePanel;
+    private final KartePanel kartePanel;
     private JTextPane soaTextPane;
     private JTextPane pTextPane;
     private JLabel timeStampLabel;
@@ -53,7 +51,7 @@ public class KartePanelFactory {
     }
 
     /**
-     * Viewer 用の KartePanel
+     * Viewer 用の KartePanel.
      * soaTextaPenel と soaTextPanel の中身の実際の高さの高い方を preferredSize として返す
      */
     private class ViewerPanel extends KartePanel {
