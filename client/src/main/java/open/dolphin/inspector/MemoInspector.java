@@ -2,7 +2,6 @@ package open.dolphin.inspector;
 
 import java.awt.*;
 import java.util.Date;
-import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
@@ -28,8 +27,8 @@ public class MemoInspector {
     private JPanel memoPanel;
     private CompositeArea memoArea;
     private PatientMemoModel patientMemoModel;
-    private ChartImpl context;
-    private Logger logger;
+    private final ChartImpl context;
+    private final Logger logger;
     private String oldText = "";
     public static final String NAME = "memoInspector";
 
@@ -39,14 +38,15 @@ public class MemoInspector {
 
     /**
      * MemoInspectorオブジェクトを生成する.
+     * @param context
      */
     public MemoInspector(ChartImpl context) {
-
         this.context = context;
         logger = ClientContext.getBootLogger();
-
         initComponents();
         update();
+        // Undo
+        memoArea.getDocument().addUndoableEditListener(memoArea);
     }
 
     /**
@@ -63,6 +63,7 @@ public class MemoInspector {
     private void initComponents() {
 
         memoArea = new CompositeArea(5, 10);
+        memoArea.setParent(context);
         memoArea.setLineWrap(true);
         memoArea.setMargin(new java.awt.Insets(3, 3, 2, 2));
         memoArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
@@ -103,7 +104,7 @@ public class MemoInspector {
      */
     public void updateMemo() {
         // メモ内容に変更がなければ何もしない
-        if (oldText.equals(memoArea.getText().trim())) return;
+        if (oldText.equals(memoArea.getText().trim())) { return; }
 
         if (patientMemoModel == null) {
             patientMemoModel =  new PatientMemoModel();
