@@ -40,12 +40,11 @@ import open.dolphin.ui.MyJSheet;
 import org.apache.log4j.Logger;
 
 /**
- * Karte Pane
+ * Karte Pane.
  *
  * @author Kazushi Minagawa, Digital Globe, inc.
  */
-public class KartePane implements DocumentListener, MouseListener,
-        CaretListener, PropertyChangeListener, KarteComposite {
+public class KartePane implements DocumentListener, MouseListener, CaretListener, PropertyChangeListener, KarteComposite<JTextPane> {
 
     // 文書に付けるタイトルを自動で取得する時の長さ
     private static final int TITLE_LENGTH = 15;
@@ -443,7 +442,7 @@ public class KartePane implements DocumentListener, MouseListener,
     }
 
     @Override
-    public Component getComponent() {
+    public JTextPane getComponent() {
         return getTextPane();
     }
 

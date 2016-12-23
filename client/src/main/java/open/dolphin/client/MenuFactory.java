@@ -31,7 +31,7 @@ public class MenuFactory {
     private JMenuBar menuBar;
     private JPanel toolPanel;
     private ActionMap actionMap;
-    private static boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
+    private static final boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
 
 
     public MenuFactory() {

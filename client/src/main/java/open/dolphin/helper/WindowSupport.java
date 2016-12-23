@@ -3,8 +3,8 @@ package open.dolphin.helper;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -28,14 +28,15 @@ public class WindowSupport implements MenuListener {
     final private static ArrayList<WindowSupport> allWindows = new ArrayList<>();
 
     private static final String WINDOW_MWNU_NAME = "ウインドウ";
-//pns^
+
     private static enum State { OPENED, CLOSED };
+
     // frame を整列させるときの初期位置と移動幅
     final public static int INITIAL_X = 256;
     final public static int INITIAL_Y = 40;
     final public static int INITIAL_DX = 192;
     final public static int INITIAL_DY = 20;
-//pns$
+
     // Window support が提供するスタッフ
     // フレーム
     final private MainFrame frame;
@@ -82,28 +83,20 @@ public class WindowSupport implements MenuListener {
         };
 
         // インスタンスを生成する
-        final WindowSupport ret
-                = new WindowSupport(frame, menuBar, windowMenu, windowAction);
+        final WindowSupport ret = new WindowSupport(frame, menuBar, windowMenu, windowAction);
 
         // WindowEvent をこのクラスに通知しリストの管理を行う
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+        frame.addWindowListener(new WindowAdapter() {
 
             @Override
             public void windowOpened(java.awt.event.WindowEvent e) {
-//pns           WindowSupport.windowOpened(ret);
-                setWindowList(State.OPENED);
+                allWindows.add(ret);
             }
 
             @Override
             public void windowClosed(java.awt.event.WindowEvent e) {
-//pns           WindowSupport.windowClosed(ret);
-                setWindowList(State.CLOSED);
-            }
-
-            private void setWindowList(State state) {
-                if (state == State.OPENED) allWindows.add(ret);
-                else allWindows.remove(ret);
+                allWindows.remove(ret);
             }
         });
 
@@ -116,34 +109,16 @@ public class WindowSupport implements MenuListener {
         return allWindows;
     }
 
-/*    public static void windowOpened(WindowSupport opened) {
-        // リストに追加する
-        allWindows.add(opened);
-    }
-
-    public static void windowClosed(WindowSupport closed) {
-        // リストから削除する
-        allWindows.remove(closed);
-        closed = null;
-    }
-
-    public static boolean contains(WindowSupport toCheck) {
-        return allWindows.contains(toCheck);
-    }*/
-//pns$
-
     // プライベートコンストラクタ
-    private WindowSupport(MainFrame frame, JMenuBar menuBar, JMenu windowMenu,
-            Action windowAction) {
+    private WindowSupport(MainFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction) {
         this.frame = frame;
         this.menuBar = menuBar;
         this.windowMenu = windowMenu;
         this.windowAction = windowAction;
-//pns^
+
         // インスペクタを整列するアクションだけはあらかじめ入れておく
         // こうしておかないと，１回 window メニューを開かないと accelerator が効かないことになる
         windowMenu.add(new ArrangeInspectorAction());
-//pns$
     }
 
     public MainFrame getFrame() {
@@ -167,6 +142,7 @@ public class WindowSupport implements MenuListener {
      * それらを選択するための MenuItem を追加する.
      * リストをインスペクタとカルテに整理 by pns
      */
+    @Override
     public void menuSelected(MenuEvent e) {
 
         // 全てリムーブする
@@ -186,7 +162,8 @@ public class WindowSupport implements MenuListener {
             }
         }
         // カルテ，インスペクタが開いていない場合はリターン
-        if (allWindows.size() == count) return;
+        if (allWindows.size() == count) { return; }
+
         count = 0;
         wm.addSeparator();
 
@@ -204,6 +181,7 @@ public class WindowSupport implements MenuListener {
             wm.addSeparator();
             count = 0;
         }
+
         // 次にインスペクタ
         for (WindowSupport ws : allWindows) {
             action = ws.getWindowAction();
@@ -215,25 +193,30 @@ public class WindowSupport implements MenuListener {
             }
         }
 
-        // インスペクタウインドウを整列する
+        // "インスペクタを整列する" 項目を最後に
         if (count != 0) {
             wm.addSeparator();
-            count = 0;
             Action a = new ArrangeInspectorAction();
             wm.add(a);
         }
     }
 
     /**
-     * インスペクタを整列する action
+     * インスペクタを整列する action.
      */
     private class ArrangeInspectorAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
+
         public ArrangeInspectorAction() {
+            initComponent();
+        }
+
+        private void initComponent() {
             putValue(Action.NAME, "インスペクタを整列");
             putValue(Action.SMALL_ICON, GUIConst.ICON_WINDOWS_22);
             putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_UNDERSCORE, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             JFrame f;
@@ -242,8 +225,8 @@ public class WindowSupport implements MenuListener {
             for (WindowSupport ws : allWindows) {
                 f = ws.getFrame();
                 if (f.getTitle().contains("インスペクタ")) {
-                    if (width == 0) width = f.getBounds().width;
-                    if (height == 0) height = f.getBounds().height;
+                    if (width == 0) { width = f.getBounds().width; }
+                    if (height == 0) { height = f.getBounds().height; }
 
                     f.setBounds(x, y, width, height);
                     f.toFront();
@@ -252,7 +235,7 @@ public class WindowSupport implements MenuListener {
             }
         }
     }
-//pns$
+
     @Override
     public void menuDeselected(MenuEvent e) {
     }
@@ -262,7 +245,6 @@ public class WindowSupport implements MenuListener {
     }
 
     public static ImageIcon getIcon(JFrame frame)  {
-        if (frame.isActive()) return GUIConst.ICON_STATUS_BUSY_16;
-        return GUIConst.ICON_STATUS_OFFLINE_16;
+        return frame.isActive()? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16;
     }
 }

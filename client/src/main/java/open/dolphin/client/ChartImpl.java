@@ -801,20 +801,17 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             editModel = getKarteModelToEdit(base.getModel(), params);
         }
 
+        //
         // 新規カルテにいろいろモジュールを入れる
-        StampTreeModules stm = new StampTreeModules(this);
+        //
+        StampModulePicker picker = new StampModulePicker(this);
         // 初診・再診 stampTreeModule を自動入力する
-        ModuleModel mm = stm.getBaseCharge();
-        if (mm != null) editModel.addModule(mm);
-
+        ModuleModel mm = picker.getBaseCharge();
+        if (mm != null) { editModel.addModule(mm); }
         // 初期テキストスタンプ挿入
-        if (stm.isShoshin()) {
-            mm = stm.getTextStamp("テンプレート（初診）");
-            if (mm != null) editModel.addModule(mm);
-        } else {
-            mm = stm.getTextStamp("テンプレート（再診）");
-            if (mm != null) editModel.addModule(mm);
-        }
+        mm = picker.getInitialStamp();
+        if (mm != null) { editModel.addModule(mm); }
+
         editor = createEditor();
         editor.setModel(editModel);
         editor.setEditable(true);

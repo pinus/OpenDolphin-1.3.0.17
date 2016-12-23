@@ -9,26 +9,29 @@ import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.StampModel;
 
 /**
- * StampTree から ModuleModel を取り出す
+ * StampTree から ModuleModel を取り出す.
  * @author pns
  */
-public class StampTreeModules {
+public class StampModulePicker {
 
-    private final static int SHOSHIN = 0;
-    private final static int SHOSHIN_RYOTAN = 1;
-    private final static int SHOSHIN_YAKAN = 2;
-    private final static int SHOSHIN_RYOTAN_YAKAN = 3;
-    private final static int SAISHIN = 4;
-    private final static int SAISHIN_YAKAN = 5;
-    private final static String[] SHOSHIN_SAISHIN =
-        {"初診", "初診（療養担当）", "初診（夜間・早朝等）", "初診（療養担当）（夜間・早朝等）",
-         "再診（診療所）", "再診（診療所）（夜間・早朝等）"};
+    private enum StampItem {
+        SHOSHIN ("初診"),
+        SHOSHIN_RYOTAN ("初診（療養担当）"),
+        SHOSHIN_YAKAN ("初診（夜間・早朝等）"),
+        SHOSHIN_RYOTAN_YAKAN ("初診（療養担当）（夜間・早朝等）"),
+        SAISHIN ("再診（診療所）"),
+        SAISHIN_YAKAN ("再診（診療所）（夜間・早朝等）"),
+        ;
+        private final String title;
+        private StampItem(String t) { title = t; }
+        public String stampTitle() { return title; }
+    }
 
     private final ChartMediator mediator;
     private final GregorianCalendar today;
     private final LastVisit lv;
 
-    public StampTreeModules(ChartImpl context) {
+    public StampModulePicker(ChartImpl context) {
         mediator = context.getChartMediator();
         today = new GregorianCalendar();
         lv = context.getLastVisit();
@@ -83,8 +86,19 @@ public class StampTreeModules {
         return module;
     }
 
-    /*
-     * 初診・再診を判定して，module として返す
+    /**
+     * エディタを開いたときに最初に挿入するスタンプ名.
+     * @return
+     */
+    public ModuleModel getInitialStamp() {
+        return isShoshin()?
+            getTextStamp("テンプレート（初診）"):
+            getTextStamp("テンプレート（再診）");
+    }
+
+    /**
+     * 初診・再診を判定して，module として返す.
+     * @return
      */
     public ModuleModel getBaseCharge() {
         /*
@@ -93,31 +107,30 @@ public class StampTreeModules {
          */
 
         // 初診・再診の情報判定
-        int index;
+        StampItem item;
+
         if (isShoshin()) {
             if (isRyotan()) {
-                if (isYakan()) index = SHOSHIN_RYOTAN_YAKAN;
-                else index = SHOSHIN_RYOTAN;
+                if (isYakan()) { item = StampItem.SHOSHIN_RYOTAN_YAKAN; }
+                else { item = StampItem.SHOSHIN_RYOTAN; }
             } else {
-                if (isYakan()) index = SHOSHIN_YAKAN;
-                else index = SHOSHIN;
+                if (isYakan()) { item = StampItem.SHOSHIN_YAKAN; }
+                else { item = StampItem.SHOSHIN; }
             }
         } else {
-            if (isYakan()) index = SAISHIN_YAKAN;
-            else index = SAISHIN;
+            if (isYakan()) { item = StampItem.SAISHIN_YAKAN; }
+            else { item = StampItem.SAISHIN; }
         }
 
-        //logger.info("initial stamp = " + SHOSHIN_SAISHIN[index]);
-
         // スタンプ選択
-        return getStampModule(IInfoModel.ENTITY_BASE_CHARGE_ORDER, SHOSHIN_SAISHIN[index]);
+        return getStampModule(IInfoModel.ENTITY_BASE_CHARGE_ORDER, item.stampTitle());
     }
 
     public boolean isShoshin() {
         int[] lastVisit = lv.getLastVisitInHistoryYmd();
 
         // 受診歴が無ければ初診で返す
-        if (lastVisit == null) return true;
+        if (lastVisit == null) { return true; }
 
         // 受診歴がある場合は，３ヶ月たったかどうか判定
         int dif_year = today.get(Calendar.YEAR) - lastVisit[0];
@@ -125,16 +138,16 @@ public class StampTreeModules {
         int dif_day = today.get(Calendar.DATE) - lastVisit[2];
 
         // ２年以上離れていたら初診
-        if (dif_year >= 2) return true;
+        if (dif_year >= 2) { return true; }
         // １年差の場合は月差を調整
-        if (dif_year == 1) dif_month += 12;
+        if (dif_year == 1) { dif_month += 12; }
         // 4ヶ月以上離れていたら初診
-        if (dif_month >= 4) return true;
+        if (dif_month >= 4) { return true; }
         // 3ヶ月離れている場合は，日付を比較
         else if (dif_month == 3) {
-            return dif_day >= 0;
+            return dif_day > 0;
             // それ以外は再診
-        } else return false;
+        } else { return false; }
     }
 
     private boolean isRyotan() {

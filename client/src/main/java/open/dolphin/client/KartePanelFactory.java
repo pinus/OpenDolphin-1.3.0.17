@@ -43,11 +43,15 @@ public class KartePanelFactory {
     }
 
     public static KartePanel createViewerPanel() {
-        return new KartePanelFactory(false).kartePanel;
+        return new KartePanelFactory(false).getProduct();
     }
 
     public static KartePanel createEditorPanel() {
-        return new KartePanelFactory(true).kartePanel;
+        return new KartePanelFactory(true).getProduct();
+    }
+
+    private KartePanel getProduct() {
+        return kartePanel;
     }
 
     /**
