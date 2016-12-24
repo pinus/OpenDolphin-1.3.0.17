@@ -3,6 +3,7 @@ package open.dolphin.client;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -16,9 +17,9 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import open.dolphin.helper.ActionManager;
-import open.dolphin.helper.ActionManager.Action;
+import open.dolphin.helper.MenuActionManager;
 import open.dolphin.helper.MenuSupport;
+import open.dolphin.helper.MenuActionManager.MenuAction;
 
 /**
  * Menu Factory
@@ -54,299 +55,299 @@ public class MenuFactory {
         return actionMap;
     }
 
-    @Action
+    @MenuAction
     public void newKarte() {
         chart.sendToChain("newKarte");
     }
 
-    @Action
+    @MenuAction
     public void newDocument() {
         chart.sendToChain("newDocument");
     }
 
-    @Action
+    @MenuAction
     public void openKarte() {
         main.sendToChain("openKarte");
     }
 
-    @Action
+    @MenuAction
     public void close() {
         chart.sendToChain("close");
     }
 
-    @Action
+    @MenuAction
     public void save() {
         chart.sendToChain("save");
     }
 
-    @Action
+    @MenuAction
     public void delete() {
         chart.sendToChain("delete");
     }
 
-    @Action
+    @MenuAction
     public void printerSetup() {
         main.sendToChain("printerSetup");
     }
 
-    @Action
+    @MenuAction
     public void print() {
        chart.sendToChain("print");
     }
 
-    @Action
+    @MenuAction
     public void processExit() {
        main.sendToChain("processExit");
     }
 
-    @Action
+    @MenuAction
     public void modifyKarte() {
         chart.sendToChain("modifyKarte");
     }
 
-    @Action
+    @MenuAction
     public void undo() {
         chart.sendToChain("undo");
     }
 
-    @Action
+    @MenuAction
     public void redo() {
         chart.sendToChain("redo");
     }
 
-    @Action
+    @MenuAction
     public void cut() {
         chart.cut();
     }
 
-    @Action
+    @MenuAction
     public void copy() {
         chart.copy();
     }
 
-    @Action
+    @MenuAction
     public void paste() {
         chart.paste();
     }
 
-    @Action
+    @MenuAction
     public void selectAll() {
         chart.sendToChain("selectAll");
     }
 
-    @Action
+    @MenuAction
     public void sendClaim() {
         chart.sendToChain("sendClaim");
     }
-    @Action
+    @MenuAction
     public void ascending() {
         chart.sendToChain("ascending");
     }
 
-    @Action
+    @MenuAction
     public void descending() {
         chart.sendToChain("descending");
     }
 
-    @Action
+    @MenuAction
     public void showModified() {
         chart.sendToChain("showModified");
     }
 
-    @Action
+    @MenuAction
     public void setKarteEnviroment() {
         main.sendToChain("setKarteEnviroment");
     }
 
-    @Action
+    @MenuAction
     public void insertDisease() {
     }
 
-    @Action
+    @MenuAction
     public void insertText() {
     }
 
-    @Action
+    @MenuAction
     public void insertSchema() {
     }
 
-    @Action
+    @MenuAction
     public void insertStamp() {
     }
 
-    @Action
+    @MenuAction
     public void selectInsurance() {
     }
 
-    @Action
+    @MenuAction
     public void size() {
     }
 
-    @Action
+    @MenuAction
     public void fontLarger() {
         chart.sendToChain("fontLarger");
     }
 
-    @Action
+    @MenuAction
     public void fontSmaller() {
         chart.sendToChain("fontSmaller");
     }
 
-    @Action
+    @MenuAction
     public void fontStandard() {
         chart.sendToChain("fontStandard");
     }
 
-    @Action
+    @MenuAction
     public void style() {
     }
 
-    @Action
+    @MenuAction
     public void fontBold() {
         chart.sendToChain("fontBold");
     }
 
-    @Action
+    @MenuAction
     public void fontItalic() {
         chart.sendToChain("fontItalic");
     }
 
-    @Action
+    @MenuAction
     public void fontUnderline() {
         chart.sendToChain("fontUnderline");
     }
 
-    @Action
+    @MenuAction
     public void justify() {
     }
 
-    @Action
+    @MenuAction
     public void leftJustify() {
         chart.sendToChain("leftJustify");
     }
 
-    @Action
+    @MenuAction
     public void centerJustify() {
         chart.sendToChain("centerJustify");
     }
 
-    @Action
+    @MenuAction
     public void rightJustify() {
         chart.sendToChain("rightJustify");
     }
 
-    @Action
+    @MenuAction
     public void color() {
     }
 
-    @Action
+    @MenuAction
     public void fontRed() {
         chart.sendToChain("fontRed");
     }
 
-    @Action
+    @MenuAction
     public void fontOrange() {
         chart.sendToChain("fontOrange");
     }
 
-    @Action
+    @MenuAction
     public void fontYellow() {
         chart.sendToChain("fontYellow");
     }
 
-    @Action
+    @MenuAction
     public void fontGreen() {
         chart.sendToChain("fontGreen");
     }
 
-    @Action
+    @MenuAction
     public void fontBlue() {
         chart.sendToChain("fontBlue");
     }
 
-    @Action
+    @MenuAction
     public void fontPurple() {
         chart.sendToChain("fontPurple");
     }
 
-    @Action
+    @MenuAction
     public void fontGray() {
         chart.sendToChain("fontGray");
     }
 
-    @Action
+    @MenuAction
     public void fontBlack() {
         chart.sendToChain("fontBlack");
     }
 
-    @Action
+    @MenuAction
     public void resetStyle() {
         chart.sendToChain("resetStyle");
     }
 
-    @Action
+    @MenuAction
     public void showStampBox() {
         main.sendToChain("showStampBox");
     }
 
-    @Action
+    @MenuAction
     public void showSchemaBox() {
         main.sendToChain("showSchemaBox");
     }
 
-    @Action
+    @MenuAction
     public void changePassword() {
         main.sendToChain("changePassword");
     }
 
-    @Action
+    @MenuAction
     public void addUser() {
         main.sendToChain("addUser");
     }
 
-    @Action
+    @MenuAction
     public void update1() {
         main.sendToChain("update");
     }
 
-    @Action
+    @MenuAction
     public void browseDolphinSupport() {
         main.sendToChain("browseDolphinSupport");
     }
 
-    @Action
+    @MenuAction
     public void browseDolphinProject() {
         main.sendToChain("browseDolphinProject");
     }
 
-    @Action
+    @MenuAction
     public void browseMedXml() {
         main.sendToChain("browseMedXml");
     }
 
-    @Action
+    @MenuAction
     public void showAbout() {
         main.sendToChain("showAbout");
     }
 
-    @Action
+    @MenuAction
     public void findFirst() {
         chart.sendToChain("findFirst");
     }
 
-    @Action
+    @MenuAction
     public void findNext() {
         chart.sendToChain("findNext");
     }
 
-    @Action
+    @MenuAction
     public void findPrevious() {
         chart.sendToChain("findPrevious");
     }
 
     public void build(JMenuBar menuBar) {
 
-        this.actionMap = ActionManager.getActionMap(this);
+        this.actionMap = MenuActionManager.getActionMap(this);
         this.menuBar = menuBar;
 
         // ToolBar
@@ -877,10 +878,10 @@ public class MenuFactory {
     }
 
     private void setAction(JMenuItem item, String key, String name, ImageIcon icon, String toolTipText) {
-        javax.swing.Action action = actionMap.get(key);
-        action.putValue(javax.swing.Action.NAME, name);
-        action.putValue(javax.swing.Action.SMALL_ICON, icon);
-        action.putValue(javax.swing.Action.SHORT_DESCRIPTION, toolTipText);
+        Action action = actionMap.get(key);
+        action.putValue(Action.NAME, name);
+        action.putValue(Action.SMALL_ICON, icon);
+        action.putValue(Action.SHORT_DESCRIPTION, toolTipText);
         item.setAction(action);
     }
     private void setToolBar(JToolBar toolBar, String text, ImageIcon icon) {

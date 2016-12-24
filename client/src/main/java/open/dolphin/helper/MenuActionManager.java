@@ -13,18 +13,21 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 
 /**
- * ＠Action で action を作っていろいろするクラス
+ * ＠MenuAction で action を作っていろいろするクラス.
  * @author pns
  */
-public class ActionManager {
+public class MenuActionManager {
 
+    /**
+     * @MenuAction を付けたメソッドが Action で呼ばれる.
+     */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface Action {}
+    public @interface MenuAction {}
 
     private final ActionMap actionMap;
 
-    public ActionManager(Object obj) {
+    public MenuActionManager(Object obj) {
         actionMap = getActionMap(obj);
     }
 
@@ -39,8 +42,8 @@ public class ActionManager {
 
         Method[] methods = obj.getClass().getMethods();
         for (Method m : methods) {
-            // @Action がついている medthod を ActionMap に追加
-            if (m.getAnnotation(Action.class) != null) {
+            // @MenuAction がついている medthod を ActionMap に追加
+            if (m.getAnnotation(MenuAction.class) != null) {
                 final Method method = m;
                 javax.swing.Action action = new AbstractAction() {
                     private static final long serialVersionUID = 1L;

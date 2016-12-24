@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.TooManyListenersException;
 import javax.swing.*;
 import open.dolphin.client.*;
-import open.dolphin.helper.ActionManager;
-import open.dolphin.helper.ActionManager.Action;
+import open.dolphin.helper.MenuActionManager;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.ui.MyBorder;
 import open.dolphin.ui.MyJScrollPane;
 import org.apache.log4j.Logger;
+import open.dolphin.helper.MenuActionManager.MenuAction;
 
 /**
  * インスペクタに病名を表示するクラス.
@@ -183,7 +183,7 @@ public class DiagnosisInspector {
         }
 
         // ショートカットキー登録
-        ActionMap map = ActionManager.getActionMap(this);
+        ActionMap map = MenuActionManager.getActionMap(this);
         InputMap im = diagList.getInputMap();
         ActionMap am = diagList.getActionMap();
 
@@ -434,67 +434,67 @@ public class DiagnosisInspector {
         }
     }
 
-    @Action
+    @MenuAction
     public void undo() {
         doc.undo();
     }
-    @Action
+    @MenuAction
     public void redo() {
         doc.redo();
     }
-    @Action
+    @MenuAction
     public void addLeft() {
         doc.getDiagnosisDocumentPopup().doClickDiagPopup("左");
     }
-    @Action
+    @MenuAction
     public void addRight() {
         doc.getDiagnosisDocumentPopup().doClickDiagPopup("右");
     }
-    @Action
+    @MenuAction
     public void addBoth() {
         doc.getDiagnosisDocumentPopup().doClickDiagPopup("両");
     }
-    @Action
+    @MenuAction
     public void finish() {
         doc.getDiagnosisDocumentPopup().doClickOutcomePopup("全治");
     }
-    @Action
+    @MenuAction
     public void discontinue() {
         doc.getDiagnosisDocumentPopup().doClickOutcomePopup("中止");
     }
-    @Action
+    @MenuAction
     public void renew() {
         doc.getDiagnosisDocumentPopup().doClickOutcomePopup("");
     }
-    @Action
+    @MenuAction
     public void delete() {
         doc.delete();
     }
-    @Action
+    @MenuAction
     public void sendClaim() {
         doc.sendClaim();
     }
-    @Action
+    @MenuAction
     public void duplicate(){
         doc.duplicateDiagnosis();
     }
-    @Action
+    @MenuAction
     public void dropPrepos(){
         doc.getDiagnosisDocumentPopup().dropPreposition();
     }
-    @Action
+    @MenuAction
     public void dropPostpos(){
         doc.getDiagnosisDocumentPopup().dropPostposition();
     }
-    @Action
+    @MenuAction
     public void suspected() {
         doc.getDiagnosisDocumentPopup().doClickCategoryPopup("疑い病名");
     }
-    @Action
+    @MenuAction
     public void mainDiag() {
         doc.getDiagnosisDocumentPopup().doClickCategoryPopup("主病名");
     }
-    @Action
+    @MenuAction
     public void infection() {
         doc.getDiagnosisDocumentPopup().doClickDiagPopup("の二次感染");
     }

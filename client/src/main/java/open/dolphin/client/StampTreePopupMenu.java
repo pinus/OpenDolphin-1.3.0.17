@@ -3,11 +3,11 @@ package open.dolphin.client;
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import open.dolphin.helper.ActionManager;
-import open.dolphin.helper.ActionManager.Action;
+import open.dolphin.helper.MenuActionManager;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
+import open.dolphin.helper.MenuActionManager.MenuAction;
 
 /**
  * StampTree に PopupMenu を表示する　StampTreePopupAdapter から切換
@@ -25,7 +25,7 @@ public class StampTreePopupMenu extends MyJPopupMenu {
     }
 
     private void buildPopupMenu() {
-        ActionManager m = new ActionManager(this);
+        MenuActionManager m = new MenuActionManager(this);
 
         add(m.getMenuItem("createNewFolder", "新規フォルダ", GUIConst.ICON_FOLDER_NEW_16));
         add(m.getMenuItem("deleteNode", "削　除", GUIConst.ICON_REMOVE_16));
@@ -36,11 +36,11 @@ public class StampTreePopupMenu extends MyJPopupMenu {
         add(m.getMenuItem("expandAll", "フォルダを全て展開する", GUIConst.ICON_TREE_EXPANDED_16));
     }
 
-    @Action
+    @MenuAction
     public void createNewFolder() {
         tree.createNewFolder();
     }
-    @Action
+    @MenuAction
     public void deleteNode() {
         int ans = MyJSheet.showConfirmDialog(SwingUtilities.getWindowAncestor(tree),
                 "本当に削除しますか", "スタンプ削除", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -49,16 +49,16 @@ public class StampTreePopupMenu extends MyJPopupMenu {
             else Toolkit.getDefaultToolkit().beep();
         }
     }
-    @Action
+    @MenuAction
     public void renameNode() {
         if (isEditable()) tree.renameNode();
         else Toolkit.getDefaultToolkit().beep();
     }
-    @Action
+    @MenuAction
     public void expandAll() {
         tree.expandAll();
     }
-    @Action
+    @MenuAction
     public void collapseAll() {
         tree.collapseAll();
     }

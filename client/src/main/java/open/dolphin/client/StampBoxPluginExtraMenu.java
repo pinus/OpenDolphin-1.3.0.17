@@ -15,8 +15,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.ActionManager;
-import open.dolphin.helper.ActionManager.Action;
+import open.dolphin.helper.MenuActionManager;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleInfoBean;
@@ -26,6 +25,7 @@ import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.HexBytesTool;
 import org.jdom2.Element;
+import open.dolphin.helper.MenuActionManager.MenuAction;
 
 /**
  * StampBox の特別(gear)メニュー
@@ -38,7 +38,7 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
     private final StampBoxPlugin context;
     private final AbstractStampBox stampBox;
     private final BlockGlass blockGlass;
-    // @Action で定義された action の actionMap， key は method 名
+    // @MenuAction で定義された action の actionMap， key は method 名
     private ActionMap actionMap;
 
     public StampBoxPluginExtraMenu(StampBoxPlugin ctx) {
@@ -52,31 +52,31 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
     }
 
 //    TODO
-//    @Action
+//    @MenuAction
 //    public void search() {
 //        System.out.println("Search Stamp");
 //    }
 
-    @Action
+    @MenuAction
     public void collapseAll() {
         StampTreePanel p = (StampTreePanel) stampBox.getSelectedComponent();
         StampTree tree = p.getTree();
         tree.collapseAll();
     }
 
-    @Action
+    @MenuAction
     public void expandAll() {
         StampTreePanel p = (StampTreePanel) stampBox.getSelectedComponent();
         StampTree tree = p.getTree();
         tree.expandAll();
     }
 
-    @Action
+    @MenuAction
     public void publishStamp() {
         context.publishStamp();
     }
 
-    @Action
+    @MenuAction
     public void importStamp() {
         context.importStamp();
     }
@@ -85,7 +85,7 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
      * ポップアップメニューを作る
      */
     private void buildPopupMenu() {
-        ActionManager m = new ActionManager(this);
+        MenuActionManager m = new MenuActionManager(this);
         actionMap = m.getActionMap();
 
         popup = new MyJPopupMenu();
@@ -327,7 +327,7 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
     /**
      * スタンプを xml ファイルに書き出す
      */
-    @Action
+    @MenuAction
     public void exportUserStampBox() {
 
 //masuda^   blockGlassを入れたりSwingWorkerを入れたり・・・
@@ -425,7 +425,7 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
     /**
      * xml ファイルから新しい userStampBox を作る
      */
-    @Action
+    @MenuAction
     public void importUserStampBox() {
 
         final JFileChooser fileChooser = new JFileChooser();
