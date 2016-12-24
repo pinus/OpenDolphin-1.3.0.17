@@ -25,7 +25,7 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.ComponentMemory;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PublishedTreeModel;
@@ -143,8 +143,8 @@ public class StampImporter {
         int n = ClientContext.isMac() ? 3 : 2;
         int x = (screen.width - WIDTH) / 2;
         int y = (screen.height - HEIGHT) / n;
-        ComponentMemory cm = new ComponentMemory(frame, new Point(x, y), new Dimension(new Dimension(WIDTH, HEIGHT)), this);
-        cm.setToPreferenceBounds();
+        ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(x, y), new Dimension(new Dimension(WIDTH, HEIGHT)), this);
+        cm.revertToPreferenceBounds();
 
         JPanel contentPane = createBrowsePane();
         contentPane.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));

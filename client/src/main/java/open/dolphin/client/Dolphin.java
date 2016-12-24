@@ -14,7 +14,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
-import open.dolphin.helper.ComponentMemory;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.Task;
 import open.dolphin.helper.WindowSupport;
@@ -215,8 +215,8 @@ public class Dolphin implements MainWindow {
             //    plugin.enter();
             //}
         });
-        ComponentMemory cm = new ComponentMemory(myFrame, loc, size, this);
-        cm.setToPreferenceBounds();
+        ComponentBoundsManager cm = new ComponentBoundsManager(myFrame, loc, size, this);
+        cm.revertToPreferenceBounds();
 
         // BlockGlass を設定する
         blockGlass = new BlockGlass();

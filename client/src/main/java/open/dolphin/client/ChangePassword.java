@@ -30,7 +30,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
-import open.dolphin.helper.ComponentMemory;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.DepartmentModel;
 import open.dolphin.infomodel.LicenseModel;
@@ -101,9 +101,7 @@ public class ChangePassword extends AbstractMainTool {
                 stop();
             }
         });
-        ComponentMemory cm = new ComponentMemory(getFrame(), new Point(0, 0),
-                new Dimension(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT)),
-                this);
+        ComponentBoundsManager cm = new ComponentBoundsManager(getFrame(), new Point(0, 0), new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT), this);
         cm.putCenter();
 
         ChangePasswordPanel cp = new ChangePasswordPanel();

@@ -16,7 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
-import open.dolphin.helper.ComponentMemory;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.Task;
 import open.dolphin.helper.WindowSupport;
@@ -195,11 +195,8 @@ public class ImageBox extends AbstractMainTool {
             frame = new MainFrame(title);
         }
 
-        ComponentMemory cm = new ComponentMemory(frame,
-                new Point(defaultLocX,defaultLocY),
-                new Dimension(defaultWidth, defaultHeight),
-                this);
-        cm.setToPreferenceBounds();
+        ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(defaultLocX,defaultLocY), new Dimension(defaultWidth, defaultHeight), this);
+        cm.revertToPreferenceBounds();
 
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {

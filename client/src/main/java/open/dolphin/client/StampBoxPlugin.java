@@ -26,7 +26,7 @@ import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.infomodel.PersonalTreeModel;
-import open.dolphin.helper.ComponentMemory;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.order.StampMakerPanel;
@@ -312,8 +312,8 @@ public class StampBoxPlugin extends AbstractMainTool {
                 }
             }
         });
-        ComponentMemory cm = new ComponentMemory(frame, new Point(x, y), new Dimension(width, height), this);
-        cm.setToPreferenceBounds();
+        ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(x, y), new Dimension(width, height), this);
+        cm.revertToPreferenceBounds();
 
         //
         // 全体のボックスを生成する

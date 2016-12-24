@@ -34,7 +34,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import open.dolphin.delegater.BusinessDelegater;
 import open.dolphin.delegater.UserDelegater;
-import open.dolphin.helper.ComponentMemory;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.DepartmentModel;
 import open.dolphin.infomodel.FacilityModel;
@@ -97,8 +97,7 @@ public class AddUser extends AbstractMainTool {
                 stop();
             }
         });
-        ComponentMemory cm = new ComponentMemory(frm, new Point(0, 0),
-                new Dimension(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT)), this);
+        ComponentBoundsManager cm = new ComponentBoundsManager(frm, new Point(0, 0), new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT), this);
         cm.putCenter();
 
         // Component を生成する

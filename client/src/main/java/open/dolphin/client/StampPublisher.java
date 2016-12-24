@@ -30,7 +30,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.ComponentMemory;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.helper.ProxyDocumentListener;
 import open.dolphin.helper.Task;
@@ -108,8 +108,8 @@ public class StampPublisher {
         int n = ClientContext.isMac() ? 3 : 2;
         int x = (screen.width - WIDTH) / 2;
         int y = (screen.height - HEIGHT) / n;
-        ComponentMemory cm = new ComponentMemory(dialog, new Point(x, y), new Dimension(new Dimension(WIDTH, HEIGHT)), this);
-        cm.setToPreferenceBounds();
+        ComponentBoundsManager cm = new ComponentBoundsManager(dialog, new Point(x, y), new Dimension(WIDTH, HEIGHT), this);
+        cm.revertToPreferenceBounds();
 
         JPanel contentPane = createContentPane();
         contentPane.setOpaque(true);

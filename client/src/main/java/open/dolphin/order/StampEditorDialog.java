@@ -12,7 +12,7 @@ import java.beans.PropertyChangeSupport;
 import javax.swing.*;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
-import open.dolphin.helper.ComponentMemory;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.ui.HorizontalPanel;
 import org.apache.log4j.Logger;
 
@@ -113,8 +113,8 @@ public class StampEditorDialog implements PropertyChangeListener {
         });
 
         dialog.setTitle(editor.getTitle());
-        ComponentMemory cm = new ComponentMemory(dialog, new Point(DEFAULT_X,DEFAULT_Y), new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT), this);
-        cm.setToPreferenceBounds();
+        ComponentBoundsManager cm = new ComponentBoundsManager(dialog, new Point(DEFAULT_X,DEFAULT_Y), new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT), this);
+        cm.revertToPreferenceBounds();
 
         //ESC で編集内容破棄してクローズ
         InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
