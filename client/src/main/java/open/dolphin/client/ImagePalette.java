@@ -6,12 +6,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DragSource;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -19,29 +17,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.TransferHandler;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import open.dolphin.ui.MyBorder;
-import open.dolphin.ui.MyBorderFactory;
-import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.PatchedTransferHandler;
+import open.dolphin.ui.*;
 
 /**
- * ImagePalette
+ * ImagePalette.
  *
  * @author Minagawa,Kazushi modified by pns
  */
@@ -57,20 +40,18 @@ public class ImagePalette extends JPanel {
     private int imageWidth;
     private int imageHeight;
     private JTable imageTable;
-    private DragSource dragSource;
     private File imageDirectory;
     private String[] suffix = DEFAULT_IMAGE_SUFFIX;
     private boolean showHeader;
-//pns^
-    private Border selectedBorder = MyBorderFactory.createSelectedBorder();
-//  private Border normalBorder = MyBorderFactory.createClearBorder();
-    private Border normalBorder = BorderFactory.createEmptyBorder();
-//pns$
 
-    public ImagePalette(String[] columnNames, int columnCount, int imageWidth, int imageHeight) {
+    private final Border selectedBorder = MyBorderFactory.createSelectedBorder();
+    // private Border normalBorder = MyBorderFactory.createClearBorder();
+    private final Border normalBorder = BorderFactory.createEmptyBorder();
+
+    public ImagePalette(String[] columnNames, int columnCount, int width, int height) {
         imageTableModel = new ImageTableModel(columnNames, columnCount);
-        this.imageWidth = imageWidth;
-        this.imageHeight = imageHeight;
+        imageWidth = width;
+        imageHeight = height;
         initComponent(columnCount);
     }
 
@@ -82,7 +63,7 @@ public class ImagePalette extends JPanel {
         return imageTableModel.getImageList();
     }
 
-    public void setImageList(ArrayList list) {
+    public void setImageList(List<ImageEntry> list) {
         imageTableModel.setImageList(list);
     }
 
@@ -122,17 +103,18 @@ public class ImagePalette extends JPanel {
         Dimension imageSize = new Dimension(imageWidth, imageHeight);
         File[] imageFiles = listImageFiles(imageDirectory, suffix);
         if (imageFiles != null && imageFiles.length > 0) {
-            ArrayList<ImageEntry> imageList = new ArrayList<ImageEntry>();
-            for (int j= 0; j < imageFiles.length; j++) {
+            List<ImageEntry> imageList = new ArrayList<>();
+            for (File imageFile : imageFiles) {
                 try {
-                    URL url = imageFiles[j].toURI().toURL();
+                    URL url = imageFile.toURI().toURL();
                     ImageIcon icon = new ImageIcon(url);
                     ImageEntry entry = new ImageEntry();
                     entry.setImageIcon(adjustImageSize(icon, imageSize));
                     entry.setUrl(url.toString());
                     imageList.add(entry);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+
+                }catch (MalformedURLException e) {
+                    e.printStackTrace(System.err);
                 }
             }
             imageTableModel.setImageList(imageList);
@@ -147,6 +129,8 @@ public class ImagePalette extends JPanel {
         imageTable.setCellSelectionEnabled(true);
         imageTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         imageTable.setTransferHandler(new ImageTransferHandler());
+
+        // ドラッグ処理
         imageTable.addMouseMotionListener(new MouseMotionAdapter(){
             @Override
             public void mouseDragged (MouseEvent e) {
@@ -154,10 +138,40 @@ public class ImagePalette extends JPanel {
             }
         });
 
-        TableColumn column = null;
+        // ダブルクリックで直接入力
+        imageTable.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    // ダブルクリックしてすぐドラッグした場合はドラッグを優先する
+                    // Protection Time ms 後にマウスが動いていない場合のみダブルクリックと判定する
+                    Point p1 = imageTable.getMousePosition();
+                    try{ Thread.sleep(GUIConst.PROTECTION_TIME); } catch (Exception ex) {}
+                    Point p2 = imageTable.getMousePosition();
+
+                    if (p1 != null && p2 != null && p1.x == p2.x && p1.y == p2.y) {
+                        int row = imageTable.getSelectedRow();
+                        int col = imageTable.getSelectedColumn();
+                        ImageEntry entry = (ImageEntry) imageTable.getModel().getValueAt(row, col);
+
+                        List<Chart> allFrames = EditorFrame.getAllEditorFrames();
+                        if (! allFrames.isEmpty()) {
+                            Chart frame = allFrames.get(0);
+                            KartePane pane = ((EditorFrame) frame).getEditor().getSOAPane();
+                            // caret を最後に送ってから import する
+                            JTextPane textPane = pane.getTextPane();
+                            KarteStyledDocument doc = pane.getDocument();
+                            textPane.setCaretPosition(doc.getLength());
+                            // import
+                            pane.imageEntryDropped(entry);
+                        }
+                    }
+                }
+            }
+        });
+
         for (int i = 0; i < columnCount; i++) {
-            column = imageTable.getColumnModel().getColumn(i);
-            column.setPreferredWidth(imageWidth);
+            imageTable.getColumnModel().getColumn(i).setPreferredWidth(imageWidth);
         }
         imageTable.setRowHeight(imageHeight);
 
@@ -165,9 +179,8 @@ public class ImagePalette extends JPanel {
         imageRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         imageTable.setDefaultRenderer(java.lang.Object.class, imageRenderer);
 
-        this.setLayout(new BorderLayout());
-//pns   JScrollPane scroller = new JScrollPane();
-        JScrollPane scroller = new MyJScrollPane();
+        setLayout(new BorderLayout());
+        MyJScrollPane scroller = new MyJScrollPane();
 
         if (showHeader) {
             scroller.setViewportView(imageTable);
@@ -178,14 +191,7 @@ public class ImagePalette extends JPanel {
             scroller.setViewportView(panel);
             this.add(scroller);
         }
-//        if (showHeader) {
-//            this.add(new JScrollPane(imageTable));
-//        } else {
-//            JPanel panel = new JPanel(new BorderLayout());
-//            panel.add(imageTable);
-//            this.add(new JScrollPane(panel));
-//        }
-//pns$
+
         imageTable.setIntercellSpacing(new Dimension(0,0));
     }
 
@@ -217,12 +223,13 @@ public class ImagePalette extends JPanel {
 
     private class ImageFileFilter implements FilenameFilter {
 
-        private String[] suffix;
+        private final String[] suffix;
 
         public ImageFileFilter(String[] suffix) {
             this.suffix = suffix;
         }
 
+        @Override
         public boolean accept(File dir, String name) {
 
             boolean accept = false;
@@ -240,6 +247,10 @@ public class ImagePalette extends JPanel {
         private static final long serialVersionUID = -7952145522385412194L;
 
         public ImageRenderer() {
+            initComponent();
+        }
+
+        private void initComponent() {
             setVerticalTextPosition(JLabel.BOTTOM);
             setHorizontalTextPosition(JLabel.CENTER);
         }
@@ -258,13 +269,12 @@ public class ImagePalette extends JPanel {
                     row, col);
 
             JLabel l = (JLabel)compo;
-//pns^
-            l.setBackground(new Color(254,255,255)); // なぜか WHITE は無視される
-            if (isSelected) l.setBorder(selectedBorder);
-            else l.setBorder(normalBorder);
-//pns$
-            if (value != null) {
 
+            l.setBackground(new Color(254,255,255)); // なぜか WHITE は無視される => quaqua のせい
+            if (isSelected) { l.setBorder(selectedBorder); }
+            else { l.setBorder(normalBorder); }
+
+            if (value != null) {
                 ImageEntry entry = (ImageEntry)value;
                 l.setIcon(entry.getImageIcon());
                 l.setText(null);
@@ -291,7 +301,9 @@ public class ImagePalette extends JPanel {
             int col = imageTable.getSelectedColumn();
 
             ImageEntry entry = null;
-            if (row != -1 && col != -1) entry = (ImageEntry)imageTable.getValueAt(row, col);
+            if (row != -1 && col != -1) {
+                entry = (ImageEntry)imageTable.getValueAt(row, col);
+            }
             return new ImageEntryTransferable(entry);
         }
 
@@ -299,7 +311,6 @@ public class ImagePalette extends JPanel {
         public int getSourceActions(JComponent c) {
             return COPY_OR_MOVE;
         }
-
 
         /**
          * 半透明 drag のために dragged component とマウス位置を保存する
@@ -339,7 +350,7 @@ public class ImagePalette extends JPanel {
          */
         @Override
         public Icon getVisualRepresentation(Transferable t) {
-            if (draggedComp == null) return null;
+            if (draggedComp == null) { return null; }
 
             int width = draggedComp.getWidth();
             int height = draggedComp.getHeight();
