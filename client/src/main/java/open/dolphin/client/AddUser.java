@@ -7,50 +7,30 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.*;
 import open.dolphin.delegater.BusinessDelegater;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.ProxyDocumentListener;
 import open.dolphin.helper.Task;
-import open.dolphin.infomodel.DepartmentModel;
-import open.dolphin.infomodel.FacilityModel;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.LicenseModel;
-import open.dolphin.infomodel.RoleModel;
-import open.dolphin.infomodel.UserModel;
+import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.table.*;
 import open.dolphin.ui.AdditionalTableSettings;
-import open.dolphin.ui.MyJTabbedPane;
+import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSTabbedPane;
 import open.dolphin.util.HashUtil;
+import open.dolphin.util.PNSTriple;
 import org.apache.log4j.Logger;
 
 /**
- * AddUserPlugin
+ * AddUserPlugin.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -63,81 +43,74 @@ public class AddUser extends AbstractMainTool {
     private static final String FACILITY_SUCCESS_MSG = "施設情報を更新しました。";
     private static final String ADD_USER_SUCCESS_MSG = "ユーザを登録しました。";
     private static final String DELETE_USER_SUCCESS_MSG = "ユーザを削除しました。";
-    private static final String DELETE_OK_USER_ = "選択したユーザを削除します";
-    private static int DEFAULT_WIDTH = 600;
-    private static int DEFAULT_HEIGHT = 370;
+    private static final String DELETE_OK_USER = "選択したユーザを削除します";
+    private static final Point DEFAULT_LOC = new Point(0,0);
+    private static final Dimension DEFAULT_SIZE = new Dimension(600,370);
 
     private JFrame frame;
-    private Logger logger;
+    private final Logger logger;
 
     public AddUser() {
         setName(TITLE);
         logger = ClientContext.getBootLogger();
     }
 
-    public void setFrame(JFrame frame) {
-        this.frame = frame;
-    }
-
-    public JFrame getFrame() {
-        return frame;
-    }
-
     @Override
     public void start() {
 
-        // Super Class で Frame を初期化する
         String title = ClientContext.getFrameTitle(getName());
-        JFrame frm = new JFrame(title);
-        setFrame(frm);
-        frm.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        frm.addWindowListener(new WindowAdapter() {
+        frame = new JFrame(title);
+        frame.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 stop();
             }
         });
-        ComponentBoundsManager cm = new ComponentBoundsManager(frm, new Point(0, 0), new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT), this);
-        cm.putCenter();
 
         // Component を生成する
         AddUserPanel ap = new AddUserPanel();
         FacilityInfoPanel fp = new FacilityInfoPanel();
         UserListPanel mp = new UserListPanel();
-        MyJTabbedPane tabbedPane = new MyJTabbedPane(new java.awt.Insets(12, 0,0,0));
+        PNSTabbedPane tabbedPane = new PNSTabbedPane();
         tabbedPane.addTab(FACILITY_INFO, fp);
         tabbedPane.addTab(ADD_USER, ap);
         tabbedPane.addTab(LIST_USER, mp);
         fp.get();
 
         // Frame に加える
-        getFrame().getContentPane().add(tabbedPane, BorderLayout.CENTER);
-        getFrame().pack();
-        getFrame().setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        getFrame().setVisible(true);
-//pns
+        frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        frame.pack();
+
+        // putCenter で強制的に中心に置かれる
+        ComponentBoundsManager cm = new ComponentBoundsManager(frame, DEFAULT_LOC, DEFAULT_SIZE, this);
+        cm.putCenter();
+
+        frame.setVisible(true);
+
         AdditionalTableSettings.setTable(mp.getTable());
     }
 
     @Override
     public void stop() {
-        getFrame().setVisible(false);
-        getFrame().dispose();
+        frame.setVisible(false);
+        frame.dispose();
     }
 
     public void toFront() {
-        if (getFrame() != null) {
-            getFrame().toFront();
+        if (frame != null) {
+            frame.toFront();
         }
     }
 
     /**
      * 施設（医療機関）情報を変更するクラス.
      */
-    protected class FacilityInfoPanel extends JPanel {
+    private class FacilityInfoPanel extends JPanel {
+        private static final long serialVersionUID = 1L;
 
         // 施設情報フィールド
-        //private JTextField facilityId;
         private JTextField facilityName;
         private JTextField zipField1;
         private JTextField zipField2;
@@ -154,18 +127,12 @@ public class AddUser extends AbstractMainTool {
         private boolean hasInitialized;
 
         public FacilityInfoPanel() {
+            initComponents();
+        }
 
+        private void initComponents() {
             // GUI生成
-            DocumentListener dl = new DocumentListener() {
-                public void changedUpdate(DocumentEvent e) {
-                }
-                public void insertUpdate(DocumentEvent e) {
-                    checkButton();
-                }
-                public void removeUpdate(DocumentEvent e) {
-                    checkButton();
-                }
-            };
+            ProxyDocumentListener dl = e -> checkButton();
 
             facilityName = GUIFactory.createTextField(30, null, null, dl);
             zipField1 = GUIFactory.createTextField(3, null, null, dl);
@@ -176,40 +143,16 @@ public class AddUser extends AbstractMainTool {
             numberField = GUIFactory.createTextField(3, null, null, dl);
             urlField = GUIFactory.createTextField(30, null, null, dl);
 
-//pns       facilityName.addFocusListener(AutoKanjiListener.getInstance());
-//pns       zipField1.addFocusListener(AutoRomanListener.getInstance());
-//pns       zipField2.addFocusListener(AutoRomanListener.getInstance());
-//pns       addressField.addFocusListener(AutoKanjiListener.getInstance());
-//pns       areaField.addFocusListener(AutoRomanListener.getInstance());
-//pns       cityField.addFocusListener(AutoRomanListener.getInstance());
-//pns       numberField.addFocusListener(AutoRomanListener.getInstance());
-//pns       urlField.addFocusListener(AutoRomanListener.getInstance());
-
             updateBtn = new JButton("更新");
             updateBtn.setEnabled(false);
-            updateBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    update();
-                }
-            });
+            updateBtn.addActionListener(e -> update());
 
             clearBtn = new JButton("戻す");
             clearBtn.setEnabled(false);
-            clearBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    get();
-                }
-            });
+            clearBtn.addActionListener( e -> get());
 
             closeBtn = new JButton("閉じる");
-            closeBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    stop();
-                }
-            });
+            closeBtn.addActionListener(e -> stop());
 
             // レイアウト
             JPanel content = new JPanel(new GridBagLayout());
@@ -256,10 +199,10 @@ public class AddUser extends AbstractMainTool {
                 btnPanel = GUIFactory.createCommandButtonPanel(new JButton[]{updateBtn, clearBtn, closeBtn});
             }
 
-            this.setLayout(new BorderLayout(0, 11));
-            this.add(content, BorderLayout.NORTH);
-            this.add(btnPanel, BorderLayout.SOUTH);
-            this.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
+            setLayout(new BorderLayout(0, 11));
+            add(content, BorderLayout.NORTH);
+            add(btnPanel, BorderLayout.SOUTH);
+            setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
         }
 
         public void get() {
@@ -280,7 +223,7 @@ public class AddUser extends AbstractMainTool {
                         zipField2.setText(st.nextToken());
                     }
                 } catch (RuntimeException e) {
-                    e.printStackTrace();
+                    e.printStackTrace(System.err);
                 }
             }
 
@@ -298,7 +241,7 @@ public class AddUser extends AbstractMainTool {
                         numberField.setText(st.nextToken());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    e.printStackTrace(System.err);
                 }
             }
 
@@ -315,13 +258,13 @@ public class AddUser extends AbstractMainTool {
                 return;
             }
 
-            boolean nameEmpty = facilityName.getText().trim().equals("") ? true : false;
-            boolean zip1Empty = zipField1.getText().trim().equals("") ? true : false;
-            boolean zip2Empty = zipField2.getText().trim().equals("") ? true : false;
-            boolean addressEmpty = addressField.getText().trim().equals("") ? true : false;
-            boolean areaEmpty = areaField.getText().trim().equals("") ? true : false;
-            boolean cityEmpty = cityField.getText().trim().equals("") ? true : false;
-            boolean numberEmpty = numberField.getText().trim().equals("") ? true : false;
+            boolean nameEmpty = facilityName.getText().trim().equals("");
+            boolean zip1Empty = zipField1.getText().trim().equals("");
+            boolean zip2Empty = zipField2.getText().trim().equals("");
+            boolean addressEmpty = addressField.getText().trim().equals("");
+            boolean areaEmpty = areaField.getText().trim().equals("");
+            boolean cityEmpty = cityField.getText().trim().equals("");
+            boolean numberEmpty = numberField.getText().trim().equals("");
 
             if (nameEmpty && zip1Empty && zip2Empty && addressEmpty
                     && areaEmpty && cityEmpty && numberEmpty) {
@@ -400,9 +343,8 @@ public class AddUser extends AbstractMainTool {
             int delay = ClientContext.getInt("task.default.delay");
             String updateMsg = ClientContext.getString("task.default.updateMessage");
             String message = null;
-            Component c = getFrame();
 
-            Task task = new Task<Boolean>(c, message, updateMsg, maxEstimation) {
+            Task task = new Task<Boolean>(frame, message, updateMsg, maxEstimation) {
 
                 @Override
                 protected Boolean doInBackground() throws Exception {
@@ -414,13 +356,13 @@ public class AddUser extends AbstractMainTool {
                 @Override
                 protected void succeeded(Boolean result) {
                     logger.debug("updateUser succeeded");
-                    if (result.booleanValue()) {
-                        JOptionPane.showMessageDialog(getFrame(),
+                    if (result) {
+                        JOptionPane.showMessageDialog(frame,
                                 FACILITY_SUCCESS_MSG,
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(getFrame(),
+                        JOptionPane.showMessageDialog(frame,
                                 udl.getErrorMessage(),
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.WARNING_MESSAGE);
@@ -435,131 +377,79 @@ public class AddUser extends AbstractMainTool {
     /**
      * ユーザリストを取得するクラス. 名前がいけない.
      */
-    protected class UserListPanel extends JPanel {
+    private class UserListPanel extends JPanel {
+        private static final long serialVersionUID = 1L;
 
-        private ObjectReflectTableModel tableModel;
+        private ObjectReflectTableModel<UserModel> tableModel;
         private JTable table;
         private JButton getButton;
         private JButton deleteButton;
         private JButton cancelButton;
 
         public UserListPanel() {
+            initComponents();
+        }
 
-            String[] columns = new String[] { "ユーザID", "姓", "名", "医療資格", "診療科" };
+        private void initComponents() {
 
-            // ユーザテーブル
-            tableModel = new ObjectReflectTableModel(columns) {
+            List<PNSTriple<String,Class<?>,String>> reflectionList = Arrays.asList(
+                    new PNSTriple<>("　ユーザID", String.class, "idAsLocal"),
+                    new PNSTriple<>("　姓", String.class, "getSirName"),
+                    new PNSTriple<>("　名", String.class, "getGivenName"),
+                    new PNSTriple<>("　医療資格", LicenseModel.class, "getLicenseModel"),
+                    new PNSTriple<>("　診療科", DepartmentModel.class, "getDepartmentModel")
+            );
 
-                // 編集不可
-                @Override
-                public boolean isCellEditable(int row, int col) {
-                    return false;
-                }
-
-                // オブジェクトをテーブルに表示する
-                @Override
-                public Object getValueAt(int row, int col) {
-
-                    UserModel entry = (UserModel) getObject(row);
-                    if (entry == null) {
-                        return null;
-                    }
-
-                    String ret = null;
-
-                    switch (col) {
-
-                        case 0:
-                            ret = entry.idAsLocal();
-                            break;
-
-                        case 1:
-                            ret = entry.getSirName();
-                            break;
-
-                        case 2:
-                            ret = entry.getGivenName();
-                            break;
-
-                        case 3:
-                            ret = entry.getLicenseModel().getLicenseDesc();
-                            break;
-
-                        case 4:
-                            ret = entry.getDepartmentModel().getDepartmentDesc();
-                            break;
-                    }
-                    return ret;
-                }
-            };
+            // ユーザテーブルモデル
+            tableModel = new ObjectReflectTableModel<>(reflectionList);
 
             table = new JTable(tableModel);
+            table.setDefaultRenderer(Object.class, new IndentTableCellRenderer());
             // Selection を設定する
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             table.setRowSelectionAllowed(true);
-            table.setToolTipText(DELETE_OK_USER_);
-            ListSelectionModel m = table.getSelectionModel();
-            m.addListSelectionListener(new ListSelectionListener() {
+            table.setToolTipText(DELETE_OK_USER);
 
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-                    if (e.getValueIsAdjusting() == false) {
-                        // 削除ボタンをコントロールする
-                        // 医療資格が other 以外は削除できない
-                        int index = table.getSelectedRow();
-                        if (index == -1) { return; }
-                        UserModel entry = (UserModel) tableModel.getObject(index);
-                        if (entry == null) {
-                            return;
-                        } else {
-                            controleDelete(entry);
-                        }
+            table.getSelectionModel().addListSelectionListener(e -> {
+                if (e.getValueIsAdjusting() == false) {
+                    // 削除ボタンをコントロールする
+                    // 医療資格が other 以外は削除できない
+                    int index = table.getSelectedRow();
+                    if (index == -1) {
+                        return;
+                    }
+                    UserModel entry = tableModel.getObject(index);
+                    if (entry != null) {
+                        controleDelete(entry);
                     }
                 }
             });
 
             // Layout
-            JScrollPane scroller = new JScrollPane(table,
-                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            MyJScrollPane scroller = new MyJScrollPane(table,
+                    MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
             getButton = new JButton("ユーザリスト");
             getButton.setEnabled(true);
-            getButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    getUsers();
-                }
-            });
+            getButton.addActionListener(e -> getUsers());
 
             deleteButton = new JButton("削除");
             deleteButton.setEnabled(false);
-            deleteButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    deleteUser();
-                }
-            });
-            deleteButton.setToolTipText(DELETE_OK_USER_);
+            deleteButton.addActionListener(e -> deleteUser());
+            deleteButton.setToolTipText(DELETE_OK_USER);
 
             cancelButton = new JButton("閉じる");
-            cancelButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    stop();
-                }
-            });
+            cancelButton.addActionListener(e -> stop());
 
-            JPanel btnPanel = null;
-            if (isMac()) {
-                btnPanel = GUIFactory.createCommandButtonPanel(new JButton[]{deleteButton, cancelButton, getButton});
-            } else {
-                btnPanel = GUIFactory.createCommandButtonPanel(new JButton[]{getButton, deleteButton, cancelButton});
-            }
-            this.setLayout(new BorderLayout(0, 0));
-            this.add(scroller, BorderLayout.CENTER);
-            this.add(btnPanel, BorderLayout.SOUTH);
-            this.setBorder(BorderFactory.createEmptyBorder());
+            JPanel btnPanel = isMac()?
+                GUIFactory.createCommandButtonPanel(new JButton[]{deleteButton, cancelButton, getButton}) :
+                GUIFactory.createCommandButtonPanel(new JButton[]{getButton, deleteButton, cancelButton});
+
+            setLayout(new BorderLayout(0, 0));
+            add(scroller, BorderLayout.CENTER);
+            add(btnPanel, BorderLayout.SOUTH);
+            setBorder(BorderFactory.createEmptyBorder());
         }
 
         /**
@@ -567,7 +457,7 @@ public class AddUser extends AbstractMainTool {
          * @param user
          */
         private void controleDelete(UserModel user) {
-            boolean isMe = user.getId() == Project.getUserModel().getId() ? true : false;
+            boolean isMe = user.getId() == Project.getUserModel().getId();
             deleteButton.setEnabled(!isMe);
         }
 
@@ -582,9 +472,8 @@ public class AddUser extends AbstractMainTool {
             int delay = ClientContext.getInt("task.default.delay");
             String note = ClientContext.getString("task.default.searchMessage");
             String message = null;
-            Component c = getFrame();
 
-            Task task = new Task<List<UserModel>>(c, message, note, maxEstimation) {
+            Task task = new Task<List<UserModel>>(frame, message, note, maxEstimation) {
 
                 @Override
                 protected List<UserModel> doInBackground() throws Exception {
@@ -599,7 +488,7 @@ public class AddUser extends AbstractMainTool {
                     if (udl.getErrorCode() == BusinessDelegater.NO_ERROR) {
                         tableModel.setObjectList(results);
                     } else {
-                        JOptionPane.showMessageDialog(getFrame(),
+                        JOptionPane.showMessageDialog(frame,
                                 udl.getErrorMessage(),
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.WARNING_MESSAGE);
@@ -617,7 +506,7 @@ public class AddUser extends AbstractMainTool {
         private void deleteUser() {
 
             int row = table.getSelectedRow();
-            UserModel entry = (UserModel) tableModel.getObject(row);
+            UserModel entry = tableModel.getObject(row);
             if (entry == null) {
                 return;
             }
@@ -636,11 +525,10 @@ public class AddUser extends AbstractMainTool {
             int delay = ClientContext.getInt("task.default.delay");
             String note = ClientContext.getString("task.default.deleteMessage");
             String message = null;
-            Component c = getFrame();
 
             final String deleteId = entry.getUserId();
 
-            Task task = new Task<List<UserModel>>(c, message, note, maxEstimation) {
+            Task task = new Task<List<UserModel>>(frame, message, note, maxEstimation) {
 
                 @Override
                 protected List<UserModel> doInBackground() throws Exception {
@@ -657,13 +545,13 @@ public class AddUser extends AbstractMainTool {
                     logger.debug("deleteUser succeeded");
                     if (udl.getErrorCode() == BusinessDelegater.NO_ERROR) {
                         tableModel.setObjectList(results);
-                        JOptionPane.showMessageDialog(getFrame(),
+                        JOptionPane.showMessageDialog(frame,
                                 DELETE_USER_SUCCESS_MSG,
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(getFrame(),
+                        JOptionPane.showMessageDialog(frame,
                                 udl.getErrorMessage(),
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.WARNING_MESSAGE);
@@ -682,18 +570,19 @@ public class AddUser extends AbstractMainTool {
     /**
      * 施設内ユーザ登録クラス.
      */
-    protected class AddUserPanel extends JPanel {
+    private class AddUserPanel extends JPanel {
+        private static final long serialVersionUID = 1L;
 
         private JTextField uid; // 利用者ID
         private JPasswordField userPassword1; // パスワード
         private JPasswordField userPassword2; // パスワード
-        private JTextField sn; // 姓
+        private JTextField surName; // 姓
         private JTextField givenName; // 名
         // private String cn; // 氏名(sn & ' ' & givenName)
         private LicenseModel[] licenses; // 職種(MML0026)
-        private JComboBox licenseCombo;
+        private JComboBox<LicenseModel> licenseCombo;
         private DepartmentModel[] depts; // 診療科(MML0028)
-        private JComboBox deptCombo;
+        private JComboBox<DepartmentModel> deptCombo;
         // private String authority; // LASに対する権限(admin:管理者,user:一般利用者)
         private JTextField emailField; // メールアドレス
 
@@ -710,6 +599,10 @@ public class AddUser extends AbstractMainTool {
         private String usersRole; // user に与える role 名
 
         public AddUserPanel() {
+            initComponents();
+        }
+
+        private void initComponents() {
 
             userIdLength = ClientContext.getIntArray("addUser.userId.length");
             passwordLength = ClientContext.getIntArray("addUser.password.length");
@@ -717,101 +610,44 @@ public class AddUser extends AbstractMainTool {
             idPassPattern = ClientContext.getString("addUser.pattern.idPass");
 
             // DocumentListener
-            DocumentListener dl = new DocumentListener() {
+            ProxyDocumentListener dl = e -> checkButton();
 
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                }
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    checkButton();
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    checkButton();
-                }
-            };
-
-            uid = GUIFactory.createTextField(10, null, null, dl);
+            uid = new JTextField(10);
             uid.setDocument(new RegexConstrainedDocument(idPassPattern));
-            uid.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    userPassword1.requestFocus();
-                }
-            });
-//pns       uid.addFocusListener(AutoRomanListener.getInstance());
+            uid.getDocument().addDocumentListener(dl);
+            uid.addActionListener(e -> userPassword1.requestFocus());
 
-            userPassword1 = GUIFactory.createPassField(10, null, null, dl);
+            userPassword1 = new JPasswordField(10);
             userPassword1.setDocument(new RegexConstrainedDocument(idPassPattern));
-            userPassword1.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    userPassword2.requestFocus();
-                }
-            });
-//pns       userPassword1.addFocusListener(AutoRomanListener.getInstance());
+            userPassword1.getDocument().addDocumentListener(dl);
+            userPassword1.addActionListener(e -> userPassword2.requestFocus());
 
-            userPassword2 = GUIFactory.createPassField(10, null, null, dl);
+            userPassword2 = new JPasswordField(10);
             userPassword2.setDocument(new RegexConstrainedDocument(idPassPattern));
-            userPassword2.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    sn.requestFocus();
-                }
-            });
-//pns       userPassword2.addFocusListener(AutoRomanListener.getInstance());
+            userPassword2.getDocument().addDocumentListener(dl);
+            userPassword2.addActionListener(e -> surName.requestFocus());
 
-            sn = GUIFactory.createTextField(10, null, null, dl);
-            sn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    givenName.requestFocus();
-                }
-            });
-//pns       userPassword2.addFocusListener(AutoKanjiListener.getInstance());
+            surName = GUIFactory.createTextField(10, null, null, dl);
+            surName.addActionListener(e -> givenName.requestFocus());
 
             givenName = GUIFactory.createTextField(10, null, null, dl);
-            givenName.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    emailField.requestFocus();
-                }
-            });
-//pns       givenName.addFocusListener(AutoKanjiListener.getInstance());
+            givenName.addActionListener(e -> emailField.requestFocus());
 
             emailField = GUIFactory.createTextField(15, null, null, dl);
-            emailField.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    uid.requestFocus();
-                }
-            });
-//pns       emailField.addFocusListener(AutoRomanListener.getInstance());
+            emailField.addActionListener(e -> uid.requestFocus());
 
             licenses = ClientContext.getLicenseModel();
-            licenseCombo = new JComboBox(licenses);
+            licenseCombo = new JComboBox<>(licenses);
 
             depts = ClientContext.getDepartmentModel();
-            deptCombo = new JComboBox(depts);
-
-            ActionListener al = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    addUserEntry();
-                }
-            };
+            deptCombo = new JComboBox<>(depts);
 
             okButton = new JButton("追加");
-            okButton.addActionListener(al);
+            okButton.addActionListener(e -> addUserEntry());
             okButton.setEnabled(false);
+
             cancelButton = new JButton("閉じる");
-            cancelButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    stop();
-                }
-            });
+            cancelButton.addActionListener(e -> stop());
 
             // レイアウト
             JPanel content = new JPanel(new GridBagLayout());
@@ -835,7 +671,7 @@ public class AddUser extends AbstractMainTool {
             y += 1;
             label = new JLabel("姓:", SwingConstants.RIGHT);
             constrain(content, label, x, y, 1, 1, GridBagConstraints.NONE, GridBagConstraints.EAST);
-            constrain(content, sn, x + 1, y, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+            constrain(content, surName, x + 1, y, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
             label = new JLabel("名:", SwingConstants.RIGHT);
             constrain(content, label, x + 2, y, 1, 1, GridBagConstraints.NONE, GridBagConstraints.EAST);
             constrain(content, givenName, x + 3, y, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
@@ -869,18 +705,15 @@ public class AddUser extends AbstractMainTool {
             label = new JLabel("パスワード - 半角英数記で" + passwordLength[0] + "文字以上" + passwordLength[1] + "文字以内");
             constrain(content, label, x, y, 4, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.EAST);
 
-            JPanel btnPanel = null;
-            if (isMac()) {
-                btnPanel = GUIFactory.createCommandButtonPanel(new JButton[]{cancelButton, okButton});
-            } else {
-                btnPanel = GUIFactory.createCommandButtonPanel(new JButton[]{okButton, cancelButton});
-            }
+            JPanel btnPanel = isMac()?
+                GUIFactory.createCommandButtonPanel(new JButton[]{cancelButton, okButton}) :
+                GUIFactory.createCommandButtonPanel(new JButton[]{okButton, cancelButton});
 
-            this.setLayout(new BorderLayout(0, 17));
-            this.add(content, BorderLayout.NORTH);
-            this.add(btnPanel, BorderLayout.SOUTH);
+            setLayout(new BorderLayout(0, 17));
+            add(content, BorderLayout.NORTH);
+            add(btnPanel, BorderLayout.SOUTH);
 
-            this.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
+            setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
         }
 
         private void addUserEntry() {
@@ -904,7 +737,7 @@ public class AddUser extends AbstractMainTool {
             //String charset = ClientContext.getString("addUser.password.hash.charset");
             //String charset = null;
             //String hashPass = CryptoUtil.createPasswordHash(Algorithm, encoding, charset, userId, pass);
-            pass = null;
+            //pass = null;
 
             final UserModel user = new UserModel();
             StringBuilder sb = new StringBuilder(facilityId);
@@ -912,7 +745,7 @@ public class AddUser extends AbstractMainTool {
             sb.append(userId);
             user.setUserId(sb.toString());
             user.setPassword(hashPass);
-            user.setSirName(sn.getText().trim());
+            user.setSirName(surName.getText().trim());
             user.setGivenName(givenName.getText().trim());
             user.setCommonName(user.getSirName() + " " + user.getGivenName());
 
@@ -956,9 +789,8 @@ public class AddUser extends AbstractMainTool {
             int delay = ClientContext.getInt("task.default.delay");
             String addMsg = ClientContext.getString("task.default.addMessage");
             String message = null;
-            Component c = getFrame();
 
-            Task task = new Task<Boolean>(c, message, addMsg, maxEstimation) {
+            Task task = new Task<Boolean>(frame, message, addMsg, maxEstimation) {
 
                 @Override
                 protected Boolean doInBackground() throws Exception {
@@ -970,14 +802,14 @@ public class AddUser extends AbstractMainTool {
                 @Override
                 protected void succeeded(Boolean results) {
                     logger.debug("addUserEntry succeeded");
-                    if (results.booleanValue()) {
-                        JOptionPane.showMessageDialog(getFrame(),
+                    if (results) {
+                        JOptionPane.showMessageDialog(frame,
                                 ADD_USER_SUCCESS_MSG,
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(getFrame(),
+                        JOptionPane.showMessageDialog(frame,
                                 udl.getErrorMessage(),
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.WARNING_MESSAGE);
@@ -996,8 +828,7 @@ public class AddUser extends AbstractMainTool {
             }
 
             int len = userId.length();
-            return (len >= userIdLength[0] && len <= userIdLength[1]) ? true
-                    : false;
+            return (len >= userIdLength[0] && len <= userIdLength[1]);
         }
 
         private boolean passwordOk() {
@@ -1019,19 +850,18 @@ public class AddUser extends AbstractMainTool {
                 return false;
             }
 
-            return passwd1.equals(passwd2) ? true : false;
+            return passwd1.equals(passwd2);
         }
 
         private void checkButton() {
 
             boolean userOk = userIdOk();
             boolean passwordOk = passwordOk();
-            boolean snOk = sn.getText().trim().equals("") ? false : true;
-            boolean givenOk = givenName.getText().trim().equals("") ? false : true;
-            boolean emailOk = emailField.getText().trim().equals("") ? false : true;
+            boolean snOk = !surName.getText().trim().equals("");
+            boolean givenOk = !givenName.getText().trim().equals("");
+            boolean emailOk = !emailField.getText().trim().equals("");
 
-            boolean newOk = (userOk && passwordOk && snOk && givenOk && emailOk) ? true
-                    : false;
+            boolean newOk = (userOk && passwordOk && snOk && givenOk && emailOk);
 
             if (ok != newOk) {
                 ok = newOk;
@@ -1063,7 +893,7 @@ public class AddUser extends AbstractMainTool {
         sb.append(ClientContext.getString("task.timeoutMsg1"));
         sb.append("\n");
         sb.append(ClientContext.getString("task.timeoutMsg1"));
-        JOptionPane.showMessageDialog(getFrame(),
+        JOptionPane.showMessageDialog(frame,
                 sb.toString(),
                 ClientContext.getFrameTitle(getName()),
                 JOptionPane.WARNING_MESSAGE);
@@ -1075,6 +905,6 @@ public class AddUser extends AbstractMainTool {
      */
     private boolean isMac() {
         String os = System.getProperty("os.name").toLowerCase();
-        return os.startsWith("mac") ? true : false;
+        return os.startsWith("mac");
     }
 }

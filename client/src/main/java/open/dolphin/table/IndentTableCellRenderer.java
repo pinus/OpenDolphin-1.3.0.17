@@ -9,7 +9,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
- *
+ * インデントを付けるレンダラ.
+ * 頭にスペースをつける偽インデント.
  * @author pns
  */
 public class IndentTableCellRenderer extends DefaultTableCellRenderer {
@@ -64,7 +65,7 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
         if (value == null) {
             this.setText("");
         } else {
-            this.setText(addIndent((String)value, indent, this.getForeground()));
+            this.setText(addIndent(value.toString(), indent, this.getForeground()));
         }
         this.setFont(font);
 
@@ -95,7 +96,7 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
     }*/
 
     public static String addIndent(String text, int indent, Color color) {
-        if (indent >= 10) return "　" + text;
-        else return " " + text;
+        if (indent >= 10) { return "　" + text; }
+        else { return " " + text; }
     }
 }

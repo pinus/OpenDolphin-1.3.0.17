@@ -1,21 +1,19 @@
 package open.dolphin.client;
-import javax.swing.text.*;
 
+import javax.swing.text.*;
 import java.awt.Toolkit;
 import java.util.regex.*;
 
 /**
- * RegexConstrainedDocument
+ * RegexConstrainedDocument.
  */
 public class RegexConstrainedDocument extends PlainDocument {
-
     private static final long serialVersionUID = 4066321190740323979L;
 
-    boolean beep;
-    boolean debug;
-	
-    Pattern pattern;
-    Matcher matcher;
+    private boolean beep;
+    private boolean debug;
+    private Pattern pattern;
+    private Matcher matcher;
 
     public RegexConstrainedDocument () {
     	super();
@@ -35,8 +33,8 @@ public class RegexConstrainedDocument extends PlainDocument {
         setPatternByString (p);
     }
 
-    public void setPatternByString (String p) {
-        Pattern pattern = Pattern.compile (p);
+    private void setPatternByString (String p) {
+        pattern = Pattern.compile (p);
         // check the document against the new pattern
         // and removes the content if it no longer matches
         try {
@@ -47,7 +45,7 @@ public class RegexConstrainedDocument extends PlainDocument {
                 remove (0, getLength());
             }
         } catch (BadLocationException ble) {
-            ble.printStackTrace(); // impossible?
+            ble.printStackTrace(System.err); // impossible?
         }
     }
 
@@ -55,6 +53,7 @@ public class RegexConstrainedDocument extends PlainDocument {
     	return pattern;
     }
 
+    @Override
     public void insertString (int offs, String s, AttributeSet a) throws BadLocationException {
         // consider whether this insert will match
         //String proposedInsert = getText (0, offs) + s + getText (offs, getLength() - offs);
@@ -84,5 +83,4 @@ public class RegexConstrainedDocument extends PlainDocument {
     		System.out.println(msg);
     	}
     }
-
 }

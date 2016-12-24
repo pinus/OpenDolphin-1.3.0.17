@@ -7,30 +7,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.im.InputSubset;
 import java.util.Collection;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.*;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.ProxyDocumentListener;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.DepartmentModel;
 import open.dolphin.infomodel.LicenseModel;
@@ -41,15 +25,15 @@ import open.dolphin.util.HashUtil;
 import org.apache.log4j.Logger;
 
 /**
- * ChangePasswordPlugin
+ * ChangePasswordPlugin.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ChangePassword extends AbstractMainTool {
 
     private static final String TITLE = "プロフィール変更";
-    private static int DEFAULT_WIDTH = 568;
-    private static int DEFAULT_HEIGHT = 300;
+    private static final Point DEFAULT_LOC = new Point(0,0);
+    private static final Dimension DEFAULT_SIZE = new Dimension(568,300);
     private static final String PROGRESS_NOTE = "ユーザ情報を変更しています...";
     private static final String UPDATE_BTN_TEXT = "変更";
     private static final String CLOSE_BTN_TEXT = "閉じる";
@@ -68,24 +52,12 @@ public class ChangePassword extends AbstractMainTool {
     private static final String DUMMY_PASSWORD = "";
 
     private JFrame frame;
-    protected JButton okButton;
+    private JButton okButton;
+    private final Logger logger;
 
-    private Logger logger;
-
-    /**
-     * Creates a new instance of AddUserService
-     */
     public ChangePassword() {
         setName(TITLE);
         logger = ClientContext.getBootLogger();
-    }
-
-    public void setFrame(JFrame frame) {
-        this.frame = frame;
-    }
-
-    public JFrame getFrame() {
-        return frame;
     }
 
     @Override
@@ -93,40 +65,41 @@ public class ChangePassword extends AbstractMainTool {
 
         // Super Class で Frame を初期化する
         String title = ClientContext.getFrameTitle(getName());
-        setFrame(new JFrame(title));
-        getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        getFrame().addWindowListener(new WindowAdapter() {
+        frame = new JFrame(title);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 stop();
             }
         });
-        ComponentBoundsManager cm = new ComponentBoundsManager(getFrame(), new Point(0, 0), new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT), this);
+        ComponentBoundsManager cm = new ComponentBoundsManager(frame, DEFAULT_LOC, DEFAULT_SIZE, this);
         cm.putCenter();
 
         ChangePasswordPanel cp = new ChangePasswordPanel();
         cp.get();
-        getFrame().getContentPane().add(cp, BorderLayout.CENTER);
-        getFrame().getRootPane().setDefaultButton(okButton);
-        getFrame().setVisible(true);
+        frame.getContentPane().add(cp, BorderLayout.CENTER);
+        frame.getRootPane().setDefaultButton(okButton);
+        frame.setVisible(true);
     }
 
     @Override
     public void stop() {
-        getFrame().setVisible(false);
-        getFrame().dispose();
+        frame.setVisible(false);
+        frame.dispose();
     }
 
     public void toFront() {
-        if (getFrame() != null) {
-            getFrame().toFront();
+        if (frame != null) {
+            frame.toFront();
         }
     }
 
     /**
      * パスワード変更クラス.
      */
-    protected class ChangePasswordPanel extends JPanel {
+    private class ChangePasswordPanel extends JPanel {
+        private static final long serialVersionUID = 1L;
 
         private JTextField uid; // 利用者ID
         private JPasswordField userPassword1; // パスワード1
@@ -135,9 +108,9 @@ public class ChangePassword extends AbstractMainTool {
         private JTextField givenName; // 名
         private JTextField email;
         private LicenseModel[] licenses; // 職種(MML0026)
-        private JComboBox licenseCombo;
+        private JComboBox<LicenseModel> licenseCombo;
         private DepartmentModel[] depts; // 診療科(MML0028)
-        private JComboBox deptCombo;
+        private JComboBox<DepartmentModel> deptCombo;
 
         private JButton okButton;
         private JButton cancelButton;
@@ -148,46 +121,21 @@ public class ChangePassword extends AbstractMainTool {
 
 
         public ChangePasswordPanel() {
+            initComponents();
+        }
+
+        private void initComponents() {
 
             userIdLength = ClientContext.getIntArray("addUser.userId.length");
             passwordLength = ClientContext.getIntArray("addUser.password.length");
 
-            FocusAdapter imeOn = new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent event) {
-                    JTextField tf = (JTextField) event.getSource();
-                    tf.getInputContext().setCharacterSubsets(
-                            new Character.Subset[] { InputSubset.KANJI });
-                }
-            };
-
-            FocusAdapter imeOff = new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent event) {
-                    JTextField tf = (JTextField) event.getSource();
-                    tf.getInputContext().setCharacterSubsets(null);
-                }
-            };
-
             // DocumentListener
-            DocumentListener dl = new DocumentListener() {
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                }
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    checkButton();
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    checkButton();
-                }
-            };
+            ProxyDocumentListener dl = e -> checkButton();
 
             //
             // ユーザIDフィールドを生成する
             //
-            uid = createTextField(10, null, imeOff, null);
+            uid = new JTextField(10);
             String pattern = ClientContext.getString("addUser.pattern.idPass");
             RegexConstrainedDocument userIdDoc = new RegexConstrainedDocument(pattern);
             uid.setDocument(userIdDoc);
@@ -197,25 +145,15 @@ public class ChangePassword extends AbstractMainTool {
             //
             // パスワードフィールドを設定する
             //
-            userPassword1 = createPassField(10, null, imeOff, null);
-            userPassword1.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    userPassword2.requestFocus();
-                }
-            });
-
-            userPassword2 = createPassField(10, null, imeOff, null);
-            userPassword2.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    sn.requestFocus();
-                }
-            });
+            userPassword1 = new JPasswordField(10);
+            userPassword1.addActionListener(e -> userPassword2.requestFocus());
             RegexConstrainedDocument passwordDoc1 = new RegexConstrainedDocument(pattern);
             userPassword1.setDocument(passwordDoc1);
             userPassword1.setToolTipText(pattern);
             userPassword1.getDocument().addDocumentListener(dl);
+
+            userPassword2 = new JPasswordField(10);
+            userPassword2.addActionListener( e-> sn.requestFocus());
             RegexConstrainedDocument passwordDoc2 = new RegexConstrainedDocument(pattern);
             userPassword2.setDocument(passwordDoc2);
             userPassword2.getDocument().addDocumentListener(dl);
@@ -224,29 +162,19 @@ public class ChangePassword extends AbstractMainTool {
             //
             // 姓
             //
-            sn = createTextField(10, null, imeOn, dl);
-            sn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    givenName.requestFocus();
-                }
-            });
+            sn = GUIFactory.createTextField(10, null, null, dl);
+            sn.addActionListener(e-> givenName.requestFocus());
 
             //
             // 名
             //
-            givenName = createTextField(10, null, imeOn, dl);
-            givenName.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    userPassword1.requestFocus();
-                }
-            });
+            givenName = GUIFactory.createTextField(10, null, null, dl);
+            givenName.addActionListener(e -> userPassword1.requestFocus());
 
             //
             // 電子メール
             //
-            email = createTextField(20, null, imeOff, null);
+            email = new JTextField(20);
             pattern = ClientContext.getString("addUser.pattern.email");
             RegexConstrainedDocument emailDoc = new RegexConstrainedDocument(pattern);
             email.setDocument(emailDoc);
@@ -256,7 +184,7 @@ public class ChangePassword extends AbstractMainTool {
             // 医療資格
             //
             licenses = ClientContext.getLicenseModel();
-            licenseCombo = new JComboBox(licenses);
+            licenseCombo = new JComboBox<>(licenses);
             boolean readOnly = Project.isReadOnly();
             licenseCombo.setEnabled(!readOnly);
 
@@ -264,35 +192,21 @@ public class ChangePassword extends AbstractMainTool {
             // 診療科
             //
             depts = ClientContext.getDepartmentModel();
-            deptCombo = new JComboBox(depts);
+            deptCombo = new JComboBox<>(depts);
             deptCombo.setEnabled(true);
 
             //
             // OK Btn
             //
-            ActionListener al = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    changePassword();
-                }
-            };
-
             okButton = new JButton(UPDATE_BTN_TEXT);
-            okButton.addActionListener(al);
-            //okButton.setMnemonic(KeyEvent.VK_U);
+            okButton.addActionListener(e -> changePassword());
             okButton.setEnabled(false);
 
             //
             // Cancel Btn
             //
             cancelButton = new JButton(CLOSE_BTN_TEXT);
-            cancelButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    stop();
-                }
-            });
-            //cancelButton.setMnemonic(KeyEvent.VK_C);
+            cancelButton.addActionListener(e -> stop());
 
             // レイアウト
             JPanel content = new JPanel(new GridBagLayout());
@@ -348,18 +262,14 @@ public class ChangePassword extends AbstractMainTool {
                     + passwordLength[1] + PASSWORD_ASSIST_3);
             constrain(content, label, x, y, 4, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.EAST);
 
-            JPanel btnPanel = null;
-            if (isMac()) {
-                btnPanel = GUIFactory.createCommandButtonPanel(new JButton[]{cancelButton, okButton});
-            } else {
-                btnPanel = GUIFactory.createCommandButtonPanel(new JButton[]{okButton, cancelButton});
-            }
+            JPanel btnPanel = isMac()?
+                GUIFactory.createCommandButtonPanel(new JButton[]{cancelButton, okButton}) :
+                GUIFactory.createCommandButtonPanel(new JButton[]{okButton, cancelButton});
 
-            this.setLayout(new BorderLayout(0, 17));
-            this.add(content, BorderLayout.CENTER);
-            this.add(btnPanel, BorderLayout.SOUTH);
-
-            this.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
+            setLayout(new BorderLayout(0, 17));
+            add(content, BorderLayout.CENTER);
+            add(btnPanel, BorderLayout.SOUTH);
+            setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
         }
 
         /**
@@ -478,7 +388,7 @@ public class ChangePassword extends AbstractMainTool {
             // Roleを付け加える
             //
             Collection<RoleModel> roles = user.getRoles();
-            for (RoleModel role : roles) {
+            roles.forEach(role -> {
                 role.setUserId(user.getUserId());
                 RoleModel updateRole = new RoleModel();
                 updateRole.setId(role.getId());
@@ -486,22 +396,21 @@ public class ChangePassword extends AbstractMainTool {
                 updateRole.setUser(updateModel);
                 updateRole.setUserId(updateModel.getUserId());
                 updateModel.addRole(updateRole);
-            }
+            });
 
             // タスクを実行する
             final UserDelegater udl = new UserDelegater();
             int maxEstimation = ClientContext.getInt("task.default.maxEstimation");
             int delay = ClientContext.getInt("task.default.delay");
             String message = null;
-            Component c = getFrame();
 
-            Task task = new Task<Boolean>(c, message, PROGRESS_NOTE, maxEstimation) {
+            Task task = new Task<Boolean>(frame, message, PROGRESS_NOTE, maxEstimation) {
 
                 @Override
                 protected Boolean doInBackground() throws Exception {
                     logger.debug("ChangePassword doInBackground");
                     int cnt = udl.updateUser(updateModel);
-                    return cnt > 0 ? true : false;
+                    return cnt > 0;
                 }
 
                 @Override
@@ -525,12 +434,12 @@ public class ChangePassword extends AbstractMainTool {
                         String pk = principal.getFacilityId() + ":" + principal.getUserId();
                         DolphinClientContext.configure(hostAddress, pk, password);
 
-                        JOptionPane.showMessageDialog(getFrame(),
+                        JOptionPane.showMessageDialog(frame,
                                 SUCCESS_MESSAGE,
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(getFrame(),
+                        JOptionPane.showMessageDialog(frame,
                                 udl.getErrorMessage(),
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.WARNING_MESSAGE);
@@ -556,11 +465,7 @@ public class ChangePassword extends AbstractMainTool {
                 return false;
             }
 
-            if (userId.length() < userIdLength[0] || userId.length() > userIdLength[1]) {
-                return false;
-            }
-
-            return true;
+            return userId.length() >= userIdLength[0] && userId.length() <= userIdLength[1];
         }
 
         /**
@@ -585,7 +490,7 @@ public class ChangePassword extends AbstractMainTool {
                 return false;
             }
 
-            return passwd1.equals(passwd2) ? true : false;
+            return passwd1.equals(passwd2);
         }
 
         /**
@@ -595,69 +500,17 @@ public class ChangePassword extends AbstractMainTool {
 
             boolean uidOk = userIdOk();
             boolean passwordOk = passwordOk();
-            boolean snOk = sn.getText().trim().equals("") ? false : true;
-            boolean givenOk = givenName.getText().trim().equals("") ? false : true;
-            boolean emailOk = email.getText().trim().equals("") ? false: true;
+            boolean snOk = !sn.getText().trim().equals("");
+            boolean givenOk = !givenName.getText().trim().equals("");
+            boolean emailOk = !email.getText().trim().equals("");
 
-            boolean newOk = (uidOk && passwordOk && snOk && givenOk && emailOk) ? true : false;
+            boolean newOk = (uidOk && passwordOk && snOk && givenOk && emailOk);
 
             if (ok != newOk) {
                 ok = newOk;
                 okButton.setEnabled(ok);
             }
         }
-    }
-
-    /**
-     * TextField を生成する.
-     */
-    private JTextField createTextField(int val, Insets margin, FocusAdapter fa, DocumentListener dl) {
-
-        if (val == 0) {
-            val = 30;
-        }
-        JTextField tf = new JTextField(val);
-
-        if (margin == null) {
-            margin = new Insets(1, 2, 1, 2);
-        }
-        tf.setMargin(margin);
-
-        if (dl != null) {
-            tf.getDocument().addDocumentListener(dl);
-        }
-
-        if (fa != null) {
-            tf.addFocusListener(fa);
-        }
-
-        return tf;
-    }
-
-    /**
-     * パスワードフィールドを生成する.
-     */
-    private JPasswordField createPassField(int val, Insets margin, FocusAdapter fa, DocumentListener dl) {
-
-        if (val == 0) {
-            val = 30;
-        }
-        JPasswordField tf = new JPasswordField(val);
-
-        if (margin == null) {
-            margin = new Insets(1, 2, 1, 2);
-        }
-        tf.setMargin(margin);
-
-        if (dl != null) {
-            tf.getDocument().addDocumentListener(dl);
-        }
-
-        if (fa != null) {
-            tf.addFocusListener(fa);
-        }
-
-        return tf;
     }
 
     /**
@@ -673,7 +526,7 @@ public class ChangePassword extends AbstractMainTool {
         c.gridheight = height;
         c.fill = fill;
         c.anchor = anchor;
-//pns   c.insets = new Insets(0, 0, 5, 7);
+        // c.insets = new Insets(0, 0, 5, 7);
         c.insets = new Insets(0, 0, 0, 0);
         ((GridBagLayout) container.getLayout()).setConstraints(cmp, c);
         container.add(cmp);
@@ -684,7 +537,6 @@ public class ChangePassword extends AbstractMainTool {
      * @return mac の時 true
      */
     private boolean isMac() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.startsWith("mac") ? true : false;
+        return System.getProperty("os.name").toLowerCase().startsWith("mac");
     }
 }

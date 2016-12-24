@@ -1,15 +1,15 @@
 package open.dolphin.client;
 
 import java.io.Serializable;
-
 import javax.swing.*;
 
 /**
- * ImageEntry
+ * ImageEntry.
  *
  * @author  Kazushi Minagawa, Digital globe, Inc.
  */
 public class ImageEntry implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String confirmDate;
 

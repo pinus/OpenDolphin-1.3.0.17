@@ -30,7 +30,7 @@ public class ComponentBoundsManager implements ComponentListener {
      * @param size - intitial component size
      * @param object - この object のクラス名が preference の key になる. null にすると記録されない.
      */
-    public ComponentBoundsManager(Component component, Point location, Dimension size) {
+    public ComponentBoundsManager(Component component, Point location, Dimension size, Object object) {
         target = component;
         defaultLocation = location;
         defaultSize = size;
@@ -91,7 +91,7 @@ public class ComponentBoundsManager implements ComponentListener {
     }
 
     /**
-     * target component を画面中央に設定する
+     * target component を画面中央に設定する.
      */
     public void putCenter() {
         if (ClientContext.isMac()) {

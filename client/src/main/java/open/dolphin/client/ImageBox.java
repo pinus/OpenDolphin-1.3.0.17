@@ -26,7 +26,7 @@ import open.dolphin.ui.PNSTabbedPane;
 import org.apache.log4j.Logger;
 
 /**
- * ImageBox
+ * ImageBox.
  *
  * @author Minagawa,Kazushi
  */
@@ -35,6 +35,8 @@ public class ImageBox extends AbstractMainTool {
     private static final int DEFAULT_COLUMN_COUNT 	=   3;
     private static final int DEFAULT_IMAGE_WIDTH 	= 120;
     private static final int DEFAULT_IMAGE_HEIGHT 	= 120;
+    private static final Point DEFAULT_LOC = new Point(537,22);
+    private static final Dimension DEFAULT_SIZE = new Dimension(406,587);
     private static final String[] DEFAULT_IMAGE_SUFFIX = {".jpg"};
 
     private String imageLocation  = ClientContext.getLocation("schema");
@@ -44,10 +46,6 @@ public class ImageBox extends AbstractMainTool {
     private int imageWidth = DEFAULT_IMAGE_WIDTH;
     private int imageHeight = DEFAULT_IMAGE_HEIGHT;
     private String[] suffix = DEFAULT_IMAGE_SUFFIX;
-    private final int defaultWidth = 406;
-    private final int defaultHeight = 587;
-    private final int defaultLocX = 537;
-    private final int defaultLocY = 22;
 
     private MainFrame frame;
     private final String title = "シェーマ箱";
@@ -80,6 +78,7 @@ public class ImageBox extends AbstractMainTool {
         }
     }
 
+    @Override
     public void stop() {
         frame.setVisible(false);
     }
@@ -195,7 +194,7 @@ public class ImageBox extends AbstractMainTool {
             frame = new MainFrame(title);
         }
 
-        ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(defaultLocX,defaultLocY), new Dimension(defaultWidth, defaultHeight), this);
+        ComponentBoundsManager cm = new ComponentBoundsManager(frame, DEFAULT_LOC, DEFAULT_SIZE, this);
         cm.revertToPreferenceBounds();
 
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

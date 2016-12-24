@@ -38,7 +38,7 @@ import open.dolphin.util.PNSTriple;
 import org.apache.log4j.Logger;
 
 /**
- * StampImporter
+ * StampImporter.
  *
  * @author Minagawa,Kazushi
  */
@@ -143,7 +143,7 @@ public class StampImporter {
         int n = ClientContext.isMac() ? 3 : 2;
         int x = (screen.width - WIDTH) / 2;
         int y = (screen.height - HEIGHT) / n;
-        ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(x, y), new Dimension(new Dimension(WIDTH, HEIGHT)), this);
+        ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(x, y), new Dimension(WIDTH, HEIGHT), this);
         cm.revertToPreferenceBounds();
 
         JPanel contentPane = createBrowsePane();

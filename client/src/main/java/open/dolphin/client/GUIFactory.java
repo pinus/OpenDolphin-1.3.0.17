@@ -8,36 +8,14 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
-
-import java.text.ParseException;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.*;
 import javax.swing.event.DocumentListener;
 
 /**
- * @author Kazushi Minagawa Digital Globe, Inc.
  *
+ * @author Kazushi Minagawa Digital Globe, Inc.
  */
 public class GUIFactory {
 
@@ -52,8 +30,7 @@ public class GUIFactory {
     private static final int TITLE_SPACE_LEFT  		= 6;
     private static final int TITLE_SPACE_BOTTOM 	= 5;
     private static final int TITLE_SPACE_RIGHT  	= 5;
-
-    private static Color dropOkColor = new Color(0, 12, 156);
+    private static final Color DROP_OK_COLOR = new Color(0, 12, 156);
 
     public static Font createSmallFont() {
         return new Font("Dialog", Font.PLAIN, 10);
@@ -68,86 +45,38 @@ public class GUIFactory {
     }
 
     public static JButton createButton(String text, String mnemonic, ActionListener al) {
-
         JButton ret = new JButton(text);
-
-        if (al != null) {
-            ret.addActionListener(al);
-        }
-
-//        if (mnemonic != null) {
-//            ret.setMnemonic(mnemonic.charAt(0));
-//        }
-
+        if (al != null) { ret.addActionListener(al); }
         return ret;
     }
 
     public static JRadioButton createRadioButton(String text, ActionListener al, ButtonGroup bg) {
-
         JRadioButton radio = new JRadioButton(text);
-
-        if (al != null) {
-            radio.addActionListener(al);
-        }
-
-        if (bg != null) {
-            bg.add(radio);
-        }
-
+        if (al != null) { radio.addActionListener(al); }
+        if (bg != null) { bg.add(radio); }
         return radio;
     }
 
     public static JCheckBox createCheckBox(String text, ActionListener al) {
-
         JCheckBox ret = new JCheckBox(text);
-
-        if (al != null) {
-            ret.addActionListener(al);
-        }
-
+        if (al != null) { ret.addActionListener(al); }
         return ret;
     }
 
-    public static JTextField createTextField(int val, Insets margin, FocusListener fa, DocumentListener dl) {
-
-        if (val == 0) {
-            val = TF_LENGTH;
-        }
-        JTextField tf = new JTextField(val);
-
-        if (margin == null) {
-            margin = new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT);
-        }
-        tf.setMargin(margin);
-
-        if (dl != null) {
-            tf.getDocument().addDocumentListener(dl);
-        }
-
-        if (fa != null) {
-            tf.addFocusListener(fa);
-        }
-
+    public static JTextField createTextField(int val, Insets margin, FocusListener fl, DocumentListener dl) {
+        JTextField tf = new JTextField(val==0? TF_LENGTH : val);
+        tf.setMargin(margin==null? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin);
+        if (dl != null) { tf.getDocument().addDocumentListener(dl); }
+        if (fl != null) { tf.addFocusListener(fl); }
         return tf;
     }
 
     public static JPasswordField createPassField(int val, Insets margin, FocusListener fa, DocumentListener dl) {
-
-        val = val == 0 ? val = TF_LENGTH : val;
-        JPasswordField tf = new JPasswordField(val);
-
-        margin = margin == null ? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin;
-        tf.setMargin(margin);
-
-        if (dl != null) {
-            tf.getDocument().addDocumentListener(dl);
-        }
-
-        if (fa != null) {
-            tf.addFocusListener(fa);
-        }
-
-        return tf;
+        JPasswordField pf = new JPasswordField(val==0? TF_LENGTH : val);
+        pf.setMargin(margin==null? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin);
+        if (dl != null) { pf.getDocument().addDocumentListener(dl); }
+        if (fa != null) { pf.addFocusListener(fa); }
+        return pf;
     }
 
     /**
@@ -158,14 +87,12 @@ public class GUIFactory {
      */
     public static JPanel createButtonPanel(JButton[] btns, int align) {
         JPanel p = new JPanel(new FlowLayout(align, BUTTON_GAP, 0));
-        for (int i = 0; i < btns.length; i++) {
-            p.add(btns[i]);
-        }
+        for (JButton btn : btns) { p.add(btn); }
         return p;
     }
 
     /**
-     * 右ずめにボタンを配置したパネルを生成する.
+     * 右づめにボタンを配置したパネルを生成する.
      * @param btns 配置する Button の配列
      * @return ボタンが配列されたパネル（左に水平 Glue，右はマージンなし）
      */
@@ -183,17 +110,13 @@ public class GUIFactory {
 
     public static JPanel createRadioPanel(JRadioButton[] rbs) {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, BUTTON_GAP, 0));
-        for (int i = 0; i < rbs.length; i++) {
-            p.add(rbs[i]);
-        }
+        for (JRadioButton rb : rbs) { p.add(rb); }
         return p;
     }
 
     public static JPanel createCheckBoxPanel(JCheckBox[] boxes) {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT,BUTTON_GAP, 0));
-        for (int i = 0; i < boxes.length; i++) {
-            p.add(boxes[i]);
-        }
+        for (JCheckBox boxe : boxes) { p.add(boxe); }
         return p;
     }
 
@@ -255,9 +178,9 @@ public class GUIFactory {
     }
 
     public static Color getDropOkColor() {
-        return dropOkColor;
+        return DROP_OK_COLOR;
     }
-//pns^
+
     /**
      * Slider のパネルを作る
      * @param min
@@ -277,21 +200,12 @@ public class GUIFactory {
         spinner.setEditor(new JSpinner.NumberEditor(spinner, "#"));
 
         // お互いにリスン
-        slider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                spinner.setValue(slider.getValue());
-            }
-        });
-        spinner.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                slider.setValue((Integer)spinner.getValue());
-            }
-        });
+        slider.addChangeListener(e -> spinner.setValue(slider.getValue()));
+        spinner.addChangeListener(e -> slider.setValue((Integer)spinner.getValue()));
 
         ret.add(slider);
         ret.add(spinner);
 
         return ret;
     }
-//pns$
 }

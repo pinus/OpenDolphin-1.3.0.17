@@ -25,6 +25,8 @@ public class StampEditorDialog implements PropertyChangeListener {
 
     public static final String VALID_DATA_PROP = "validData";
     public static final String VALUE_PROP = "value";
+    private static final Point DEFAULT_LOC = new Point(159,67);
+    private static final Dimension DEFAULT_SIZE = new Dimension(924,616);
 
     /** command buttons */
     private JButton okButton;
@@ -38,11 +40,6 @@ public class StampEditorDialog implements PropertyChangeListener {
     private final String entity;
     private Object value;
     private BlockGlass glass;
-
-    private static final int DEFAULT_X = 159;
-    private static final int DEFAULT_Y = 67;
-    private static final int DEFAULT_WIDTH = 924;
-    private static final int DEFAULT_HEIGHT = 616;
 
     private final Logger logger;
     private final boolean isNew; // value が null なら new
@@ -113,7 +110,7 @@ public class StampEditorDialog implements PropertyChangeListener {
         });
 
         dialog.setTitle(editor.getTitle());
-        ComponentBoundsManager cm = new ComponentBoundsManager(dialog, new Point(DEFAULT_X,DEFAULT_Y), new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT), this);
+        ComponentBoundsManager cm = new ComponentBoundsManager(dialog, DEFAULT_LOC, DEFAULT_SIZE, this);
         cm.revertToPreferenceBounds();
 
         //ESC で編集内容破棄してクローズ

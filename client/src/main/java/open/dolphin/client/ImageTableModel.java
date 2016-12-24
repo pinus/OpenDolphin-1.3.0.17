@@ -1,9 +1,7 @@
 package open.dolphin.client;
 
 import java.util.List;
-
 import javax.swing.table.AbstractTableModel;
-
 
 /**
  * ImageTableModel
@@ -11,10 +9,11 @@ import javax.swing.table.AbstractTableModel;
  * @author Minagawa, Kazushi
  */
 public class ImageTableModel extends AbstractTableModel {
+    private static final long serialVersionUID = 1L;
 
-    private String[] columnNames;
-    private int columnCount;
-    private List imageList;
+    private final String[] columnNames;
+    private final int columnCount;
+    private List<ImageEntry> imageList;
 
     public ImageTableModel(String[] columnNames, int columnCount) {
         this.columnNames = columnNames;
@@ -26,10 +25,12 @@ public class ImageTableModel extends AbstractTableModel {
         return (columnNames != null && col < columnNames.length) ? columnNames[col] : null;
     }
 
+    @Override
     public int getColumnCount() {
         return columnCount;
     }
 
+    @Override
     public int getRowCount() {
 
         if (imageList == null) {
@@ -42,37 +43,34 @@ public class ImageTableModel extends AbstractTableModel {
         return ( (size % columnCount) != 0 ) ? rowCount + 1 : rowCount;
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
         int index = row * columnCount + col;
         if (!isValidIndex(index)) {
             return null;
         }
 
-        ImageEntry entry = (ImageEntry)imageList.get(index);
-        return (Object)entry;
+        ImageEntry entry = imageList.get(index);
+        return entry;
     }
 
-    public void setImageList(List list) {
-        if (imageList != null) {
-            imageList.clear();
-            imageList = null;
-        }
+    public void setImageList(List<ImageEntry> list) {
         imageList = list;
-        this.fireTableDataChanged();
+        fireTableDataChanged();
     }
 
-    public List getImageList() {
+    public List<ImageEntry> getImageList() {
         return imageList;
     }
 
     private boolean isValidIndex(int index) {
-        return (imageList == null || index < 0 || index >= imageList.size()) ? false : true;
+        return imageList != null && index >= 0 && index < imageList.size();
     }
 
     public void clear() {
         if (imageList != null) {
             imageList.clear();
-            this.fireTableDataChanged();
+            fireTableDataChanged();
         }
     }
 }
