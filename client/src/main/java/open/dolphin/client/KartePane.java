@@ -31,6 +31,7 @@ import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.ImageHelper;
+import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.StampEditorDialog;
@@ -79,10 +80,13 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     private int draggedCount;
     private int droppedCount;
 
+    private final TextComponentUndoManager undoManager;
+
     private final Logger logger;
 
     public KartePane() {
         logger = ClientContext.getBootLogger();
+        undoManager = new TextComponentUndoManager();
     }
 
     public void setMargin(Insets margin) {
@@ -148,10 +152,10 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * ChartMediatorを設定する.
-     * @param mediator ChartMediator
+     * @param med ChartMediator
      */
-    protected void setMediator(ChartMediator mediator) {
-        this.mediator = mediator;
+    protected void setMediator(ChartMediator med) {
+        mediator = med;
     }
 
     /**
@@ -287,7 +291,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
         // JTextPaneへアクションを登録する
         // Undo & Redo
-        ActionMap map = getTextPane().getActionMap();
+/*        ActionMap map = getTextPane().getActionMap();
         KeyStroke keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
         map.put(keystroke, mediator.getAction(GUIConst.ACTION_UNDO));
         keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
@@ -298,7 +302,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         map.put(keystroke, mediator.getAction(GUIConst.ACTION_COPY));
         keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
         map.put(keystroke, mediator.getAction(GUIConst.ACTION_PASTE));
-
+*/
         // Drag は editable に関係なく可能
         //getTextPane().setDragEnabled(true);
 
@@ -320,7 +324,10 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         if (editable) {
             getTextPane().getDocument().addDocumentListener(this);
             IMEControl.setImeOnIfFocused(getTextPane());
-            getTextPane().getDocument().addUndoableEditListener(mediator);
+
+            // undo listener の開始
+            getTextPane().getDocument().addUndoableEditListener(undoManager::listener);
+
             if (myRole.equals(IInfoModel.ROLE_SOA)) {
                 SOACodeHelper helper = new SOACodeHelper(this, getMediator());
             } else {
@@ -329,8 +336,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             getTextPane().setBackground(Color.WHITE);
             getTextPane().setOpaque(true);
         } else {
-            getTextPane().getDocument().removeDocumentListener(this);
-            getTextPane().getDocument().removeUndoableEditListener(mediator);
+            //getTextPane().getDocument().removeDocumentListener(this);
+            //getTextPane().getDocument().removeUndoableEditListener(mediator);
             setBackgroundUneditable();
         }
     }
@@ -395,6 +402,9 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      *
      */
     private void controlMenus(ActionMap map) {
+        // undo redo
+        map.get(GUIConst.ACTION_UNDO).setEnabled(undoManager.canUndo());
+        map.get(GUIConst.ACTION_REDO).setEnabled(undoManager.canRedo());
 
         // 各Stateはenableになる条件だけを管理する
         switch (curState) {
@@ -434,6 +444,10 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     @Override
     public void enter(ActionMap map) {
         curState = getMyRole().equals(IInfoModel.ROLE_SOA) ? CompState.SOA : CompState.P;
+
+        undoManager.setUndoAction(map.get(GUIConst.ACTION_UNDO));
+        undoManager.setRedoAction(map.get(GUIConst.ACTION_REDO));
+        
         controlMenus(map);
     }
 
@@ -1154,5 +1168,16 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
                 removeSchema(h);
             }
         }
+    }
+
+    /**
+     * ChartMediator で addChain されてここが呼ばれる
+     */
+    public void undo() {
+        undoManager.undo();
+    }
+
+    public void redo() {
+        undoManager.redo();
     }
 }

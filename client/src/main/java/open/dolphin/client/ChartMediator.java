@@ -6,12 +6,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.event.MenuEvent;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.project.Project;
@@ -32,10 +27,11 @@ import org.apache.log4j.Logger;
 
 /**
  * Mediator class to control Karte Window Menu.
- * KarteComposite インターフェースを持つクラスに対して，メニューをコントロールする enter / exit を送る
+ * KarteComposite インターフェースを持つクラスに対して，メニューをコントロールする enter / exit を送る.
+ * ChartImpl, EditorFrame でインスタンスが作られる.
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
-public final class ChartMediator extends MenuSupport implements UndoableEditListener {
+public final class ChartMediator extends MenuSupport {
 
     protected enum CompState{NONE, SOA, SOA_TEXT, SCHEMA, P, P_TEXT, STAMP};
 
@@ -49,10 +45,6 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     // current KarteComposit
     private KarteComposite curKarteComposit;
 
-    // Undo Manager
-    private final UndoManager undoManager;
-    private Action undoAction;
-    private Action redoAction;
     private final Logger logger;
 
     /**
@@ -88,14 +80,13 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
                 }
             }
         });
-
-        undoManager = new UndoManager();
     }
 
     public void setCurKarteComposit(KarteComposite newComposit) {
         logger.debug("ChartMediator setCurKarteComposit");
         KarteComposite old = curKarteComposit;
         curKarteComposit = newComposit;
+        addChain(curKarteComposit);
 
         if (old != curKarteComposit) {
             logger.debug("ChartMediator old != curKarteComposit");
@@ -104,13 +95,16 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
             if (old != null) {
                 old.exit(getActions());
             }
-            // KarteComposit.enter 内で初期化されない項目の初期化
+            // KarteComposite.enter 内で enable/disable の初期化が必要な action
             enableAction(GUIConst.ACTION_CUT, false);
             enableAction(GUIConst.ACTION_COPY, false);
             enableAction(GUIConst.ACTION_PASTE, false);
             enableAction(GUIConst.ACTION_INSERT_TEXT, false);
             enableAction(GUIConst.ACTION_INSERT_SCHEMA, false);
             enableAction(GUIConst.ACTION_INSERT_STAMP, false);
+            // undo/redo は基本 false で，あとは KarteComposite で制御されるべき
+            enableAction(GUIConst.ACTION_UNDO, false);
+            enableAction(GUIConst.ACTION_REDO, false);
 
             if (curKarteComposit != null) {
                 logger.debug("ChartMediator curKarteComposit != null");
@@ -124,9 +118,6 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     public void registerActions(ActionMap map) {
 
         super.registerActions(map);
-
-        undoAction = map.get(GUIConst.ACTION_UNDO);
-        redoAction = map.get(GUIConst.ACTION_REDO);
 
         // 昇順降順を Preference から取得し設定しておく
         boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
@@ -592,56 +583,6 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
         if (focusOwner != null && focusOwner instanceof JTextPane) {
             JTextPane pane = (JTextPane) focusOwner;
             pane.setCharacterAttributes(SimpleAttributeSet.EMPTY, true);
-        }
-    }
-
-    /**
-     * UndoableEditListener.
-     * TextPane の Document に addUndoableEditListener として登録する
-     * @param e
-     */
-    @Override
-    public void undoableEditHappened(UndoableEditEvent e) {
-        undoManager.addEdit(e.getEdit());
-        updateUndoAction();
-        updateRedoAction();
-    }
-
-    public void undo() {
-        try {
-            undoManager.undo();
-        } catch (CannotUndoException ex) {
-            ex.printStackTrace(System.err);
-        }
-        updateUndoAction();
-        updateRedoAction();
-    }
-
-    public void redo() {
-        try {
-            undoManager.redo();
-        } catch (CannotRedoException ex) {
-            ex.printStackTrace(System.err);
-        }
-        updateRedoAction();
-        updateUndoAction();
-    }
-
-    private void updateUndoAction() {
-
-        if(undoManager.canUndo()) {
-            undoAction.setEnabled(true);
-        } else {
-            undoAction.setEnabled(false);
-        }
-    }
-
-    private void updateRedoAction() {
-
-        if(undoManager.canRedo()) {
-            redoAction.setEnabled(true);
-        } else {
-            redoAction.setEnabled(false);
         }
     }
 

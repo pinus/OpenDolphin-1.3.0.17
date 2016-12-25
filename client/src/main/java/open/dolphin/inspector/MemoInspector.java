@@ -45,8 +45,8 @@ public class MemoInspector {
         logger = ClientContext.getBootLogger();
         initComponents();
         update();
-        // Undo
-        memoArea.getDocument().addUndoableEditListener(memoArea);
+        // 初期描画が終わってから，undo listener を開始
+        memoArea.startUndoListener();
     }
 
     /**
@@ -63,7 +63,6 @@ public class MemoInspector {
     private void initComponents() {
 
         memoArea = new CompositeArea(5, 10);
-        memoArea.setParent(context);
         memoArea.setLineWrap(true);
         memoArea.setMargin(new java.awt.Insets(3, 3, 2, 2));
         memoArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));

@@ -11,11 +11,12 @@ import javax.swing.event.MenuListener;
 
 /**
  * MenuSupport.
+ * Dolphin, StampBoxPlugin, ImageBox がインスタンスを持っている.
  * Object に対して順番にリフレクションで method を実行していく
  * chains[0] = addChain で登録した Object
  * chains[1] = this
  * chains[2] = コンストラクタで指定した owner
- *
+ * addChain するところ：Dolphin のタブ切換，AbstractChartDocument の enter，ChartMediator の KarteComposite のフォーカス切換
  * @author Minagawa,Kazushi
  */
 public class MenuSupport implements MenuListener {
@@ -41,6 +42,10 @@ public class MenuSupport implements MenuListener {
     @Override
     public void menuCanceled(MenuEvent e) {}
 
+    /**
+     * メニューの ActionMap.
+     * @param actions
+     */
     public void registerActions(ActionMap actions) {
         this.actions = actions;
     }
