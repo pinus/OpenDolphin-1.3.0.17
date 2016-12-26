@@ -1208,7 +1208,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
      * EditorFrame で編集中の場合はここが呼ばれる.
      */
     public void sendClaim() {
-        logger.fatal("sendClaim() in KarteEdito called.");
+        logger.fatal("sendClaim() in KarteEditor called.");
         /*
         ToDO Edit 中の内容が送られるようにしたい
         String message;
