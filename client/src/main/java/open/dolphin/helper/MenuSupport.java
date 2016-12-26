@@ -112,6 +112,7 @@ public class MenuSupport implements MenuListener {
      * @return メソッドが実行された時 true
      */
     public boolean sendToChain(String method) {
+        System.out.println(String.format("MenuSupport: %s() \n chain[0]= %s\n chain[1]=%s \n chain[2]=%s", method, chains[0], chains[1], chains[2]));
 
         boolean handled = false;
 
@@ -126,9 +127,11 @@ public class MenuSupport implements MenuListener {
                         mth.invoke(target, (Object[])null);
                         handled = true;
                         break;
-                    // この target では実行できない. NoSuchMethodException が出るのは問題なし.
+
                     } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) { System.out.println("MenuSupport.java: " + ex);
                     } catch (InvocationTargetException ex) { System.out.println("MenuSupport.java: " + ex); ex.printStackTrace(System.err);
+
+                    // この target では実行できない. NoSuchMethodException が出るのは問題なし.
                     } catch (NoSuchMethodException ex) { //System.out.println("MenuSupport.java: " + ex);
                     }
                 }
