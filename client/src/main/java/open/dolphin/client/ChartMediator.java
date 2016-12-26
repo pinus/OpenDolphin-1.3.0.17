@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
  * Mediator class to control Karte Window Menu.
  * KarteComposite インターフェースを持つクラスに対して，メニューをコントロールする enter / exit を送る.
  * ChartImpl, EditorFrame でインスタンスが作られる.
+ * chains[0] を KarteComposite レイヤー，chains[1] を ChartDocument レイヤーとして使う.
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class ChartMediator extends MenuSupport {
@@ -83,10 +84,9 @@ public final class ChartMediator extends MenuSupport {
 
         KarteComposite<?> old = curKarteComposit;
         curKarteComposit = newComposit;
-        addChain(curKarteComposit);
+        addKarteCompositeChain(curKarteComposit);
 
         if (old != curKarteComposit) {
-            logger.debug("ChartMediator old != curKarteComposit");
             logger.debug("ChartMediator: composit changed in " + chart.getClass());
 
             if (old != null) {
@@ -104,11 +104,29 @@ public final class ChartMediator extends MenuSupport {
             enableAction(GUIConst.ACTION_REDO, false);
 
             if (curKarteComposit != null) {
-                logger.debug("ChartMediator curKarteComposit != null");
+                logger.debug("ChartMediator: curKarteComposit != null");
                 // KarteComposite 内で enable/disable は初期化される
                 curKarteComposit.enter(getActions());
             }
         }
+    }
+
+    /**
+     * KarteComosite 層の Object を addChain する.
+     * chain[0] に入る.
+     * @param karteComposite
+     */
+    public void addKarteCompositeChain(KarteComposite karteComposite) {
+        addChain(karteComposite);
+    }
+
+    /**
+     * ChartDocument 層の Object を addChain する.
+     * chain[1] に入る.
+     * @param chartDocument
+     */
+    public void addChartDocumentChain(ChartDocument chartDocument) {
+        addChain2(chartDocument);
     }
 
     @Override

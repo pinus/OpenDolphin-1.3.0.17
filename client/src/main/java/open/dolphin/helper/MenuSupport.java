@@ -8,28 +8,32 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import open.dolphin.client.ClientContext;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
  * MenuSupport.
- * Dolphin, StampBoxPlugin, ImageBox がインスタンスを持っている.
- * Object に対して順番にリフレクションで method を実行していく
- * chains[0] = addChain で登録した Object / ChartMediator では KarteComposite レベル
- * chains[1] = ChartMediator では ChartDocument レベル
- * chains[2] = コンストラクタで指定した owner
- * addChain するところ：
- * Dolphin のタブ切換: WatingListImpl / PatientSearchImpl / LaboTestImporter (Dolphin.java 内の mediator)
- * AbstractChartDocument の enter (ChartMediator)
- * ChartMediator の KarteComposite のフォーカス切換
+ * Object に対して順番にリフレクションで method を実行していく.
+ * MainWindow 層では
+ * chains[0] = MainWindow (WatingListImpl/PatientSearchImpl/LaboTestImporter
+ * chains[1] = null
+ * chains[2] = Dolphin
+ * addChain するところ： Dolphin のタブ切換: WatingListImpl / PatientSearchImpl / LaboTestImporter (Dolphin.java 内の mediator)
  *
+ * Dolphin, StampBoxPlugin, ImageBox がインスタンスを持っているが，StampBox, ImageBox はメニュー表示だけのため.
+ * ChartDocument 層での使用は ChartMediator で行う.
  * @author Minagawa,Kazushi
  */
 public class MenuSupport implements MenuListener {
 
     private ActionMap actions;
     private final Object[] chains = new Object[3];
+    private final Logger logger = ClientContext.getBootLogger();
 
     public MenuSupport(Object owner) {
         chains[2] = owner;
+        logger.setLevel(Level.DEBUG);
     }
 
     @Override
@@ -98,7 +102,9 @@ public class MenuSupport implements MenuListener {
      */
     public void addChain(Object obj) {
         chains[0] = obj;
-        System.out.println("MenuSupport: addChain = " + obj);
+        logger.debug("MenuSupport: addChain = " + obj);
+        logger.debug("chains[1] = " + chains[1]);
+        logger.debug("chains[2] = " + chains[2]);
     }
 
     public Object getChain() {
@@ -112,6 +118,9 @@ public class MenuSupport implements MenuListener {
      */
     public void addChain2(Object obj) {
         chains[1] = obj;
+        logger.debug("MenuSupport: addChain2 = " + obj);
+        logger.debug("chains[0] = " + chains[0]);
+        logger.debug("chains[2] = " + chains[2]);
     }
 
     /**
@@ -123,6 +132,7 @@ public class MenuSupport implements MenuListener {
      * @return メソッドが実行された時 true
      */
     public boolean sendToChain(String method) {
+        logger.debug(String.format("MenuSupport: sendToChain: %s: [0]=%s, [1]=%s,[2]=%s", method, chains[0], chains[1], chains[2]));
 
         boolean handled = false;
 
