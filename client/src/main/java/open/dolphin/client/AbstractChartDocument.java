@@ -67,12 +67,10 @@ public abstract class AbstractChartDocument implements ChartDocument {
 
     @Override
     public void enter() {
-        //chartContext.getStatusPanel().setMessage("");
         chartContext.getStatusPanel().setText("", "message");
         getContext().getChartMediator().addChain(this);
         disableMenus();
         getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, true);
-        getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, true);
     }
 
     @Override

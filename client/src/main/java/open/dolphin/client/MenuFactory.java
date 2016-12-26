@@ -28,7 +28,7 @@ import open.dolphin.helper.MenuActionManager.MenuAction;
 public class MenuFactory {
 
     private MenuSupport main;
-    private MenuSupport chart;
+    private MenuSupport chart; // ChartMediator
     private JMenuBar menuBar;
     private JPanel toolPanel;
     private ActionMap actionMap;
@@ -117,17 +117,17 @@ public class MenuFactory {
 
     @MenuAction
     public void cut() {
-        chart.cut();
+        chart.sendToChain("cut"); //cut();
     }
 
     @MenuAction
     public void copy() {
-        chart.copy();
+        chart.sendToChain("copy"); //copy();
     }
 
     @MenuAction
     public void paste() {
-        chart.paste();
+        chart.sendToChain("paste"); //paste();
     }
 
     @MenuAction

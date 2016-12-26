@@ -13,10 +13,14 @@ import javax.swing.event.MenuListener;
  * MenuSupport.
  * Dolphin, StampBoxPlugin, ImageBox がインスタンスを持っている.
  * Object に対して順番にリフレクションで method を実行していく
- * chains[0] = addChain で登録した Object
- * chains[1] = this
+ * chains[0] = addChain で登録した Object / ChartMediator では KarteComposite レベル
+ * chains[1] = ChartMediator では ChartDocument レベル
  * chains[2] = コンストラクタで指定した owner
- * addChain するところ：Dolphin のタブ切換，AbstractChartDocument の enter，ChartMediator の KarteComposite のフォーカス切換
+ * addChain するところ：
+ * Dolphin のタブ切換: WatingListImpl / PatientSearchImpl / LaboTestImporter (Dolphin.java 内の mediator)
+ * AbstractChartDocument の enter (ChartMediator)
+ * ChartMediator の KarteComposite のフォーカス切換
+ *
  * @author Minagawa,Kazushi
  */
 public class MenuSupport implements MenuListener {
@@ -25,11 +29,6 @@ public class MenuSupport implements MenuListener {
     private final Object[] chains = new Object[3];
 
     public MenuSupport(Object owner) {
-        setInitialChains(owner);
-    }
-
-    private void setInitialChains(Object owner) {
-        chains[1] = this;
         chains[2] = owner;
     }
 
@@ -93,14 +92,26 @@ public class MenuSupport implements MenuListener {
         }
     }
 
+    /**
+     * 最初のターゲットに設定する.
+     * @param obj
+     */
     public void addChain(Object obj) {
-        // 最初のターゲットに設定する
         chains[0] = obj;
+        System.out.println("MenuSupport: addChain = " + obj);
     }
 
     public Object getChain() {
         // 最初のターゲットを返す
         return chains[0];
+    }
+
+    /**
+     * 二番目のターゲットに設定する.
+     * @param obj
+     */
+    public void addChain2(Object obj) {
+        chains[1] = obj;
     }
 
     /**
@@ -112,37 +123,28 @@ public class MenuSupport implements MenuListener {
      * @return メソッドが実行された時 true
      */
     public boolean sendToChain(String method) {
-        System.out.println(String.format("MenuSupport: %s() \n chain[0]= %s\n chain[1]=%s \n chain[2]=%s", method, chains[0], chains[1], chains[2]));
 
         boolean handled = false;
 
-        if (chains != null) {
+        for (Object target : chains) {
 
-            for (Object target : chains) {
+            if (target != null) {
+                try {
+                    Method mth = target.getClass().getMethod(method, (Class[])null);
+                    // System.out.println("invoked: " + target.getClass() + "#" + method);
+                    mth.invoke(target, (Object[])null);
+                    handled = true;
+                    break;
 
-                if (target != null) {
-                    try {
-                        Method mth = target.getClass().getMethod(method, (Class[])null);
-                        // System.out.println("invoked: " + target.getClass() + "#" + method);
-                        mth.invoke(target, (Object[])null);
-                        handled = true;
-                        break;
+                } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) { System.out.println("MenuSupport.java: " + ex);
+                } catch (InvocationTargetException ex) { System.out.println("MenuSupport.java: " + ex); ex.printStackTrace(System.err);
 
-                    } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) { System.out.println("MenuSupport.java: " + ex);
-                    } catch (InvocationTargetException ex) { System.out.println("MenuSupport.java: " + ex); ex.printStackTrace(System.err);
-
-                    // この target では実行できない. NoSuchMethodException が出るのは問題なし.
-                    } catch (NoSuchMethodException ex) { //System.out.println("MenuSupport.java: " + ex);
-                    }
+                // この target では実行できない. NoSuchMethodException が出るのは問題なし.
+                } catch (NoSuchMethodException ex) { //System.out.println("MenuSupport.java: " + ex);
                 }
             }
         }
+
         return handled;
     }
-
-    public void cut() {}
-
-    public void copy() {}
-
-    public void paste() {}
 }

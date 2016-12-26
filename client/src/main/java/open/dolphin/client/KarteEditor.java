@@ -25,7 +25,6 @@ import open.dolphin.message.MMLHelper;
 import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.project.Project;
 import open.dolphin.ui.MyBorderFactory;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.MMLDate;
 import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;
@@ -40,7 +39,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
  *
  * @author Kazushi Minagawa
  */
-public class KarteEditor extends AbstractChartDocument implements IInfoModel, NChartDocument {
+public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private static final long serialVersionUID = 1L;
     // シングルモード
     public static final int SINGLE_MODE = 1;
@@ -483,23 +482,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
         timeStampLabel.addMouseListener(new PopupListener());
 
         insuranceVisible = true;
-    }
-
-    public void applyInsurance(PVTHealthInsuranceModel hm) {
-
-        getModel().getDocInfo().setHealthInsurance(hm.getInsuranceClassCode());
-        getModel().getDocInfo().setHealthInsuranceDesc(hm.toString());
-        getModel().getDocInfo().setHealthInsuranceGUID(hm.getGUID());
-
-        if (isInsuranceVisible()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(timeStamp);
-            sb.append(" (");
-            sb.append(hm.toString().trim());
-            sb.append(")");
-            timeStampLabel.setText(sb.toString());
-            timeStampLabel.revalidate();
-        }
     }
 
     public void setInsuranceVisible(Boolean b) {
@@ -1218,6 +1200,14 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
         } else {
             return icon;
         }
+    }
+
+    /**
+     * Save 時ではなくメニューから CLAIM 送信する.
+     * KartePane が addChain されている場面ではこちらが呼ばれる.
+     */
+    public void sendClaim() {
+        logger.fatal("sendClaim() in KarteEdito called.");
     }
 
     /**

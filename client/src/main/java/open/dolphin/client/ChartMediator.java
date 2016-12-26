@@ -80,7 +80,7 @@ public final class ChartMediator extends MenuSupport {
     }
 
     public void setCurKarteComposit(KarteComposite<?> newComposit) {
-        logger.debug("ChartMediator setCurKarteComposit");
+
         KarteComposite<?> old = curKarteComposit;
         curKarteComposit = newComposit;
         addChain(curKarteComposit);
@@ -535,8 +535,6 @@ public final class ChartMediator extends MenuSupport {
     //
     // メニューのアクション (MenuSupport から reflection で実行される
     //
-
-    @Override
     public void cut() {
         if (curKarteComposit != null) {
             JComponent focusOwner = getCurrentComponent();
@@ -550,7 +548,6 @@ public final class ChartMediator extends MenuSupport {
         }
     }
 
-    @Override
     public void copy() {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {
@@ -561,7 +558,6 @@ public final class ChartMediator extends MenuSupport {
         }
     }
 
-    @Override
     public void paste() {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {

@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -28,7 +27,6 @@ import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledEditorKit;
-import static open.dolphin.client.KarteEditor.DOUBLE_MODE;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.DBTask;
@@ -36,9 +34,7 @@ import open.dolphin.helper.ImageHelper;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
-import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.order.StampEditorDialog;
-import open.dolphin.project.Project;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
@@ -1150,7 +1146,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
-     * ChartMediator で addChain されてここが呼ばれる
+     * ChartMediator で addChain されてここが呼ばれる.
      */
     public void undo() {
         undoManager.undo();
@@ -1158,14 +1154,5 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     public void redo() {
         undoManager.redo();
-    }
-
-    /**
-     * Save 時ではなくメニューから CLAIM 送信する.
-     * KartePane が addChain されている場面ではこちらが呼ばれる.
-     */
-    public void sendClaim() {
-        logger.fatal("sendClaim() in KartePane called.");
-
     }
 }
