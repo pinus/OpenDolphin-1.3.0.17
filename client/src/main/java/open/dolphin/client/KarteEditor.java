@@ -1204,7 +1204,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
     /**
      * Save 時ではなくメニューから CLAIM 送信する.
-     * KartePane が addChain されている場面ではこちらが呼ばれる.
+     * EditorFrame で編集中の場合はここが呼ばれる.
      */
     public void sendClaim() {
         logger.fatal("sendClaim() in KarteEdito called.");

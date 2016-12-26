@@ -910,7 +910,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
      * 表示されているカルテを CLAIM 送信する.
      */
     public void sendClaim() {
-        logger.fatal("sendClaim() in KarteDocumentViewer called.");
+        logger.debug("sendClaim() in KarteDocumentViewer called.");
 
         String message;
         int messageType;

@@ -9,7 +9,6 @@ import javax.swing.ActionMap;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import open.dolphin.client.ClientContext;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -33,7 +32,6 @@ public class MenuSupport implements MenuListener {
 
     public MenuSupport(Object owner) {
         chains[2] = owner;
-        logger.setLevel(Level.DEBUG);
     }
 
     @Override
