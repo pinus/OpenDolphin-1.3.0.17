@@ -25,6 +25,7 @@ import open.dolphin.message.MMLHelper;
 import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.project.Project;
 import open.dolphin.ui.MyBorderFactory;
+import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.MMLDate;
 import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;
@@ -1208,6 +1209,39 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
      */
     public void sendClaim() {
         logger.fatal("sendClaim() in KarteEdito called.");
+        /*
+        ToDO Edit 中の内容が送られるようにしたい
+        String message;
+        int messageType;
+
+        if (! Project.getSendClaim()) {
+            message = "CLAIM を送信しない設定になっています";
+            messageType = JOptionPane.ERROR_MESSAGE;
+
+        } else {
+
+            model.setKarte(getContext().getKarte());
+            model.getDocInfo().setConfirmDate(new Date());
+            if (getMode() == DOUBLE_MODE) {
+                if (Project.getProjectStub().isUseOrcaApi()) {
+                    OrcaApi api = OrcaApi.getInstance();
+                    api.setContext(getContext());
+                    api.send(model);
+                } else {
+                    claimSender.send(model);
+                }
+            }
+            message = "ORCA に送信しました";
+            messageType = JOptionPane.PLAIN_MESSAGE;
+        }
+
+        Frame parent = getContext().getFrame();
+        if (MyJSheet.isAlreadyShown(parent)) {
+            parent.toFront();
+            return;
+        }
+        MyJSheet.showMessageSheet(parent, message, messageType);
+        */
     }
 
     /**
