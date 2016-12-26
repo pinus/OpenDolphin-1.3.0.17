@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -23,10 +24,11 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledEditorKit;
-import open.dolphin.client.ChartMediator.CompState;
+import static open.dolphin.client.KarteEditor.DOUBLE_MODE;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.DBTask;
@@ -34,7 +36,9 @@ import open.dolphin.helper.ImageHelper;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
+import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.order.StampEditorDialog;
+import open.dolphin.project.Project;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
@@ -46,6 +50,10 @@ import org.apache.log4j.Logger;
  * @author Kazushi Minagawa, Digital Globe, inc.
  */
 public class KartePane implements DocumentListener, MouseListener, CaretListener, PropertyChangeListener, KarteComposite<JTextPane> {
+
+    // KartePane の状態　(_TEXT はテキストが選択された状態)
+    private enum State {NONE, SOA, SOA_TEXT, SCHEMA, P, P_TEXT, STAMP};
+    private State curState;
 
     // 文書に付けるタイトルを自動で取得する時の長さ
     private static final int TITLE_LENGTH = 15;
@@ -66,7 +74,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     private boolean dirty;
     // Selection Flag
     private boolean hasSelection;
-    private CompState curState;
     // 初期化された時のDocumentの長さ
     private int initialLength;
     // ChartMediator(MenuSupport)
@@ -76,17 +83,18 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     // 保存後及びブラウズ時の編集不可を表すカラー
     private Color uneditableColor = UNEDITABLE_COLOR;
     // このペインからDragg及びDroppされたスタンプの情報
-    private ComponentHolder[] drragedStamp;
+    private ComponentHolder<?>[] drragedStamp;
     private int draggedCount;
     private int droppedCount;
-
+    // KartePane の UndoManager
     private final TextComponentUndoManager undoManager;
+    private final UndoableEditListener undoListener;
 
-    private final Logger logger;
+    private final Logger logger = ClientContext.getBootLogger();
 
     public KartePane() {
-        logger = ClientContext.getBootLogger();
         undoManager = new TextComponentUndoManager();
+        undoListener = undoManager::listener;
     }
 
     public void setMargin(Insets margin) {
@@ -148,14 +156,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      */
     protected String getDocId() {
         return docId;
-    }
-
-    /**
-     * ChartMediatorを設定する.
-     * @param med ChartMediator
-     */
-    protected void setMediator(ChartMediator med) {
-        mediator = med;
     }
 
     /**
@@ -267,7 +267,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      * このPaneからDragされたスタンプを返す.
      * @return このPaneからDragされたスタンプ配列
      */
-    protected ComponentHolder[] getDrragedStamp() {
+    protected ComponentHolder<?>[] getDrragedStamp() {
         return drragedStamp;
     }
 
@@ -275,46 +275,29 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      * このPaneからDragされたスタンプを設定（記録）する.
      * @param drragedStamp このPaneからDragされたスタンプ配列
      */
-    protected void setDrragedStamp(ComponentHolder[] drragedStamp) {
+    protected void setDrragedStamp(ComponentHolder<?>[] drragedStamp) {
         this.drragedStamp = drragedStamp;
     }
 
     /**
      * 初期化する.
      * @param editable 編集可能かどうかのフラグ
-     * @param mediator チャートメディエータ（実際にはメニューサポート）
+     * @param chartMediator チャートメディエータ（メニューサポート）
      */
-    public void init(boolean editable, ChartMediator mediator) {
+    public void init(boolean editable, ChartMediator chartMediator) {
 
         // Mediatorを保存する
-        setMediator(mediator);
+        mediator = chartMediator;
 
-        // JTextPaneへアクションを登録する
-        // Undo & Redo
-/*        ActionMap map = getTextPane().getActionMap();
-        KeyStroke keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-        map.put(keystroke, mediator.getAction(GUIConst.ACTION_UNDO));
-        keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-        map.put(keystroke, mediator.getAction(GUIConst.ACTION_REDO));
-        keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-        map.put(keystroke, mediator.getAction(GUIConst.ACTION_CUT));
-        keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-        map.put(keystroke, mediator.getAction(GUIConst.ACTION_COPY));
-        keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-        map.put(keystroke, mediator.getAction(GUIConst.ACTION_PASTE));
-*/
         // Drag は editable に関係なく可能
         //getTextPane().setDragEnabled(true);
 
         // リスナを登録する
         getTextPane().addMouseListener(this);
         getTextPane().addCaretListener(this);
+        getTextPane().getDocument().addDocumentListener(this);
+        getTextPane().getDocument().addUndoableEditListener(undoListener);
 
-        // Editable Property を設定する
-        setEditableProp(editable);
-    }
-
-    public void setEditableProp(boolean editable) {
         getTextPane().setEditable(editable);
         // ChartImpl で DocumentHistory が focus を取れないことがあるのの workaround
         // editable でないときはフォーカスを取らない
@@ -322,11 +305,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         getTextPane().setFocusable(editable);
 
         if (editable) {
-            getTextPane().getDocument().addDocumentListener(this);
             IMEControl.setImeOnIfFocused(getTextPane());
-
-            // undo listener の開始
-            getTextPane().getDocument().addUndoableEditListener(undoManager::listener);
 
             if (myRole.equals(IInfoModel.ROLE_SOA)) {
                 SOACodeHelper helper = new SOACodeHelper(this, getMediator());
@@ -335,9 +314,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             }
             getTextPane().setBackground(Color.WHITE);
             getTextPane().setOpaque(true);
+
         } else {
-            //getTextPane().getDocument().removeDocumentListener(this);
-            //getTextPane().getDocument().removeUndoableEditListener(mediator);
             setBackgroundUneditable();
         }
     }
@@ -368,9 +346,9 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
             // テキスト選択の状態へ遷移する
             if (hasSelection) {
-                curState = getMyRole().equals(IInfoModel.ROLE_SOA) ? CompState.SOA_TEXT : CompState.P_TEXT;
+                curState = getMyRole().equals(IInfoModel.ROLE_SOA) ? State.SOA_TEXT : State.P_TEXT;
             } else {
-                curState = getMyRole().equals(IInfoModel.ROLE_SOA) ? CompState.SOA : CompState.P;
+                curState = getMyRole().equals(IInfoModel.ROLE_SOA) ? State.SOA : State.P;
             }
             controlMenus(mediator.getActions());
         }
@@ -384,6 +362,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         if (pane == null) { return; }
 
         pane.getDocument().removeDocumentListener(this);
+        pane.getDocument().removeUndoableEditListener(undoListener);
         pane.removeMouseListener(this);
         pane.removeCaretListener(this);
 
@@ -443,11 +422,11 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     @Override
     public void enter(ActionMap map) {
-        curState = getMyRole().equals(IInfoModel.ROLE_SOA) ? CompState.SOA : CompState.P;
+        curState = getMyRole().equals(IInfoModel.ROLE_SOA) ? State.SOA : State.P;
 
         undoManager.setUndoAction(map.get(GUIConst.ACTION_UNDO));
         undoManager.setRedoAction(map.get(GUIConst.ACTION_REDO));
-        
+
         controlMenus(map);
     }
 
@@ -1179,5 +1158,14 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     public void redo() {
         undoManager.redo();
+    }
+
+    /**
+     * Save 時ではなくメニューから CLAIM 送信する.
+     * KartePane が addChain されている場面ではこちらが呼ばれる.
+     */
+    public void sendClaim() {
+        logger.fatal("sendClaim() in KartePane called.");
+
     }
 }

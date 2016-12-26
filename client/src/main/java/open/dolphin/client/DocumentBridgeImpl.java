@@ -7,7 +7,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.IInfoModel;
@@ -15,8 +14,8 @@ import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.ui.MyJScrollPane;
 
 /**
- * 参照タブ画面を提供する Bridge クラス. このクラスの scroller へ
- * カルテ，紹介状等のどきゅめんとが表示される.
+ * 参照タブ画面を提供する Bridge クラス.
+ * このクラスの scroller へカルテが表示される.
  *
  * @author kazushi Minagawa, Digital Globe, Inc.
  */
@@ -28,9 +27,9 @@ public class DocumentBridgeImpl extends AbstractChartDocument
     // 文書表示クラスのインターフェイス
     private DocumentViewer curViwer;
     // Scroller
-    private JScrollPane scroller;
-    // 何も文書がないときは blank JLabel を出す
-    private JPanel blankPanel;
+    private MyJScrollPane scroller;
+    // 何も文書がないときは blank panel を出す
+    private final JPanel blankPanel;
     // エディタで編集した直後に呼ばれた場合，その日付を入れる
     private String editDate;
 
@@ -60,7 +59,7 @@ public class DocumentBridgeImpl extends AbstractChartDocument
         getUI().add(scroller, BorderLayout.CENTER);
 
         // スクロールバーを常に表示しないと，スクロールバーが表示されるときにカルテがスクロールバー分伸びて尻切れになることがある
-        scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scroller.setVerticalScrollBarPolicy(MyJScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         // 文書履歴のプロパティ通知をリッスンする
         DocumentHistory h = getContext().getDocumentHistory();
@@ -110,54 +109,49 @@ public class DocumentBridgeImpl extends AbstractChartDocument
         }
     }
 
+    /**
+     * DocumentHistory から呼ばれる.
+     * @param evt
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
-        ChartMediator med = this.getContext().getChartMediator();
-        med.setCurKarteComposit(null);
-        String prop = evt.getPropertyName();
+        switch (evt.getPropertyName()) {
 
-        if (prop.equals(DocumentHistory.DOCUMENT_TYPE)) {
+            case DocumentHistory.DOCUMENT_TYPE:
+                String docType = (String) evt.getNewValue();
+                if (docType.equals(IInfoModel.DOCTYPE_LETTER)) {
+                    // curViwer = new LetterViewer();
+                } else {
+                    curViwer = new KarteDocumentViewer();
+                }   curViwer.setContext(getContext());
+                curViwer.start();
+                break;
 
-            String docType = (String) evt.getNewValue();
+            case DocumentHistory.HITORY_UPDATED:
+                // 編集直後に来た場合は，編集カルテの editDate が入っている
+                editDate = (String) evt.getNewValue();
+                // 文書履歴の抽出期間が変更された場合
+                if (curViwer != null) {
+                    curViwer.historyPeriodChanged();
+                }   // null の代わりに blankPanel を出す
+                // this.scroller.setViewportView(null);
+                this.scroller.setViewportView(blankPanel);
+                break;
 
-            if (docType.equals(IInfoModel.DOCTYPE_LETTER)) {
-                // curViwer = new LetterViewer();
-            } else {
-                curViwer = new KarteDocumentViewer();
-            }
+            case DocumentHistory.SELECTED_HISTORIES:
+                // TODO 編集直後に来た場合は，できれば編集直後のカルテを viewwer で表示するようにしたい
+                if (editDate != null) {
+                    SwingUtilities.invokeLater(() -> scroller.getViewport().setViewPosition(new java.awt.Point(0,0)));
+                    editDate = null;
+                }
+                // 文書履歴の選択が変更された場合
+                DocInfoModel[] selectedHistories = (DocInfoModel[]) evt.getNewValue();
+                this.showDocuments(selectedHistories);
+                break;
 
-            curViwer.setContext(getContext());
-            curViwer.start();
-
-        } else if (prop.equals(DocumentHistory.HITORY_UPDATED)) {
-            // 編集直後に来た場合は，編集カルテの editDate が入っている
-            editDate = (String) evt.getNewValue();
-
-            // 文書履歴の抽出期間が変更された場合
-            if (curViwer != null) {
-                curViwer.historyPeriodChanged();
-            }
-            // null の代わりに blankPanel を出す
-            // this.scroller.setViewportView(null);
-            this.scroller.setViewportView(blankPanel);
-
-        } else if (prop.equals(DocumentHistory.SELECTED_HISTORIES)) {
-
-            // TODO 編集直後に来た場合は，できれば編集直後のカルテを viewwer で表示するようにしたい
-            if (editDate != null) {
-                SwingUtilities.invokeLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        scroller.getViewport().setViewPosition(new java.awt.Point(0,0));
-                    }
-                });
-                editDate = null;
-            }
-
-            // 文書履歴の選択が変更された場合
-            DocInfoModel[] selectedHistories = (DocInfoModel[]) evt.getNewValue();
-            this.showDocuments(selectedHistories);
+            default:
+                break;
         }
     }
 

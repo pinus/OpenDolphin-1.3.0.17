@@ -33,6 +33,7 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import open.dolphin.util.MMLDate;
 import open.dolphin.util.PNSTriple;
+import org.apache.log4j.Logger;
 
 /**
  * DiagnosisDocument
@@ -108,8 +109,10 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     // ChartImpl#close() で isValidOutcome でない時，DiagnosisDocument に戻れるようにするために使う
     private boolean isValidOutcome = true;
 
+    private final Logger logger = ClientContext.getBootLogger();
+
     /**
-     *  Creates new DiagnosisDocument
+     *  Creates new DiagnosisDocument.
      */
     public DiagnosisDocument() {
         setTitle(TITLE);

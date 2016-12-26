@@ -33,17 +33,15 @@ import org.apache.log4j.Logger;
  */
 public final class ChartMediator extends MenuSupport {
 
-    protected enum CompState{NONE, SOA, SOA_TEXT, SCHEMA, P, P_TEXT, STAMP};
-
+    // Font size
     private static final int[] FONT_SIZE = {10, 12, 14, 16, 18, 24, 36};
-
-    private int curSize = 1;
+    private int curFontSize = 1;
 
     // ChartPlugin
     private final Chart chart;
 
     // current KarteComposit
-    private KarteComposite curKarteComposit;
+    private KarteComposite<?> curKarteComposit;
 
     private final Logger logger;
 
@@ -56,7 +54,6 @@ public final class ChartMediator extends MenuSupport {
         super(owner);
         logger = ClientContext.getBootLogger();
         chart = owner;
-        logger.debug("ChartMediator constractor");
 
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 
@@ -82,9 +79,9 @@ public final class ChartMediator extends MenuSupport {
         });
     }
 
-    public void setCurKarteComposit(KarteComposite newComposit) {
+    public void setCurKarteComposit(KarteComposite<?> newComposit) {
         logger.debug("ChartMediator setCurKarteComposit");
-        KarteComposite old = curKarteComposit;
+        KarteComposite<?> old = curKarteComposit;
         curKarteComposit = newComposit;
         addChain(curKarteComposit);
 
@@ -589,17 +586,17 @@ public final class ChartMediator extends MenuSupport {
     public void fontLarger() {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {
-            if (curSize < 6) {
-                curSize++;
+            if (curFontSize < 6) {
+                curFontSize++;
             }
-            int size = FONT_SIZE[curSize];
+            int size = FONT_SIZE[curFontSize];
             Action a = focusOwner.getActionMap().get("font-size-" + size);
             if (a != null) {
                 a.actionPerformed(new ActionEvent(focusOwner,
                         ActionEvent.ACTION_PERFORMED,
                         null));
             }
-            if (curSize == 6) {
+            if (curFontSize == 6) {
                 enableAction("fontLarger", false);
             }
         }
@@ -608,17 +605,17 @@ public final class ChartMediator extends MenuSupport {
     public void fontSmaller() {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {
-            if (curSize > 0) {
-                curSize--;
+            if (curFontSize > 0) {
+                curFontSize--;
             }
-            int size = FONT_SIZE[curSize];
+            int size = FONT_SIZE[curFontSize];
             Action a = focusOwner.getActionMap().get("font-size-" + size);
             if (a != null) {
                 a.actionPerformed(new ActionEvent(focusOwner,
                         ActionEvent.ACTION_PERFORMED,
                         null));
             }
-            if (curSize == 0) {
+            if (curFontSize == 0) {
                 enableAction("fontSmaller", false);
             }
         }
@@ -627,8 +624,8 @@ public final class ChartMediator extends MenuSupport {
     public void fontStandard() {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {
-            curSize = 1;
-            int size = FONT_SIZE[curSize];
+            curFontSize = 1;
+            int size = FONT_SIZE[curFontSize];
             Action a = focusOwner.getActionMap().get("font-size-" + size);
             if (a != null) {
                 a.actionPerformed(new ActionEvent(focusOwner,

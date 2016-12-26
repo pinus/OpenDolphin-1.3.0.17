@@ -48,7 +48,10 @@ public class DiagnosisInspector {
     private static final String SUSPECT = " 疑い";
     private final Logger logger;
 
-    /** ショートカットキー定義 */
+    /**
+     * ショートカットキー定義.
+     * MenuSupport には依存せず，全て独自実装している.
+     */
     private enum Shortcut{
         undo (KeyEvent.VK_Z, InputEvent.META_DOWN_MASK),
         redo (KeyEvent.VK_Z, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK),
@@ -140,14 +143,13 @@ public class DiagnosisInspector {
                     // ダブルクリックならエディタを立ち上げる
                     else if (e.getClickCount() == 2) {
 
-                        // sleep を入れないと，なぜか diagList がフォーカスを横取りしてしまい，エディタがフォーカスを取れない.
+                        // なぜか diagList がフォーカスを横取りしてしまい，エディタがフォーカスを取れない.
                         // 同じ現象は DiagnosisDocument からエディタを立ち上げた場合にもおこるが，
                         // そちらは diagTable.setFocasable(false) を一時的に設定することで回避している
                         //try{Thread.sleep(10);} catch (InterruptedException ex){}
 
                         // こちらも，setFocasable で対応することにした
                         diagList.setFocusable(false);
-                        try{Thread.sleep(10);} catch (InterruptedException ex){}
 
                         int sel = diagList.getSelectedIndex();
                         if (sel < 0) {

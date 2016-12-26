@@ -27,11 +27,15 @@ public abstract class AbstractChartDocument implements ChartDocument {
     private JPanel ui;
     private boolean dirty;
 
-    protected Logger logger;
+    private final Logger logger;
 
     public AbstractChartDocument() {
-        setUI(new PrintablePanel());
         logger = ClientContext.getBootLogger();
+        initComponent();
+    }
+
+    private void initComponent() {
+        setUI(new PrintablePanel());
     }
 
     @Override
@@ -108,6 +112,7 @@ public abstract class AbstractChartDocument implements ChartDocument {
 
     /**
      * 共通の警告表示を行う.
+     * @param title
      * @param message
      */
     protected void warning(String title, String message) {

@@ -16,6 +16,7 @@ import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.project.Project;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.MyJSheet;
+import org.apache.log4j.Logger;
 
 /**
  * DocumentViewer
@@ -48,18 +49,20 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     // 選択を解除されたカルテのリスト
     private ArrayList<KarteViewer> removed;
     // karteViewer を並べたパネル
-    private JPanel scrollerPanel;
+    private final JPanel scrollerPanel;
     // scrollerPanel を表示する JScrollPane: DocumentBridgeImpl で作られる
     //private KarteScrollPane scrollPane;
     private MyJScrollPane scrollPane;
     // 選択された history
     private DocInfoModel[] selectedHistories;
     // 検索用
-    private FindAndView findAndView = new FindAndView();
+    private final FindAndView findAndView = new FindAndView();
     // 今日の日付 2008-02-12 形式
-    private String todayDateAsString;
+    private final String todayDateAsString;
     // 縦スクロールかどうか
     private boolean isVerticalScroll = true;
+
+    private final Logger logger = ClientContext.getBootLogger();
 
     /**
      * DocumentViewerオブジェクトを生成する.
@@ -904,9 +907,11 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
     }
 
     /**
-     * 表示されているカルテを CLAIM 送信する
+     * 表示されているカルテを CLAIM 送信する.
      */
     public void sendClaim() {
+        logger.fatal("sendClaim() in KarteDocumentViewer called.");
+
         String message;
         int messageType;
 
@@ -916,6 +921,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
 
         } else {
             // claim を送るのはカルテだけ
+            // getBaseKarte() は選択カルテを返す
             String docType = getBaseKarte().getModel().getDocInfo().getDocType();
             if (!IInfoModel.DOCTYPE_KARTE.equals(docType)) { return; }
 

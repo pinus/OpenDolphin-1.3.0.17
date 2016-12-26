@@ -13,12 +13,12 @@ public class ReflectAction extends AbstractAction {
 
     /**
      * Action which invokes target.method()
-     * @param text
+     * @param name
      * @param target
      * @param method
      */
-    public ReflectAction(String text, Object target, String method) {
-        super(text);
+    public ReflectAction(String name, Object target, String method) {
+        super(name);
         this.target = target;
         this.method = method;
     }

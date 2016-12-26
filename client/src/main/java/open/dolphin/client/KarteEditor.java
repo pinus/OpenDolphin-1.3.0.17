@@ -28,6 +28,7 @@ import open.dolphin.ui.MyBorderFactory;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.MMLDate;
 import open.dolphin.util.StringTool;
+import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -68,9 +69,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     // 2号カルテ JPanel
     private PrintablePanel panel2;
     // タイムスタンプの foreground
-    private Color timeStampFore = TIMESTAMP_FORE;
+    private final Color timeStampFore = TIMESTAMP_FORE;
     // タイムスタンプフォント
-    private Font timeStampFont = TIMESTAMP_FONT;
+    private final Font timeStampFont = TIMESTAMP_FONT;
     // 編集可能かどうかのフラグ
     // このフラグで KartePane を初期化する
     private boolean editable;
@@ -85,11 +86,13 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     // State Manager
     private StateMgr stateMgr;
     // ClaimSender
-    private ClaimSender claimSender = new ClaimSender();
+    private final ClaimSender claimSender = new ClaimSender();
 
     // EditorFrame に save 完了を知らせる
     public static String SAVE_DONE = "saveDoneProp";
-    private PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());
+    private final PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());
+
+    private final Logger logger = ClientContext.getBootLogger();
 
     public PropertyChangeSupport getBoundSupport() {
         return boundSupport;
@@ -765,10 +768,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
                         printPanel2(chart.getContext().getPageFormat(), copies, false);
                     }
 
-                    // 編集不可に設定する
-                    soaPane.setEditableProp(false);
-                    if (getMode() == DOUBLE_MODE) pPane.setEditableProp(false);
-
                     // 状態遷移する
                     stateMgr.setSaved(true);
 
@@ -1219,42 +1218,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
         } else {
             return icon;
         }
-    }
-
-    /**
-     * Save 時ではなくメニューから CLAIM 送信する
-     */
-    public void sendClaim() {
-        String message;
-        int messageType;
-
-        if (! Project.getSendClaim()) {
-            message = "CLAIM を送信しない設定になっています";
-            messageType = JOptionPane.ERROR_MESSAGE;
-
-        } else {
-
-            model.setKarte(getContext().getKarte());
-            model.getDocInfo().setConfirmDate(new Date());
-            if (getMode() == DOUBLE_MODE) {
-                if (Project.getProjectStub().isUseOrcaApi()) {
-                    OrcaApi api = OrcaApi.getInstance();
-                    api.setContext(getContext());
-                    api.send(model);
-                } else {
-                    claimSender.send(model);
-                }
-            }
-            message = "ORCA に送信しました";
-            messageType = JOptionPane.PLAIN_MESSAGE;
-        }
-
-        Frame parent = getContext().getFrame();
-        if (MyJSheet.isAlreadyShown(parent)) {
-            parent.toFront();
-            return;
-        }
-        MyJSheet.showMessageSheet(parent, message, messageType);
     }
 
     /**
