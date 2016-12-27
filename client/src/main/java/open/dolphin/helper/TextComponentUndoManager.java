@@ -27,6 +27,18 @@ public class TextComponentUndoManager extends UndoManager {
     public TextComponentUndoManager() {
     }
 
+    /**
+     * JTextComponent に Undo 機能を付ける utility static method.
+     * @param c
+     * @return
+     */
+    public static TextComponentUndoManager getManager(JTextComponent c) {
+        TextComponentUndoManager manager = new TextComponentUndoManager();
+        manager.addUndoActionTo(c);
+        c.getDocument().addUndoableEditListener(manager::listener);
+        return manager;
+    }
+
     public void addUndoActionTo(JTextComponent c) {
 
         undoAction = new AbstractAction("undo") {
@@ -63,15 +75,23 @@ public class TextComponentUndoManager extends UndoManager {
 
     public void listener (UndoableEditEvent e) {
         addEdit(e.getEdit());
+        updateActionStatus(); // 文字入力毎に action が enable/disable される
     }
 
     @Override
     public void undo() {
-        if (canUndo()) { super.undo(); }
+        super.undo();
+        updateActionStatus();
     }
 
     @Override
     public void redo() {
-        if (canRedo()) { super.redo(); }
+        super.redo();
+        updateActionStatus();
+    }
+
+    private void updateActionStatus() {
+        undoAction.setEnabled(canUndo());
+        redoAction.setEnabled(canRedo());
     }
 }

@@ -9,7 +9,6 @@ import java.beans.PropertyChangeSupport;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.UndoableEditListener;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
@@ -38,8 +37,8 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
     // ItemTablePanel.java の stampNameField.setBackground と同じ色
     private static final Color STAMP_NAME_FIELD_BACKGROUND = new Color(251,239,128);
 
-    private UndoableEditListener paneListener;
-    private UndoableEditListener fieldListener;
+    private TextComponentUndoManager paneUndoManager;
+    private TextComponentUndoManager fieldUndoManager;
 
     public TextStampEditor() {
         entity = IInfoModel.ENTITY_TEXT;
@@ -62,12 +61,8 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
         titleField.setOpaque(false);
 
         // Undo
-        TextComponentUndoManager paneUndo = new TextComponentUndoManager();
-        TextComponentUndoManager fieldUndo = new TextComponentUndoManager();
-        paneUndo.addUndoActionTo(textPane);
-        fieldUndo.addUndoActionTo(titleField);
-        paneListener = paneUndo::listener;
-        fieldListener = fieldUndo::listener;
+        paneUndoManager = TextComponentUndoManager.getManager(textPane);
+        fieldUndoManager = TextComponentUndoManager.getManager(titleField);
 
         HorizontalPanel titlePanel = new HorizontalPanel();
 
@@ -187,10 +182,6 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
      */
     @Override
     public void setValue(ModuleModel val) {
-        // stop undo
-        textPane.getDocument().removeUndoableEditListener(paneListener);
-        titleField.getDocument().removeUndoableEditListener(fieldListener);
-
         // set text
         ModuleModel model = val;
         TextStampModel stamp = (TextStampModel) model.getModel();
@@ -199,8 +190,8 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
 
         textPane.requestFocusInWindow();
 
-        // start undo
-        textPane.getDocument().addUndoableEditListener(paneListener);
-        titleField.getDocument().addUndoableEditListener(fieldListener);
+        // reset undo
+        paneUndoManager.discardAllEdits();
+        fieldUndoManager.discardAllEdits();
     }
 }

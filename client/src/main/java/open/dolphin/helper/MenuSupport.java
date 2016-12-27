@@ -33,6 +33,7 @@ public class MenuSupport implements MenuListener {
 
     public MenuSupport(Object owner) {
         chains[2] = owner;
+        //logger.setLevel(Level.DEBUG);
     }
 
     @Override
