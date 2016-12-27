@@ -290,6 +290,9 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         // Mediatorを保存する
         mediator = chartMediator;
 
+        // 入れておかないと最初に focus 取る前に Drop したときヌルポが出る
+        enter(mediator.getActions());
+
         // Drag は editable に関係なく可能
         //getTextPane().setDragEnabled(true);
 
