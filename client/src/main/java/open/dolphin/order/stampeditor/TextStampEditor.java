@@ -9,6 +9,7 @@ import java.beans.PropertyChangeSupport;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
@@ -19,7 +20,7 @@ import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.MyJScrollPane;
 
 /**
- * TextStampEditor
+ * TextStampEditor.
  * @author  pns
  */
 public final class TextStampEditor extends JPanel implements IStampEditor {
@@ -55,6 +56,14 @@ public final class TextStampEditor extends JPanel implements IStampEditor {
         titleField.getDocument().addDocumentListener(new StateListener());
         titleField.setBackground(STAMP_NAME_FIELD_BACKGROUND);
         titleField.setOpaque(false);
+
+        // Undo
+        TextComponentUndoManager paneUndo = new TextComponentUndoManager();
+        TextComponentUndoManager fieldUndo = new TextComponentUndoManager();
+        paneUndo.addUndoActionTo(textPane);
+        fieldUndo.addUndoActionTo(titleField);
+        textPane.getDocument().addUndoableEditListener(paneUndo::listener);
+        titleField.getDocument().addUndoableEditListener(fieldUndo::listener);
 
         HorizontalPanel titlePanel = new HorizontalPanel();
 
@@ -122,8 +131,9 @@ public final class TextStampEditor extends JPanel implements IStampEditor {
     public void setValidModel(boolean b) {
         boolean old = isValidModel;
         isValidModel = b;
-        if (old != isValidModel)
+        if (old != isValidModel) {
             boundSupport.firePropertyChange(VALID_DATA_PROP, old, isValidModel);
+        }
     }
 
     @Override
