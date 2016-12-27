@@ -8,13 +8,14 @@ import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 
 /**
- * TextComponentUndoManager.
- * <pre>
+ * JTextComponent に Undo 機能を付ける.<br>
+ * 使用例:
+ * <pre>{@code
  * TextComponentUndoManager manager = new TextComponentUndoManager();
  * JTextPane textComponent = new JTextPane();
  * manager.addUndoActionTo(textComponent);
  * textComponent.getDocument().addUndoableEditListener(manager::listener);
- * </pre>
+ * }</pre>
  * @author pns
  */
 public class TextComponentUndoManager extends UndoManager {

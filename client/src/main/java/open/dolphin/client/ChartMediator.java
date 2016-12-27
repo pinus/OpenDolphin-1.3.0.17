@@ -26,11 +26,14 @@ import open.dolphin.ui.MyJPopupMenu;
 import org.apache.log4j.Logger;
 
 /**
- * Mediator class to control Karte Window Menu.
- * KarteComposite インターフェースを持つクラスに対して，メニューをコントロールする enter / exit を送る.
- * ChartImpl, EditorFrame でインスタンスが作られる.
- * chains[0] を KarteComposite レイヤー，chains[1] を ChartDocument レイヤーとして使う.
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * Mediator (MenuSupport) class to control ChartDocument menus.<br>
+ * ChartImpl, EditorFrame でインスタンスが作られ，KarteComposite インターフェースを持つクラスが選択されると，
+ * メニューをコントロールする {@link open.dolphin.client.KarteComposite KarteComposite#enter/exit} を送る.<br>
+ * MenuSupport の chains[0] を KarteComposite レイヤー，chains[1] を ChartDocument レイヤーとして使うために，
+ * {@link open.dolphin.client.ChartMediator#addChartDocumentChain addChartDocumentChain} (= addChain2)，
+ * {@link  open.dolphin.client.ChartMediator#addKarteCompositeChain addKarteCompositeChain} (= addChain) を作ってある.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public final class ChartMediator extends MenuSupport {
 

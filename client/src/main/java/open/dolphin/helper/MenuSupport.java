@@ -12,17 +12,18 @@ import open.dolphin.client.ClientContext;
 import org.apache.log4j.Logger;
 
 /**
- * MenuSupport.
  * Object に対して順番にリフレクションで method を実行していく.
  * MainWindow 層では
- * chains[0] = MainWindow (WatingListImpl/PatientSearchImpl/LaboTestImporter
- * chains[1] = null
- * chains[2] = Dolphin
- * addChain するところ： Dolphin のタブ切換: WatingListImpl / PatientSearchImpl / LaboTestImporter (Dolphin.java 内の mediator)
- *
- * Dolphin, StampBoxPlugin, ImageBox がインスタンスを持っているが，StampBox, ImageBox はメニュー表示だけのため.
- * ChartDocument 層での使用は ChartMediator で行う.
- * @author Minagawa,Kazushi
+ * <ul>
+ * <li>chains[0] = MainWindow (WatingListImpl/PatientSearchImpl/LaboTestImporter)
+ * <li>chains[1] = null
+ * <li>chains[2] = Dolphin
+ * </ul>
+ * addChain するところは {@link open.dolphin.client.Dolphin#initComponents() Dolphin} のタブ切換設定の部分.
+ * StampBoxPlugin, ImageBox もインスタンスを持っているが，メニュー表示だけで adChain は未実装.<br>
+ * ChartDocument 層での使用は {@link open.dolphin.client.ChartMediator ChartMediator} で行う.
+ * @author Minagawa, Kazushi
+ * @author pns
  */
 public class MenuSupport implements MenuListener {
 
