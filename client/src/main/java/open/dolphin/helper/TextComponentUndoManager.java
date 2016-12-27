@@ -80,13 +80,13 @@ public class TextComponentUndoManager extends UndoManager {
 
     @Override
     public void undo() {
-        super.undo();
+        if (canUndo()) { super.undo(); }
         updateActionStatus();
     }
 
     @Override
     public void redo() {
-        super.redo();
+        if (canRedo()) { super.redo(); }
         updateActionStatus();
     }
 
