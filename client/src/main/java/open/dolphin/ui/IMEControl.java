@@ -1,26 +1,18 @@
 package open.dolphin.ui;
 
-import java.awt.AWTEvent;
 import java.awt.Component;
-import java.awt.DefaultKeyboardFocusManager;
-import java.awt.KeyboardFocusManager;
-import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
 
 /**
- * Mac で IME on/off を切り替える
- *
- * ver 1: AppleScript で on/off するバージョン　：　遅すぎてストレスたまる
- * ver 2: InputContext.selectInputMethod バージョン　：　調子よかったが，1.6.0_29 で使えなくなる
- * ver 3: Robot version 切り替わったかどうか判定するために event queue システム導入
- * ver 4: enableInputMethod(true/false) バージョン
+ * Mac で IME on/off を切り替える.
+ *<ul>
+ * <li>ver 1: AppleScript で on/off するバージョン　：　遅すぎてストレスたまる
+ * <li>ver 2: InputContext.selectInputMethod バージョン　：　調子よかったが，1.6.0_29 で使えなくなる
+ * <li>ver 3: Robot version 切り替わったかどうか判定するために event queue システム導入
+ * <li>ver 4: enableInputMethod(true/false) バージョン
+ * <li>ver 5: To DO
+ * </ul>
  * @author pns
  */
 public class IMEControl {
@@ -42,7 +34,7 @@ public class IMEControl {
         });*/
 
         // 上の方法だと，時々ショートカットキーが効かなくなることがあったので，
-        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener(){
+/*        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener(){
             @Override
             public void eventDispatched(AWTEvent event) {
                 if (((KeyEvent)event).getKeyCode() == KeyEvent.VK_KATAKANA) {
@@ -52,7 +44,7 @@ public class IMEControl {
                     }
                 }
             }
-        }, AWTEvent.KEY_EVENT_MASK);
+        }, AWTEvent.KEY_EVENT_MASK);*/
     }
 
     /**
@@ -60,7 +52,7 @@ public class IMEControl {
      * @param c
      */
     public static void setImeOff(Component c) {
-        c.enableInputMethods(false);
+        //c.enableInputMethods(false);
     }
 
     /**
@@ -68,9 +60,9 @@ public class IMEControl {
      * @param c
      */
     public static void setImeOn(Component c) {
-        if (c instanceof JTextComponent) {
-            c.enableInputMethods(true);
-        }
+        //if (c instanceof JTextComponent) {
+        //    c.enableInputMethods(true);
+        //}
     }
 
     /**
@@ -78,12 +70,12 @@ public class IMEControl {
      * @param c
      */
     public static void setImeOffIfFocused(final Component c) {
-        c.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                setImeOff(c);
-            }
-        });
+        //c.addFocusListener(new FocusAdapter() {
+        //    @Override
+        //    public void focusGained(FocusEvent e) {
+        //        setImeOff(c);
+        //    }
+        //});
     }
 
     /**
@@ -91,17 +83,17 @@ public class IMEControl {
      * @param c
      */
     public static void setImeOnIfFocused(final Component c) {
-        c.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                setImeOn(c);
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                Component w = SwingUtilities.getWindowAncestor(c);
-                if (w != null) { setImeOff(w); }
-            }
-        });
+        //c.addFocusListener(new FocusAdapter() {
+        //    @Override
+        //    public void focusGained(FocusEvent e) {
+        //        setImeOn(c);
+        //    }
+        //    @Override
+        //    public void focusLost(FocusEvent e) {
+        //        Component w = SwingUtilities.getWindowAncestor(c);
+        //        if (w != null) { setImeOff(w); }
+        //    }
+        //});
     }
 
     public static void main(String[] argv) {

@@ -41,9 +41,13 @@ import open.dolphin.ui.MyJSheet;
 import org.apache.log4j.Logger;
 
 /**
- * Karte Pane.
+ * KarteComposite の一つで，内部に JTextPane を１つ保持している.
+ * 保持している JTextPane は，{@link open.dolphin.client.KartePane#setTextPane setTextPane} されるときに
+ * client property "kartePane" に親の KartePane を入れる.<br>
+ * ２号カルテはこれを２枚 KarteViewer / KarteEditor に入れて使う.
  *
  * @author Kazushi Minagawa, Digital Globe, inc.
+ * @author pns
  */
 public class KartePane implements DocumentListener, MouseListener, CaretListener, PropertyChangeListener, KarteComposite<JTextPane> {
 
@@ -79,7 +83,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     // 保存後及びブラウズ時の編集不可を表すカラー
     private Color uneditableColor = UNEDITABLE_COLOR;
     // このペインからDragg及びDroppされたスタンプの情報
-    private ComponentHolder<?>[] drragedStamp;
+    private ComponentHolder<?>[] draggedStamp;
     private int draggedCount;
     private int droppedCount;
     // KartePane の UndoManager
@@ -264,7 +268,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      * @return このPaneからDragされたスタンプ配列
      */
     protected ComponentHolder<?>[] getDrragedStamp() {
-        return drragedStamp;
+        return draggedStamp;
     }
 
     /**
@@ -272,11 +276,12 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      * @param drragedStamp このPaneからDragされたスタンプ配列
      */
     protected void setDrragedStamp(ComponentHolder<?>[] drragedStamp) {
-        this.drragedStamp = drragedStamp;
+        this.draggedStamp = drragedStamp;
     }
 
     /**
      * 初期化する.
+     * KarteViewer, KarteEditor から呼ばれる.
      * @param editable 編集可能かどうかのフラグ
      * @param chartMediator チャートメディエータ（メニューサポート）
      */
@@ -374,7 +379,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * メニューを制御する.
-     *
      */
     private void controlMenus(ActionMap map) {
         // undo redo
@@ -729,12 +733,12 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
                     addList.size() + "個のスタンプが同時にドロップされましたが続けますか", "スタンプ挿入確認",
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE
                     );
-            if (ans != JOptionPane.YES_OPTION) return;
+            if (ans != JOptionPane.YES_OPTION) { return; }
         }
 
         final StampDelegater sdl = new StampDelegater();
 
-        DBTask task = new DBTask<List<StampModel>>(parent.getContext()) {
+        DBTask<List<StampModel>> task = new DBTask<List<StampModel>>(parent.getContext()) {
 
             @Override
             protected List<StampModel> doInBackground() throws Exception {
@@ -766,7 +770,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
                     // スタンプ重複チェック
                     for (ModuleModel module : duplicateCheckList) {
                         int count = StampModifier.checkDuplicates(module, KartePane.this);
-                        if (count > 0) break;
+                        if (count > 0) { break; }
                     }
                 } else {
                     showNoStampModelMessage();
@@ -785,7 +789,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
         final StampDelegater sdl = new StampDelegater();
 
-        DBTask task = new DBTask<List<StampModel>>(parent.getContext()) {
+        DBTask<List<StampModel>> task = new DBTask<List<StampModel>>(parent.getContext()) {
 
             @Override
             protected List<StampModel> doInBackground() throws Exception {
@@ -826,7 +830,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
         final OrcaMasterDao dao = new OrcaMasterDao();
 
-        DBTask task = new DBTask<List<ModuleModel>>(parent.getContext()) {
+        DBTask<List<ModuleModel>> task = new DBTask<List<ModuleModel>>(parent.getContext()) {
 
             @Override
             protected List<ModuleModel> doInBackground() throws Exception {
@@ -838,9 +842,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             public void succeeded(List<ModuleModel> models) {
                 logger.debug("applyOrcaSet succeeded");
                 if (models != null) {
-                    for (ModuleModel stamp : models) {
-                        stamp(stamp);
-                    }
+                    models.forEach(stamp -> stamp(stamp));
                 }
             }
         };
@@ -866,21 +868,18 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         String title = ClientContext.getFrameTitle("画像サイズについて");
         JLabel msg1 = new JLabel("カルテに挿入する画像は、最大で " + maxImageWidth + " x " + maxImageHeight + " pixcel に制限しています。");
         JLabel msg2 = new JLabel("画像を縮小しカルテに展開しますか?");
+
         final JCheckBox cb = new JCheckBox("今後このメッセージを表示しない");
         cb.setFont(new Font("Dialog", Font.PLAIN, 10));
-        cb.addActionListener(new ActionListener() {
+        cb.addActionListener(e -> pref.putBoolean("showImageSizeMessage", !cb.isSelected()));
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                pref.putBoolean("showImageSizeMessage", !cb.isSelected());
-            }
-        });
         JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 3));
         p1.add(msg1);
         JPanel p2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 3));
         p2.add(msg2);
         JPanel p3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 3));
         p3.add(cb);
+
         JPanel box = new JPanel();
         box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
         box.add(p1);
@@ -937,7 +936,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             return;
         }
 
-        DBTask task = new DBTask<ImageIcon>(parent.getContext()) {
+        DBTask<ImageIcon> task = new DBTask<ImageIcon>(parent.getContext()) {
 
             @Override
             protected ImageIcon doInBackground() throws Exception {
@@ -979,15 +978,12 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
                     ref.setHref(fileName);
 
                     // JavaFX thread で立ち上げ
-                    Platform.runLater(new Runnable(){
-                        @Override
-                        public void run() {
-                            SchemaEditor editor = new SchemaEditorImpl();
-                            editor.setSchema(schema);
-                            editor.setEditable(true);
-                            editor.addPropertyChangeListener(KartePane.this);
-                            editor.start();
-                        }
+                    Platform.runLater(() -> {
+                        SchemaEditor editor = new SchemaEditorImpl();
+                        editor.setSchema(schema);
+                        editor.setEditable(true);
+                        editor.addPropertyChangeListener(KartePane.this);
+                        editor.start();
                     });
                 }
             }
@@ -1013,7 +1009,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         }
         suffix = suffix.substring(index+1);
 
-        Iterator readers = ImageIO.getImageReadersBySuffix(suffix);
+        Iterator<ImageReader> readers = ImageIO.getImageReadersBySuffix(suffix);
 
         if (!readers.hasNext()) {
             showNoReaderMessage();
@@ -1036,7 +1032,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             logger.warn(e.getMessage());
             return;
         }
-        reader = null;
+
         ImageEntry entry = new ImageEntry();
         entry.setPath(path);
         entry.setFileName(name);
@@ -1073,7 +1069,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
                 }
                 break;
         }
-//pns   stamp が挿入されたら toFront する.
+        // stamp が挿入されたら toFront する.
         this.getParent().getContext().getFrame().toFront();
     }
 

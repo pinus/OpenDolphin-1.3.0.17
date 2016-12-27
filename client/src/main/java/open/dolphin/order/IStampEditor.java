@@ -5,9 +5,11 @@ import java.beans.PropertyChangeListener;
 /**
  * Stamp Model Editor が実装するインターフェイス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
+ * @param <T>
  **/
-public interface IStampEditor {
+public interface IStampEditor <T> {
 
     public void start();
 
@@ -19,9 +21,9 @@ public interface IStampEditor {
 
     public void setTitle(String val);
 
-    public Object getValue();
+    public T getValue();
 
-    public void setValue(Object o);
+    public void setValue(T o);
 
     public void addPropertyChangeListener(String prop, PropertyChangeListener l);
 
