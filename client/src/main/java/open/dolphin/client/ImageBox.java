@@ -187,7 +187,9 @@ public class ImageBox extends AbstractMainTool {
             mediator.disableAllMenus();
             String[] enables = new String[]{
                 GUIConst.ACTION_SHOW_STAMPBOX,
-                GUIConst.ACTION_SET_KARTE_ENVIROMENT
+                GUIConst.ACTION_SET_KARTE_ENVIROMENT,
+                "showWaitingList",
+                "showPatientSearch"
             };
             mediator.enableMenus(enables);
         } else {

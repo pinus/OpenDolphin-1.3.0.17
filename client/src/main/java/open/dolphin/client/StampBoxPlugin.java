@@ -35,9 +35,9 @@ import open.dolphin.ui.*;
 import org.apache.log4j.Logger;
 
 /**
- * StampBox
- * modified by pns
+ * StampBoxPlugin.
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class StampBoxPlugin extends AbstractMainTool {
 
@@ -288,7 +288,9 @@ public class StampBoxPlugin extends AbstractMainTool {
             mediator.disableAllMenus();
             String[] enables = new String[]{
                 GUIConst.ACTION_SHOW_SCHEMABOX,
-                GUIConst.ACTION_SET_KARTE_ENVIROMENT
+                GUIConst.ACTION_SET_KARTE_ENVIROMENT,
+                "showWaitingList",
+                "showPatientSearch"
             };
             mediator.enableMenus(enables);
 
@@ -305,7 +307,7 @@ public class StampBoxPlugin extends AbstractMainTool {
             public void windowClosing(WindowEvent e) {
                 if (editing) {
                     toolBtn.doClick();
-                    if (!isLocked) lockBtn.doClick();
+                    if (!isLocked) { lockBtn.doClick(); }
 
                 } else {
                     Toolkit.getDefaultToolkit().beep();
@@ -416,12 +418,12 @@ public class StampBoxPlugin extends AbstractMainTool {
             if (!editing) {
                 startStampMake();
                 editing = true;
-                if (isLocked) lockBtn.doClick();
+                if (isLocked) { lockBtn.doClick(); }
 
             } else {
                 stopStampMake();
                 editing = false;
-                if (!isLocked) lockBtn.doClick();
+                if (!isLocked) { lockBtn.doClick(); }
             }
         });
 
@@ -782,7 +784,7 @@ public class StampBoxPlugin extends AbstractMainTool {
             } else if (obj != null && obj instanceof ArrayList) {
                 // 傷病名の場合
                 StampTree tree = getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
-                tree.addDiagnosis((ArrayList<RegisteredDiagnosisModel>) obj);
+                tree.addDiagnosis((List<RegisteredDiagnosisModel>) obj);
             }
         }
     }

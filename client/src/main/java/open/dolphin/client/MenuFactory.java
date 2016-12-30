@@ -22,8 +22,9 @@ import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.MenuActionManager.MenuAction;
 
 /**
- * Menu Factory
+ * Menu Factory.
  * @author Minagawa, Kazushi
+ * @author pns
  */
 public class MenuFactory {
 
@@ -296,6 +297,16 @@ public class MenuFactory {
     }
 
     @MenuAction
+    public void showWaitingList() {
+        main.sendToChain("showWaitingList");
+    }
+
+    @MenuAction
+    public void showPatientSearch() {
+        main.sendToChain("showPatientSearch");
+    }
+
+    @MenuAction
     public void changePassword() {
         main.sendToChain("changePassword");
     }
@@ -383,13 +394,6 @@ public class MenuFactory {
         setAccelerator(newKarte, KeyEvent.VK_N);
         file.add(newKarte);
         setToolBar(editBar, "newKarte", GUIConst.ICON_KARTE_NEW_22);
-
-        // 新規文書
-//        JMenuItem newDocument = new JMenuItem();
-//        newDocument.setName("newDocument");
-//        setAction(newDocument, "newDocument", "新規文書...", GUIConst.ICON_DOCUMENT_NEW_22, "新しい文書を作成します");
-//        file.add(newDocument);
-//        setToolBar(fileBar, "newDocument", GUIConst.ICON_DOCUMENT_NEW_22);
 
         // 開く
         JMenuItem openKarte = new JMenuItem();
@@ -488,13 +492,6 @@ public class MenuFactory {
         setAction(cut, "cut", "カット", GUIConst.ICON_EDIT_CUT_22, "選択部分をカットします");
         setAccelerator(cut, KeyEvent.VK_X);
         edit.add(cut);
-/*      if (chart != null) {
-            JButton cutBtn = new JButton();
-            cutBtn.setAction(actionMap.get("cut"));
-            cutBtn.setText(null);
-            cutBtn.setIcon(GUIConst.ICON_EDIT_CUT_32);
-            editBar.add(cutBtn);
-        }*/
 
         // Copy
         JMenuItem copy = new JMenuItem();
@@ -502,13 +499,6 @@ public class MenuFactory {
         setAction(copy, "copy", "コピー", GUIConst.ICON_EDIT_COPY_22, "選択部分をコピーします");
         setAccelerator(copy, KeyEvent.VK_C);
         edit.add(copy);
-/*      if (chart != null) {
-            JButton copyBtn = new JButton();
-            copyBtn.setAction(actionMap.get("copy"));
-            copyBtn.setText(null);
-            copyBtn.setIcon(GUIConst.ICON_EDIT_COPY_32);
-            editBar.add(copyBtn);
-        }*/
 
         // Paste
         JMenuItem paste = new JMenuItem();
@@ -516,15 +506,7 @@ public class MenuFactory {
         setAction(paste, "paste", "ペースト", GUIConst.ICON_EDIT_PASTE_22, "カーソル位置にペーストします");
         setAccelerator(paste, KeyEvent.VK_V);
         edit.add(paste);
-/*      if (chart != null) {
-            JButton pasteBtn = new JButton();
-            pasteBtn.setAction(actionMap.get("paste"));
-            pasteBtn.setText(null);
-            pasteBtn.setIcon(GUIConst.ICON_EDIT_PASTE_32);
-            editBar.add(pasteBtn);
-        }*/
 
-//pns^
         // SelectAll
         JMenuItem selectAll = new JMenuItem();
         selectAll.setName("selectAll");
@@ -548,7 +530,6 @@ public class MenuFactory {
         setAction(findNext, "findNext", "次を検索", GUIConst.ICON_EMPTY_22, "次を検索します");
         setAccelerator(findNext, KeyEvent.VK_G);
         edit.add(findNext);
-//      setToolBar(editBar, "findNext", GUIConst.ICON_EDIT_FIND_NEXT_32);
 
         // Find Previous
         JMenuItem findPrevious = new JMenuItem();
@@ -556,22 +537,21 @@ public class MenuFactory {
         setAction(findPrevious, "findPrevious", "前を検索", GUIConst.ICON_EMPTY_22, "前を検索します");
         setAccelerator(findPrevious, KeyEvent.VK_G, true);
         edit.add(findPrevious);
-//      setToolBar(editBar, "findPrevious", GUIConst.ICON_EDIT_FIND_PREVIOUS_32);
-//pns$
+
         /******************************************************/
 
         // Karte
         JMenu karte = new JMenu();
         karte.setName("karteMenu");
         karte.setText("カルテ");
-//pns^
+
         // CLAIM 送信
         JMenuItem sendClaim = new JMenuItem();
         sendClaim.setName("sendClaim");
         setAction(sendClaim, "sendClaim", "CLAIM 送信", null, "CLAIM 送信します");
         setAccelerator(sendClaim, KeyEvent.VK_L);
         karte.add(sendClaim);
-//pns$
+
         // 昇順
         JRadioButtonMenuItem ascending = new JRadioButtonMenuItem();
         ascending.setName("ascending");
@@ -814,6 +794,20 @@ public class MenuFactory {
         setAccelerator(showSchemaBox, KeyEvent.VK_2);
         tool.add(showSchemaBox);
 
+        JMenuItem showWaitingList = new JMenuItem();
+        showWaitingList.setName("showWaitingList");
+        showWaitingList.setAction(actionMap.get("showWaitingList"));
+        showWaitingList.setText("受付リスト");
+        setAccelerator(showWaitingList, KeyEvent.VK_1, true);
+        tool.add(showWaitingList);
+
+        JMenuItem showPatientSearch = new JMenuItem();
+        showPatientSearch.setName("showPatientSearch");
+        showPatientSearch.setAction(actionMap.get("showPatientSearch"));
+        showPatientSearch.setText("患者検索");
+        setAccelerator(showPatientSearch, KeyEvent.VK_2, true);
+        tool.add(showPatientSearch);
+
         tool.add(new JSeparator());
 
         JMenuItem changePassword = new JMenuItem();
@@ -849,20 +843,14 @@ public class MenuFactory {
         }
 
         /******************************************************/
-//pns   この時点で menuBar には既に window メニューは入っている
-        int pos = 0;
-        menuBar.add(file,   (pos == GUIConst.DEFAULT_WINDOWMENU_POSITION)? ++pos: pos); pos++;
-        menuBar.add(edit,   (pos == GUIConst.DEFAULT_WINDOWMENU_POSITION)? ++pos: pos); pos++;
-        menuBar.add(karte,  (pos == GUIConst.DEFAULT_WINDOWMENU_POSITION)? ++pos: pos); pos++;
-//      menuBar.add(insert, 3); // insert action はコードされていないので削除した
-        menuBar.add(text,   (pos == GUIConst.DEFAULT_WINDOWMENU_POSITION)? ++pos: pos); pos++;
-        menuBar.add(tool,   (pos == GUIConst.DEFAULT_WINDOWMENU_POSITION)? ++pos: pos); pos++;
-        // 5 = Window
-        menuBar.add(help,   (pos == GUIConst.DEFAULT_WINDOWMENU_POSITION)? ++pos: pos); pos++;
-
-        /******************************************************/
-
-//      resMap.injectComponents(menuBar);
+        // この時点で menuBar には既に window メニューが入っている (menuCount = 1 となっている)
+        menuBar.add(file,  0);
+        menuBar.add(edit,  1);
+        menuBar.add(karte, 2);
+        menuBar.add(text,  3);
+        menuBar.add(tool,  4);
+        // window menu = 5
+        menuBar.add(help,  6);
     }
 
     private void setAccelerator(JMenuItem item, int key) {

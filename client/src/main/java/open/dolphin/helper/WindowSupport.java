@@ -20,8 +20,8 @@ import open.dolphin.ui.MainFrame;
 /**
  * Window Menu をサポートするためのクラス.
  * Factory method で WindowMenu をもつ JFrame を生成する.
- *
  * @author Minagawa,Kazushi
+ * @author pns
  */
 public class WindowSupport implements MenuListener {
 

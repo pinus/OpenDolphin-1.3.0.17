@@ -11,8 +11,6 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
@@ -111,24 +109,19 @@ public class Dolphin implements MainWindow {
     }
 
     private void startup() {
-
         // ログインダイアログを表示し認証を行う
-        PropertyChangeListener pl = new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent e) {
+        PropertyChangeListener pl = e -> {
+            LoginDialog.LoginStatus result = (LoginDialog.LoginStatus) e.getNewValue();
 
-                LoginDialog.LoginStatus result = (LoginDialog.LoginStatus) e.getNewValue();
-
-                switch (result) {
-                    case AUTHENTICATED:
-                        startServices();
-                        initComponents();
-                        break;
-                    case NOT_AUTHENTICATED:
-                    case CANCELD:
-                        exit();
-                        break;
-                }
+            switch (result) {
+                case AUTHENTICATED:
+                    startServices();
+                    initComponents();
+                    break;
+                case NOT_AUTHENTICATED:
+                case CANCELD:
+                    exit();
+                    break;
             }
         };
         LoginDialog login = new LoginDialog();
@@ -142,18 +135,12 @@ public class Dolphin implements MainWindow {
     private void startServices() {
 
         // プラグインのプロバイダマップを生成する
-        setProviders(new HashMap<String, MainService>());
+        setProviders(new HashMap<>());
 
         // 環境設定ダイアログで変更される場合があるので保存する
         saveEnv = new Properties();
 
-        // PVT Sever を起動する
-        //if (Project.getUseAsPVTServer()) {
-            //startPvtServer();
-
-        //} else {
-            saveEnv.put(GUIConst.KEY_PVT_SERVER, GUIConst.SERVICE_NOT_RUNNING);
-        //}
+        saveEnv.put(GUIConst.KEY_PVT_SERVER, GUIConst.SERVICE_NOT_RUNNING);
 
         // CLAIM送信を生成する
         if (Project.getSendClaim()) {
@@ -166,23 +153,14 @@ public class Dolphin implements MainWindow {
             saveEnv.put(GUIConst.ADDRESS_CLAIM, Project.getClaimAddress());
         }
 
-        // MML送信を生成する
-        //if (Project.getSendMML()) {
-        //    startSendMml();
-
-        //} else {
-            saveEnv.put(GUIConst.KEY_SEND_MML, GUIConst.SERVICE_NOT_RUNNING);
-        //}
-        //if (Project.getCSGWPath() != null) {
-        //    saveEnv.put(GUIConst.CSGW_PATH, Project.getCSGWPath());
-        //}
+        saveEnv.put(GUIConst.KEY_SEND_MML, GUIConst.SERVICE_NOT_RUNNING);
     }
 
     private void initComponents() {
 
-//pns   デバッグ用-------------------------
-        //javax.swing.RepaintManager.setCurrentManager(new VerboseRepaintManager());
-        //new FocusMonitor();
+        // デバッグ用-------------------------
+        // javax.swing.RepaintManager.setCurrentManager(new VerboseRepaintManager());
+        // new FocusMonitor();
 
         // 設定に必要な定数をコンテキストから取得する
         String windowTitle = ClientContext.getString("title");
@@ -208,12 +186,6 @@ public class Dolphin implements MainWindow {
             public void windowClosing(WindowEvent e) {
                 processExit();
             }
-            //@Override
-            //public void windowActivated(WindowEvent e) {
-            //    int index = tabbedPane.getSelectedIndex();
-            //    MainComponent plugin = (MainComponent) providers.get(String.valueOf(index));
-            //    plugin.enter();
-            //}
         });
         ComponentBoundsManager cm = new ComponentBoundsManager(myFrame, loc, size, this);
         cm.revertToPreferenceBounds();
@@ -259,19 +231,16 @@ public class Dolphin implements MainWindow {
         mediator.addChain(plugin[0]);
 
         // タブの切り替えで plugin.enter() をコールする
-        tabbedPane.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int index = tabbedPane.getSelectedIndex();
-                MainComponent plugin = (MainComponent) providers.get(String.valueOf(index));
-                if (plugin.getContext() == null) {
-                    plugin.setContext(Dolphin.this);
-                    plugin.start();
-                    tabbedPane.setComponentAt(index, plugin.getUI());
-                }
-                plugin.enter();
-                mediator.addChain(plugin);
+        tabbedPane.addChangeListener(e -> {
+            int index = tabbedPane.getSelectedIndex();
+            MainComponent plugin1 = (MainComponent) providers.get(String.valueOf(index));
+            if (plugin1.getContext() == null) {
+                plugin1.setContext(Dolphin.this);
+                plugin1.start();
+                tabbedPane.setComponentAt(index, plugin1.getUI());
             }
+            plugin1.enter();
+            mediator.addChain(plugin1);
         });
 
         // StaeMagrを使用してメインウインドウの状態を制御する
@@ -287,7 +256,7 @@ public class Dolphin implements MainWindow {
         String note = "スタンプツリーを読み込んでいます...";
         Component c = windowSupport.getFrame();
 
-        Task stampTask = new Task<Boolean>(c, message, note, 30*1000) {
+        Task<Boolean> stampTask = new Task<Boolean>(c, message, note, 30*1000) {
 
             @Override
             protected Boolean doInBackground() throws Exception {
@@ -299,7 +268,7 @@ public class Dolphin implements MainWindow {
             @Override
             protected void succeeded(Boolean result) {
                 bootLogger.debug("stampTask succeeded");
-                if (result.booleanValue()) {
+                if (result) {
                     stampBox.start();
                     stampBox.getFrame().setVisible(true);
                     providers.put("stampBox", stampBox);
@@ -433,17 +402,6 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * PVTServer を開始する.
-     */
-    //private void startPvtServer() {
-    //    pvtServer = new PVTClientServer();
-    //    pvtServer.setContext(this);
-    //    pvtServer.start();
-    //    providers.put("pvtServer", pvtServer);
-    //    saveEnv.put(GUIConst.KEY_PVT_SERVER, GUIConst.SERVICE_RUNNING);
-    //}
-
-    /**
      * CLAIM 送信を開始する.
      */
     private void startSendClaim() {
@@ -453,17 +411,6 @@ public class Dolphin implements MainWindow {
         providers.put("sendClaim", sendClaim);
         saveEnv.put(GUIConst.KEY_SEND_CLAIM, GUIConst.SERVICE_RUNNING);
     }
-
-    /**
-     * MML送信を開始する.
-     */
-    //private void startSendMml() {
-    //    sendMml = new SendMmlImpl();
-    //    sendMml.setContext(this);
-    //    sendMml.start();
-    //    providers.put("sendMml", sendMml);
-    //    saveEnv.put(GUIConst.KEY_SEND_MML, GUIConst.SERVICE_RUNNING);
-    //}
 
     /**
      * プリンターをセットアップする.
@@ -520,29 +467,12 @@ public class Dolphin implements MainWindow {
         public void propertyChange(PropertyChangeEvent e) {
 
             if (e.getPropertyName().equals("SETTING_PROP")) {
-
-                boolean valid = ((Boolean) e.getNewValue()).booleanValue();
+                boolean valid = (Boolean) e.getNewValue();
 
                 if (valid) {
 
                     // 設定の変化を調べ，サービスの制御を行う
-                    ArrayList<String> messages = new ArrayList<String>(2);
-
-                    // PvtServer はサーバに移動したので，client での起動は廃止
-                    //boolean oldRunning = saveEnv.getProperty(GUIConst.KEY_PVT_SERVER).equals(GUIConst.SERVICE_RUNNING) ? true : false;
-                    //boolean newRun = Project.getUseAsPVTServer();
-                    //boolean start = ((!oldRunning) && newRun) ? true : false;
-                    //boolean stop = ((oldRunning) && (!newRun)) ? true : false;
-
-                    //if (start) {
-                    //    startPvtServer();
-                    //    messages.add("受付受信を開始しました. ");
-                    //} else if (stop && pvtServer != null) {
-                    //    pvtServer.stop();
-                    //    pvtServer = null;
-                    //    saveEnv.put(GUIConst.KEY_PVT_SERVER, GUIConst.SERVICE_NOT_RUNNING);
-                    //    messages.add("受付受信を停止しました. ");
-                    //}
+                    ArrayList<String> messages = new ArrayList<>(2);
 
                     // SendClaim
                     boolean oldRunning = saveEnv.getProperty(GUIConst.KEY_SEND_CLAIM).equals(GUIConst.SERVICE_RUNNING);
@@ -576,39 +506,6 @@ public class Dolphin implements MainWindow {
                         saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
                         messages.add("CLAIM送信をリスタートしました。(送信アドレス=" + newAddress + ")");
                     }
-
-                    // SendMML 使用しない
-                    //oldRunning = saveEnv.getProperty(GUIConst.KEY_SEND_MML).equals(GUIConst.SERVICE_RUNNING) ? true : false;
-                    //newRun = Project.getSendMML();
-                    //start = ((!oldRunning) && newRun) ? true : false;
-                    //stop = ((oldRunning) && (!newRun)) ? true : false;
-
-                    //restart = false;
-                    //oldAddress = saveEnv.getProperty(GUIConst.CSGW_PATH);
-                    //newAddress = Project.getCSGWPath();
-                    //if (oldAddress != null && newAddress != null && (!oldAddress.equals(newAddress)) && newRun) {
-                    //    restart = true;
-                    //}
-
-                    //if (start) {
-                    //    startSendMml();
-                    //    saveEnv.put(GUIConst.CSGW_PATH, newAddress);
-                    //    messages.add("MML送信を開始しました. (送信アドレス=" + newAddress + ")");
-
-                    //} else if (stop && sendMml != null) {
-                    //    sendMml.stop();
-                    //    sendMml = null;
-                    //    saveEnv.put(GUIConst.KEY_SEND_MML, GUIConst.SERVICE_NOT_RUNNING);
-                    //    saveEnv.put(GUIConst.CSGW_PATH, newAddress);
-                    //    messages.add("MML送信を停止しました. ");
-
-                    //} else if (restart) {
-                    //    sendMml.stop();
-                    //    sendMml = null;
-                    //    startSendMml();
-                    //    saveEnv.put(GUIConst.CSGW_PATH, newAddress);
-                    //    messages.add("MML送信をリスタートしました. (送信アドレス=" + newAddress + ")");
-                    //}
 
                     if (messages.size() > 0) {
                         String[] msgArray = messages.toArray(new String[messages.size()]);
@@ -667,26 +564,20 @@ public class Dolphin implements MainWindow {
     private List<Callable<Boolean>> getStoppingTask() {
 
         // StoppingTask を集める
-        List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(1);
+        List<Callable<Boolean>> stoppingTasks = new ArrayList<>(1);
 
         // ログイン前に終了すると，providers = null でここに入って exception が出る
-        if (providers == null) { return tasks; }
+        if (providers == null) { return stoppingTasks; }
 
-        HashMap<String, MainService> cloneMap;
-        synchronized (providers) {
-            cloneMap = (HashMap) providers.clone();
-        }
-        Iterator iter = cloneMap.values().iterator();
-        while (iter != null && iter.hasNext()) {
-            MainService pl = (MainService) iter.next();
-            if (pl instanceof MainTool) {
-                Callable<Boolean> task = ((MainTool) pl).getStoppingTask();
-                if (task != null) {
-                    tasks.add(task);
-                }
+        providers.values().forEach(service -> {
+            if (service instanceof MainTool) {
+                Callable<Boolean> task = ((MainTool) service).getStoppingTask();
+                if (task != null) { stoppingTasks.add(task); }
             }
-        }
-        return tasks;
+        });
+        // WatingListImpl と StampBoxPlugin
+        // stoppingTasks.forEach(task -> System.out.println("stopping task = " + task));
+        return stoppingTasks;
     }
 
     public void processExit() {
@@ -705,9 +596,6 @@ public class Dolphin implements MainWindow {
                 return;
             }
         }
-        // すべての chart を閉じる（pvt が OPEN のままのこらないようにするため)
-        // これだと終了に間に合わないことがあるので，stoppingTask で処理することにした
-        // ChartImpl.closeAll();
 
         // MainTool, MainComponent で getStoppingTask を override するとここで呼ばれる
         final List<Callable<Boolean>> tasks = getStoppingTask();
@@ -721,7 +609,7 @@ public class Dolphin implements MainWindow {
             String note = ClientContext.getString("exitDolphin.savingNote");
             Component c = getFrame();
 
-            Task stampTask = new Task<Boolean>(c, message, note, 60*1000) {
+            Task<Boolean> stampTask = new Task<Boolean>(c, message, note, 60*1000) {
 
                 @Override
                 protected Boolean doInBackground() throws Exception {
@@ -729,7 +617,7 @@ public class Dolphin implements MainWindow {
                     boolean success = true;
                     for (Callable<Boolean> c : tasks) {
                         Boolean result = c.call();
-                        if (!result.booleanValue()) {
+                        if (!result) {
                             success = false;
                             break;
                         }
@@ -740,7 +628,7 @@ public class Dolphin implements MainWindow {
                 @Override
                 protected void succeeded(Boolean result) {
                     bootLogger.debug("stoppingTask succeeded");
-                    if (result.booleanValue()) {
+                    if (result) {
                         exit();
                     } else {
                         doStoppingAlert();
@@ -798,16 +686,7 @@ public class Dolphin implements MainWindow {
     private void exit() {
 
         if (providers != null) {
-
-            HashMap cloneMap;
-            synchronized (providers) {
-                cloneMap = (HashMap) providers.clone();
-            }
-            Iterator iter = cloneMap.values().iterator();
-            while (iter != null && iter.hasNext()) {
-                MainService pl = (MainService) iter.next();
-                pl.stop();
-            }
+            providers.values().forEach(service -> service.stop());
         }
 
         if (windowSupport != null) {
@@ -846,9 +725,7 @@ public class Dolphin implements MainWindow {
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace(System.err);
-        } catch (IllegalAccessException ex) {
-            System.out.println("Dolphin.java: " + ex);
-        } catch (InstantiationException ex) {
+        } catch (IllegalAccessException | InstantiationException ex) {
             System.out.println("Dolphin.java: " + ex);
         }
     }
@@ -954,7 +831,21 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * Mediator
+     * Waiting list を表示する.
+     */
+    public void showWaitingList() {
+        tabbedPane.setSelectedIndex(0);
+    }
+
+    /**
+     * Patient search を表示する.
+     */
+    public void showPatientSearch() {
+        tabbedPane.setSelectedIndex(1);
+    }
+
+    /**
+     * Mediator.
      */
     private final class Mediator extends MenuSupport {
 
@@ -970,13 +861,13 @@ public class Dolphin implements MainWindow {
         @Override
         public void registerActions(ActionMap actions) {
             super.registerActions(actions);
-        // メインウインドウなので閉じるだけは無効にする
-        //getAction(GUIConst.ACTION_WINDOW_CLOSING).setEnabled(false);
+            // メインウインドウなので閉じるだけは無効にする
+            //getAction(GUIConst.ACTION_WINDOW_CLOSING).setEnabled(false);
         }
     }
 
     /**
-     * MainWindowState
+     * MainWindowState.
      */
     private abstract class MainWindowState {
 
@@ -989,7 +880,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * LoginState
+     * LoginState.
      */
     private class LoginState extends MainWindowState {
 
@@ -1012,7 +903,6 @@ public class Dolphin implements MainWindow {
                 GUIConst.ACTION_PROCESS_EXIT,
                 GUIConst.ACTION_SET_KARTE_ENVIROMENT,
                 GUIConst.ACTION_SHOW_STAMPBOX,
-                GUIConst.ACTION_NEW_PATIENT,
                 GUIConst.ACTION_SHOW_SCHEMABOX,
                 GUIConst.ACTION_CHANGE_PASSWORD,
                 GUIConst.ACTION_CONFIRM_RUN,
@@ -1020,7 +910,9 @@ public class Dolphin implements MainWindow {
                 GUIConst.ACTION_BROWS_DOLPHIN,
                 GUIConst.ACTION_BROWS_DOLPHIN_PROJECT,
                 GUIConst.ACTION_BROWS_MEDXML,
-                GUIConst.ACTION_SHOW_ABOUT
+                GUIConst.ACTION_SHOW_ABOUT,
+                "showWaitingList",
+                "showPatientSearch"
             };
             mediator.enableMenus(enables);
 
@@ -1038,7 +930,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * LogoffState
+     * LogoffState.
      */
     private class LogoffState extends MainWindowState {
 
@@ -1057,12 +949,12 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * StateManager
+     * StateManager.
      */
     private class StateManager {
 
-        private MainWindowState loginState = new LoginState();
-        private MainWindowState logoffState = new LogoffState();
+        private final MainWindowState loginState = new LoginState();
+        private final MainWindowState logoffState = new LogoffState();
         private MainWindowState currentState = logoffState;
 
         public StateManager() {
@@ -1106,8 +998,8 @@ public class Dolphin implements MainWindow {
         }
     }
 
-    public static class FocusMonitor implements PropertyChangeListener {
-        private KeyboardFocusManager focusManager;
+    private static class FocusMonitor implements PropertyChangeListener {
+        private final KeyboardFocusManager focusManager;
         public FocusMonitor() {
             focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
             focusManager.addPropertyChangeListener(this);

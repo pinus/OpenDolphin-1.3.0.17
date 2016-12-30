@@ -14,6 +14,7 @@ import open.dolphin.ui.MyJPopupMenu;
  * CompositeArea.
  * KarteComposite インターフェースを持つ JTextArea - Memo で使っている
  * @author kazm
+ * @author pns
  */
 public class CompositeArea extends JTextArea implements KarteComposite<JTextArea>, CaretListener {
     private static final long serialVersionUID = 1L;
@@ -80,7 +81,7 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
     }
 
     /**
-     * ChartMediator で addChain されて呼ばれる
+     * ChartMediator で addChain されて呼ばれる.
      */
     public void undo() {
         undoManager.undo();
