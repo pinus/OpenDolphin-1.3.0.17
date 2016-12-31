@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import javax.swing.JComponent;
 import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.plaf.ComponentUI;
 import open.dolphin.client.ClientContext;
 
@@ -24,12 +22,7 @@ public class MyTreeUI extends WindowsTreeUI {
     public static ComponentUI createUI(JComponent tree) {
         final JTree t = (JTree) tree;
         // tree が展開されたときにバックグラウンドがみだれるのの workaround
-        t.addTreeSelectionListener(new TreeSelectionListener(){
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                t.repaint();
-            }
-        });
+        t.addTreeSelectionListener(e -> t.repaint());
         return new MyTreeUI();
     }
 

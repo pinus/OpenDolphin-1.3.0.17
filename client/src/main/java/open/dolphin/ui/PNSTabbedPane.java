@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -105,14 +106,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         setLayout(new BorderLayout(0,0));
         add(buttonPanel, BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
-    }
-
-    /**
-     * タブのボタンを格納した JPanel を返す.
-     * @return
-     */
-    public ButtonPanel getButtonPanel() {
-        return buttonPanel;
     }
 
     /**
@@ -346,6 +339,31 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         public Dimension getPadding() {
             return padding;
         }
+
+        @Override
+        public void paint(Graphics g) {
+            super.paint(g);
+            paintButtonPanel(g);
+        }
+    }
+
+    /**
+     * ButtonBanel 描画装飾フック用.
+     * @param g
+     */
+    public void paintButtonPanel(Graphics g) {
+    }
+
+    /**
+     * n 番目のボタンの右上のコーナーの座標を返す.
+     * @param n
+     * @return
+     */
+    public Point getButtonTopRightCornerLocation(int n) {
+        TabButton button = buttonList.get(n);
+        Point p = button.getLocation();
+        p.x += button.getWidth();
+        return p;
     }
 
     /**
@@ -561,6 +579,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                 int offset = 0;
                 for(int line=0; line< lineCount; line++) {
                     int bc = buttonCountAtLine.get(line);
+                    if (bc == 0) { continue; }
                     // 隙間を測る
                     int gap = hgap; // hgap の数はボタンよりも１つ多い
                     for(int i=0; i< bc; i++) {
@@ -618,9 +637,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         JPanel mainComponentPanel_3 = createMainPanel();
 
         final PNSTabbedPane tabPane = new PNSTabbedPane();
-        // content の command panel と連続にするために alpha セット
         tabPane.setButtonVgap(4);
-        tabPane.addTab("受付リスト(10)", mainComponentPanel_1);
+        tabPane.addTab("受付リスト", mainComponentPanel_1);
         tabPane.addTab("患者検索", mainComponentPanel_2);
         tabPane.addTab("ラボレシーバ", mainComponentPanel_3);
 
@@ -631,8 +649,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         f.pack();
         f.setVisible(true);
 
-        tabPane.setTitleAt(0, "受付リスト");
-        tabPane.setTitleAt(0, "受付リスト(10)");
     }
 
     private static JPanel createMainPanel() {
@@ -804,7 +820,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         // 内側の tabbed pane
         PNSTabbedPane tab = new PNSTabbedPane();
         // ボタンパネルの余白設定
-        tab.getButtonPanel().setPadding(new Dimension(4,4));
+        tab.setButtonPanelPadding(new Dimension(4,4));
         // status panel を inner tab に設定
         StatusPanel statusPanel = new StatusPanel();
         tab.add(statusPanel, BorderLayout.SOUTH);

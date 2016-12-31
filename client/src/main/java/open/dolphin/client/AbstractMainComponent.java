@@ -9,6 +9,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.PatientDelegater;
+import open.dolphin.event.BadgeListener;
 import open.dolphin.infomodel.KarteState;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
@@ -92,6 +93,9 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
 
     @Override
     public abstract void stop();
+
+    @Override
+    public void addBadgeListener(BadgeListener listener) {}
 
     // MainComponent に共通な作業
     // 必要に応じて extend 側でオーバーライドする

@@ -1,6 +1,7 @@
 package open.dolphin.client;
 
 import javax.swing.JPanel;
+import open.dolphin.event.BadgeListener;
 
 /**
  *
@@ -15,5 +16,7 @@ public interface MainComponent extends MainTool {
     public JPanel getUI();
 
     public void setUI(JPanel panel);
+
+    public void addBadgeListener(BadgeListener listener);
 
 }

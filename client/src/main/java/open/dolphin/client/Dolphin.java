@@ -29,7 +29,7 @@ import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.setting.ProjectSettingDialog;
 import open.dolphin.ui.MainFrame;
-import open.dolphin.ui.PNSTabbedPane;
+import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.SettingForMac;
 import org.apache.log4j.Logger;
 
@@ -49,7 +49,7 @@ public class Dolphin implements MainWindow {
     // プラグインのプロバイダ
     private HashMap<String, MainService> providers;
     // pluginを格納する tabbedPane
-    private PNSTabbedPane tabbedPane;
+    private PNSBadgeTabbedPane tabbedPane;
     // timerTask 関連
     private javax.swing.Timer taskTimer;
     // ロガー
@@ -203,8 +203,8 @@ public class Dolphin implements MainWindow {
         mediator.registerActions(appMenu.getActionMap());
 
         // mainWindowのコンテントGUIを生成しFrameに追加する
-        tabbedPane = new PNSTabbedPane();
-        tabbedPane.setButtonVgap(4);
+        tabbedPane = new PNSBadgeTabbedPane();
+        //tabbedPane.setButtonVgap(4);
 
         MainFrame.MainPanel mainPanel = myFrame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0,0));
@@ -227,6 +227,8 @@ public class Dolphin implements MainWindow {
             tabbedPane.addTab(plugin[index].getName(), plugin[index].getUI());
             providers.put(String.valueOf(index), plugin[index]);
         }
+        // WatingListImpl に BadgeListener を付ける
+        plugin[0].addBadgeListener(tabbedPane::setBadge);
 
         mediator.addChain(plugin[0]);
 

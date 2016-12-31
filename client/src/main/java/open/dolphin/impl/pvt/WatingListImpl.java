@@ -1,7 +1,5 @@
 package open.dolphin.impl.pvt;
 
-import ch.randelshofer.quaqua.SheetEvent;
-import ch.randelshofer.quaqua.SheetListener;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -13,14 +11,12 @@ import java.beans.EventHandler;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.prefs.Preferences;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
@@ -35,6 +31,8 @@ import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.PatientDelegater;
 import open.dolphin.dto.PvtStateSpec;
+import open.dolphin.event.BadgeEvent;
+import open.dolphin.event.BadgeListener;
 import open.dolphin.helper.ReflectAction;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
@@ -111,6 +109,8 @@ public class WatingListImpl extends AbstractMainComponent {
     private ExecutorService executor;
     // PvtChecker を定期起動するための ExecutorService
     private ScheduledExecutorService schedule;
+    // BadgeListener
+    private BadgeListener badgeListener;
 
     private Logger logger;
     private WatingListPanel view;
@@ -142,7 +142,7 @@ public class WatingListImpl extends AbstractMainComponent {
         restartCheckTimer();
         // pvt broadcaster 受信待ちスレッド開始
         // getUserAsPVTServer をリサイクル利用
-        if (Project.getUseAsPVTServer() ) {;
+        if (Project.getUseAsPVTServer() ) {
             startPvtMessageReceiver();
         }
 
@@ -151,12 +151,9 @@ public class WatingListImpl extends AbstractMainComponent {
             // 初回のチェック. 以後は ReceivePvtBroadcast と，下のタイマーで更新
             checkFullPvt();
             // １分ごとに setPvtCount() を呼んで待ち時間を更新
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    setPvtCount();
-                    setCheckedTime(new Date()); // これは時計になる
-                }
+            Runnable r = () -> {
+                setPvtCount();
+                setCheckedTime(new Date()); // これは時計になる
             };
             schedule.scheduleAtFixedRate(r, 0, 1, TimeUnit.MINUTES);
         }
@@ -239,7 +236,7 @@ public class WatingListImpl extends AbstractMainComponent {
             @Override
             public void toggleSortOrder(int column) {
                 if(column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
-                    List<RowSorter.SortKey> keys = new ArrayList<RowSorter.SortKey>(getSortKeys());
+                    List<RowSorter.SortKey> keys = new ArrayList<>(getSortKeys());
                     if(!keys.isEmpty()) {
                         RowSorter.SortKey sortKey = keys.get(0);
                         if(sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {
@@ -284,20 +281,17 @@ public class WatingListImpl extends AbstractMainComponent {
             methodNames[AGE_COLUMN] = AGE_METHOD[1];
         }
         // 生年月日コラムに comparator を設定「32.10 歳(S60-01-01)」というのをソートできるようにする
-        sorter.setComparator(AGE_COLUMN, new Comparator(){
-            @Override
-            public int compare(Object o1, Object o2) {
-                String birthday1;
-                String birthday2;
-                if (ageDisplay) {
-                    birthday1 = ModelUtils.getMmlBirthdayFromAge((String)o1);
-                    birthday2 = ModelUtils.getMmlBirthdayFromAge((String)o2);
-                    return birthday2.compareTo(birthday1);
-                } else {
-                    birthday1 = (String)o1;
-                    birthday2 = (String)o2;
-                    return birthday1.compareTo(birthday2);
-                }
+        sorter.setComparator(AGE_COLUMN, (o1, o2) -> {
+            String birthday1;
+            String birthday2;
+            if (ageDisplay) {
+                birthday1 = ModelUtils.getMmlBirthdayFromAge((String)o1);
+                birthday2 = ModelUtils.getMmlBirthdayFromAge((String)o2);
+                return birthday2.compareTo(birthday1);
+            } else {
+                birthday1 = (String)o1;
+                birthday2 = (String)o2;
+                return birthday1.compareTo(birthday2);
             }
         });
 
@@ -329,22 +323,18 @@ public class WatingListImpl extends AbstractMainComponent {
         pvtTable.addMouseListener(new ContextListener());
 
         // ListSelectionListener を組み込む
-        pvtTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting() == false) {
-                    int[] rows = pvtTable.getSelectedRows();
-                    if (rows == null) {
-                        setSelectedPvt(null);
-                    } else {
-                        PatientVisitModel[] patients = new PatientVisitModel[rows.length];
-                        for (int i=0; i < rows.length; i++) {
-                            rows[i] = pvtTable.convertRowIndexToModel(rows[i]);
-                            patients[i] = (PatientVisitModel) pvtTableModel.getObject(rows[i]);
-                        }
-                        setSelectedPvt(patients);
+        pvtTable.getSelectionModel().addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting() == false) {
+                int[] rows = pvtTable.getSelectedRows();
+                if (rows == null) {
+                    setSelectedPvt(null);
+                } else {
+                    PatientVisitModel[] patients = new PatientVisitModel[rows.length];
+                    for (int i=0; i < rows.length; i++) {
+                        rows[i] = pvtTable.convertRowIndexToModel(rows[i]);
+                        patients[i] = (PatientVisitModel) pvtTableModel.getObject(rows[i]);
                     }
+                    setSelectedPvt(patients);
                 }
             }
         });
@@ -496,6 +486,29 @@ public class WatingListImpl extends AbstractMainComponent {
             }
         }
         view.getCountLbl().setText(String.format("来院数%d人，待ち%d人，待ち時間 %s", pvtCount, waitingCount, waitingTime));
+        fireBadgeEvent(waitingCount);
+    }
+
+    /**
+     * 待ち人数を送る listener.
+     * @param listener
+     */
+    @Override
+    public void addBadgeListener(BadgeListener listener) {
+        badgeListener = listener;
+    }
+
+    /**
+     * 待ち人数 listener に待ち人数を送る.
+     * @param n
+     */
+    private void fireBadgeEvent(int n) {
+        if (badgeListener != null) {
+            BadgeEvent e = new BadgeEvent(this);
+            e.setBadgeNumber(n);
+            e.setTabIndex(0);
+            badgeListener.badgeChanged(e);
+        }
     }
 
     /**
@@ -533,7 +546,7 @@ public class WatingListImpl extends AbstractMainComponent {
     /**
      * 選択された来院情報を設定する.
      * 複数行選択対応 by pns
-     * @param 選択された来院情報
+     * @param selectedPvt
      */
     public void setSelectedPvt(PatientVisitModel[] selectedPvt) {
         this.selectedPvt = selectedPvt;
@@ -569,15 +582,13 @@ public class WatingListImpl extends AbstractMainComponent {
      */
     public void openKarte() {
         PatientVisitModel pvtModel[] = getSelectedPvt();
-        if (pvtModel == null) { return; }
-
-        for (int i=0; i < pvtModel.length; i++) {
-            openKarte(pvtModel[i]);
+        if (pvtModel != null) {
+            Arrays.asList(pvtModel).forEach(model -> openKarte(model));
         }
     }
 
     /**
-     * 指定されたカルテを開く
+     * 指定されたカルテを開く.
      * @param pvtModel
      */
     public void openKarte(final PatientVisitModel pvtModel) {
@@ -587,31 +598,27 @@ public class WatingListImpl extends AbstractMainComponent {
             setBusy(true);
 
             // isReadOnly対応
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
+            Runnable r = () -> {
+                // 健康保険情報をフェッチする
+                PatientDelegater ptdl = new PatientDelegater();
+                ptdl.fetchHealthInsurance(pvtModel.getPatient());
 
-                    // 健康保険情報をフェッチする
-                    PatientDelegater ptdl = new PatientDelegater();
-                    ptdl.fetchHealthInsurance(pvtModel.getPatient());
+                // 現在の state をサーバからとってくる
+                PvtDelegater pvdl = new PvtDelegater();
+                int state = pvdl.getPvtState(pvtModel.getId());
+                // 読んだら table を update 　　　→ カルテが開くと update がよばれるのでここでは不要
+                //int row = getRowForPvt(pvtModel);
+                //pvtModel.setState(state);
+                //pvtTableModel.fireTableRowsUpdated(row, row);
 
-                    // 現在の state をサーバからとってくる
-                    PvtDelegater pvdl = new PvtDelegater();
-                    int state = pvdl.getPvtState(pvtModel.getId());
-                    // 読んだら table を update 　　　→ カルテが開くと update がよばれるのでここでは不要
-                    //int row = getRowForPvt(pvtModel);
-                    //pvtModel.setState(state);
-                    //pvtTableModel.fireTableRowsUpdated(row, row);
-
-                    // すでに OPEN ならどっかで開いているということなので編集不可に設定
-                    if (KarteState.isOpen(state)) {
-                        openReadOnlyKarte(pvtModel, state);
-                    }
-                    // OPEN でなければ，通常どおりオープン （Dolphin#openKarte を呼ぶ）
-                    else  { getContext().openKarte(pvtModel); }
-                    setBusy(false);
-                    // startCheckTimer(); // openKarte すると ChartImpl が open するので，updateState が必ず呼ばれるので，そちらで startCheckTimer される
+                // すでに OPEN ならどっかで開いているということなので編集不可に設定
+                if (KarteState.isOpen(state)) {
+                    openReadOnlyKarte(pvtModel, state);
                 }
+                // OPEN でなければ，通常どおりオープン （Dolphin#openKarte を呼ぶ）
+                else  { getContext().openKarte(pvtModel); }
+                setBusy(false);
+                // startCheckTimer(); // openKarte すると ChartImpl が open するので，updateState が必ず呼ばれるので，そちらで startCheckTimer される
             };
             // ここは database とは関係ないので thread で
             Thread t = new Thread(r);
@@ -625,7 +632,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * Read Only でカルテを開く
+     * Read Only でカルテを開く.
      * @param pvtModel
      * @param state
      */
@@ -661,7 +668,7 @@ public class WatingListImpl extends AbstractMainComponent {
         List<Component> cc = java.util.Arrays.asList(components);
 
         while (!cc.isEmpty()) {
-            List<Component> stack = new ArrayList<Component>();
+            List<Component> stack = new ArrayList<>();
             for (Component c: cc) {
                 if (c instanceof JButton) {
                     JButton button = (JButton) c;
@@ -678,19 +685,16 @@ public class WatingListImpl extends AbstractMainComponent {
         final JButton forceEditBtn = tmpForce;
 
         MyJSheet dialog = MyJSheet.createDialog(pane, getContext().getFrame());
-        dialog.addSheetListener(new SheetListener(){
-            @Override
-            public void optionSelected(SheetEvent se) {
-                int result = se.getOption();
-                if (result == 0) { // 閲覧
-                    pvtModel.setState(KarteState.READ_ONLY);
-                    getContext().openKarte(pvtModel);
-                } else if (result == 1) { // 強制編集
-                    pvtModel.setState(KarteState.toClosedState(state));
-                    getContext().openKarte(pvtModel);
-                }
-                // それ以外はキャンセル
+        dialog.addSheetListener(se -> {
+            int result = se.getOption();
+            if (result == 0) { // 閲覧
+                pvtModel.setState(KarteState.READ_ONLY);
+                getContext().openKarte(pvtModel);
+            } else if (result == 1) { // 強制編集
+                pvtModel.setState(KarteState.toClosedState(state));
+                getContext().openKarte(pvtModel);
             }
+            // それ以外はキャンセル
         });
 
         // 強制編集ボタンにショートカット登録
@@ -698,6 +702,7 @@ public class WatingListImpl extends AbstractMainComponent {
         InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "force-edit");
         am.put("force-edit", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
             @Override
             public void actionPerformed(ActionEvent e) {
                 forceEditBtn.doClick();
@@ -708,8 +713,8 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 現在の selectedPvt が canOpen かどうか判定 by pns
-     * １つでも開けられないものがあれば false とする
+     * 現在の selectedPvt が canOpen かどうか判定 by pns.
+     * １つでも開けられないものがあれば false とする.
      */
     private boolean canOpen() {
 
@@ -718,10 +723,10 @@ public class WatingListImpl extends AbstractMainComponent {
         if (pvt == null || pvt.length == 0) {
             return false;
         } else {
-            for (int i=0; i < pvt.length; i++) {
+            for (PatientVisitModel model : pvt) {
                 // 既に開かれているカルテを openKarte すると toFront になるので，
                 // open できないカルテは cancel されたカルテのみである
-                if (isKarteCanceled(pvt[i])) { return false; }
+                if (isKarteCanceled(model)) { return false; }
             }
         }
         return true;
@@ -746,8 +751,8 @@ public class WatingListImpl extends AbstractMainComponent {
 
     /**
      * チャートステートの状態をデータベースに書き込む.
-     * ChartImpl の windowOpened, windowClosed で呼ばれる
-     * state, byomeiCount, byomeiCountToday が変化している可能性がある
+     * ChartImpl の windowOpened, windowClosed で呼ばれる.
+     * state, byomeiCount, byomeiCountToday が変化している可能性がある.
      * @param updated
      */
     public void updateState(final PatientVisitModel updated) {
@@ -764,59 +769,46 @@ public class WatingListImpl extends AbstractMainComponent {
 
         if (state != KarteState.READ_ONLY) {
             // データベースへの書き込み
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    PvtDelegater pdl = new PvtDelegater();
-                    int serverState = pdl.getPvtState(updated.getId());
-                    // サーバが NONE 以外かつクライアントが NONE の時はサーバの state を優先する
-                    // i.e. NONE のカルテを強制変更でひらいて，変更しないで終了した場合，他の端末で SAVE になったのを NONE に戻してしまうのを防ぐ
-                    if (! KarteState.isNone(serverState) && KarteState.isNone(state)) {
-                        updated.setState(serverState);
-                    }
-                    pdl.updatePvt(updated);
-                    pvtTableModel.fireTableRowsUpdated(row, row);
-
-                    startCheckTimer();
+            Runnable r = () -> {
+                PvtDelegater pdl = new PvtDelegater();
+                int serverState = pdl.getPvtState(updated.getId());
+                // サーバが NONE 以外かつクライアントが NONE の時はサーバの state を優先する
+                // i.e. NONE のカルテを強制変更でひらいて，変更しないで終了した場合，他の端末で SAVE になったのを NONE に戻してしまうのを防ぐ
+                if (! KarteState.isNone(serverState) && KarteState.isNone(state)) {
+                    updated.setState(serverState);
                 }
+                pdl.updatePvt(updated);
+                pvtTableModel.fireTableRowsUpdated(row, row);
+
+                startCheckTimer();
             };
             executor.submit(r);
         } else {
             // ReadOnly の時，state を読み直す
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    PvtDelegater pdl = new PvtDelegater();
-                    updated.setState(pdl.getPvtState(updated.getId()));
-                    pvtTableModel.fireTableRowsUpdated(row, row);
-                    startCheckTimer();
-                }
+            Runnable r = () -> {
+                PvtDelegater pdl = new PvtDelegater();
+                updated.setState(pdl.getPvtState(updated.getId()));
+                pvtTableModel.fireTableRowsUpdated(row, row);
+                startCheckTimer();
             };
             executor.submit(r);
         }
     }
 
     /**
-     * 終了時にカルテが OPEN になったまま残るのを防ぐためにすべて CLOSED に変換
+     * 終了時にカルテが OPEN になったまま残るのを防ぐためにすべて CLOSED に変換.
      * @return
      */
     @Override
     public Callable<Boolean> getStoppingTask() {
         logger.info("WatingListImpl stoppingTask starts");
 
-        Callable<Boolean> longTask = new Callable<Boolean>() {
-
-            @Override
-            public Boolean call() {
-                // 開いているカルテを調べる
-                for(ChartImpl chart : ChartImpl.getAllChart()) {
-                    logger.info("Closing remained chart: " + chart);
-
-                    PatientVisitModel pvt = chart.getPatientVisit();
-
-                    // 今日の受診と関係ないカルテは無視
-                    if (pvt.getPvtDate() == null) { continue; }
-
+        Callable<Boolean> longTask = () -> {
+            // 開いているカルテを調べる
+            ChartImpl.getAllChart().stream()
+                .map(chart -> chart.getPatientVisit())
+                .filter(pvt -> pvt.getPvtDate() != null) // 今日の受診と関係あるカルテのみ選択
+                .forEach(pvt -> {
                     // 今日の受診がある場合は pvt status を変更する（open -> close)
                     int oldState = pvt.getState();
                     boolean isEmpty = new DocumentPeeker(pvt).isKarteEmpty();
@@ -831,17 +823,16 @@ public class WatingListImpl extends AbstractMainComponent {
                         pvt.setState(newState);
                         pdl.updatePvt(pvt);
                     }
-                }
-                return true;
-            }
+            });
+            return true;
         };
 
         return longTask;
     }
 
     /**
-     * 与えられた pvt に対応する TableModel の行を返す
-     * 要素が別オブジェクトになっている場合があるため，レコードIDで探す
+     * 与えられた pvt に対応する TableModel の行を返す.
+     * 要素が別オブジェクトになっている場合があるため，レコードIDで探す.
      * @param pvt
      * @return
      */
@@ -870,8 +861,8 @@ public class WatingListImpl extends AbstractMainComponent {
 
         if (selectedPvt == null || selectedPvt.length == 0) { return; }
         // 名前リスト作成
-        for (int i=0; i < selectedPvt.length; i++) {
-            ptNames.append(selectedPvt[i].getPatientName());
+        for (PatientVisitModel pvt : selectedPvt) {
+            ptNames.append(pvt.getPatientName());
             ptNames.append("，");
         }
 
@@ -891,22 +882,19 @@ public class WatingListImpl extends AbstractMainComponent {
 
         // 受付を取り消す
         if (select == JOptionPane.OK_OPTION) {
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    for (PatientVisitModel pvt :selectedPvt) {
-                        PvtDelegater pdl = new PvtDelegater();
-                        // karte open なら キャンセルできない
-                        if (KarteState.isOpen(pdl.getPvtState(pvt.getId()))) {
-                            MyJSheet.showMessageSheet(getContext().getFrame(), "編集中のカルテはキャンセルできません");
-                        } else {
-                            pvt.setState(KarteState.CANCEL_PVT);
-                            pdl.updatePvt(pvt);
-                        }
+            Runnable r = () -> {
+                for (PatientVisitModel pvt :selectedPvt) {
+                    PvtDelegater pdl = new PvtDelegater();
+                    // karte open なら キャンセルできない
+                    if (KarteState.isOpen(pdl.getPvtState(pvt.getId()))) {
+                        MyJSheet.showMessageSheet(getContext().getFrame(), "編集中のカルテはキャンセルできません");
+                    } else {
+                        pvt.setState(KarteState.CANCEL_PVT);
+                        pdl.updatePvt(pvt);
                     }
-                    MinMax row = new MinMax(pvtTable.getSelectedRows());
-                    pvtTableModel.fireTableRowsUpdated(row.min, row.max);
                 }
+                MinMax row = new MinMax(pvtTable.getSelectedRows());
+                pvtTableModel.fireTableRowsUpdated(row.min, row.max);
             };
             executor.submit(r);
         }
@@ -920,7 +908,7 @@ public class WatingListImpl extends AbstractMainComponent {
         startCheckTimer(0);
     }
     /**
-     * チェックタイマーを止める(タスクが起動済みの場合はこのタスクを実行しているスレッドに割り込まないで完了を待つ)
+     * チェックタイマーを止める(タスクが起動済みの場合はこのタスクを実行しているスレッドに割り込まないで完了を待つ).
      */
     private void stopCheckTimer() {
         if (timerHandler != null) {
@@ -933,8 +921,8 @@ public class WatingListImpl extends AbstractMainComponent {
         }
     }
     /**
-     * チェックタイマーを second 秒後にスタートする
-     * Thread から呼ばれるので，stop されないで２回呼ばれることがある
+     * チェックタイマーを second 秒後にスタートする.
+     * Thread から呼ばれるので，stop されないで２回呼ばれることがある.
      * @param second
      */
     private void startCheckTimer(int second) {
@@ -949,13 +937,13 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * チェックタイマーを止めた時点での残り時間から再開する
+     * チェックタイマーを止めた時点での残り時間から再開する.
      */
     private void startCheckTimer() {
         startCheckTimer((intervalToNextCheck > 0)? intervalToNextCheck : 0);
     }
     /**
-     * 更新ボタンで呼ばれる. 定期チェックの方はリセットする
+     * 更新ボタンで呼ばれる. 定期チェックの方はリセットする.
      */
     public void checkFullPvt() {
         stopCheckTimer();
@@ -964,7 +952,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 患者来院情報をチェックするタスク
+     * 患者来院情報をチェックするタスク.
      */
     private class PvtChecker implements Runnable {
 
@@ -976,12 +964,7 @@ public class WatingListImpl extends AbstractMainComponent {
         public void run() {
             startTime = new Date().getTime();
 
-            SwingUtilities.invokeLater(new Runnable(){
-                @Override
-                public void run() {
-                    setBusy(true);
-                }
-            });
+            SwingUtilities.invokeLater(() -> setBusy(true));
 
             final Date date = new Date();
             final String[] dateToSerach = ModelUtils.getSearchDateAsString(date);
@@ -1000,7 +983,7 @@ public class WatingListImpl extends AbstractMainComponent {
             if (newVisitCount > 0) {
                 List newList = new ArrayList();
                 for (int i = 0; i < newVisitCount; i++) {
-                    pvt = (PatientVisitModel) result.get(i);
+                    pvt = result.get(i);
                     // 受付番号セット
                     pvt.setNumber(firstResult+i+1);
                     // 受付リスト追加
@@ -1016,7 +999,7 @@ public class WatingListImpl extends AbstractMainComponent {
             if (pvtStateList != null && (pvtStateList.size() == pvtTableModel.getObjectCount())) {
 
                 PatientVisitModel myPvt;
-                ArrayList<Integer> changedRows = new ArrayList<Integer>();
+                List<Integer> changedRows = new ArrayList<>();
 
                 for (int i=0; i < pvtStateList.size(); i++) {
                     PvtStateSpec serverPvt = pvtStateList.get(i);
@@ -1041,7 +1024,7 @@ public class WatingListImpl extends AbstractMainComponent {
                             myPvt.setByomeiCountToday(serverPvt.getByomeiCountToday());
                             lineChanged = true;
                         }
-                        if (lineChanged) changedRows.add(i);
+                        if (lineChanged) { changedRows.add(i); }
                     }
                 }
                 if (changedRows.size() > 0) {
@@ -1051,13 +1034,10 @@ public class WatingListImpl extends AbstractMainComponent {
                 }
             }
 
-            SwingUtilities.invokeLater(new Runnable(){
-                @Override
-                public void run() {
-                    setCheckedTime(date);
-                    setPvtCount(pvtTableModel.getObjectCount());
-                    setBusy(false);
-                }
+            SwingUtilities.invokeLater(() -> {
+                setCheckedTime(date);
+                setPvtCount(pvtTableModel.getObjectCount());
+                setBusy(false);
             });
 
             // ATOK ラベル更新
@@ -1068,7 +1048,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * PvtServer からの pvt meessage を受け取って pvtTableModel を更新する
+     * PvtServer からの pvt meessage を受け取って pvtTableModel を更新する.
      */
     private void startPvtMessageReceiver () {
 
@@ -1121,6 +1101,7 @@ public class WatingListImpl extends AbstractMainComponent {
                     }
                 });
             }
+
             @Override
             public void onError(Session session, Throwable t) {
                 System.out.println("WatingListImp: WebSocket error: " + t.toString());
@@ -1134,7 +1115,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * Retina 対応 Grid を描くレンダラ
+     * Retina 対応 Grid を描くレンダラ.
      */
     private abstract class TableCellRendererBase extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
@@ -1149,7 +1130,7 @@ public class WatingListImpl extends AbstractMainComponent {
         public abstract void init();
 
         /**
-         * Show grids and markings
+         * Show grids and markings.
          * @param graphics
          */
         @Override
@@ -1203,8 +1184,8 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * KarteStateRenderer
-     * カルテ（チャート）の状態をレンダリングするクラス
+     * KarteStateRenderer.
+     * カルテ（チャート）の状態をレンダリングするクラス.
      */
     private class KarteStateRenderer extends TableCellRendererBase {
         private static final long serialVersionUID = -7654410476024116413L;
@@ -1304,7 +1285,7 @@ public class WatingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * KarteStateRenderer
+     * KarteStateRenderer.
      * カルテ（チャート）の状態をレンダリングするクラス.
      */
     private class MaleFemaleRenderer extends TableCellRendererBase {
@@ -1445,7 +1426,7 @@ public class WatingListImpl extends AbstractMainComponent {
         public MinMax(int[] rows) {
             set(rows);
         }
-        public MinMax(ArrayList<Integer> list) {
+        public MinMax(List<Integer> list) {
             if (list == null || list.isEmpty()) { return; }
             int[] rows = new int[list.size()];
             int count = 0;

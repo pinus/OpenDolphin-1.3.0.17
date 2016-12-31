@@ -25,7 +25,7 @@ public class MyListUI extends BasicListUI {
     }
 
     /**
-     * ストライプな ListUI
+     * ストライプな ListUI.
      * @author pns
      */
     @Override
@@ -49,7 +49,7 @@ public class MyListUI extends BasicListUI {
                 lastCellHeight = r.height;
             } else {
                 int h = list.getFixedCellHeight();
-                if (h > 0) lastCellHeight = h;
+                if (h > 0) { lastCellHeight = h; }
             }
             int bottomY = topY + lastCellHeight;
             g.setColor(ROW_COLORS[currentRow & 1]);
