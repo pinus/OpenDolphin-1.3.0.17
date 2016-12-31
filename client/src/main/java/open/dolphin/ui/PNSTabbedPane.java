@@ -36,7 +36,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
- * JTabbedPane 的な何か
+ * JTabbedPane 的な何か.
  * @author pns
  */
 public class PNSTabbedPane extends JPanel implements ChangeListener {
@@ -71,7 +71,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * 組み込まれるときに addNotify が呼ばれるのを利用して parent を登録する
+     * 組み込まれるときに addNotify が呼ばれるのを利用して parent を登録する.
      */
      @Override
     public void addNotify() {
@@ -108,7 +108,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * タブのボタンを格納した JPanel を返す
+     * タブのボタンを格納した JPanel を返す.
      * @return
      */
     public ButtonPanel getButtonPanel() {
@@ -116,7 +116,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * タブにコンポネントを加える
+     * タブにコンポネントを加える.
      * @param name
      * @param c
      */
@@ -133,7 +133,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * index の card に component をセットする
+     * index の card に component をセットする.
      * @param index
      * @param c
      */
@@ -148,7 +148,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * index の component を返す
+     * index の component を返す.
      * @param index
      * @return
      */
@@ -156,13 +156,28 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         return contentPanel.getComponent(index);
     }
 
+    /**
+     * index のボタンの title を返す.
+     * @param index
+     * @return
+     */
     public String getTitleAt(int index) {
         TabButton button = (TabButton) buttonPanel.getComponent(index);
         return button.getName();
     }
 
     /**
-     * ボタンパネルを上につけるか，下につけるか
+     * index のボタンの title を設定する.
+     * @param index
+     * @param title
+     */
+    public void setTitleAt(int index, String title) {
+        TabButton button = (TabButton) buttonPanel.getComponent(index);
+        button.setName(title);
+    }
+
+    /**
+     * ボタンパネルを上につけるか，下につけるか.
      * @param tabPlacement
      */
     public void setTabPlacement(int tabPlacement) {
@@ -182,7 +197,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * index のボタンに ToolTipText をつける
+     * index のボタンに ToolTipText をつける.
      * @param index
      * @param text
      */
@@ -191,7 +206,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * index のタブを選択する
+     * index のタブを選択する.
      * @param index
      */
     public void setSelectedIndex(int index) {
@@ -199,7 +214,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * 選択されている index を返す
+     * 選択されている index を返す.
      * @return
      */
     public int getSelectedIndex() {
@@ -207,7 +222,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * タブの総数を返す
+     * タブの総数を返す.
      * @return
      */
     public int getTabCount() {
@@ -215,7 +230,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * 表示されている component を返す
+     * 表示されている component を返す.
      * @return
      */
     public Component getSelectedComponent() {
@@ -223,7 +238,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * ChangeListener を登録する
+     * ChangeListener を登録する.
      * @param listener
      */
     public void addChangeListener(ChangeListener listener) {
@@ -231,7 +246,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * index のタブが使用可能であるかどうかを設定
+     * index のタブが使用可能であるかどうかを設定.
      * @param index
      * @param isEnabled
      */
@@ -240,7 +255,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * text をタイトルに持つタブ番号を返す. ない場合は -1 を返す
+     * text をタイトルに持つタブ番号を返す. ない場合は -1 を返す.
      * @param title
      * @return
      */
@@ -256,7 +271,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * index のタブを削除する
+     * index のタブを削除する.
      * @param index
      */
     public void removeTabAt(int index) {
@@ -270,7 +285,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * ボタンレイアウトの水平方向の隙間
+     * ボタンレイアウトの水平方向の隙間.
      * @param hgap
      */
     public void setButtonHgap(int hgap) {
@@ -278,7 +293,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * ボタンレイアウトの垂直方向の隙間
+     * ボタンレイアウトの垂直方向の隙間.
      * @param vgap
      */
     public void setButtonVgap(int vgap) {
@@ -286,7 +301,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * selection model が変更されると呼ばれる
+     * selection model が変更されると呼ばれる.
      * @param e
      */
     @Override
@@ -299,19 +314,31 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * ボタンパネル
+     * ボタンパネルの回りの余白を設定する.
+     * @param d
      */
-    public class ButtonPanel extends HorizontalPanel {
+    public void setButtonPanelPadding(Dimension d) {
+        buttonPanel.setPadding(d);
+    }
+
+    /**
+     * ボタンパネルの回りの余白を返す.
+     * @return
+     */
+    public Dimension getButtonPanelPadding() {
+        return buttonPanel.getPadding();
+    }
+
+    /**
+     * ボタンパネル.
+     */
+    private class ButtonPanel extends HorizontalPanel {
         private static final long serialVersionUID = 1L;
         private Dimension padding = new Dimension(0,0);
 
         public ButtonPanel() {
         }
 
-        /**
-         * ボタンパネルの回りの余白を設定する
-         * @param d
-         */
         public void setPadding(Dimension d) {
             padding = d;
         }
@@ -322,11 +349,11 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * タブボタンクラス
+     * タブボタンクラス.
      */
     private class TabButton extends JToggleButton implements ActionListener {
         private static final long serialVersionUID = 1L;
-        private final String name;
+        private String name;
         private int index;
         public boolean isBottom;
         public boolean isRightEnd;
@@ -343,12 +370,18 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         }
         private void initComponent() {
             setName(name);
-            setText(name);
             addActionListener(this);
             setFocusable(false);
             setBorderPainted(false);
         }
-        public void setIndex(int index) {
+        @Override
+        public final void setName(String name) {
+            super.setName(name);
+            super.setText(name);
+            this.name = name;
+        }
+
+        public final void setIndex(int index) {
             this.index = index;
         }
         @Override
@@ -438,7 +471,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * 両端そろえる FlowLayout
+     * 両端そろえる FlowLayout.
      */
     private class RightJustifiedFlowLayout extends FlowLayout {
         private static final long serialVersionUID = 1L;
@@ -556,9 +589,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     //================== TEST =================
     public static void main(String[] argv) {
         open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
-        //testPattern1();
+        testPattern1();
         //testPattern2();
-        testPattern3();
+        //testPattern3();
     }
 
     /**
@@ -587,7 +620,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         final PNSTabbedPane tabPane = new PNSTabbedPane();
         // content の command panel と連続にするために alpha セット
         tabPane.setButtonVgap(4);
-        tabPane.addTab("受付リスト", mainComponentPanel_1);
+        tabPane.addTab("受付リスト(10)", mainComponentPanel_1);
         tabPane.addTab("患者検索", mainComponentPanel_2);
         tabPane.addTab("ラボレシーバ", mainComponentPanel_3);
 
@@ -595,9 +628,11 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(tabPane, BorderLayout.CENTER);
 
-        tabPane.addChangeListener(e -> tabPane.getSelectedComponent());
-
+        f.pack();
         f.setVisible(true);
+
+        tabPane.setTitleAt(0, "受付リスト");
+        tabPane.setTitleAt(0, "受付リスト(10)");
     }
 
     private static JPanel createMainPanel() {

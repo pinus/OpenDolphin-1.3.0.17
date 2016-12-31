@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 
 /**
- *
+ * ClientContextStub のインスタンスを static method で参照する.
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ClientContext {

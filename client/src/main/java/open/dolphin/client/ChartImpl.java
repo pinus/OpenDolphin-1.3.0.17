@@ -597,7 +597,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         providers = new HashMap<>();
 
         PNSTabbedPane tab = new PNSTabbedPane();
-        tab.getButtonPanel().setPadding(new Dimension(0,4));
+        tab.setButtonPanelPadding(new Dimension(0,4));
 
         ChartDocument[] plugin = new ChartDocument[5];
         plugin[0] = new DocumentBridgeImpl();

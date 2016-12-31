@@ -12,12 +12,11 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import open.dolphin.infomodel.DepartmentModel;
 import open.dolphin.infomodel.DiagnosisCategoryModel;
@@ -34,15 +33,15 @@ import org.apache.velocity.app.VelocityEngine;
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
-public class ClientContextStub {
+public final class ClientContextStub {
 
     private final String RESOURCE_LOCATION = "/";
     private final String TEMPLATE_LOCATION = "/templates/";
     private final String IMAGE_LOCATION = "/images/";
     private final String SCHEMA_LOCATION = "/schema/";
     private final String RESOURCE = "Dolphin_ja";
-    private ResourceBundle resBundle;
-    private ClassLoader pluginClassLoader;
+    private final ResourceBundle resBundle;
+    private final ClassLoader pluginClassLoader;
     private Logger bootLogger;
     private Logger part11Logger;
     private Logger delegaterLogger;
@@ -57,32 +56,26 @@ public class ClientContextStub {
      */
     public ClientContextStub() {
 
-        try {
-            // ResourceBundle を得る
-            resBundle = ResourceBundle.getBundle(RESOURCE);
+        // ResourceBundle を得る
+        resBundle = ResourceBundle.getBundle(RESOURCE);
 
-            // Logger を生成する
-            generateLoggers();
+        // Logger を生成する
+        generateLoggers();
 
-            // Log4J のコンフィグレーションを行う
-            PropertyConfigurator.configure(getResource("log4j.prop"));
+        // Log4J のコンフィグレーションを行う
+        PropertyConfigurator.configure(getResource("log4j.prop"));
 
-            // 基本情報を出力する
-            logStartupInformation();
+        // 基本情報を出力する
+        logStartupInformation();
 
-            // Plugin Class Loader を生成する
-            pluginClassLoader = Thread.currentThread().getContextClassLoader();
+        // Plugin Class Loader を生成する
+        pluginClassLoader = Thread.currentThread().getContextClassLoader();
 
-            // Velocity を初期化する
-            initVelocity();
+        // Velocity を初期化する
+        initVelocity();
 
-            // デフォルトの UI フォントを変更する
-            setUIFonts();
-
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            System.exit(1);
-        }
+        // デフォルトの UI フォントを変更する
+        setUIFonts();
     }
 
     private void generateLoggers() {
@@ -162,15 +155,15 @@ public class ClientContextStub {
     }
 
     public boolean isMac() {
-        return System.getProperty("os.name").toLowerCase().startsWith("mac") ? true : false;
+        return System.getProperty("os.name").toLowerCase().startsWith("mac");
     }
 
     public boolean isWin() {
-        return System.getProperty("os.name").toLowerCase().startsWith("windows") ? true : false;
+        return System.getProperty("os.name").toLowerCase().startsWith("windows");
     }
 
     public boolean isLinux() {
-        return System.getProperty("os.name").toLowerCase().startsWith("linux") ? true : false;
+        return System.getProperty("os.name").toLowerCase().startsWith("linux");
     }
 
     public String getLocation(String dir) {
@@ -195,53 +188,56 @@ public class ClientContextStub {
             ex.printStackTrace(System.err);
         }
 
-        if (dir.equals("base")) {
-            ret = sb.toString();
-
-        } else if (dir.equals("lib")) {
-            sb.append(File.separator);
-            if (isMac()) {
-                sb.append(getString("lib.mac.dir"));
-            } else {
-                sb.append(getString("lib.dir"));
-            }
-            ret = sb.toString();
-
-        } else if (dir.equals("dolphin.jar")) {
-            if (isMac()) {
+        switch (dir) {
+            case "base":
+                ret = sb.toString();
+                break;
+            case "lib":
                 sb.append(File.separator);
-                sb.append(getString("dolphin.jar.mac.dir"));
-            }
-            ret = sb.toString();
-
-        } else if (dir.equals("security")) {
-            sb.append(File.separator);
-            sb.append(getString("security.dir"));
-            ret = sb.toString();
-
-        } else if (dir.equals("log")) {
-            sb.append(File.separator);
-            sb.append(getString("log.dir"));
-            ret = sb.toString();
-
-        } else if (dir.equals("setting")) {
-            sb.append(File.separator);
-            sb.append(getString("setting.dir"));
-            ret = sb.toString();
-
-        } else if (dir.equals("schema")) {
-            sb.append(File.separator);
-            sb.append(getString("schema.dir"));
-            ret = sb.toString();
-
-        } else if (dir.equals("plugins")) {
-            sb.append(File.separator);
-            sb.append(getString("plugins.dir"));
-            ret = sb.toString();
-        } else if (dir.equals("pdf")) {
-            sb.append(File.separator);
-            sb.append(getString("pdf.dir"));
-            ret = sb.toString();
+                if (isMac()) {
+                    sb.append(getString("lib.mac.dir"));
+                } else {
+                    sb.append(getString("lib.dir"));
+                }   ret = sb.toString();
+                break;
+            case "dolphin.jar":
+                if (isMac()) {
+                    sb.append(File.separator);
+                    sb.append(getString("dolphin.jar.mac.dir"));
+                }   ret = sb.toString();
+                break;
+            case "security":
+                sb.append(File.separator);
+                sb.append(getString("security.dir"));
+                ret = sb.toString();
+                break;
+            case "log":
+                sb.append(File.separator);
+                sb.append(getString("log.dir"));
+                ret = sb.toString();
+                break;
+            case "setting":
+                sb.append(File.separator);
+                sb.append(getString("setting.dir"));
+                ret = sb.toString();
+                break;
+            case "schema":
+                sb.append(File.separator);
+                sb.append(getString("schema.dir"));
+                ret = sb.toString();
+                break;
+            case "plugins":
+                sb.append(File.separator);
+                sb.append(getString("plugins.dir"));
+                ret = sb.toString();
+                break;
+            case "pdf":
+                sb.append(File.separator);
+                sb.append(getString("pdf.dir"));
+                ret = sb.toString();
+                break;
+            default:
+                break;
         }
 
         return ret;
@@ -354,7 +350,7 @@ public class ClientContextStub {
         String[] code = getStringArray("license");
         String codeSys = getString("licenseCodeSys");
         LicenseModel[] ret = new LicenseModel[desc.length];
-        LicenseModel model = null;
+        LicenseModel model;
         for (int i = 0; i < desc.length; i++) {
             model = new LicenseModel();
             model.setLicense(code[i]);
@@ -370,7 +366,7 @@ public class ClientContextStub {
         String[] code = getStringArray("department");
         String codeSys = getString("departmentCodeSys");
         DepartmentModel[] ret = new DepartmentModel[desc.length];
-        DepartmentModel model = null;
+        DepartmentModel model;
         for (int i = 0; i < desc.length; i++) {
             model = new DepartmentModel();
             model.setDepartment(code[i]);
@@ -386,7 +382,7 @@ public class ClientContextStub {
         String[] code = getStringArray("diagnosis.outcome");
         String codeSys = getString("diagnosis.outcomeCodeSys");
         DiagnosisOutcomeModel[] ret = new DiagnosisOutcomeModel[desc.length];
-        DiagnosisOutcomeModel model = null;
+        DiagnosisOutcomeModel model;
         for (int i = 0; i < desc.length; i++) {
             model = new DiagnosisOutcomeModel();
             model.setOutcome(code[i]);
@@ -402,7 +398,7 @@ public class ClientContextStub {
         String[] code = getStringArray("diagnosis.outcome");
         String[] codeSys = getStringArray("diagnosis.outcomeCodeSys");
         DiagnosisCategoryModel[] ret = new DiagnosisCategoryModel[desc.length];
-        DiagnosisCategoryModel model = null;
+        DiagnosisCategoryModel model;
         for (int i = 0; i < desc.length; i++) {
             model = new DiagnosisCategoryModel();
             model.setDiagnosisCategory(code[i]);
@@ -414,7 +410,7 @@ public class ClientContextStub {
     }
 
     public NameValuePair[] getNameValuePair(String key) {
-        NameValuePair[] ret = null;
+        NameValuePair[] ret;
         String[] code = getStringArray(key + ".value");
         String[] name = getStringArray(key + ".name");
         int len = code.length;
@@ -435,7 +431,7 @@ public class ClientContextStub {
 
     private void setupEventColorTable() {
         // イベントカラーを定義する
-        eventColorTable = new HashMap<String, Color>(10, 0.75f);
+        eventColorTable = new HashMap<>();
         eventColorTable.put("TODAY", getColor("color.TODAY_BACK"));
         eventColorTable.put("BIRTHDAY", getColor("color.BIRTHDAY_BACK"));
         eventColorTable.put("PVT", getColor("color.PVT"));
@@ -504,14 +500,14 @@ public class ClientContextStub {
     }
 
     public boolean getBoolean(String key) {
-        return Boolean.valueOf(getString(key)).booleanValue();
+        return Boolean.parseBoolean(getString(key));
     }
 
     public boolean[] getBooleanArray(String key) {
         String[] obj = getStringArray(key);
         boolean[] ret = new boolean[obj.length];
         for (int i = 0; i < ret.length; i++) {
-            ret[i] = Boolean.valueOf(obj[i]).booleanValue();
+            ret[i] = Boolean.parseBoolean(obj[i]);
         }
         return ret;
     }
@@ -557,15 +553,15 @@ public class ClientContextStub {
             return ret;
 
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
         return null;
     }
 
-    private void listJars(ArrayList list, File dir) {
+    private void listJars(List<String> list, File dir) {
         File[] files = dir.listFiles();
         // plugin ディレクトリをなくしたので
-        if (files == null) return;
+        if (files == null) { return; }
 
         for (File file : files) {
             if (file.isDirectory()) {

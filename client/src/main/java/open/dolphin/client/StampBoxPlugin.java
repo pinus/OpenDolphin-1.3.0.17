@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-// import を編成しない！
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
@@ -331,7 +330,7 @@ public class StampBoxPlugin extends AbstractMainTool {
             }
         };
         parentBox.setTabPlacement(JTabbedPane.BOTTOM);
-        parentBox.getButtonPanel().setPadding(new Dimension(0,4));
+        parentBox.setButtonPanelPadding(new Dimension(0,4));
 
         //
         // 読み込んだStampTreeをTabbedPaneに格納し，さらにそれをparentBoxに追加する
@@ -361,7 +360,7 @@ public class StampBoxPlugin extends AbstractMainTool {
                     //
                     userBox = new UserStampBox();
 
-                    userBox.getButtonPanel().setPadding(new Dimension(16,4));
+                    userBox.setButtonPanelPadding(new Dimension(16,4));
                     userBox.setContext(this);
                     userBox.setStampTreeModel(model);
                     userBox.buildStampBox();
@@ -814,7 +813,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         // Asp StampBox を生成し parentBox に加える
         //
         AbstractStampBox aspBox = new AspStampBox();
-        aspBox.getButtonPanel().setPadding(new Dimension(16,4));
+        aspBox.setButtonPanelPadding(new Dimension(16,4));
         aspBox.setContext(this);
         aspBox.setStampTreeModel(importTree);
         aspBox.buildStampBox();
