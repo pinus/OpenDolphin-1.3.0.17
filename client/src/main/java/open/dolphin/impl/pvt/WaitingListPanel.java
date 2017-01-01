@@ -36,10 +36,10 @@ public class WaitingListPanel extends MainComponentPanel {
         kutuBtn = new JButton("更新");
         kutuBtn.setFocusable(false);
         legendLbl = new JLabel();
-        atokLbl = new JLabel("ATOKメモリ");
+        //atokLbl = new JLabel("ATOKメモリ");
         comPanel.add(kutuBtn);
         comPanel.addGlue();
-        comPanel.add(atokLbl);
+        //comPanel.add(atokLbl);
         comPanel.add(legendLbl);
         comPanel.setMargin(4);
 

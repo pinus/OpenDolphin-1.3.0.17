@@ -32,7 +32,7 @@ import javax.swing.WindowConstants;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.GridBagBuilder;
-import open.dolphin.helper.ProxyDocumentListener;
+import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.FacilityModel;
 import open.dolphin.infomodel.IInfoModel;

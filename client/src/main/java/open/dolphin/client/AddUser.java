@@ -17,7 +17,7 @@ import javax.swing.*;
 import open.dolphin.delegater.BusinessDelegater;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.helper.ComponentBoundsManager;
-import open.dolphin.helper.ProxyDocumentListener;
+import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;

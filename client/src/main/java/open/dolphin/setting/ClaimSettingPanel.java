@@ -10,7 +10,7 @@ import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.helper.GridBagBuilder;
-import open.dolphin.helper.ProxyDocumentListener;
+import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.IMEControl;
 

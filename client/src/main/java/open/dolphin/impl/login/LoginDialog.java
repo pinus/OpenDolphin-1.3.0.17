@@ -17,7 +17,7 @@ import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
-import open.dolphin.helper.ProxyDocumentListener;
+import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.ProxyPropertyChangeListener;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.ModelUtils;

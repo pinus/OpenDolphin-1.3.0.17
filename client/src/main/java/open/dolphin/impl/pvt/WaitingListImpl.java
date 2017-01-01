@@ -42,6 +42,7 @@ import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.ExecuteScript;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJSheet;
+import open.dolphin.util.PNSTriple;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 
@@ -68,18 +69,20 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     // JTableレンダラ用のカラー
     private static final Color MALE_COLOR = new Color(230,243,243);
-    private static final Color FEMALE_COLOR = ClientContext.getColor("waitingList.color.female");
-    private static final Color CANCEL_PVT_COLOR = ClientContext.getColor("waitingList.color.pvtCancel");
+    private static final Color FEMALE_COLOR = new Color(254,221,242);
+    private static final Color CANCEL_PVT_COLOR = new Color(128,128,128);
     protected static final Color SHOSHIN_COLOR = new Color(180,220,240); //青っぽい色
     protected static final Color KARTE_EMPTY_COLOR = new Color(250,200,160); //茶色っぽい色
     protected static final Color DIAGNOSIS_EMPTY_COLOR = new Color(243,255,15); //黄色
+    // テーブルの row height
+    private static final int ROW_HEIGHT = 18;
     // 来院情報テーブルの年齢カラム
-    private int AGE_COLUMN;
+    private static final int AGE_COLUMN = 5;
     // 年齢生年月日メソッド
     private final String[] AGE_METHOD = new String[]{"getPatientAgeBirthday", "getPatientBirthday"};
     // PVT Table
     private JTable pvtTable;
-    private ObjectReflectTableModel pvtTableModel;
+    private ObjectReflectTableModel<PatientVisitModel> pvtTableModel;
     // Preference
     private Preferences preferences;
     // 性別レンダラフラグ
@@ -120,7 +123,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     private int initialAtokMemSize = ExecuteScript.getAtok24MemSize();
 
     /**
-     * Creates new WaitingList
+     * Creates new WaitingList.
      */
     public WaitingListImpl() {
         setName(NAME);
@@ -194,42 +197,31 @@ public class WaitingListImpl extends AbstractMainComponent {
             }
         });
 
-        // ATOK メモリモニタ クリックで ATOK リセット
-        view.getAtokLbl().setVisible(false);
-        //setAtokLabel();
-        //view.getAtokLbl().addMouseListener(new MouseAdapter(){
-        //    @Override
-        //    public void mouseClicked(MouseEvent e) {
-        //        view.getAtokLbl().setText("再起動中");
-        //        ExecuteScript.restartAtok24();
-        //        setAtokLabel();
-        //    }
-        //});
-
         // 来院テーブル用のパラメータ
-        String[] columnNames = {" 受付","　患者 ID","　来院時間","　氏　　名","　性別","　生年月日","　ドクター", "　メ モ"," 予約","状態"};
-        String[] methodNames = {"getNumber","getPatientId","getPvtDateTrimDate","getPatientName","getPatientGenderDesc",
-                                "getPatientAgeBirthday","getAssignedDoctorName","getMemo","getAppointment","getState"};
-        Class[] classes = {java.lang.Integer.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,
-                            java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,
-                            java.lang.String.class,java.lang.Integer.class};
+        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+                new PNSTriple<>(" 受付", Integer.class, "getNumber"),
+                new PNSTriple<>(" 患者 ID", String.class, "getPatientId"),
+                new PNSTriple<>("　来院時間", String.class, "getPvtDateTrimDate"),
+                new PNSTriple<>("　氏　　名", String.class, "getPatientName"),
+                new PNSTriple<>("　性別", String.class, "getPatientGenderDesc"),
+                new PNSTriple<>("　生年月日", String.class, "getPatientAgeBirthday"),
+                new PNSTriple<>("　ドクター", String.class, "getAssignedDoctorName"),
+                new PNSTriple<>("　メ モ", String.class, "getMemo"),
+                new PNSTriple<>(" 予約", String.class, "getAppointment"),
+                new PNSTriple<>("状態", Integer.class, "getState")
+        );
         int[] columnWidth = {34,80,72,140,50,150,75,50,40,30};
-
-        int startNumRows = ClientContext.getInt("waitingList.startNumRows");
-        int rowHeight = ClientContext.getInt("waitingList.rowHeight");
 
         // 生成する
         pvtTable = view.getTable();
-        pvtTableModel = new ObjectReflectTableModel(columnNames,startNumRows, methodNames, classes);
+        pvtTableModel = new ObjectReflectTableModel<>(reflectList);
         pvtTable.setModel(pvtTableModel);
 
         // 来院情報テーブルの属性を設定する
-        pvtTable.setRowHeight(rowHeight);
+        pvtTable.setRowHeight(ROW_HEIGHT);
         pvtTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         pvtTable.setRowSelectionAllowed(true);
-        // Retina 対応
-        // pvtTable.setShowGrid(true);
-        // pvtTable.setGridColor(Color.WHITE);
+
         // sorter を設定
         TableRowSorter<ObjectReflectTableModel> sorter = new TableRowSorter<ObjectReflectTableModel>(pvtTableModel) {
             // ASCENDING -> DESENDING -> 初期状態 と切り替える
@@ -250,36 +242,6 @@ public class WaitingListImpl extends AbstractMainComponent {
         };
         pvtTable.setRowSorter(sorter);
 
-        // コラム幅の設定
-        for (int i = 0; i <columnWidth.length; i++) {
-            TableColumn column = pvtTable.getColumnModel().getColumn(i);
-            column.setPreferredWidth(columnWidth[i]);
-            if (i != 3 && i != 5 && i != 7) { //固定幅
-                column.setMaxWidth(columnWidth[i]);
-                column.setMinWidth(columnWidth[i]);
-            }
-        }
-
-        // レンダラを生成する
-        MaleFemaleRenderer sRenderer = new MaleFemaleRenderer();
-        CenterRenderer centerRenderer = new CenterRenderer();
-        KarteStateRenderer stateRenderer = new KarteStateRenderer();
-        int row = 0;
-        pvtTable.getColumnModel().getColumn(row++).setCellRenderer(centerRenderer); // 0 受付
-        pvtTable.getColumnModel().getColumn(row++).setCellRenderer(sRenderer); // 1 患者 ID
-        pvtTable.getColumnModel().getColumn(row++).setCellRenderer(centerRenderer); // 2 来院時間
-        pvtTable.getColumnModel().getColumn(row++).setCellRenderer(sRenderer); // 3 氏名
-        pvtTable.getColumnModel().getColumn(row++).setCellRenderer(centerRenderer); // 4 性別
-        pvtTable.getColumnModel().getColumn(AGE_COLUMN = row++).setCellRenderer(sRenderer); // 5 生年月日
-        pvtTable.getColumnModel().getColumn(row++).setCellRenderer(sRenderer); // 6 ドクター
-        pvtTable.getColumnModel().getColumn(row++).setCellRenderer(sRenderer); // 7 メモ
-        pvtTable.getColumnModel().getColumn(row++).setCellRenderer(sRenderer); // 8 予約
-        pvtTable.getColumnModel().getColumn(row++).setCellRenderer(stateRenderer);
-
-        // 年齢表示をしない場合はメソッドを変更する
-        if (!ageDisplay) {
-            methodNames[AGE_COLUMN] = AGE_METHOD[1];
-        }
         // 生年月日コラムに comparator を設定「32.10 歳(S60-01-01)」というのをソートできるようにする
         sorter.setComparator(AGE_COLUMN, (o1, o2) -> {
             String birthday1;
@@ -294,6 +256,37 @@ public class WaitingListImpl extends AbstractMainComponent {
                 return birthday1.compareTo(birthday2);
             }
         });
+
+        // コラム幅の設定
+        for (int i = 0; i <columnWidth.length; i++) {
+            TableColumn column = pvtTable.getColumnModel().getColumn(i);
+            column.setPreferredWidth(columnWidth[i]);
+            if (i != 3 && i != 5 && i != 7) { //固定幅
+                column.setMaxWidth(columnWidth[i]);
+                column.setMinWidth(columnWidth[i]);
+            }
+        }
+
+        // レンダラを生成する
+        MaleFemaleRenderer sRenderer = new MaleFemaleRenderer();
+        CenterRenderer centerRenderer = new CenterRenderer();
+        KarteStateRenderer stateRenderer = new KarteStateRenderer();
+
+        pvtTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer); // 0 受付
+        pvtTable.getColumnModel().getColumn(1).setCellRenderer(sRenderer); // 1 患者 ID
+        pvtTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer); // 2 来院時間
+        pvtTable.getColumnModel().getColumn(3).setCellRenderer(sRenderer); // 3 氏名
+        pvtTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer); // 4 性別
+        pvtTable.getColumnModel().getColumn(5).setCellRenderer(sRenderer); // 5 生年月日
+        pvtTable.getColumnModel().getColumn(6).setCellRenderer(sRenderer); // 6 ドクター
+        pvtTable.getColumnModel().getColumn(7).setCellRenderer(sRenderer); // 7 メモ
+        pvtTable.getColumnModel().getColumn(8).setCellRenderer(sRenderer); // 8 予約
+        pvtTable.getColumnModel().getColumn(9).setCellRenderer(stateRenderer);
+
+        // 年齢表示をしない場合はメソッドを変更する
+        if (!ageDisplay) {
+            pvtTableModel.setMethodName(AGE_METHOD[1], AGE_COLUMN);
+        }
 
         // 日付ラベルに値を設定する
         setOperationDate(new Date());
@@ -317,7 +310,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         ChartImpl.addPropertyChangeListener(ChartImpl.CHART_STATE, EventHandler.create(PropertyChangeListener.class, this, "updateState", "newValue"));
 
         // 靴のアイコンをクリックした時来院情報を検索する
-        view.getKutuBtn().addActionListener(EventHandler.create(ActionListener.class, this, "checkFullPvt"));
+        view.getKutuBtn().addActionListener(e -> checkFullPvt());
 
         // コンテキストリスナを登録する
         pvtTable.addMouseListener(new ContextListener());
@@ -332,7 +325,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                     PatientVisitModel[] patients = new PatientVisitModel[rows.length];
                     for (int i=0; i < rows.length; i++) {
                         rows[i] = pvtTable.convertRowIndexToModel(rows[i]);
-                        patients[i] = (PatientVisitModel) pvtTableModel.getObject(rows[i]);
+                        patients[i] = pvtTableModel.getObject(rows[i]);
                     }
                     setSelectedPvt(patients);
                 }
@@ -560,21 +553,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     private void controlMenu() {
         getContext().enableAction(GUIConst.ACTION_OPEN_KARTE, canOpen());
     }
-
-    /**
-     * ATOK メモリモニタ
-     */
-    //private void setAtokLabel() {
-    //    JLabel atokLabel = view.getAtokLbl();
-    //    double mem = ExecuteScript.getAtok24MemSize();
-    //    double increase = mem - initialAtokMemSize;
-    //    atokLabel.setText(String.format("ATOK : %.1f MB（%.1f）", mem/1024D, increase/1024D));
-    //    if (mem == 0) { atokLabel.setVisible(false); }
-    //    else if (mem < 200000) { atokLabel.setIcon(GUIConst.PROGRSS_BAR_1); }
-    //    else if (mem < 300000) { atokLabel.setIcon(GUIConst.PROGRSS_BAR_2); }
-    //    else if (mem < 400000) { atokLabel.setIcon(GUIConst.PROGRSS_BAR_3); }
-    //    else { atokLabel.setIcon(GUIConst.PROGRSS_BAR_4); }
-    //}
 
     /**
      * Popupメニューから，現在選択されている全ての患者のカルテを開く.
@@ -970,7 +948,7 @@ public class WaitingListImpl extends AbstractMainComponent {
             final String[] dateToSerach = ModelUtils.getSearchDateAsString(date);
 
             // 現在のテーブルサイズを firstResult とする
-            List dataList = pvtTableModel.getObjectList();
+            List<PatientVisitModel> dataList = pvtTableModel.getObjectList();
             int firstResult = dataList != null ? dataList.size() : 0;
             //logger.info("check PVT at " + date + " firstResult = " + firstResult);
 
@@ -981,9 +959,9 @@ public class WaitingListImpl extends AbstractMainComponent {
 
             // 結果を追加する
             if (newVisitCount > 0) {
-                List newList = new ArrayList();
+                List<PatientVisitModel> newList = new ArrayList<>();
                 for (int i = 0; i < newVisitCount; i++) {
-                    pvt = result.get(i);
+                    pvt = result.get(i); // newVisitCount > 0 なので null ではない
                     // 受付番号セット
                     pvt.setNumber(firstResult+i+1);
                     // 受付リスト追加
@@ -1003,7 +981,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
                 for (int i=0; i < pvtStateList.size(); i++) {
                     PvtStateSpec serverPvt = pvtStateList.get(i);
-                    myPvt = (PatientVisitModel) pvtTableModel.getObject(i);
+                    myPvt = pvtTableModel.getObject(i);
 
                     // サーバと違いがあればアップデート
                     // 自分でカルテを開いている場合はアップデートしない
@@ -1040,9 +1018,6 @@ public class WaitingListImpl extends AbstractMainComponent {
                 setBusy(false);
             });
 
-            // ATOK ラベル更新
-            //setAtokLabel();
-
             //logger.info("check time " + (new Date().getTime()-startTime) + " msec");
         }
     }
@@ -1055,6 +1030,9 @@ public class WaitingListImpl extends AbstractMainComponent {
         DolphinClientContext.getContext().setEndpoint(new Endpoint(){
             @Override
             public void onOpen(Session session, EndpointConfig config) {
+                //session.addMessageHandler((MessageHandler.Whole<String>) message -> {
+
+
                 session.addMessageHandler(new MessageHandler.Whole<String>() {
                    @Override
                     public void onMessage(String message) {
@@ -1067,7 +1045,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                         int row = -1;
 
                         for (int i=0; i<pvtTableModel.getObjectCount(); i++) {
-                            PatientVisitModel p = (PatientVisitModel) pvtTableModel.getObject(i);
+                            PatientVisitModel p = pvtTableModel.getObject(i);
                             if (p.getPvtDate().equals(hostPvt.getPvtDate())) {
                                 localPvt = p;
                                 row = i;
@@ -1172,7 +1150,7 @@ public class WaitingListImpl extends AbstractMainComponent {
             Color bg = table.getBackground();
 
             if (isSexRenderer()) {
-                PatientVisitModel pvt = (PatientVisitModel) pvtTableModel.getObject(table.convertRowIndexToModel(row));
+                PatientVisitModel pvt = pvtTableModel.getObject(table.convertRowIndexToModel(row));
                 if (pvt != null) {
                     String gender = pvt.getPatient().getGender();
                     if (gender.equals(IInfoModel.MALE)) { bg = MALE_COLOR; }
@@ -1204,7 +1182,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 boolean isFocused,
                 int row, int col) {
 
-            PatientVisitModel pvt = (PatientVisitModel) pvtTableModel.getObject(table.convertRowIndexToModel(row));
+            PatientVisitModel pvt = pvtTableModel.getObject(table.convertRowIndexToModel(row));
 
             // 背景色の設定
             setBackground(table, value, isSelected, isFocused, row, col);
@@ -1264,7 +1242,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
                 // マーキングする
                 marking = false;
-                if (pvt.getState() != KarteState.CANCEL_PVT) {
+                if (pvt != null && pvt.getState() != KarteState.CANCEL_PVT) {
                     if (!pvt.hasByomei()) {
                         marking = true;
                         markingColor = DIAGNOSIS_EMPTY_COLOR;
@@ -1304,7 +1282,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 boolean isFocused,
                 int row, int col) {
 
-            PatientVisitModel pvt = (PatientVisitModel) pvtTableModel.getObject(table.convertRowIndexToModel(row));
+            PatientVisitModel pvt = pvtTableModel.getObject(table.convertRowIndexToModel(row));
 
             if (isSelected) {
                 this.setBackground(table.getSelectionBackground());
@@ -1374,13 +1352,13 @@ public class WaitingListImpl extends AbstractMainComponent {
             if (e.isPopupTrigger()) {
 
                 contextMenu.removeAll();
-                String pop3 = ClientContext.getString("waitingList.popup.oddEvenRenderer");
-                String pop4 = ClientContext.getString("waitingList.popup.sexRenderer");
+                String pop3 = "偶数奇数レンダラを使用する";
+                String pop4 = "性別レンダラを使用する";
                 String pop5 = "年齢表示";
 
                 if (canOpen()) {
-                    String pop1 = ClientContext.getString("waitingList.popup.openKarte");
-                    String pop2 = ClientContext.getString("waitingList.popup.cancelVisit");
+                    String pop1 = "カルテを開く";
+                    String pop2 = "受付をキャンセルする";
                     JMenuItem openKarte = new JMenuItem(new ReflectAction(pop1, WaitingListImpl.this, "openKarte"));
                     JMenuItem cancelVisit = new JMenuItem(new ReflectAction(pop2, WaitingListImpl.this, "cancelVisit"));
                     openKarte.setIconTextGap(8);

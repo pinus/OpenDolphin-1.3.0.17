@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentListener;
 import open.dolphin.client.*;
 import open.dolphin.helper.GridBagBuilder;
-import open.dolphin.helper.ProxyDocumentListener;
+import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.setting.AbstractSettingPanel.State;

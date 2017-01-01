@@ -236,6 +236,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void mouseClicked(MouseEvent e) {
             // ダブルクリック
             if (e.getClickCount() == 2 && !contextMenu.isShowing() && e.getSource() instanceof JTable) {
@@ -251,6 +252,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void mousePressed(MouseEvent e) {
      // public void mouseReleased(MouseEvent e) { // windows はこちら
 

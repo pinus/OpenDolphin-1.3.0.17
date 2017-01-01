@@ -1,11 +1,11 @@
-package open.dolphin.helper;
+package open.dolphin.event;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
  * ProxyDocumentListener.
- * 全ての update で anyUpdate だけを呼ぶ DocumentListener
+ * 全ての update で anyUpdate だけを呼ぶ DocumentListener.
  * ProxyDocumentListener = e -> ... と書ける
  * @author pns
  */

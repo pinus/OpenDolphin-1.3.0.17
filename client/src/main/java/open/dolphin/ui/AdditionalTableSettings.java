@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
@@ -20,12 +21,17 @@ public class AdditionalTableSettings {
     private static final int ROW_HEIGHT = 18;
 
     public static void setTable(final JTable table) {
-        // テーブルの行以外の範囲をクリックしたとき，フォーカスを失う
         setTable(table, new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                // テーブルの行以外の範囲 (parent 領域) をクリックしたとき，フォーカスを失う
                 table.clearSelection();
-                //table.getParent().requestFocusInWindow();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // parent 領域でも popup を出すため
+                table.dispatchEvent(SwingUtilities.convertMouseEvent(table.getParent(), e, table));
             }
         });
     }

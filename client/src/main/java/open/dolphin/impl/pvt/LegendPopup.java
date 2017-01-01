@@ -29,15 +29,13 @@ public class LegendPopup extends JPopupMenu {
 
     private void initComponents() {
 
-        int row = 0;
-
-        insert(getPanel("診察終了　", WaitingListImpl.DONE_ICON), row++);
-        insert(getPanel("記載未完了", WaitingListImpl.UNFINISHED_ICON), row++);
-        insert(getPanel("オープン　", WaitingListImpl.OPEN_ICON), row++);
-        insert(getPanel("仮保存　　", WaitingListImpl.TEMPORARY_ICON), row++);
-        insert(getPanel("他で編集中", WaitingListImpl.OPEN_USED_NONE), row++);
-        insert(getPanel("診断未入力", WaitingListImpl.DIAGNOSIS_EMPTY_COLOR), row++);
-        insert(getPanel("初診　　　", WaitingListImpl.SHOSHIN_COLOR), row++);
+        insert(getPanel("診察終了　", WaitingListImpl.DONE_ICON),             0);
+        insert(getPanel("記載未完了", WaitingListImpl.UNFINISHED_ICON),       1);
+        insert(getPanel("オープン　", WaitingListImpl.OPEN_ICON),             2);
+        insert(getPanel("仮保存　　", WaitingListImpl.TEMPORARY_ICON),        3);
+        insert(getPanel("他で編集中", WaitingListImpl.OPEN_USED_NONE),        4);
+        insert(getPanel("診断未入力", WaitingListImpl.DIAGNOSIS_EMPTY_COLOR), 5);
+        insert(getPanel("初診　　　", WaitingListImpl.SHOSHIN_COLOR),         6);
 
         pack();
     }

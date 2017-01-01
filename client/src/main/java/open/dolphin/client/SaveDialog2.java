@@ -29,7 +29,7 @@ import javax.swing.KeyStroke;
 import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import open.dolphin.helper.ProxyDocumentListener;
+import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.ui.MyJSheet;
 
 /**
