@@ -20,7 +20,7 @@ import open.dolphin.impl.claim.SendClaimImpl;
 import open.dolphin.impl.labrcv.LaboTestImporter;
 import open.dolphin.impl.login.LoginDialog;
 import open.dolphin.impl.psearch.PatientSearchImpl;
-import open.dolphin.impl.pvt.WatingListImpl;
+import open.dolphin.impl.pvt.WaitingListImpl;
 import open.dolphin.infomodel.KarteState;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.infomodel.RoleModel;
@@ -217,7 +217,7 @@ public class Dolphin implements MainWindow {
 
         // タブペインに格納する Plugin をロードする
         MainComponent[] plugin = new MainComponent[3];
-        plugin[0] = new WatingListImpl();
+        plugin[0] = new WaitingListImpl();
         plugin[1] = new PatientSearchImpl();
         plugin[2] = new LaboTestImporter();
 
@@ -227,7 +227,7 @@ public class Dolphin implements MainWindow {
             tabbedPane.addTab(plugin[index].getName(), plugin[index].getUI());
             providers.put(String.valueOf(index), plugin[index]);
         }
-        // WatingListImpl に BadgeListener を付ける
+        // WaitingListImpl に BadgeListener を付ける
         plugin[0].addBadgeListener(tabbedPane::setBadge);
 
         mediator.addChain(plugin[0]);
@@ -577,7 +577,7 @@ public class Dolphin implements MainWindow {
                 if (task != null) { stoppingTasks.add(task); }
             }
         });
-        // WatingListImpl と StampBoxPlugin
+        // WaitingListImpl と StampBoxPlugin
         // stoppingTasks.forEach(task -> System.out.println("stopping task = " + task));
         return stoppingTasks;
     }

@@ -8,10 +8,10 @@ import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
 
 /**
- * WatingListView 互換 JPanel
+ * WaitingListView 互換 JPanel
  * @author pns
  */
-public class WatingListPanel extends MainComponentPanel {
+public class WaitingListPanel extends MainComponentPanel {
     private static final long serialVersionUID = 1L;
 
     // command panel
@@ -26,7 +26,7 @@ public class WatingListPanel extends MainComponentPanel {
     private JLabel dateLbl;
     private JLabel intervalLbl;
 
-    public WatingListPanel() {
+    public WaitingListPanel() {
         initComponents();
     }
 

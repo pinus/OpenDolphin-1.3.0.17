@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  * Object に対して順番にリフレクションで method を実行していく.
  * MainWindow 層では
  * <ul>
- * <li>chains[0] = MainWindow (WatingListImpl/PatientSearchImpl/LaboTestImporter)
+ * <li>chains[0] = MainWindow (WaitingListImpl/PatientSearchImpl/LaboTestImporter)
  * <li>chains[1] = null
  * <li>chains[2] = Dolphin
  * </ul>

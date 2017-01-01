@@ -15,7 +15,7 @@ import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.StatusPanel;
 
 /**
- * WatingList, PatientSearch, LaboTextImporter で使う共通パネル骨格
+ * WaitingList, PatientSearch, LaboTextImporter で使う共通パネル骨格
  * MainFrame に格納される TabbedPane の中に入る
  * +-----------------+
  * | commandPanel    |

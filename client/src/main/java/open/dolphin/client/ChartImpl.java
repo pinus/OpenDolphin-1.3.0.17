@@ -1483,8 +1483,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャートウインドウのオープンを通知する.
-     * CLOSE -> OPEN に変換する操作，ReadOnly の場合は WatingList に通知しない
-     * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WatingList に通知しない
+     * CLOSE -> OPEN に変換する操作，ReadOnly の場合は WaitingList に通知しない
+     * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WaitingList に通知しない
      * @param opened オープンした Chart(=this)
      */
     public static void windowOpened(ChartImpl opened) {
@@ -1506,8 +1506,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャートウインドウのクローズを通知する.
-     * OPEN -> CLOSE に変更する操作   ReadOnly のときも WatingList に通知する
-     * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WatingList に通知しない
+     * OPEN -> CLOSE に変更する操作   ReadOnly のときも WaitingList に通知する
+     * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WaitingList に通知しない
      * @param closed クローズした Chart(=this)
      */
     public static void windowClosed(ChartImpl closed) {
@@ -1523,8 +1523,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             int newState = KarteState.toClosedState(oldState, isEmpty);
             model.setState(newState);
         }
-        // WatingListImpl に通知する
-        // 書き込み時の ReadOnly 対応は WatingList 側で施行
+        // WaitingListImpl に通知する
+        // 書き込み時の ReadOnly 対応は WaitingList 側で施行
         if (model.getId() != 0) {
             boundSupport.firePropertyChange(ChartImpl.CHART_STATE, null, model);
         }

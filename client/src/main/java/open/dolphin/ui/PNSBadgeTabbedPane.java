@@ -20,6 +20,7 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
     private static final int BADGE_RADIUS = 8;
     private static final int BADGE_OFFSET = 4;
     private static final String BADGE_FONT = "Arial";
+    private static final Color BADGE_COLOR = Color.red;
 
     private int tabIndex = 0;
     private int badgeNumber;
@@ -40,8 +41,8 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             // 円
-            g.setColor(Color.red);
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+            g.setColor(BADGE_COLOR);
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
             Point p = getButtonTopRightCornerLocation(tabIndex);
             Point center = new Point(p.x - BADGE_OFFSET, p.y + BADGE_OFFSET);
             g.fillOval(center.x - BADGE_RADIUS, center.y - BADGE_RADIUS, BADGE_RADIUS*2, BADGE_RADIUS*2);

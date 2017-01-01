@@ -50,7 +50,7 @@ import org.apache.log4j.Logger;
  * @author Kazushi Minagawa, Digital Globe, Inc.,
  * @author pns
  */
-public class WatingListImpl extends AbstractMainComponent {
+public class WaitingListImpl extends AbstractMainComponent {
 
     private static final String NAME = "受付リスト";
 
@@ -68,8 +68,8 @@ public class WatingListImpl extends AbstractMainComponent {
 
     // JTableレンダラ用のカラー
     private static final Color MALE_COLOR = new Color(230,243,243);
-    private static final Color FEMALE_COLOR = ClientContext.getColor("watingList.color.female");
-    private static final Color CANCEL_PVT_COLOR = ClientContext.getColor("watingList.color.pvtCancel");
+    private static final Color FEMALE_COLOR = ClientContext.getColor("waitingList.color.female");
+    private static final Color CANCEL_PVT_COLOR = ClientContext.getColor("waitingList.color.pvtCancel");
     protected static final Color SHOSHIN_COLOR = new Color(180,220,240); //青っぽい色
     protected static final Color KARTE_EMPTY_COLOR = new Color(250,200,160); //茶色っぽい色
     protected static final Color DIAGNOSIS_EMPTY_COLOR = new Color(243,255,15); //黄色
@@ -113,16 +113,16 @@ public class WatingListImpl extends AbstractMainComponent {
     private BadgeListener badgeListener;
 
     private Logger logger;
-    private WatingListPanel view;
+    private WaitingListPanel view;
     private static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
     private static final Font SMALL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 9);
 
     private int initialAtokMemSize = ExecuteScript.getAtok24MemSize();
 
     /**
-     * Creates new WatingList
+     * Creates new WaitingList
      */
-    public WatingListImpl() {
+    public WaitingListImpl() {
         setName(NAME);
         // 使い回すオブジェクト
         schedule = Executors.newSingleThreadScheduledExecutor();
@@ -175,8 +175,8 @@ public class WatingListImpl extends AbstractMainComponent {
      */
     private void initComponents() {
 
-        //view = new WatingListView();
-        view = new WatingListPanel();
+        //view = new WaitingListView();
+        view = new WaitingListPanel();
         setUI(view);
 
         // ラベル初期化
@@ -215,8 +215,8 @@ public class WatingListImpl extends AbstractMainComponent {
                             java.lang.String.class,java.lang.Integer.class};
         int[] columnWidth = {34,80,72,140,50,150,75,50,40,30};
 
-        int startNumRows = ClientContext.getInt("watingList.startNumRows");
-        int rowHeight = ClientContext.getInt("watingList.rowHeight");
+        int startNumRows = ClientContext.getInt("waitingList.startNumRows");
+        int rowHeight = ClientContext.getInt("waitingList.rowHeight");
 
         // 生成する
         pvtTable = view.getTable();
@@ -409,7 +409,7 @@ public class WatingListImpl extends AbstractMainComponent {
      */
     private void setOperationDate(Date date) {
         operationDate = date;
-        String formatStr = ClientContext.getString("watingList.state.dateFormat");
+        String formatStr = ClientContext.getString("waitingList.state.dateFormat");
         SimpleDateFormat sdf = new SimpleDateFormat(formatStr); // 2006-11-20(水)
         view.getDateLbl().setText(sdf.format(operationDate));
     }
@@ -420,7 +420,7 @@ public class WatingListImpl extends AbstractMainComponent {
      */
     private void setCheckedTime(Date date) {
         checkedTime = date;
-        String formatStr = ClientContext.getString("watingList.state.timeFormat");
+        String formatStr = ClientContext.getString("waitingList.state.timeFormat");
         SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
         view.getCheckedTimeLbl().setText(sdf.format(checkedTime));
     }
@@ -801,7 +801,7 @@ public class WatingListImpl extends AbstractMainComponent {
      */
     @Override
     public Callable<Boolean> getStoppingTask() {
-        logger.info("WatingListImpl stoppingTask starts");
+        logger.info("WaitingListImpl stoppingTask starts");
 
         Callable<Boolean> longTask = () -> {
             // 開いているカルテを調べる
@@ -1058,7 +1058,7 @@ public class WatingListImpl extends AbstractMainComponent {
                 session.addMessageHandler(new MessageHandler.Whole<String>() {
                    @Override
                     public void onMessage(String message) {
-                        // logger.debug("WatingListImpl: received pvt = " + message);
+                        // logger.debug("WaitingListImpl: received pvt = " + message);
                         PatientVisitModel hostPvt = JsonConverter.fromJson(message, PatientVisitModel.class);
 
                         // 送られてきた pvt と同じものを local で探す
@@ -1104,12 +1104,12 @@ public class WatingListImpl extends AbstractMainComponent {
 
             @Override
             public void onError(Session session, Throwable t) {
-                System.out.println("WatingListImp: WebSocket error: " + t.toString());
+                System.out.println("WaitingListImp: WebSocket error: " + t.toString());
             }
 
             @Override
             public void onClose(Session session, CloseReason reason) {
-                System.out.println("WatingListImpl: WebSocket colosed: " + reason.getReasonPhrase());
+                System.out.println("WaitingListImpl: WebSocket colosed: " + reason.getReasonPhrase());
             }
         });
     }
@@ -1365,7 +1365,7 @@ public class WatingListImpl extends AbstractMainComponent {
 
         @Override
         public void openKarte(PatientVisitModel pvt) {
-            WatingListImpl.this.openKarte(pvt);
+            WaitingListImpl.this.openKarte(pvt);
         }
 
         @Override
@@ -1374,15 +1374,15 @@ public class WatingListImpl extends AbstractMainComponent {
             if (e.isPopupTrigger()) {
 
                 contextMenu.removeAll();
-                String pop3 = ClientContext.getString("watingList.popup.oddEvenRenderer");
-                String pop4 = ClientContext.getString("watingList.popup.sexRenderer");
+                String pop3 = ClientContext.getString("waitingList.popup.oddEvenRenderer");
+                String pop4 = ClientContext.getString("waitingList.popup.sexRenderer");
                 String pop5 = "年齢表示";
 
                 if (canOpen()) {
-                    String pop1 = ClientContext.getString("watingList.popup.openKarte");
-                    String pop2 = ClientContext.getString("watingList.popup.cancelVisit");
-                    JMenuItem openKarte = new JMenuItem(new ReflectAction(pop1, WatingListImpl.this, "openKarte"));
-                    JMenuItem cancelVisit = new JMenuItem(new ReflectAction(pop2, WatingListImpl.this, "cancelVisit"));
+                    String pop1 = ClientContext.getString("waitingList.popup.openKarte");
+                    String pop2 = ClientContext.getString("waitingList.popup.cancelVisit");
+                    JMenuItem openKarte = new JMenuItem(new ReflectAction(pop1, WaitingListImpl.this, "openKarte"));
+                    JMenuItem cancelVisit = new JMenuItem(new ReflectAction(pop2, WaitingListImpl.this, "cancelVisit"));
                     openKarte.setIconTextGap(8);
                     cancelVisit.setIconTextGap(8);
                     contextMenu.add(openKarte);
@@ -1390,8 +1390,8 @@ public class WatingListImpl extends AbstractMainComponent {
                     contextMenu.addSeparator();
                 }
 
-                JRadioButtonMenuItem oddEven = new JRadioButtonMenuItem(new ReflectAction(pop3, WatingListImpl.this, "switchRenderere"));
-                JRadioButtonMenuItem sex = new JRadioButtonMenuItem(new ReflectAction(pop4, WatingListImpl.this, "switchRenderere"));
+                JRadioButtonMenuItem oddEven = new JRadioButtonMenuItem(new ReflectAction(pop3, WaitingListImpl.this, "switchRenderere"));
+                JRadioButtonMenuItem sex = new JRadioButtonMenuItem(new ReflectAction(pop4, WaitingListImpl.this, "switchRenderere"));
                 ButtonGroup bg = new ButtonGroup();
                 bg.add(oddEven);
                 bg.add(sex);
@@ -1406,7 +1406,7 @@ public class WatingListImpl extends AbstractMainComponent {
                 JCheckBoxMenuItem item = new JCheckBoxMenuItem(pop5);
                 contextMenu.add(item);
                 item.setSelected(ageDisplay);
-                item.addActionListener(EventHandler.create(ActionListener.class, WatingListImpl.this, "switchAgeDisplay"));
+                item.addActionListener(EventHandler.create(ActionListener.class, WaitingListImpl.this, "switchAgeDisplay"));
                 oddEven.setIconTextGap(12);
                 sex.setIconTextGap(12);
                 item.setIconTextGap(12);

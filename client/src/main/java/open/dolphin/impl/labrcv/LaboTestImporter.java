@@ -143,7 +143,7 @@ public class LaboTestImporter extends AbstractMainComponent {
         usp.setMaximumSize(pbSize);
         usp.setPreferredSize(pbSize);
 
-        //Font font = new Font("Dialog", Font.PLAIN, ClientContext.getInt("watingList.state.font.size"));
+        //Font font = new Font("Dialog", Font.PLAIN, ClientContext.getInt("waitingList.state.font.size"));
         countLabel = new JLabel("");
         dateLabel = new JLabel("");
 
@@ -151,7 +151,7 @@ public class LaboTestImporter extends AbstractMainComponent {
         updateCount();
 
         // 日付を設定する
-        String formatStr = ClientContext.getString("watingList.state.dateFormat");
+        String formatStr = ClientContext.getString("waitingList.state.dateFormat");
         SimpleDateFormat sdf = new SimpleDateFormat(formatStr); // 2006-11-20(水)
         dateLabel.setText(sdf.format(new Date()) + " ");
 

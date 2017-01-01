@@ -132,7 +132,7 @@ public class StampPublisher {
         // GUIコンポーネントを生成する
         infoLable = new JLabel(GUIConst.ICON_INFORMATION_16);
         instLabel = new JLabel("");
-        instLabel.setFont(new Font("Dialog", Font.PLAIN, ClientContext.getInt("watingList.state.font.size")));
+        instLabel.setFont(new Font("Dialog", Font.PLAIN, ClientContext.getInt("waitingList.state.font.size")));
         publishedDate = new JLabel("");
 
         stampBoxName = GUIFactory.createTextField(15, null, null, null);

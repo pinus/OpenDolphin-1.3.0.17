@@ -358,7 +358,7 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * PVTDelegater で使う date を作成する（WatingListImpl から移動
+     * PVTDelegater で使う date を作成する（WaitingListImpl から移動
      * date[0] = today, date[1] = AppodateFrom, date[2] = AppodateTo
      * @param date
      * @return

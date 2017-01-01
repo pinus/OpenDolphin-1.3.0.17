@@ -20,7 +20,7 @@ import open.dolphin.ui.MyJSheet;
 
 /**
  * Main Window コンポーネントプラグインの抽象クラス.
- * WatingListImpl, PatientSearchImpl, LaboTestImpoter で これを extends している.
+ * WaitingListImpl, PatientSearchImpl, LaboTestImpoter で これを extends している.
  * AbstractMainComponent > MainComponent > MainTool > MainService
  */
 public abstract class AbstractMainComponent extends MouseAdapter implements MainComponent {
@@ -207,7 +207,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     }
 
     /**
-     * MainComponent (WatingList, PatientSearch, LaboImporter) で使われる ContextListener.
+     * MainComponent (WaitingList, PatientSearch, LaboImporter) で使われる ContextListener.
      * @param <T>
      */
     public abstract class ContextListener<T> extends MouseAdapter {

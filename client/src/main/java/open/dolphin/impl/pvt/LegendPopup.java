@@ -10,10 +10,11 @@ import javax.swing.SwingConstants;
 import open.dolphin.client.GUIConst;
 
 /**
- * 状態ラベルの説明を表示する popup
+ * 状態ラベルの説明を表示する popup.
  * @author pns
  */
 public class LegendPopup extends JPopupMenu {
+    private static final long serialVersionUID = 1L;
 
     private static String SPACE = "　";
 
@@ -30,13 +31,13 @@ public class LegendPopup extends JPopupMenu {
 
         int row = 0;
 
-        insert(getPanel("診察終了　", WatingListImpl.DONE_ICON), row++);
-        insert(getPanel("記載未完了", WatingListImpl.UNFINISHED_ICON), row++);
-        insert(getPanel("オープン　", WatingListImpl.OPEN_ICON), row++);
-        insert(getPanel("仮保存　　", WatingListImpl.TEMPORARY_ICON), row++);
-        insert(getPanel("他で編集中", WatingListImpl.OPEN_USED_NONE), row++);
-        insert(getPanel("診断未入力", WatingListImpl.DIAGNOSIS_EMPTY_COLOR), row++);
-        insert(getPanel("初診　　　", WatingListImpl.SHOSHIN_COLOR), row++);
+        insert(getPanel("診察終了　", WaitingListImpl.DONE_ICON), row++);
+        insert(getPanel("記載未完了", WaitingListImpl.UNFINISHED_ICON), row++);
+        insert(getPanel("オープン　", WaitingListImpl.OPEN_ICON), row++);
+        insert(getPanel("仮保存　　", WaitingListImpl.TEMPORARY_ICON), row++);
+        insert(getPanel("他で編集中", WaitingListImpl.OPEN_USED_NONE), row++);
+        insert(getPanel("診断未入力", WaitingListImpl.DIAGNOSIS_EMPTY_COLOR), row++);
+        insert(getPanel("初診　　　", WaitingListImpl.SHOSHIN_COLOR), row++);
 
         pack();
     }
@@ -69,6 +70,5 @@ public class LegendPopup extends JPopupMenu {
 
         return panel;
     }
-
 }
 

@@ -642,7 +642,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 contextMenu.removeAll();
 
                 if (canOpen()) {
-                    String pop1 = ClientContext.getString("watingList.popup.openKarte");
+                    String pop1 = ClientContext.getString("waitingList.popup.openKarte");
                     JMenuItem openKarte = new JMenuItem(new ReflectAction(pop1, PatientSearchImpl.this, "openKarte"));
                     JMenuItem addAsPvt = new JMenuItem(new ReflectAction("受付登録", PatientSearchImpl.this, "addAsPvt"));
                     openKarte.setIconTextGap(8);
