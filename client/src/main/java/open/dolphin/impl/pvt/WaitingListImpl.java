@@ -33,7 +33,7 @@ import open.dolphin.delegater.PatientDelegater;
 import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.BadgeListener;
-import open.dolphin.helper.ReflectAction;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
@@ -402,8 +402,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      */
     private void setOperationDate(Date date) {
         operationDate = date;
-        String formatStr = ClientContext.getString("waitingList.state.dateFormat");
-        SimpleDateFormat sdf = new SimpleDateFormat(formatStr); // 2006-11-20(水)
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd (EE)"); // 2006-11-20 (水)
         view.getDateLbl().setText(sdf.format(operationDate));
     }
 
@@ -413,8 +412,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      */
     private void setCheckedTime(Date date) {
         checkedTime = date;
-        String formatStr = ClientContext.getString("waitingList.state.timeFormat");
-        SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         view.getCheckedTimeLbl().setText(sdf.format(checkedTime));
     }
 
@@ -679,13 +677,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         ActionMap am = dialog.getRootPane().getActionMap();
         InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "force-edit");
-        am.put("force-edit", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                forceEditBtn.doClick();
-            }
-        });
+        am.put("force-edit", new ProxyAction(forceEditBtn::doClick));
 
         dialog.show();
     }
@@ -1030,8 +1022,6 @@ public class WaitingListImpl extends AbstractMainComponent {
         DolphinClientContext.getContext().setEndpoint(new Endpoint(){
             @Override
             public void onOpen(Session session, EndpointConfig config) {
-                //session.addMessageHandler((MessageHandler.Whole<String>) message -> {
-
 
                 session.addMessageHandler(new MessageHandler.Whole<String>() {
                    @Override
@@ -1093,7 +1083,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * Retina 対応 Grid を描くレンダラ.
+     * Retina 対応 Grid を描くレンダラのベース.
      */
     private abstract class TableCellRendererBase extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
@@ -1103,9 +1093,8 @@ public class WaitingListImpl extends AbstractMainComponent {
         protected boolean marking = false;
         protected Color markingColor = Color.WHITE;
 
-        public TableCellRendererBase() { init(); }
-
-        public abstract void init();
+        public TableCellRendererBase() {
+        }
 
         /**
          * Show grids and markings.
@@ -1168,11 +1157,14 @@ public class WaitingListImpl extends AbstractMainComponent {
     private class KarteStateRenderer extends TableCellRendererBase {
         private static final long serialVersionUID = -7654410476024116413L;
 
-        @Override
-        public void init() {
-            setHorizontalAlignment(JLabel.CENTER);
+        public KarteStateRenderer() {
             holizontalGrid = true;
             virticalGrid = true;
+            initComponent();
+        }
+
+        private void initComponent() {
+            setHorizontalAlignment(JLabel.CENTER);
         }
 
         @Override
@@ -1263,16 +1255,19 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * KarteStateRenderer.
-     * カルテ（チャート）の状態をレンダリングするクラス.
+     * MaleFemaleRenderer.
+     * 男女で色を変える renderer. alignment は左詰.
      */
     private class MaleFemaleRenderer extends TableCellRendererBase {
         private static final long serialVersionUID = 1L;
 
-        @Override
-        public void init() {
-            setHorizontalAlignment(JLabel.LEFT);
+        public MaleFemaleRenderer() {
             holizontalGrid = true;
+            initComponent();
+        }
+
+        private void initComponent() {
+            setHorizontalAlignment(JLabel.LEFT);
         }
 
         @Override
@@ -1320,13 +1315,20 @@ public class WaitingListImpl extends AbstractMainComponent {
         }
     }
 
+    /**
+     * センタリングする MaleFemaleRenderer.
+     */
     private class CenterRenderer extends MaleFemaleRenderer {
         private static final long serialVersionUID = 1L;
 
-        @Override
-        public void init() {
-            setHorizontalAlignment(JLabel.CENTER);
+        public CenterRenderer() {
+            super();
             holizontalGrid = true;
+            initComponent();
+        }
+
+        private void initComponent() {
+            setHorizontalAlignment(JLabel.CENTER);
         }
     }
 
@@ -1359,8 +1361,8 @@ public class WaitingListImpl extends AbstractMainComponent {
                 if (canOpen()) {
                     String pop1 = "カルテを開く";
                     String pop2 = "受付をキャンセルする";
-                    JMenuItem openKarte = new JMenuItem(new ReflectAction(pop1, WaitingListImpl.this, "openKarte"));
-                    JMenuItem cancelVisit = new JMenuItem(new ReflectAction(pop2, WaitingListImpl.this, "cancelVisit"));
+                    JMenuItem openKarte = new JMenuItem(new ProxyAction(pop1, WaitingListImpl.this::openKarte));
+                    JMenuItem cancelVisit = new JMenuItem(new ProxyAction(pop2, WaitingListImpl.this::cancelVisit));
                     openKarte.setIconTextGap(8);
                     cancelVisit.setIconTextGap(8);
                     contextMenu.add(openKarte);
@@ -1368,8 +1370,8 @@ public class WaitingListImpl extends AbstractMainComponent {
                     contextMenu.addSeparator();
                 }
 
-                JRadioButtonMenuItem oddEven = new JRadioButtonMenuItem(new ReflectAction(pop3, WaitingListImpl.this, "switchRenderere"));
-                JRadioButtonMenuItem sex = new JRadioButtonMenuItem(new ReflectAction(pop4, WaitingListImpl.this, "switchRenderere"));
+                JRadioButtonMenuItem oddEven = new JRadioButtonMenuItem(new ProxyAction(pop3, WaitingListImpl.this::switchRenderere));
+                JRadioButtonMenuItem sex = new JRadioButtonMenuItem(new ProxyAction(pop4, WaitingListImpl.this::switchRenderere));
                 ButtonGroup bg = new ButtonGroup();
                 bg.add(oddEven);
                 bg.add(sex);

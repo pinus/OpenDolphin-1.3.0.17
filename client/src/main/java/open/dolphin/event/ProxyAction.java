@@ -14,6 +14,10 @@ public class ProxyAction extends AbstractAction {
 
     private ProxyActionListener listener;
 
+    public ProxyAction(ProxyActionListener listener) {
+        this(null, listener);
+    }
+
     public ProxyAction(String name, ProxyActionListener listener) {
         this(name, null, listener);
     }

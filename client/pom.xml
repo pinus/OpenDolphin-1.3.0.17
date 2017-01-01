@@ -14,7 +14,7 @@
         <!-- versions -->
         <version.org.jboss.resteasy>3.0.10.Final</version.org.jboss.resteasy>
         <version.org.hibernate>4.3.7.Final</version.org.hibernate>
-        <version.org.glassfish.tyrus.bundles>1.10</version.org.glassfish.tyrus.bundles>
+        <version.org.glassfish.tyrus.bundles>1.13</version.org.glassfish.tyrus.bundles>
         <version.org.postgresql>9.4-1200-jdbc41</version.org.postgresql>
 
     </properties>
