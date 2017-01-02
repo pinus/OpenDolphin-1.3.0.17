@@ -25,22 +25,24 @@ import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;
 
 /**
- * 関連文書ファイルを表示するクラス
+ * 関連文書ファイルを表示するクラス.
  * @author pns
  */
 public class FileInspector {
 
     private JPanel filePanel;
-    private JList list;
-    private ChartImpl context;
-    private Logger logger;
+    private JList<File> list;
+    private final ChartImpl context;
     public static final String NAME = "fileInspector";
-    private DefaultListModel model;
+    private DefaultListModel<File> model;
     private FileFilter filter;
     private static final String DEFAULT_DOCUMENT_FOLDER = "/Volumes/documents/";
 
+    private final Logger logger;
+
     /**
      * MemoInspectorオブジェクトを生成する.
+     * @param context
      */
     public FileInspector(ChartImpl context) {
 
@@ -50,7 +52,8 @@ public class FileInspector {
     }
 
     /**
-     * 患者 id から，関連文書の path を作る
+     * 患者 id から，関連文書の path を作る.
+     * <pre>
      * 関連文書ファイル構造
      *   １万台フォルダ/千台フォルダ/関連文書
      *   000001-010000/000001-001000/${id}
@@ -58,6 +61,7 @@ public class FileInspector {
      *         :
      *   010001-020000/010001-011000/${id}
      *         :
+     * </pre>
      * @param id
      * @return
      */
@@ -77,8 +81,8 @@ public class FileInspector {
      */
     private void initComponents() {
 
-        model = new DefaultListModel();
-        list = new JList(model);
+        model = new DefaultListModel<>();
+        list = new JList<>(model);
         list.putClientProperty("Quaqua.List.style", "striped");
         list.setCellRenderer(new FileListCellRenderer());
         list.setFixedCellHeight(GUIConst.DEFAULT_LIST_ROW_HEIGHT);
@@ -92,12 +96,7 @@ public class FileInspector {
         filePanel.add(scrollPane);
 
         // Hidden ファイルフィルタ
-        filter = new FileFilter() {
-            @Override
-            public boolean accept (File file) {
-                return !file.getName().toLowerCase().startsWith(".");
-            }
-        };
+        filter = file -> !file.getName().startsWith(".");
 
         update();
     }
@@ -111,13 +110,13 @@ public class FileInspector {
     }
 
     /**
-     * データのアップデート
+     * データのアップデート.
      */
     public void update() {
         //String path = DEFAULT_DOCUMENT_FOLDER + context.getKarte().getPatient().getPatientId();
         File infoFolder = new File (getDocumentPath(context.getKarte().getPatient().getPatientId()));
         File[] files = infoFolder.listFiles(filter);
-        if (files == null) return;
+        if (files == null) { return; }
 
         Arrays.sort(files, new FileNameComparator());
 
@@ -127,7 +126,7 @@ public class FileInspector {
     }
 
     /**
-     * 選択されたら，QuickLook で文書を見る
+     * 選択されたら，QuickLook で文書を見る.
      */
     private class FileSelectionListener extends MouseAdapter {
 
@@ -135,20 +134,22 @@ public class FileInspector {
         public void mouseClicked(MouseEvent e) {
             Point mousePoint = e.getPoint();
             int index = list.locationToIndex(mousePoint);
-            if (index == -1) return;
+            if (index == -1) { return; }
 
             Point indexPoint = list.indexToLocation(index);
             // あまりマウスが離れたところをクリックしてたらクリアする
             if (indexPoint != null && Math.abs((indexPoint.y+6) - mousePoint.y) > 12) {
                 list.clearSelection();
             } else {
-                String path = ((File)model.getElementAt(index)).getPath();
+                String path = model.getElementAt(index).getPath();
                 ExecuteScript.quickLook(path);
             }
         }
     }
 
     private class FileListCellRenderer extends DefaultListCellRenderer {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public Component getListCellRendererComponent(
             JList list,              // the list
@@ -173,19 +174,19 @@ public class FileInspector {
     }
 
     /**
-     * file name comparator
-     * File2, File10 などの数字付きのファイル名が正しくソートできるようにする
+     * file name comparator.
+     * File2, File10 などの数字付きのファイル名が正しくソートできるようにする.
      */
-    private class FileNameComparator implements Comparator {
+    private class FileNameComparator implements Comparator<File> {
 
         // 紹介状15.ods の '15.' を切り出すパターン
-        private Pattern NUMBER_PLUS_DOT = Pattern.compile("[0-9]+\\.");
+        private final Pattern NUMBER_PLUS_DOT = Pattern.compile("[0-9]+\\.");
 
         @Override
-        public int compare(Object o1, Object o2) {
+        public int compare(File o1, File o2) {
             // 全角数字だった場合，半角数字に変換してから比較する
-            String name1 = StringTool.toHankakuNumber(((File)o1).getName());
-            String name2 = StringTool.toHankakuNumber(((File)o2).getName());
+            String name1 = StringTool.toHankakuNumber(o1.getName());
+            String name2 = StringTool.toHankakuNumber(o2.getName());
 
             Matcher m1 = NUMBER_PLUS_DOT.matcher(name1);
             Matcher m2 = NUMBER_PLUS_DOT.matcher(name2);
@@ -215,7 +216,7 @@ public class FileInspector {
          */
         private String adjustDigit(String str, int n) {
             StringBuilder sb = new StringBuilder();
-            for(int i=n; i> str.length(); i--) sb.append('0');
+            for(int i=n; i> str.length(); i--) { sb.append('0'); }
             sb.append(str);
             return sb.toString();
         }
