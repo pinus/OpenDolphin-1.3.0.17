@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Script でいろいろする
+ * Script でいろいろする.
  * @author pns
  */
 public class ExecuteScript {
 
     private static final String CR = "\n";
 
-    private static String[] OPEN_PATIENT_FOLDER_SCRIPT = {
+    private static final String[] OPEN_PATIENT_FOLDER_SCRIPT = {
         "tell application \"Finder\"",
         "   set targetFolder to argv as POSIX file",                    // Folder の時は POSIX から Mac 形式に変換が必要 (ファイルは無変換でもOK）
         "   open targetFolder",
@@ -32,13 +32,8 @@ public class ExecuteScript {
         "end tell",
     };
 
-    private static final String RESTART_ATOK24_SCRIPT =
-        //"tell application \"ATOK24\"" + CR +
-        "tell application \"ATOK25\"" + CR +
-        "   quit" + CR +
-        "   delay 0.1" + CR +
-        "   launch" + CR +
-        "end tell" + CR;
+    private static final String DISPLAY_NOTIFICATION_SCRIPT =
+        "display notification \"%s\" with title \"%s\" subtitle \"%s\"";
 
     private static final String IME_ON_SCRIPT =
         "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 104";
@@ -46,15 +41,35 @@ public class ExecuteScript {
     private static final String IME_OFF_SCRIPT =
         "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 102";
 
-    private static final String[] GET_ATOK_MEM_SIZE_SCRIPT = {"/bin/sh", "-c",
-        //"ps -A -o rss,command | grep ATOK24.app | grep -v grep | sed -e \'s/\\/.*$//\' -e \'s/ //g\'"
-        "ps -A -o rss,command | grep \'/Contents/MacOS/ATOK25\' | grep -v grep | sed -e \'s/\\/.*$//\' -e \'s/ //g\'"
-    };
+    //private static final String[] GET_ATOK_MEM_SIZE_SCRIPT = {"/bin/sh", "-c",
+    //    //"ps -A -o rss,command | grep ATOK24.app | grep -v grep | sed -e \'s/\\/.*$//\' -e \'s/ //g\'"
+    //    "ps -A -o rss,command | grep \'/Contents/MacOS/ATOK25\' | grep -v grep | sed -e \'s/\\/.*$//\' -e \'s/ //g\'"
+    //};
 
-    static boolean atokRestarted = false;
+    //private static final String RESTART_ATOK24_SCRIPT =
+    //    //"tell application \"ATOK24\"" + CR +
+    //    "tell application \"ATOK25\"" + CR +
+    //    "   quit" + CR +
+    //    "   delay 0.1" + CR +
+    //    "   launch" + CR +
+    //    "end tell" + CR;
+
+    // private static boolean atokRestarted = false;
 
     /**
-     * 情報フォルダを開く
+     * 通知センターに通知を表示する.
+     * 動かない!!!!!  コマンドラインだと表示されるのに.
+     * @param message
+     * @param title
+     * @param subtitle
+     */
+    public static void displayNotification(String message, String title, String subtitle) {
+        String script = String.format(DISPLAY_NOTIFICATION_SCRIPT, message, title, subtitle);
+        new AppleScriptExecutor(script).start();
+    }
+
+    /**
+     * 情報フォルダを開く.
      * @param path
      */
     public static void openPatientFolder(final String path) {
@@ -64,33 +79,21 @@ public class ExecuteScript {
     }
 
     /**
-     * ATOK24 をリスタートする
-     */
-    public static void restartAtok24() {
-        // これは，thread ではなくて，直接 run で起動して，帰ってくるのを待つ
-        // 待たないと，次の getAtok24MemSize が間に合わない
-        atokRestarted = true;
-        new AppleScriptExecutor(RESTART_ATOK24_SCRIPT).run();
-    }
-
-    /**
-     * かなキー（keycode 104）を System Event に送る
-     * @return 失敗したら null
+     * かなキー（keycode 104）を System Event に送る.
      */
     public static void setImeOn() {
         new AppleScriptExecutor(IME_ON_SCRIPT).start();
     }
 
     /**
-     * 英数キー（keycode 102）を System Event に送る
-     * @return 失敗したら null
+     * 英数キー（keycode 102）を System Event に送る.
      */
     public static void setImeOff() {
         new AppleScriptExecutor(IME_OFF_SCRIPT).start();
     }
 
     /**
-     * window の InputMethodContext で U.S. になるまで待つ ImeOff
+     * window の InputMethodContext で U.S. になるまで待つ ImeOff.
      * @param w
      */
     public static void setImeOff(Window w) {
@@ -116,7 +119,7 @@ public class ExecuteScript {
     }
 
     /**
-     * 現在の ime モードが U.S. かどうかを返す
+     * 現在の ime モードが U.S. かどうかを返す.
      * @param w InputContext を調べる JFrame or JDialog
      * @return
      */
@@ -127,46 +130,58 @@ public class ExecuteScript {
     }
 
     /**
-     * ATOK24 の使用メモリサイズを調べる（単位 KB）
-     * ATOK24 が走っていなければ 0 を返す
-     * @return
+     * ATOK24 をリスタートする.
      */
-    public static int getAtok24MemSize() {
-        List<String> output = executeShellScript(GET_ATOK_MEM_SIZE_SCRIPT);
-        //if (output.isEmpty()) System.out.println("ATOK25 not found");
-        return (output.size() == 1)? Integer.valueOf(output.get(0)) : atokRestarted? 1:0;
-    }
+    //public static void restartAtok24() {
+    //    // これは，thread ではなくて，直接 run で起動して，帰ってくるのを待つ
+    //    // 待たないと，次の getAtok24MemSize が間に合わない
+    //    atokRestarted = true;
+    //    new AppleScriptExecutor(RESTART_ATOK24_SCRIPT).run();
+    //}
 
     /**
-     * 選択ファイルを QuickLook する
+     * ATOK24 の使用メモリサイズを調べる（単位 KB）.
+     * ATOK24 が走っていなければ 0 を返す.
+     * @return
+     */
+    //public static int getAtok24MemSize() {
+    //    List<String> output = executeShellScript(GET_ATOK_MEM_SIZE_SCRIPT);
+    //    //if (output.isEmpty()) System.out.println("ATOK25 not found");
+    //    return (output.size() == 1)? Integer.valueOf(output.get(0)) : atokRestarted? 1:0;
+    //}
+
+    /**
+     * 選択ファイルを QuickLook する.
      * @param path
      */
     public static void quickLook(String path) {
         final String[] command = {"qlmanage", "-p", path};
+        executeShellScript(command);
+    }
 
-        // バックグランドでスクリプト実行
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Runtime.getRuntime().exec(command).waitFor();
-                } catch (IOException ex) {
-                    System.out.println("ExecuteScript.java: " + ex);
-                } catch (InterruptedException ex) {
-                    System.out.println(ex.getMessage());
-                }
+    /**
+     * shell command を実行する.
+     * @param command
+     * @return
+     */
+    private static void executeShellScript(String[] command) {
+        Thread t = new Thread(()-> {
+            try {
+                Runtime.getRuntime().exec(command).waitFor();
+            } catch (IOException | InterruptedException ex) {
+                System.out.println("ExecuteScript.java: " + ex);
             }
-        };
+        });
         t.start();
     }
 
     /**
-     * shell command を実行して，標準出力を返す
+     * shell command を実行して，標準出力を返す.
      * @param command
      * @return
      */
-    private static List<String> executeShellScript(String[] command) {
-        List<String> output = new ArrayList<String>();
+    private static List<String> executeShellScriptWithResponce(String[] command) {
+        List<String> output = new ArrayList<>();
 
         try {
             Process p = Runtime.getRuntime().exec(command);
@@ -179,9 +194,7 @@ public class ExecuteScript {
             }
             p.waitFor();
 
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        } catch (InterruptedException ex) {
+        } catch (IOException | InterruptedException ex) {
             System.out.println(ex.getMessage());
         }
 
@@ -189,7 +202,7 @@ public class ExecuteScript {
     }
 
     /**
-     * 複数行のスクリプトを１行スクリプトに変換
+     * 複数ストリング配列に入ったスクリプトを１行スクリプトに変換.
      * @param code
      * @return
      */
@@ -209,7 +222,8 @@ public class ExecuteScript {
         //ExecuteScript.openPatientFolder("/Volumes/Documents/000001/");
         //ExecuteScript.quickLook("/Volumes/documents/008113/お返事2011-01-11.pdf");
         //ExecuteScript.restartAtok24();
-        System.out.println(ExecuteScript.getAtok24MemSize());
+        //System.out.println(ExecuteScript.getAtok24MemSize());
         //ExecuteScript.setImeOff();
+        ExecuteScript.displayNotification("message", "title", "subtitle");
     }
 }

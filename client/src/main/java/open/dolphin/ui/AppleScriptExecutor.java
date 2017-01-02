@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.swing.SwingWorker;
 
@@ -14,9 +13,9 @@ import javax.swing.SwingWorker;
  */
 public class AppleScriptExecutor extends Thread {
 
-    private String code;
-    private int ptime;
-    private long startTime;
+    private final String code;
+    private final int ptime;
+    private final long startTime;
 
     public AppleScriptExecutor(String code) {
         this.code = code;
@@ -48,20 +47,13 @@ public class AppleScriptExecutor extends Thread {
             }
 
         // Exception が出たら，その engine は破棄する
-        } catch (InterruptedException ex) {
-            System.out.println("AppleScriptExecutor: " + ex);
-        } catch (ExecutionException ex) {
-            System.out.println("AppleScriptExecutor: " + ex);
-        } catch (TimeoutException ex) {
+        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
             System.out.println("AppleScriptExecutor: " + ex);
         }
     }
 
     public static void main (String[] s) {
         ScriptEngineManager m = new ScriptEngineManager();
-
-        for (ScriptEngineFactory f : m.getEngineFactories()) {
-            System.out.println(f.getEngineName());
-        }
+        m.getEngineFactories().forEach(f -> System.out.println(f.getEngineName()));
     }
 }

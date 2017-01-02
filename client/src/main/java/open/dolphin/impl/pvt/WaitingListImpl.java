@@ -39,7 +39,6 @@ import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
-import open.dolphin.ui.ExecuteScript;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.PNSTriple;
@@ -64,8 +63,11 @@ public class WaitingListImpl extends AbstractMainComponent {
     protected static final ImageIcon OPEN_USED_NONE = GUIConst.ICON_USER_WHITE_16;
     protected static final ImageIcon OPEN_USED_SAVE = GUIConst.ICON_USER_BLUE_16;
     protected static final ImageIcon OPEN_USED_UNFINISHED = GUIConst.ICON_USER_RED_16;
+    private static final ImageIcon KUTU_ICON = GUIConst.ICON_ARROW_CIRCLE_DOUBLE_16;
 
-    private ImageIcon KUTU_ICON = GUIConst.ICON_ARROW_CIRCLE_DOUBLE_16;
+    // Font
+    private static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+    private static final Font SMALL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 9);
 
     // JTableレンダラ用のカラー
     private static final Color MALE_COLOR = new Color(230,243,243);
@@ -74,12 +76,18 @@ public class WaitingListImpl extends AbstractMainComponent {
     protected static final Color SHOSHIN_COLOR = new Color(180,220,240); //青っぽい色
     protected static final Color KARTE_EMPTY_COLOR = new Color(250,200,160); //茶色っぽい色
     protected static final Color DIAGNOSIS_EMPTY_COLOR = new Color(243,255,15); //黄色
+
     // テーブルの row height
     private static final int ROW_HEIGHT = 18;
     // 来院情報テーブルの年齢カラム
     private static final int AGE_COLUMN = 5;
     // 年齢生年月日メソッド
     private final String[] AGE_METHOD = new String[]{"getPatientAgeBirthday", "getPatientBirthday"};
+    // デフォルトのチェック間隔
+    private static int DEFAULT_CHECK_INTERVAL = 30; // デフォルト値
+
+    // WaitingList の表示パネル
+    private WaitingListPanel view;
     // PVT Table
     private JTable pvtTable;
     private ObjectReflectTableModel<PatientVisitModel> pvtTableModel;
@@ -95,8 +103,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     private Date checkedTime;
     // 来院患者数
     private int pvtCount;
-    // デフォルトのチェック間隔
-    private static int DEFAULT_CHECK_INTERVAL = 30; // デフォルト値
     // チェック間隔
     private int checkInterval;
     // 次のチェックまでの残り時間
@@ -116,11 +122,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     private BadgeListener badgeListener;
 
     private Logger logger;
-    private WaitingListPanel view;
-    private static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
-    private static final Font SMALL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 9);
-
-    private int initialAtokMemSize = ExecuteScript.getAtok24MemSize();
 
     /**
      * Creates new WaitingList.
