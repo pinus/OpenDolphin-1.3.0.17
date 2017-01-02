@@ -18,12 +18,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
-import javax.websocket.CloseReason;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler;
-import javax.websocket.Session;
-import open.dolphin.JsonConverter;
 import open.dolphin.client.*;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.PvtDelegater;
@@ -145,7 +139,9 @@ public class WaitingListImpl extends AbstractMainComponent {
         // pvt broadcaster 受信待ちスレッド開始
         // getUserAsPVTServer をリサイクル利用
         if (Project.getUseAsPVTServer() ) {
-            startPvtMessageReceiver();
+            PvtEndpoint endpoint = new PvtEndpoint();
+            DolphinClientContext.getContext().setEndpoint(endpoint);
+            endpoint.addPvtListener(this::hostPvtReceiver);
         }
 
         if (checkInterval == 0) {
@@ -1012,70 +1008,46 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * PvtServer からの pvt meessage を受け取って pvtTableModel を更新する.
+     * @param hostPvt
      */
-    private void startPvtMessageReceiver () {
+    public void hostPvtReceiver(PatientVisitModel hostPvt) {
+        // 送られてきた pvt と同じものを local で探す
+        // pvtDate で判定する → Patient ID が同じでも，pvtDate が違えば違う受付と判断する
+        PatientVisitModel localPvt = null;
+        int row = -1;
 
-        DolphinClientContext.getContext().setEndpoint(new Endpoint(){
-            @Override
-            public void onOpen(Session session, EndpointConfig config) {
-
-                session.addMessageHandler(new MessageHandler.Whole<String>() {
-                   @Override
-                    public void onMessage(String message) {
-                        // logger.debug("WaitingListImpl: received pvt = " + message);
-                        PatientVisitModel hostPvt = JsonConverter.fromJson(message, PatientVisitModel.class);
-
-                        // 送られてきた pvt と同じものを local で探す
-                        // pvtDate で判定する → Patient ID が同じでも，pvtDate が違えば違う受付と判断する
-                        PatientVisitModel localPvt = null;
-                        int row = -1;
-
-                        for (int i=0; i<pvtTableModel.getObjectCount(); i++) {
-                            PatientVisitModel p = pvtTableModel.getObject(i);
-                            if (p.getPvtDate().equals(hostPvt.getPvtDate())) {
-                                localPvt = p;
-                                row = i;
-                                break;
-                            }
-                        }
-
-                        if (localPvt != null) {
-                            logger.info("pvt state local = " + localPvt.getState() + ", server = " + hostPvt.getState());
-
-                            // localPvt がみつかった場合，更新である
-                            hostPvt.setNumber(localPvt.getNumber());
-                            pvtTableModel.getObjectList().set(row, hostPvt);
-                            // changeRow を fire，ただしカルテが開いていたら fire しない
-                            if (! ChartImpl.isKarteOpened(localPvt)) {
-                                pvtTableModel.fireTableRowsUpdated(row, row);
-                            }
-                            // 待ち時間更新
-                            setPvtCount();
-
-                        } else{
-                            // localPvt がなければ，それは追加である
-                            row = pvtTableModel.getObjectCount();
-                            // 番号付加
-                            hostPvt.setNumber(row+1);
-                            pvtTableModel.addRow(hostPvt);
-                            //logger.info("pvt added at row " + row);
-                            // 患者数セット
-                            setPvtCount(row+1);
-                        }
-                    }
-                });
+        for (int i=0; i<pvtTableModel.getObjectCount(); i++) {
+            PatientVisitModel p = pvtTableModel.getObject(i);
+            if (p.getPvtDate().equals(hostPvt.getPvtDate())) {
+                localPvt = p;
+                row = i;
+                break;
             }
+        }
 
-            @Override
-            public void onError(Session session, Throwable t) {
-                System.out.println("WaitingListImp: WebSocket error: " + t.toString());
-            }
+        if (localPvt != null) {
+            logger.info("pvt state local = " + localPvt.getState() + ", server = " + hostPvt.getState());
 
-            @Override
-            public void onClose(Session session, CloseReason reason) {
-                System.out.println("WaitingListImpl: WebSocket colosed: " + reason.getReasonPhrase());
+            // localPvt がみつかった場合，更新である
+            hostPvt.setNumber(localPvt.getNumber());
+            pvtTableModel.getObjectList().set(row, hostPvt);
+            // changeRow を fire，ただしカルテが開いていたら fire しない
+            if (! ChartImpl.isKarteOpened(localPvt)) {
+                pvtTableModel.fireTableRowsUpdated(row, row);
             }
-        });
+            // 待ち時間更新
+            setPvtCount();
+
+        } else{
+            // localPvt がなければ，それは追加である
+            row = pvtTableModel.getObjectCount();
+            // 番号付加
+            hostPvt.setNumber(row+1);
+            pvtTableModel.addRow(hostPvt);
+            //logger.info("pvt added at row " + row);
+            // 患者数セット
+            setPvtCount(row+1);
+        }
     }
 
     /**
