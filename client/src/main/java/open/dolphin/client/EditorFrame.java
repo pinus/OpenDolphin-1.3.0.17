@@ -7,6 +7,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.Action;
@@ -133,7 +134,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * @return 全インスタンスを保持するリスト
      */
     public static List<Chart> getAllEditorFrames() {
-        return allEditorFrames;
+        return Collections.unmodifiableList(allEditorFrames);
     }
 
     private static PageFormat pageFormat = null;

@@ -7,8 +7,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.*;
-import java.beans.EventHandler;
-import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -305,10 +303,8 @@ public class WaitingListImpl extends AbstractMainComponent {
      */
     private void connect() {
 
-        // Chart のリスナになる
-        // 患者カルテの Open/Save/SaveTemp の通知を受けて受付リストの表示を制御する
-        // EventHandler で this.updateState(newValue) が生成される
-        ChartImpl.addPropertyChangeListener(ChartImpl.CHART_STATE, EventHandler.create(PropertyChangeListener.class, this, "updateState", "newValue"));
+        // ChartImpl から PatientVisitModel を受け取って update する.
+        ChartImpl.addPvtListener(this::updateState);
 
         // 靴のアイコンをクリックした時来院情報を検索する
         view.getKutuBtn().addActionListener(e -> checkFullPvt());
@@ -750,7 +746,6 @@ public class WaitingListImpl extends AbstractMainComponent {
                 }
                 pdl.updatePvt(updated);
                 pvtTableModel.fireTableRowsUpdated(row, row);
-
                 startCheckTimer();
             };
             executor.submit(r);
@@ -1387,7 +1382,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 JCheckBoxMenuItem item = new JCheckBoxMenuItem(pop5);
                 contextMenu.add(item);
                 item.setSelected(ageDisplay);
-                item.addActionListener(EventHandler.create(ActionListener.class, WaitingListImpl.this, "switchAgeDisplay"));
+                item.addActionListener(ae -> WaitingListImpl.this.switchAgeDisplay());
                 oddEven.setIconTextGap(12);
                 sex.setIconTextGap(12);
                 item.setIconTextGap(12);

@@ -23,8 +23,8 @@ public class RowTipsTable extends JTable {
         int row = rowAtPoint(e.getPoint());
         PatientVisitModel pvt = (PatientVisitModel) model.getObject(row);
 
-//pns^  待ち時間表示
-        if (pvt == null) return null;
+        // 待ち時間表示
+        if (pvt == null) { return null; }
         Date pvtDate = ModelUtils.getDateTimeAsObject(pvt.getPvtDate());
         int pvtState = pvt.getState();
         String waitingTime = "";
@@ -34,8 +34,5 @@ public class RowTipsTable extends JTable {
         }
 
         return pvt.getPatient().getKanaName() + waitingTime;
-//pns$
-
-//      return pvt != null ? pvt.getPatient().getKanaName() : null;
     }
 }
