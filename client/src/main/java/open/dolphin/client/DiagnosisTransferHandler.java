@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -81,7 +82,7 @@ public class DiagnosisTransferHandler extends PatchedTransferHandler {
             StampTreeNode droppedNode = (StampTreeNode) t.getTransferData(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor);
 
             // Import するイストを生成する
-            ArrayList<ModuleInfoBean> importList = new ArrayList<ModuleInfoBean>(3);
+            List<ModuleInfoBean> importList = new ArrayList<>(3);
 
             // 葉の場合
             if (droppedNode.isLeaf()) {

@@ -349,7 +349,7 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
                             @Override
                             protected String doInBackground() throws Exception {
                                 blockGlass.block();
-                                ArrayList<StampTree> publishList = new ArrayList<StampTree>(IInfoModel.STAMP_ENTITIES.length);
+                                List<StampTree> publishList = new ArrayList<>(IInfoModel.STAMP_ENTITIES.length);
                                 List<StampTree> trees = stampBox.getAllTrees();
                                 publishList.addAll(trees);
                                 String ret = director.build(publishList);

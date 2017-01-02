@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.beans.PropertyChangeSupport;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TooManyListenersException;
@@ -575,7 +575,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             if (sendClaim) {
                 // modify 時に既に中途終了データがあれば sendClaim = true にする
                 OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
-                ArrayList<OrcaEntry> entries = dao.getWksryactEntries(getContext().getPatient().getPatientId());
+                List<OrcaEntry> entries = dao.getWksryactEntries(getContext().getPatient().getPatientId());
                 if (entries.isEmpty()) {
                     sendClaim = Project.getSendClaimModify();
                 } else {

@@ -1,7 +1,7 @@
 package open.dolphin.client;
 
 import java.awt.Component;
-import java.util.ArrayList;
+import java.util.List;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -54,7 +54,7 @@ public class OrcaTree extends StampTree {
             protected Boolean doInBackground() throws Exception {
                 OrcaMasterDao dao = new OrcaMasterDao();
 
-                ArrayList<OrcaEntry> entries = dao.getOrcaInputCdList();
+                List<OrcaEntry> entries = dao.getOrcaInputCdList();
                 StampTreeNode root = (StampTreeNode) getModel().getRoot();
 
                 for (OrcaEntry entry : entries) {

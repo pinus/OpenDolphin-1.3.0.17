@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.awt.datatransfer.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -197,7 +198,7 @@ public class SOATransferHandler extends TransferHandler {
 
             // Dropされたノードの葉を列挙する
             Enumeration e = droppedNode.preorderEnumeration();
-            ArrayList<ModuleInfoBean> addList = new ArrayList<ModuleInfoBean>(5);
+            List<ModuleInfoBean> addList = new ArrayList<>(5);
             String role = null;
             while (e.hasMoreElements()) {
                 StampTreeNode node = (StampTreeNode) e.nextElement();

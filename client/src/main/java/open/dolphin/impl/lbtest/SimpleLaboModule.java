@@ -28,7 +28,7 @@ public class SimpleLaboModule {
     private String testCenterName;
     private String set;
 
-    private ArrayList simpleLaboTests;
+    private List simpleLaboTests;
 
     /** Creates a new instance of SimpleLaboModule */
     public SimpleLaboModule() {
@@ -130,11 +130,11 @@ public class SimpleLaboModule {
         set = val;
     }
 
-    public ArrayList getSimpleLaboTest() {
+    public List getSimpleLaboTest() {
         return simpleLaboTests;
     }
 
-    public void setSimpleLaboTest(ArrayList list) {
+    public void setSimpleLaboTest(List list) {
         simpleLaboTests = list;
     }
 

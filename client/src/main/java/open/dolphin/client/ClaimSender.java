@@ -154,12 +154,13 @@ public class ClaimSender {
 
     /**
      * 診断名の CLAIM 送信
+     * @param diagnoses
      * @param rd
      */
     public void send(List<RegisteredDiagnosisModel> diagnoses) {
 
         // DocInfo & RD をカプセル化したアイテムを生成する
-        ArrayList<DiagnosisModuleItem> moduleItems = new ArrayList<DiagnosisModuleItem>();
+        List<DiagnosisModuleItem> moduleItems = new ArrayList<>();
 
         for (RegisteredDiagnosisModel rd : diagnoses) {
             DocInfoModel docInfo = new DocInfoModel();

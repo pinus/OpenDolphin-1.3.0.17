@@ -754,7 +754,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
                 logger.debug("stampInfoDropped succeeded");
                 if (list != null) {
 
-                    ArrayList<ModuleModel> duplicateCheckList = new ArrayList<>();
+                    List<ModuleModel> duplicateCheckList = new ArrayList<>();
 
                     for (int i = 0; i < list.size(); i++) {
                         ModuleInfoBean stampInfo = addList.get(i);

@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import open.dolphin.client.*;
 import open.dolphin.dao.OrcaEntry;
@@ -123,7 +124,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
                 getProjectStub().setClaimAddress(claimAddressField.getText().trim());
 
                 OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
-                ArrayList<OrcaEntry> entry = dao.getSyskanriEntries("1010"); // 1010 職員情報
+                List<OrcaEntry> entry = dao.getSyskanriEntries("1010"); // 1010 職員情報
 
                 for (OrcaEntry e : entry) {
                     String drid = e.getComment();   // 最初の 16 文字が ユーザー ID

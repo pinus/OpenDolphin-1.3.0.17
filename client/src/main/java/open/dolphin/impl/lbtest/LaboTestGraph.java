@@ -3,9 +3,9 @@ package open.dolphin.impl.lbtest;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.util.ArrayList;
 import javax.swing.*;
-import java.util.*;
-import open.dolphin.client.*;
+import java.util.List;
 
 /**
  * LaboTestGraph
@@ -130,7 +130,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
         }
     }
 
-    public void setTestValue(String[] sampleTime, ArrayList list, int mode) {
+    public void setTestValue(String[] sampleTime, List list, int mode) {
 
         if (data != null) {
             itemName = null;
@@ -181,7 +181,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
         // テスト項目数分繰り返す
         for (int i = 0; i < itemCount; i++) {
 
-            ArrayList al = (ArrayList) list.get(i);
+            List al = (List) list.get(i);
             int size = al.size();
             boolean hasName = false;
             boolean hasUnit = false;
@@ -756,7 +756,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
         // スケールの増分単位
         double unit = k * base[index];
 
-        ArrayList ret = new ArrayList();
+        List ret = new ArrayList();
         double start = 0.0D;
 
         if (min < 0.0F) {

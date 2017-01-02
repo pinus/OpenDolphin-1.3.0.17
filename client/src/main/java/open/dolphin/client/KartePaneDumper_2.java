@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Enumeration;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -26,9 +27,9 @@ public class KartePaneDumper_2 {
 
     private static final String[] REPLACES = new String[] { "&lt;", "&gt;", "&amp;" ,"&apos;", "&quot;"};
 
-    private ArrayList<ModuleModel> moduleList;
+    private List<ModuleModel> moduleList;
 
-    private ArrayList<SchemaModel> schemaList;
+    private List<SchemaModel> schemaList;
 
     private String spec;
 

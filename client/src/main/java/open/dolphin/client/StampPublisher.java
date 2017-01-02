@@ -400,7 +400,7 @@ public class StampPublisher {
     public void publish() {
 
         // 公開するStampTreeを取得する
-        ArrayList<StampTree> publishList = new ArrayList<>();
+        List<StampTree> publishList = new ArrayList<>();
 
         // Entity のカンマ連結用 StringBuilder
         StringBuilder sb = new StringBuilder();

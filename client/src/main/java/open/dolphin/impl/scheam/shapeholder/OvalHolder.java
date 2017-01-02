@@ -1,6 +1,7 @@
 package open.dolphin.impl.scheam.shapeholder;
 
 import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
 import open.dolphin.impl.scheam.FillMode;
 import open.dolphin.impl.scheam.ShapeHolderBounds;
@@ -39,8 +40,8 @@ public class OvalHolder extends ShapeHolderBase {
         ShapeHolderBounds bounds = getBounds();
         double a = bounds.getWidth() / 2;
         double b = bounds.getHeight() / 2;
-        ArrayList<Double> px = new ArrayList<>();
-        ArrayList<Double> py = new ArrayList<>();
+        List<Double> px = new ArrayList<>();
+        List<Double> py = new ArrayList<>();
 
         final int FR = 120;
         for (double f=0; f<FR; f++) {

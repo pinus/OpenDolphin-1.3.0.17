@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.StringTokenizer;
 import open.dolphin.JsonConverter;
 import open.dolphin.infomodel.DepartmentModel;
@@ -213,7 +214,7 @@ public class InitDatabase {
             InputStreamReader ir = new InputStreamReader(in, ENCODING);
             BufferedReader reader = new BufferedReader(ir); ){
 
-            ArrayList<RadiologyMethodValue> list = null;
+            List<RadiologyMethodValue> list = null;
 
             String line;
             while ( (line = reader.readLine()) != null) {

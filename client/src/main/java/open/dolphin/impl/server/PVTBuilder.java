@@ -112,7 +112,7 @@ public final class PVTBuilder {
 
     private TelephoneModel curTelephone;
 
-    private ArrayList<PVTHealthInsuranceModel> pvtInsurnaces;
+    private List<PVTHealthInsuranceModel> pvtInsurnaces;
 
     private PVTHealthInsuranceModel curInsurance;
 

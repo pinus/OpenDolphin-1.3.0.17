@@ -8,6 +8,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import javax.swing.*;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIFactory;
@@ -31,8 +32,8 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
 
     // 全体のモデル
     private HashMap<String, AbstractSettingPanel> settingMap;
-    private ArrayList<AbstractSettingPanel> allSettings;
-    private ArrayList<JToggleButton> allBtns;
+    private List<AbstractSettingPanel> allSettings;
+    private List<JToggleButton> allBtns;
     private String startSettingName;
     private boolean loginState;
     private PropertyChangeSupport boundSupport;

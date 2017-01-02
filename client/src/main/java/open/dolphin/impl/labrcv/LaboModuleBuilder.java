@@ -62,7 +62,7 @@ public class LaboModuleBuilder {
     private String patientIdTypeTableId;
     private String moduleUUID;
     private String confirmDate;
-    private ArrayList<LaboModuleValue> allModules;
+    private List<LaboModuleValue> allModules;
     private LaboModuleValue laboModule;
     private LaboSpecimenValue laboSpecimen;
     private LaboItemValue laboItem;

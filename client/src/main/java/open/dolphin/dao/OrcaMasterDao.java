@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import open.dolphin.client.DiagnosisDocument;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.ClaimConst;
@@ -43,8 +44,8 @@ public class OrcaMasterDao extends OrcaDao {
     private static final String SQL_TBL_WKSRYACT = "select karte_key, mod_flg from tbl_wksryact "
             + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
 
-    public ArrayList<OrcaEntry> getWksryactEntries(String ptId) {
-        ArrayList<OrcaEntry> ret = new ArrayList<OrcaEntry>();
+    public List<OrcaEntry> getWksryactEntries(String ptId) {
+        List<OrcaEntry> ret = new ArrayList<OrcaEntry>();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -80,8 +81,8 @@ public class OrcaMasterDao extends OrcaDao {
      * @param kanricd
      * @return
      */
-    public ArrayList<OrcaEntry> getSyskanriEntries(String kanricd) {
-        ArrayList<OrcaEntry> ret = new ArrayList<OrcaEntry>();
+    public List<OrcaEntry> getSyskanriEntries(String kanricd) {
+        List<OrcaEntry> ret = new ArrayList<>();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -117,9 +118,9 @@ public class OrcaMasterDao extends OrcaDao {
      * @param keyword
      * @return
      */
-    public ArrayList<OrcaEntry> getTensuEntries(String keyword) {
-        ArrayList<OrcaEntry> ret = new ArrayList<OrcaEntry>();
-        ArrayList<OrcaEntry> expired = new ArrayList<OrcaEntry>();
+    public List<OrcaEntry> getTensuEntries(String keyword) {
+        List<OrcaEntry> ret = new ArrayList<>();
+        List<OrcaEntry> expired = new ArrayList<>();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -167,9 +168,9 @@ public class OrcaMasterDao extends OrcaDao {
      * @param keyword
      * @return
      */
-    public ArrayList<OrcaEntry> getByomeiEntries(String keyword) {
-        ArrayList<OrcaEntry> ret = new ArrayList<OrcaEntry>();
-        ArrayList<OrcaEntry> expired = new ArrayList<OrcaEntry>();
+    public List<OrcaEntry> getByomeiEntries(String keyword) {
+        List<OrcaEntry> ret = new ArrayList<>();
+        List<OrcaEntry> expired = new ArrayList<>();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -207,12 +208,12 @@ public class OrcaMasterDao extends OrcaDao {
     /**
      * 病名コードのリストに対応する OrcaEntry を返す
      * DiagnosisDocument, DiagnosisTablePanel から呼ばれる
-     * @param srycdList 病名コードのセット
+     * @param codes
      * @return DiseaseEntry のリスト
      */
-    public ArrayList<OrcaEntry> getByomeiEntries(String[] codes) {
+    public List<OrcaEntry> getByomeiEntries(String[] codes) {
 
-        ArrayList<OrcaEntry> ret = new ArrayList<OrcaEntry>();
+        List<OrcaEntry> ret = new ArrayList<>();
         if (codes == null || codes.length == 0) return ret;
 
         String sql = (codes.length == 1)?
@@ -256,8 +257,8 @@ public class OrcaMasterDao extends OrcaDao {
      * OrcaTree から呼ばれる
      * @return 入力セットコード(inputcd)の昇順リスト
      */
-    public ArrayList<OrcaEntry> getOrcaInputCdList() {
-        ArrayList<OrcaEntry> ret = new ArrayList<OrcaEntry>();
+    public List<OrcaEntry> getOrcaInputCdList() {
+        List<OrcaEntry> ret = new ArrayList<>();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -293,8 +294,8 @@ public class OrcaMasterDao extends OrcaDao {
      * @param stampInfo
      * @return
      */
-    public ArrayList<ModuleModel> getStamp(ModuleInfoBean stampInfo) {
-        ArrayList<ModuleModel> ret = new ArrayList<ModuleModel>();
+    public List<ModuleModel> getStamp(ModuleInfoBean stampInfo) {
+        List<ModuleModel> ret = new ArrayList<>();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -303,7 +304,7 @@ public class OrcaMasterDao extends OrcaDao {
             con = getConnection();
 
             // tbl_inputset の検索
-            ArrayList<OrcaEntry> inputsetEntries = new ArrayList<OrcaEntry>();
+            List<OrcaEntry> inputsetEntries = new ArrayList<>();
             ps = con.prepareStatement(SQL_TBL_INPUTSET);
             ps.setInt(1, getHospNum());
             ps.setString(2, stampInfo.getStampId());
@@ -316,9 +317,9 @@ public class OrcaMasterDao extends OrcaDao {
 
             // OrcaEntries を解釈して，stamp に対応した OrcaEntries に分割する
             // 分割した Entries を入れる list
-            ArrayList<ArrayList<OrcaEntry>> lists = new ArrayList<ArrayList<OrcaEntry>>();
+            List<List<OrcaEntry>> lists = new ArrayList<>();
             // Entries を入れておくバッファ
-            ArrayList<OrcaEntry> entries = new ArrayList<OrcaEntry>();
+            List<OrcaEntry> entries = new ArrayList<>();
 
             // １行ずつ解釈して，とってきた inputsetEntries をスタンプ単位に分離して lists に格納
             boolean onAdmin = false;
@@ -349,7 +350,7 @@ public class OrcaMasterDao extends OrcaDao {
             lists.add(entries);
 
             // その情報を元に，tbl_tensu を検索して ModuleModel を作成する
-            for (ArrayList<OrcaEntry> list : lists) {
+            for (List<OrcaEntry> list : lists) {
                 ModuleModel stamp = createStamp(stampInfo, list);
                 ret.add(stamp);
             }
@@ -374,7 +375,7 @@ public class OrcaMasterDao extends OrcaDao {
      * @param entries
      * @return
      */
-    private ModuleModel createStamp(ModuleInfoBean stampInfo, ArrayList<OrcaEntry> inputsetEntries) throws SQLException, Exception {
+    private ModuleModel createStamp(ModuleInfoBean stampInfo, List<OrcaEntry> inputsetEntries) throws SQLException, Exception {
 
         ModuleModel stamp = null;
         ClaimBundle bundle = null;
@@ -573,8 +574,8 @@ public class OrcaMasterDao extends OrcaDao {
      * @param ascend
      * @return
      */
-    public ArrayList<RegisteredDiagnosisModel> getOrcaDisease(String patientId, String from, String to, Boolean ascend) {
-        ArrayList<RegisteredDiagnosisModel> ret = new ArrayList<RegisteredDiagnosisModel>();
+    public List<RegisteredDiagnosisModel> getOrcaDisease(String patientId, String from, String to, Boolean ascend) {
+        List<RegisteredDiagnosisModel> ret = new ArrayList<>();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -601,7 +602,7 @@ public class OrcaMasterDao extends OrcaDao {
             ps.setString(4, to);
 
             rs = ps.executeQuery();
-            ArrayList<OrcaEntry> ptbyomeiEntries = new ArrayList<OrcaEntry>();
+            List<OrcaEntry> ptbyomeiEntries = new ArrayList<>();
             while (rs.next()) ptbyomeiEntries.add(EntryFactory.createPtByomeiEntry(rs));
 
             for (OrcaEntry entry : ptbyomeiEntries) {

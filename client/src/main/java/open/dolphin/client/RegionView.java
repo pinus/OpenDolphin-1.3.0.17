@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -700,8 +701,8 @@ public class RegionView extends javax.swing.JDialog {
      * ボタンの状態に応じて ClaimItem を作って返す
      * @return
      */
-    public ArrayList<ClaimItem> getValue() {
-        ArrayList<ClaimItem> list = new ArrayList<ClaimItem>();
+    public List<ClaimItem> getValue() {
+        List<ClaimItem> list = new ArrayList<>();
 
         for (int i=0; i<MASTER.length; i+=2) {
             String key = MASTER[i];

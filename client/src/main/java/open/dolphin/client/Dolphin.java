@@ -474,7 +474,7 @@ public class Dolphin implements MainWindow {
                 if (valid) {
 
                     // 設定の変化を調べ，サービスの制御を行う
-                    ArrayList<String> messages = new ArrayList<>(2);
+                    List<String> messages = new ArrayList<>(2);
 
                     // SendClaim
                     boolean oldRunning = saveEnv.getProperty(GUIConst.KEY_SEND_CLAIM).equals(GUIConst.SERVICE_RUNNING);
@@ -533,7 +533,7 @@ public class Dolphin implements MainWindow {
         boolean dirty = false;
 
         // Chart を調べる
-        ArrayList<ChartImpl> allChart = ChartImpl.getAllChart();
+        List<ChartImpl> allChart = ChartImpl.getAllChart();
         if (allChart != null && allChart.size() > 0) {
             for (ChartImpl chart : allChart) {
                 if (chart.isDirty()) {

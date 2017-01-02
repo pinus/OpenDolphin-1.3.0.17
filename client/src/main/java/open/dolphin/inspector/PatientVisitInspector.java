@@ -53,7 +53,7 @@ public class PatientVisitInspector {
 
         // 来院歴
         if (latestVisit != null && !latestVisit.isEmpty()) {
-            ArrayList<SimpleDate> simpleDates = new ArrayList<SimpleDate>(latestVisit.size());
+            List<SimpleDate> simpleDates = new ArrayList<>(latestVisit.size());
             for (String pvtDate : latestVisit) {
                 SimpleDate sd = SimpleDate.mmlDateToSimpleDate(pvtDate);
                 sd.setEventCode(pvtEvent);

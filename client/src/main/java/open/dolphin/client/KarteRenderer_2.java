@@ -3,6 +3,7 @@ package open.dolphin.client;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.text.*;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
@@ -86,9 +87,9 @@ public class KarteRenderer_2 {
 
     private boolean bSoaPane;
 
-    private ArrayList<ModuleModel> soaModules;
+    private List<ModuleModel> soaModules;
 
-    private ArrayList<ModuleModel> pModules;
+    private List<ModuleModel> pModules;
 
     private final Logger logger;
 

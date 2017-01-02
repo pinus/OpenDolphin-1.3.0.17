@@ -12,18 +12,15 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-
 import javax.swing.JPopupMenu;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.MyBorderFactory;
-import open.dolphin.ui.MyJPopupMenu;
 
 /**
  * CalendarCardPanel
@@ -48,7 +45,7 @@ public class CalendarCardPanel extends JPanel  {
     private int maxMonth = 24;
     private HashMap<String, LiteCalendarPanel> calendars;
     private HashMap colorTable;
-    private ArrayList markList;
+    private List markList;
     private PropertyChangeSupport boundSupport;
     private PropertyChangeListener calendarListener;
     private JPanel cmdEastPanel;
@@ -163,7 +160,7 @@ public class CalendarCardPanel extends JPanel  {
         controlNavigation();
     }
 
-    public void setMarkList(ArrayList newMark) {
+    public void setMarkList(List newMark) {
 
         if (markList != newMark) {
             markList = newMark;

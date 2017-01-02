@@ -3,7 +3,7 @@ package open.dolphin.client;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -92,7 +92,7 @@ public class ChartToolBar extends JToolBar {
             @Override
             public void mousePressed(MouseEvent e) {
                 MyJPopupMenu popup = new MyJPopupMenu();
-                final ArrayList<WindowSupport> windows = WindowSupport.getAllWindows();
+                final List<WindowSupport> windows = WindowSupport.getAllWindows();
                 Action action;
                 String name;
 

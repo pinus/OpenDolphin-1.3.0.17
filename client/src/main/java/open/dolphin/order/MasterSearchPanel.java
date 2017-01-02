@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -372,54 +373,17 @@ public class MasterSearchPanel extends JPanel {
         }
     }
 
-    private class MasterTableSorter extends TableRowSorter {
-        private final int CODE_COL = 0;
+    private class MasterTableSorter extends TableRowSorter<ObjectReflectTableModel> {
 
         private MasterTableSorter(final ObjectReflectTableModel tableModel) {
             super(tableModel);
-
-            // code コラムの comparator
-/*            setComparator(CODE_COL, new Comparator() {
-                @Override
-                public int compare(Object o1, Object o2) {
-                    String s1 = (o1==null)? "" : String.valueOf(o1);
-                    String s2 = (o2==null)? "" : String.valueOf(o2);
-
-                    // endDate が設定されていたら，いつも後ろにする
-                    boolean valid1 = false, valid2 = false;
-                    for (Object o : tableModel.getObjectList()) {
-                        OrcaEntry e = (OrcaEntry)o;
-                        if (s1.equals(e.getCode())) valid1 = "99999999".equals(e.getEndDate());
-                        if (s2.equals(e.getCode())) valid2 = "99999999".equals(e.getEndDate());
-                        //if (s1.equals(e.getCode())) valid1 = (todayDate.compareTo(e.getEndDate()) < 0);
-                        //if (s2.equals(e.getCode())) valid2 = (todayDate.compareTo(e.getEndDate()) < 0);
-                    }
-
-                    SortOrder sortOrder = null;
-                    ArrayList<SortKey> keys = new ArrayList<SortKey>(getSortKeys());
-                    if(!keys.isEmpty()) {
-                        SortKey sortKey = keys.get(0);
-                        sortOrder = sortKey.getSortOrder();
-                        //System.out.println("sortorder=" + sortOrder);
-                    }
-
-                    if (valid1 && !valid2) return (sortOrder == SortOrder.ASCENDING)? -1 : 1;
-                    if (!valid1 && valid2) return (sortOrder == SortOrder.ASCENDING)? 1 : -1;;
-
-                    // Z は 0 と判断
-                    s1 = s1.replaceAll("Z", "0");
-                    s2 = s2.replaceAll("Z", "0");
-
-                    return s1.compareTo(s2);
-                }
-            });*/
         }
 
         // ASCENDING -> DESENDING -> 初期状態 と切り替える
         @Override
         public void toggleSortOrder(int column) {
             if(column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
-                ArrayList<SortKey> keys = new ArrayList<SortKey>(getSortKeys());
+                List<? extends SortKey> keys = getSortKeys();
                 if(!keys.isEmpty()) {
                     SortKey sortKey = keys.get(0);
                     if(sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {

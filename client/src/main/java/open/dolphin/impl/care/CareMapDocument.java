@@ -692,14 +692,14 @@ public final class CareMapDocument extends AbstractChartDocument {
     @Override
     public void save() {
 
-        final ArrayList<AppointmentModel> results = new ArrayList<AppointmentModel>();
+        final List<AppointmentModel> results = new ArrayList<>();
 
         // カレンダー単位に抽出する
         for (SimpleCalendarPanel c : cPool.values()) {
 
             if (c.getRelativeMonth() >= 0) {
 
-                ArrayList<AppointmentModel> list = c.getUpdatedAppoints();
+                List<AppointmentModel> list = c.getUpdatedAppoints();
                 int size = list.size();
                 for (int i = 0; i < size; i++) {
                     AppointmentModel appo = list.get(i);

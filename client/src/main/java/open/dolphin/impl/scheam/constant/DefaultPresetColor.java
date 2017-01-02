@@ -39,7 +39,7 @@ public class DefaultPresetColor {
     }
 
     /** seeds から計算して作った色を入れる配列 */
-    private static final ArrayList<Color> colorList = new ArrayList<>();
+    private static final List<Color> colorList = new ArrayList<>();
 
     /**  色配列を seeds から計算して作る */
     static {

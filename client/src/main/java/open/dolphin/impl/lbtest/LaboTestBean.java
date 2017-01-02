@@ -540,8 +540,8 @@ public class LaboTestBean extends AbstractChartDocument {
             return;
         }
 
-        ArrayList retList = null;
-        ArrayList list = null;
+        List retList = null;
+        List list = null;
 
         int columnCount = table.getColumnCount();
         //int columnCount = laboModules.size();

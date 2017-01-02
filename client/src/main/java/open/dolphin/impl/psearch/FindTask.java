@@ -110,7 +110,7 @@ class FindTask extends Task<Collection> {
      */
     protected void setResult() {
 
-        tableModel.setObjectList((ArrayList) result);
+        tableModel.setObjectList(result);
 
         // 件数表示
         int cnt = result != null ? result.size() : 0;

@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -25,7 +26,7 @@ import open.dolphin.ui.MainFrame;
  */
 public class WindowSupport implements MenuListener {
 
-    final private static ArrayList<WindowSupport> allWindows = new ArrayList<>();
+    final private static List<WindowSupport> allWindows = new ArrayList<>();
 
     private static final String WINDOW_MWNU_NAME = "ウインドウ";
 
@@ -105,7 +106,7 @@ public class WindowSupport implements MenuListener {
         return ret;
     }
 
-  public static ArrayList<WindowSupport> getAllWindows() {
+  public static List<WindowSupport> getAllWindows() {
         return allWindows;
     }
 

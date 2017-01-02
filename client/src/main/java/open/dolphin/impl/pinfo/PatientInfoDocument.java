@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
@@ -400,7 +401,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
 
         private String[] columnNames;
 
-        private ArrayList<String[]> data;
+        private List<String[]> data;
 
         public HealthInsuranceTableModel(PVTHealthInsuranceModel insurance,
                 String[] columnNames) {
@@ -408,13 +409,13 @@ public class PatientInfoDocument extends AbstractChartDocument {
             data = getData(insurance);
         }
 
-        private ArrayList getData(PVTHealthInsuranceModel insurance) {
+        private List getData(PVTHealthInsuranceModel insurance) {
 
             if (insurance == null) {
                 return null;
             }
 
-            ArrayList<String[]> list = new ArrayList<String[]>();
+            List<String[]> list = new ArrayList<String[]>();
 
             String[] rowData = new String[2];
             rowData[0] = "保険種別";

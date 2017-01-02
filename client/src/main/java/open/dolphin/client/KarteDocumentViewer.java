@@ -47,7 +47,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     // このクラスの状態マネージャ
     private StateMgr stateMgr;
     // 選択を解除されたカルテのリスト
-    private ArrayList<KarteViewer> removed;
+    private List<KarteViewer> removed;
     // karteViewer を並べたパネル
     private final JPanel scrollerPanel;
     // scrollerPanel を表示する JScrollPane: DocumentBridgeImpl で作られる

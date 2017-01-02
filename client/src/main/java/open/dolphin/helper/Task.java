@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
@@ -14,21 +15,22 @@ import open.dolphin.ui.MyProgressMonitor;
 /**
  * Progress 表示付き Task
  * @author pns
+ * @param <T>
  */
 public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionListener, PropertyChangeListener {
 
     /** 起動している Task instance のリスト. 表示される ProgressMonitor を１つにするのに使う */
-    private static ArrayList<Task> taskList = new ArrayList<Task>();
+    private static List<Task> taskList = new ArrayList<>();
 
     /** ProgressMonitor のレンジは 0-100 で固定なので MAX は 100 で固定する */
     private static final double MAX = 100;
+    /** 進捗状況を表示する間隔 (msec) */
+    private static int INTERVAL = 500;
 
     private MyProgressMonitor progressMonitor;
     private Timer timer;
     private InputBlocker blocker;
     private int timeout = 0;
-    /** 進捗状況を表示する間隔 (msec) */
-    private int interval = 500;
     /** interval と timeout から計算される ProgressMonitor の増加量 */
     private double tick = 0;
     /** 進捗値　0〜MAX の間を動く */
@@ -61,14 +63,14 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
         // interval (msec) ごとに interrupt して進捗状況を表示
         timeout = maxEstimation;
         if (maxEstimation != 0) {
-            tick = MAX * interval / maxEstimation;
+            tick = MAX * INTERVAL / maxEstimation;
         }
         // this をコンストラクタから分離
         initialize(parent, message, note);
     }
 
     private void initialize(Component c, Object message, String note) {
-        timer = new Timer(interval, this);
+        timer = new Timer(INTERVAL, this);
         progressMonitor = new MyProgressMonitor(c, message, note, 0, 100);
         taskList.add(this);
         addPropertyChangeListener(this);
@@ -76,7 +78,7 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
 
     /**
      * ProgressMonitor を出す前に無条件で待つ時間 (default = 500 msec)
-     * @param sec
+     * @param msec
      */
     public void setMillisToDecidePopup(int msec) {
         progressMonitor.setMillisToDecideToPopup(msec);
@@ -151,7 +153,7 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
         } else  {
             current += tick;
             // timeout した場合は強制的に cancel
-            if (current >= MAX) cancel(true);
+            if (current >= MAX) { cancel(true); }
         }
     }
     /**
@@ -166,13 +168,13 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
             switch ((StateValue) e.getNewValue()) {
                 case STARTED:
                     // 一定時間ごとに割り込んで進捗状況を表示するタイマーをスタート
-                    if (!timer.isRunning()) timer.start();
-                    if (blocker != null) blocker.block();
+                    if (!timer.isRunning()) { timer.start(); }
+                    if (blocker != null) { blocker.block(); }
                     break;
 
                 case DONE:
                     timer.stop();
-                    if (blocker != null) blocker.unblock();
+                    if (blocker != null) { blocker.unblock(); }
                     break;
             }
         // setProgress した場合呼ばれる
@@ -188,7 +190,7 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
         taskList.remove(this);
         progressMonitor.close();
 
-        if (isCancelled()) cancelled();
+        if (isCancelled()) { cancelled(); }
         else {
             try {
                 succeeded(get());

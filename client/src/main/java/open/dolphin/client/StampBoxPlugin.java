@@ -888,7 +888,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         //
         // User Tree のみを保存する
         //
-        ArrayList<StampTree> list = (ArrayList<StampTree>) userBox.getAllTrees();
+        List<StampTree> list = userBox.getAllTrees();
         if (list == null || list.isEmpty()) {
             return null;
         }
@@ -960,7 +960,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     public List<StampTree> getAllAllPTrees() {
 
         int cnt = parentBox.getTabCount();
-        ArrayList<StampTree> ret = new ArrayList<>();
+        List<StampTree> ret = new ArrayList<>();
 
         for (int i = 0; i < cnt; i++) {
             AbstractStampBox stb = (AbstractStampBox) parentBox.getComponentAt(i);

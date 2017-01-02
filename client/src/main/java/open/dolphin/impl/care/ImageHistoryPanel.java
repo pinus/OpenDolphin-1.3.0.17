@@ -90,7 +90,6 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
         myParent = doc;
     }
 
-    @SuppressWarnings("unchecked")
     public void setImageList(List allImages) {
 
         if (allImages != null) {
@@ -99,7 +98,7 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
             List list = new ArrayList();
 
             for (int i = 0; i < size; i++) {
-                ArrayList l = (ArrayList) allImages.get(i);
+                List l = (List) allImages.get(i);
                 if (l != null) {
                     for (int j = 0; j < l.size(); j++) {
                         list.add(l.get(j));

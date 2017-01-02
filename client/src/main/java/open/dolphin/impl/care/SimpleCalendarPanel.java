@@ -5,7 +5,11 @@ import java.awt.datatransfer.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.beans.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
 import open.dolphin.client.*;
@@ -197,9 +201,9 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      * 予約のある日をリストで返す.
      * @return 予約日リスト
      */
-    public ArrayList<AppointmentModel> getAppointDays() {
+    public List<AppointmentModel> getAppointDays() {
 
-        ArrayList<AppointmentModel> results = new ArrayList<AppointmentModel>();
+        List<AppointmentModel> results = new ArrayList<>();
         MedicalEvent event = null;
         AppointmentModel appoint = null;
 
@@ -239,9 +243,9 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      * 更新された予約のリストを返す.
      * @return 更新された予約のリスト
      */
-    public ArrayList<AppointmentModel> getUpdatedAppoints() {
+    public List<AppointmentModel> getUpdatedAppoints() {
 
-        ArrayList<AppointmentModel> results = new ArrayList<AppointmentModel>();
+        List<AppointmentModel> results = new ArrayList<>();
         MedicalEvent event = null;
         AppointmentModel appoint = null;
 
@@ -277,7 +281,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         return results;
     }
 
-    public void setModuleList(String event, ArrayList list) {
+    public void setModuleList(String event, List list) {
 
         markEvent = event;
         clearMark();
@@ -318,7 +322,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
     }
 
-    public void setImageList(String event, ArrayList list) {
+    public void setImageList(String event, List list) {
 
         markEvent = event;
         clearMark();
@@ -359,7 +363,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
     }
 
-    public void setAppointmentList(ArrayList list) {
+    public void setAppointmentList(List list) {
 
         // 当月以降のカレンダのみ検索する
         if (relativeMonth < 0 ) {
@@ -998,7 +1002,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     public static class SimpleCalendarPool {
 
         private static SimpleCalendarPool instance = new SimpleCalendarPool();
-        private HashMap<String, ArrayList> poolDictionary = new HashMap<String, ArrayList>();
+        private HashMap<String, List> poolDictionary = new HashMap<>();
 
         private SimpleCalendarPool() {
         }
@@ -1008,7 +1012,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
 
         public synchronized SimpleCalendarPanel acquireSimpleCalendar(int n) {
-            ArrayList pool = poolDictionary.get(String.valueOf(n));
+            List pool = poolDictionary.get(String.valueOf(n));
             if (pool != null) {
                 int size = pool.size();
                 size--;
@@ -1020,9 +1024,9 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         public synchronized void releaseSimpleCalendar(SimpleCalendarPanel c) {
             int n = c.getRelativeMonth();
             String key = String.valueOf(n);
-            ArrayList pool = poolDictionary.get(key);
+            List pool = poolDictionary.get(key);
             if (pool == null) {
-                pool = new ArrayList<SimpleCalendarPanel>(5);
+                pool = new ArrayList<>(5);
                 poolDictionary.put(key, pool);
             }
             pool.add(c);

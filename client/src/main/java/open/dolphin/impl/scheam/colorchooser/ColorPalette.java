@@ -1,6 +1,7 @@
 package open.dolphin.impl.scheam.colorchooser;
 
 import java.util.ArrayList;
+import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -32,7 +33,7 @@ public class ColorPalette extends Pane {
     /** 各々のラベルのサイズ */
     private static final int PALETTE_LABEL_SIZE = 16;
     /** 色配列から作った color labels を保持する配列 */
-    private final ArrayList<ColorLabel> labelList = new ArrayList<>();
+    private final List<ColorLabel> labelList = new ArrayList<>();
     /** opacity を管理するスライダー */
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty();
     /** 選択した色を保持する property. これは opacity も保持する.  */

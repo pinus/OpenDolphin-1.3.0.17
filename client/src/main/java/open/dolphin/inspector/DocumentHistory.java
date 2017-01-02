@@ -488,7 +488,7 @@ public class DocumentHistory {
                     JTable table = view.getTable();
                     int[] selectedRows = table.getSelectedRows();
                     if (selectedRows.length > 0) {
-                        ArrayList<DocInfoModel> list = new ArrayList<DocInfoModel>(1);
+                        List<DocInfoModel> list = new ArrayList<>(1);
                         for (int i = 0; i < selectedRows.length; i++) {
                             DocInfoModel obj = (DocInfoModel) tableModel.getObject(selectedRows[i]);
                             if (obj != null) {

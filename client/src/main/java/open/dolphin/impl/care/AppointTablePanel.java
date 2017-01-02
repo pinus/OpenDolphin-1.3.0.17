@@ -91,7 +91,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
                 // newValue = 予約日がセットされた SimpleCalendarPanel[]
                 SimpleCalendarPanel[] calendars = (SimpleCalendarPanel[]) e.getNewValue();
 
-                ArrayList<AppointmentModel> allList = new ArrayList<>();
+                List<AppointmentModel> allList = new ArrayList<>();
                 Arrays.asList(calendars).forEach(calendar -> allList.addAll(calendar.getAppointDays()));
 
                 // table を全部描き直す

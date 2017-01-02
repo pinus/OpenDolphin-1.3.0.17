@@ -3,7 +3,6 @@ package open.dolphin.client;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.EventHandler;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.SimpleDateFormat;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.helper.Task;
 import open.dolphin.helper.WindowSupport;
@@ -43,7 +41,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     public static final String CHART_STATE = "chartStateProp";
 
     //  Chart インスタンスを管理するstatic 変数
-    private static final ArrayList<ChartImpl> allCharts = new ArrayList<>(3);
+    private static final List<ChartImpl> allCharts = new ArrayList<>(3);
     // Chart 状態の通知を行うための static 束縛サポート
     private static final PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());
     /// Document Plugin を格納する TabbedPane
@@ -622,7 +620,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         tab.setSelectedIndex(0);
 
         // tab に プラグインを遅延生成するためのの ChangeListener を追加する
-        tab.addChangeListener(EventHandler.create(ChangeListener.class, this, "tabChanged", ""));
+        tab.addChangeListener(this::tabChanged);
 
         // getDiagnosisDocument() に loadDocuments が終わったことを通知する
         synchronized(loadDocumentsDone) {
@@ -1457,7 +1455,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * オープンしている全インスタンスを保持するリストを返す.
      * @return オープンしている ChartPlugin のリスト
      */
-    public static ArrayList<ChartImpl> getAllChart() {
+    public static List<ChartImpl> getAllChart() {
         return allCharts;
     }
 
@@ -1597,43 +1595,45 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * カルテを前に出す
-     * @param pvt
+     * PatientVisitModel のカルテを前に出す.
+     * @param pvt PatientVisitModel
      */
     public static void toFront(PatientVisitModel pvt) {
-        if (pvt == null) return;
+        if (pvt == null) { return; }
         toFront(pvt.getPatient());
     }
 
+    /**
+     * PatientModel のカルテを前に出す.
+     * @param patient PatientModel
+     */
     public static void toFront(PatientModel patient) {
-        if (patient == null) return;
+        if (patient == null) { return; }
         long ptId = patient.getId();
-        for (ChartImpl chart : allCharts) {
-            if (chart.getPatient().getId() == ptId) {
-                chart.getFrame().toFront();
-                return;
-            }
-        }
+        allCharts.stream().filter(chart -> chart.getPatient().getId() == ptId)
+                .findAny().ifPresent(chart -> chart.getFrame().toFront());
+
     }
 
     /**
-     * カルテがあるかどうか調べる
-     * @param pvt
+     * PatientVisitModel のカルテがあるかどうか調べる.
+     * @param pvt PatientVisitModel
      * @return
      */
     public static boolean isKarteOpened(PatientVisitModel pvt) {
-        if (pvt == null) return false;
+        if (pvt == null) { return false; }
         return isKarteOpened(pvt.getPatient());
     }
 
+    /**
+     * PatientModel のカルテがあるかどうか調べる.
+     * @param patient PatientModel
+     * @return
+     */
     public static boolean isKarteOpened(PatientModel patient) {
-        if (patient == null) return false;
+        if (patient == null) { return false; }
         long ptId = patient.getId();
-        for (ChartImpl chart : allCharts) {
-            if (chart.getPatient().getId() == ptId) {
-                return true;
-            }
-        }
-        return false;
+
+        return allCharts.stream().anyMatch(chart -> chart.getPatient().getId() == ptId);
     }
 }

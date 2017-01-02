@@ -249,7 +249,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
      */
     private Object getValue1() {
 
-        ArrayList<RegisteredDiagnosisModel> ret = new ArrayList<RegisteredDiagnosisModel>(1);
+        List<RegisteredDiagnosisModel> ret = new ArrayList<>(1);
         RegisteredDiagnosisModel rd = new RegisteredDiagnosisModel();
 
         StringBuilder name = new StringBuilder();
@@ -295,7 +295,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
      * @return List<RegisteredDiagnosisModel>
      */
     private Object getValue2() {
-        ArrayList<RegisteredDiagnosisModel> ret = new ArrayList<RegisteredDiagnosisModel>();
+        List<RegisteredDiagnosisModel> ret = new ArrayList<>();
 
         for(Object o : tableModel.getObjectList()) {
             MasterItem mItem = (MasterItem) o;
@@ -344,7 +344,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
             protected Object doInBackground() throws Exception {
                 // 傷病名コードからDiseaseEntryを取得
                 OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
-                ArrayList<OrcaEntry> result = dao.getByomeiEntries(codes);
+                List<OrcaEntry> result = dao.getByomeiEntries(codes);
                 return result;
             }
             @Override

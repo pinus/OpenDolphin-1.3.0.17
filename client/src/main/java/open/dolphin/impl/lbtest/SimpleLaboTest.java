@@ -124,9 +124,9 @@ public class SimpleLaboTest implements Comparable {
     }
 
 	@SuppressWarnings("unchecked")
-	public ArrayList getSimpleLaboTestItem() {
+	public List getSimpleLaboTestItem() {
 
-		ArrayList ret = null;
+		List ret = null;
 
 		if (testItemTreeSet == null) {
 			return ret;
@@ -140,7 +140,7 @@ public class SimpleLaboTest implements Comparable {
 
 			ret.add((SimpleLaboTestItem)iter.next());
 		}
-		
+
 		return ret;
 	}
 
