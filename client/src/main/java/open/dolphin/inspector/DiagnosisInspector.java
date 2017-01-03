@@ -149,7 +149,8 @@ public class DiagnosisInspector {
                         //try{Thread.sleep(10);} catch (InterruptedException ex){}
 
                         // こちらも，setFocasable で対応することにした
-                        diagList.setFocusable(false);
+                        //diagList.setFocusable(false);
+                        // なくても大丈夫になってる?
 
                         int sel = diagList.getSelectedIndex();
                         if (sel < 0) {

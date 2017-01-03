@@ -843,7 +843,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     public void openEditor3(RegisteredDiagnosisModel rd) {
         // editor 起動後，なぜかすぐに diagTable にフォーカス取られてしまう不具合の workaround
-        diagTable.setFocusable(false);
+        // 不要になった?
+        //diagTable.setFocusable(false);
         // editor が立ち上がっている間は ウインドウを閉じられないようにする
         getContext().enabledAction(GUIConst.ACTION_CLOSE, false);
 
@@ -902,9 +903,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         }
         setDiagnosisCount();
 
-        // フォーカス横取防止対策解除
-        diagTable.setFocusable(true);
-        diagnosisInspector.setFocasable(true);
+        // フォーカス横取防止対策解除 不要になった?
+        //diagTable.setFocusable(true);
+        //diagnosisInspector.setFocasable(true);
     }
 
     private boolean isValidOutcome(RegisteredDiagnosisModel rd) {
