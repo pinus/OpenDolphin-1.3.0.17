@@ -12,13 +12,14 @@ import java.beans.PropertyChangeSupport;
 import javax.swing.*;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.ui.HorizontalPanel;
 import org.apache.log4j.Logger;
 
 /**
  * Stamp 編集用の外枠を提供する Dialog.
- * カルテの StampHolder から呼ばれる
+ * カルテの StampHolder から呼ばれる.
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class StampEditorDialog implements PropertyChangeListener {
@@ -86,6 +87,7 @@ public class StampEditorDialog implements PropertyChangeListener {
 
         editor = new StampEditor(this.entity);
         editor.start();
+        //editor.addValidListener(this::setValid);
         editor.addPropertyChangeListener(VALID_DATA_PROP, this);
         editor.setValue(value);
 
@@ -117,41 +119,27 @@ public class StampEditorDialog implements PropertyChangeListener {
         InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         im.put(key, "cancel");
-        dialog.getRootPane().getActionMap().put("cancel", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cancelButton.doClick();
-            }
-        });
+        dialog.getRootPane().getActionMap().put("cancel", new ProxyAction(cancelButton::doClick));
+
         // commnad-w で，保存ダイアログを出してから終了
         key = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.META_DOWN_MASK);
         im.put(key, "close-window");
-        dialog.getRootPane().getActionMap().put("close-window", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JSheet.showConfirmSheet(dialog, "カルテに展開しますか？", sheetEvent -> {
-                    // 0=はい, 1=いいえ, 2=キャンセル -1=エスケープキー
-                    if (sheetEvent.getOption() == 0) {
-                        okButton.doClick();
-                    } else if (sheetEvent.getOption() == 1) {
-                        value = null;
-                        close();
-                    }
-                });
-            }
-        });
+        dialog.getRootPane().getActionMap().put("close-window", new ProxyAction(() -> {
+            JSheet.showConfirmSheet(dialog, "カルテに展開しますか？", sheetEvent -> {
+                // 0=はい, 1=いいえ, 2=キャンセル -1=エスケープキー
+                if (sheetEvent.getOption() == 0) {
+                    okButton.doClick();
+                } else if (sheetEvent.getOption() == 1) {
+                    value = null;
+                    close();
+                }
+            });
+        }));
+
         // Command + ENTER で入力
         key = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.META_DOWN_MASK);
         im.put(key, "done");
-        dialog.getRootPane().getActionMap().put("done", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                okButton.doClick();
-            }
-        });
+        dialog.getRootPane().getActionMap().put("done", new ProxyAction(okButton::doClick));
 
         dialog.setVisible(true);
         editor.enter(); // フォーカスとる
@@ -185,11 +173,15 @@ public class StampEditorDialog implements PropertyChangeListener {
 
     /**
      * 編集中のモデル値が有効な値かどうかの通知を受け，
-     * カルテに展開ボタンを enable/disable にする
+     * カルテに展開ボタンを enable/disable にする.
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         okButton.setEnabled((Boolean) evt.getNewValue());
+    }
+
+    public void setValid(boolean valid) {
+        okButton.setEnabled(valid);
     }
 
     /**

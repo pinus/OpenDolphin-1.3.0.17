@@ -2,15 +2,15 @@ package open.dolphin.order;
 
 /**
  * Class to hold selected master item information.
- * StampModelEditor の TablePanel の TableModel はこれを Object として保持する
- * @author  Kazuhi Minagawa, Digital Globe, Inc.
- * modified by pns
+ * StampEditor の TablePanel の TableModel はこれを Object として保持する.
+ * @author Kazuhi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class MasterItem implements java.io.Serializable {
     private static final long serialVersionUID = -6359300744722498857L;
 
     /**
-     * Claim subclass code マスタ項目の種別
+     * Claim subclass code マスタ項目の種別.
      * SYUGI(手技=0), ZAIRYO(材料=1), YAKUZAI(薬剤=2), ADMIN(用法=3)
      */
     private int classCode;

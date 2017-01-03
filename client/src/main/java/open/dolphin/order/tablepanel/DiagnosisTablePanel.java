@@ -105,7 +105,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                             model.setCode(HAND_CODE);
                             fireTableCellUpdated(row, col);
                         }
-                        // これで StampModelEditor の呼び主の propertyChange が呼ばれる
+                        // これで StampEditor の呼び主の propertyChange が呼ばれる
                         checkState();
                     }
                 } else if (col == 2) {

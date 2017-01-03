@@ -6,6 +6,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
+import open.dolphin.event.ValidListener;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.order.IStampEditor;
@@ -16,8 +17,8 @@ import open.dolphin.order.tablepanel.RadiologyTablePanel;
 import open.dolphin.order.tablepanel.RecipeTablePanel;
 
 /**
- * StampEditor
- * StampEditorProxyPanel では，これを必要なだけインスタンス化して保持する
+ * StampEditor.
+ * StampEditorProxyPanel では，これを必要なだけインスタンス化して保持する.
  * @author pns
  */
 public class StampEditor extends JPanel implements IStampEditor {
@@ -26,6 +27,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     public static final String VALID_DATA_PROP = "validData";
 
     private final PropertyChangeSupport boundSupport;
+    private ValidListener validListener;
     private boolean isValidModel;
     private String title;
     private ItemTablePanel tablePanel;
@@ -43,15 +45,19 @@ public class StampEditor extends JPanel implements IStampEditor {
         // タイトル設定
         this.setTitle(ClaimConst.EntityNameMap.get(entity));
 
-        // TablePanel 作成
-        if (IInfoModel.ENTITY_MED_ORDER.equals(entity)) {
-            tablePanel = new RecipeTablePanel(this);
-        } else if (IInfoModel.ENTITY_RADIOLOGY_ORDER.equals(entity)) {
-            tablePanel = new RadiologyTablePanel(this);
-        } else if (IInfoModel.ENTITY_DIAGNOSIS.equals(entity)) {
-            tablePanel = new DiagnosisTablePanel(this);
-        } else {
-            tablePanel = new ItemTablePanel(this);
+        switch (entity) {
+            case IInfoModel.ENTITY_MED_ORDER:
+                tablePanel = new RecipeTablePanel(this);
+                break;
+            case IInfoModel.ENTITY_RADIOLOGY_ORDER:
+                tablePanel = new RadiologyTablePanel(this);
+                break;
+            case IInfoModel.ENTITY_DIAGNOSIS:
+                tablePanel = new DiagnosisTablePanel(this);
+                break;
+            default:
+                tablePanel = new ItemTablePanel(this);
+                break;
         }
 
         // MasterSearchPanel 作成
@@ -72,7 +78,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * StampEditorProxyPanel を show した際に呼ばれる
+     * StampEditorProxyPanel を show した際に呼ばれる.
      */
     @Override
     public void enter() {
@@ -86,7 +92,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * TablePanel をセットする
+     * TablePanel をセットする.
      * @param tablePanel
      */
     public void setTablePanel(ItemTablePanel tablePanel) {
@@ -94,7 +100,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * TablePanel を返す
+     * TablePanel を返す.
      * @return
      */
     public ItemTablePanel getTablePanel() {
@@ -110,7 +116,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * Entity を TablePanel に伝える
+     * Entity を TablePanel に伝える.
      * @param entity
      */
     @Override
@@ -120,7 +126,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * セットされたエンティティーを返す
+     * セットされたエンティティーを返す.
      * @return
      */
     public String getEntity() {
@@ -128,7 +134,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * TablePanel からデータを取り出す
+     * TablePanel からデータを取り出す.
      * @return
      */
     @Override
@@ -137,7 +143,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * TablePanel にデータをセットする
+     * TablePanel にデータをセットする.
      * @param val
      */
     @Override
@@ -153,6 +159,10 @@ public class StampEditor extends JPanel implements IStampEditor {
     @Override
     public void removePropertyChangeListener(String prop, PropertyChangeListener l) {
         boundSupport.removePropertyChangeListener(prop, l);
+    }
+
+    public void addValidListener(ValidListener listener) {
+        validListener = listener;
     }
 
     @Override

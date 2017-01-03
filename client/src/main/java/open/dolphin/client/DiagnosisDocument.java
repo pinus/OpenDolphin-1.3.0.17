@@ -23,6 +23,7 @@ import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dto.DiagnosisSearchSpec;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
@@ -119,7 +120,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * ChartMediator から呼ばれる
+     * ChartMediator から呼ばれる.
      * @return
      */
     public DiagnosisDocumentTable getDiagnosisTable() {
@@ -127,7 +128,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * DiagnosisDocumentPopupMenu 用
+     * DiagnosisDocumentPopupMenu 用.
      * @return
      */
     public JTextField getStartDateField() {
@@ -197,23 +198,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // delete key
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "delete");
-        am.put("delete", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                deleteButton.doClick();
-            }
-        });
+        am.put("delete", new ProxyAction(deleteButton::doClick));
 
         // duplicate
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.META_DOWN_MASK), "duplicate");
-        am.put("duplicate", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                duplicateDiagnosis();
-            }
-        });
+        am.put("duplicate", new ProxyAction(this::duplicateDiagnosis));
 
         // tableModel 用設定
         tableModel.setLastVisit(lastVisitYmd);
@@ -515,7 +504,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * extraction ComboBox の選択値に応じて DiagnosisHistory を更新する
+     * extraction ComboBox の選択値に応じて DiagnosisHistory を更新する.
      */
     private void updateDiagnosisHistory() {
 
@@ -594,7 +583,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 削除リストに追加する
+     * 削除リストに追加する.
      * @param deleted
      */
     private void addDeletedList(RegisteredDiagnosisModel deleted) {
@@ -640,7 +629,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 */
     /**
-     * ボタン制御 update, delete, undo, redo
+     * ボタン制御 update, delete, undo, redo.
      */
     private void controlButtons() {
         //showList(); //デバッグ用
@@ -695,8 +684,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 傷病名件数を設定する.  modified by pns
-     * DELETED_RECORD はカウントしない
+     * 傷病名件数を設定する.  modified by pns.
+     * DELETED_RECORD はカウントしない.
      */
     public void setDiagnosisCount() {
         diagnosisCount = 0;
@@ -792,8 +781,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * row に RegisteredDiagnosisModel を挿入する
-     * テーブルへの挿入をする場所はここ（スタンプ箱，DiagnosisDocumentTableModel）と propertyChange（エディタから挿入）
+     * row に RegisteredDiagnosisModel を挿入する.
+     * テーブルへの挿入をする場所はここ（スタンプ箱，DiagnosisDocumentTableModel）と propertyChange（エディタから挿入）.
      * @param module
      */
     private void insertDiagnosis(RegisteredDiagnosisModel module) {
@@ -834,8 +823,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 傷病名エディタを開く.
-     * 傷病名エディタから追加した場合 openEditor2
-     * 傷病名エディタで既にある病名を編集した場合は openEditor3 が呼ばれる　　thx masuda sensei
+     * 傷病名エディタから追加した場合 openEditor2.
+     * 傷病名エディタで既にある病名を編集した場合は openEditor3 が呼ばれる　　thx masuda sensei.
      */
     public void openEditor2() {
         openEditor3(null);
@@ -998,7 +987,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * ChartImpl#close() で isValidOutcome でなかった場合，DiagnosisDocument に戻れるようにするために使う
+     * ChartImpl#close() で isValidOutcome でなかった場合，DiagnosisDocument に戻れるようにするために使う.
      * @return
      */
     public boolean isValidOutcome() {
@@ -1007,7 +996,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 新規及び変更された傷病名を保存する.
-     * deletedDiagnosis 対応 by pns
+     * deletedDiagnosis 対応 by pns.
      */
     @Override
     public void save() {
@@ -1163,7 +1152,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * RegisteredDiagnosisModel を元に，移行病名かどうかをチェックする
+     * RegisteredDiagnosisModel を元に，移行病名かどうかをチェックする.
      * @param rdList
      */
     public void checkIkouByomei(final List<RegisteredDiagnosisModel> rdList) {
@@ -1223,7 +1212,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 選択された行のデータを削除する.
-     * 複数行対応と，いきなり消さないで，save() 時にまとめて消すようにする by pns
+     * 複数行対応と，いきなり消さないで，save() 時にまとめて消すようにする by pns.
      */
     public void delete() {
 
@@ -1288,7 +1277,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * DiagnosisPutTask
+     * DiagnosisPutTask.
      */
     private class DiagnosisPutTask extends DBTask<List<Long>> {
 
@@ -1370,7 +1359,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * ORCA 病名の色を変える，DELETE 病名を薄く表示，移行病名を赤表示
+     * ORCA 病名の色を変える，DELETE 病名を薄く表示，移行病名を赤表示.
      */
     private class DolphinOrcaRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
@@ -1451,7 +1440,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * JComboBox を細かくコントロールするための Cell Editor
+     * JComboBox を細かくコントロールするための Cell Editor.
      */
     private class MyCellEditor extends MyDefaultCellEditor {
         private static final long serialVersionUID = 1L;
@@ -1496,7 +1485,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * JComboBox の項目から index を返す
+     * JComboBox の項目から index を返す.
      * @param combo
      * @param item
      * @return
@@ -1526,7 +1515,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 選択された診断を CLAIM 送信する
+     * 選択された診断を CLAIM 送信する.
      */
     public void sendClaim() {
 
@@ -1599,7 +1588,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 選択された診断を複製する
+     * 選択された診断を複製する.
      */
     public void duplicateDiagnosis() {
 
