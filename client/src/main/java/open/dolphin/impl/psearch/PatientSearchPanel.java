@@ -5,10 +5,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -17,15 +17,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.ui.CompletableJTextField;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
+import open.dolphin.util.PNSPair;
 
 /**
- * PatientSearchView 互換 JPanel
+ * PatientSearchView 互換 JPanel.
  * @author pns
  */
 public class PatientSearchPanel extends MainComponentPanel {
@@ -48,9 +48,6 @@ public class PatientSearchPanel extends MainComponentPanel {
     private JLabel cntLbl;
     private JLabel dateLbl;
     private JProgressBar progressBar;
-    // searchLbl menu
-    private static final String[] MENU_ITEMS = {"名前検索","カナ検索","患者番号検索","誕生日検索","メモ検索","全文検索"};
-    private static final String[] MENU_CODES = {"N",     "K",      "I",         "B",       "M",     "F"};
     private JMenuItem hibernateIndexItem;
 
     public PatientSearchPanel() {
@@ -62,11 +59,24 @@ public class PatientSearchPanel extends MainComponentPanel {
         CommandPanel comPanel = getCommandPanel();
 
         final JPopupMenu popup = new JPopupMenu();
-        for (int i=0; i<MENU_ITEMS.length; i++) {
-            JMenuItem item = new JMenuItem(MENU_ITEMS[i]);
-            item.addActionListener(new SearchLblAction(MENU_CODES[i]));
+        final List<PNSPair<String,String>> menuPair = Arrays.asList(
+                new PNSPair<>("名前検索", "N"),
+                new PNSPair<>("カナ検索", "K"),
+                new PNSPair<>("患者番号検索", "T"),
+                new PNSPair<>("誕生日検索", "B"),
+                new PNSPair<>("メモ検索", "M"),
+                new PNSPair<>("全文検索", "F")
+        );
+
+        menuPair.forEach(pair -> {
+            JMenuItem item = new JMenuItem(pair.getName());
+            item.addActionListener(e -> {
+                keywordFld.setText(pair.getValue() + " ");
+                keywordFld.requestFocusInWindow();
+            });
             popup.add(item);
-        }
+        });
+
         popup.addSeparator();
 
         narrowingSearchCb = new JCheckBoxMenuItem("絞り込みモード");
@@ -87,6 +97,7 @@ public class PatientSearchPanel extends MainComponentPanel {
         });
 
         keywordFld = new CompletableJTextField(20) {
+            private static final long serialVersionUID = 1L;
             @Override
             protected void paintBorder(Graphics g) {
                 super.paintBorder(g);
@@ -138,26 +149,6 @@ public class PatientSearchPanel extends MainComponentPanel {
         statusPanel.addSeparator();
         statusPanel.add(dateLbl);
         statusPanel.setMargin(4);
-    }
-
-    private class SearchLblAction implements ActionListener {
-        private String prep;
-
-        public SearchLblAction(String prep) {
-
-            this.prep = prep + " ";
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            keywordFld.setText(prep);
-            SwingUtilities.invokeLater(new Runnable(){
-                @Override
-                public void run() {
-                    keywordFld.requestFocus();
-                }
-            });
-        }
     }
 
     public JLabel getDateLbl() {

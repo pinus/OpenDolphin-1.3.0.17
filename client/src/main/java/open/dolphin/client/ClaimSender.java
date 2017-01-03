@@ -21,9 +21,9 @@ import open.dolphin.project.Project;
 import open.dolphin.util.GUIDGenerator;
 
 /**
- * Karte と Diagnosis の CLAIM を送る
- * KarteEditor の sendClaim を独立させた
- * DiagnosisDocument の CLAIM 送信部分もここにまとめた
+ * Karte と Diagnosis の CLAIM を送る.
+ * KarteEditor の sendClaim を独立させた.
+ * DiagnosisDocument の CLAIM 送信部分もここにまとめた.
  * @author pns
  */
 public class ClaimSender {
@@ -36,7 +36,7 @@ public class ClaimSender {
     }
 
     /**
-     * Diagnosis では pvt をセットする必要がある
+     * Diagnosis では pvt をセットする必要がある.
      * @param model
      */
     public void setPatientVisitModel(PatientVisitModel model) {
@@ -67,7 +67,7 @@ public class ClaimSender {
     }
 
     /**
-     * CLAIM リスナを返す
+     * CLAIM リスナを返す.
      * @return
      */
     public ClaimMessageListener getListener() {
@@ -87,6 +87,7 @@ public class ClaimSender {
 
     /**
      * DocumentModel の CLAIM 送信を行う.
+     * @param sendModel
      */
     public void send(DocumentModel sendModel) {
 
@@ -130,12 +131,9 @@ public class ClaimSender {
 
         // 保存する KarteModel の全モジュールをチェックし
         // それが ClaimBundle ならヘルパーへ追加する
-        for (ModuleModel module : modules) {
-            IInfoModel m = module.getModel();
-            if (m instanceof ClaimBundle) {
-                helper.addClaimBundle((ClaimBundle) m);
-            }
-        }
+        modules.stream().map(module -> module.getModel())
+                .filter(model -> model instanceof ClaimBundle)
+                .forEach(model -> helper.addClaimBundle((ClaimBundle) model));
 
         MessageBuilder mb = new MessageBuilder();
         String claimMessage = mb.build(helper);
@@ -153,16 +151,15 @@ public class ClaimSender {
     }
 
     /**
-     * 診断名の CLAIM 送信
+     * 診断名の CLAIM 送信.
      * @param diagnoses
-     * @param rd
      */
     public void send(List<RegisteredDiagnosisModel> diagnoses) {
 
         // DocInfo & RD をカプセル化したアイテムを生成する
         List<DiagnosisModuleItem> moduleItems = new ArrayList<>();
 
-        for (RegisteredDiagnosisModel rd : diagnoses) {
+        diagnoses.stream().map(rd -> {
             DocInfoModel docInfo = new DocInfoModel();
             docInfo.setDocId(GUIDGenerator.generate(docInfo));
             docInfo.setTitle(IInfoModel.DEFAULT_DIAGNOSIS_TITLE);
@@ -173,8 +170,9 @@ public class ClaimSender {
             DiagnosisModuleItem mItem = new DiagnosisModuleItem();
             mItem.setDocInfo(docInfo);
             mItem.setRegisteredDiagnosisModule(rd);
-            moduleItems.add(mItem);
-        }
+            return mItem;
+
+        }).forEach(mItem -> moduleItems.add(mItem));
 
         // ヘルパー用の値を生成する
         String confirmDate = diagnoses.get(0).getConfirmDate();

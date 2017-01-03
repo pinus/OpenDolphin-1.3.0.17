@@ -3,84 +3,68 @@ package open.dolphin.client;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.print.PageFormat;
-import java.awt.print.PrinterJob;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.prefs.Preferences;
 import javax.swing.Action;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
-import open.dolphin.util.PreferencesUtils;
-import org.apache.log4j.Logger;
 
 /**
- * EditorFrame
- *
+ * EditorFrame.
+ * ChartImpl と同じく Chart interface をもつ. ChartImpl は realChart にセットされる.
+ * EditorFrame Object は JFrame ではなく，実 Frame は WindowSupport で作る.
  * @author Kazushi Minagawa
  */
 public class EditorFrame extends AbstractMainTool implements Chart {
 
     // このクラスの２つのモード（状態）でメニューの制御に使用する
     public enum EditorMode {BROWSER, EDITOR};
-
     // 全インスタンスを保持するリスト
     private static final List<Chart> allEditorFrames = new ArrayList<>(3);
-
     // このフレームの実のコンテキストチャート
     private Chart realChart;
-
-    // このフレームに表示する KarteView オブジェクト
+    // このフレームに表示する KarteViewer オブジェクト
     private KarteViewer view;
-
     // このフレームに表示する KarteEditor オブジェクト
     private KarteEditor editor;
-
     // ToolBar パネル
     private JPanel myToolPanel;
-
     // スクローラコンポーネント
     private JScrollPane scroller;
-
     // Status パネル
     private StatusPanel statusPanel;
-
     // このフレームの動作モード
     private EditorMode mode;
-
     // WindowSupport オブジェクト
     private WindowSupport windowSupport;
-
     // Mediator オブジェクト
     private ChartMediator mediator;
-
     // Block GlassPane
     private BlockGlass blockGlass;
 
-    // 親チャートの位置
-    private Point parentLoc;
+    /**
+     * EditorFrame オブジェクトを生成する.
+     */
+    public EditorFrame() {
+    }
 
-    // KarteEditor からの PropertyChange を受け取るリスナ
-    private PropertyChangeListener editorListener;
+    /**
+     * 全インスタンスを保持するリストを返す static method.
+     * @return 全インスタンスを保持するリスト
+     */
+    public static List<Chart> getAllEditorFrames() {
+        return Collections.unmodifiableList(allEditorFrames);
+    }
 
-    // Preferences と property name
-    private final Preferences prefs;
-    private static final String PN_FRAME = "editorFrame.frame";
-
-    //private JPanel content;
-    // Logger
-    private final Logger logger;
-
-    // masuda
     public KarteEditor getEditor(){
         return editor;
     }
@@ -127,40 +111,13 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         }
         return pk;
     }
-    // masuda
 
     /**
-     * 全インスタンスを保持するリストを返す.
-     * @return 全インスタンスを保持するリスト
-     */
-    public static List<Chart> getAllEditorFrames() {
-        return Collections.unmodifiableList(allEditorFrames);
-    }
-
-    private static PageFormat pageFormat = null;
-    static {
-        PrinterJob printJob = PrinterJob.getPrinterJob();
-        if (printJob != null && pageFormat == null) {
-            // set default format
-            pageFormat = printJob.defaultPage();
-        }
-    }
-
-    /**
-     * EditorFrame オブジェクトを生成する.
-     */
-    public EditorFrame() {
-        logger = ClientContext.getBootLogger();
-        prefs = Preferences.userNodeForPackage(this.getClass());
-    }
-
-    /**
-     * IChart コンテキストを設定する.
-     * @param chartCtx IChart コンテキスト
+     * ChartImpl コンテキストを設定する.
+     * @param chartCtx ChartImpl コンテキスト
      */
     public void setChart(Chart chartCtx) {
         this.realChart = chartCtx;
-        parentLoc = realChart.getFrame().getLocation();
         super.setContext(chartCtx.getContext());
     }
 
@@ -428,15 +385,13 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             editor.setContext(EditorFrame.this);
             editor.initialize();
             editor.start();
-            // scroller = new JScrollPane(editor.getUI());
             scroller = new MyJScrollPane(editor.getUI());
             scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
             mediator.enableAction(GUIConst.ACTION_NEW_KARTE, false);
             mediator.enableAction(GUIConst.ACTION_NEW_DOCUMENT, false);
 
             // KarteEditor で save が完了したら通知される
-            editorListener = e -> stop();
-            editor.getBoundSupport().addPropertyChangeListener(KarteEditor.SAVE_DONE, editorListener);
+            editor.addFinishListener(this::stop);
         }
         mainPanel.add(scroller, BorderLayout.CENTER);
 
@@ -446,7 +401,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                processWindowClosing();
+                close();
             }
             @Override
             public void windowOpened(WindowEvent e) {
@@ -469,15 +424,15 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         frame.setGlassPane(blockGlass);
 
         // Frame の大きさをストレージからロードする
-        int x = ClientContext.getInt("editorFrame.frameX");
-        int y = ClientContext.getInt("editorFrame.frameY");
-        int width = ClientContext.getInt("editorFrame.frameWidth");
-        int height = ClientContext.getInt("editorFrame.frameHeight");
+        Point defaultLocation = new Point(5,20);
+        Dimension defaultSize = new Dimension(724,740);
 
-        Rectangle bounds = PreferencesUtils.getRectangle(prefs, PN_FRAME, new Rectangle(x,y,width,height));
-        frame.setBounds(bounds);
-        windowSupport.getFrame().setVisible(true);
+        ComponentBoundsManager manager = new ComponentBoundsManager(frame, defaultLocation, defaultSize, this);
+        manager.revertToPreferenceBounds();
 
+        frame.setVisible(true);
+
+        // 先頭を表示
         EventQueue.invokeLater(() -> {
             if (view != null) {
                 view.getUI().scrollRectToVisible(new Rectangle(0,0,view.getUI().getWidth(), 50));
@@ -493,85 +448,21 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     @Override
     public void stop() {
         mediator.dispose();
-        editor.getBoundSupport().removePropertyChangeListener(editorListener);
-
-        Rectangle bounds = getFrame().getBounds();
-        PreferencesUtils.putRectangle(prefs, PN_FRAME, bounds);
-
         getFrame().setVisible(false);
         getFrame().dispose();
-
         realChart.getFrame().toFront();
     }
 
     /**
-     * ウインドウの close box が押された時の処理を実行する.
-     */
-    public void processWindowClosing() {
-        close();
-    }
-
-    /**
-     * ウインドウオープン時の処理を行う.
-     */
-    public void processWindowOpened() {
-    }
-
-    /**
-     * Focus ゲインを得た時の処理を行う.
-     */
-    public void processGainedFocus() {
-
-        switch (mode) {
-            case BROWSER:
-                if (view != null) {
-                    view.enter();
-                }
-                break;
-
-            case EDITOR:
-                if (editor != null) {
-                    editor.enter();
-                }
-                break;
-        }
-    }
-
-    private PageFormat getPageFormat() {
-        return realChart.getContext().getPageFormat();
-    }
-
-    /**
-     * 印刷する.
-     */
-    public void print() {
-
-        switch (mode) {
-
-            case BROWSER:
-                if (view != null) {
-                    view.printPanel2(getPageFormat());
-                }
-                break;
-
-            case EDITOR:
-                if (editor != null) {
-                    editor.printPanel2(getPageFormat());
-                }
-                break;
-        }
-    }
-
-    /**
      * クローズする.
-     * キャンセル，破棄の処理は editor でまとめてすることにした by pns
+     * キャンセル，破棄の処理は editor でまとめてすることにした.
      */
     @Override
     public void close() {
         if (mode == EditorMode.EDITOR) {
-            if (editor.isDirty()) editor.save();
-            else stop();
-        } else stop();
+            if (editor.isDirty()) { editor.save(); }
+            else { stop(); }
+        } else { stop(); }
     }
 
     /**
@@ -579,7 +470,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * @param pvt
      */
     public static void toFront(PatientVisitModel pvt) {
-        if (pvt == null) return;
+        if (pvt == null) { return; }
         toFront(pvt.getPatient());
     }
 
@@ -588,7 +479,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * @param patient
      */
     public static void toFront(PatientModel patient) {
-        if (patient == null) return;
+        if (patient == null) { return; }
         long ptId = patient.getId();
         for (Chart chart : allEditorFrames) {
             long id = chart.getPatient().getId();
@@ -599,5 +490,4 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             }
         }
     }
-//pns$
 }

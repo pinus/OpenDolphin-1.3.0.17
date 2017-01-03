@@ -77,7 +77,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private final Preferences prefs;
     public static final String PN_FRAME = "chart.frame";
 
-    // getDiagnosisDocument() に loadDocuments() が終わったことを知らせるオブジェクト
+    // getDiagnosisDocument() に loadDocuments() が終わったことを知らせる lock オブジェクト
     public final boolean[] loadDocumentsDone = {false};
 
     /**
@@ -651,6 +651,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * ドキュメントタブを生成する.
+     * 遅延実行される initComponents() から呼ばれるので遅延実行される.
      */
     private PNSTabbedPane loadDocuments() {
 
@@ -693,26 +694,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * ドキュメントタブにプラグインを遅延生成し追加する.
-     * @param e
-     */
-    public void tabChanged(ChangeEvent e) {
-
-        // 選択されたタブ番号に対応するプラグインをテーブルから検索する
-        int index = tabbedPane.getSelectedIndex();
-        String key = tabbedPane.getTitleAt(index);
-        ChartDocument plugin = providers.get(key);
-
-        if (plugin.getContext() == null) {
-            // まだ生成されていないプラグインを生成する
-            plugin.setContext(ChartImpl.this);
-            plugin.start();
-            tabbedPane.setComponentAt(index, plugin.getUI());
-        }
-        plugin.enter();
-    }
-
-    /**
      * ChartImpl から DiagnosisDocument を取る.
      * loadDocuments() が完了するまで synchronized で堰き止める.
      * DiangosisInspector, DiagnosisInspectorTransferHandler, UserStampBox から呼ばれる.
@@ -734,6 +715,26 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             doc.start();
         }
         return doc;
+    }
+
+    /**
+     * ドキュメントタブにプラグインを遅延生成し追加する.
+     * @param e
+     */
+    public void tabChanged(ChangeEvent e) {
+
+        // 選択されたタブ番号に対応するプラグインをテーブルから検索する
+        int index = tabbedPane.getSelectedIndex();
+        String key = tabbedPane.getTitleAt(index);
+        ChartDocument plugin = providers.get(key);
+
+        if (plugin.getContext() == null) {
+            // まだ生成されていないプラグインを生成する
+            plugin.setContext(ChartImpl.this);
+            plugin.start();
+            tabbedPane.setComponentAt(index, plugin.getUI());
+        }
+        plugin.enter();
     }
 
     /**

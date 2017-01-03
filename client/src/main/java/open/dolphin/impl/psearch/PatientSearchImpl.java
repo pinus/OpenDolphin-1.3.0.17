@@ -1,8 +1,5 @@
 package open.dolphin.impl.psearch;
 
-import ch.randelshofer.quaqua.SheetEvent;
-import ch.randelshofer.quaqua.SheetListener;
-import java.awt.EventQueue;
 import java.awt.event.*;
 import java.beans.*;
 import java.io.File;
@@ -12,10 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.prefs.Preferences;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import open.dolphin.client.AbstractMainComponent;
@@ -37,22 +30,22 @@ import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJSheet;
+import open.dolphin.util.PNSTriple;
 import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;
 
 /**
- * 患者検索
- * @author Kazushi Minagawa, modified by pns
+ * 患者検索.
+ * @author Kazushi Minagawa
+ * @author pns
  */
 public class PatientSearchImpl extends AbstractMainComponent {
-
     private static final String NAME = "患者検索";
-    private static final String[] COLUMN_NAMES = {" 　患者 ID","　 氏   名","　 カ  ナ"," 性別","　生年月日", "　最終受診日"};
 
+    // 年齢表示カラム
+    private static final int AGE_COLUMN = 4;
     private static final ImageIcon SEARCH_ICON = GUIConst.ICON_SYSTEM_SEARCH_22;
-    private static final String[] METHOD_NAMES = {"getPatientId","getFullName", "getKanaName","getGenderDesc","getAgeBirthday","getFormattedLastVisit"};
     private static final int[] COLUMN_WIDTH = {80,100,120,40,120,120};
-    private static final String UNSUITABLE_CHAR = "検索に適さない文字が含まれています。";
     // Preferences の key
     private static final String NARROWING_SEARCH = "narrowingSearch";
     private static final String AGE_DISPLAY = "ageDisplay";
@@ -62,19 +55,27 @@ public class PatientSearchImpl extends AbstractMainComponent {
     private PatientModel[] selectedPatient;
     // 年齢表示をするかどうか
     private boolean ageDisplay;
-    // 年齢表示カラム
-    private static int AGE_COLUMN = 4;
     // View
-    //private PatientSearchView view;
     private PatientSearchPanel view;
+
     private KeyBlocker keyBlocker;
-    private Logger logger;
-    private Preferences prefs;
+    private final Logger logger;
+    private final Preferences prefs;
 
     public PatientSearchImpl() {
         setName(NAME);
         logger = ClientContext.getBootLogger();
         prefs = Preferences.userNodeForPackage(this.getClass());
+    }
+
+    /**
+     * Keyword Field にフォーカスを取る.
+     */
+    public void requestFocus() {
+        SwingUtilities.invokeLater(() ->{
+            view.getKeywordFld().requestFocusInWindow();
+            view.getKeywordFld().selectAll();
+        });
     }
 
     @Override
@@ -87,13 +88,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     public void enter() {
         controlMenu();
         // 入ってきたら，キーワードフィールドにフォーカス
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                view.getKeywordFld().requestFocusInWindow();
-                view.getKeywordFld().selectAll();
-            }
-        });
+        requestFocus();
     }
 
     @Override
@@ -106,27 +101,28 @@ public class PatientSearchImpl extends AbstractMainComponent {
      */
     private void initComponents() {
 
-        //view = new PatientSearchView();
         view = new PatientSearchPanel();
         setUI(view);
         view.getSearchLbl().setIcon(SEARCH_ICON);
         JTable table = view.getTable();
-        //
-        // 年齢表示をしないなんて信じられない要望!
-        //
-        ageDisplay = prefs.getBoolean(AGE_DISPLAY, true);
-        if (!ageDisplay) {
-            METHOD_NAMES[4] = AGE_METHOD[1];
-        }
 
-        ObjectReflectTableModel tableModel = new ObjectReflectTableModel(COLUMN_NAMES, 0, METHOD_NAMES, null);
+        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+                new PNSTriple<>(" 　患者 ID", String.class, "getPatientId"),
+                new PNSTriple<>("　 氏   名", String.class, "getFullName"),
+                new PNSTriple<>("　 カ  ナ", String.class, "getKanaName"),
+                new PNSTriple<>(" 性別", String.class, "getGenderDesc"),
+                new PNSTriple<>("　生年月日", String.class, "getAgeBirthday"),
+                new PNSTriple<>("　最終受診日", String.class, "getFormattedLastVisit")
+        );
+
+        ObjectReflectTableModel<PatientModel> tableModel = new ObjectReflectTableModel<>(reflectList);
         table.setModel(tableModel);
         TableRowSorter<ObjectReflectTableModel> sorter = new TableRowSorter<ObjectReflectTableModel>(tableModel) {
             // ASCENDING -> DESENDING -> 初期状態 と切り替える
             @Override
             public void toggleSortOrder(int column) {
                 if(column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
-                    List<SortKey> keys = new ArrayList<SortKey>(getSortKeys());
+                    List<? extends SortKey> keys = new ArrayList<>(getSortKeys());
                     if(!keys.isEmpty()) {
                         SortKey sortKey = keys.get(0);
                         if(sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {
@@ -138,23 +134,31 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 super.toggleSortOrder(column);
             }
         };
+        //
+        // 年齢表示をしないなんて信じられない要望!
+        //
+        ageDisplay = prefs.getBoolean(AGE_DISPLAY, true);
+        if (!ageDisplay) {
+            tableModel.setMethodName(AGE_METHOD[1], AGE_COLUMN);
+        }
+
         // 生年月日コラムに comparator を設定「32.10 歳(S60-01-01)」というのをソートできるようにする
-        sorter.setComparator(AGE_COLUMN, new Comparator(){
-            @Override
-            public int compare(Object o1, Object o2) {
-                String birthday1;
-                String birthday2;
-                if (ageDisplay) {
-                    birthday1 = ModelUtils.getMmlBirthdayFromAge((String)o1);
-                    birthday2 = ModelUtils.getMmlBirthdayFromAge((String)o2);
-                    return birthday2.compareTo(birthday1);
-                } else {
-                    birthday1 = (String)o1;
-                    birthday2 = (String)o2;
-                    return birthday1.compareTo(birthday2);
-                }
+        sorter.setComparator(AGE_COLUMN, (String o1, String o2) -> {
+            String birthday1;
+            String birthday2;
+            if (ageDisplay) {
+                birthday1 = ModelUtils.getMmlBirthdayFromAge(o1);
+                birthday2 = ModelUtils.getMmlBirthdayFromAge(o2);
+                return birthday2.compareTo(birthday1);
+            } else {
+                birthday1 = o1;
+                birthday2 = o2;
+                return birthday1.compareTo(birthday2);
             }
         });
+        // 最終受診日コラムのソート順序を逆に＝最近に受診した人が上に来る
+        sorter.setComparator(5, (String o1, String o2) -> o2.compareTo(o1));
+
         table.setRowSorter(sorter);
 
         // カラム幅を変更する
@@ -176,20 +180,17 @@ public class PatientSearchImpl extends AbstractMainComponent {
         view.getDateLbl().setText(sdf.format(new Date()));
 
         // hibernate index ボタン
-        view.getHibernateIndexItem().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final String message = "<html><b><u>Hibernate Search のインデックス作成をします</u></b><br><br>"
-                        + "ホストのトランザクションタイムアウト時間を<br>"
-                        + "のばしておく必要があります。<br>"
-                        + "途中でキャンセルはできません。<br>"
-                        + "よろしいですか？</html>";
-                int option = MyJSheet.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+        view.getHibernateIndexItem().addActionListener(e -> {
+            final String message = "<html><b><u>Hibernate Search のインデックス作成をします</u></b><br><br>"
+                    + "ホストのトランザクションタイムアウト時間を<br>"
+                    + "のばしておく必要があります。<br>"
+                    + "途中でキャンセルはできません。<br>"
+                    + "よろしいですか？</html>";
+            int option = MyJSheet.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 
-                if (option == JOptionPane.YES_OPTION) {
-                    PnsDelegater dl = new PnsDelegater();
-                    dl.makeInitialIndex();
-                }
+            if (option == JOptionPane.YES_OPTION) {
+                PnsDelegater dl = new PnsDelegater();
+                dl.makeInitialIndex();
             }
         });
 
@@ -212,45 +213,30 @@ public class PatientSearchImpl extends AbstractMainComponent {
         keyBlocker = new KeyBlocker(view.getKeywordFld());
 
         // KeywordFld に ActionListener 登録
-        view.getKeywordFld().addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JTextField tf = (JTextField) e.getSource();
-                String test = tf.getText().trim();
-                if (!test.equals("")) {
-                    // 検索開始
-                    find(test);
+        view.getKeywordFld().addActionListener(e -> {
+            JTextField tf = (JTextField) e.getSource();
+            String test = tf.getText().trim();
+            if (!test.equals("")) {
+                // 検索開始
+                find(test);
 
-                } else {
-                    // キーワードが "" ならテーブルクリアして，検索件数をリセット
-                    ((ObjectReflectTableModel) view.getTable().getModel()).clear();
-                    view.getCntLbl().setText("0 件");
-                }
-                SwingUtilities.invokeLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        view.getKeywordFld().requestFocus();
-                    }
-                });
+            } else {
+                // キーワードが "" ならテーブルクリアして，検索件数をリセット
+                ((ObjectReflectTableModel) view.getTable().getModel()).clear();
+                view.getCntLbl().setText("0 件");
             }
+            requestFocus();
         });
+
         // 履歴保存する prefs をセット
         view.getKeywordFld().setPreferences(prefs);
 
         // クリアボタンの動作
-        view.getClearBtn().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                view.getKeywordFld().setText("");
-                ((ObjectReflectTableModel) view.getTable().getModel()).clear();
-                view.getCntLbl().setText("0 件");
-                SwingUtilities.invokeLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        view.getKeywordFld().requestFocus();
-                    }
-                });
-            }
+        view.getClearBtn().addActionListener(e -> {
+            view.getKeywordFld().setText("");
+            ((ObjectReflectTableModel) view.getTable().getModel()).clear();
+            view.getCntLbl().setText("0 件");
+            requestFocus();
         });
 
         // IME off
@@ -260,57 +246,48 @@ public class PatientSearchImpl extends AbstractMainComponent {
         final JTable table = view.getTable();
         final ObjectReflectTableModel tableModel = (ObjectReflectTableModel) table.getModel();
 
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting() == false) {
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting() == false) {
 
-                    int[] rows = table.getSelectedRows();
-                    if (rows == null) {
-                        setSelectedPatinet(null);
-                    } else {
-                        PatientModel[] patients = new PatientModel[rows.length];
-                        for (int i=0; i < rows.length; i++) {
-                            rows[i] = table.convertRowIndexToModel(rows[i]);
-                            patients[i] = (PatientModel) tableModel.getObject(rows[i]);
-                        }
-                        setSelectedPatinet(patients);
+                int[] rows = table.getSelectedRows();
+                if (rows == null) {
+                    setSelectedPatinet(null);
+                } else {
+                    PatientModel[] patients = new PatientModel[rows.length];
+                    for (int i=0; i < rows.length; i++) {
+                        rows[i] = table.convertRowIndexToModel(rows[i]);
+                        patients[i] = (PatientModel) tableModel.getObject(rows[i]);
                     }
+                    setSelectedPatinet(patients);
                 }
             }
         });
 
         // 絞り込み選択ボタンが解除されたときは背景もクリアする
-        view.getNarrowingSearchCb().addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                prefs.putBoolean(NARROWING_SEARCH, view.getNarrowingSearchCb().isSelected());
+        view.getNarrowingSearchCb().addActionListener(e -> {
+            prefs.putBoolean(NARROWING_SEARCH, view.getNarrowingSearchCb().isSelected());
 
-                if (tableModel.getObjectCount() > 0 && view.getNarrowingSearchCb().isSelected()) {
-                    view.getKeywordFld().setBackground(PatientSearchPanel.NARROWING_SEARCH_BACKGROUND_COLOR);
-                } else {
-                    view.getKeywordFld().setBackground(PatientSearchPanel.NORMAL_SEARCH_BACKGROUND_COLOR);
-                }
+            if (tableModel.getObjectCount() > 0 && view.getNarrowingSearchCb().isSelected()) {
+                view.getKeywordFld().setBackground(PatientSearchPanel.NARROWING_SEARCH_BACKGROUND_COLOR);
+            } else {
+                view.getKeywordFld().setBackground(PatientSearchPanel.NORMAL_SEARCH_BACKGROUND_COLOR);
             }
         });
 
         // テーブルの状態による絞り込み検索モードの制御
-        tableModel.addTableModelListener(new TableModelListener(){
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                if (tableModel.getObjectCount() > 0 && view.getNarrowingSearchCb().isSelected()) {
-                    view.getKeywordFld().setBackground(PatientSearchPanel.NARROWING_SEARCH_BACKGROUND_COLOR);
-                } else {
-                    view.getKeywordFld().setBackground(PatientSearchPanel.NORMAL_SEARCH_BACKGROUND_COLOR);
-                }
+        tableModel.addTableModelListener(e -> {
+            if (tableModel.getObjectCount() > 0 && view.getNarrowingSearchCb().isSelected()) {
+                view.getKeywordFld().setBackground(PatientSearchPanel.NARROWING_SEARCH_BACKGROUND_COLOR);
+            } else {
+                view.getKeywordFld().setBackground(PatientSearchPanel.NORMAL_SEARCH_BACKGROUND_COLOR);
             }
         });
     }
 
     /**
-     * メニューを制御する
-     * 複数行選択対応 by pns
-     * １つでも開けられないものがあれば false とする
+     * メニューを制御する.
+     * 複数行選択対応 by pns.
+     * １つでも開けられないものがあれば false とする.
      */
     private void controlMenu() {
         getContext().enableAction(GUIConst.ACTION_OPEN_KARTE, canOpen());
@@ -325,7 +302,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * SelectionListener から呼ばれて selectedPatient をセットする
+     * SelectionListener から呼ばれて selectedPatient をセットする.
      * @param model
      */
     public void setSelectedPatinet(PatientModel[] model) {
@@ -348,45 +325,25 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * 現在の selectedPatinet が canOpen かどうか判定 by pns
-     * １つでも開けられないものがあれば false とする
+     * 現在の selectedPatinet が canOpen かどうか判定 by pns.
+     * １つでも開けられないものがあれば false とする.
      */
     private boolean canOpen() {
-/*
-        boolean isCanOpen = false;
-        PatientModel[] pt = getSelectedPatinet();
-
-        if (pt == null || pt.length == 0) {
-            isCanOpen = false;
-        } else {
-            isCanOpen = true;
-            for (int i=0; i < pt.length; i++) {
-                if (! canOpen(pt[i])) {
-                    isCanOpen = false;
-                    break;
-                }
-            }
-        }
-        return isCanOpen;
- */
         // 既に開かれているカルテを open すると，toFront として処理されるので
         // PatientSearchImpl では open できないカルテというのはない
         return true;
     }
 
     /**
-     * カルテを開く
-     * popupMenu で選択した場合はこれが呼ばれる　複数行選択対応
-     * openKarte(patient) は abstract に移動
+     * カルテを開く.
+     * popupMenu で選択した場合はこれが呼ばれる　複数行選択対応.
+     * openKarte(patient) は abstract に移動.
      * by pns
      */
     public void openKarte() {
         PatientModel patient[] = getSelectedPatinet();
-        if (patient == null) return;
-
-        for (int i=0; i < patient.length; i++) {
-            openKarte(patient[i]);
-        }
+        if (patient == null) { return; }
+        Arrays.asList(patient).forEach(pt -> openKarte(pt));
     }
 
     /**
@@ -396,7 +353,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     public void addAsPvt() {
 
         PatientModel[] patients = getSelectedPatinet();
-        if (patients == null) return;
+        if (patients == null) { return; }
 
         PatientVisitModel[] pvts = new PatientVisitModel[patients.length];
         String pvtDate = ModelUtils.getDateTimeAsString(new Date());
@@ -422,12 +379,12 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
 
     /**
-     * 選択患者を受付する
-     * 複数行選択対応　by pns
+     * 選択患者を受付する.
+     * 複数行選択対応　by pns.
      */
     private class AddAsPvtTask extends SwingWorker<Void, Void> {
 
-        private PatientVisitModel[] pvts;
+        private final PatientVisitModel[] pvts;
 
         public AddAsPvtTask(PatientVisitModel[] pvts) {
             super();
@@ -446,7 +403,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * 検索テキストを解析して，該当する検索タスクを呼び出す
+     * 検索テキストを解析して，該当する検索タスクを呼び出す.
      * @param text キーワード
      */
     private void find(String text) {
@@ -552,7 +509,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * FindTask で使う InputBlocker
+     * FindTask で使う InputBlocker.
      */
     private class Blocker implements Task.InputBlocker {
 
@@ -614,7 +571,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         return false;
     }
     private boolean isId(String text) {
-        if (text == null || text.length() > 6) return false;
+        if (text == null || text.length() > 6) { return false; }
         return text.matches("[0-9]+");
     }
 
@@ -671,45 +628,41 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * 検索結果をファイルに書き出す
-     * 複数行選択対応
+     * 検索結果をファイルに書き出す.
+     * 複数行選択対応.
      */
     public void exportSearchResult() {
         final JFileChooser fileChooser = new JFileChooser();
-        MyJSheet.showSaveSheet(fileChooser, getContext().getFrame(), new SheetListener() {
-            @Override
-            public void optionSelected(SheetEvent e) {
-                if (e.getOption() == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
+        MyJSheet.showSaveSheet(fileChooser, getContext().getFrame(), e -> {
+            if (e.getOption() == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
 
-                    if (!file.exists() || overwriteConfirmed(file)) {
+                if (!file.exists() || overwriteConfirmed(file)) {
 
-                        try {
-                            FileWriter writer = new FileWriter(file);
-                            JTable table = view.getTable();
-                            // 書き出す内容　選択されたものを書き出す
-                            StringBuilder sb = new StringBuilder();
-                            int[] rows = table.getSelectedRows();
-                            for (int i = 0; i < rows.length; i++) {
-                                rows[i] = table.convertRowIndexToModel(rows[i]);
-                                for (int column = 0; column < table.getColumnCount(); column++) {
-                                    sb.append(column==0?'"':",\"");
-                                    sb.append(table.getValueAt(rows[i], column));
-                                    sb.append('"');
-                                }
-                                sb.append('\n');
+                    try (FileWriter writer = new FileWriter(file)) {
+                        JTable table = view.getTable();
+                        // 書き出す内容　選択されたものを書き出す
+                        StringBuilder sb = new StringBuilder();
+                        int[] rows = table.getSelectedRows();
+                        for (int i = 0; i < rows.length; i++) {
+                            rows[i] = table.convertRowIndexToModel(rows[i]);
+                            for (int column = 0; column < table.getColumnCount(); column++) {
+                                sb.append(column==0?'"':",\"");
+                                sb.append(table.getValueAt(rows[i], column));
+                                sb.append('"');
                             }
-                            writer.write(sb.toString());
-                            writer.close();
-
-                        } catch (IOException ex) {
-                            System.out.println("PatientSearchImpl.java: " + ex);
+                            sb.append('\n');
                         }
+                        writer.write(sb.toString());
+
+                    } catch (IOException ex) {
+                        System.out.println("PatientSearchImpl.java: " + ex);
                     }
                 }
             }
         });
     }
+
     /**
      * ファイル上書き確認ダイアログを表示する.
      * @param file 上書き対象ファイル
@@ -725,7 +678,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.WARNING_MESSAGE );
 
-        if(confirm == JOptionPane.OK_OPTION) return true;
+        if(confirm == JOptionPane.OK_OPTION) { return true; }
 
         return false;
     }
@@ -738,10 +691,14 @@ public class PatientSearchImpl extends AbstractMainComponent {
         /** ポップアップメニュー */
         private JPopupMenu popup;
         /** ターゲットのテキストフィールド */
-        private JTextField tf;
+        private final JTextField tf;
 
         public PopupListener(JTextField tf) {
             this.tf = tf;
+            connect();
+        }
+
+        private void connect() {
             tf.addMouseListener(this);
         }
 

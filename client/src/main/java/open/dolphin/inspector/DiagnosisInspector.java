@@ -201,9 +201,10 @@ public class DiagnosisInspector {
         scrollPane.putClientProperty("JComponent.sizeVariant", "small");
         diagPanel.add(scrollPane);
 
-        // ChartImpl#getDiagnosisDocument() を呼ぶと，ChartImpl から DiagnosisDocument#start() が呼ばれて
-        // DiagnosisDocument でサーバーから診断リストを読み込んで，それが読み終わると
-        // DiagnosisDocument からここの update(model) が呼ばれて diagList がセットされるという紆余曲折な仕組み
+        // ここで普通に ChartImpl#getDiagnosisDocument() を呼ぶと，遅延形成される ChartImpl#loadDocuments() が終了していないため
+        // null が返ってきてしまう. そこで，ChartImpl#getDiagnosisDocument() に loadDocuments() が終了するまで待ってもらうように
+        // ロックをかけるようにして，こちらの呼び出しもスレッドにして止まって待てるようにしている.
+
         Thread t = new Thread(){
             @Override
             public void run() {

@@ -160,7 +160,7 @@ public class Dolphin implements MainWindow {
 
         // デバッグ用-------------------------
         // javax.swing.RepaintManager.setCurrentManager(new VerboseRepaintManager());
-        // new FocusMonitor();
+        //new FocusMonitor();
 
         // 設定に必要な定数をコンテキストから取得する
         String windowTitle = ClientContext.getString("title");

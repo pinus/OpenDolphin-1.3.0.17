@@ -5,7 +5,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
-import java.beans.PropertyChangeSupport;
 import java.io.*;
 import java.util.List;
 import java.util.Collection;
@@ -25,7 +24,6 @@ import open.dolphin.message.MMLHelper;
 import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.project.Project;
 import open.dolphin.ui.MyBorderFactory;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.MMLDate;
 import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;
@@ -34,6 +32,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import open.dolphin.event.FinishListener;
 
 /**
  * 2号カルテクラス.
@@ -87,19 +86,22 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private StateMgr stateMgr;
     // ClaimSender
     private final ClaimSender claimSender = new ClaimSender();
-
     // EditorFrame に save 完了を知らせる
-    public static String SAVE_DONE = "saveDoneProp";
-    private final PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());
+    private FinishListener finListener;
 
     private final Logger logger = ClientContext.getBootLogger();
 
-    public PropertyChangeSupport getBoundSupport() {
-        return boundSupport;
-    }
-
     public KarteEditor() {
         setTitle(DEFAULT_TITLE);
+    }
+
+    /**
+     * エディタ終了を知らせるリスナを登録.
+     * EditorFrame に知らせる.
+     * @param listener
+     */
+    public void addFinishListener(FinishListener listener) {
+        finListener = listener;
     }
 
     public void selectAll() {
@@ -150,7 +152,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             return Math.max(hsoa, hp);
 
         } catch (BadLocationException ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(System.err);
         }
         return 0;
     }
@@ -178,8 +180,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             String path = chooser.getSelectedFile().getPath();
             this.getSOAPane().insertImage(path);
 
-        } else if (selected == JFileChooser.CANCEL_OPTION) {
-            return;
         }
     }
 
@@ -210,6 +210,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * MMLリスナを追加する.
      * @param listener MMLリスナリスナ
+     * @throws java.util.TooManyListenersException
      */
     public void addMMLListner(MmlMessageListener listener) throws TooManyListenersException {
         if (mmlListener != null) {
@@ -405,13 +406,11 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         ChartMediator mediator = getContext().getChartMediator();
         soaPane.init(editable, mediator);
         pPane.init(editable, mediator);
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                // キャレットを先頭にリセット.
-                getSOAPane().getTextPane().setCaretPosition(0);
-                getPPane().getTextPane().setCaretPosition(0);
-                getSOAPane().getTextPane().requestFocusInWindow();
-            }
+        EventQueue.invokeLater(() -> {
+            // キャレットを先頭にリセット.
+            getSOAPane().getTextPane().setCaretPosition(0);
+            getPPane().getTextPane().setCaretPosition(0);
+            getSOAPane().getTextPane().requestFocusInWindow();
         });
         enter();
     }
@@ -451,7 +450,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
         // コンテキストが EditotFrame の場合と Chart の場合がある
         if (getContext() instanceof ChartImpl) {
-            ins = ((ChartImpl) getContext()).getHealthInsurances();
+            ins = getContext().getHealthInsurances();
         } else if (getContext() instanceof EditorFrame) {
             EditorFrame ef = (EditorFrame) getContext();
             ChartImpl chart = (ChartImpl) ef.getChart();
@@ -462,10 +461,10 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         String selecteIns = null;
         String insGUID = getModel().getDocInfo().getHealthInsuranceGUID();
         if (insGUID != null) {
-            for (int i = 0; i < ins.length; i++) {
-                String GUID = ins[i].getGUID();
+            for (PVTHealthInsuranceModel in : ins) {
+                String GUID = in.getGUID();
                 if (GUID != null && GUID.equals(insGUID)) {
-                    selecteIns = ins[i].toString();
+                    selecteIns = in.toString();
                     break;
                 }
             }
@@ -549,7 +548,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             }
         }
 
-        SaveParams params = null;
+        SaveParams params;
 
         //
         // 新規カルテで保存の場合
@@ -585,7 +584,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         }
 
         // 確認ダイアログを表示するかどうか
-//        if (Project.getPreferences().getBoolean(Project.KARTE_SHOW_CONFIRM_AT_SAVE, true)) {
 
             // ダイアログを表示し，アクセス権等の保存時のパラメータを取得する
             params = new SaveParams(joinAreaNetwork);
@@ -614,39 +612,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 prefs.putInt("karte.print.count", params.getPrintCount());
             }
 
-  /*      } else {
-
-            //
-            // 確認ダイアログを表示しない
-            //
-            params = new SaveParams(false);
-            params.setTitle(text);
-            params.setDepartment(model.getDocInfo().getDepartmentDesc());
-            params.setPrintCount(Project.getPreferences().getInt(Project.KARTE_PRINT_COUNT, 0));
-
-            //
-            // 仮保存が指定されている端末の場合
-            //
-            int sMode = Project.getPreferences().getInt(Project.KARTE_SAVE_ACTION, 0);
-            boolean tmpSave = sMode == 1 ? true : false;
-            params.setTmpSave(tmpSave);
-            if (tmpSave) {
-                params.setSendClaim(false);
-            } else {
-                //
-                // 保存が実行される端末の場合
-                //
-                params.setSendClaim(sendClaim);
-            }
-
-            //
-            // 患者参照，施設参照不可
-            //
-            params.setAllowClinicRef(false);
-            params.setAllowPatientRef(false);
-        }
-*/
-
         return params;
     }
 
@@ -665,9 +630,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             // ケース２ HIGO 方式 地域ID を使用
             ID masterID = Project.getMasterId(getContext().getPatient().getPatientId());
 
-            sendMml = (Project.getSendMML() && masterID != null && mmlListener != null)
-                    ? true
-                    : false;
+            sendMml = Project.getSendMML() && masterID != null && mmlListener != null;
 
             // この段階での CLAIM 送信 = 診療行為送信かつclaimListener!=null
             sendClaim = (Project.getSendClaim() && claimSender.getListener() != null);
@@ -683,10 +646,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             int selection = params.getSelection();
             if (selection == SaveDialog2.SAVE || selection == SaveDialog2.TMP_SAVE) {
                 save2(params);
-            }
-            else if (selection == SaveDialog2.DISPOSE) {
-                // save 前に EditorFrame に SAVE_DONE を送って dispose する
-                boundSupport.firePropertyChange(KarteEditor.SAVE_DONE, false, true);
+            } else if (selection == SaveDialog2.DISPOSE) {
+                // save 前に EditorFrame に Termination を送って dispose する
+                finListener.finished();
             }
 
         } catch (Exception e) {
@@ -772,7 +734,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                     chart.getDocumentHistory().getDocumentHistory(docInfo.getFirstConfirmDateTrimTime());
 
                     // save が終了したことを EditorFrame に知らせる
-                    boundSupport.firePropertyChange(KarteEditor.SAVE_DONE, false, true);
+                    finListener.finished();
 
                 } else {
                     // errMsg を処理する
@@ -825,35 +787,28 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             //
             String oldStatus = docInfo.getStatus();
 
-            if (oldStatus.equals(STATUS_NONE)) {
-                //
-                // NONEから確定への遷移 newSave
-                //
-                sendClaim = params.isSendClaim();
-                logger.debug("NONEから確定 : " + sendClaim);
-
-            } else if (oldStatus.equals(STATUS_TMP)) {
-                //
-                // 仮保存から確定へ遷移する場合   saveFromTmp
-                // 同日の場合だけ CLIAM 送信する
-                //
-                //String first = ModelUtils.getDateAsString(docInfo.getFirstConfirmDate());
-                //String cd = ModelUtils.getDateAsString(docInfo.getConfirmDate());
-                //if (first.equals(cd)) {
-                    //sendClaim = params.isSendClaim();
-                //} else {
-                    //sendClaim = false;
-                //}
-                sendClaim = params.isSendClaim();
-                logger.debug("仮保存から確定 : " + sendClaim);
-
-            } else {
-                //
-                // 確定から確定（修正の場合に相当する）以前は sendClaim = false;
-                //
-                sendClaim = params.isSendClaim();
-
-                logger.debug("修正 : " + sendClaim);
+            switch (oldStatus) {
+                case STATUS_NONE:
+                    //
+                    // NONEから確定への遷移 newSave
+                    //
+                    sendClaim = params.isSendClaim();
+                    logger.debug("NONEから確定 : " + sendClaim);
+                    break;
+                case STATUS_TMP:
+                    //
+                    // 仮保存から確定へ遷移する場合   saveFromTmp
+                    //
+                    sendClaim = params.isSendClaim();
+                    logger.debug("仮保存から確定 : " + sendClaim);
+                    break;
+                default:
+                    //
+                    // 確定から確定（修正の場合に相当する）以前は sendClaim = false;
+                    //
+                    sendClaim = params.isSendClaim();
+                    logger.debug("修正 : " + sendClaim);
+                    break;
             }
 
             //
@@ -1017,22 +972,22 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
         // FLAGを設定する
         // image があるかどうか
-        boolean flag = model.getSchema() != null ? true : false;
+        boolean flag = model.getSchema() != null;
         docInfo.setHasImage(flag);
         logger.debug("hasImage = " + flag);
 
         // RP があるかどうか
-        flag = model.getModule(ENTITY_MED_ORDER) != null ? true : false;
+        flag = model.getModule(ENTITY_MED_ORDER) != null;
         docInfo.setHasRp(flag);
         logger.debug("hasRp = " + flag);
 
         // 処置があるかどうか
-        flag = model.getModule(ENTITY_TREATMENT) != null ? true : false;
+        flag = model.getModule(ENTITY_TREATMENT) != null;
         docInfo.setHasTreatment(flag);
         logger.debug("hasTreatment = " + flag);
 
         // LaboTest があるかどうか
-        flag = model.getModule(ENTITY_LABO_TEST) != null ? true : false;
+        flag = model.getModule(ENTITY_LABO_TEST) != null;
         docInfo.setHasLaboTest(flag);
         logger.debug("hasLaboTest = " + flag);
 
@@ -1145,8 +1100,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     }
 
     /**
-     * Courtesy of Junzo SATO
-     * ImageIO by pns
+     * Courtesy of Junzo SATO.
+     * ImageIO by pns.
      */
     private byte[] getJPEGByte(Image image) {
 
@@ -1245,7 +1200,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     }
 
     /**
-     * MML送信を行う
+     * MML送信を行う.
      */
     private void sendMml(DocumentModel sendModel) {
 
@@ -1267,12 +1222,13 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
             // Merge する
             StringWriter sw = new StringWriter();
-            BufferedWriter bw = new BufferedWriter(sw);
-            InputStream instream = ClientContext.getTemplateAsStream(templateFile);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
-            Velocity.evaluate(context, bw, "mml", reader);
-            bw.flush();
-            bw.close();
+            BufferedReader reader;
+            try (BufferedWriter bw = new BufferedWriter(sw)) {
+                InputStream instream = ClientContext.getTemplateAsStream(templateFile);
+                reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
+                Velocity.evaluate(context, bw, "mml", reader);
+                bw.flush();
+            }
             reader.close();
             String mml = sw.toString();
             //System.out.println(mml);
@@ -1293,37 +1249,23 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 mmlListener.mmlMessageEvent(mevt);
             }
 
-        } catch (IOException ex) {
-            System.out.println("KarteEditor.java: " + ex);
-        } catch (ParseErrorException ex) {
-            System.out.println("KarteEditor.java: " + ex);
-        } catch (MethodInvocationException ex) {
-            System.out.println("KarteEditor.java: " + ex);
-        } catch (ResourceNotFoundException ex) {
+        } catch (IOException | ParseErrorException | MethodInvocationException | ResourceNotFoundException ex) {
             System.out.println("KarteEditor.java: " + ex);
         }
     }
 
     /**
-     * このエディタの抽象状態クラス
+     * このエディタの状態インターフェース.
      */
-    private abstract class EditorState {
-
-        public EditorState() {
-        }
-
+    private interface EditorState {
         public abstract boolean isDirty();
-
         public abstract void controlMenu();
     }
 
     /**
-     * No dirty 状態クラス
+     * No dirty 状態クラス.
      */
-    private final class NoDirtyState extends EditorState {
-
-        public NoDirtyState() {
-        }
+    private final class NoDirtyState implements EditorState {
 
         @Override
         public void controlMenu() {
@@ -1352,12 +1294,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     }
 
     /**
-     * Dirty 状態クラス
+     * Dirty 状態クラス.
      */
-    private final class DirtyState extends EditorState {
-
-        public DirtyState() {
-        }
+    private final class DirtyState implements EditorState {
 
         @Override
         public void controlMenu() {
@@ -1377,12 +1316,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     }
 
     /**
-     * EmptyNew 状態クラス
+     * EmptyNew 状態クラス.
      */
-    private final class SavedState extends EditorState {
-
-        public SavedState() {
-        }
+    private final class SavedState implements EditorState {
 
         @Override
         public void controlMenu() {
@@ -1410,13 +1346,13 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     }
 
     /**
-     * 状態マネージャ
+     * 状態マネージャ.
      */
     private final class StateMgr {
 
-        private EditorState noDirtyState = new NoDirtyState();
-        private EditorState dirtyState = new DirtyState();
-        private EditorState savedState = new SavedState();
+        private final EditorState noDirtyState = new NoDirtyState();
+        private final EditorState dirtyState = new DirtyState();
+        private final EditorState savedState = new SavedState();
         private EditorState currentState;
 
         public StateMgr() {
@@ -1444,29 +1380,12 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         }
     }
 
+    /**
+     * 文末の無駄な改行文字を削除する.
+     * by masuda-sensei
+     * @param kd
+     */
     private void removeExtraCR(KarteStyledDocument kd) {
-
-        // 文書末の余分な改行文字を削除する masuda
-/*
-        // すっきりしている 20個の改行削除に7msec
-        int pos = kd.getLength() - 1;
-        try {
-            while ("\n".equals(kd.getText(pos, 1))) {
-                kd.remove(pos, 1);
-                --pos;
-            }
-        } catch (Exception ex) {
-        }
-*/
-/*
-        // いっそのことこれでもいい. 20個の改行削除に7msec でも…
-        try {
-            while ("\n".equals(kd.getText(kd.getLength() - 1, 1))) {
-                kd.remove(kd.getLength() - 1, 1);
-            }
-        } catch (Exception ex) {
-        }
-*/
         // これが一番速い！ 20個の改行削除に2msec!!
         int len = kd.getLength();
         try {
@@ -1487,7 +1406,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     }
 
     /**
-     * ２個以上連続する改行を１個にする
+     * 3個以上連続する改行を2個にする.
+     * つまり，２つ以上連続する空行を１つにする.
      * @param kd
      */
     private void removeRepeatedCR(KarteStyledDocument kd) {
