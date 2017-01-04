@@ -474,13 +474,13 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * ValidModel かどうかをセットする
-     * これをセットすると，StampModelEditor の isValidModel が呼ばれて，
-     * そこで firePropetyChange されて，登録されたリスナに伝達される     *
+     * Valid model かどうかをセットする.
+     * これをセットすると，StampEditor の setValid が呼ばれて，
+     * そこで登録されたリスナに伝達される.
      * @param valid
      */
-    public void setValidModel(boolean valid) {
-        getMyParent().setValidModel(valid);
+    public void setValid(boolean valid) {
+        getMyParent().setValid(valid);
     }
 
     /**
@@ -859,14 +859,14 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
             clearButton.setEnabled(false);
             stampNameField.setText(DEFAULT_STAMP_NAME);
 
-            setValidModel(false);
+            setValid(false);
 
         } else {
             int index = table.getSelectedRow();
             removeButton.setEnabled(tableModel.getObject(index) != null);
             clearButton.setEnabled(true);
 
-            setValidModel(hasSyugi() && isNumberOk());
+            setValid(hasSyugi() && isNumberOk());
         }
     }
 

@@ -6,7 +6,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import javax.swing.*;
@@ -22,9 +21,8 @@ import org.apache.log4j.Logger;
  * カルテの StampHolder から呼ばれる.
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
-public class StampEditorDialog implements PropertyChangeListener {
+public class StampEditorDialog {
 
-    public static final String VALID_DATA_PROP = "validData";
     public static final String VALUE_PROP = "value";
     private static final Point DEFAULT_LOC = new Point(159,67);
     private static final Dimension DEFAULT_SIZE = new Dimension(924,616);
@@ -87,8 +85,7 @@ public class StampEditorDialog implements PropertyChangeListener {
 
         editor = new StampEditor(this.entity);
         editor.start();
-        //editor.addValidListener(this::setValid);
-        editor.addPropertyChangeListener(VALID_DATA_PROP, this);
+        editor.addValidListener(okButton::setEnabled);
         editor.setValue(value);
 
         // レアイウトする
@@ -169,19 +166,6 @@ public class StampEditorDialog implements PropertyChangeListener {
      */
     public void remopvePropertyChangeListener(String prop, PropertyChangeListener listener) {
         boundSupport.removePropertyChangeListener(prop, listener);
-    }
-
-    /**
-     * 編集中のモデル値が有効な値かどうかの通知を受け，
-     * カルテに展開ボタンを enable/disable にする.
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        okButton.setEnabled((Boolean) evt.getNewValue());
-    }
-
-    public void setValid(boolean valid) {
-        okButton.setEnabled(valid);
     }
 
     /**

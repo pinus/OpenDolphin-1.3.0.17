@@ -1,10 +1,8 @@
 package open.dolphin.order;
 
-import open.dolphin.order.stampeditor.StampEditor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import javax.swing.*;
@@ -21,11 +19,11 @@ import open.dolphin.ui.HorizontalPanel;
 
 /**
  * StampMakerPanel.
- * StampBox の startStampMake() から呼ばれ，左側に表示されるパネル
- * StampEditorProxyPanel と ButtonPanel からなる
+ * StampBox の startStampMake() から呼ばれ，左側に表示されるパネル.
+ * StampEditorProxyPanel と ButtonPanel からなる.
  * @author pns
  */
-public class StampMakerPanel extends JPanel implements PropertyChangeListener, TreeSelectionListener {
+public class StampMakerPanel extends JPanel implements TreeSelectionListener {
     private static final long serialVersionUID = 1L;
 
     public static final String EDITOR_VALUE_PROP = "editorSetProp";
@@ -49,12 +47,13 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
      */
     private void initComponent() {
 
-        editorPanel = new StampEditorProxyPanel(this);
+        editorPanel = new StampEditorProxyPanel();
 
          // 編集したスタンプをボックスへ登録する右向きボタンを生成する
         rightArrowBtn = new JButton(GUIConst.ICON_GO_NEXT_16);
         rightArrowBtn.addActionListener(new ToStampBoxPlugin());
         rightArrowBtn.setEnabled(false);
+        editorPanel.addValidListener(rightArrowBtn::setEnabled);
 
         // スタンプボックスのスタンプをセットテーブルへ取り込む左向きのボタンを生成する
         leftArrowBtn = new JButton(GUIConst.ICON_GO_PREVIOUS_16);
@@ -118,19 +117,6 @@ public class StampMakerPanel extends JPanel implements PropertyChangeListener, T
      */
     public void remopvePropertyChangeListener(String prop, PropertyChangeListener listener) {
         boundSupport.removePropertyChangeListener(prop, listener);
-    }
-
-    /**
-     * 編集中のスタンプの有効/無効の属性通知を受け，右向きボタンを制御する.
-     * @param e
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (prop.equals(StampEditor.VALID_DATA_PROP)) {
-            boolean state = (Boolean) e.getNewValue();
-            rightArrowBtn.setEnabled(state);
-        }
     }
 
     /**

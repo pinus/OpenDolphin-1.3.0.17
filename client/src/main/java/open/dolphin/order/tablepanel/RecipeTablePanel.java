@@ -518,7 +518,7 @@ public class RecipeTablePanel extends ItemTablePanel {
             clearButton.setEnabled(false);
             stampNameField.setText(DEFAULT_STAMP_NAME);
             stateLabel.setText("医薬品を入力してください");
-            setValidModel(false);
+            setValid(false);
 
         } else {
             int index = table.getSelectedRow();
@@ -530,7 +530,7 @@ public class RecipeTablePanel extends ItemTablePanel {
             else if (!isNumberOk()) stateLabel.setText("数量が正しくありません");
             else stateLabel.setText("カルテに展開できます");
 
-            setValidModel(hasMedicine() && hasAdmin() && isNumberOk());
+            setValid(hasMedicine() && hasAdmin() && isNumberOk());
         }
     }
 

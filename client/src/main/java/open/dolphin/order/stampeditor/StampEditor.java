@@ -1,7 +1,5 @@
 package open.dolphin.order.stampeditor;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import open.dolphin.client.ClientContext;
@@ -24,9 +22,6 @@ import open.dolphin.order.tablepanel.RecipeTablePanel;
 public class StampEditor extends JPanel implements IStampEditor {
     private static final long serialVersionUID = 1L;
 
-    public static final String VALID_DATA_PROP = "validData";
-
-    private final PropertyChangeSupport boundSupport;
     private ValidListener validListener;
     private boolean isValidModel;
     private String title;
@@ -36,7 +31,6 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     public StampEditor(String entity) {
         this.entity = entity;
-        boundSupport = new PropertyChangeSupport(this);
     }
 
     @Override
@@ -152,15 +146,6 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     @Override
-    public void addPropertyChangeListener(String prop, PropertyChangeListener l) {
-        boundSupport.addPropertyChangeListener(prop, l);
-    }
-
-    @Override
-    public void removePropertyChangeListener(String prop, PropertyChangeListener l) {
-        boundSupport.removePropertyChangeListener(prop, l);
-    }
-
     public void addValidListener(ValidListener listener) {
         validListener = listener;
     }
@@ -171,10 +156,9 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     @Override
-    public void setValidModel(boolean b) {
-        isValidModel = b;
-        // 強制 fire (→ tab 切り替え時に右矢印ボタンを制御するため)
-        boundSupport.firePropertyChange(VALID_DATA_PROP, null, isValidModel);
+    public void setValid(boolean valid) {
+        isValidModel = valid;
+        validListener.validity(valid);
     }
 
     @Override

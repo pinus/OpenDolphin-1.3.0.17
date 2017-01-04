@@ -389,12 +389,12 @@ public class DiagnosisTablePanel extends ItemTablePanel {
             removeButton.setEnabled(false);
             clearButton.setEnabled(false);
             stateLabel.setText("傷病名がありません");
-            setValidModel(false);
+            setValid(false);
 
         } else {
             removeButton.setEnabled(tableModel.getObject(table.getSelectedRow()) != null);
             clearButton.setEnabled(true);
-            setValidModel(isValidModel());
+            setValid(isValidModel());
         }
         reconstractDiagnosis();
     }

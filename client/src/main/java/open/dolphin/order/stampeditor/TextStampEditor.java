@@ -2,13 +2,10 @@ package open.dolphin.order.stampeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Insets;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.event.ValidListener;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
@@ -26,12 +23,11 @@ import open.dolphin.ui.MyJScrollPane;
 public final class TextStampEditor extends JPanel implements IStampEditor<ModuleModel> {
     private static final long serialVersionUID = 1L;
 
-    public static final String VALID_DATA_PROP = "validData";
+    private String title; // Dialog に表示されるタイトル
 
-    private final PropertyChangeSupport boundSupport;
-    private String title;
+    private ValidListener validListener;
     private JTextPane textPane;
-    private JTextField titleField;
+    private JTextField headerField;
     private boolean isValidModel = false;
     private String entity;
     // ItemTablePanel.java の stampNameField.setBackground と同じ色
@@ -42,7 +38,6 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
 
     public TextStampEditor() {
         entity = IInfoModel.ENTITY_TEXT;
-        boundSupport = new PropertyChangeSupport(this);
     }
 
     /**
@@ -54,47 +49,37 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
 
         textPane = new JTextPane();
         textPane.setMargin(new Insets(7,7,7,7));
-        textPane.getDocument().addDocumentListener(new StateListener());
-        titleField = new JTextField();
-        titleField.getDocument().addDocumentListener(new StateListener());
-        titleField.setBackground(STAMP_NAME_FIELD_BACKGROUND);
-        titleField.setOpaque(false);
+        textPane.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkState());
+        headerField = new JTextField();
+        headerField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkState());
+        headerField.setBackground(STAMP_NAME_FIELD_BACKGROUND);
+        headerField.setOpaque(true);
 
         // Undo
         paneUndoManager = TextComponentUndoManager.getManager(textPane);
-        fieldUndoManager = TextComponentUndoManager.getManager(titleField);
+        fieldUndoManager = TextComponentUndoManager.getManager(headerField);
 
-        HorizontalPanel titlePanel = new HorizontalPanel();
+        HorizontalPanel headerPanel = new HorizontalPanel();
 
         JLabel label = new JLabel("スタンプ名：");
 
-        titlePanel.add(label);
-        titlePanel.add(titleField);
+        headerPanel.add(label);
+        headerPanel.add(headerField);
 
         MyJScrollPane scroller = new MyJScrollPane(textPane);
         scroller.setVerticalScrollBarPolicy(MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroller.setHorizontalScrollBarPolicy(MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         this.setLayout(new BorderLayout(0, 0));
-        this.add(titlePanel, BorderLayout.NORTH);
+        this.add(headerPanel, BorderLayout.NORTH);
         this.add(scroller, BorderLayout.CENTER);
-        this.setBorder(BorderFactory.createTitledBorder(""));
+        this.setBorder(BorderFactory.createEmptyBorder());
     }
 
-    private class StateListener implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) { checkState(); }
-        @Override
-        public void removeUpdate(DocumentEvent e) { checkState(); }
-        @Override
-        public void changedUpdate(DocumentEvent e) { checkState(); }
-
-        private void checkState() {
-            String title = titleField.getText();
-            String text = textPane.getText();
-            setValidModel(title != null && !title.equals("") && text != null && !text.equals(""));
-        }
+    private void checkState() {
+        String header = headerField.getText();
+        String text = textPane.getText();
+        setValid(header != null && !header.equals("") && text != null && !text.equals(""));
     }
 
     /**
@@ -102,11 +87,11 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
      */
     @Override
     public void enter() {
-        EventQueue.invokeLater(textPane::requestFocusInWindow);
+        SwingUtilities.invokeLater(textPane::requestFocusInWindow);
     }
 
     /**
-     * このエディタではとくに dispose すべきリソースはない
+     * このエディタではとくに dispose すべきリソースはない.
      */
     @Override
     public void dispose() {
@@ -127,11 +112,11 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
     }
 
     @Override
-    public void setValidModel(boolean b) {
+    public void setValid(boolean valid) {
         boolean old = isValidModel;
-        isValidModel = b;
+        isValidModel = valid;
         if (old != isValidModel) {
-            boundSupport.firePropertyChange(VALID_DATA_PROP, old, isValidModel);
+            validListener.validity(valid);
         }
     }
 
@@ -146,17 +131,12 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
     }
 
     @Override
-    public void addPropertyChangeListener(String prop, PropertyChangeListener l) {
-        boundSupport.addPropertyChangeListener(prop, l);
-    }
-
-    @Override
-    public void removePropertyChangeListener(String prop, PropertyChangeListener l) {
-        boundSupport.removePropertyChangeListener(prop, l);
+    public void addValidListener(ValidListener listener) {
+        validListener = listener;
     }
 
     /**
-     * 編集したテキストを返す
+     * 編集したテキストを返す.
      * @return ModuleModel
      */
     @Override
@@ -165,7 +145,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
         TextStampModel stamp = new TextStampModel();
         ModuleInfoBean info = new ModuleInfoBean();
 
-        info.setStampName(titleField.getText().trim());
+        info.setStampName(headerField.getText().trim());
         info.setEntity(entity);
         info.setStampRole(IInfoModel.ROLE_TEXT);
         stamp.setText(textPane.getText());
@@ -177,7 +157,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
     }
 
     /**
-     * 編集するテキストを設定する
+     * 編集するテキストを設定する.
      * @param val ModuleModel
      */
     @Override
@@ -186,7 +166,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
         ModuleModel model = val;
         TextStampModel stamp = (TextStampModel) model.getModel();
         textPane.setText(stamp.getText());
-        titleField.setText(model.getModuleInfo().getStampName());
+        headerField.setText(model.getModuleInfo().getStampName());
 
         textPane.requestFocusInWindow();
 

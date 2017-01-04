@@ -1,6 +1,6 @@
 package open.dolphin.order;
 
-import java.beans.PropertyChangeListener;
+import open.dolphin.event.ValidListener;
 
 /**
  * StampEditor が実装するインターフェイス.
@@ -15,23 +15,34 @@ public interface IStampEditor <T> {
 
     public void enter();
 
+    /**
+     * ダイアログのタイトルを返す.
+     * @return
+     */
     public String getTitle();
 
-    public void setEntity(String entity);
-
+    /**
+     * ダイアログのタイトルトルをセットする.
+     * @param val
+     */
     public void setTitle(String val);
+
+    public void setEntity(String entity);
 
     public T getValue();
 
     public void setValue(T o);
 
-    public void addPropertyChangeListener(String prop, PropertyChangeListener l);
-
-    public void removePropertyChangeListener(String prop, PropertyChangeListener l);
+    /**
+     * 編集中のデータが valid かどうかをリスンするリスナ.
+     * これによりカルテに展開するボタンの制御を行う.
+     * @param listener
+     */
+    public void addValidListener(ValidListener listener);
 
     public boolean isValidModel();
 
-    public void setValidModel(boolean b);
+    public void setValid(boolean b);
 
     public void dispose();
 }

@@ -19,6 +19,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
+import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.ui.CompletableJTextField;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
@@ -113,6 +114,8 @@ public class PatientSearchPanel extends MainComponentPanel {
         keywordFld.setPreferredSize(tfSize);
         keywordFld.setMaximumSize(tfSize);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
+        TextComponentUndoManager manager = TextComponentUndoManager.getManager(keywordFld);
+        manager.discardAllEdits();
 
         clearBtn = new JButton();
         clearBtn.setFocusable(false);
