@@ -142,7 +142,7 @@ public class PatchedTransferHandler extends TransferHandler implements Serializa
                 }
             }
 
-            th.exportDone(c, t, NONE);
+            //th.exportDone(c, t, NONE);
         }
 
         // --- DragSourceListener methods -----------------------------------
