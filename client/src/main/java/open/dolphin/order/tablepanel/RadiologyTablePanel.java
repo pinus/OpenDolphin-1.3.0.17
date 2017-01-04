@@ -1,18 +1,15 @@
 package open.dolphin.order.tablepanel;
 
 import java.awt.BorderLayout;
-import java.beans.PropertyChangeSupport;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import open.dolphin.delegater.RadiologyDelegater;
 import open.dolphin.infomodel.RadiologyMethodValue;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.ui.AdditionalTableSettings;
 
 /**
- * ItemTablePanel を extend して作った RadiologyTablePanel
+ * ItemTablePanel を extend して作った RadiologyTablePanel.
  * @author pns
  */
 public class RadiologyTablePanel extends ItemTablePanel {
@@ -44,49 +41,38 @@ public class RadiologyTablePanel extends ItemTablePanel {
     }
 
     /**
-     * RadiologyMedthodPanel
+     * RadiologyMedthodPanel.
      * テーブルの左側にくっつくパネル
      */
     private final class RadiologyMethodPanel extends JPanel {
         private static final long serialVersionUID = 7002106454090449477L;
 
-        public static final String RADIOLOGY_MEYTHOD_PROP = "radiologyProp";
         private static final int METHOD_CELL_WIDTH   = 120;
         private static final int COMMENT_CELL_WIDTH    = 140;
 
-        private final JList methodList;
-        private JList commentList;
-        private List v2;
-        private PropertyChangeSupport boundSupport;
+        private JList<RadiologyMethodValue> methodList;
+        private JList<RadiologyMethodValue> commentList;
 
-        /**
-        * Creates new AdminPanel
-        */
         public RadiologyMethodPanel() {
+            initComponents();
+        }
 
-            boundSupport = new PropertyChangeSupport(this);
+        private void initComponents() {
+
             RadiologyDelegater mdl = new RadiologyDelegater();
 
             setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
             // Method panel
             JPanel p1 = new JPanel(new BorderLayout());
-            Object[] methods = mdl.getRadiologyMethod().toArray();
-            methodList = new JList(methods);
+            methodList = new JList<>(mdl.getRadiologyMethod().toArray(new RadiologyMethodValue[0]));
             methodList.setFixedCellWidth(METHOD_CELL_WIDTH);
             methodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            methodList.addListSelectionListener(new ListSelectionListener() {
-
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-
-                    if (e.getValueIsAdjusting() == false) {
-                            RadiologyMethodValue entry = (RadiologyMethodValue)methodList.getSelectedValue();
-                        if (entry == null) {
-                            return;
-                        }
-                        fetchComments(entry.getHierarchyCode1());
-                    }
+            methodList.addListSelectionListener(e -> {
+                if (e.getValueIsAdjusting() == false) {
+                    RadiologyMethodValue entry = methodList.getSelectedValue();
+                    if (entry == null) { return; }
+                    fetchComments(entry.getHierarchyCode1());
                 }
             });
 
@@ -98,22 +84,14 @@ public class RadiologyTablePanel extends ItemTablePanel {
 
             // Commet panel
             JPanel p2 = new JPanel(new BorderLayout());
-            commentList = new JList();
+            commentList = new JList<>();
             commentList.setFixedCellWidth(COMMENT_CELL_WIDTH);
             commentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            commentList.addListSelectionListener(new ListSelectionListener() {
-
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-
-                    if (e.getValueIsAdjusting() == false) {
-
-                            RadiologyMethodValue entry = (RadiologyMethodValue)commentList.getSelectedValue();
-                        if (entry == null) {
-                            return;
-                        }
-                        notifyComment(entry.getMethodName());
-                    }
+            commentList.addListSelectionListener(e -> {
+                if (e.getValueIsAdjusting() == false) {
+                    RadiologyMethodValue entry = commentList.getSelectedValue();
+                    if (entry == null) { return; }
+                    notifyComment(entry.getMethodName());
                 }
             });
             scroller = new JScrollPane(commentList,
@@ -132,13 +110,9 @@ public class RadiologyTablePanel extends ItemTablePanel {
         }
 
         private void fetchComments(String h1) {
-
-            if (v2 != null) {
-                v2.clear();
-            }
             RadiologyDelegater mdl = new RadiologyDelegater();
-            v2 = mdl.getRadiologyComments(h1);
-            commentList.setListData(v2.toArray());
+            List<RadiologyMethodValue> method = mdl.getRadiologyComments(h1);
+            commentList.setListData(method.toArray(new RadiologyMethodValue[0]));
         }
     }
 }
