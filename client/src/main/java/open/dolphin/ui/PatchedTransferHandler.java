@@ -16,8 +16,8 @@ import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
 /**
- * drag and drop with transparent visual feed back
- * @author http://bugs.sun.com/view_bug.do?bug_id=4816922 modified by pns
+ * drag and drop with transparent visual feed back.
+ * @author http://bugs.sun.com/view_bug.do?bug_id=4816922 modified by pns.
  *
  */
 public class PatchedTransferHandler extends TransferHandler implements Serializable {
@@ -47,14 +47,14 @@ public class PatchedTransferHandler extends TransferHandler implements Serializa
         }
 
         /**
-         * register this DragGestureRecognizer's Listeners with the Component
+         * register this DragGestureRecognizer's Listeners with the Component.
          */
         @Override
         protected void registerListeners() {}
 
         /**
-         * unregister this DragGestureRecognizer's Listeners with the Component
-         * subclasses must override this method
+         * unregister this DragGestureRecognizer's Listeners with the Component.
+         * subclasses must override this method.
          */
         @Override
         protected void unregisterListeners() {}
@@ -95,7 +95,7 @@ public class PatchedTransferHandler extends TransferHandler implements Serializa
         // --- DragGestureListener methods -----------------------------------
 
         /**
-         * a Drag gesture has been recognized
+         * a Drag gesture has been recognized.
          */
         @Override
         public void dragGestureRecognized(DragGestureEvent dge) {
@@ -135,38 +135,38 @@ public class PatchedTransferHandler extends TransferHandler implements Serializa
                     return;
                 } catch (InvalidDnDOperationException re) {
                     //InvalidDnDOperationException: Drag and drop in progress
-                    //System.out.println("PatchedTransferHandler: " + re);
+                    System.out.println("PatchedTransferHandler: " + re);
                     //SunDragSourceContextPeer.setDragDropInProgress(false);
                     //re.printStackTrace();
                     c.setAutoscrolls(scrolls);
                 }
             }
-
+            // OS X 10.12 + Java 1.8.0_112 causes frequent "Drag and drop in progress" exception
             //th.exportDone(c, t, NONE);
         }
 
         // --- DragSourceListener methods -----------------------------------
 
         /**
-         * as the hotspot enters a platform dependent drop site
+         * as the hotspot enters a platform dependent drop site.
          */
         @Override
         public void dragEnter(DragSourceDragEvent dsde) {}
 
         /**
-         * as the hotspot moves over a platform dependent drop site
+         * as the hotspot moves over a platform dependent drop site.
          */
         @Override
         public void dragOver(DragSourceDragEvent dsde) {}
 
         /**
-         * as the hotspot exits a platform dependent drop site
+         * as the hotspot exits a platform dependent drop site.
          */
         @Override
         public void dragExit(DragSourceEvent dsde) {}
 
         /**
-         * as the operation completes
+         * as the operation completes.
          */
         @Override
         public void dragDropEnd(DragSourceDropEvent dsde) {
