@@ -119,8 +119,16 @@ public final class ChartMediator extends MenuSupport {
      * chain[0] に入る.
      * @param karteComposite
      */
-    public void addKarteCompositeChain(KarteComposite karteComposite) {
+    public void addKarteCompositeChain(KarteComposite<?> karteComposite) {
         addChain(karteComposite);
+    }
+
+    /**
+     * KarteComposite 層の Object を返す.
+     * @return
+     */
+    public KarteComposite<?> getKarteCompositeChain() {
+        return (KarteComposite) getChain();
     }
 
     /**
@@ -130,6 +138,14 @@ public final class ChartMediator extends MenuSupport {
      */
     public void addChartDocumentChain(ChartDocument chartDocument) {
         addChain2(chartDocument);
+    }
+
+    /**
+     * ChartDocument 層の Object を返す.
+     * @return
+     */
+    public ChartDocument getChartDocumentChain() {
+        return (ChartDocument) getChain2();
     }
 
     @Override
@@ -226,8 +242,8 @@ public final class ChartMediator extends MenuSupport {
         boolean enabled = false;
         KartePane kartePane;
 
-        if (getChain() instanceof KarteEditor) {
-            KarteEditor editor = (KarteEditor) getChain();
+        if (getChartDocumentChain() instanceof KarteEditor) {
+            KarteEditor editor = (KarteEditor) getChartDocumentChain();
             kartePane = editor.getSOAPane();
             enabled = kartePane.getTextPane().isEditable();
         }
@@ -271,7 +287,7 @@ public final class ChartMediator extends MenuSupport {
         // chain の先頭が DiagnosisDocument の時のみ使用可能とする
         //
         JMenu myMenu;
-        Object obj = getChain(); // chain の先頭
+        Object obj = getChartDocumentChain(); // chain の先頭
         DiagnosisDocument diagnosis = obj instanceof DiagnosisDocument?
                 (DiagnosisDocument) obj : null;
 
@@ -301,7 +317,7 @@ public final class ChartMediator extends MenuSupport {
         boolean enabled = false;
 
         KartePane kartePane = null;
-        Object obj = getChain();
+        Object obj = getChartDocumentChain();
 
         if (obj instanceof KarteEditor) {
             KarteEditor editor = (KarteEditor) obj;
@@ -352,7 +368,7 @@ public final class ChartMediator extends MenuSupport {
         boolean enabled = false;
 
         KartePane kartePane = null;
-        Object obj = getChain();
+        Object obj = getChartDocumentChain();
 
         if (obj instanceof KarteEditor) {
             KarteEditor editor = (KarteEditor) obj;
@@ -385,10 +401,10 @@ public final class ChartMediator extends MenuSupport {
      */
     public void addDiseaseMenu(MyJPopupMenu popup) {
         //
-        // Chain の先頭が DiagnosisDocument の時のみ追加する
+        // Chain の ChartDocument層 が DiagnosisDocument の時のみ追加する
         //
         DiagnosisDocument diagnosis = null;
-        Object obj = getChain();
+        Object obj = getChartDocumentChain();
 
         if (obj instanceof DiagnosisDocument) {
             diagnosis = (DiagnosisDocument) obj;
@@ -421,7 +437,7 @@ public final class ChartMediator extends MenuSupport {
         boolean enabled = false;
 
         KartePane kartePane = null;
-        Object obj = getChain();
+        Object obj = getChartDocumentChain();
 
         if (obj instanceof KarteEditor) {
             KarteEditor editor = (KarteEditor) obj;
@@ -492,7 +508,7 @@ public final class ChartMediator extends MenuSupport {
         boolean enabled = false;
 
         KartePane kartePane = null;
-        Object obj = getChain();
+        Object obj = getChartDocumentChain();
 
         if (obj instanceof KarteEditor) {
             KarteEditor editor = (KarteEditor) obj;
@@ -533,24 +549,6 @@ public final class ChartMediator extends MenuSupport {
         StampBoxPlugin stBox = (StampBoxPlugin)chart.getContext().getPlugin("stampBox");
         StampTree tree = stBox.getStampTree(entity);
         return tree != null;
-    }
-
-    /**
-     * chain のトップの Object に applyInsurance(PVTHealthInsuranceModel hm) メソッドを発行する.
-     * @param hm
-     */
-    public void applyInsurance(PVTHealthInsuranceModel hm) {
-
-        Object target = getChain();
-        if (target != null) {
-            try {
-                Method m = target.getClass().getMethod("applyInsurance", new Class[]{hm.getClass()});
-                m.invoke(target, new Object[]{hm});
-
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                System.out.println("ChartMediator.java: " + ex);
-            }
-        }
     }
 
     //

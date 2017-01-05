@@ -107,8 +107,11 @@ public class MenuSupport implements MenuListener {
         logger.debug("chains[2] = " + chains[2]);
     }
 
+    /**
+     * 最初のターゲットを返す.
+     * @return
+     */
     public Object getChain() {
-        // 最初のターゲットを返す
         return chains[0];
     }
 
@@ -121,6 +124,14 @@ public class MenuSupport implements MenuListener {
         logger.debug("MenuSupport: addChain2 = " + obj);
         logger.debug("chains[0] = " + chains[0]);
         logger.debug("chains[2] = " + chains[2]);
+    }
+
+    /**
+     * ２番目のターゲットを返す.
+     * @return
+     */
+    public Object getChain2() {
+        return chains[1];
     }
 
     /**
