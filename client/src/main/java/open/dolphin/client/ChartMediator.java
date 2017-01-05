@@ -4,14 +4,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
-import java.lang.reflect.InvocationTargetException;
 import javax.swing.event.MenuEvent;
 import javax.swing.text.SimpleAttributeSet;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.project.Project;
 import java.awt.event.ActionEvent;
-import java.lang.reflect.Method;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -21,7 +19,6 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextPane;
 import javax.swing.TransferHandler;
 import javax.swing.text.StyledEditorKit;
-import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.ui.MyJPopupMenu;
 import org.apache.log4j.Logger;
 
@@ -738,31 +735,31 @@ public final class ChartMediator extends MenuSupport {
     }
 
     public void fontRed() {
-        colorAction(ClientContext.getColor("color.set.default.red"));
+        colorAction(new Color(255,43,58));
     }
 
     public void fontOrange() {
-       colorAction(ClientContext.getColor("color.set.default.orange"));
+       colorAction(new Color(255,148,44));
     }
 
     public void fontYellow() {
-        colorAction(ClientContext.getColor("color.set.default.yellow"));
+        colorAction(new Color(242,207,43));
     }
 
     public void fontGreen() {
-        colorAction(ClientContext.getColor("color.set.default.green"));
+        colorAction(new Color(139,209,40));
     }
 
     public void fontBlue() {
-        colorAction(ClientContext.getColor("color.set.default.blue"));
+        colorAction(new Color(10,140,211));
     }
 
     public void fontPurple() {
-        colorAction(ClientContext.getColor("color.set.default.purpule"));
+        colorAction(new Color(223,61,154));
     }
 
     public void fontGray() {
-        colorAction(ClientContext.getColor("color.set.default.gray"));
+        colorAction(new Color(130,130,130));
     }
 
     public void fontBlack() {
