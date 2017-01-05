@@ -12,9 +12,9 @@ import open.dolphin.order.MasterItem;
  */
 public class MasterItemTransferable implements Transferable {
 
-    public static final DataFlavor masterItemFlavor = new DataFlavor(open.dolphin.order.MasterItem.class, "MasterItem");
-    public static final DataFlavor[] flavors = {masterItemFlavor};
-    private MasterItem masterItem;
+    public static final DataFlavor MASTER_ITEM_FLAVOR = new DataFlavor(MasterItem.class, "MasterItem");
+    private static final DataFlavor[] FLAVORS = { MASTER_ITEM_FLAVOR };
+    private final MasterItem masterItem;
 
     public MasterItemTransferable(MasterItem masterItem) {
         this.masterItem = masterItem;
@@ -22,19 +22,19 @@ public class MasterItemTransferable implements Transferable {
 
     @Override
     public synchronized DataFlavor[] getTransferDataFlavors() {
-        return flavors;
+        return FLAVORS;
     }
 
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-        return flavor.equals(masterItemFlavor) ? true : false;
+        return flavor.equals(MASTER_ITEM_FLAVOR);
     }
 
     @Override
     public synchronized Object getTransferData(DataFlavor flavor)
             throws UnsupportedFlavorException, IOException {
 
-        if (flavor.equals(masterItemFlavor)) {
+        if (flavor.equals(MASTER_ITEM_FLAVOR)) {
             return masterItem;
         } else {
             throw new UnsupportedFlavorException(flavor);

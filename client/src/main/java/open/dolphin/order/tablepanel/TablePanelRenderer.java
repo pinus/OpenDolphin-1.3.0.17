@@ -10,7 +10,7 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.util.StringTool;
 
 /**
- * ドロップ位置を paintComponent で表示するレンダラ
+ * ドロップ位置を paintComponent で表示するレンダラ.
  * @author pns
  */
 public class TablePanelRenderer extends DefaultTableCellRenderer {
@@ -71,7 +71,7 @@ public class TablePanelRenderer extends DefaultTableCellRenderer {
 
         return comp;
     }
-    
+
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);

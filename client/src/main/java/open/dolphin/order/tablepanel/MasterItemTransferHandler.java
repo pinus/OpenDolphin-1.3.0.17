@@ -19,22 +19,17 @@ import open.dolphin.order.MasterItem;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.PatchedTransferHandler;
 
-
 /**
- * MasterItemTransferHandler
- *  modified for Java 1.6 by pns
+ * MasterItemTransferHandler.
  * @author Minagawa,Kazushi
  * @author pns
- *
  */
 public class MasterItemTransferHandler extends PatchedTransferHandler {
     private static final long serialVersionUID = 4871088750931696219L;
 
-    private DataFlavor masterItemFlavor = MasterItemTransferable.masterItemFlavor;
+    private final DataFlavor masterItemFlavor = MasterItemTransferable.MASTER_ITEM_FLAVOR;
 
     private JTable sourceTable;
-    //private MasterItem dragItem;
-    //private MasterItem dropItem;
     private boolean shouldRemove;
     private int fromIndex;
     private int toIndex;
@@ -65,7 +60,7 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
                 JTable.DropLocation dropLocation = (JTable.DropLocation) support.getDropLocation();
 
                 toIndex = dropLocation.getRow();
-                shouldRemove = dropTable == sourceTable ? true : false;
+                shouldRemove = (dropTable == sourceTable);
                 if (shouldRemove) {
                     tableModel.moveRow(fromIndex, (toIndex>fromIndex)? --toIndex : toIndex);
                 } else {
@@ -73,8 +68,8 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
                 }
                 sourceTable.getSelectionModel().setSelectionInterval(toIndex, toIndex);
                 return true;
-            } catch (IOException e) { System.out.println("MasterItemTransferHandler.java: " + e);
-            } catch (UnsupportedFlavorException e) { System.out.println("MasterItemTransferHandler.java: " + e);
+            } catch (IOException | UnsupportedFlavorException e) {
+                System.out.println("MasterItemTransferHandler.java: " + e);
             }
         }
 
@@ -83,17 +78,9 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
 
     @Override
     protected void exportDone(JComponent c, Transferable data, int action) {
-//      if (action == MOVE && shouldRemove) {
-//            ObjectReflectTableModel tableModel = (ObjectReflectTableModel) sourceTable.getModel();
-//            tableModel.deleteRow(dragItem);
-//            int index = tableModel.getIndex(dropItem);
-//            if (index > -1) {
-//                sourceTable.getSelectionModel().setSelectionInterval(index, index);
-//            }
-//      }
-//pns   doesn't function
-//      JTable table = (JTable) c;
-//      table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        // doesn't work
+        // JTable table = (JTable) c;
+        // table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         shouldRemove = false;
         fromIndex = -1;
         toIndex = -1;
@@ -107,20 +94,20 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
         DataFlavor[] flavors = support.getDataFlavors();
         ObjectReflectTableModel tableModel = (ObjectReflectTableModel) dropTable.getModel();
         if (tableModel.getObject(dropTable.getSelectedRow()) != null) {
-            for (int i = 0; i < flavors.length; i++) {
-                if (masterItemFlavor.equals(flavors[i])) {
+            for (DataFlavor flavor : flavors) {
+                if (masterItemFlavor.equals(flavor)) {
                     isDropable = true;
                     break;
                 }
             }
         }
-//pns doesn't function
-//      dropTable.setCursor(isDropable? DragSource.DefaultMoveDrop: DragSource.DefaultMoveNoDrop);
+        // doesn't work
+        // dropTable.setCursor(isDropable? DragSource.DefaultMoveDrop: DragSource.DefaultMoveNoDrop);
         return isDropable;
     }
 
     /**
-     * 半透明 drag のために dragged component とマウス位置を保存する
+     * 半透明 drag のために dragged component とマウス位置を保存する.
      * @param comp
      * @param e
      * @param action
@@ -150,13 +137,13 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
     }
 
     /**
-     * 半透明のフィードバックを返す
+     * 半透明のフィードバックを返す.
      * @param t
      * @return
      */
     @Override
     public Icon getVisualRepresentation(Transferable t) {
-        if (draggedComp == null) return null;
+        if (draggedComp == null) { return null; }
 
         int width = draggedComp.getWidth();
         int height = draggedComp.getHeight();

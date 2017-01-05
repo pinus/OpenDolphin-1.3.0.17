@@ -1,11 +1,8 @@
 package open.dolphin.inspector;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -13,7 +10,6 @@ import java.io.FileFilter;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
@@ -21,6 +17,7 @@ import open.dolphin.infomodel.KarteBean;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.ExecuteScript;
+import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.PNSTabbedPane;
 
 public class PatientInspector {
@@ -240,24 +237,8 @@ public class PatientInspector {
         diagnosisInspector.getPanel().setMinimumSize(new Dimension(prefW, 100));
         fileInspector.getPanel().setPreferredSize(new Dimension(prefW, 100));
 
-        container = new JPanel() {
-            @Override
-            public void paintComponent(Graphics graphics) {
-                super.paintComponent(graphics);
-                Graphics2D g = (Graphics2D) graphics.create();
-                int w = getWidth();
-                int h = getHeight();
-
-                if (SwingUtilities.getWindowAncestor(this).isFocused()) g.setColor(Color.BLACK);
-                else g.setColor(Color.WHITE);
-
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
-                g.drawLine(0, 0, w-1, 0);
-                g.drawLine(w-1, 0, w-1, h);
-
-                g.dispose();
-            }
-        };
+        // 全体の container
+        container = new HorizontalPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 
         // 左側のレイアウトを行う
