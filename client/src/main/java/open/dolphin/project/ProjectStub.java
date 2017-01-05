@@ -299,7 +299,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getTopInspector() {
-        return prefs.get("topInspector", PatientInspector.INSPECTOR_ITEMS[0]); // メモ
+        return prefs.get("topInspector", PatientInspector.DEFAULT_INSPECTOR[0]); // メモ
     }
 
     public void setTopInspector(String topInspector) {
@@ -307,7 +307,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getSecondInspector() {
-        return prefs.get("secondInspector", PatientInspector.INSPECTOR_ITEMS[5]); // 病名
+        return prefs.get("secondInspector", PatientInspector.DEFAULT_INSPECTOR[5]); // 病名
     }
 
     public void setSecondInspector(String secondInspector) {
@@ -315,7 +315,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getThirdInspector() {
-        return prefs.get("thirdInspector", PatientInspector.INSPECTOR_ITEMS[1]); // カレンダー
+        return prefs.get("thirdInspector", PatientInspector.DEFAULT_INSPECTOR[1]); // カレンダー
     }
 
     public void setThirdInspector(String thirdInspector) {
@@ -323,7 +323,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getForthInspector() {
-        return prefs.get("forthInspector", PatientInspector.INSPECTOR_ITEMS[2]); // 文書履歴
+        return prefs.get("forthInspector", PatientInspector.DEFAULT_INSPECTOR[2]); // 文書履歴
     }
 
     public void setForthInspector(String forthInspector) {
@@ -331,7 +331,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getFifthInspector() {
-        return prefs.get("fifthInspector", PatientInspector.INSPECTOR_ITEMS[3]); // アレルギー
+        return prefs.get("fifthInspector", PatientInspector.DEFAULT_INSPECTOR[3]); // アレルギー
     }
 
     public void setFifthInspector(String fifthInspector) {

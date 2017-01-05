@@ -210,7 +210,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         // GUI コンポーネントを生成する
 //pns^
-        String[] compo = PatientInspector.INSPECTOR_ITEMS;
+        String[] compo = PatientInspector.DEFAULT_INSPECTOR;
         lastIndexOfCompo = compo.length - 1;
         inspectorCompo = new JComboBox[INSPECTOR_LENGTH];
         for (int i=0; i<INSPECTOR_LENGTH; i++) {

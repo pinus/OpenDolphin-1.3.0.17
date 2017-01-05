@@ -19,6 +19,8 @@ import javax.swing.ListSelectionModel;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
+import open.dolphin.event.BadgeEvent;
+import open.dolphin.event.BadgeListener;
 import open.dolphin.ui.ExecuteScript;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.util.StringTool;
@@ -29,14 +31,17 @@ import org.apache.log4j.Logger;
  * @author pns
  */
 public class FileInspector {
+    private static final String DEFAULT_DOCUMENT_FOLDER = "/Volumes/documents/";
+    private static final FileFilter FF_REGULAR = file -> !file.getName().startsWith(".");
 
     private JPanel filePanel;
     private JList<File> list;
     private final ChartImpl context;
     public static final String NAME = "fileInspector";
     private DefaultListModel<File> model;
-    private FileFilter filter;
-    private static final String DEFAULT_DOCUMENT_FOLDER = "/Volumes/documents/";
+
+    private BadgeListener badgeListener;
+    private int tabIndex;
 
     private final Logger logger;
 
@@ -76,6 +81,11 @@ public class FileInspector {
         return DEFAULT_DOCUMENT_FOLDER + subfolder + id;
     }
 
+    public void addBadgeListener(BadgeListener listener, int index) {
+        badgeListener = listener;
+        tabIndex = index;
+    }
+
     /**
      * GUI コンポーネントを初期化する.
      */
@@ -94,11 +104,6 @@ public class FileInspector {
         final MyJScrollPane scrollPane = new MyJScrollPane(list);
         scrollPane.putClientProperty("JComponent.sizeVariant", "small");
         filePanel.add(scrollPane);
-
-        // Hidden ファイルフィルタ
-        filter = file -> !file.getName().startsWith(".");
-
-        update();
     }
 
     /**
@@ -113,15 +118,19 @@ public class FileInspector {
      * データのアップデート.
      */
     public void update() {
-        //String path = DEFAULT_DOCUMENT_FOLDER + context.getKarte().getPatient().getPatientId();
         File infoFolder = new File (getDocumentPath(context.getKarte().getPatient().getPatientId()));
-        File[] files = infoFolder.listFiles(filter);
+        File[] files = infoFolder.listFiles(FF_REGULAR);
         if (files == null) { return; }
 
         Arrays.sort(files, new FileNameComparator());
+        Arrays.asList(files).forEach(file -> model.addElement(file));
 
-        for (File file : files) {
-            model.addElement(file);
+        // BadgeListener に通知
+        if (badgeListener != null) {
+            BadgeEvent e = new BadgeEvent(this);
+            e.setBadgeNumber(files.length);
+            e.setTabIndex(tabIndex);
+            badgeListener.badgeChanged(e);
         }
     }
 
