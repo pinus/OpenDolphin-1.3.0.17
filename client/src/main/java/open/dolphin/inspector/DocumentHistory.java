@@ -1,15 +1,13 @@
 package open.dolphin.inspector;
 
-import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.beans.EventHandler;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -22,13 +20,13 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
 import open.dolphin.client.NameValuePair;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.DocumentSearchSpec;
@@ -39,13 +37,15 @@ import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
+import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyDefaultCellEditor;
+import open.dolphin.util.PNSTriple;
 
 /**
  * 文書履歴を取得し，表示するクラス.
- *
  * @author Minagawa,Kazushi
+ * @author pns
  */
 public class DocumentHistory {
 
@@ -55,19 +55,17 @@ public class DocumentHistory {
     public static final String SELECTED_KARTES = "selectedKartes";
     public static final String HITORY_UPDATED = "historyUpdated";
     // 文書履歴テーブル
-    private ObjectReflectTableModel tableModel;
+    private ObjectReflectTableModel<DocInfoModel> tableModel;
     //private DocumentHistoryView view;
     private DocumentHistoryPanel view;
     // 抽出期間コンボボックス
     private JComboBox extractionCombo;
-    // 文書種別コンボボックス
-    private JComboBox contentCombo;
     // 件数フィールド
     private JLabel countField;
     // 束縛サポート
     private PropertyChangeSupport boundSupport;
     // context
-    private ChartImpl context;
+    private final ChartImpl context;
     // 選択された文書情報(DocInfo)の配列
     private DocInfoModel[] selectedHistories;
     // 抽出コンテント(文書種別)
@@ -82,8 +80,6 @@ public class DocumentHistory {
     private boolean showModified;
     // フラグ
     private boolean start;
-    // 未使用
-    private NameValuePair[] contentObject;
     // 文書抽出期間
     public static final NameValuePair[] extractionObjects = {
         //new NameValuePair("1ヶ月", "-1"),
@@ -102,7 +98,7 @@ public class DocumentHistory {
 
     /**
      * 文書履歴オブジェクトを生成する.
-     * @param owner コンテキシト
+     * @param context
      */
     public DocumentHistory(ChartImpl context) {
         this.context = context;
@@ -112,7 +108,143 @@ public class DocumentHistory {
     }
 
     /**
-     * 全部のカルテを選択する command-A を押すと，KarteDocumentViewer の selectAll が呼ばれて，そこからここが呼ばれる
+     * GUI コンポーネントを生成する.
+     */
+    private void initComponent() {
+
+        view = new DocumentHistoryPanel();
+
+        // selectAll (command-A) を横取りするため削除
+        view.getInputMap().remove(KeyStroke.getKeyStroke('A',java.awt.event.InputEvent.META_MASK));
+
+        // 履歴テーブルのパラメータを取得する
+        List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
+                new PNSTriple<>(" 確定日", String.class, "getFirstConfirmDateTrimTime"),
+                new PNSTriple<>(" 内容", String.class, "getTitle")
+        );
+
+        // 文書履歴テーブルを生成する
+        tableModel = new ObjectReflectTableModel<DocInfoModel>(reflectList) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                // 内容は editable
+                if (col == 1 && getObject(row) != null) {
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void setValueAt(Object value, int row, int col) {
+                // 内容コラム以外，またはデータがない場合は何もしない
+                if (col != 1 || value == null || value.equals("")) { return; }
+
+                DocInfoModel docInfo = getObject(row);
+                if (docInfo == null) { return; }
+
+                // 文書タイトルを変更し通知する
+                docInfo.setTitle((String) value);
+                titleChanged(docInfo);
+            }
+        };
+        view.getTable().setModel(tableModel);
+
+        // カラム幅を調整する
+        // カラム幅は日付の入る１カラム目だけを固定にする
+        view.getTable().getColumnModel().getColumn(0).setPreferredWidth(90);
+        view.getTable().getColumnModel().getColumn(0).setMaxWidth(90);
+        view.getTable().getColumnModel().getColumn(0).setMinWidth(90);
+
+        // タイトルカラムに IME ON を設定する
+        JTextField tf = new JTextField();
+        IMEControl.setImeOnIfFocused(tf);
+        TableColumn column = view.getTable().getColumnModel().getColumn(1);
+        column.setCellEditor(new MyDefaultCellEditor(tf));
+
+        // isReadOnly対応
+        tf.setEnabled(!context.isReadOnly());
+
+        // 奇数偶数レンダラを設定する
+        view.getTable().setDefaultRenderer(Object.class, new IndentTableCellRenderer(IndentTableCellRenderer.NARROW));
+
+        // 抽出機関 ComboBox を生成する
+        extractionCombo = view.getExtractCombo();
+
+        // 件数フィールドを生成する
+        countField = view.getCntLbl();
+
+        // table の関係ないところをクリックしたら，selection をクリア
+        AdditionalTableSettings.setTable(view.getTable(), null);
+    }
+
+    /**
+     * Event 接続を行う.
+     */
+    private void connect() {
+
+        // 履歴テーブルで選択された行の文書を表示する
+        ListSelectionModel slm = view.getTable().getSelectionModel();
+        slm.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting() == false) {
+                    JTable table = view.getTable();
+                    int[] selectedRows = table.getSelectedRows();
+                    if (selectedRows.length > 0) {
+                        List<DocInfoModel> list = new ArrayList<>(1);
+                        for (int i = 0; i < selectedRows.length; i++) {
+                            DocInfoModel obj = (DocInfoModel) tableModel.getObject(selectedRows[i]);
+                            if (obj != null) {
+                                list.add(obj);
+                            }
+                        }
+                        DocInfoModel[] selected = list.toArray(new DocInfoModel[list.size()]);
+                        if (selected != null && selected.length > 0) {
+                            setSelectedHistories(selected);
+                        } else {
+                            setSelectedHistories((DocInfoModel[]) null);
+                        }
+                    }
+                }
+            }
+        });
+
+        // 抽出期間コンボボックスの選択を処理する
+        extractionCombo.addItemListener(this::periodChanged);
+
+        // Preference から文書種別を設定する
+        extractionContent = IInfoModel.DOCTYPE_KARTE;
+
+        // Preference から抽出期間を設定する
+        int past = Project.getPreferences().getInt(Project.DOC_HISTORY_PERIOD, -12);
+        int index = NameValuePair.getIndex(String.valueOf(past), extractionObjects);
+        extractionCombo.setSelectedIndex(index);
+        GregorianCalendar today = new GregorianCalendar();
+        today.add(GregorianCalendar.MONTH, past);
+        today.clear(Calendar.HOUR_OF_DAY);
+        today.clear(Calendar.MINUTE);
+        today.clear(Calendar.SECOND);
+        today.clear(Calendar.MILLISECOND);
+        setExtractionPeriod(today.getTime());
+
+        // Preference から自動文書取得数を設定する
+        autoFetchCount = Project.getPreferences().getInt(Project.DOC_HISTORY_FETCHCOUNT, 1);
+
+        // Preference から昇順降順を設定する
+        ascending = Project.getPreferences().getBoolean(Project.DIAGNOSIS_ASCENDING, false);
+
+        // Preference から修正履歴表示を設定する
+        showModified = Project.getPreferences().getBoolean(Project.DOC_HISTORY_SHOWMODIFIED, false);
+
+        // 文書履歴テーブルのキーボード入力をブロックするリスナ
+        blockKeyListener = new BlockKeyListener();
+    }
+
+    /**
+     * 全部のカルテを選択する command-A を押すと，KarteDocumentViewer の selectAll が呼ばれて，そこからここが呼ばれる.
      */
     public void selectAll() {
         JTable table = view.getTable();
@@ -130,17 +262,12 @@ public class DocumentHistory {
     }
 
     /**
-     * 文書履歴テーブルにフォーカスを取る
+     * 文書履歴テーブルにフォーカスを取る.
      */
     public void requestFocus() {
-        EventQueue.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                view.getTable().requestFocusInWindow();
-                // quaqua を修正して対応した
-                //view.getTable().repaint(); // repaint しないと，選択がグレーのままになる
-            }
-        });
+        SwingUtilities.invokeLater(view.getTable()::requestFocusInWindow);
+        // quaqua を修正して対応した
+        //view.getTable().repaint(); // repaint しないと，選択がグレーのままになる
     }
 
     /**
@@ -268,7 +395,7 @@ public class DocumentHistory {
 
         // 抽出期間が変化しても，できるだけ現在の選択を再現するため保存しておく
         JTable table = view.getTable();
-        List<String> oldSelection = new ArrayList<String>();
+        List<String> oldSelection = new ArrayList<>();
         for (int r : table.getSelectedRows()) {
             int row = table.convertRowIndexToModel(r);
             String date = ((DocInfoModel) tableModel.getObject(row)).getFirstConfirmDateTrimTime();
@@ -355,13 +482,14 @@ public class DocumentHistory {
 
     /**
      * 抽出期間を変更し再検索する.
+     * @param e
      */
-    public void periodChanged(int state) {
-        if (state == ItemEvent.SELECTED) {
+    public void periodChanged(ItemEvent e) {
+
+        if (e.getStateChange() == ItemEvent.SELECTED) {
             int index = extractionCombo.getSelectedIndex();
-            NameValuePair pair = extractionObjects[index];
-            String value = pair.getValue();
-            int addValue = Integer.parseInt(value);
+            int addValue = ComboBoxFactory.getDocumentExtractionPeriodModel().get(index).getValue();
+
             GregorianCalendar today = new GregorianCalendar();
             today.add(GregorianCalendar.MONTH, addValue);
             today.clear(Calendar.HOUR_OF_DAY);
@@ -373,171 +501,11 @@ public class DocumentHistory {
     }
 
     /**
-     * 文書種別を変更し再検索する.
-     */
-    public void contentChanged(int state) {
-        if (state == ItemEvent.SELECTED) {
-            int index = contentCombo.getSelectedIndex();
-            NameValuePair pair = contentObject[index];
-            setExtractionContent(pair.getValue());
-        }
-    }
-
-    /**
-     * GUI コンポーネントを生成する.
-     */
-    private void initComponent() {
-
-        view = new DocumentHistoryPanel();
-
-        // selectAll (command-A) を横取りするため削除
-        view.getInputMap().remove(KeyStroke.getKeyStroke('A',java.awt.event.InputEvent.META_MASK));
-
-        // 履歴テーブルのパラメータを取得する
-        String[] columnNames = ClientContext.getStringArray("docHistory.columnNames"); // {"確定日", "内容"};
-        String[] methodNames = ClientContext.getStringArray("docHistory.methodNames"); // {"getFirstConfirmDateTrimTime",// "getTitle"};
-        Class[] columnClasses = {String.class, String.class};
-        int startNumRows = ClientContext.getInt("docHistory.startNumRows"); // 20
-
-        // 文書履歴テーブルを生成する
-        tableModel = new ObjectReflectTableModel(columnNames, startNumRows, methodNames, columnClasses) {
-
-            @Override
-            public boolean isCellEditable(int row, int col) {
-
-                if (col == 1 && getObject(row) != null) {
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void setValueAt(Object value, int row, int col) {
-
-                if (col != 1 || value == null || value.equals("")) {
-                    return;
-                }
-
-                Object o = getObject(row);
-                if (o == null) {
-                    return;
-                }
-
-                // 文書タイトルを変更し通知する
-                DocInfoModel docInfo = (DocInfoModel) o;
-                docInfo.setTitle((String) value);
-                titleChanged(docInfo);
-            }
-        };
-        view.getTable().setModel(tableModel);
-
-        // カラム幅を調整する
-        // カラム幅は日付の入る１カラム目だけを固定にする
-        view.getTable().getColumnModel().getColumn(0).setPreferredWidth(90);
-        view.getTable().getColumnModel().getColumn(0).setMaxWidth(90);
-        view.getTable().getColumnModel().getColumn(0).setMinWidth(90);
-
-        // タイトルカラムに IME ON を設定する
-        JTextField tf = new JTextField();
-        IMEControl.setImeOnIfFocused(tf);
-        TableColumn column = view.getTable().getColumnModel().getColumn(1);
-        column.setCellEditor(new MyDefaultCellEditor(tf));
-
-        // isReadOnly対応
-        tf.setEnabled(!context.isReadOnly());
-
-        // 奇数偶数レンダラを設定する
-        view.getTable().setDefaultRenderer(Object.class, new IndentTableCellRenderer(IndentTableCellRenderer.NARROW));
-
-        // 文書種別(コンテントタイプ) ComboBox を生成する
-        contentObject = new NameValuePair[2];
-        contentObject[0] = new NameValuePair("カルテ", "karte");
-        // contentObject[1] = new NameValuePair("紹介状", "letter");
-        contentCombo = view.getDocTypeCombo();
-
-        // 抽出機関 ComboBox を生成する
-        extractionCombo = view.getExtractCombo();
-
-        // 件数フィールドを生成する
-        countField = view.getCntLbl();
-
-        // table の関係ないところをクリックしたら，selection をクリア
-        AdditionalTableSettings.setTable(view.getTable(), null);
-    }
-
-    /**
      * レイアウトパネルを返す.
      * @return
      */
     public JPanel getPanel() {
         return (JPanel) view;
-    }
-
-    /**
-     * Event 接続を行う
-     */
-    private void connect() {
-
-        // 履歴テーブルで選択された行の文書を表示する
-        ListSelectionModel slm = view.getTable().getSelectionModel();
-        slm.addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting() == false) {
-                    JTable table = view.getTable();
-                    int[] selectedRows = table.getSelectedRows();
-                    if (selectedRows.length > 0) {
-                        List<DocInfoModel> list = new ArrayList<>(1);
-                        for (int i = 0; i < selectedRows.length; i++) {
-                            DocInfoModel obj = (DocInfoModel) tableModel.getObject(selectedRows[i]);
-                            if (obj != null) {
-                                list.add(obj);
-                            }
-                        }
-                        DocInfoModel[] selected = list.toArray(new DocInfoModel[list.size()]);
-                        if (selected != null && selected.length > 0) {
-                            setSelectedHistories(selected);
-                        } else {
-                            setSelectedHistories((DocInfoModel[]) null);
-                        }
-                    }
-                }
-            }
-        });
-
-        // 文書種別変更
-        contentCombo.addItemListener(EventHandler.create(ItemListener.class, this, "contentChanged", "stateChange"));
-
-        // 抽出期間コンボボックスの選択を処理する
-        extractionCombo.addItemListener(EventHandler.create(ItemListener.class, this, "periodChanged", "stateChange"));
-
-        // Preference から文書種別を設定する
-        extractionContent = IInfoModel.DOCTYPE_KARTE;
-
-        // Preference から抽出期間を設定する
-        int past = Project.getPreferences().getInt(Project.DOC_HISTORY_PERIOD, -12);
-        int index = NameValuePair.getIndex(String.valueOf(past), extractionObjects);
-        extractionCombo.setSelectedIndex(index);
-        GregorianCalendar today = new GregorianCalendar();
-        today.add(GregorianCalendar.MONTH, past);
-        today.clear(Calendar.HOUR_OF_DAY);
-        today.clear(Calendar.MINUTE);
-        today.clear(Calendar.SECOND);
-        today.clear(Calendar.MILLISECOND);
-        setExtractionPeriod(today.getTime());
-
-        // Preference から自動文書取得数を設定する
-        autoFetchCount = Project.getPreferences().getInt(Project.DOC_HISTORY_FETCHCOUNT, 1);
-
-        // Preference から昇順降順を設定する
-        ascending = Project.getPreferences().getBoolean(Project.DIAGNOSIS_ASCENDING, false);
-
-        // Preference から修正履歴表示を設定する
-        showModified = Project.getPreferences().getBoolean(Project.DOC_HISTORY_SHOWMODIFIED, false);
-
-        // 文書履歴テーブルのキーボード入力をブロックするリスナ
-        blockKeyListener = new BlockKeyListener();
     }
 
     /**

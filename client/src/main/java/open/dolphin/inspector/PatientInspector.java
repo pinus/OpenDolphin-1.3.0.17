@@ -26,9 +26,7 @@ import open.dolphin.ui.PNSBadgeTabbedPane;
  * @author pns
  */
 public class PatientInspector {
-    //public static final String[] DEFAULT_INSPECTOR = new String[]{
-    //    "メモ", "カレンダー", "文書履歴", "アレルギー", "身長体重", "病名", "関連文書", "なし"
-    //};
+
     public static final int DEFAULT_WIDTH = ClientContext.isMac()? 280 : 260;
     public static final int DEFAULT_HEIGHT = ClientContext.isMac()? 175 : 178;
 
@@ -111,8 +109,6 @@ public class PatientInspector {
         tabbedPane.addTab(docHistoryTitle, docHistory.getPanel());
 
         // インスペクタのサイズ調整
-
-        allergyInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
         physicalInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
 
         //サイズ微調整
@@ -169,6 +165,7 @@ public class PatientInspector {
         memoInspector.update();
         basicInfoInspector.update();
         fileInspector.update();
+        allergyInspector.update();
 
         Dimension d = container.getMinimumSize();
         d.width = DEFAULT_WIDTH;

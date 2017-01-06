@@ -14,7 +14,7 @@ import open.dolphin.client.LocalStampTreeNodeTransferable;
  */
 public class DiagnosisInspectorTransferHandler extends TransferHandler {
     private static final long serialVersionUID = 1L;
-    private ChartImpl context;
+    private final ChartImpl context;
 
     public DiagnosisInspectorTransferHandler(ChartImpl context) {
         this.context = context;
@@ -22,7 +22,7 @@ public class DiagnosisInspectorTransferHandler extends TransferHandler {
 
     @Override
     public boolean importData(TransferSupport support) {
-        if (!support.isDrop()) return false;
+        if (!support.isDrop()) { return false; }
 
         DiagnosisDocument doc = context.getDiagnosisDocument();
         DiagnosisTransferHandler handler = (DiagnosisTransferHandler) doc.getDiagnosisTable().getTransferHandler();
@@ -37,8 +37,8 @@ public class DiagnosisInspectorTransferHandler extends TransferHandler {
         support.setShowDropLocation(false);
 
         DataFlavor[] flavors = support.getDataFlavors();
-        for (int i = 0; i < flavors.length; i++) {
-            if (LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavors[i])) {
+        for (DataFlavor flavor : flavors) {
+            if (LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavor)) {
                 return true;
             }
         }

@@ -28,7 +28,7 @@ import open.dolphin.helper.MenuActionManager.MenuAction;
  * インスペクタに病名を表示するクラス.
  * @author pns
  */
-public class DiagnosisInspector {
+public class DiagnosisInspector implements IInspector {
 
     public static final String NAME = "diagnosisInspector";
 
@@ -259,6 +259,7 @@ public class DiagnosisInspector {
      * PaientInspector にレイアウト用のパネルを返す.
      * @return レイアウトパネル
      */
+    @Override
     public JPanel getPanel() {
         return diagPanel;
     }
@@ -276,7 +277,14 @@ public class DiagnosisInspector {
     }
 
     /**
-     * データのアップデート
+     * このインスペクタは DiagnosisDocument に依存しているので，自分で update できない.
+     */
+    @Override
+    public void update() {}
+
+    /**
+     * データのアップデート.
+     * DiagnosisDocument から呼ばれる.
      * @param model
      */
     public void update(DiagnosisDocumentTableModel model) {
@@ -377,7 +385,7 @@ public class DiagnosisInspector {
     }
 
     /**
-     * ドロップするとき，Border にフィードバックを出すパネル
+     * ドロップするとき，Border にフィードバックを出すパネル.
      */
     private class DropPanel extends JPanel {
         private static final long serialVersionUID = 1L;

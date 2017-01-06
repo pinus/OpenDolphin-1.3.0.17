@@ -14,12 +14,12 @@ import open.dolphin.client.ChartImpl;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.SimpleAddressModel;
-import static open.dolphin.inspector.PatientInspector.DEFAULT_WIDTH;
 import open.dolphin.ui.MyBorderFactory;
 
 /**
  * BasicInfoInspector.
  * 名前，年齢，生年月日と住所.
+ * このインスペクタだけは ChartImpl の ToolPanel に入る.
  * @author kazm
  * @author pns
  */
