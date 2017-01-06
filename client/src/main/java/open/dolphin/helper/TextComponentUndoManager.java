@@ -25,6 +25,22 @@ public class TextComponentUndoManager extends UndoManager {
     private Action redoAction;
 
     public TextComponentUndoManager() {
+        // default undo action
+        undoAction = new AbstractAction("undo") {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                undo();
+            }
+        };
+        // default redo action
+        redoAction = new AbstractAction("redo") {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                redo();
+            }
+        };
     }
 
     /**
@@ -40,23 +56,6 @@ public class TextComponentUndoManager extends UndoManager {
     }
 
     public void addUndoActionTo(JTextComponent c) {
-
-        undoAction = new AbstractAction("undo") {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                undo();
-            }
-        };
-
-        redoAction = new AbstractAction("redo") {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                redo();
-            }
-        };
-
         ActionMap am = c.getActionMap();
         InputMap im = c.getInputMap();
         am.put("undo", undoAction);

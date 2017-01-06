@@ -38,7 +38,7 @@ import open.dolphin.client.GUIFactory;
 import open.dolphin.client.NameValuePair;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.inspector.DocumentHistory;
-import open.dolphin.inspector.PatientInspector;
+import open.dolphin.inspector.InspectorCategory;
 import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.IMEControl;
@@ -210,7 +210,11 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         // GUI コンポーネントを生成する
 //pns^
-        String[] compo = PatientInspector.DEFAULT_INSPECTOR;
+        String[] compo = new String[InspectorCategory.values().length];
+        for (int i=0; i<compo.length; i++) {
+            compo[i] = InspectorCategory.values()[i].name();
+        }
+        
         lastIndexOfCompo = compo.length - 1;
         inspectorCompo = new JComboBox[INSPECTOR_LENGTH];
         for (int i=0; i<INSPECTOR_LENGTH; i++) {

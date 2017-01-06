@@ -26,9 +26,11 @@ import open.dolphin.ui.PNSBadgeTabbedPane;
  * @author pns
  */
 public class PatientInspector {
-    public static final String[] DEFAULT_INSPECTOR = new String[]{
-        "メモ", "カレンダー", "文書履歴", "アレルギー", "身長体重", "病名", "関連文書", "なし"
-    };
+    //public static final String[] DEFAULT_INSPECTOR = new String[]{
+    //    "メモ", "カレンダー", "文書履歴", "アレルギー", "身長体重", "病名", "関連文書", "なし"
+    //};
+    public static final int DEFAULT_WIDTH = ClientContext.isMac()? 280 : 260;
+    public static final int DEFAULT_HEIGHT = ClientContext.isMac()? 175 : 178;
 
     // 個々のインスペクタ
     // 患者基本情報
@@ -86,11 +88,11 @@ public class PatientInspector {
         String fileTitle = "関連文書";
 
         // Preference に保存されているインスペクタの順番
-        String topInspector = Project.getPreferences().get("topInspector", DEFAULT_INSPECTOR[0]); //0"メモ"
-        String secondInspector = Project.getPreferences().get("secondInspector", DEFAULT_INSPECTOR[5]); //5"病名"
-        String thirdInspector = Project.getPreferences().get("thirdInspector", DEFAULT_INSPECTOR[1]); //1"カレンダ"
-        String forthInspector = Project.getPreferences().get("forthInspector", DEFAULT_INSPECTOR[2]); //2"文書履歴"
-        String fifthInspector = Project.getPreferences().get("fifthInspector", DEFAULT_INSPECTOR[3]); //3"アレルギー"
+        String topInspector = Project.getPreferences().get("topInspector", InspectorCategory.メモ.name()); //0"メモ"
+        String secondInspector = Project.getPreferences().get("secondInspector", InspectorCategory.病名.name()); //5"病名"
+        String thirdInspector = Project.getPreferences().get("thirdInspector", InspectorCategory.カレンダー.name()); //1"カレンダ"
+        String forthInspector = Project.getPreferences().get("forthInspector", InspectorCategory.文書履歴.name()); //2"文書履歴"
+        String fifthInspector = Project.getPreferences().get("fifthInspector", InspectorCategory.アレルギー.name()); //3"アレルギー"
 
         // 各インスペクタを生成する
         basicInfoInspector = new BasicInfoInspector(context);
@@ -109,29 +111,20 @@ public class PatientInspector {
         tabbedPane.addTab(docHistoryTitle, docHistory.getPanel());
 
         // インスペクタのサイズ調整
-        int prefW = 260;
-        int prefW2 = 260;
-        int prefH = 178;
-        if (ClientContext.isMac()) { prefW2 += 20; prefH = 175; }
 
-        basicInfoInspector.getPanel().setPreferredSize(new Dimension(prefW2, 42));
-        basicInfoInspector.getPanel().setMaximumSize(new Dimension(prefW2, 42));
-        basicInfoInspector.getPanel().setMinimumSize(new Dimension(prefW2, 42));
-        allergyInspector.getPanel().setPreferredSize(new Dimension(prefW, 110));
-        physicalInspector.getPanel().setPreferredSize(new Dimension(prefW, 110));
+        allergyInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
+        physicalInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
 
         //サイズ微調整
-        docHistory.getPanel().setPreferredSize(new Dimension(prefW, 350));
-        docHistory.getPanel().setMinimumSize(new Dimension(prefW, 350));
-        patientVisitInspector.getPanel().setPreferredSize(new Dimension(prefW, prefH));
-        patientVisitInspector.getPanel().setMinimumSize(new Dimension(prefW, prefH));
-        patientVisitInspector.getPanel().setMaximumSize(new Dimension(1024, prefH));
-        memoInspector.getPanel().setMinimumSize(new Dimension(prefW, 70));
-        memoInspector.getPanel().setPreferredSize(new Dimension(prefW, 100));
+        docHistory.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 350));
+        docHistory.getPanel().setMinimumSize(new Dimension(DEFAULT_WIDTH, 350));
+        patientVisitInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        patientVisitInspector.getPanel().setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        patientVisitInspector.getPanel().setMaximumSize(new Dimension(1024, DEFAULT_HEIGHT));
 
-        diagnosisInspector.getPanel().setPreferredSize(new Dimension(prefW, 100));
-        diagnosisInspector.getPanel().setMinimumSize(new Dimension(prefW, 100));
-        fileInspector.getPanel().setPreferredSize(new Dimension(prefW, 100));
+        diagnosisInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
+        diagnosisInspector.getPanel().setMinimumSize(new Dimension(DEFAULT_WIDTH, 100));
+        fileInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
 
         // 全体の container
         container = new HorizontalPanel();
@@ -172,10 +165,13 @@ public class PatientInspector {
         if (!bFile) {
             fileInspector.addBadgeListener(tabbedPane::setBadge, tabbedPane.getTabCount()-1);
         }
+
+        memoInspector.update();
+        basicInfoInspector.update();
         fileInspector.update();
 
         Dimension d = container.getMinimumSize();
-        d.width = prefW;
+        d.width = DEFAULT_WIDTH;
         container.setMinimumSize(d);
     }
 
@@ -186,7 +182,7 @@ public class PatientInspector {
      */
     private void layoutRow(JPanel content, String itype) {
 
-        if (itype.equals(DEFAULT_INSPECTOR[0])) { //"メモ"
+        if (itype.equals(InspectorCategory.メモ.name())) { //"メモ"
 
             // もし関連文書(/Volumes/documents/${患者id}）があれば，メモタイトルを変える
             final String path = FileInspector.getDocumentPath(context.getKarte().getPatient().getPatientId());
@@ -259,31 +255,31 @@ public class PatientInspector {
             content.add(memoInspector.getPanel());
             bMemo = true;
 
-        } else if (itype.equals(DEFAULT_INSPECTOR[1])) { //"カレンダ"
+        } else if (itype.equals(InspectorCategory.カレンダー.name())) { //"カレンダ"
             patientVisitInspector.getPanel().setBorder(BorderFactory.createTitledBorder("来院歴"));
             content.add(patientVisitInspector.getPanel());
             bCalendar = true;
 
-        } else if (itype.equals(DEFAULT_INSPECTOR[2])) { //"文書履歴"
+        } else if (itype.equals(InspectorCategory.文書履歴.name())) { //"文書履歴"
             content.add(tabbedPane);
 
-        } else if (itype.startsWith(DEFAULT_INSPECTOR[3])) { //"アレルギ"
+        } else if (itype.startsWith(InspectorCategory.アレルギー.name())) { //"アレルギ"
             allergyInspector.getPanel().setBorder(BorderFactory.createTitledBorder("アレルギー"));
             content.add(allergyInspector.getPanel());
             bAllergy = true;
 
-        } else if (itype.equals(DEFAULT_INSPECTOR[4])) { // "身長体重"
+        } else if (itype.equals(InspectorCategory.身長体重.name())) { // "身長体重"
             physicalInspector.getPanel().setBorder(BorderFactory.createTitledBorder("身長体重"));
             content.add(physicalInspector.getPanel());
             bPhysical = true;
         }
 
-        else if (itype.equals(DEFAULT_INSPECTOR[5])) { // "病名"
+        else if (itype.equals(InspectorCategory.病名.name())) { // "病名"
             diagnosisInspector.getPanel().setBorder(BorderFactory.createTitledBorder("病名"));
             content.add(diagnosisInspector.getPanel());
             bDiagnosis = true;
 
-        } else if (itype.equals(DEFAULT_INSPECTOR[6])) { // "関連文書"
+        } else if (itype.equals(InspectorCategory.関連文書.name())) { // "関連文書"
             fileInspector.getPanel().setBorder(BorderFactory.createTitledBorder("関連文書"));
             content.add(fileInspector.getPanel());
             bFile = true;
@@ -387,6 +383,6 @@ public class PatientInspector {
         physicalInspector.clear();
 
         // memo 欄の自動セーブ
-        memoInspector.updateMemo();
+        memoInspector.save();
     }
 }

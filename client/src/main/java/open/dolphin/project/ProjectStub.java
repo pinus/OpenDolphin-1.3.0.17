@@ -1,14 +1,20 @@
 package open.dolphin.project;
 
 import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeUtility;
 import open.dolphin.client.ClientContext;
 import open.dolphin.infomodel.UserModel;
-import open.dolphin.inspector.PatientInspector;
+import open.dolphin.inspector.InspectorCategory;
 
 /**
  * プロジェクト情報管理クラス.
@@ -18,7 +24,7 @@ import open.dolphin.inspector.PatientInspector;
 public class ProjectStub implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Preferences prefs;
+    private final Preferences prefs;
     private boolean valid;
     private DolphinPrincipal principal;
     private String providerURL;
@@ -66,6 +72,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * Preferencesを返す.
+     * @return
      */
     public Preferences getPreferences() {
         return prefs;
@@ -145,7 +152,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * プロジェクト名を返す.
-     * @return プロジェクト名 (Dolphin ASP, HOT, MAIKO, HANIWA ... etc)
+     * @param projectName
      */
     public void setName(String projectName) {
         prefs.put(Project.PROJECT_NAME, projectName);
@@ -177,7 +184,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログイン画面用のUserIDを設定する.
-     * @param ログイン画面に表示するUserId
+     * @param val ログイン画面に表示するUserId
      */
     public void setUserId(String val) {
         prefs.put(Project.USER_ID, val);
@@ -193,7 +200,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログイン画面用のFacilityIDを設定する.
-     * @param ログイン画面に表示するFacilityID
+     * @param val ログイン画面に表示するFacilityID
      */
     public void setFacilityId(String val) {
         prefs.put(Project.FACILITY_ID, val);
@@ -241,7 +248,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ORCA バージョンを設定する.
-     * @param ORCA バージョン
+     * @param version ORCA バージョン
      */
     public void setOrcaVersion(String version) {
         prefs.put("orcaVersion", version);
@@ -256,8 +263,8 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     /**
-     * JMARICode を返す.
-     * @return JMARI Code
+     * JMARICode を設定する.
+     * @param jamriCode
      */
     public void setJMARICode(String jamriCode) {
         prefs.put("jmariCode", jamriCode);
@@ -299,7 +306,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getTopInspector() {
-        return prefs.get("topInspector", PatientInspector.DEFAULT_INSPECTOR[0]); // メモ
+        return prefs.get("topInspector", InspectorCategory.メモ.name()); // メモ
     }
 
     public void setTopInspector(String topInspector) {
@@ -307,7 +314,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getSecondInspector() {
-        return prefs.get("secondInspector", PatientInspector.DEFAULT_INSPECTOR[5]); // 病名
+        return prefs.get("secondInspector", InspectorCategory.病名.name()); // 病名
     }
 
     public void setSecondInspector(String secondInspector) {
@@ -315,7 +322,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getThirdInspector() {
-        return prefs.get("thirdInspector", PatientInspector.DEFAULT_INSPECTOR[1]); // カレンダー
+        return prefs.get("thirdInspector", InspectorCategory.カレンダー.name()); // カレンダー
     }
 
     public void setThirdInspector(String thirdInspector) {
@@ -323,7 +330,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getForthInspector() {
-        return prefs.get("forthInspector", PatientInspector.DEFAULT_INSPECTOR[2]); // 文書履歴
+        return prefs.get("forthInspector", InspectorCategory.文書履歴.name()); // 文書履歴
     }
 
     public void setForthInspector(String forthInspector) {
@@ -331,7 +338,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     public String getFifthInspector() {
-        return prefs.get("fifthInspector", PatientInspector.DEFAULT_INSPECTOR[3]); // アレルギー
+        return prefs.get("fifthInspector", InspectorCategory.アレルギー.name()); // アレルギー
     }
 
     public void setFifthInspector(String fifthInspector) {
@@ -538,7 +545,7 @@ public class ProjectStub implements java.io.Serializable {
      * CLAIM 送信全体への設定を返す.
      * デフォルトが false になっているのは新規インストールの場合で ORCA 接続なしで
      * 使えるようにするため.
-     * @param 送信する時 true
+     * @return 送信する時 true
      */
     public boolean getSendClaim() {
         return prefs.getBoolean(Project.SEND_CLAIM, DEFAULT_SEND_CLAIM);
@@ -550,7 +557,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 保存時に CLAIM 送信を行うかどうかを返す.
-     * @param 行う時 true
+     * @return 行う時 true
      */
     public boolean getSendClaimSave() {
         return prefs.getBoolean(Project.SEND_CLAIM_SAVE, DEFAULT_SEND_CLAIM_SAVE);
@@ -562,7 +569,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 仮保存時に CLAIM 送信を行うかどうかを返す.
-     * @param 行う時 true
+     * @return 行う時 true
      */
     public boolean getSendClaimTmp() {
         return prefs.getBoolean(Project.SEND_CLAIM_TMP, DEFAULT_SEND_CLAIM_TMP);
@@ -574,7 +581,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 修正時に CLAIM 送信を行うかどうかを返す.
-     * @param 行う時 true
+     * @return 行う時 true
      */
     public boolean getSendClaimModify() {
         return prefs.getBoolean(Project.SEND_CLAIM_MODIFY, DEFAULT_SEND_CLAIM_MODIFY);
@@ -602,7 +609,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 病名 CLAIM 送信を行うかどうかを返す.
-     * @param 行う時 true
+     * @return 行う時 true
      */
     public boolean getSendDiagnosis() {
         return prefs.getBoolean(Project.SEND_DIAGNOSIS, DEFAULT_SEND_DIAGNOSIS);
@@ -814,10 +821,8 @@ public class ProjectStub implements java.io.Serializable {
     public void exportSubtree(OutputStream os) {
         try {
             prefs.exportSubtree(os);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (BackingStoreException e) {
-            e.printStackTrace();
+        } catch (IOException | BackingStoreException e) {
+            e.printStackTrace(System.err);
         }
     }
 
@@ -825,12 +830,12 @@ public class ProjectStub implements java.io.Serializable {
         try {
             prefs.clear();
         } catch (BackingStoreException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
     }
 
     /**
-     * パスワードを暗号化した文字列を返す
+     * パスワードを暗号化した文字列を返す.
      * @param key
      * @param pass
      * @return
@@ -842,17 +847,18 @@ public class ProjectStub implements java.io.Serializable {
             cipher.init(Cipher.ENCRYPT_MODE, spec);
 
             ByteArrayOutputStream bo = new ByteArrayOutputStream();
-            OutputStream outputStream = MimeUtility.encode(bo, "base64");
-
-            outputStream.write(cipher.doFinal(pass.getBytes()));
-            outputStream.close();
+            try (OutputStream outputStream = MimeUtility.encode(bo, "base64")) {
+                outputStream.write(cipher.doFinal(pass.getBytes()));
+            } catch (MessagingException ex) {
+                System.out.println("ProjectStub.java:" + ex);
+            }
 
             //System.out.println("input password: " + pass);
             //System.out.println("encrypted password: " + bo.toString());
 
             return bo.toString();
 
-        } catch (Exception ex) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IOException | IllegalBlockSizeException | BadPaddingException ex) {
             System.out.println("ProjectStub.java:" + ex);
         }
 
@@ -860,7 +866,7 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     /**
-     * 暗号化したパスワードをデコードして返す
+     * 暗号化したパスワードをデコードして返す.
      * @param key
      * @param pass
      * @return
@@ -892,7 +898,7 @@ public class ProjectStub implements java.io.Serializable {
 
             return decoded;
 
-        } catch (Exception ex) {
+        } catch (MessagingException | IOException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             System.out.println("ProjectStub.java:" + ex);
 
         } finally {

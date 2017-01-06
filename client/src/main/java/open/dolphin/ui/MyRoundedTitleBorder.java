@@ -1,6 +1,5 @@
 package open.dolphin.ui;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -14,13 +13,15 @@ import javax.swing.ImageIcon;
 import javax.swing.border.AbstractBorder;
 
 /**
- * 角丸のタイトルボーダー
+ * 角丸のタイトルボーダー.
  * @author pns
  */
 public class MyRoundedTitleBorder extends AbstractBorder {
+    private static final long serialVersionUID = 1L;
 
-    private ImageIcon image;
-    private Insets insets;
+    private static final Color EDGE_COLOR = new Color(200,200,200);
+    private final ImageIcon image;
+    private final Insets insets;
 
     public MyRoundedTitleBorder(ImageIcon image, Insets insets) {
         this.image = image;
@@ -36,11 +37,9 @@ public class MyRoundedTitleBorder extends AbstractBorder {
         g2d.setPaint(paint);
         g2d.fillRoundRect(x, y, width-1, height-1, 10, 10);
 
-        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.setColor(EDGE_COLOR);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.drawRoundRect(x, y, width-1, height-1, 10, 10);
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
-        g2d.drawRoundRect(x+1, y+1, width-1, height-1, 10, 10);
    }
 
     @Override

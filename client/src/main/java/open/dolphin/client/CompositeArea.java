@@ -12,7 +12,7 @@ import open.dolphin.ui.MyJPopupMenu;
 
 /**
  * CompositeArea.
- * KarteComposite インターフェースを持つ JTextArea - Memo で使っている
+ * KarteComposite インターフェースを持つ JTextArea - Memo で使っている.
  * @author kazm
  * @author pns
  */
@@ -26,16 +26,17 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
     public CompositeArea(int row, int col) {
         super(row, col);
         undoManager = new TextComponentUndoManager();
-        putClientProperty("Quaqua.TextComponent.showPopup ", false);
-        connect();
+        initComponents();
     }
 
-    private void connect() {
+    private void initComponents() {
+        getDocument().addUndoableEditListener(undoManager::listener);
+        putClientProperty("Quaqua.TextComponent.showPopup ", false);
         addCaretListener(this);
     }
 
-    public void startUndoListener() {
-        getDocument().addUndoableEditListener(undoManager::listener);
+    public TextComponentUndoManager getUndoManager() {
+        return undoManager;
     }
 
     @Override

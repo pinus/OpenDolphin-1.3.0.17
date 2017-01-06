@@ -18,23 +18,23 @@ import open.dolphin.ui.MyJScrollPane;
 import org.apache.log4j.Logger;
 
 /**
- * 患者のメモを表示し編集するクラス.  modified by pns
- *
+ * 患者のメモを表示し編集するクラス.
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
-public class MemoInspector {
+public class MemoInspector implements IInspector {
+    private static final Color[] ALERT_LINE_COLOR = {new Color(255,100,100), new Color(255,130,130), new Color(255,180,180)};
+    private static final Color ALERT_BACK_COLOR = new Color(255,240,240);
+    public static final String NAME = "memoInspector";
 
+    private final ChartImpl context;
     private JPanel memoPanel;
     private CompositeArea memoArea;
     private PatientMemoModel patientMemoModel;
-    private final ChartImpl context;
     private final Logger logger;
-    private String oldText = "";
-    public static final String NAME = "memoInspector";
 
+    private String oldText = "";
     private boolean shouldAlert = false;
-    private static final Color[] ALERT_LINE_COLOR = {new Color(255,100,100), new Color(255,130,130), new Color(255,180,180)};
-    private static final Color ALERT_BACK_COLOR = new Color(255,240,240);
 
     /**
      * MemoInspectorオブジェクトを生成する.
@@ -44,17 +44,6 @@ public class MemoInspector {
         this.context = context;
         logger = ClientContext.getBootLogger();
         initComponents();
-        update();
-        // 初期描画が終わってから，undo listener を開始
-        memoArea.startUndoListener();
-    }
-
-    /**
-     * レイアウト用のパネルを返す.
-     * @return レイアウトパネル
-     */
-    public JPanel getPanel() {
-        return memoPanel;
     }
 
     /**
@@ -80,13 +69,25 @@ public class MemoInspector {
 
         memoPanel = new JPanel(new BorderLayout());
         memoPanel.add(pane, BorderLayout.CENTER);
+
+        memoPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, 70));
+        memoPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
+    }
+
+    /**
+     * レイアウト用のパネルを返す.
+     * @return レイアウトパネル
+     */
+    @Override
+    public JPanel getPanel() {
+        return memoPanel;
     }
 
     /**
      * 患者メモを表示する.
      */
-    private void update() {
-        //List list = context.getKarte().getEntryCollection("patientMemo");
+    @Override
+    public void update() {
         patientMemoModel = context.getKarte().getPatientMemo();
         if (patientMemoModel != null) {
             memoArea.setText(patientMemoModel.getMemo());
@@ -96,12 +97,14 @@ public class MemoInspector {
             shouldAlert = containsContraindication();
             memoPanel.repaint();
         }
+        // undo 記録開始
+        memoArea.getUndoManager().discardAllEdits();
     }
 
     /**
-     * 患者メモを更新する.
+     * 患者メモをサーバに保存する.
      */
-    public void updateMemo() {
+    public void save() {
         // メモ内容に変更がなければ何もしない
         if (oldText.equals(memoArea.getText().trim())) { return; }
 
@@ -118,7 +121,7 @@ public class MemoInspector {
         patientMemoModel.setStatus(IInfoModel.STATUS_FINAL);
         patientMemoModel.setMemo(memoArea.getText().trim());
 
-        DBTask task = new DBTask<Void>(context) {
+        DBTask<Void> task = new DBTask<Void>(context) {
 
             @Override
             protected Void doInBackground() throws Exception {
@@ -138,7 +141,7 @@ public class MemoInspector {
     }
 
     /**
-     * メモ内容に禁忌等の注意事項があるかどうか
+     * メモ内容に禁忌等の注意事項があるかどうか.
      * @return
      */
     public boolean containsContraindication() {
@@ -153,6 +156,9 @@ public class MemoInspector {
                 || text.contains("アナフィラ");
     }
 
+    /**
+     * ViewPort に赤枠を付ける.
+     */
     private class AttentiveViewport extends JViewport {
         private static final long serialVersionUID = 1L;
 

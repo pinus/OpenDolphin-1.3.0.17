@@ -13,8 +13,8 @@ import javax.swing.border.Border;
 import open.dolphin.client.GUIConst;
 
 /**
- * Mac っぽいボーダー
- * @author pinus
+ * Mac っぽいボーダー.
+ * @author pns
  */
 public class MyBorderFactory {
     public static Border createSelectedBorder() {
