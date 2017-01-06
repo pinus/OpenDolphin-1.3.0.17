@@ -6,7 +6,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
@@ -78,7 +81,7 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * 組み込まれるときに addNotify が呼ばれるのを利用して parent に WindowAdapter を付ける
+     * 組み込まれるときに addNotify が呼ばれるのを利用して parent に WindowAdapter を付ける.
      */
     @Override
     public void addNotify() {
@@ -86,6 +89,7 @@ public class HorizontalPanel extends JPanel {
 
         if (parent == null) {
             parent = SwingUtilities.windowForComponent(this);
+            // Window の active/deactive に合わせて背景色を変える.
             if (parent != null) {
                 parent.addWindowListener(new WindowAdapter() {
                     @Override
@@ -100,11 +104,28 @@ public class HorizontalPanel extends JPanel {
                     }
                 });
             }
+            // このパネルをつかんで移動できるようにする
+            MouseAdapter ma = new MouseAdapter() {
+                private final Point startPt = new Point();
+                private final Point windowPt = new Point();
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    startPt.setLocation(e.getLocationOnScreen());
+                    windowPt.setLocation(parent.getLocation());
+                }
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    Point pt = e.getLocationOnScreen();
+                    parent.setLocation(windowPt.x + pt.x - startPt.x, windowPt.y + pt.y - startPt.y);
+                }
+            };
+            addMouseListener(ma);
+            addMouseMotionListener(ma);
         }
     }
 
     /**
-     * Parent Window に合わせて active/deactive する
+     * Parent Window に合わせて active/deactive する.
      * @param b
      */
     public void setActive(boolean b) {
@@ -124,21 +145,21 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * BoxLayout 部分に縦線のセパレーターを入れる
+     * BoxLayout 部分に縦線のセパレーターを入れる.
      */
     public void addSeparator() {
         add(new SeparatorPanel());
     }
 
     /**
-     * BoxLayout 部分に透明なグルーを入れる
+     * BoxLayout 部分に透明なグルーを入れる.
      */
     public void addGlue() {
         add(Box.createGlue());
     }
 
     /**
-     * 隙間を入れる
+     * 隙間を入れる.
      * @param witdh
      */
     public void addSpace(int witdh) {
@@ -146,7 +167,7 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * BoxLayout 部分にコンポネントを加える
+     * BoxLayout 部分にコンポネントを加える.
      * @param c
      * @return
      */
@@ -161,8 +182,8 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * BoxLayout の場合，index オプションで NORTH または SOUTH に他の Panel を加える
-     * FlowLayout の場合は，挿入位置を指定
+     * BoxLayout の場合，index オプションで NORTH または SOUTH に他の Panel を加える.
+     * FlowLayout の場合は，挿入位置を指定.
      * @param c
      * @param index
      */
@@ -171,8 +192,8 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * String を add した場合は，JLabel として挿入
-     * あとから，setText(String key) でその JLabel の文字列をセットできる
+     * String を add した場合は，JLabel として挿入.
+     * あとから，setText(String key) でその JLabel の文字列をセットできる.
      * @param text
      * @param key
      */
@@ -184,7 +205,7 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * String の add で key を省略した場合は，ラベルの順番（0〜）をストリングにしたキーとなる
+     * String の add で key を省略した場合は，ラベルの順番（0〜）をストリングにしたキーとなる.
      * @param text
      */
     public void add(String text) {
@@ -196,7 +217,7 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * 後から挿入したラベルのテキストを変更する
+     * 後から挿入したラベルのテキストを変更する.
      * @param text
      * @param key
      */
@@ -209,7 +230,7 @@ public class HorizontalPanel extends JPanel {
     }
 
     /**
-     * BoxLayout 部分のフォントサイズをセットする
+     * BoxLayout 部分のフォントサイズをセットする.
      * @param size
      */
     public void setFontSize(int size) {

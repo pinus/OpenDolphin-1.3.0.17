@@ -20,6 +20,11 @@ import open.dolphin.ui.ExecuteScript;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 
+/**
+ * 各々の Inspecter を生成して配置する.
+ * @author kazm
+ * @author pns
+ */
 public class PatientInspector {
     public static final String[] DEFAULT_INSPECTOR = new String[]{
         "メモ", "カレンダー", "文書履歴", "アレルギー", "身長体重", "病名", "関連文書", "なし"
@@ -43,7 +48,7 @@ public class PatientInspector {
     // 関連文書インスペクタ
     private FileInspector fileInspector;
 
-    // インスペクタを格納するタブペイン
+    // DocumentHistory インスペクタを格納するタブペイン. ６個目以降のインスペクタはここに追加される.
     private PNSBadgeTabbedPane tabbedPane;
 
     // このクラスのコンテナパネル

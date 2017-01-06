@@ -12,6 +12,16 @@ import open.dolphin.event.BadgeEvent;
 
 /**
  * Badge を付けられる PNSTabbedPane.
+ * Badge を付けたい target に対してリスナを付ける.
+ * <pre>
+ * target.addBadgeListener(tabbedPane::setBadge);
+ * </pre>
+ * target で付けたいバッジを通知する.
+ * <pre>
+ * badgeEvent.setBadgeNumber(1);
+ * badgeEvent.setTabIndex(0);
+ * badgeListener.badgeChanged(e);
+ * </pre>
  * @author pns
  */
 public class PNSBadgeTabbedPane extends PNSTabbedPane {
