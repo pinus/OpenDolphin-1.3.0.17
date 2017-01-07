@@ -757,7 +757,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // 新規ドキュメントのタイプ=2号カルテと可能なオプションを設定する
         String docType = IInfoModel.DOCTYPE_KARTE;
         Chart.NewKarteOption option;
-        KarteViewer base;
+        KarteViewer2 base;
 
         ChartDocument bridgeOrViewer = providers.get("参 照");
 

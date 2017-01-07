@@ -33,7 +33,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     // このフレームの実のコンテキストチャート
     private Chart realChart;
     // このフレームに表示する KarteViewer オブジェクト
-    private KarteViewer view;
+    private KarteViewer2 view;
     // このフレームに表示する KarteEditor オブジェクト
     private KarteEditor editor;
     // ToolBar パネル
@@ -129,7 +129,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * 表示する KarteViewer オブジェクトを設定する.
      * @param view 表示する KarteView
      */
-    public void setKarteViewer(KarteViewer view) {
+    public void setKarteViewer(KarteViewer2 view) {
         this.view = view;
     }
 

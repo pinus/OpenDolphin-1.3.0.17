@@ -1,21 +1,62 @@
 package open.dolphin.client;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.MouseListener;
+import java.awt.print.PageFormat;
+import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import open.dolphin.infomodel.DocInfoModel;
+import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
 
 /**
- * 2号カルテクラス.
- *
+ * 2号カルテを View する ChartDocument.
+ * KartePanel はタイムスタンプ, SoaTextPane, PTextPane を含んだ JPanel. これを KarteDocumentViewer で見る.
+ * KartePane は KartePanel の SoaTextPane または PTextPane を含んだ KarteComposite. いろいろな機能を持つ.
+ * Viewer で KartePane も生成される.
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
-public class KarteViewer2 extends KarteViewer {
+public class KarteViewer2 extends AbstractChartDocument implements Comparable<KarteViewer2> {
 
+    // タイムスタンプの foreground カラー
+    private static final Color TIMESTAMP_FORE = Color.BLUE;
+    // タイムスタンプのフォントサイズ
+    private static final int TIMESTAMP_FONT_SIZE = 12;
+    // タイムスタンプフォント
+    private static final Font TIMESTAMP_FONT = new Font("Dialog", Font.PLAIN, TIMESTAMP_FONT_SIZE);
+    private static final Font TIMESTAMP_FONT_BOLD = new Font("Dialog", Font.BOLD, TIMESTAMP_FONT_SIZE);
+    // 仮保存中のドキュメントを表す文字
+    private static final String UNDER_TMP_SAVE = " - 仮保存中";
+
+    // この view のモデル
+    private DocumentModel model;
+    // タイムスタンプラベル
+    private JLabel timeStampLabel;
+    // SOA Pane
+    private KartePane soaPane;
     // P Pane
     private KartePane pPane;
+    // 2号カルテ
+    private KartePanel kartePanel;
+
+    private boolean avoidEnter;
+
+    // 選択されているかどうかのフラグ
+    private boolean selected;
+
 
     public KarteViewer2() {}
+
+    /**
+     * SOA Pane を返す.
+     * @return soaPane
+     */
+    public KartePane getSOAPane() {
+        return soaPane;
+    }
 
     /**
      * P Pane を返す.
@@ -26,26 +67,34 @@ public class KarteViewer2 extends KarteViewer {
     }
 
     /**
+     * KartePanel を返す.
+     * @return
+     */
+    public KartePanel getKartePanel() {
+        return kartePanel;
+    }
+
+    /**
      * ２号カルテで初期化する.
      */
     private void initialize() {
 
-        KartePanel kp2 = KartePanelFactory.createViewerPanel();
-        panel2 = kp2;
+        kartePanel = KartePanelFactory.createViewerPanel();
 
-        // viewer では編集不可
-        kp2.getSoaTextPane().setEditable(false);
-        kp2.getPTextPane().setEditable(false);
+        // viewer では編集不可: start() でも init(false,mediator) しているが，
+        // 表示直後の ChartImpl の ToolBar の制御に間に合わない.
+        kartePanel.getSoaTextPane().setEditable(false);
+        kartePanel.getPTextPane().setEditable(false);
 
         // TimeStampLabel を生成する
-        timeStampLabel = kp2.getTimeStampLabel();
+        timeStampLabel = kartePanel.getTimeStampLabel();
         timeStampLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        timeStampLabel.setForeground(timeStampFore);
-        timeStampLabel.setFont(timeStampFont);
+        timeStampLabel.setForeground(TIMESTAMP_FORE);
+        timeStampLabel.setFont(TIMESTAMP_FONT);
 
         // SOA Pane を生成する
         soaPane = new KartePane();
-        soaPane.setTextPane(kp2.getSoaTextPane());
+        soaPane.setTextPane(kartePanel.getSoaTextPane());
         soaPane.setRole(IInfoModel.ROLE_SOA);
         if (model != null) {
             // Schema 画像にファイル名を付けるのために必要
@@ -55,10 +104,10 @@ public class KarteViewer2 extends KarteViewer {
 
         // P Pane を生成する
         pPane = new KartePane();
-        pPane.setTextPane(kp2.getPTextPane());
+        pPane.setTextPane(kartePanel.getPTextPane());
         pPane.setRole(IInfoModel.ROLE_P);
 
-        setUI(kp2);
+        setUI(kartePanel);
     }
 
     /**
@@ -93,7 +142,7 @@ public class KarteViewer2 extends KarteViewer {
             renderer.render(model);
         }
 
-        // モデル表示後にリスナ等を設定する
+        // モデル表示後にリスナ等を設定する init(editable, mediator)
         ChartMediator mediator = getContext().getChartMediator();
         soaPane.init(false, mediator);
         pPane.init(false, mediator);
@@ -106,9 +155,120 @@ public class KarteViewer2 extends KarteViewer {
         pPane.clear();
     }
 
-    @Override
     public void addMouseListener(MouseListener ml) {
         soaPane.getTextPane().addMouseListener(ml);
         pPane.getTextPane().addMouseListener(ml);
+    }
+    public String getDocType() {
+        if (model != null) {
+            String docType = model.getDocInfo().getDocType();
+            return docType;
+        }
+        return null;
+    }
+
+    /**
+     * KarteDocumentViewer#addKarteViewer 中に enter() をブロックする.
+     * @param b
+     */
+    public void setAvoidEnter(boolean b) {
+        avoidEnter = b;
+    }
+
+    /**
+     * KartePanel を 1枚，ダイアログを出してプリントする.
+     * Junzo SATO
+     */
+    @Override
+    public void print() {
+        PageFormat pageFormat = getContext().getContext().getPageFormat();
+        String name = getContext().getPatient().getFullName();
+        kartePanel.printPanel(pageFormat, 1, true, name, kartePanel.getPreferredSize().height + 30);
+    }
+
+    /**
+     * コンテナからコールされる enter() メソッドでメニューを制御する.
+     */
+    @Override
+    public void enter() {
+        if (avoidEnter) { return; }
+        super.enter();
+
+        // ReadOnly 属性
+        boolean canEdit = !getContext().isReadOnly();
+
+        // 仮保存かどうか
+        boolean tmp = model.getDocInfo().getStatus().equals(IInfoModel.STATUS_TMP);
+
+        // 新規カルテ作成が可能な条件
+        boolean newOk = canEdit && (!tmp);
+
+        ChartMediator mediator = getContext().getChartMediator();
+        mediator.getAction(GUIConst.ACTION_NEW_KARTE).setEnabled(newOk);        // 新規カルテ
+        mediator.getAction(GUIConst.ACTION_PRINT).setEnabled(true);             // 印刷
+        mediator.getAction(GUIConst.ACTION_MODIFY_KARTE).setEnabled(canEdit);   // 修正
+    }
+
+    /**
+     * 表示するモデルを設定する.
+     * @param model 表示するDocumentModel
+     */
+    public void setModel(DocumentModel model) {
+        this.model = model;
+    }
+
+    /**
+     * 表示するモデルを返す.
+     * @return 表示するDocumentModel
+     */
+    public DocumentModel getModel() {
+        return model;
+    }
+
+    /**
+     * 選択状態を設定する.
+     * 選択状態により Viewer のタイムスタンプ部分のフォントを変える (BOLD にする).
+     * @param selected 選択された時 true
+     */
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        if (selected) {
+            timeStampLabel.setFont(TIMESTAMP_FONT_BOLD);
+        } else {
+            timeStampLabel.setFont(TIMESTAMP_FONT);
+        }
+    }
+
+    /**
+     * 選択されているかどうかを返す.
+     * @return 選択されている時 true
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    @Override
+    public int hashCode() {
+        return getModel().getDocInfo().getDocId().hashCode() + 72;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other != null && other.getClass() == this.getClass()) {
+            DocInfoModel otheInfo = ((KarteViewer2) other).getModel()
+            .getDocInfo();
+            return getModel().getDocInfo().equals(otheInfo);
+        }
+        return false;
+    }
+
+    @Override
+    public int compareTo(KarteViewer2 other) {
+        if (other != null && other.getClass() == this.getClass()) {
+            DocInfoModel otheInfo = other.getModel().getDocInfo();
+
+            return getModel().getDocInfo().compareTo(otheInfo);
+        }
+        return -1;
     }
 }

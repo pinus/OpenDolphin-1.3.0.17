@@ -19,12 +19,11 @@ import open.dolphin.ui.MyJSheet;
 import org.apache.log4j.Logger;
 
 /**
- * DocumentViewer
- *
+ * KarteDocumentViewer.
+ * KarteViewer2 をまとめて DocumentBridge の scroller に入れる.
  * @author Minagawa,Kazushi
- *
  */
-public class KarteDocumentViewer extends AbstractChartDocument implements DocumentViewer {
+public class KarteDocumentViewer extends AbstractChartDocument {
 
     // Busy プロパティ名
     public static final String BUSY_PROP = "busyProp";
@@ -34,10 +33,10 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     // このアプリケーションは文書履歴を複数選択することができる
     // このリストはそれに対応した KarteViewer(2号カルテ)を保持している
     // このリストの内容（KarteViewer)が一枚のパネルに並べて表示される
-    private List<KarteViewer> karteList;
+    private List<KarteViewer2> karteList;
     // 上記パネル内でマウスで選択されているカルテ(karteViewer)
     // 前回処方を適用した新規カルテはこの選択されたカルテが元になる
-    private KarteViewer selectedKarte; // 選択されている karteViewer
+    private KarteViewer2 selectedKarte; // 選択されている karteViewer
     // busy プリパティ
     private boolean busy;
     // 文書履を昇順で表示する場合に true
@@ -47,9 +46,9 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     // このクラスの状態マネージャ
     private StateMgr stateMgr;
     // 選択を解除されたカルテのリスト
-    private List<KarteViewer> removed;
+    private List<KarteViewer2> removed;
     // karteViewer を並べたパネル
-    private final JPanel scrollerPanel;
+    private JPanel scrollerPanel;
     // scrollerPanel を表示する JScrollPane: DocumentBridgeImpl で作られる
     //private KarteScrollPane scrollPane;
     private MyJScrollPane scrollPane;
@@ -58,7 +57,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     // 検索用
     private final FindAndView findAndView = new FindAndView();
     // 今日の日付 2008-02-12 形式
-    private final String todayDateAsString;
+    private String todayDateAsString;
     // 縦スクロールかどうか
     private boolean isVerticalScroll = true;
 
@@ -69,7 +68,12 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
      */
     public KarteDocumentViewer() {
         super();
+        initComponents();
+    }
+
+    private void initComponents() {
         setTitle(TITLE);
+
         todayDateAsString = ModelUtils.getDateAsString(new Date());
 
         Preferences prefs = Project.getPreferences();
@@ -110,7 +114,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * 全てを選択　の動作
+     * 全てを選択　の動作.
      */
     public void selectAll() {
         this.getContext().getDocumentHistory().selectAll();
@@ -126,18 +130,21 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
 
     @Override
     public void start() {
-        karteList = new ArrayList<KarteViewer>(1);
-        connect();
+        // 文書履歴に昇順／降順，修正履歴表示の設定をする
+        // この値の初期値はデフォルト値であり，個々のドキュメント（画面）単位にメニューで変更できる. （適用されるのは個々のドキュメントのみ）
+        // デフォルト値の設定は環境設定で行う.
+        ascending = getContext().getDocumentHistory().isAscending();
+        showModified = getContext().getDocumentHistory().isShowModified();
+        karteList = new ArrayList<>(1);
         stateMgr = new StateMgr();
+
         enter();
     }
 
     @Override
     public void stop() {
         if (karteList != null) {
-            for (KarteViewer karte : karteList) {
-                karte.stop();
-            }
+            karteList.stream().forEach((karte) -> karte.stop());
             karteList.clear();
         }
     }
@@ -154,9 +161,9 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
      * 選択されているKarteViwerを返す.
      * @return 選択されているKarteViwer
      */
-    public KarteViewer getSelectedKarte() {
+    public KarteViewer2 getSelectedKarte() {
         boolean found = false;
-        for (KarteViewer kv : karteList) {
+        for (KarteViewer2 kv : karteList) {
             if (kv == selectedKarte) {
                 found = true;
                 break;
@@ -173,18 +180,16 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
      * StateMgrを Haskarte State にする.
      * @param view 選択されたKarteViwer
      */
-    public void setSelectedKarte(KarteViewer view) {
+    public void setSelectedKarte(KarteViewer2 view) {
 
-        KarteViewer old = getSelectedKarte();
+        KarteViewer2 old = getSelectedKarte();
         selectedKarte = view;
         //
         // 他のカルテが選択されている場合はそれを解除する
         //
         if (selectedKarte != old) {
             if (selectedKarte != null) {
-                for (KarteViewer karte : karteList) {
-                    karte.setSelected(false);
-                }
+                karteList.forEach((karte) -> karte.setSelected(false));
                 selectedKarte.setSelected(true);
                 stateMgr.processCleanEvent();
 
@@ -200,10 +205,10 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
      * 新規カルテ作成の元になるカルテを返す.
      * @return 作成の元になるカルテ
      */
-    public KarteViewer getBaseKarte() {
-        KarteViewer ret = getSelectedKarte();
+    public KarteViewer2 getBaseKarte() {
+        KarteViewer2 ret = getSelectedKarte();
         if (ret == null) {
-            if (karteList != null && karteList.size() > 0) {
+            if (karteList != null && ! karteList.isEmpty()) {
                 ret = ascending ? karteList.get(karteList.size() - 1) : karteList.get(0);
             }
         }
@@ -214,7 +219,6 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
      * 文書履歴の抽出期間が変更された場合，
      * karteList をclear，選択されているkarteViewerを解除，sateMgrをNoKarte状態に設定する.
      */
-    @Override
     public void historyPeriodChanged() {
         if (karteList != null) {
             karteList.clear();
@@ -224,30 +228,17 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     }
 
     /**
-     * GUIコンポーネントにリスナを設定する.
-     *
+     * DocumentBridgeImpl から呼ばれる.
+     * @param selected 選択された文書情報 DocInfo 配列
+     * @param scroller
      */
-    private void connect() {
-
-        // 文書履歴に昇順／降順，修正履歴表示の設定をする
-        // この値の初期値はデフォル値であり，個々のドキュメント（画面）単位にメニューで変更できる. （適用されるのは個々のドキュメントのみ）
-        // デフォルト値の設定は環境設定で行う.
-        ascending = getContext().getDocumentHistory().isAscending();
-        showModified = getContext().getDocumentHistory().isShowModified();
-    }
-
-    /**
-     * DocumentBridgeImpl から呼ばれる
-     * @param selectedHistories 選択された文書情報 DocInfo 配列
-     */
-    @Override
-    public void showDocuments(DocInfoModel[] selectedHistories, final JScrollPane scroller) {
+    public void showDocuments(DocInfoModel[] selected, final MyJScrollPane scroller) {
         getContext().showDocument(0);  // Chart のカルテ参照タブの選択
 
         //this.scrollPane = (KarteScrollPane) scroller;
-        this.scrollPane = (MyJScrollPane) scroller;
-        this.scrollPane.setViewportView(scrollerPanel);
-        this.selectedHistories = selectedHistories;
+        scrollPane = scroller;
+        scrollPane.setViewportView(scrollerPanel);
+        selectedHistories = selected;
 
         if (selectedHistories == null || selectedHistories.length == 0) {
             return;
@@ -268,9 +259,9 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
 
         if (models != null) {
             // 選択解除されたリストを入れる
-            removed = new ArrayList<KarteViewer>(); // 選択が解除されているもの
+            removed = new ArrayList<>(); // 選択が解除されているもの
             // karteList にあって選択リストにないものは除去リストに入れる
-            for (KarteViewer viewer : karteList) {
+            for (KarteViewer2 viewer : karteList) {
                 boolean found = false;
                 String id1 = viewer.getModel().getDocInfo().getDocId();
                 for (DocInfoModel selectedDocInfo : selectedHistories) {
@@ -295,7 +286,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
 
                 // 重複チェック
                 boolean duplicated = false;
-                for (KarteViewer viewer : karteList) {
+                for (KarteViewer2 viewer : karteList) {
                     String viewerId = viewer.getModel().getDocInfo().getDocId();
                     if (docId.equals(viewerId)) {
                         duplicated = true;
@@ -323,9 +314,8 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
                     break;
                 }
 
-                // シングル及び２号用紙の判定を行い，KarteViewer を生成する
-                final KarteViewer karteViewer = (docInfo.getDocType().equals(IInfoModel.DOCTYPE_S_KARTE))?
-                        new KarteViewer() : new KarteViewer2();
+                // KarteViewer を生成する
+                final KarteViewer2 karteViewer = new KarteViewer2();
 
                 karteViewer.setContext(getContext());
                 karteViewer.setModel(karteModel);
@@ -353,7 +343,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
                     karteViewer.addMouseListener(ml);
                 }
                 // ボーダーをあらかじめ付けておく
-                karteViewer.panel2.setBackground(karteViewer.getSOAPane().getTextPane().getBackground());
+                karteViewer.getKartePanel().setBackground(karteViewer.getSOAPane().getTextPane().getBackground());
                 karteViewer.setSelected(false);
                 karteList.add(karteViewer);
             }
@@ -368,16 +358,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
             // JPanel を使い回してメモリ節約をはかる
             scrollerPanel.removeAll();
 
-            for (KarteViewer view : karteList) {
-                scrollerPanel.add(view.getUI(), -1); // index -1 で最後に追加になる
-            }
-/*            SwingUtilities.invokeLater(new Runnable(){
-                @Override
-                public void run() {
-                    scrollerPanel.revalidate();
-                    scrollerPanel.repaint();
-                }
-            });*/
+            karteList.forEach(view -> scrollerPanel.add(view.getUI(), -1)); // index -1 で最後に追加になる
             scrollerPanel.revalidate();
             scrollerPanel.repaint();
 
@@ -440,23 +421,25 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
         }
     }
 
+    /**
+     * masuda-sensei.
+     */
     @Override
     public void print() {
 
         // インスペクタに表示されているカルテをまとめて印刷する.
         // ブザイクなんだけど，あまり使わない機能なのでこれでヨシとする masuda
         // modifyed by pns
-
         // 背景色が緑だとインクがもったいないので白にする. 選択も解除しておく.
-        for (KarteViewer kv : karteList) {
+        karteList.forEach((kv) -> {
             //kv.panel2.setBorder(BorderFactory.createEmptyBorder());
             KartePane kp = kv.getSOAPane();
             kp.getTextPane().setBackground(Color.WHITE);
             if (kv instanceof KarteViewer2) {
-                kp = ((KarteViewer2) kv).getPPane();
+                kp = kv.getPPane();
                 kp.getTextPane().setBackground(Color.WHITE);
             }
-        }
+        });
 
         // 患者名を取得
         String name = getContext().getPatient().getFullName();
@@ -465,7 +448,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
         PrintKarteDocumentView.printComponent(scrollerPanel, name, id);
 
         // 背景色を戻しておく
-        for (KarteViewer kv : karteList) {
+        karteList.forEach(kv -> {
             //kv.panel2.setBorder(MyBorderFactory.createClearBorder());
             if (kv.isSelected()) {
                 setSelectedKarte(kv);
@@ -473,11 +456,10 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
             KartePane kp = kv.getSOAPane();
             kp.getTextPane().setBackground(KartePane.UNEDITABLE_COLOR);
             if (kv instanceof KarteViewer2) {
-                kp = ((KarteViewer2) kv).getPPane();
+                kp = kv.getPPane();
                 kp.getTextPane().setBackground(KartePane.UNEDITABLE_COLOR);
             }
-        }
-        // masuda
+        });
     }
 
     /**
@@ -519,7 +501,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
     public void delete() {
 
         // 対象のカルテを得る
-        KarteViewer delete = getBaseKarte();
+        KarteViewer2 delete = getBaseKarte();
         if (delete == null) {
             return;
         }
@@ -531,14 +513,9 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
         final JCheckBox box3 = new JCheckBox("その他");
         box1.setSelected(true);
 
-        ActionListener al = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (box1.isSelected() || box2.isSelected()) {
-                    return;
-                } else if (!box3.isSelected()) {
-                    box3.setSelected(true);
-                }
+        ActionListener al = e -> {
+            if (! box1.isSelected() && ! box2.isSelected() && ! box3.isSelected()) {
+                box3.setSelected(true);
             }
         };
 
@@ -594,13 +571,13 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
             progressBar = getContext().getStatusPanel().getProgressBar();
 
             // 選択リストにあって 現在の karteList にないものは追加する
-            List<DocInfoModel> added = new ArrayList<DocInfoModel>(); // 追加されたもの
+            List<DocInfoModel> added = new ArrayList<>(); // 追加されたもの
             //for (DocInfoModel selectedDocInfo : selectedDocInfoList) {
             savedSelectedHistories = selectedHistories;
             for (DocInfoModel selectedDocInfo : selectedHistories) {
                 boolean found = false;
                 String id1 = selectedDocInfo.getDocId();
-                for (KarteViewer viewer : karteList) {
+                for (KarteViewer2 viewer : karteList) {
                     String id2 = viewer.getModel().getDocInfo().getDocId();
                     if (id1.equals(id2)) {
                         found = true;
@@ -619,7 +596,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
                 int count = 0;
                 boolean hasNext = true;
                 while (hasNext) {
-                    List<Long> pkList = new ArrayList<Long>(FRACTION);
+                    List<Long> pkList = new ArrayList<>(FRACTION);
                     for (int i = 0; i<FRACTION; i++) {
                         pkList.add(added.get(count++).getDocPk());
                         if (count >= added.size()) {
@@ -642,7 +619,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
                 }
             } else {
                 // removed 処理のために空の addKarteViewer 呼ぶ必要有り
-                addKarteViewer(new ArrayList<DocumentModel>(1));
+                addKarteViewer(new ArrayList<>(1));
             }
             return added.size();
         }
@@ -656,9 +633,7 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
         @Override
         protected void process(List<List<DocumentModel>> chunks) {
             //logger.info("process published chunks");
-            for (List<DocumentModel> dm : chunks) {
-                addKarteViewer(dm);
-            }
+            chunks.forEach(dm -> addKarteViewer(dm));
         }
     }
 
@@ -769,8 +744,8 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
      */
     private class DeleteTask extends DBTask<Boolean> {
 
-        private DocumentDelegater ddl;
-        private long docPk;
+        private final DocumentDelegater ddl;
+        private final long docPk;
 
         public DeleteTask(Chart ctx, long docPk, DocumentDelegater ddl) {
             super(ctx);
@@ -788,7 +763,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
         @Override
         protected void succeeded(Boolean result) {
             logger.debug("DeleteTask succeeded");
-            if (result.booleanValue()) {
+            if (result) {
                 Chart chart = (KarteDocumentViewer.this).getContext();
                 chart.getDocumentHistory().update();
             } else {
@@ -798,93 +773,13 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
     }
 
     /**
-     * 抽象状態クラス.
-     */
-    private abstract class BrowserState {
-
-        public BrowserState() {
-        }
-
-        public abstract void enter();
-    }
-
-    /**
-     * 表示するカルテがない状態を表す.
-     */
-    private final class EmptyState extends BrowserState {
-
-        public EmptyState() {
-        }
-
-        @Override
-        public void enter() {
-            boolean canEdit = isReadOnly() ? false : true;
-            getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, canEdit);     // 新規カルテ
-            getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, canEdit);  // 新規文書
-            getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, false);    // 修正
-            getContext().enabledAction(GUIConst.ACTION_DELETE, false);          // 削除
-            getContext().enabledAction(GUIConst.ACTION_PRINT, false);           // 印刷
-            getContext().enabledAction(GUIConst.ACTION_ASCENDING, false);       // 昇順
-            getContext().enabledAction(GUIConst.ACTION_DESCENDING, false);      // 降順
-            getContext().enabledAction(GUIConst.ACTION_SHOW_MODIFIED, false);   // 修正履歴表示
-
-            getContext().enabledAction(GUIConst.ACTION_FIND_FIRST, false);
-            getContext().enabledAction(GUIConst.ACTION_FIND_NEXT, false);
-            getContext().enabledAction(GUIConst.ACTION_FIND_PREVIOUS, false);
-            getContext().enabledAction(GUIConst.ACTION_SEND_CLAIM, false);
-        }
-    }
-
-    /**
-     * カルテが表示されている状態を表す.
-     */
-    private final class ClaenState extends BrowserState {
-
-        public ClaenState() {
-        }
-
-        @Override
-        public void enter() {
-
-            //
-            // 新規カルテが可能なケース 仮保存でないことを追加
-            //
-            boolean canEdit = isReadOnly() ? false : true;
-            boolean tmpKarte = false;
-            KarteViewer base = getBaseKarte();
-            if (base != null) {
-                String state = base.getModel().getDocInfo().getStatus();
-                String confirmDate = base.getModel().getDocInfo().getConfirmDateTrimTime();
-
-                // もし今日のカルテが一時保存なら新規カルテは作らない
-                if (state.equals(IInfoModel.STATUS_TMP) && todayDateAsString.equals(confirmDate)) {
-                    tmpKarte = true;
-                }
-            }
-            boolean newOk = canEdit && (!tmpKarte) ? true : false;
-            getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, newOk);        // 新規カルテ
-            getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, canEdit);   // 新規文書
-            getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, canEdit);   // 修正
-            getContext().enabledAction(GUIConst.ACTION_DELETE, canEdit);         // 削除
-            getContext().enabledAction(GUIConst.ACTION_PRINT, true);             // 印刷
-            getContext().enabledAction(GUIConst.ACTION_ASCENDING, true);         // 昇順
-            getContext().enabledAction(GUIConst.ACTION_DESCENDING, true);        // 降順
-            getContext().enabledAction(GUIConst.ACTION_SHOW_MODIFIED, true);     // 修正履歴表示
-
-            getContext().enabledAction(GUIConst.ACTION_FIND_FIRST, true);
-            getContext().enabledAction(GUIConst.ACTION_FIND_NEXT, true);
-            getContext().enabledAction(GUIConst.ACTION_FIND_PREVIOUS, true);
-            getContext().enabledAction(GUIConst.ACTION_SEND_CLAIM, true);
-        }
-    }
-
-    /**
      * StateContext クラス.
      */
     private final class StateMgr {
 
-        private BrowserState emptyState = new EmptyState();
-        private BrowserState cleanState = new ClaenState();
+        private final BrowserState emptyState = new EmptyState();
+        private final BrowserState cleanState = new CleanState();
+
         private BrowserState currentState;
 
         public StateMgr() {
@@ -903,6 +798,84 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
 
         public void enter() {
             currentState.enter();
+        }
+    }
+
+    /**
+     * State Interface.
+     */
+    private interface BrowserState {
+        public void enter();
+    }
+
+    /**
+     * EmptyState.
+     * 表示するカルテがない状態を表す.
+     */
+    private final class EmptyState implements BrowserState {
+
+        public EmptyState() {
+        }
+
+        @Override
+        public void enter() {
+            boolean canEdit = !isReadOnly();
+            getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, canEdit);     // 新規カルテ
+            getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, canEdit);  // 新規文書
+            getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, false);    // 修正
+            getContext().enabledAction(GUIConst.ACTION_DELETE, false);          // 削除
+            getContext().enabledAction(GUIConst.ACTION_PRINT, false);           // 印刷
+            getContext().enabledAction(GUIConst.ACTION_ASCENDING, false);       // 昇順
+            getContext().enabledAction(GUIConst.ACTION_DESCENDING, false);      // 降順
+            getContext().enabledAction(GUIConst.ACTION_SHOW_MODIFIED, false);   // 修正履歴表示
+
+            getContext().enabledAction(GUIConst.ACTION_FIND_FIRST, false);
+            getContext().enabledAction(GUIConst.ACTION_FIND_NEXT, false);
+            getContext().enabledAction(GUIConst.ACTION_FIND_PREVIOUS, false);
+            getContext().enabledAction(GUIConst.ACTION_SEND_CLAIM, false);
+        }
+    }
+
+    /**
+     * CleanState.
+     * カルテが表示されている状態を表す.
+     */
+    private final class CleanState implements BrowserState {
+
+        public CleanState() {
+        }
+
+        @Override
+        public void enter() {
+            //
+            // 新規カルテが可能なケース 仮保存でないことを追加
+            //
+            boolean canEdit = !isReadOnly();
+            boolean tmpKarte = false;
+            KarteViewer2 base = getBaseKarte();
+            if (base != null) {
+                String state = base.getModel().getDocInfo().getStatus();
+                String confirmDate = base.getModel().getDocInfo().getConfirmDateTrimTime();
+
+                // もし今日のカルテが一時保存なら新規カルテは作らない
+                if (state.equals(IInfoModel.STATUS_TMP) && todayDateAsString.equals(confirmDate)) {
+                    tmpKarte = true;
+                }
+            }
+            boolean newOk = canEdit && ! tmpKarte;
+            getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, newOk);        // 新規カルテ
+            getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, canEdit);   // 新規文書
+            getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, canEdit);   // 修正
+            getContext().enabledAction(GUIConst.ACTION_DELETE, canEdit);         // 削除
+            getContext().enabledAction(GUIConst.ACTION_PRINT, true);             // 印刷
+            getContext().enabledAction(GUIConst.ACTION_ASCENDING, true);         // 昇順
+            getContext().enabledAction(GUIConst.ACTION_DESCENDING, true);        // 降順
+            getContext().enabledAction(GUIConst.ACTION_SHOW_MODIFIED, true);     // 修正履歴表示
+
+            getContext().enabledAction(GUIConst.ACTION_FIND_FIRST, true);
+            getContext().enabledAction(GUIConst.ACTION_FIND_NEXT, true);
+            getContext().enabledAction(GUIConst.ACTION_FIND_PREVIOUS, true);
+            getContext().enabledAction(GUIConst.ACTION_SEND_CLAIM, true);
         }
     }
 
