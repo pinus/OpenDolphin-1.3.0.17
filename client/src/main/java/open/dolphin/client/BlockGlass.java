@@ -24,22 +24,22 @@ import javax.swing.JComponent;
  * component shine through. This panel is meant to be used
  * asa <i>glass pane</i> in the window performing the long
  * operation.
- * <br /><br />
+ * <br><br>
  * On the contrary to regular glass panes, you don't need to
  * set it visible or not by yourself. Once you've started the
  * animation all the mouse events are intercepted by this
  * panel, preventing them from being forwared to the
  * underlying components.
- * <br /><br />
+ * <br><br>
  * The panel can be controlled by the <code>start()</code>,
  * <code>stop()</code> and <code>interrupt()</code> methods.
- * <br /><br />
+ * <br><br>
  * Example:
- * <br /><br />
+ * <br><br>
  * <pre>BlockGlass pane = new BlockGlass();
  * frame.setGlassPane(pane);
  * pane.start()</pre>
- * <br /><br />
+ * <br><br>
  * Several properties can be configured at creation time. The
  * message and its font can be changed at runtime. Changing the
  * font can be done using <code>setFont()</code> and
@@ -82,7 +82,7 @@ public class BlockGlass extends JComponent implements MouseListener {
     private boolean isLocked;
 
     /**
-     * Creates a new progress panel with default values:<br />
+     * Creates a new progress panel with default values:<br>
      * <ul>
      * <li>No message</li>
      * <li>14 bars</li>
@@ -96,7 +96,7 @@ public class BlockGlass extends JComponent implements MouseListener {
     }
 
     /**
-     * Creates a new progress panel with default values:<br />
+     * Creates a new progress panel with default values:<br>
      * <ul>
      * <li>14 bars</li>
      * <li>Veil's alpha level is 70%</li>
@@ -110,7 +110,7 @@ public class BlockGlass extends JComponent implements MouseListener {
     }
 
     /**
-     * Creates a new progress panel with default values:<br />
+     * Creates a new progress panel with default values:<br>
      * <ul>
      * <li>Veil's alpha level is 70%</li>
      * <li>15 frames per second</li>
@@ -124,7 +124,7 @@ public class BlockGlass extends JComponent implements MouseListener {
     }
 
     /**
-     * Creates a new progress panel with default values:<br />
+     * Creates a new progress panel with default values:<br>
      * <ul>
      * <li>15 frames per second</li>
      * <li>Fade in/out last 300 ms</li>
@@ -139,7 +139,7 @@ public class BlockGlass extends JComponent implements MouseListener {
     }
 
     /**
-     * Creates a new progress panel with default values:<br />
+     * Creates a new progress panel with default values:<br>
      * <ul>
      * <li>Fade in/out last 300 ms</li>
      * </ul>
@@ -191,6 +191,7 @@ public class BlockGlass extends JComponent implements MouseListener {
 
     /**
      * Returns the current displayed message.
+     * @return
      */
     public String getText() {
         return text;
@@ -259,8 +260,7 @@ public class BlockGlass extends JComponent implements MouseListener {
                 g2.fill(ticker[i]);
 
                 Rectangle2D bounds = ticker[i].getBounds2D();
-                if (bounds.getMaxY() > maxY)
-                    maxY = bounds.getMaxY();
+                if (bounds.getMaxY() > maxY) { maxY = bounds.getMaxY(); }
             }
 
             if (text != null && text.length() > 0) {
@@ -284,9 +284,9 @@ public class BlockGlass extends JComponent implements MouseListener {
         Area[] tickers = new Area[barsCount];
         Point2D.Double center = new Point2D.Double((double) frameWidth / 2, (double) frameHeight / 2);
 
-        double fixedAngle = 2.0 * Math.PI / ((double) barsCount);
+        double fixedAngle = 2.0 * Math.PI / barsCount;
 
-        for (double i = 0.0; i < (double) barsCount; i++) {
+        for (double i = 0.0; i < barsCount; i++) {
             Area primitive = buildPrimitive();
 
             AffineTransform toCenter = AffineTransform.getTranslateInstance(center.getX(), center.getY());
@@ -331,9 +331,10 @@ public class BlockGlass extends JComponent implements MouseListener {
             this.rampUp = rampUp;
         }
 
+        @Override
         public void run() {
             Point2D.Double center = new Point2D.Double((double) frameWidth / 2, (double) frameHeight / 2);
-            double fixedIncrement = 2.0 * Math.PI / ((double) barsCount);
+            double fixedIncrement = 2.0 * Math.PI / barsCount;
             AffineTransform toCircle = AffineTransform.getRotateInstance(fixedIncrement, center.getX(), center.getY());
 
             /** initial delay */
@@ -350,16 +351,16 @@ public class BlockGlass extends JComponent implements MouseListener {
             }
 
             long start = System.currentTimeMillis();
-            if (rampDelay == 0)
-                alphaLevel = rampUp ? 255 : 0;
+            if (rampDelay == 0) { alphaLevel = rampUp ? 255 : 0; }
 
             started = true;
             boolean inRamp = rampUp;
 
             while (!Thread.interrupted()) {
                 if (!inRamp) {
-                    for (int i = 0; i < ticker.length; i++)
-                        ticker[i].transform(toCircle);
+                    for (Area ticker1 : ticker) {
+                        ticker1.transform(toCircle);
+                    }
                 }
 
                 repaint();
@@ -383,15 +384,15 @@ public class BlockGlass extends JComponent implements MouseListener {
                 }
 
                 try {
-                    Thread.sleep(inRamp ? 10 : (int) (1000 / fps));
+                    Thread.sleep(inRamp ? 10 : (long) (1000 / fps));
                 } catch (InterruptedException ie) {
                     break;
                 }
                 Thread.yield();
-//              if (rampUp) System.out.print(".");
-//              else System.out.print(",");
+                // if (rampUp) System.out.print(".");
+                // else System.out.print(",");
             }
-//          System.out.println("blocking animation done");
+            // System.out.println("blocking animation done");
 
             if (!rampUp) {
                 started = false;
@@ -407,25 +408,21 @@ public class BlockGlass extends JComponent implements MouseListener {
         if (!isLocked) {
             Throwable t = new Throwable();
             blockCaller = t.getStackTrace()[1];
-//          System.out.println("blocked by blocker: " + blockCaller.getClassName());
+            // System.out.println("blocked by blocker: " + blockCaller.getClassName());
             isLocked = true;
             start();
         }
-//      this.addMouseListener(this);
-//      this.setVisible(true);
     }
 
     public void unblock() {
         Throwable t = new Throwable();
         StackTraceElement unblockCaller = t.getStackTrace()[1];
-//      System.out.println("blocker: " + blockCaller.getClassName());
-//      System.out.println("unblocker: " + unblockCaller.getClassName());
+        // System.out.println("blocker: " + blockCaller.getClassName());
+        // System.out.println("unblocker: " + unblockCaller.getClassName());
         if (unblockCaller.getClassName().equals(blockCaller.getClassName())) {
             stop();
             isLocked = false;
         }
-//      this.removeMouseListener(this);
-//      this.setVisible(false);
     }
 
     // hash コードによる block 処理実験

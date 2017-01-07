@@ -790,7 +790,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
             logger.debug("DeleteTask succeeded");
             if (result.booleanValue()) {
                 Chart chart = (KarteDocumentViewer.this).getContext();
-                chart.getDocumentHistory().getDocumentHistory();
+                chart.getDocumentHistory().update();
             } else {
                 warning(ClientContext.getString("ドキュメント削除"), ddl.getErrorMessage());
             }
