@@ -1,29 +1,35 @@
 package open.dolphin.client;
 
-import java.awt.event.ActionEvent;
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.ui.MyJPopupMenu;
 
 /**
- * ChartImpl と EditorFrame 特有の JToolBar
+ * ChartImpl と EditorFrame 特有の JToolBar.
  * @author pns
  */
 public class ChartToolBar extends JToolBar {
     private static final long serialVersionUID = 1L;
 
+    private final MainWindow window;
+    private final ChartMediator mediator;
+
     public ChartToolBar(final Chart chart) {
         super();
+        window = chart.getContext();
+        mediator = chart.getChartMediator();
+        initComponents();
+    }
 
-        final ChartMediator mediator = chart.getChartMediator();
-        final MainWindow context = chart.getContext();
+    private void initComponents() {
 
         setFloatable(false);
         //setBorder(MyBorderFactory.createGroupBoxBorder(new Insets(1,5,1,5)));
@@ -40,7 +46,7 @@ public class ChartToolBar extends JToolBar {
         textStampButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!((JButton) e.getSource()).isEnabled()) return;
+                if (!((Component) e.getSource()).isEnabled()) { return; }
                 MyJPopupMenu popup = new MyJPopupMenu();
                 mediator.addTextMenu(popup);
                 if (!e.isPopupTrigger()) {
@@ -60,8 +66,8 @@ public class ChartToolBar extends JToolBar {
         schemaButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!((JButton) e.getSource()).isEnabled()) return;
-                context.showSchemaBox();
+                if (!((Component) e.getSource()).isEnabled()) return;
+                window.showSchemaBox();
             }
         });
 
@@ -76,7 +82,7 @@ public class ChartToolBar extends JToolBar {
         stampButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!((JButton) e.getSource()).isEnabled()) return;
+                if (!((Component) e.getSource()).isEnabled()) return;
                 MyJPopupMenu popup = new MyJPopupMenu();
                 mediator.addStampMenu(popup);
                 popup.show(e.getComponent(), e.getX(), e.getY());
@@ -123,31 +129,22 @@ public class ChartToolBar extends JToolBar {
                 // インスペクタウインドウ整列
                 if (count != 0) {
                     popup.addSeparator();
-                    count = 0;
 
-                    Action a = new AbstractAction() {
-                        private static final long serialVersionUID = 1L;
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            JFrame f;
-                            int x = WindowSupport.INITIAL_X; int y = WindowSupport.INITIAL_Y; int width = 0; int height = 0;
+                    Action a = new ProxyAction("インスペクタを整列", GUIConst.ICON_WINDOWS_22, () -> {
+                        int x = WindowSupport.INITIAL_X; int y = WindowSupport.INITIAL_Y; int width = 0; int height = 0;
 
-                            for (WindowSupport ws : windows) {
-                                f = ws.getFrame();
-                                if (f.getTitle().contains("インスペクタ")) {
-                                    if (width == 0) width = f.getBounds().width;
-                                    if (height == 0) height = f.getBounds().height;
+                        for (WindowSupport ws : windows) {
+                            JFrame f = ws.getFrame();
+                            if (f.getTitle().contains("インスペクタ")) {
+                                if (width == 0) { width = f.getBounds().width; }
+                                if (height == 0) { height = f.getBounds().height; }
 
-                                    f.setBounds(x, y, width, height);
-                                    f.toFront();
-                                    x += WindowSupport.INITIAL_DX; y += WindowSupport.INITIAL_DY;
-                                }
+                                f.setBounds(x, y, width, height);
+                                f.toFront();
+                                x += WindowSupport.INITIAL_DX; y += WindowSupport.INITIAL_DY;
                             }
                         }
-                    };
-
-                    a.putValue(Action.NAME, "インスペクタを整列");
-                    a.putValue(Action.SMALL_ICON, GUIConst.ICON_WINDOWS_22);
+                    });
                     popup.add(a);
                 }
 

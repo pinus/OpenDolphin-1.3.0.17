@@ -33,6 +33,10 @@ public class KarteViewer2 extends KarteViewer {
         KartePanel kp2 = KartePanelFactory.createViewerPanel();
         panel2 = kp2;
 
+        // viewer では編集不可
+        kp2.getSoaTextPane().setEditable(false);
+        kp2.getPTextPane().setEditable(false);
+
         // TimeStampLabel を生成する
         timeStampLabel = kp2.getTimeStampLabel();
         timeStampLabel.setHorizontalAlignment(SwingConstants.CENTER);
