@@ -15,7 +15,7 @@ import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
 
 /**
- * KarteRenderer_2
+ * KarteRenderer_2.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -83,7 +83,7 @@ public class KarteRenderer_2 {
 
     private KartePane thePane;
 
-    boolean logicalStyle;
+    private boolean logicalStyle;
 
     private boolean bSoaPane;
 
@@ -149,12 +149,12 @@ public class KarteRenderer_2 {
 
         // SOA Pane をレンダリングする
         if (soaSpec == null || soaSpec.equals("")) {
-            for (ModuleModel mm : soaModules) {
-                soaPane.stamp(mm);
+            soaModules.forEach(moduleModel -> {
+                soaPane.stamp(moduleModel);
                 soaPane.makeParagraph();
-            }
+            });
             // モジュールのみの場合も dirty にセット
-            if (soaModules != null) soaPane.setDirty(true);
+            if (soaModules != null) { soaPane.setDirty(true); }
 
         } else {
             debug("Render SOA Pane");
@@ -167,14 +167,14 @@ public class KarteRenderer_2 {
         // P Pane をレンダリングする
         if (pSpec == null || pSpec.equals("")) {
             // 前回処方適用のようにモジュールのみの場合
-            for (ModuleModel mm : pModules) {
+            pModules.forEach(moduleModel -> {
                 //pPane.stamp(mm);
-                pPane.flowStamp(mm);
+                pPane.flowStamp(moduleModel);
                 pPane.makeParagraph();
                 pPane.makeParagraph();
-            }
+            });
             // モジュールだけの場合も dirty にセット
-            if (pModules != null && pPane != null) pPane.setDirty(true);
+            if (pModules != null && pPane != null) { pPane.setDirty(true); }
 
         } else {
             bSoaPane = false;

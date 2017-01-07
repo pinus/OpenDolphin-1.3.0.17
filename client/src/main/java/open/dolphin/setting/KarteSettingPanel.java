@@ -37,7 +37,6 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.client.NameValuePair;
 import open.dolphin.helper.GridBagBuilder;
-import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.inspector.InspectorCategory;
 import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
@@ -88,7 +87,16 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     private JComboBox periodCombo;
     private JRadioButton vSc;
     private JRadioButton hSc;
-    private NameValuePair[] periodObjects;
+    private NameValuePair[] periodObjects = {
+        //new NameValuePair("1ヶ月", "-1"),
+        //new NameValuePair("3ヶ月", "-3"),
+        new NameValuePair("半年", "-6"),
+        new NameValuePair("1年", "-12"),
+        new NameValuePair("2年", "-24"),
+        new NameValuePair("3年", "-36"),
+        new NameValuePair("5年", "-60"),
+        new NameValuePair("全て", "-180") // 15年 must be enough
+    };
     private JComboBox docNumberCombo;
     private String[] docNumberObjects;
 
@@ -214,7 +222,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         for (int i=0; i<compo.length; i++) {
             compo[i] = InspectorCategory.values()[i].name();
         }
-        
+
         lastIndexOfCompo = compo.length - 1;
         inspectorCompo = new JComboBox[INSPECTOR_LENGTH];
         for (int i=0; i<INSPECTOR_LENGTH; i++) {
@@ -242,8 +250,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         asc = new JRadioButton("昇順");
         desc = new JRadioButton("降順");
         showModifiedCB = new JCheckBox("修正履歴表示");
-        // periodObjects = ClientContext.getNameValuePair("docHistory.combo.period");
-        periodObjects = DocumentHistory.extractionObjects;
         periodCombo = new JComboBox(periodObjects);
 
         vSc = new JRadioButton("垂直");

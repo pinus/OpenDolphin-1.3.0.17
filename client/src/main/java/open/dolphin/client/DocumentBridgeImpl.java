@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import open.dolphin.infomodel.DocInfoModel;
@@ -16,10 +14,11 @@ import open.dolphin.ui.MyJScrollPane;
  * 参照タブ画面を提供する Bridge クラス.
  * ChartImpl の ChartDocument plugin として登録されるのはこれ.
  * このクラスの scroller へカルテが表示される.
- *
+ * 実務をしているのは KarteDocumentViewer.
  * @author kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
-public class DocumentBridgeImpl extends AbstractChartDocument implements PropertyChangeListener {
+public class DocumentBridgeImpl extends AbstractChartDocument {
 
     private static final String TITLE = "参 照";
 
@@ -64,9 +63,10 @@ public class DocumentBridgeImpl extends AbstractChartDocument implements Propert
 
         // 文書履歴のプロパティ通知をリッスンする
         DocumentHistory h = getContext().getDocumentHistory();
-        h.addPropertyChangeListener(DocumentHistory.DOCUMENT_TYPE, this);
-        h.addPropertyChangeListener(DocumentHistory.HITORY_UPDATED, this);
-        h.addPropertyChangeListener(DocumentHistory.SELECTED_HISTORIES, this);
+        // 編集保存したとき
+        h.addDocumentHistoryUpdateListener(this::documentHistoryUpdated);
+        // 選択変更したとき
+        h.addDocumentHistorySelectionListener(this::documentHistorySelected);
 
         karteViewer = new KarteDocumentViewer();
         karteViewer.setContext(getContext());
@@ -103,42 +103,26 @@ public class DocumentBridgeImpl extends AbstractChartDocument implements Propert
         }
     }
 
-    /**
-     * DocumentHistory から呼ばれる.
-     * @param evt
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void documentHistoryUpdated(String date) {
+        // 編集直後に来た場合は，編集カルテの editDate が入っている.
+        // select histories したときに editDate がセットされていたら，その editDate の対応カルテを表示するのに使いたい
+        editDate = date;
+        // 文書履歴の抽出期間が変更された場合
+        if (karteViewer != null) {
+            karteViewer.historyPeriodChanged();
+        }   // null の代わりに blankPanel を出す
+        scroller.setViewportView(blankPanel);
+    }
 
-        switch (evt.getPropertyName()) {
-            case DocumentHistory.DOCUMENT_TYPE:
-                // 使わない
-                break;
-
-            case DocumentHistory.HITORY_UPDATED:
-                // 編集直後に来た場合は，編集カルテの editDate が入っている
-                editDate = (String) evt.getNewValue();
-                // 文書履歴の抽出期間が変更された場合
-                if (karteViewer != null) {
-                    karteViewer.historyPeriodChanged();
-                }   // null の代わりに blankPanel を出す
-                scroller.setViewportView(blankPanel);
-                break;
-
-            case DocumentHistory.SELECTED_HISTORIES:
-                // TODO 編集直後に来た場合は，できれば編集直後のカルテを viewwer で表示するようにしたい
-                if (editDate != null) {
-                    SwingUtilities.invokeLater(() -> scroller.getViewport().setViewPosition(new java.awt.Point(0,0)));
-                    editDate = null;
-                }
-                // 文書履歴の選択が変更された場合
-                DocInfoModel[] selectedHistories = (DocInfoModel[]) evt.getNewValue();
-                showDocuments(selectedHistories);
-                break;
-
-            default:
-                break;
+    public void documentHistorySelected(DocInfoModel[] model) {
+        // TODO 編集直後に来た場合は，できれば editDate の該当カルテを viewwer で表示するようにしたい.
+        // 現時点では，先頭を表示する.
+        if (editDate != null) {
+            SwingUtilities.invokeLater(() -> scroller.getViewport().setViewPosition(new java.awt.Point(0,0)));
+            editDate = null;
         }
+        // 文書履歴の選択変更処理
+        showDocuments(model);
     }
 
     public KarteViewer2 getBaseKarte() {

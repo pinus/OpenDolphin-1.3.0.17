@@ -112,8 +112,6 @@ public class PatientInspector {
         physicalInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
 
         //サイズ微調整
-        docHistory.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 350));
-        docHistory.getPanel().setMinimumSize(new Dimension(DEFAULT_WIDTH, 350));
         patientVisitInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         patientVisitInspector.getPanel().setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         patientVisitInspector.getPanel().setMaximumSize(new Dimension(1024, DEFAULT_HEIGHT));

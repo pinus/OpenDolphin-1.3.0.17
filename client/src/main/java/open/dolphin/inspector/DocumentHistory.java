@@ -1,11 +1,10 @@
 package open.dolphin.inspector;
 
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -25,9 +24,10 @@ import javax.swing.table.TableColumn;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
-import open.dolphin.client.NameValuePair;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.DocumentSearchSpec;
+import open.dolphin.event.DocumentHistorySelectionListener;
+import open.dolphin.event.DocumentHistoryUpdateListener;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.IInfoModel;
@@ -38,6 +38,7 @@ import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyDefaultCellEditor;
+import open.dolphin.util.PNSPair;
 import open.dolphin.util.PNSTriple;
 
 /**
@@ -45,13 +46,8 @@ import open.dolphin.util.PNSTriple;
  * @author Minagawa,Kazushi
  * @author pns
  */
-public class DocumentHistory {
+public class DocumentHistory implements IInspector {
 
-    // PropertyChange 名
-    public static final String DOCUMENT_TYPE = "documentTypeProp";
-    public static final String SELECTED_HISTORIES = "selectedHistories";
-    public static final String SELECTED_KARTES = "selectedKartes";
-    public static final String HITORY_UPDATED = "historyUpdated";
     // 文書履歴テーブル
     private ObjectReflectTableModel<DocInfoModel> tableModel;
     //private DocumentHistoryView view;
@@ -60,14 +56,14 @@ public class DocumentHistory {
     private JComboBox extractionCombo;
     // 件数フィールド
     private JLabel countField;
-    // 束縛サポート
-    private PropertyChangeSupport boundSupport;
+    // DocumentHistoryUpdate リスナ
+    private DocumentHistoryUpdateListener updateListener;
+    // DocumentHistorySelection リスナ
+    private DocumentHistorySelectionListener selectionListener;
     // context
     private final ChartImpl context;
     // 選択された文書情報(DocInfo)の配列
     private DocInfoModel[] selectedHistories;
-    // 抽出コンテント(文書種別)
-    private String extractionContent;
     // 抽出開始日
     private Date extractionPeriod;
     // 自動的に取得する文書数
@@ -76,17 +72,6 @@ public class DocumentHistory {
     private boolean ascending;
     // 修正版も表示するかどうかのフラグ
     private boolean showModified;
-    // 文書抽出期間
-    public static final NameValuePair[] extractionObjects = {
-        //new NameValuePair("1ヶ月", "-1"),
-        //new NameValuePair("3ヶ月", "-3"),
-        new NameValuePair("半年", "-6"),
-        new NameValuePair("1年", "-12"),
-        new NameValuePair("2年", "-24"),
-        new NameValuePair("3年", "-36"),
-        new NameValuePair("5年", "-60"),
-        new NameValuePair("全て", "-180") // 15年 must be enough
-    };
     // Key入力をブロックするリスナ
     private BlockKeyListener blockKeyListener;
     // 編集終了したカルテの日付を保存する. 編集終了した時に必ず選択するために使う
@@ -109,6 +94,10 @@ public class DocumentHistory {
 
         view = new DocumentHistoryPanel();
 
+        // サイズ
+        view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 350));
+        view.setMinimumSize(new Dimension(DEFAULT_WIDTH, 350));
+
         // selectAll (command-A) を横取りするため削除
         view.getInputMap().remove(KeyStroke.getKeyStroke('A',java.awt.event.InputEvent.META_MASK));
 
@@ -124,11 +113,8 @@ public class DocumentHistory {
 
             @Override
             public boolean isCellEditable(int row, int col) {
-                // 内容は editable
-                if (col == 1 && getObject(row) != null) {
-                    return true;
-                }
-                return false;
+                // "内容" は editable
+                return col == 1 && getObject(row) != null;
             }
 
             @Override
@@ -209,12 +195,9 @@ public class DocumentHistory {
         // 抽出期間コンボボックスの選択を処理する
         extractionCombo.addItemListener(this::periodChanged);
 
-        // Preference から文書種別を設定する
-        extractionContent = IInfoModel.DOCTYPE_KARTE;
-
         // Preference から抽出期間を設定する
         int past = Project.getPreferences().getInt(Project.DOC_HISTORY_PERIOD, -12);
-        int index = NameValuePair.getIndex(String.valueOf(past), extractionObjects);
+        int index = PNSPair.getIndex(past, ComboBoxFactory.getDocumentExtractionPeriodModel());
         extractionCombo.setSelectedIndex(index);
         GregorianCalendar today = new GregorianCalendar();
         today.add(GregorianCalendar.MONTH, past);
@@ -261,27 +244,19 @@ public class DocumentHistory {
     }
 
     /**
-     * 束縛プロパティリスナを登録する.
-     * @param propName プロパティ名
-     * @param listener リスナ
+     * update listener (from DocumentBridge)
+     * @param listener
      */
-    public void addPropertyChangeListener(String propName, PropertyChangeListener listener) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.addPropertyChangeListener(propName, listener);
+    public void addDocumentHistoryUpdateListener(DocumentHistoryUpdateListener listener) {
+        updateListener = listener;
     }
 
     /**
-     * 束縛プロパティを削除する.
-     * @param propName プロパティ名
-     * @param listener リスナ
+     * selection listener (from DocumentBridge)
+     * @param listener
      */
-    public void removePropertyChangeListener(String propName, PropertyChangeListener listener) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.removePropertyChangeListener(propName, listener);
+    public void addDocumentHistorySelectionListener(DocumentHistorySelectionListener listener) {
+        selectionListener = listener;
     }
 
     /**
@@ -301,10 +276,10 @@ public class DocumentHistory {
         DocInfoModel[] old = selectedHistories;
         selectedHistories = newSelected;
         //
-        // リスナへ通知を行う  -> DocumetnBridge#propertyChange
+        // リスナへ通知を行う  -> DocumentBridgeImpl
         //
         if (selectedHistories != null) {
-            boundSupport.firePropertyChange(SELECTED_HISTORIES, old, selectedHistories);
+            selectionListener.selected(selectedHistories);
         }
     }
 
@@ -339,14 +314,15 @@ public class DocumentHistory {
      * 取得するパラメータ(患者ID，文書タイプ，抽出期間)はこのクラスの属性として定義されている.
      * これらのパラメータは comboBox等で選択される. 値が変化する度にこのメソッドがコールされる.
      */
+    @Override
     public void update() {
 
-        if (extractionPeriod != null && extractionContent != null) {
+        if (extractionPeriod != null) {
 
             // 検索パラメータセットのDTOを生成する
             DocumentSearchSpec spec = new DocumentSearchSpec();
             spec.setKarteId(context.getKarte().getId());	// カルテID
-            spec.setDocType(extractionContent);			// 文書タイプ
+            spec.setDocType(IInfoModel.DOCTYPE_KARTE);			// 文書タイプ
             spec.setFromDate(extractionPeriod);			// 抽出期間開始
             spec.setIncludeModifid(showModified);		// 修正履歴
             spec.setCode(DocumentSearchSpec.DOCTYPE_SEARCH);	// 検索タイプ
@@ -370,8 +346,9 @@ public class DocumentHistory {
     }
 
     /**
-     * 抽出期間等が変化し，履歴を再取得した場合等の処理で，履歴テーブルの更新， 最初の行の自動選択，束縛プロパティの変化通知を行う.
-     * DocInfoTask から呼ばれる.
+     * 抽出期間の変化・カルテの編集終了で，履歴を再取得した場合等の処理で，
+     * 履歴テーブルの更新， 最初の行の自動選択，束縛プロパティの変化通知を行う.
+     * update() -> DocInfoTask から呼ばれる.
      */
     private void updateHistory(List<DocInfoModel> newHistory) {
 
@@ -389,20 +366,20 @@ public class DocumentHistory {
         List<String> oldSelection = new ArrayList<>();
         for (int r : table.getSelectedRows()) {
             int row = table.convertRowIndexToModel(r);
-            String date = ((DocInfoModel) tableModel.getObject(row)).getFirstConfirmDateTrimTime();
+            String date = tableModel.getObject(row).getFirstConfirmDateTrimTime();
             oldSelection.add(date);
         }
 
-        // 文書履歴テーブルにデータの Arraylist を設定する
+        // 文書履歴テーブルにデータを設定する
         tableModel.setObjectList(newHistory);
 
-        // 束縛プロパティの通知を行う -> DocumetnBridge#propertyChange
-        boundSupport.firePropertyChange(HITORY_UPDATED, false, editDate);
+        // 束縛プロパティの通知を行う -> DocumetnBridgeImpl
+        updateListener.updated(editDate);
 
         if (newHistory != null && ! newHistory.isEmpty()) {
-            int cnt = newHistory.size();
-            countField.setText(String.valueOf(cnt) + " 件");
-            int fetchCount = cnt > autoFetchCount ? autoFetchCount : cnt;
+            int historySize = newHistory.size();
+            countField.setText(String.valueOf(historySize) + " 件");
+            int fetchCount = historySize > autoFetchCount ? autoFetchCount : historySize;
 
             ListSelectionModel selectionModel = table.getSelectionModel();
 
@@ -415,30 +392,24 @@ public class DocumentHistory {
             // oldSelection を復元する
             selectionModel.setValueIsAdjusting(true);
 
-            for(String oldDate : oldSelection) {
+            oldSelection.forEach(oldDate -> {
                 for(int i=0; i<newHistory.size(); i++) {
-                    String date = ((DocInfoModel)newHistory.get(i)).getFirstConfirmDateTrimTime();
+                    String date = newHistory.get(i).getFirstConfirmDateTrimTime();
                     if (date.equals(oldDate)) {
                         int row = table.convertRowIndexToView(i);
                         selectionModel.addSelectionInterval(row, row);
                     }
                 }
-            }
+            });
 
             // 復元した結果，選択がない場合はデフォルトの選択
+            // ascending なら最後の行の fetchCount 分を選択
+            // descending なら最初の fetchCount 分
             if (table.getSelectedRowCount() == 0) {
                 // テーブルの最初の行の自動選択を行う
-                int first = 0;
-                int last = 0;
-
-                if (ascending) {
-                    last = cnt - 1;
-                    first = cnt - fetchCount;
-                } else {
-                    first = 0;
-                    last = fetchCount - 1;
-                }
-                // 自動選択
+                int first = ascending? historySize - fetchCount : 0;
+                int last = ascending? historySize - 1 : fetchCount -1;
+                // 選択
                 selectionModel.addSelectionInterval(first, last);
                 // 選択した行が表示されるようにスクロールする
                 Rectangle r = table.getCellRect(first, last, true);
@@ -462,9 +433,9 @@ public class DocumentHistory {
 
     /**
      * 文書履歴のタイトルを変更する.
+     * @param docInfo
      */
     public void titleChanged(DocInfoModel docInfo) {
-
         if (docInfo != null && docInfo.getTitle() != null) {
             ChangeTitleTask task = new ChangeTitleTask(context, docInfo, new DocumentDelegater());
             task.execute();
@@ -495,8 +466,9 @@ public class DocumentHistory {
      * レイアウトパネルを返す.
      * @return
      */
+    @Override
     public JPanel getPanel() {
-        return (JPanel) view;
+        return view;
     }
 
     /**
@@ -515,26 +487,6 @@ public class DocumentHistory {
         public void keyReleased(KeyEvent e) {
             e.consume();
         }
-    }
-
-    /**
-     * 検索パラメータの文書タイプを設定する. .
-     * @param extractionContent 文書タイプ
-     */
-    public void setExtractionContent(String extractionContent) {
-        String old = this.extractionContent;
-        this.extractionContent = extractionContent;
-        // -> DocumetnBridge#propertyChange
-        boundSupport.firePropertyChange(DOCUMENT_TYPE, old, this.extractionContent);
-        update();
-    }
-
-    /**
-     * 検索パラメータの文書タイプを返す.
-     * @return 文書タイプ
-     */
-    public String getExtractionContent() {
-        return extractionContent;
     }
 
     /**
@@ -594,9 +546,9 @@ public class DocumentHistory {
     private class DocInfoTask extends DBTask<List<DocInfoModel>> {
 
         // Delegator
-        private DocumentDelegater ddl;
+        private final DocumentDelegater ddl;
         // 検索パラメータを保持するオブジェクト
-        private DocumentSearchSpec spec;
+        private final DocumentSearchSpec spec;
 
         public DocInfoTask(Chart ctx, DocumentSearchSpec spec, DocumentDelegater ddl) {
             super(ctx);
@@ -607,7 +559,7 @@ public class DocumentHistory {
         @Override
         protected List<DocInfoModel> doInBackground() {
             //logger.debug("DocInfoTask started");
-            List<DocInfoModel> result = (List<DocInfoModel>) ddl.getDocInfoList(spec);
+            List<DocInfoModel> result = ddl.getDocInfoList(spec);
             if (ddl.isNoError()) {
                 return result;
             } else {
@@ -630,9 +582,9 @@ public class DocumentHistory {
     private class ChangeTitleTask extends DBTask<Boolean> {
 
         // DocInfo
-        private DocInfoModel docInfo;
+        private final DocInfoModel docInfo;
         // Delegator
-        private DocumentDelegater ddl;
+        private final DocumentDelegater ddl;
 
         public ChangeTitleTask(Chart ctx, DocInfoModel docInfo, DocumentDelegater ddl) {
             super(ctx);
