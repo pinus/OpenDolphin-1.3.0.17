@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.*;
 import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIFactory;
 import open.dolphin.project.Project;
 import org.apache.log4j.Logger;
 
@@ -21,6 +20,7 @@ import org.apache.log4j.Logger;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class ProjectSettingDialog implements PropertyChangeListener {
+    public static final Color BACKGROUND = new Color(241,241,241);
 
     // GUI
     private JDialog dialog;
@@ -144,7 +144,7 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
      */
     private void initComponents() {
 
-        itemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        itemPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         //itemPanel = new JPanel();
         //itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
 
@@ -180,13 +180,12 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
         cardPanel.setLayout(cardLayout);
 
         // コマンドボタン
-        String text = ClientContext.getString("settingDialog.saveButtonText");
-        okButton = GUIFactory.createButton(text, null, null);
+        okButton = new JButton("保存");
         okButton.setEnabled(false);
 
         // Cancel
-        text = (String) UIManager.get("OptionPane.cancelButtonText");
-        cancelButton = GUIFactory.createButton(text, "C", null);
+        String text = (String) UIManager.get("OptionPane.cancelButtonText");
+        cancelButton = new JButton(text);
 
         // 全体ダイアログのコンテントパネル
         JPanel panel = new JPanel(new BorderLayout(11, 0));
@@ -197,7 +196,6 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
         panel.setMinimumSize(new Dimension(DEFAULT_WIDTH-50, DEFAULT_HEIGHT-90));
 
         // ダイアログを生成する
-        String title = ClientContext.getString("settingDialog.title");
         Object[] options = new Object[]{okButton, cancelButton};
 
         JOptionPane jop = new JOptionPane(
@@ -208,13 +206,13 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
                 options,
                 okButton);
 
-        dialog = jop.createDialog( parentFrame, ClientContext.getFrameTitle(title));
+        dialog = jop.createDialog( parentFrame, ClientContext.getFrameTitle("環境設定"));
         // この方法で作った dialog のタイトルバーは "brushMetalLook" にすると 241 の Gray １色になる
         // 構造は JDialog > JPanel (ContentPane) > JOptionPane となっている
         dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
         JOptionPane op = (JOptionPane) dialog.getContentPane().getComponent(0);
         op.setOpaque(true);
-        op.setBackground(new Color(241,241,241));
+        op.setBackground(BACKGROUND);
 
         dialog.setResizable(false);
         dialog.setSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
@@ -237,9 +235,11 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
         // 設定項目ボタンに追加するアクションリスナを生成する
         ActionListener al = event -> {
             logger.debug("actionPerformed");
+
             AbstractSettingPanel theSetting = null;
             String name = event.getActionCommand();
             logger.debug("actionCmd = " + name);
+
             for (AbstractSettingPanel setting : allSettings) {
                 String id = setting.getId();
                 if (id.equals(name)) {
@@ -254,7 +254,7 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
         };
 
         // 全てのボタンにリスナを追加する
-        allBtns.stream().forEach((btn) -> btn.addActionListener(al));
+        allBtns.forEach(btn -> btn.addActionListener(al));
 
         // Save
         okButton.addActionListener(e -> doOk());
@@ -291,7 +291,6 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
     private void startSetting(final AbstractSettingPanel sp) {
 
         if (sp.getContext() != null) {
-            adjustHeight(sp);
             cardLayout.show(cardPanel, sp.getTitle());
             return;
         }
@@ -306,7 +305,6 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
 
             SwingUtilities.invokeLater(() -> {
                 cardPanel.add(sp.getUI(), sp.getTitle());
-                adjustHeight(sp);
                 cardLayout.show(cardPanel, sp.getTitle());
                 if (!dialog.isVisible()) {
                     dialog.setVisible(true);
@@ -317,10 +315,6 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
         Thread t = new Thread(r);
         t.setPriority(Thread.NORM_PRIORITY);
         t.start();
-    }
-
-    private void adjustHeight(AbstractSettingPanel settingPanel) {
-
     }
 
     /**

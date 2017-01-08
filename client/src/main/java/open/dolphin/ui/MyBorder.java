@@ -6,11 +6,10 @@ import java.awt.Graphics;
 import java.awt.Insets;
 
 /**
- * Mac っぽい Border
+ * Mac っぽい Border を作るための材料の static methods.
  * @author pns
  */
 public class MyBorder {
-    private static final long serialVersionUID = 1L;
 
     // selected border color
     protected static final Color INSIDE_COLOR = new Color(217,231,244);
@@ -67,6 +66,8 @@ public class MyBorder {
      * @param y
      * @param width
      * @param height
+     * @param arcx
+     * @param arcy
      */
     public static void drawRoundRect(int level, Color color, Graphics g, int x, int y, int width, int height, int arcx, int arcy) {
         g.setColor(color);
@@ -155,7 +156,7 @@ public class MyBorder {
 
     public static void drawSelectedLine(Component c, Graphics g, int x, int y, int width, int height){
         int level = y;
-        if (y < 2) level = 2;
+        if (y < 2) { level = 2; }
         g.setColor(INSIDE_COLOR); g.drawLine(x, level, width, level);
         g.setColor(INSIDE_MIDDLE_COLOR); g.drawLine(x, level-1, width, level-1);
         g.setColor(MIDDLE_COLOR); g.drawLine(x, level-2, width, level-2);
@@ -163,7 +164,7 @@ public class MyBorder {
 
     public static void drawSelectedBlueLine(Component c, Graphics g, int x, int y, int width, int height){
         int level = y;
-        if (y < 2) level = 2;
+        if (y < 2) { level = 2; }
         g.setColor(INSIDE_BLUE_COLOR); g.drawLine(x, level, width, level);
         g.setColor(INSIDE_MIDDLE_BLUE_COLOR); g.drawLine(x, level-1, width, level-1);
         g.setColor(MIDDLE_BLUE_COLOR); g.drawLine(x, level-2, width, level-2);
@@ -171,7 +172,7 @@ public class MyBorder {
 
     public static void drawSelectedGrayLine(Component c, Graphics g, int x, int y, int width, int height){
         int level = y;
-        if (y < 2) level = 2;
+        if (y < 2) { level = 2; }
         g.setColor(INSIDE_GRAY_COLOR); g.drawLine(x, level, width, level);
         g.setColor(INSIDE_MIDDLE_GRAY_COLOR); g.drawLine(x, level-1, width, level-1);
         g.setColor(MIDDLE_GRAY_COLOR); g.drawLine(x, level-2, width, level-2);

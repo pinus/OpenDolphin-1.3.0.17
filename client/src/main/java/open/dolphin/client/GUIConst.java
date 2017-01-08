@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -134,10 +133,6 @@ public class GUIConst {
 
     // ダブルクリック後の Protection Time：この時間の間にドラッグが始まったらダブルクリックはキャンセルする
     public static final int PROTECTION_TIME = 50;
-
-    // "apple.awt.brushMetalLook" で連続になる背景色
-    public static final Color BACKGROUND_FOCUSED = new Color(211,211,211);
-    public static final Color BACKGROUND_OFF_FOCUS = new Color(246,246,246);
 
     //
     // アイコンはここで集中管理
@@ -311,7 +306,7 @@ public class GUIConst {
 
     // RegionView の背景
     public static final ImageIcon ICON_BODY = ClientContext.getImageIcon("body.png");
-    public static BufferedImage IMAGE_BODY;
+    public static final BufferedImage IMAGE_BODY;
     static {
         IMAGE_BODY = new BufferedImage(ICON_BODY.getIconWidth(), ICON_BODY.getIconHeight(), BufferedImage.TYPE_INT_BGR);
         Graphics2D g = IMAGE_BODY.createGraphics();

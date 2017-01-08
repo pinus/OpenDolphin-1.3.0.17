@@ -341,8 +341,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         }
 
         @Override
-        public void paint(Graphics g) {
-            super.paint(g);
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
             paintButtonPanel(g);
         }
     }
@@ -434,7 +434,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             // ボタン中身
             if (parent.isActive()) {
                 if (this.isSelected()) {
-                    g.setColor(Color.BLACK);
                     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
                     for(int y=0; y< h; y++) {
                         int rgb = (int)(y / (float)h * 70f + 50f);
@@ -789,12 +788,10 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         final PNSTabbedPane tabIn2 = createTreeTabPane(tabStr2);
 
         // 遅延生成テスト
-        tabIn2.addChangeListener(new ChangeListener(){
-            public void stateChanged(ChangeEvent e) {
-                System.out.println("stateChanged");
-                int index = tabIn2.getSelectedIndex();
-                tabIn2.setComponentAt(index, new JLabel(String.valueOf(index) + ":" + tabStr2[index]));
-            }
+        tabIn2.addChangeListener(e -> {
+            System.out.println("stateChanged");
+            int index = tabIn2.getSelectedIndex();
+            tabIn2.setComponentAt(index, new JLabel(String.valueOf(index) + ":" + tabStr2[index]));
         });
 
         // 外側の tabbed pane

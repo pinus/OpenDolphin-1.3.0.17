@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2005 Digital Globe, Inc. All rights reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package open.dolphin.helper;
 
 import java.awt.BorderLayout;
@@ -23,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,8 +14,8 @@ import javax.swing.SwingConstants;
 import open.dolphin.ui.IMEControl;
 
 /**
+ * GridBagLayout の JPanel を作る.
  * @author Kazushi Minagawa Digital Globe, Inc.
- *
  */
 public class GridBagBuilder {
 
@@ -54,12 +36,20 @@ public class GridBagBuilder {
     private int titleSpaceBottom = TITLE_SPACE_BOTTOM;
     private int titleSpaceRight = TITLE_SPACE_RIGHT;
 
+    /**
+     * GridBagLayout の JPanel を作る.
+     */
     public GridBagBuilder() {
         container = new JPanel(new GridBagLayout());
         c = new GridBagConstraints();
         product = container;
     }
 
+    /**
+     * GridBagLayout の JPanel を BorderLayout の CENTER に入れた
+     * TitledBorder を付けた JPanel を返す.
+     * @param title
+     */
     public GridBagBuilder(String title) {
         this();
         setTitle(title);
@@ -72,12 +62,14 @@ public class GridBagBuilder {
     /**
      * タイトルボーダを設定する.
      */
-    public void setTitle(String title) {
+    private void setTitle(String title) {
 
         if (title != null) {
             product = new JPanel(new BorderLayout());
             product.setBorder(BorderFactory.createTitledBorder(title));
-            container.setBorder(BorderFactory.createEmptyBorder(getTitleSpaceTop(),
+
+            container.setBorder(BorderFactory.createEmptyBorder(
+                    getTitleSpaceTop(),
                     getTitleSpaceLeft(),
                     getTitleSpaceBottom(),
                     getTitleSpaceRight()));
@@ -87,7 +79,11 @@ public class GridBagBuilder {
     }
 
     /**
-     * 座標(x, y) anchor の位置に長さ一のコンポーネントを追加する.
+     * 座標(x, y) anchor の位置に長さ 1 のコンポーネントを追加する.
+     * @param c
+     * @param x
+     * @param y
+     * @param anchor
      */
     public void add(Component c, int x, int y, int anchor) {
         add(c, x, y, 1, 1, anchor);
@@ -95,6 +91,12 @@ public class GridBagBuilder {
 
     /**
      * 座標(x, y) anchor の位置にスパン(width, height)のコンポーネントを追加する.
+     * @param cmp
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param anchor
      */
     public void add(Component cmp, int x, int y, int width, int height, int anchor) {
 
@@ -120,6 +122,12 @@ public class GridBagBuilder {
 
     /**
      * 座標(x, y)の位置にスパン１で重み(wx, wy)のコンポーネントを追加する.
+     * @param cmp
+     * @param x
+     * @param y
+     * @param fill
+     * @param wx
+     * @param wy
      */
     public void add(Component cmp, int x, int y, int fill, double wx, double wy) {
         add(cmp, x, y, 1, 1, fill, wx, wy);
@@ -127,6 +135,14 @@ public class GridBagBuilder {
 
     /**
      * 座標(x, y)の位置にスパン(width, height)で重み(wx, wy)のコンポーネントを追加する.
+     * @param cmp
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param fill
+     * @param wx
+     * @param wy
      */
     public void add(Component cmp, int x, int y, int width, int height, int fill, double wx, double wy) {
 
@@ -210,7 +226,6 @@ public class GridBagBuilder {
         return titleSpaceRight;
     }
 
-
     public void addTextItem(int row, int col, String title, int length, boolean kanji) {
 
         JLabel l = new JLabel(title, SwingConstants.RIGHT);
@@ -218,12 +233,9 @@ public class GridBagBuilder {
         JTextField tf = new JTextField(length);
         tf.setMargin(new Insets(1,2,1,2));
 
-//pns
       if (kanji) {
-            //tf.addFocusListener(AutoKanjiListener.getInstance());
             IMEControl.setImeOnIfFocused(tf);
         } else {
-            //tf.addFocusListener(AutoRomanListener.getInstance());
             IMEControl.setImeOffIfFocused(tf);
         }
 
@@ -235,10 +247,11 @@ public class GridBagBuilder {
 
     /**
      *
+     * @param components
      */
     public void layout(List<GridBagComponent> components) {
 
-        for (GridBagComponent gbc : components) {
+        components.forEach(gbc -> {
 
             int x = gbc.getCol();
             int y = gbc.getRow();
@@ -261,7 +274,7 @@ public class GridBagBuilder {
 
             ((GridBagLayout) container.getLayout()).setConstraints(gbc.getComponent(), c);
             container.add(gbc.getComponent());
-        }
+        });
     }
 }
 

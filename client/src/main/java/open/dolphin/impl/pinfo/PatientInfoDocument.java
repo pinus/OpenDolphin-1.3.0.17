@@ -1,4 +1,3 @@
-
 package open.dolphin.impl.pinfo;
 
 import java.awt.BorderLayout;
@@ -65,7 +64,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
     private StateContext stateMgr;
 
     /**
-     * Creates new PatientInfoDocument
+     * Creates new PatientInfoDocument.
      */
     public PatientInfoDocument() {
         setTitle(TITLE);
@@ -76,7 +75,6 @@ public class PatientInfoDocument extends AbstractChartDocument {
 
         JPanel myPanel = getUI();
         JComponent compo = createComponent();
-//pns   compo.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
         compo.setBorder(MyBorderFactory.createGroupBoxBorder(new Insets(5,5,5,5)));
         myPanel.setLayout(new BorderLayout());
 

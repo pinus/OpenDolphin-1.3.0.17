@@ -11,13 +11,14 @@ import javax.swing.ImageIcon;
 import javax.swing.border.AbstractBorder;
 
 /**
- * タイトルボーダー
+ * タイトルボーダー.
  * @author pns
  */
 public class MyTitleBorder extends AbstractBorder {
+    private static final long serialVersionUID = 1L;
 
-    private ImageIcon image;
-    private Insets insets;
+    private final ImageIcon image;
+    private final Insets insets;
 
     public MyTitleBorder(ImageIcon image, Insets insets) {
         this.image = image;

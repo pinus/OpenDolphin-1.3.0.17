@@ -46,19 +46,19 @@ public class MainFrame extends JFrame {
         setTitle(title);
 
         // コマンドパネル
-        if (commandPanelNeeded) commandPanel = new CommandPanel();
+        if (commandPanelNeeded) { commandPanel = new CommandPanel(); }
 
         // メインパネル
         mainPanel = new MainPanel();
 
         // ステータスパネル
-        if (statusPanelNeeded) statusPanel = new StatusPanel();
+        if (statusPanelNeeded) { statusPanel = new StatusPanel(); }
 
         // 全体をレイアウトする
         this.setLayout(new BorderLayout(0,0));
-        if (commandPanelNeeded) this.add(commandPanel, BorderLayout.NORTH);
+        if (commandPanelNeeded) { this.add(commandPanel, BorderLayout.NORTH); }
         this.add(mainPanel, BorderLayout.CENTER);
-        if (statusPanelNeeded) this.add(statusPanel, BorderLayout.SOUTH);
+        if (statusPanelNeeded) { this.add(statusPanel, BorderLayout.SOUTH); }
     }
 
     /**
@@ -74,6 +74,7 @@ public class MainFrame extends JFrame {
      * メインパネル
      */
     public class MainPanel extends JPanel {
+        private static final long serialVersionUID = 1L;
         public MainPanel() {
             super();
         }
@@ -101,7 +102,7 @@ public class MainFrame extends JFrame {
     }
     /** StatusPanel を作る */
     public void createStatusPanel() {
-        if (statusPanel != null) this.remove(statusPanel);
+        if (statusPanel != null) { this.remove(statusPanel); }
         statusPanel = new StatusPanel();
         this.add(commandPanel, BorderLayout.NORTH);
     }
@@ -112,7 +113,7 @@ public class MainFrame extends JFrame {
     }
     /** CommandPanel を作る */
     public void createCommandPanel() {
-        if (commandPanel != null) this.remove(commandPanel);
+        if (commandPanel != null) { this.remove(commandPanel); }
         commandPanel = new CommandPanel();
         this.add(commandPanel, BorderLayout.NORTH);
     }

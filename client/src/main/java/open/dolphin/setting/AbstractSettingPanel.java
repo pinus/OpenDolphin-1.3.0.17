@@ -9,7 +9,7 @@ import open.dolphin.project.ProjectStub;
 import org.apache.log4j.Logger;
 
 /**
- * AbstractSettingPanel
+ * AbstractSettingPanel.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -21,20 +21,20 @@ public abstract class AbstractSettingPanel {
     private ProjectSettingDialog context;
     private ProjectStub projectStub;
     private PropertyChangeSupport boundSupport;
-    protected AbstractSettingPanel.State state = AbstractSettingPanel.State.NONE_STATE;
+    protected State state = State.NONE_STATE;
     private JPanel ui;
     private boolean loginState;
     private String title;
     private ImageIcon icon;
     private String id;
 
-    private Logger logger;
+    private final Logger logger;
 
     /**
-     * Creates a new instance of SettingPanel
+     * Creates a new instance of SettingPanel.
      */
     public AbstractSettingPanel() {
-        setUI(new JPanel());
+        //setUI(new JPanel());
         logger = ClientContext.getBootLogger();
     }
 

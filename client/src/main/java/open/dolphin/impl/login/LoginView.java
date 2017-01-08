@@ -8,9 +8,6 @@ package open.dolphin.impl.login;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import javax.swing.JPanel;
 import javax.swing.UIManager;
 import open.dolphin.client.GUIConst;
 
@@ -24,21 +21,8 @@ public class LoginView extends javax.swing.JDialog {
     public LoginView(java.awt.Frame parent, boolean modal) {
        super(parent, modal);
        getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
-       JPanel p = new JPanel();
-       setContentPane(p);
+
        initComponents();
-       p.setOpaque(true);
-       p.setBackground((GUIConst.BACKGROUND_OFF_FOCUS));
-       addWindowListener(new WindowAdapter() {
-           @Override
-           public void windowActivated(WindowEvent e) {
-                p.setBackground((GUIConst.BACKGROUND_FOCUSED));
-           }
-           @Override
-           public void windowDeactivated(WindowEvent e) {
-                p.setBackground((GUIConst.BACKGROUND_OFF_FOCUS));
-           }
-       });
     }
 
     public javax.swing.JButton getCancelBtn() {

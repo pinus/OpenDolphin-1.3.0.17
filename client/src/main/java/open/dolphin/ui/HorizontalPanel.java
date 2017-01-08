@@ -1,6 +1,5 @@
 package open.dolphin.ui;
 
-import com.apple.eawt.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -10,8 +9,6 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -19,7 +16,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import open.dolphin.client.GUIConst;
 
 /**
  * Command Panel，Status Panel のベースになるパネル.
@@ -40,35 +36,14 @@ public class HorizontalPanel extends JPanel {
     private final HashMap<String, JLabel> labelMap = new HashMap<>();
     /** 親の Window */
     private Window parent = null;
-    /** アプリケーションとして前面に居るか後面に回っているか */
-    private boolean isAppForeground = true;
 
     public HorizontalPanel() {
         initComponent();
     }
 
     private void initComponent() {
-        setOpaque(true);
+        setOpaque(false);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setBackground(GUIConst.BACKGROUND_OFF_FOCUS);
-
-        // アプリケーションとして前面にいるかどうかをセットする
-        // https://coderanch.com/how-to/javadoc/appledoc/api/com/apple/eawt/package-summary.html
-        com.apple.eawt.Application application = com.apple.eawt.Application.getApplication();
-        application.addAppEventListener(new AppForegroundListener() {
-            @Override
-            public void appRaisedToForeground(AppEvent.AppForegroundEvent afe) {
-                isAppForeground = true;
-                if (parent != null) {
-                    if (parent.isActive()) { setActive(true); }
-                    else { setActive(false); }
-                }
-            }
-            @Override
-            public void appMovedToBackground(AppEvent.AppForegroundEvent afe) {
-                isAppForeground = false;
-            }
-        });
     }
 
     /**
@@ -89,21 +64,6 @@ public class HorizontalPanel extends JPanel {
 
         if (parent == null) {
             parent = SwingUtilities.windowForComponent(this);
-            // Window の active/deactive に合わせて背景色を変える.
-            if (parent != null) {
-                parent.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowActivated(WindowEvent e) {
-                        // アプリケーションとしてバックに回っているのに windowActivated が来てしまうことがある対策
-                        if (isAppForeground) { setActive(true); }
-                        //else { System.out.println("windowActivated ignored while appMovedToBackground"); }
-                    }
-                    @Override
-                    public void windowDeactivated(WindowEvent e) {
-                        setActive(false);
-                    }
-                });
-            }
             // このパネルをつかんで移動できるようにする
             MouseAdapter ma = new MouseAdapter() {
                 private final Point startPt = new Point();
@@ -122,15 +82,6 @@ public class HorizontalPanel extends JPanel {
             addMouseListener(ma);
             addMouseMotionListener(ma);
         }
-    }
-
-    /**
-     * Parent Window に合わせて active/deactive する.
-     * @param b
-     */
-    public void setActive(boolean b) {
-        if (b) { setBackground(GUIConst.BACKGROUND_FOCUSED); }
-        else { setBackground(GUIConst.BACKGROUND_OFF_FOCUS); }
     }
 
     /**
