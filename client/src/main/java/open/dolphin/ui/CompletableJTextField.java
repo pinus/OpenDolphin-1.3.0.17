@@ -38,8 +38,8 @@ import javax.swing.event.ListSelectionListener;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * CompletableJTextField
- * modified from JAVA SWING HACKS
+ * CompletableJTextField.
+ * modified from JAVA SWING HACKS.
  * @author pns
  */
 public class CompletableJTextField extends JTextField implements ListSelectionListener, FocusListener, KeyListener, ComponentListener {
@@ -83,7 +83,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     }
 
     /**
-     * 補完した内容を保存する preferences をセットする
+     * 補完した内容を保存する preferences をセットする.
      * @param prefs
      */
     public void setPreferences(Preferences prefs) {
@@ -117,7 +117,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
         completer.removeCompletion(s);
     }
 
-    public void clearCompletions(String s ) {
+    public void clearCompletions() {
         completer.clearCompletions();
     }
 
@@ -126,7 +126,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     }
 
     /**
-     * 補完ウインドウを適切な場所に表示する
+     * 補完ウインドウを適切な場所に表示する.
      */
     private void showListWindow() {
         // figure out where the text field is,
@@ -141,7 +141,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     }
 
     /**
-     * リストが選択されたときの処理
+     * リストが選択されたときの処理.
      * @param e
      */
     @Override
@@ -161,7 +161,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     }
 
     /**
-     * フォーカスを取ったら補完ウインドウを出す
+     * フォーカスを取ったら補完ウインドウを出す.
      * @param e
      */
     @Override
@@ -170,7 +170,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     }
 
     /**
-     * フォーカスを失ったら補完ウインドウは消す
+     * フォーカスを失ったら補完ウインドウは消す.
      * @param e
      */
     @Override
@@ -179,8 +179,8 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     }
 
     /**
-     * キー入力を監視
-     * リストが選択された状態でリターン：リストの文字をフィールドにセット
+     * キー入力を監視.
+     * リストが選択された状態でリターン：リストの文字をフィールドにセット.
      * 上キー：選択を上へ，下キー：選択を下へ
      * @param e
      */
@@ -210,23 +210,32 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
             int size = completionListModel.getSize();
             int selection = completionList.getSelectedIndex();
 
-            if (keyCode == KeyEvent.VK_UP) {
-                if (selection > 0) {
-                    selection --;
-                    completionList.getSelectionModel().setSelectionInterval(selection, selection);
-                }
-                e.consume();
+            switch (keyCode) {
+                case KeyEvent.VK_UP:
+                    if (selection > 0) {
+                        selection --;
+                        completionList.getSelectionModel().setSelectionInterval(selection, selection);
+                    }   e.consume();
+                    break;
 
-            } else if (keyCode == KeyEvent.VK_DOWN) {
-                if (selection < size - 1){
-                    selection ++;
-                    completionList.getSelectionModel().setSelectionInterval(selection, selection);
-                } else if (selection == -1) {
-                    // ウインドウが表示されていて選択されていない状態
-                    selection = 0;
-                    completionList.getSelectionModel().setSelectionInterval(selection, selection);
-                }
-                e.consume();
+                case KeyEvent.VK_DOWN:
+                    if (selection < size - 1){
+                        selection ++;
+                        completionList.getSelectionModel().setSelectionInterval(selection, selection);
+                    } else if (selection == -1) {
+                        // ウインドウが表示されていて選択されていない状態
+                        selection = 0;
+                        completionList.getSelectionModel().setSelectionInterval(selection, selection);
+                    }   e.consume();
+                    break;
+
+                case KeyEvent.VK_CLEAR:
+                    clearCompletions();
+                    e.consume();
+                    break;
+
+                default:
+                    break;
             }
         } else {
             // リストが表示されていないとき，下キーで候補を全部出す
@@ -268,7 +277,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
 
     /**
      * inner class does the matching of the JTextField's
-     * document to completion strings kept in an ArrayList
+     * document to completion strings kept in an ArrayList.
      */
     private class Completer implements DocumentListener {
 
