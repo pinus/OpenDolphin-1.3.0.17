@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
@@ -197,6 +198,8 @@ public class DiagnosisInspector implements IInspector {
 
         // GUI 形成
         diagPanel = new DropPanel(new BorderLayout());
+        diagPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
+        diagPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, 100));
 
         MyJScrollPane scrollPane = new MyJScrollPane(diagList);
         scrollPane.putClientProperty("JComponent.sizeVariant", "small");

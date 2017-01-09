@@ -2,19 +2,18 @@ package open.dolphin.inspector;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-// import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -34,33 +33,113 @@ import open.dolphin.infomodel.PhysicalModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-//pns  import open.dolphin.table.OddEvenRowRenderer;
 import open.dolphin.ui.MyJPopupMenu;
+import open.dolphin.util.PNSTriple;
 import org.apache.log4j.Logger;
 
 /**
  * 身長体重インスペクタクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
-public class PhysicalInspector {
+public class PhysicalInspector implements IInspector {
 
-    private ObjectReflectTableModel tableModel;
-
+    private ObjectReflectTableModel<PhysicalModel> tableModel;
     private PhysicalView view;
+    private final ChartImpl context;
 
-    private ChartImpl context;
-
-    private Logger logger;
+    private final Logger logger;
 
     /**
      * PhysicalInspectorオブジェクトを生成する.
+     * @param ctx
      */
-    public PhysicalInspector(ChartImpl context) {
-        this.context = context;
+    public PhysicalInspector(ChartImpl ctx) {
+        context = ctx;
         logger = ClientContext.getBootLogger();
         initComponents();
-        update();
+    }
+
+    /**
+     * GUIコンポーネントを初期化する.
+     */
+    private void initComponents() {
+
+        view = new PhysicalView();
+
+        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+                new PNSTriple<>(" 身長", String.class, "getHeight"),
+                new PNSTriple<>(" 体重", String.class, "getWeight"),
+                new PNSTriple<>(" BMI", String.class, "getBmi"),
+                new PNSTriple<>(" 測定日", String.class, "getIdentifiedDate")
+        );
+
+        // 身長体重テーブルを生成する
+        tableModel = new ObjectReflectTableModel<>(reflectList);
+        view.getTable().setModel(tableModel);
+        view.getTable().setRowHeight(GUIConst.DEFAULT_TABLE_ROW_HEIGHT);
+        view.getTable().setDefaultRenderer(Object.class, new IndentTableCellRenderer(IndentTableCellRenderer.NARROW));
+        view.getTable().getColumnModel().getColumn(2).setCellRenderer(new BMIRenderer());
+        view.getTable().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // インスペクタのサイズ調整
+        view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
+
+        // 列幅を調整する カット&トライ
+        int[] cellWidth = new int[]{50,50,50,110};
+        for (int i = 0; i < cellWidth.length; i++) {
+            TableColumn column = view.getTable().getColumnModel().getColumn(i);
+            column.setPreferredWidth(cellWidth[i]);
+        }
+
+        // 右クリックによる追加削除のメニューを登録する
+        MouseAdapter ma = new MouseAdapter() {
+            private void mabeShowPopup(MouseEvent e) {
+                // isReadOnly対応
+                if (context.isReadOnly()) { return; }
+
+                MyJPopupMenu pop = new MyJPopupMenu();
+                JMenuItem item = new JMenuItem("追加");
+                item.setIcon(GUIConst.ICON_LIST_ADD_16);
+                pop.add(item);
+                item.addActionListener(ae -> PhysicalEditor.show(PhysicalInspector.this));
+
+                final int row = view.getTable().rowAtPoint(e.getPoint());
+
+                if (tableModel.getObject(row) != null) {
+                    pop.add(new JSeparator());
+                    JMenuItem item2 = new JMenuItem("削除");
+                    item2.setIcon(GUIConst.ICON_LIST_REMOVE_16);
+                    pop.add(item2);
+                    item2.addActionListener(ae -> delete(row));
+                }
+                pop.show(e.getComponent(), e.getX(), e.getY());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if(e.getComponent() == view.getTable().getParent()) {
+                    view.getTable().clearSelection();
+                }
+                if (e.isPopupTrigger()) {
+                    mabeShowPopup(e);
+                }
+            }
+
+            //@Override
+            //public void mouseReleased(MouseEvent e) {
+            //    mabeShowPopup(e);
+            //}
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    PhysicalEditor.show(PhysicalInspector.this);
+                }
+            }
+        };
+
+        view.getTable().addMouseListener(ma);
+        AdditionalTableSettings.setTable(view.getTable(), ma);
     }
 
     public Chart getContext() {
@@ -75,111 +154,20 @@ public class PhysicalInspector {
      * レイアウトパネルを返す.
      * @return レイアウトパネル
      */
+    @Override
     public JPanel getPanel() {
-        return (JPanel) view;
+        return view;
     }
 
     /**
-     * GUIコンポーネントを初期化する.
+     * データ部分までスクロールする.
+     * @param ascending
      */
-    private void initComponents() {
-
-        view = new PhysicalView();
-
-         // カラム名
-        String[] columnNames = ClientContext.getStringArray("patientInspector.physicalInspector.columnNames"); // {"身長","体重","BMI","測定日"};
-
-        // テーブルの初期行数
-        int startNumRows = ClientContext.getInt("patientInspector.physicalInspector.startNumRows");
-
-        // 属性値を取得するためのメソッド名
-        String[] methodNames = ClientContext.getStringArray("patientInspector.physicalInspector.methodNames"); // {"getHeight","getWeight","getBMI","getConfirmDate"};
-
-        // 身長体重テーブルを生成する
-        tableModel = new ObjectReflectTableModel(columnNames, startNumRows, methodNames, null);
-        view.getTable().setModel(tableModel);
-//pns   view.getTable().setDefaultRenderer(Object.class, new OddEvenRowRenderer());
-        view.getTable().setRowHeight(GUIConst.DEFAULT_TABLE_ROW_HEIGHT);
-        view.getTable().setDefaultRenderer(Object.class, new IndentTableCellRenderer(IndentTableCellRenderer.NARROW));
-        view.getTable().getColumnModel().getColumn(2).setCellRenderer(new BMIRenderer());
-        view.getTable().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        // 列幅を調整する カット&トライ
-        int[] cellWidth = new int[]{50,50,50,110};
-        for (int i = 0; i < cellWidth.length; i++) {
-            TableColumn column = view.getTable().getColumnModel().getColumn(i);
-            column.setPreferredWidth(cellWidth[i]);
-        }
-
-        // 右クリックによる追加削除のメニューを登録する
-//pns^
-        MouseAdapter ma = new MouseAdapter() {
-            private void mabeShowPopup(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-//                  isReadOnly対応
-                    if (context.isReadOnly()) return;
-
-                    MyJPopupMenu pop = new MyJPopupMenu();
-                    JMenuItem item = new JMenuItem("追加");
-                    item.setIcon(GUIConst.ICON_LIST_ADD_16);
-                    pop.add(item);
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            new PhysicalEditor(PhysicalInspector.this);
-                        }
-                    });
-                    final int row = view.getTable().rowAtPoint(e.getPoint());
-                    if (tableModel.getObject(row) != null) {
-                        pop.add(new JSeparator());
-                        JMenuItem item2 = new JMenuItem("削除");
-                        item2.setIcon(GUIConst.ICON_LIST_REMOVE_16);
-                        pop.add(item2);
-                        item2.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                delete(row);
-                            }
-                        });
-                    }
-                    pop.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-            @Override
-            public void mousePressed(MouseEvent e) {
-//pns^
-            if(e.getComponent() == view.getTable().getParent()) {
-                view.getTable().clearSelection();
-                e.getComponent().requestFocusInWindow();
-            }
-//pns$
-                mabeShowPopup(e);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                mabeShowPopup(e);
-            }
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    new PhysicalEditor(PhysicalInspector.this);
-                }
-            }
-        };
-        view.getTable().addMouseListener(ma);
-
-//pns   動的 startNumRows 調節のための設定
-        // tableModel.setTable(view.getTable());
-        AdditionalTableSettings.setTable(view.getTable(), ma);
-    }
-
     private void scroll(boolean ascending) {
 
         int cnt = tableModel.getObjectCount();
         if (cnt > 0) {
-            int row = 0;
-            if (ascending) {
-                row = cnt - 1;
-            }
+            int row = ascending? cnt - 1 : 0;
             Rectangle r = view.getTable().getCellRect(row, row, true);
             view.getTable().scrollRectToVisible(r);
         }
@@ -188,19 +176,14 @@ public class PhysicalInspector {
     /**
      * 身長体重データを表示する.
      */
+    @Override
     public void update() {
-        List list = context.getKarte().getPhysicalEntry();
-
-        if (list.isEmpty()) {
-            return;
-        }
+        List<PhysicalModel> list = context.getKarte().getPhysicalEntry();
+        if (list.isEmpty()) { return; }
 
         boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
-        if (asc) {
-            Collections.sort(list);
-        } else {
-            Collections.sort(list, Collections.reverseOrder());
-        }
+        if (asc) { Collections.sort(list); }
+        else { Collections.sort(list, Collections.reverseOrder()); }
 
         tableModel.setObjectList(list);
         scroll(asc);
@@ -208,6 +191,7 @@ public class PhysicalInspector {
 
     /**
      * 身長体重データを追加する.
+     * @param model
      */
     public void add(final PhysicalModel model) {
 
@@ -218,7 +202,7 @@ public class PhysicalInspector {
         // 記録日
         Date recorded = new Date();
 
-        final List<ObservationModel> addList = new ArrayList<ObservationModel>(2);
+        final List<ObservationModel> addList = new ArrayList<>(2);
 
         if (model.getHeight() != null) {
             ObservationModel observation = new ObservationModel();
@@ -253,9 +237,7 @@ public class PhysicalInspector {
             addList.add(observation);
         }
 
-        if (addList.size() == 0) {
-            return;
-        }
+        if (addList.isEmpty()) { return ; }
 
         DBTask task = new DBTask<List<Long>>(context) {
 
@@ -293,24 +275,20 @@ public class PhysicalInspector {
 
     /**
      * テーブルで選択した身長体重データを削除する.
+     * @param row
      */
     public void delete(final int row) {
+        PhysicalModel model = tableModel.getObject(row);
+        if (model == null) { return; }
 
-        PhysicalModel model = (PhysicalModel) tableModel.getObject(row);
-        if (model == null) {
-            return;
-        }
-
-        final List<Long> list = new ArrayList<Long>(2);
+        final List<Long> list = new ArrayList<>(2);
 
         if (model.getHeight() != null) {
-//pns       list.add(new Long(model.getHeightId()));
-            list.add(Long.valueOf(model.getHeightId()));
+            list.add(model.getHeightId());
         }
 
         if (model.getWeight() != null) {
-//pns       list.add(new Long(model.getWeightId()));
-            list.add(Long.valueOf(model.getWeightId()));
+            list.add(model.getWeightId());
         }
 
         DBTask task = new DBTask<Void>(context) {
@@ -336,11 +314,9 @@ public class PhysicalInspector {
     /**
      * BMI値 を表示するレンダラクラス.
      */
-    protected class BMIRenderer extends DefaultTableCellRenderer {
+    private class BMIRenderer extends DefaultTableCellRenderer {
+        private static final long serialVersionUID = 1L;
 
-        /**
-         * Creates new IconRenderer
-         */
         public BMIRenderer() {
             super();
         }
@@ -356,27 +332,15 @@ public class PhysicalInspector {
                     isSelected,
                     isFocused, row, col);
 
-            if (isSelected) {
-                setBackground(table.getSelectionBackground());
-                setForeground(table.getSelectionForeground());
-            } else {
-                setForeground(table.getForeground());
-                if (row % 2 == 0) {
-                    setBackground(ClientContext.getColor("color.even"));
-                } else {
-                    setBackground(ClientContext.getColor("color.odd"));
-                }
-            }
-
-            PhysicalModel h = (PhysicalModel) tableModel.getObject(row);
+            PhysicalModel h = tableModel.getObject(row);
 
             Color fore = (h != null && h.getBmi() != null && h.getBmi().compareTo("25") > 0)  ? Color.RED : Color.BLACK;
-            this.setForeground(fore);
+            setForeground(fore);
 
             ((JLabel) c).setText(value == null ? "" : (String) value);
 
             if (h != null && h.getStandardWeight() != null) {
-                this.setToolTipText("標準体重 = " + h.getStandardWeight());
+                setToolTipText("標準体重 = " + h.getStandardWeight());
             }
 
             return c;

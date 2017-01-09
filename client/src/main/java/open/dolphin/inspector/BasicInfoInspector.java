@@ -95,7 +95,7 @@ public class BasicInfoInspector implements IInspector {
     public void update() {
         PatientModel patient = context.getPatient();
 
-        String name = String.format("%s (%s)  %s", patient.getFullName(), patient.getKanaName(), patient.getAgeBirthday());
+        String name = String.format("%s (%s)   %s", patient.getFullName(), patient.getKanaName(), patient.getAgeBirthday());
         nameLabel.setText(name);
 
         SimpleAddressModel address = patient.getAddress();

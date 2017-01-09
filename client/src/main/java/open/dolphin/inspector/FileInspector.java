@@ -2,6 +2,7 @@ package open.dolphin.inspector;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
  * 関連文書ファイルを表示するクラス.
  * @author pns
  */
-public class FileInspector {
+public class FileInspector implements IInspector {
     private static final String DEFAULT_DOCUMENT_FOLDER = "/Volumes/documents/";
     private static final FileFilter FF_REGULAR = file -> !file.getName().startsWith(".");
 
@@ -100,6 +101,7 @@ public class FileInspector {
         list.addMouseListener(new FileSelectionListener());
 
         filePanel = new JPanel(new BorderLayout());
+        filePanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
 
         final MyJScrollPane scrollPane = new MyJScrollPane(list);
         scrollPane.putClientProperty("JComponent.sizeVariant", "small");
@@ -110,6 +112,7 @@ public class FileInspector {
      * PaientInspector にレイアウト用のパネルを返す.
      * @return レイアウトパネル
      */
+    @Override
     public JPanel getPanel() {
         return filePanel;
     }
@@ -117,6 +120,7 @@ public class FileInspector {
     /**
      * データのアップデート.
      */
+    @Override
     public void update() {
         File infoFolder = new File (getDocumentPath(context.getKarte().getPatient().getPatientId()));
         File[] files = infoFolder.listFiles(FF_REGULAR);

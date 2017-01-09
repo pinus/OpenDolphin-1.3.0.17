@@ -48,13 +48,10 @@ public class PatientInspector {
     private DiagnosisInspector diagnosisInspector;
     // 関連文書インスペクタ
     private FileInspector fileInspector;
-
     // DocumentHistory インスペクタを格納するタブペイン. ６個目以降のインスペクタはここに追加される.
     private PNSBadgeTabbedPane tabbedPane;
-
     // このクラスのコンテナパネル
     private JPanel container;
-
     // Context このインスペクタの親コンテキスト
     private ChartImpl context;
 
@@ -109,18 +106,6 @@ public class PatientInspector {
         // docHistory は必ずタブに入れる
         tabbedPane.addTab(docHistoryTitle, docHistory.getPanel());
 
-        // インスペクタのサイズ調整
-        physicalInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
-
-        //サイズ微調整
-        patientVisitInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-        patientVisitInspector.getPanel().setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-        patientVisitInspector.getPanel().setMaximumSize(new Dimension(1024, DEFAULT_HEIGHT));
-
-        diagnosisInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
-        diagnosisInspector.getPanel().setMinimumSize(new Dimension(DEFAULT_WIDTH, 100));
-        fileInspector.getPanel().setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
-
         // 全体の container
         container = new HorizontalPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -165,6 +150,10 @@ public class PatientInspector {
         basicInfoInspector.update();
         fileInspector.update();
         allergyInspector.update();
+        physicalInspector.update();
+        patientVisitInspector.update();
+        docHistory.update();
+        diagnosisInspector.update();
 
         Dimension d = container.getMinimumSize();
         d.width = DEFAULT_WIDTH;
@@ -375,9 +364,9 @@ public class PatientInspector {
      */
     public void dispose() {
         // List をクリアする
-        docHistory.clear();
-        allergyInspector.clear();
-        physicalInspector.clear();
+        //docHistory.clear();
+        //allergyInspector.clear();
+        //physicalInspector.clear();
 
         // memo 欄の自動セーブ
         memoInspector.save();
