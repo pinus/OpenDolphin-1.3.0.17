@@ -29,6 +29,7 @@ public class BasicInfoInspector implements IInspector {
     private static final Border MALE_BORDER = PNSBorderFactory.createTitleBarBorderLightBlue(new Insets(0,0,0,0));
     private static final Border FEMALE_BORDER = PNSBorderFactory.createTitleBarBorderPink(new Insets(0,0,0,0));
     private static final Border UNKNOWN_BORDER = PNSBorderFactory.createTitleBarBorderGray(new Insets(0,0,0,0));
+    private static final int WIDTH_EXTENSION = 50;
 
     private JPanel aquaPanel;
     private JLabel nameLabel;
@@ -73,9 +74,9 @@ public class BasicInfoInspector implements IInspector {
         aquaPanel.add(namePanel, BorderLayout.NORTH);
 
         // サイズ調節
-        aquaPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH + 5, 42));
-        aquaPanel.setMaximumSize(new Dimension(DEFAULT_WIDTH + 5, 42));
-        aquaPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH + 5, 42));
+        aquaPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
+        aquaPanel.setMaximumSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
+        aquaPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
     }
 
     /**
@@ -94,7 +95,7 @@ public class BasicInfoInspector implements IInspector {
     public void update() {
         PatientModel patient = context.getPatient();
 
-        String name = String.format("%s  %s", patient.getFullName(), patient.getAgeBirthday());
+        String name = String.format("%s (%s)  %s", patient.getFullName(), patient.getKanaName(), patient.getAgeBirthday());
         nameLabel.setText(name);
 
         SimpleAddressModel address = patient.getAddress();
