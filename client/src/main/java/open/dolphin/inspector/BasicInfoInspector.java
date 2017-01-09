@@ -14,7 +14,7 @@ import open.dolphin.client.ChartImpl;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.SimpleAddressModel;
-import open.dolphin.ui.MyBorderFactory;
+import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * BasicInfoInspector.
@@ -26,9 +26,9 @@ import open.dolphin.ui.MyBorderFactory;
 public class BasicInfoInspector implements IInspector {
 
     private static final Color FONT_COLOR = new Color(20,20,140); // 濃い青
-    private static final Border MALE_BORDER = MyBorderFactory.createTitleBorderLightBlue(new Insets(0,0,0,0));
-    private static final Border FEMALE_BORDER = MyBorderFactory.createTitleBorderPink(new Insets(0,0,0,0));
-    private static final Border UNKNOWN_BORDER = MyBorderFactory.createTitleBorderGray(new Insets(0,0,0,0));
+    private static final Border MALE_BORDER = PNSBorderFactory.createTitleBarBorderLightBlue(new Insets(0,0,0,0));
+    private static final Border FEMALE_BORDER = PNSBorderFactory.createTitleBarBorderPink(new Insets(0,0,0,0));
+    private static final Border UNKNOWN_BORDER = PNSBorderFactory.createTitleBarBorderGray(new Insets(0,0,0,0));
 
     private JPanel aquaPanel;
     private JLabel nameLabel;

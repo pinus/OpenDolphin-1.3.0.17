@@ -162,7 +162,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
             // cut and try
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            MyBorder.drawSelectedBlueRoundRect(this, g2d, 0, 0, getWidth(), getHeight(),6,6);
+            PNSBorder.drawSelectedBlueRoundRect(this, g2d, 0, 0, getWidth(), getHeight(),6,6);
             g2d.dispose();
         }
     }

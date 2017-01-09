@@ -26,7 +26,7 @@ public class MyDefaultTreeCellEditor extends DefaultTreeCellEditor {
 
     @Override
     protected TreeCellEditor createTreeCellEditor() {
-        final DefaultTextField textField = new DefaultTextField(MyBorderFactory.createTextFieldBorder());
+        final DefaultTextField textField = new DefaultTextField(PNSBorderFactory.createTextFieldBorder());
 
         textField.putClientProperty("Quaqua.TextComponent.showPopup", false); // 勝手に cut,copy,past の popup を作らせない
         textField.setOpaque(true); // これをしないと，編集時のバックグランドが白くならない

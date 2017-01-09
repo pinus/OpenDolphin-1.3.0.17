@@ -6,10 +6,10 @@ import java.awt.Graphics;
 import java.awt.Insets;
 
 /**
- * Mac っぽい Border を作るための材料の static methods.
+ * グラデーションをもった枠.
  * @author pns
  */
-public class MyBorder {
+public class PNSBorder {
 
     // selected border color
     protected static final Color INSIDE_COLOR = new Color(217,231,244);

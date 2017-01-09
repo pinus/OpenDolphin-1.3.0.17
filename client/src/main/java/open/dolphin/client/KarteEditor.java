@@ -23,7 +23,7 @@ import open.dolphin.infomodel.*;
 import open.dolphin.message.MMLHelper;
 import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.project.Project;
-import open.dolphin.ui.MyBorderFactory;
+import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.MMLDate;
 import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;
@@ -305,7 +305,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         timeStampLabel.setForeground(timeStampFore);
         timeStampLabel.setFont(timeStampFont);
 
-        kp1.getTimeStampPanel().setBorder(MyBorderFactory.createTitleBorder(new Insets(0,0,0,0)));
+        kp1.getTimeStampPanel().setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
 
         // SOA Pane を生成する
         soaPane = new KartePane();
@@ -344,7 +344,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         timeStampLabel.setForeground(timeStampFore);
         timeStampLabel.setFont(timeStampFont);
 
-        kp2.getTimeStampPanel().setBorder(MyBorderFactory.createTitleBorder(new Insets(0,0,0,0)));
+        kp2.getTimeStampPanel().setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
 
         // SOA Pane を生成する
         soaPane = new KartePane();

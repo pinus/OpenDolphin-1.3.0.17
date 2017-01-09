@@ -14,11 +14,11 @@ public class MyClearBorder extends AbstractBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        MyBorder.clearRect(c, g, x, y, width, height);
+        PNSBorder.clearRect(c, g, x, y, width, height);
     }
 
     @Override
     public Insets getBorderInsets(Component c)       {
-        return MyBorder.DEFAULT_MARGIN;
+        return PNSBorder.DEFAULT_MARGIN;
     }
 }

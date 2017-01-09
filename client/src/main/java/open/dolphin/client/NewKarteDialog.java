@@ -1,22 +1,19 @@
 package open.dolphin.client;
 
 import open.dolphin.ui.MyJSheet;
-import java.beans.EventHandler;
 import javax.swing.*;
-import javax.swing.event.*;
-
-import open.dolphin.infomodel.PVTHealthInsuranceModel;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.prefs.Preferences;
 import open.dolphin.project.Project;
-
+import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.infomodel.PVTHealthInsuranceModel;
 
 /**
  * 新規カルテ作成のダイアログ.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public final class NewKarteDialog {
 
@@ -38,28 +35,103 @@ public final class NewKarteDialog {
     private JRadioButton emptyNew;
     private JRadioButton applyRp;       // 前回処方を適用
     private JRadioButton allCopy;	// 全てコピー
-    private JList insuranceList;
+    private JList<PVTHealthInsuranceModel> insuranceList;
     private JLabel departmentLabel;
     private JRadioButton addToTab;	// タブパネルへ追加
     private JRadioButton openAnother;	// 別 Window へ表示
 
-    private Preferences prefs;
+    private final Preferences prefs;
 
-    private Frame parentFrame;
-    private String title;
-    private JPanel content;
+    private final Frame parentFrame;
+    private final String title;
+    private final JPanel content;
     private JDialog dialog;
     private Object value;
 
-
     /**
-     * Creates new OpenKarteDialog
+     * Creates new NewKarteDialog.
+     * @param parentFrame
+     * @param title
      */
     public NewKarteDialog(Frame parentFrame, String title) {
         prefs = Preferences.userNodeForPackage(this.getClass());
         this.parentFrame = parentFrame;
         this.title = title;
         content = createComponent();
+    }
+
+    private JPanel createComponent() {
+
+        // 診療科情報ラベル
+        departmentLabel = new JLabel();
+        JPanel dp = new JPanel(new FlowLayout(FlowLayout.CENTER, 11, 0));
+        dp.add(new JLabel(DEPARTMENT));
+        dp.add(departmentLabel);
+
+        // 保険選択リスト
+        insuranceList = new JList<>();
+        insuranceList.setFixedCellWidth(200);
+        insuranceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        insuranceList.addListSelectionListener(e -> insuranceSelectionChanged(e.getValueIsAdjusting()));
+
+        JPanel ip = new JPanel(new BorderLayout(9, 0));
+        ip.setBorder(PNSBorderFactory.createTitledBorder(SELECT_INS));
+        ip.add(insuranceList, BorderLayout.CENTER);
+        ip.add(new JLabel(GUIConst.ICON_INSURANCE_CARD_32), BorderLayout.WEST);
+
+        // 前回処方適用 / 全コピー / 空白
+        emptyNew = new JRadioButton(EMPTY_NEW);
+        applyRp = new JRadioButton(APPLY_RP);
+        allCopy = new JRadioButton(ALL_COPY);
+        ActionListener memory = e -> memoryMode();
+        emptyNew.addActionListener(memory);
+        applyRp.addActionListener(memory);
+        allCopy.addActionListener(memory);
+        JPanel rpPanel = new JPanel();
+        rpPanel.setLayout(new BoxLayout(rpPanel, BoxLayout.X_AXIS));
+        rpPanel.add(applyRp);
+        rpPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        rpPanel.add(allCopy);
+        rpPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        rpPanel.add(emptyNew);
+        rpPanel.add(Box.createHorizontalGlue());
+
+        // タブパネルへ追加/別ウィンドウ
+        openAnother = new JRadioButton(OPEN_ANOTHER);
+        addToTab = new JRadioButton(ADD_TO_TAB);
+        openAnother.addActionListener(e -> memoryFrame());
+        addToTab.addActionListener(e -> memoryFrame());
+        JPanel openPanel = new JPanel();
+        openPanel.setLayout(new BoxLayout(openPanel, BoxLayout.X_AXIS));
+        openPanel.add(openAnother);
+        openPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        openPanel.add(addToTab);
+        openPanel.add(Box.createHorizontalGlue());
+
+        // ok
+        String buttonText =  (String) UIManager.get("OptionPane.okButtonText");
+        okButton = new JButton(buttonText);
+        okButton.addActionListener(e -> doOk());
+        okButton.setEnabled(false);
+
+        // Cancel Button
+        buttonText =  (String)UIManager.get("OptionPane.cancelButtonText");
+        cancelButton = new JButton(buttonText);
+        cancelButton.addActionListener(e -> doCancel());
+
+        // 全体を配置
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(dp);
+        panel.add(Box.createVerticalStrut(11));
+        panel.add(ip);
+        panel.add(Box.createVerticalStrut(11));
+        panel.add(GUIFactory.createTitledPanel(rpPanel, "カルテ作成方法"));
+        panel.add(Box.createVerticalStrut(11));
+        panel.add(GUIFactory.createTitledPanel(openPanel, "カルテ編集ウインドウ"));
+        panel.add(Box.createVerticalStrut(11));
+
+        return panel;
     }
 
     public void setValue(Object o) {
@@ -156,13 +228,12 @@ public final class NewKarteDialog {
                 options,
                 okButton);
 
-//pns^  すでに JSheet が出ている場合は，toFront してリターン
+        // すでに JSheet が出ている場合は，toFront してリターン
         if (MyJSheet.isAlreadyShown(parentFrame)) {
             parentFrame.toFront();
             return;
         }
 
-//pns$  dialog = jop.createDialog(parentFrame, title);
         dialog = MyJSheet.createDialog(jop, parentFrame);
         dialog.addWindowListener(new WindowAdapter() {
             @Override
@@ -184,7 +255,7 @@ public final class NewKarteDialog {
         }
     }
 
-    private void setInsurance(Object[] o) {
+    private void setInsurance(PVTHealthInsuranceModel[] o) {
 
         insuranceList.setListData(o);
 
@@ -214,104 +285,37 @@ public final class NewKarteDialog {
         emptyNew.setSelected(false);
         applyRp.setSelected(false);
         allCopy.setSelected(false);
-        if (mode == 0) {
-            emptyNew.setSelected(true);
-        } else if (mode == 1) {
-            applyRp.setSelected(true);
-        } else if (mode == 2) {
-            allCopy.setSelected(true);
+        switch (mode) {
+            case 0:
+                emptyNew.setSelected(true);
+                break;
+            case 1:
+                applyRp.setSelected(true);
+                break;
+            case 2:
+                allCopy.setSelected(true);
+                break;
+            default:
+                break;
         }
-    }
-
-    protected JPanel createComponent() {
-
-        // 診療科情報ラベル
-        departmentLabel = new JLabel();
-        JPanel dp = new JPanel(new FlowLayout(FlowLayout.CENTER, 11, 0));
-        dp.add(new JLabel(DEPARTMENT));
-        dp.add(departmentLabel);
-
-        // 保険選択リスト
-        insuranceList = new JList();
-        insuranceList.setFixedCellWidth(200);
-        insuranceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        insuranceList.addListSelectionListener(EventHandler.create(ListSelectionListener.class, this, "insuranceSelectionChanged", "valueIsAdjusting"));
-
-        JPanel ip = new JPanel(new BorderLayout(9, 0));
-        ip.setBorder(BorderFactory.createTitledBorder(SELECT_INS));
-        ip.add(insuranceList, BorderLayout.CENTER);
-        ip.add(new JLabel(GUIConst.ICON_INSURANCE_CARD_32), BorderLayout.WEST);
-
-        // 前回処方適用 / 全コピー / 空白
-        emptyNew = new JRadioButton(EMPTY_NEW);
-        applyRp = new JRadioButton(APPLY_RP);
-        allCopy = new JRadioButton(ALL_COPY);
-        ActionListener memory = EventHandler.create(ActionListener.class, this, "memoryMode");
-        emptyNew.addActionListener(memory);
-        applyRp.addActionListener(memory);
-        allCopy.addActionListener(memory);
-        JPanel rpPanel = new JPanel();
-        rpPanel.setLayout(new BoxLayout(rpPanel, BoxLayout.X_AXIS));
-        rpPanel.add(applyRp);
-        rpPanel.add(Box.createRigidArea(new Dimension(5,0)));
-        rpPanel.add(allCopy);
-        rpPanel.add(Box.createRigidArea(new Dimension(5,0)));
-        rpPanel.add(emptyNew);
-        rpPanel.add(Box.createHorizontalGlue());
-
-        // タブパネルへ追加/別ウィンドウ
-        openAnother = new JRadioButton(OPEN_ANOTHER);
-        addToTab = new JRadioButton(ADD_TO_TAB);
-        openAnother.addActionListener((ActionListener) EventHandler.create(ActionListener.class, this, "memoryFrame"));
-        addToTab.addActionListener((ActionListener) EventHandler.create(ActionListener.class, this, "memoryFrame"));
-        JPanel openPanel = new JPanel();
-        openPanel.setLayout(new BoxLayout(openPanel, BoxLayout.X_AXIS));
-        openPanel.add(openAnother);
-        openPanel.add(Box.createRigidArea(new Dimension(5,0)));
-        openPanel.add(addToTab);
-        openPanel.add(Box.createHorizontalGlue());
-
-        // ok
-        String buttonText =  (String) UIManager.get("OptionPane.okButtonText");
-        okButton = new JButton(buttonText);
-        okButton.addActionListener((ActionListener) EventHandler.create(ActionListener.class, this, "doOk"));
-        okButton.setEnabled(false);
-
-        // Cancel Button
-        buttonText =  (String)UIManager.get("OptionPane.cancelButtonText");
-        cancelButton = new JButton(buttonText);
-        cancelButton.addActionListener((ActionListener) EventHandler.create(ActionListener.class, this, "doCancel"));
-
-        // 全体を配置
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(dp);
-        panel.add(Box.createVerticalStrut(11));
-        panel.add(ip);
-        panel.add(Box.createVerticalStrut(11));
-        panel.add(GUIFactory.createTitledPanel(rpPanel, "カルテ作成方法"));
-        panel.add(Box.createVerticalStrut(11));
-        panel.add(GUIFactory.createTitledPanel(openPanel, "カルテ編集ウインドウ"));
-        panel.add(Box.createVerticalStrut(11));
-
-        return panel;
     }
 
     /**
      * 保険選択リストにフォーカスする.
+     * @param e
      */
     public void controlFocus(WindowEvent e) {
         insuranceList.requestFocusInWindow();
     }
 
     /**
-     * 保険選択の変更を処理する.
+     * 保険選択に応じてボタン処理をする.
+     * @param adjusting
      */
     public void insuranceSelectionChanged(boolean adjusting) {
         if (adjusting == false) {
             Object o = insuranceList.getSelectedValue();
-            boolean ok = o != null ? true : false;
-            okButton.setEnabled(ok);
+            okButton.setEnabled(o != null);
         }
     }
 
@@ -344,10 +348,10 @@ public final class NewKarteDialog {
      */
     public void doOk() {
         params.setDepartment(departmentLabel.getText());
-        params.setPVTHealthInsurance((PVTHealthInsuranceModel) insuranceList.getSelectedValue());
+        params.setPVTHealthInsurance(insuranceList.getSelectedValue());
         params.setCreateMode(getCreateMode());
         params.setOpenFrame(openAnother.isSelected());
-        value = (Object) params;
+        value = params;
         dialog.setVisible(false);
         dialog.dispose();
     }

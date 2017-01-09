@@ -19,7 +19,7 @@ import javax.swing.*;
 import open.dolphin.client.*;
 import open.dolphin.helper.MenuActionManager;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.ui.MyBorder;
+import open.dolphin.ui.PNSBorder;
 import open.dolphin.ui.MyJScrollPane;
 import org.apache.log4j.Logger;
 import open.dolphin.helper.MenuActionManager.MenuAction;
@@ -440,7 +440,7 @@ public class DiagnosisInspector implements IInspector {
                 int y = 16;
                 int width = getWidth() - 2*x;
                 int height = getHeight() - y - 3;
-                MyBorder.drawSelectedBlueRoundRect(this, g, x, y, width, height,10,10);
+                PNSBorder.drawSelectedBlueRoundRect(this, g, x, y, width, height,10,10);
                 g.dispose();
             }
         }

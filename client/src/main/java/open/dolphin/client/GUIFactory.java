@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import javax.swing.*;
 import javax.swing.event.DocumentListener;
+import open.dolphin.ui.PNSBorderFactory;
 
 /**
  *
@@ -124,7 +125,7 @@ public class GUIFactory {
         c.setBorder(BorderFactory.createEmptyBorder(TITLE_SPACE_TOP, TITLE_SPACE_LEFT, TITLE_SPACE_BOTTOM, TITLE_SPACE_RIGHT));
         JPanel p = new JPanel(new BorderLayout());
         p.add(c, BorderLayout.CENTER);
-        p.setBorder(BorderFactory.createTitledBorder(title));
+        p.setBorder(PNSBorderFactory.createTitledBorder(title));
         return p;
     }
 

@@ -6,7 +6,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import open.dolphin.ui.MyBorder;
+import open.dolphin.ui.PNSBorder;
 
 /**
  * StampBox をレンダリングするクラス（StampTree から分離）
@@ -53,25 +53,25 @@ public class StampTreeRenderer extends DefaultTreeCellRenderer {
             switch(drawMode) {
                 case UNDER_LINE:
                     if (isEditable) {
-                        MyBorder.drawSelectedBlueLine(null, g, 0, getSize().height, getSize().width, getSize().height);
+                        PNSBorder.drawSelectedBlueLine(null, g, 0, getSize().height, getSize().width, getSize().height);
                     } else {
-                        MyBorder.drawSelectedGrayLine(null, g, 0, getSize().height, getSize().width, getSize().height);
+                        PNSBorder.drawSelectedGrayLine(null, g, 0, getSize().height, getSize().width, getSize().height);
                     }
                     break;
 
                 case UPPER_LINE:
                     if (isEditable) {
-                        MyBorder.drawSelectedBlueLine(null, g, 0,                0, getSize().width,                 0);
+                        PNSBorder.drawSelectedBlueLine(null, g, 0,                0, getSize().width,                 0);
                     } else {
-                        MyBorder.drawSelectedGrayLine(null, g, 0,                0, getSize().width,                 0);
+                        PNSBorder.drawSelectedGrayLine(null, g, 0,                0, getSize().width,                 0);
                     }
                     break;
 
                 default:
                     if (isEditable) {
-                        MyBorder.drawSelectedBlueRect(null, g, 0,                0, getSize().width, getSize().height);
+                        PNSBorder.drawSelectedBlueRect(null, g, 0,                0, getSize().width, getSize().height);
                     } else {
-                        MyBorder.drawSelectedGrayRect(null, g, 0,                0, getSize().width, getSize().height);
+                        PNSBorder.drawSelectedGrayRect(null, g, 0,                0, getSize().width, getSize().height);
                     }
             }
         }

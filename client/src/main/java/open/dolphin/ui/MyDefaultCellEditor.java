@@ -22,7 +22,7 @@ public class MyDefaultCellEditor extends DefaultCellEditor {
         super(textField);
         //cellEditor = this;
 
-        textField.setBorder(MyBorderFactory.createTextFieldBorder());
+        textField.setBorder(PNSBorderFactory.createTextFieldBorder());
 
         // selectAll on FocusGain
         textField.addFocusListener(new TextFieldFocusListener());

@@ -20,7 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.ui.MyBorderFactory;
+import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * CalendarCardPanel
@@ -216,7 +216,7 @@ public class CalendarCardPanel extends JPanel  {
         cmd.add(backBtn);
         cmd.add(stopBtn);
         cmd.add(forwardBtn);
-        cmd.setBorder(MyBorderFactory.createTitleBorder(new Insets(0,0,0,0)));
+        cmd.setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
         backBtn.setOpaque(false);
         stopBtn.setOpaque(false);
         forwardBtn.setOpaque(false);
@@ -226,7 +226,7 @@ public class CalendarCardPanel extends JPanel  {
     private JPanel createWestCommandPanel() {
         JPanel cmd = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,0,0));
         cmd.add(upBtn);
-        cmd.setBorder(MyBorderFactory.createTitleBorder(new Insets(0,0,0,0)));
+        cmd.setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
         upBtn.setOpaque(false);
         return cmd;
     }

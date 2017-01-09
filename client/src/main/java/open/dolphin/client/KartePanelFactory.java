@@ -21,7 +21,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
-import open.dolphin.ui.MyBorderFactory;
+import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.MyJScrollPane;
 
 /**
@@ -210,7 +210,7 @@ public class KartePanelFactory {
         timeStampPanel.setMinimumSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
         timeStampPanel.setPreferredSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
         timeStampPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        timeStampPanel.setBorder(MyBorderFactory.createTitleBorder(new Insets(0,0,0,0)));
+        timeStampPanel.setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
 
         timeStampLabel = new JLabel();
         timeStampPanel.add(timeStampLabel);

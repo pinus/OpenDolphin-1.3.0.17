@@ -16,6 +16,7 @@ import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.project.Project;
+import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.PNSPair;
 
 /**
@@ -251,7 +252,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         });
         appointTable = new AppointTablePanel(updateAppoBtn);
         appointTable.setParent(this);
-        appointTable.setBorder(BorderFactory.createTitledBorder("予約表"));
+        appointTable.setBorder(PNSBorderFactory.createTitledBorder("予約表"));
         appointTable.setPreferredSize(new Dimension(500, 260));
 
         // オーダ履歴表示用テーブルを生成する
@@ -342,7 +343,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         // 検査履歴と画像歴の切り替えコンテナ
         historyContainer = new JPanel(new BorderLayout());
         historyContainer.add(history, BorderLayout.CENTER);
-        historyContainer.setBorder(BorderFactory.createTitledBorder("履 歴"));
+        historyContainer.setBorder(PNSBorderFactory.createTitledBorder("履 歴"));
         myPanel.add(historyContainer);
 
         myPanel.add(Box.createVerticalStrut(7));

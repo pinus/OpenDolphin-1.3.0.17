@@ -1,0 +1,133 @@
+package open.dolphin.ui;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+import open.dolphin.client.GUIConst;
+
+/**
+ * Mac っぽいボーダー.
+ * @author pns
+ */
+public class PNSBorderFactory {
+
+    public static Border createTitledBorder(String title) {
+        return createTitledBorder(null, title, TitledBorder.LEFT, TitledBorder.TOP, null, Color.BLACK);
+    }
+
+    public static Border createTitledBorder(
+            Border titleBorder,
+            String title,
+            int titleJustification, // TitledBorder.LEFT
+            int titlePosition,      // TitledBorder.TOP
+            Font titleFont,
+            Color titleColor ){
+
+        return new PNSTitledBorder(titleBorder, title, titleJustification, titlePosition, titleFont, titleColor);
+    }
+
+    public static Border createSelectedBorder() {
+        return new PNSSelectedBorder();
+    }
+
+    public static Border createSelectedGrayBorder() {
+        return new PNSSelectedGrayBorder();
+    }
+
+    public static Border createClearBorder() {
+        return new MyClearBorder();
+    }
+
+    public static Border createTextFieldBorder() {
+        return new PNSTextFieldBorder();
+    }
+
+    public static Border createGroupBoxBorder(Insets borderInsets) {
+        return new ImageBevelBorder(GUIConst.ICON_BORDER_GROUPBOX_18, new Insets(7,7,7,7), borderInsets);
+    }
+
+    /**
+     * 高さ 22 のタイトルバー風ボーダー.
+     * KarteViewer などのタイトル部分.
+     * @param borderInsets
+     * @return
+     */
+    public static Border createTitleBarBorder(Insets borderInsets) {
+       return new PNSTexturedBorder(GUIConst.ICON_BORDER_TITLE_22, borderInsets);
+    }
+
+    /**
+     * 高さ 16 のタイトルバー風ボーダー.
+     * 未使用
+     * @param borderInsets
+     * @return
+     */
+    public static Border createTitleBarBorder16(Insets borderInsets) {
+       return new PNSTexturedBorder(GUIConst.ICON_BORDER_TITLE_16, borderInsets);
+    }
+
+    /**
+     * 高さ 12 のタイトルバー風ボーダー.
+     * 未使用
+     * @param borderInsets
+     * @return
+     */
+    public static Border createTitleBarBorder12(Insets borderInsets) {
+       return new PNSTexturedBorder(GUIConst.ICON_BORDER_TITLE_12, borderInsets);
+    }
+
+    /**
+     * 高さ 38 のピンク色のタイトルバー風ボーダー.
+     * @param borderInsets
+     * @return
+     */
+
+    public static Border createTitleBarBorderPink(Insets borderInsets) {
+       return new PNSRoundedTextureBorder(GUIConst.ICON_BORDER_TITLE_PINK_38, borderInsets);
+    /**
+     * 高さ 38 の水色のタイトルバー風ボーダー.
+     * @param borderInsets
+     * @return
+     */
+    }
+
+    public static Border createTitleBarBorderLightBlue(Insets borderInsets) {
+       return new PNSRoundedTextureBorder(GUIConst.ICON_BORDER_TITLE_LIGHT_BLUE_38, borderInsets);
+    }
+
+    /**
+     * 高さ 38 のグレーのタイトルバー風ボーダー.
+     * @param borderInsets
+     * @return
+     */
+    public static Border createTitleBarBorderGray(Insets borderInsets) {
+       return new PNSRoundedTextureBorder(GUIConst.ICON_BORDER_TITLE_38, borderInsets);
+    }
+
+    /**
+     * ImageIcon から BufferedImage に変換.
+     * alpha 対応.
+     * @param src
+     * @return
+     */
+    public static BufferedImage imageToBufferedImage(ImageIcon src) {
+        if (src == null) { return null; }
+
+        int width = src.getImage().getWidth(null);
+        int height = src.getImage().getHeight(null);
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+
+        src.paintIcon(null, g, 0, 0);
+
+        g.dispose();
+
+        return image;
+    }
+}

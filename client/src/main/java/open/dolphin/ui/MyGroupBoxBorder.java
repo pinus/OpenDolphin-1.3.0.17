@@ -31,7 +31,7 @@ public class MyGroupBoxBorder extends AbstractBorder {
         Graphics2D g2d = (Graphics2D) g.create();
 
 
-        BufferedImage buf = MyBorderFactory.imageToBufferedImage(image);
+        BufferedImage buf = PNSBorderFactory.imageToBufferedImage(image);
 
         RectangleGenerator src = new RectangleGenerator(0, 0, buf.getWidth(), buf.getHeight(), insets);
         RectangleGenerator dist = new RectangleGenerator(x, y, width, height, insets);

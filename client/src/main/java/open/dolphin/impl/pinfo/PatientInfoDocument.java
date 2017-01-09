@@ -19,7 +19,7 @@ import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.infomodel.PVTPublicInsuranceItemModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.ui.AdditionalTableSettings;
-import open.dolphin.ui.MyBorderFactory;
+import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.MyDefaultCellEditor;
 
 /**
@@ -75,7 +75,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
 
         JPanel myPanel = getUI();
         JComponent compo = createComponent();
-        compo.setBorder(MyBorderFactory.createGroupBoxBorder(new Insets(5,5,5,5)));
+        compo.setBorder(PNSBorderFactory.createGroupBoxBorder(new Insets(5,5,5,5)));
         myPanel.setLayout(new BorderLayout());
 
         //

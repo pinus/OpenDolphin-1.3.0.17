@@ -1,14 +1,11 @@
 package open.dolphin.client;
 
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -16,81 +13,74 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.infomodel.ClaimItem;
 
 /**
- * StampHolderPopupMenu 用の，外用部位選択パネル
+ * StampHolderPopupMenu 用の，外用部位選択パネル.
  *
  * @author pns
  */
 public class RegionView extends javax.swing.JDialog {
     private static final long serialVersionUID = 1L;
 
-    /** code → name の map */
-    private HashMap<String, String> nameMap = new HashMap<String, String>();
-    /** code → JRadioButton の map */
-    private HashMap<String, JRadioButton> buttonMap = new HashMap<String, JRadioButton>();
+    /**
+     * code → name の map
+     */
+    private final HashMap<String, String> nameMap = new HashMap<>();
+    /**
+     * code → JRadioButton の map
+     */
+    private final HashMap<String, JRadioButton> buttonMap = new HashMap<>();
 
     private boolean cancelled = true;
 
     public RegionView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
+
         initComponents();
+        connect();
+
         // マッピング作成
         generateMap();
 
-        input.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-                cancelled = false;
-                setVisible(false);
-                dispose();
-            }
+        input.addActionListener(e -> {
+            cancelled = false;
+            setVisible(false);
+            dispose();
         });
-        cancel.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-                cancelled = true;
-                setVisible(false);
-                dispose();
-            }
+        cancel.addActionListener(e -> {
+            cancelled = true;
+            setVisible(false);
+            dispose();
         });
-        clear.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-                clearAllButtons();
-                repaint();
-            }
+        clear.addActionListener(e -> {
+            clearAllButtons();
+            repaint();
         });
 
+        SwingUtilities.invokeLater(() -> {
+            cancel.requestFocusInWindow();
+            input.setSelected(true);
+        });
+    }
+
+    private void connect() {
         // short-cut
         InputMap im = getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = getRootPane().getActionMap();
         // return で入力
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "input");
-        am.put("input", new AbstractAction(){
-            public void actionPerformed(ActionEvent e) {
-                input.doClick();
-            }
-        });
+        am.put("input", new ProxyAction(input::doClick));
+
         // ESC でキャンセル
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-        am.put("cancel", new AbstractAction(){
-            public void actionPerformed(ActionEvent e) {
-                cancel.doClick();
-            }
-        });
+        am.put("cancel", new ProxyAction(cancel::doClick));
+
         // backspace でクリア
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "clear");
-        am.put("clear", new AbstractAction(){
-            public void actionPerformed(ActionEvent e) {
-                clear.doClick();
-            }
-        });
-
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run() {
-                cancel.requestFocusInWindow();
-                input.setSelected(true);
-            }
-        });
+        am.put("clear", new ProxyAction(clear::doClick));
 
         // default button
         getRootPane().setDefaultButton(input);
@@ -100,12 +90,14 @@ public class RegionView extends javax.swing.JDialog {
      * バックグランド付きパネル
      */
     private class BackgroundPanel extends JPanel {
-        private int width, height;
+        private static final long serialVersionUID = 1L;
+        private final int width, height;
+
 
         public BackgroundPanel() {
             width = GUIConst.IMAGE_BODY.getWidth();
             height = GUIConst.IMAGE_BODY.getHeight();
-            //setOpaque(false);
+            setOpaque(false);
         }
 
         @Override
@@ -273,7 +265,6 @@ public class RegionView extends javax.swing.JDialog {
 
         clear.setText("全てクリア");
 
-        backgroundPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         backgroundPanel.setMaximumSize(new java.awt.Dimension(384, 420));
         backgroundPanel.setMinimumSize(new java.awt.Dimension(384, 420));
         backgroundPanel.setPreferredSize(new java.awt.Dimension(384, 420));

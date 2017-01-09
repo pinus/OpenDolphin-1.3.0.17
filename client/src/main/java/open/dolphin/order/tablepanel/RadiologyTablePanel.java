@@ -7,6 +7,8 @@ import open.dolphin.delegater.RadiologyDelegater;
 import open.dolphin.infomodel.RadiologyMethodValue;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.ui.AdditionalTableSettings;
+import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * ItemTablePanel を extend して作った RadiologyTablePanel.
@@ -76,11 +78,12 @@ public class RadiologyTablePanel extends ItemTablePanel {
                 }
             });
 
-            JScrollPane scroller = new JScrollPane(methodList,
+            MyJScrollPane scroller = new MyJScrollPane(methodList,
                             JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scroller.isPermanentScrollBar = true;
             p1.add(scroller);
-            p1.setBorder(BorderFactory.createTitledBorder("撮影方法"));
+            p1.setBorder(PNSBorderFactory.createTitledBorder("撮影方法"));
 
             // Commet panel
             JPanel p2 = new JPanel(new BorderLayout());
@@ -94,11 +97,12 @@ public class RadiologyTablePanel extends ItemTablePanel {
                     notifyComment(entry.getMethodName());
                 }
             });
-            scroller = new JScrollPane(commentList,
+            scroller = new MyJScrollPane(commentList,
                             JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scroller.isPermanentScrollBar = true;
             p2.add(scroller);
-            p2.setBorder(BorderFactory.createTitledBorder("撮影コメント"));
+            p2.setBorder(PNSBorderFactory.createTitledBorder("撮影コメント"));
 
             // Add p1 and p2
             add(p1);

@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import open.dolphin.ui.IMEControl;
+import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * GridBagLayout の JPanel を作る.
@@ -66,7 +67,7 @@ public class GridBagBuilder {
 
         if (title != null) {
             product = new JPanel(new BorderLayout());
-            product.setBorder(BorderFactory.createTitledBorder(title));
+            product.setBorder(PNSBorderFactory.createTitledBorder(title));
 
             container.setBorder(BorderFactory.createEmptyBorder(
                     getTitleSpaceTop(),
@@ -277,29 +278,3 @@ public class GridBagBuilder {
         });
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

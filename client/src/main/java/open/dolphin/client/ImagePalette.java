@@ -44,8 +44,8 @@ public class ImagePalette extends JPanel {
     private String[] suffix = DEFAULT_IMAGE_SUFFIX;
     private boolean showHeader;
 
-    private final Border selectedBorder = MyBorderFactory.createSelectedBorder();
-    // private Border normalBorder = MyBorderFactory.createClearBorder();
+    private final Border selectedBorder = PNSBorderFactory.createSelectedBorder();
+    // private Border normalBorder = PNSBorderFactory.createClearBorder();
     private final Border normalBorder = BorderFactory.createEmptyBorder();
 
     public ImagePalette(String[] columnNames, int columnCount, int width, int height) {
@@ -357,7 +357,7 @@ public class ImagePalette extends JPanel {
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
             Graphics g = image.getGraphics();
             draggedComp.paint(g);
-            MyBorder.drawSelectedRect(draggedComp, g, 0, 0, width-1, height-1);
+            PNSBorder.drawSelectedRect(draggedComp, g, 0, 0, width-1, height-1);
             return new ImageIcon(image);
         }
     }

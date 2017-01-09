@@ -27,7 +27,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.ui.MyBorderFactory;
+import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.Holiday;
 
 /**
@@ -185,7 +185,7 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
 //pns^
             titleLabel.setOpaque(false);
             titlePanel.setPreferredSize(new Dimension(10, 22));
-            titlePanel.setBorder(MyBorderFactory.createTitleBorder(new Insets(0,0,0,0)));
+            titlePanel.setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
             titlePanel.setLayout(new BorderLayout(0,0));
             titlePanel.add(titleLabel, BorderLayout.CENTER);
 

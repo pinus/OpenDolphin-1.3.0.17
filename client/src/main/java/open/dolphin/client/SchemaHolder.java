@@ -9,7 +9,7 @@ import javax.swing.border.Border;
 import javax.swing.text.Position;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.SchemaModel;
-import open.dolphin.ui.MyBorderFactory;
+import open.dolphin.ui.PNSBorderFactory;
 import org.apache.log4j.Logger;
 
 /**
@@ -38,8 +38,8 @@ public final class SchemaHolder extends AbstractComponentHolder {
     private Position end;
     private KartePane kartePane;
     private Color selectedBorder = SELECTED_BORDER;
-    private static final Border MY_SELECTED_BORDER = MyBorderFactory.createSelectedBorder();
-    private static final Border MY_CLEAR_BORDER = MyBorderFactory.createClearBorder();
+    private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
+    private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
 
     private Logger logger;
 

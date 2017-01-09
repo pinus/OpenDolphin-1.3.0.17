@@ -16,7 +16,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
-import open.dolphin.ui.MyBorderFactory;
+import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.PreferencesUtils;
 import open.dolphin.util.StringTool;
 import org.apache.velocity.VelocityContext;
@@ -46,8 +46,8 @@ public final class StampHolder extends AbstractComponentHolder {
     private Position end;
     private boolean selected;
 
-    private static final Border MY_SELECTED_BORDER = MyBorderFactory.createSelectedBorder();
-    private static final Border MY_CLEAR_BORDER = MyBorderFactory.createClearBorder();
+    private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
+    private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
 
     // 検索語にマークする
     private String searchText = null;

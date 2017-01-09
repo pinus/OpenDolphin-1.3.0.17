@@ -46,7 +46,7 @@ public class SettingForMac {
         //java.util.Set<String> includes = new java.util.HashSet<String>();
         java.util.Set<String> excludes = new java.util.HashSet<>();
         excludes.add("ScrollBar");
-        //excludes.add("Panel");
+        excludes.add("Panel");
         //includes.add("Component");
         //includes.add("TabbedPane");
         //includes.add("Tree");

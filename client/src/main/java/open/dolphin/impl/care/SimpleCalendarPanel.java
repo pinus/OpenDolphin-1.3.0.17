@@ -18,6 +18,7 @@ import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.ui.MyJPopupMenu;
+import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.*;
 
 /**
@@ -130,7 +131,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         String title = getCalendarTitle();
         this.add(table.getTableHeader(), BorderLayout.NORTH);
         this.add(table, BorderLayout.CENTER);
-        this.setBorder(BorderFactory.createTitledBorder(title));
+        this.setBorder(PNSBorderFactory.createTitledBorder(title));
 
         // Adjust cut & try
         Dimension dim = new Dimension(columnWidth*7 + 10, rowHeight*8 + 5);

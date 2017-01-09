@@ -2,16 +2,15 @@ package open.dolphin.client;
 
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
 
-
 /**
- * NewKarteParams
+ * NewKarteParams.
  *
  * @author  Kazushi Minagawa
  */
 public final class NewKarteParams {
 
     // ベースのカルテがあるかどうか，タブ及びEditorFrameの別，修正かどうか
-    private Chart.NewKarteOption option;
+    private final Chart.NewKarteOption option;
 
     // 空白，全コピー，前回処方適用のフラグ
     private Chart.NewKarteMode createMode;
@@ -23,7 +22,7 @@ public final class NewKarteParams {
     private String departmentCode;
 
     // 健康保険
-    private Object[] insurances;
+    private PVTHealthInsuranceModel[] insurances;
 
     // 初期化時に選択する保険
     private int initialSelectedInsurance;
@@ -42,7 +41,10 @@ public final class NewKarteParams {
     private String groupId;
 
 
-    /** Creates a new instance of NewKarteParams */
+    /**
+     * Creates a new instance of NewKarteParams.
+     * @param option
+     */
     public NewKarteParams(Chart.NewKarteOption option) {
         this.option = option;
     }
@@ -55,8 +57,8 @@ public final class NewKarteParams {
         return docType;
     }
 
-    public String setDocType(String docType) {
-        return this.docType = docType;
+    public void setDocType(String docType) {
+        this.docType = docType;
     }
 
     public String getGroupId() {
@@ -83,11 +85,11 @@ public final class NewKarteParams {
         this.departmentCode = departmentCode;
     }
 
-    public Object[] getInsurances() {
+    public PVTHealthInsuranceModel[] getInsurances() {
         return insurances;
     }
 
-    public void setInsurances(Object[] ins) {
+    public void setInsurances(PVTHealthInsuranceModel[] ins) {
         insurances = ins;
     }
 
