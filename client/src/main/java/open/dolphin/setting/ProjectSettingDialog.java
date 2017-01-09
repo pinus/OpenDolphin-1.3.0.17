@@ -18,9 +18,10 @@ import org.apache.log4j.Logger;
  * 環境設定ダイアログ.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public final class ProjectSettingDialog implements PropertyChangeListener {
-    public static final Color BACKGROUND = new Color(241,241,241);
+    public static final Color BACKGROUND = new Color(244,244,244);
 
     // GUI
     private JDialog dialog;
@@ -158,8 +159,8 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
             String id = setting.getId();
             String text = setting.getTitle();
             JToggleButton tb = new JToggleButton(text, setting.getIcon());
-            // pns が作った ElCapitanQuaquaToggleButtonUI だと selection の文字が白くなってしまう
-            tb.setUI(new ch.randelshofer.quaqua.QuaquaToggleButtonUI());
+            // pns が作った ElCapitanQuaquaToggleButtonUI で clientProperty で文字色を変えられるようにした
+            tb.putClientProperty("activeForeground", Color.BLACK);
             tb.setFocusable(false);
             if (ClientContext.isWin()) {
                 tb.setMargin(new Insets(0, 0, 0, 0));
@@ -207,12 +208,12 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
                 okButton);
 
         dialog = jop.createDialog( parentFrame, ClientContext.getFrameTitle("環境設定"));
-        // この方法で作った dialog のタイトルバーは "brushMetalLook" にすると 241 の Gray １色になる
+        // この方法で作った dialog のタイトルバーは "brushMetalLook" にすると 244 の Gray １色になる
         // 構造は JDialog > JPanel (ContentPane) > JOptionPane となっている
         dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
-        JOptionPane op = (JOptionPane) dialog.getContentPane().getComponent(0);
-        op.setOpaque(true);
-        op.setBackground(BACKGROUND);
+
+        // Container の background が黒になってしまうので直す
+        setContainerBackground(dialog);
 
         dialog.setResizable(false);
         dialog.setSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
@@ -295,7 +296,7 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
             return;
         }
 
-        Runnable r = () -> {
+        Thread t = new Thread(() -> {
             // まだ生成されていない場合は
             // 選択された設定パネルを生成しカードに追加する
             settingMap.put(sp.getId(), sp);
@@ -304,17 +305,31 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
             sp.start();
 
             SwingUtilities.invokeLater(() -> {
+                // Container のバックグランドを直す
+                setContainerBackground(sp.getUI());
                 cardPanel.add(sp.getUI(), sp.getTitle());
                 cardLayout.show(cardPanel, sp.getTitle());
                 if (!dialog.isVisible()) {
                     dialog.setVisible(true);
                 }
             });
-        };
+        });
 
-        Thread t = new Thread(r);
         t.setPriority(Thread.NORM_PRIORITY);
         t.start();
+    }
+
+    /**
+     * "apple.awt.brushMetalLook" の Container のバックグランドが黒くなるのを直す.
+     * @param component
+     */
+    private void setContainerBackground(Component component) {
+        if (component instanceof Container) {
+            component.setBackground(BACKGROUND);
+            for (Component c : ((Container) component).getComponents()) {
+                setContainerBackground(c);
+            }
+        }
     }
 
     /**

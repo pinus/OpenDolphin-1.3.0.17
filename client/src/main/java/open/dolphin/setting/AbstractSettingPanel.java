@@ -34,7 +34,7 @@ public abstract class AbstractSettingPanel {
      * Creates a new instance of SettingPanel.
      */
     public AbstractSettingPanel() {
-        //setUI(new JPanel());
+        setUI(new JPanel());
         logger = ClientContext.getBootLogger();
     }
 
