@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileFilter;
+import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -32,19 +33,19 @@ public class PatientInspector {
     // 患者基本情報
     private BasicInfoInspector basicInfoInspector;
     // 来院歴
-    private PatientVisitInspector patientVisitInspector;
+    //private PatientVisitInspector patientVisitInspector;
     // 患者メモ
-    private MemoInspector memoInspector;
+    //private MemoInspector memoInspector;
     // 文書履歴
-    private DocumentHistory docHistory;
+    //private DocumentHistory docHistory;
     // アレルギ
-    private AllergyInspector allergyInspector;
+    //private AllergyInspector allergyInspector;
     // 身長体重
-    private PhysicalInspector physicalInspector;
+    //private PhysicalInspector physicalInspector;
     // 病名インスペクタ
-    private DiagnosisInspector diagnosisInspector;
+    //private DiagnosisInspector diagnosisInspector;
     // 関連文書インスペクタ
-    private FileInspector fileInspector;
+    //private FileInspector fileInspector;
     // DocumentHistory インスペクタを格納するタブペイン. ６個目以降のインスペクタはここに追加される.
     private PNSBadgeTabbedPane tabbedPane;
     // このクラスのコンテナパネル
@@ -73,28 +74,41 @@ public class PatientInspector {
 
     private void initComponents() {
 
-        // Preference に保存されているインスペクタの順番
+        // Preference に保存されているインスペクタの順番を読み込む
         String topInspector = Project.getPreferences().get("topInspector", InspectorCategory.メモ.name()); //0"メモ"
         String secondInspector = Project.getPreferences().get("secondInspector", InspectorCategory.病名.name()); //5"病名"
         String thirdInspector = Project.getPreferences().get("thirdInspector", InspectorCategory.カレンダー.name()); //1"カレンダ"
         String forthInspector = Project.getPreferences().get("forthInspector", InspectorCategory.文書履歴.name()); //2"文書履歴"
         String fifthInspector = Project.getPreferences().get("fifthInspector", InspectorCategory.アレルギー.name()); //3"アレルギー"
 
-        // 各インスペクタを生成する
+        // 固定インスペクタ
         basicInfoInspector = new BasicInfoInspector(context);
-        memoInspector = new MemoInspector(context);
-        patientVisitInspector = new PatientVisitInspector(context);
-        docHistory = new DocumentHistory(getContext());
-        allergyInspector = new AllergyInspector(context);
-        physicalInspector = new PhysicalInspector(context);
-        diagnosisInspector = new DiagnosisInspector(context);
-        fileInspector = new FileInspector(context);
+
+        
+        // 浮動インスペクタ
+        HashMap<String, IInspector> map = new HashMap<>();
+        map.put(InspectorCategory.メモ.name(), new MemoInspector(context));
+        map.put(InspectorCategory.カレンダー.name(), new PatientVisitInspector(context));
+        map.put(InspectorCategory.文書履歴.name(), new DocumentHistory(context));
+        map.put(InspectorCategory.アレルギー.name(), new AllergyInspector(context));
+        map.put(InspectorCategory.身長体重.name(), new PhysicalInspector(context));
+        map.put(InspectorCategory.病名.name(), new DiagnosisInspector(context));
+        map.put(InspectorCategory.関連文書.name(), new FileInspector(context));
+
+        //memoInspector = new MemoInspector(context);
+        //patientVisitInspector = new PatientVisitInspector(context);
+        //docHistory = new DocumentHistory(getContext());
+        //allergyInspector = new AllergyInspector(context);
+        //physicalInspector = new PhysicalInspector(context);
+        //diagnosisInspector = new DiagnosisInspector(context);
+        //fileInspector = new FileInspector(context);
+
 
         // タブパネル
         tabbedPane = new PNSBadgeTabbedPane();
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         // docHistory は必ずタブに入れる
-        tabbedPane.addTab(InspectorCategory.文書履歴.title(), docHistory.getPanel());
+        //tabbedPane.addTab(InspectorCategory.文書履歴.title(), map.get(InspectorCategory.文書履歴.name()).getPanel());
 
         // 全体の container
         container = new HorizontalPanel();
