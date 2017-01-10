@@ -1,6 +1,8 @@
 package open.dolphin.inspector;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Date;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -13,6 +15,7 @@ import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientMemoModel;
 import open.dolphin.project.Project;
+import open.dolphin.ui.ExecuteScript;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
 import org.apache.log4j.Logger;
@@ -72,6 +75,15 @@ public class MemoInspector implements IInspector {
 
         memoPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, 70));
         memoPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
+
+        // kick AppleScript to open target folder
+        memoPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String path = FileInspector.getDocumentPath(context.getKarte().getPatient().getPatientId());
+                ExecuteScript.openPatientFolder(path);
+            }
+        });
     }
 
     /**

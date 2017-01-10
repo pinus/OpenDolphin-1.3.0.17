@@ -3,8 +3,6 @@ package open.dolphin.inspector;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileFilter;
 import javax.swing.BorderFactory;
@@ -16,7 +14,6 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.infomodel.KarteBean;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.project.Project;
-import open.dolphin.ui.ExecuteScript;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.PNSBorderFactory;
@@ -75,13 +72,6 @@ public class PatientInspector {
     }
 
     private void initComponents() {
-        String memoTitle = "メモ";
-        String pvtTitle = "来院歴"; // カレンダー
-        String docHistoryTitle = "文書履歴";
-        String allergyTitle = "アレルギー";
-        String physicalTitle = "身長体重";
-        String diagnosisTitle = "病名";
-        String fileTitle = "関連文書";
 
         // Preference に保存されているインスペクタの順番
         String topInspector = Project.getPreferences().get("topInspector", InspectorCategory.メモ.name()); //0"メモ"
@@ -104,7 +94,7 @@ public class PatientInspector {
         tabbedPane = new PNSBadgeTabbedPane();
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         // docHistory は必ずタブに入れる
-        tabbedPane.addTab(docHistoryTitle, docHistory.getPanel());
+        tabbedPane.addTab(InspectorCategory.文書履歴.title(), docHistory.getPanel());
 
         // 全体の container
         container = new HorizontalPanel();
@@ -119,26 +109,26 @@ public class PatientInspector {
 
         // 左側にレイアウトされなかったものをタブに格納する
         if (!bMemo) {
-            tabbedPane.addTab(memoTitle, memoInspector.getPanel());
+            tabbedPane.addTab(InspectorCategory.メモ.title(), memoInspector.getPanel());
         }
 
         if (!bCalendar) {
-            tabbedPane.addTab(pvtTitle, patientVisitInspector.getPanel());
+            tabbedPane.addTab(InspectorCategory.カレンダー.title(), patientVisitInspector.getPanel());
         }
 
         if (!bAllergy) {
-            tabbedPane.addTab(allergyTitle, allergyInspector.getPanel());
+            tabbedPane.addTab(InspectorCategory.アレルギー.title(), allergyInspector.getPanel());
         }
 
         if (!bPhysical) {
-            tabbedPane.addTab(physicalTitle, physicalInspector.getPanel());
+            tabbedPane.addTab(InspectorCategory.身長体重.title(), physicalInspector.getPanel());
         }
 
         if (!bDiagnosis) {
-            tabbedPane.addTab(diagnosisTitle, diagnosisInspector.getPanel());
+            tabbedPane.addTab(InspectorCategory.病名.title(), diagnosisInspector.getPanel());
         }
         if (!bFile) {
-            tabbedPane.addTab(fileTitle, fileInspector.getPanel());
+            tabbedPane.addTab(InspectorCategory.関連文書.title(), fileInspector.getPanel());
         }
 
         // BadgeListener
@@ -219,17 +209,11 @@ public class PatientInspector {
                 if (mColor == null) { mColor = Color.blue; }
                 mFont = new Font(Font.SANS_SERIF,Font.BOLD,12);
 
-                // kick AppleScript to open target folder
-                memoInspector.getPanel().addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        ExecuteScript.openPatientFolder(path);
-                    }
-                });
+
             } else {
                 // フォルダがない
                 if (memoTitle.toString().equals("")) {
-                    memoTitle.append("メモ");
+                    memoTitle.append(InspectorCategory.メモ.title());
                     mColor = Color.BLACK;
                     mFont = null;
                 }
@@ -242,7 +226,7 @@ public class PatientInspector {
             bMemo = true;
 
         } else if (itype.equals(InspectorCategory.カレンダー.name())) { //"カレンダ"
-            patientVisitInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder("来院歴"));
+            patientVisitInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.カレンダー.title()));
             content.add(patientVisitInspector.getPanel());
             bCalendar = true;
 
@@ -250,23 +234,23 @@ public class PatientInspector {
             content.add(tabbedPane);
 
         } else if (itype.startsWith(InspectorCategory.アレルギー.name())) { //"アレルギ"
-            allergyInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder("アレルギー"));
+            allergyInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.アレルギー.title()));
             content.add(allergyInspector.getPanel());
             bAllergy = true;
 
         } else if (itype.equals(InspectorCategory.身長体重.name())) { // "身長体重"
-            physicalInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder("身長体重"));
+            physicalInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.身長体重.title()));
             content.add(physicalInspector.getPanel());
             bPhysical = true;
         }
 
         else if (itype.equals(InspectorCategory.病名.name())) { // "病名"
-            diagnosisInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder("病名"));
+            diagnosisInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.病名.title()));
             content.add(diagnosisInspector.getPanel());
             bDiagnosis = true;
 
         } else if (itype.equals(InspectorCategory.関連文書.name())) { // "関連文書"
-            fileInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder("関連文書"));
+            fileInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.関連文書.title()));
             content.add(fileInspector.getPanel());
             bFile = true;
         }
