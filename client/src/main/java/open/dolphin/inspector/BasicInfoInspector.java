@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -15,6 +17,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.SimpleAddressModel;
 import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.util.StringTool;
 
 /**
  * BasicInfoInspector.
@@ -31,8 +34,9 @@ public class BasicInfoInspector implements IInspector {
     private static final Border UNKNOWN_BORDER = PNSBorderFactory.createTitleBarBorderGray(new Insets(0,0,0,0));
     private static final int WIDTH_EXTENSION = 50;
 
-    private JPanel aquaPanel;
+    private JPanel panel;
     private JLabel nameLabel;
+    private JLabel ageLabel;
     private JLabel addressLabel;
 
     // Context このインスペクタの親コンテキスト
@@ -56,9 +60,20 @@ public class BasicInfoInspector implements IInspector {
         nameLabel.setHorizontalAlignment(SwingConstants.LEFT);
         nameLabel.setForeground(FONT_COLOR);
         nameLabel.setOpaque(false);
-        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+
+        ageLabel = new JLabel(" ");
+        ageLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+        ageLabel.setForeground(FONT_COLOR);
+        ageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        ageLabel.setOpaque(false);
+
+        JPanel namePanel = new JPanel();
+        namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
+
         namePanel.setOpaque(false);
         namePanel.add(nameLabel);
+        namePanel.add(Box.createGlue());
+        namePanel.add(ageLabel);
 
         addressLabel = new JLabel("　");
         addressLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -69,14 +84,14 @@ public class BasicInfoInspector implements IInspector {
         addressPanel.setOpaque(false);
         addressPanel.add(addressLabel);
 
-        aquaPanel = new JPanel(new BorderLayout());
-        aquaPanel.add(addressPanel, BorderLayout.CENTER);
-        aquaPanel.add(namePanel, BorderLayout.NORTH);
+        panel = new JPanel(new BorderLayout());
+        panel.add(addressPanel, BorderLayout.CENTER);
+        panel.add(namePanel, BorderLayout.NORTH);
 
         // サイズ調節
-        aquaPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
-        aquaPanel.setMaximumSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
-        aquaPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
+        panel.setPreferredSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
+        panel.setMaximumSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
+        panel.setMinimumSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
     }
 
     /**
@@ -85,7 +100,7 @@ public class BasicInfoInspector implements IInspector {
      */
     @Override
     public JPanel getPanel() {
-        return aquaPanel;
+        return panel;
     }
 
     /**
@@ -95,25 +110,26 @@ public class BasicInfoInspector implements IInspector {
     public void update() {
         PatientModel patient = context.getPatient();
 
-        String name = String.format("%s (%s)   %s", patient.getFullName(), patient.getKanaName(), patient.getAgeBirthday());
+        String name = String.format(" %s（%s）", patient.getFullName(), patient.getKanaName());
         nameLabel.setText(name);
+        ageLabel.setText(patient.getAgeBirthday() + " ");
 
         SimpleAddressModel address = patient.getAddress();
         if (address != null) {
-            addressLabel.setText(address.getAddress());
+            addressLabel.setText(StringTool.toZenkakuNumber(address.getAddress()));
         } else {
             addressLabel.setText("　");
         }
 
         switch (patient.getGenderDesc()) {
             case IInfoModel.MALE_DISP:
-                aquaPanel.setBorder(MALE_BORDER);
+                panel.setBorder(MALE_BORDER);
                 break;
             case IInfoModel.FEMALE_DISP:
-                aquaPanel.setBorder(FEMALE_BORDER);
+                panel.setBorder(FEMALE_BORDER);
                 break;
             default:
-                aquaPanel.setBorder(UNKNOWN_BORDER);
+                panel.setBorder(UNKNOWN_BORDER);
                 break;
         }
     }

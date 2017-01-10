@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
@@ -767,7 +768,11 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         Callable<Boolean> longTask = () -> {
             // 開いているカルテを調べる
-            ChartImpl.getAllChart().stream()
+            // java.util.ConcurrentModificationException 対策のためにコピーで実行
+            List<ChartImpl> allCharts = new ArrayList<>();
+            allCharts.addAll(ChartImpl.getAllChart());
+
+            allCharts.stream()
                 .map(chart -> chart.getPatientVisit())
                 .filter(pvt -> pvt.getPvtDate() != null) // 今日の受診と関係あるカルテのみ選択
                 .forEach(pvt -> {
