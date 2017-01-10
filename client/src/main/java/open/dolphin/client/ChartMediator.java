@@ -29,6 +29,13 @@ import org.apache.log4j.Logger;
  * MenuSupport の chains[0] を KarteComposite レイヤー，chains[1] を ChartDocument レイヤーとして使うために，
  * {@link open.dolphin.client.ChartMediator#addChartDocumentChain addChartDocumentChain} (= addChain2)，
  * {@link  open.dolphin.client.ChartMediator#addKarteCompositeChain addKarteCompositeChain} (= addChain) を作ってある.
+ * <ul>
+ * <li>chains[0] = KaretComposite
+ * <li>chains[1] = ChartDocument
+ * <li>chains[2] = this
+ * <li>chains[3] = ChartImpl or EditorFrame
+ * </ul>
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
@@ -51,8 +58,8 @@ public final class ChartMediator extends MenuSupport {
      * @param owner
      */
     public ChartMediator(Chart owner) {
-
         super(owner);
+
         logger = ClientContext.getBootLogger();
         chart = owner;
 
@@ -676,6 +683,7 @@ public final class ChartMediator extends MenuSupport {
 
     public void fontUnderline() {
         JComponent focusOwner = getCurrentComponent();
+        System.out.println("--------------- focusOwner = " + focusOwner);
         if (focusOwner != null) {
             Action a = focusOwner.getActionMap().get("font-underline");
             if (a != null) {

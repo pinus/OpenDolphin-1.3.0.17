@@ -17,23 +17,30 @@ import org.apache.log4j.Logger;
  * <ul>
  * <li>chains[0] = MainWindow (WaitingListImpl/PatientSearchImpl/LaboTestImporter)
  * <li>chains[1] = null
- * <li>chains[2] = Dolphin
+ * <li>chains[2] = this
+ * <li>chains[3] = Dolphin
  * </ul>
  * addChain するところは {@link open.dolphin.client.Dolphin#initComponents() Dolphin} のタブ切換設定の部分.
  * StampBoxPlugin, ImageBox もインスタンスを持っているが，メニュー表示だけで adChain は未実装.<br>
  * ChartDocument 層での使用は {@link open.dolphin.client.ChartMediator ChartMediator} で行う.
+ * 
  * @author Minagawa, Kazushi
  * @author pns
  */
 public class MenuSupport implements MenuListener {
 
     private ActionMap actions;
-    private final Object[] chains = new Object[3];
+    private final Object[] chains = new Object[4];
     private final Logger logger = ClientContext.getBootLogger();
 
     public MenuSupport(Object owner) {
-        chains[2] = owner;
+        setDefaultChains(owner);
         //logger.setLevel(Level.DEBUG);
+    }
+
+    private void setDefaultChains(Object owner) {
+        chains[2] = this;
+        chains[3] = owner;
     }
 
     @Override
