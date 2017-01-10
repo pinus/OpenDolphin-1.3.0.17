@@ -571,22 +571,20 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                     return;
                 }
 
-                switch (c.getName()) {
-                    // マウスがメモにあれば，メモにフォーカス
-                    case MemoInspector.NAME:
-                        c.requestFocusInWindow(); // c は null ではない
-                        break;
+                if (c.getParent() != null) {
 
-                    // マウスが DiagnosisInspector にあれば何もしない
-                    case DiagnosisInspector.NAME:
-                        break;
+                    // Inspector は親パネルに名前がついている
+                    if (MemoInspector.CATEGORY.name().equals(c.getParent().getName())) {
+                        // マウスがメモにあれば，メモにフォーカス
+                        c.requestFocusInWindow();
 
-                    // それ以外は plugin の enter() で plugin ごとにフォーカス処理
-                    default:
+                    } else if (! DiagnosisInspector.CATEGORY.name().equals(c.getParent().getName())) {
+                        // マウスが DiagnosisInspector にあれば何もしない
+                        // それ以外は plugin の enter() で plugin ごとにフォーカス処理
                         String key = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
                         ChartDocument plugin = providers.get(key);
                         if (plugin != null) { plugin.enter(); }
-                        break;
+                    }
                 }
             }
         });

@@ -32,13 +32,14 @@ import org.apache.log4j.Logger;
  * @author pns
  */
 public class FileInspector implements IInspector {
+    public static final InspectorCategory CATEGORY = InspectorCategory.関連文書;
+
     private static final String DEFAULT_DOCUMENT_FOLDER = "/Volumes/documents/";
     private static final FileFilter FF_REGULAR = file -> !file.getName().startsWith(".");
 
     private JPanel filePanel;
     private JList<File> list;
     private final ChartImpl context;
-    public static final String NAME = "fileInspector";
     private DefaultListModel<File> model;
 
     private BadgeListener badgeListener;
@@ -101,6 +102,8 @@ public class FileInspector implements IInspector {
         list.addMouseListener(new FileSelectionListener());
 
         filePanel = new JPanel(new BorderLayout());
+        filePanel.setName(CATEGORY.name());
+
         filePanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
 
         final MyJScrollPane scrollPane = new MyJScrollPane(list);
@@ -115,6 +118,16 @@ public class FileInspector implements IInspector {
     @Override
     public JPanel getPanel() {
         return filePanel;
+    }
+
+    @Override
+    public String getName() {
+        return CATEGORY.name();
+    }
+
+    @Override
+    public String getTitle() {
+        return CATEGORY.title();
     }
 
     /**

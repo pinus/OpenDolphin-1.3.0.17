@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
  * @author pns
  */
 public class PhysicalInspector implements IInspector {
+    public static final InspectorCategory CATEGORY = InspectorCategory.身長体重;
 
     private ObjectReflectTableModel<PhysicalModel> tableModel;
     private PhysicalView view;
@@ -67,6 +68,7 @@ public class PhysicalInspector implements IInspector {
     private void initComponents() {
 
         view = new PhysicalView();
+        view.setName(CATEGORY.name());
 
         List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" 身長", String.class, "getHeight"),
@@ -157,6 +159,16 @@ public class PhysicalInspector implements IInspector {
     @Override
     public JPanel getPanel() {
         return view;
+    }
+
+    @Override
+    public String getName() {
+        return CATEGORY.name();
+    }
+
+    @Override
+    public String getTitle() {
+        return CATEGORY.title();
     }
 
     /**

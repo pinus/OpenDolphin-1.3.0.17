@@ -22,13 +22,16 @@ import org.apache.log4j.Logger;
 
 /**
  * 患者のメモを表示し編集するクラス.
+ * タイトル部分に関連文書情報を表示し，クリックで関連文書フォルダを開く機能も持つ.
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
 public class MemoInspector implements IInspector {
+    public static final InspectorCategory CATEGORY = InspectorCategory.メモ;
+
     private static final Color[] ALERT_LINE_COLOR = {new Color(255,100,100), new Color(255,130,130), new Color(255,180,180)};
     private static final Color ALERT_BACK_COLOR = new Color(255,240,240);
-    public static final String NAME = "memoInspector";
 
     private final ChartImpl context;
     private JPanel memoPanel;
@@ -39,13 +42,17 @@ public class MemoInspector implements IInspector {
     private String oldText = "";
     private boolean shouldAlert = false;
 
+    // このカルテの関連情報ファイルのパス
+    private final String path;
+
     /**
      * MemoInspectorオブジェクトを生成する.
-     * @param context
+     * @param chart
      */
-    public MemoInspector(ChartImpl context) {
-        this.context = context;
+    public MemoInspector(ChartImpl chart) {
+        context = chart;
         logger = ClientContext.getBootLogger();
+        path = FileInspector.getDocumentPath(chart.getKarte().getPatient().getPatientId());
         initComponents();
     }
 
@@ -55,10 +62,11 @@ public class MemoInspector implements IInspector {
     private void initComponents() {
 
         memoArea = new CompositeArea(5, 10);
+
         memoArea.setLineWrap(true);
         memoArea.setMargin(new java.awt.Insets(3, 3, 2, 2));
         memoArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
-        memoArea.setName(NAME);
+
         IMEControl.setImeOnIfFocused(memoArea);
         // isReadOnly対応
         memoArea.setEnabled(!context.isReadOnly());
@@ -71,8 +79,9 @@ public class MemoInspector implements IInspector {
         pane.putClientProperty("JComponent.sizeVariant", "small");
 
         memoPanel = new JPanel(new BorderLayout());
-        memoPanel.add(pane, BorderLayout.CENTER);
+        memoPanel.setName(CATEGORY.name());
 
+        memoPanel.add(pane, BorderLayout.CENTER);
         memoPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, 70));
         memoPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
 
@@ -80,7 +89,6 @@ public class MemoInspector implements IInspector {
         memoPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String path = FileInspector.getDocumentPath(context.getKarte().getPatient().getPatientId());
                 ExecuteScript.openPatientFolder(path);
             }
         });
@@ -93,6 +101,16 @@ public class MemoInspector implements IInspector {
     @Override
     public JPanel getPanel() {
         return memoPanel;
+    }
+
+    @Override
+    public String getName() {
+        return CATEGORY.name();
+    }
+
+    @Override
+    public String getTitle() {
+        return CATEGORY.title();
     }
 
     /**

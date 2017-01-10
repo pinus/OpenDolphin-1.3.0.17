@@ -14,6 +14,7 @@ import open.dolphin.infomodel.SimpleDate;
  * @author kazm
  */
 public class PatientVisitInspector implements IInspector {
+    public static final InspectorCategory CATEGORY = InspectorCategory.カレンダー;
 
     private CalendarCardPanel calendarCardPanel;
     private String pvtCode; // PVT
@@ -37,12 +38,24 @@ public class PatientVisitInspector implements IInspector {
         return calendarCardPanel;
     }
 
+    @Override
+    public String getName() {
+        return CATEGORY.name();
+    }
+
+    @Override
+    public String getTitle() {
+        return CATEGORY.title();
+    }
+
     /**
      * GUIコンポーネントを初期化する.
      */
     private void initComponent() {
         pvtCode = ClientContext.getString("eventCode.pvt"); // "PVT"
         calendarCardPanel = new CalendarCardPanel(ClientContext.getEventColorTable());
+        calendarCardPanel.setName(CATEGORY.name());
+        
         calendarCardPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         calendarCardPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         calendarCardPanel.setMaximumSize(new Dimension(1024, DEFAULT_HEIGHT));

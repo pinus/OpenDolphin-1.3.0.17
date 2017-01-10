@@ -24,7 +24,6 @@ import open.dolphin.infomodel.AllergyModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ObservationModel;
-import static open.dolphin.inspector.PatientInspector.DEFAULT_WIDTH;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
@@ -37,7 +36,7 @@ import open.dolphin.util.PNSTriple;
  * @author pns
  */
 public class AllergyInspector implements IInspector {
-    public static final String NAME = InspectorCategory.アレルギー.name();
+    public static final InspectorCategory CATEGORY = InspectorCategory.アレルギー;
 
     // TableModel
     private ObjectReflectTableModel<AllergyModel> tableModel;
@@ -61,6 +60,8 @@ public class AllergyInspector implements IInspector {
     private void initComponents() {
 
         view = new AllergyView();
+        view.setName(CATEGORY.name());
+        
         JTable table = view.getTable();
 
         // アレルギーテーブルを設定する
@@ -151,6 +152,16 @@ public class AllergyInspector implements IInspector {
     @Override
     public JPanel getPanel() {
         return view;
+    }
+
+    @Override
+    public String getName() {
+        return CATEGORY.name();
+    }
+
+    @Override
+    public String getTitle() {
+        return CATEGORY.title();
     }
 
     public void clear() {

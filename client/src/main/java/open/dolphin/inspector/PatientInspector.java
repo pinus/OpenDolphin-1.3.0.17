@@ -109,26 +109,26 @@ public class PatientInspector {
 
         // 左側にレイアウトされなかったものをタブに格納する
         if (!bMemo) {
-            tabbedPane.addTab(InspectorCategory.メモ.title(), memoInspector.getPanel());
+            tabbedPane.addTab(memoInspector.getTitle(), memoInspector.getPanel());
         }
 
         if (!bCalendar) {
-            tabbedPane.addTab(InspectorCategory.カレンダー.title(), patientVisitInspector.getPanel());
+            tabbedPane.addTab(patientVisitInspector.getTitle(), patientVisitInspector.getPanel());
         }
 
         if (!bAllergy) {
-            tabbedPane.addTab(InspectorCategory.アレルギー.title(), allergyInspector.getPanel());
+            tabbedPane.addTab(allergyInspector.getTitle(), allergyInspector.getPanel());
         }
 
         if (!bPhysical) {
-            tabbedPane.addTab(InspectorCategory.身長体重.title(), physicalInspector.getPanel());
+            tabbedPane.addTab(physicalInspector.getTitle(), physicalInspector.getPanel());
         }
 
         if (!bDiagnosis) {
-            tabbedPane.addTab(InspectorCategory.病名.title(), diagnosisInspector.getPanel());
+            tabbedPane.addTab(diagnosisInspector.getTitle(), diagnosisInspector.getPanel());
         }
         if (!bFile) {
-            tabbedPane.addTab(InspectorCategory.関連文書.title(), fileInspector.getPanel());
+            tabbedPane.addTab(fileInspector.getTitle(), fileInspector.getPanel());
         }
 
         // BadgeListener
@@ -226,7 +226,7 @@ public class PatientInspector {
             bMemo = true;
 
         } else if (itype.equals(InspectorCategory.カレンダー.name())) { //"カレンダ"
-            patientVisitInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.カレンダー.title()));
+            patientVisitInspector.getPanel().setBorder(patientVisitInspector.getBorder());
             content.add(patientVisitInspector.getPanel());
             bCalendar = true;
 
@@ -234,23 +234,23 @@ public class PatientInspector {
             content.add(tabbedPane);
 
         } else if (itype.startsWith(InspectorCategory.アレルギー.name())) { //"アレルギ"
-            allergyInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.アレルギー.title()));
+            allergyInspector.getPanel().setBorder(allergyInspector.getBorder());
             content.add(allergyInspector.getPanel());
             bAllergy = true;
 
         } else if (itype.equals(InspectorCategory.身長体重.name())) { // "身長体重"
-            physicalInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.身長体重.title()));
+            physicalInspector.getPanel().setBorder(physicalInspector.getBorder());
             content.add(physicalInspector.getPanel());
             bPhysical = true;
         }
 
         else if (itype.equals(InspectorCategory.病名.name())) { // "病名"
-            diagnosisInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.病名.title()));
+            diagnosisInspector.getPanel().setBorder(diagnosisInspector.getBorder());
             content.add(diagnosisInspector.getPanel());
             bDiagnosis = true;
 
         } else if (itype.equals(InspectorCategory.関連文書.name())) { // "関連文書"
-            fileInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(InspectorCategory.関連文書.title()));
+            fileInspector.getPanel().setBorder(fileInspector.getBorder());
             content.add(fileInspector.getPanel());
             bFile = true;
         }

@@ -27,6 +27,7 @@ import open.dolphin.util.StringTool;
  * @author pns
  */
 public class BasicInfoInspector implements IInspector {
+    public static final String NAME = "患者情報";
 
     private static final Color FONT_COLOR = new Color(20,20,140); // 濃い青
     private static final Border MALE_BORDER = PNSBorderFactory.createTitleBarBorderLightBlue(new Insets(0,0,0,0));
@@ -62,7 +63,7 @@ public class BasicInfoInspector implements IInspector {
         nameLabel.setOpaque(false);
 
         ageLabel = new JLabel(" ");
-        ageLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+        ageLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         ageLabel.setForeground(FONT_COLOR);
         ageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         ageLabel.setOpaque(false);
@@ -85,6 +86,7 @@ public class BasicInfoInspector implements IInspector {
         addressPanel.add(addressLabel);
 
         panel = new JPanel(new BorderLayout());
+        panel.setName(NAME);
         panel.add(addressPanel, BorderLayout.CENTER);
         panel.add(namePanel, BorderLayout.NORTH);
 
@@ -109,9 +111,16 @@ public class BasicInfoInspector implements IInspector {
     @Override
     public void update() {
         PatientModel patient = context.getPatient();
+        String kanjiName = patient.getFullName();
+        String kanaName = patient.getKanaName();
+        // 名前が長い場合は，カナ名を半角にする
+        if (kanjiName.length() + kanaName.length() > 14) {
+            kanaName = StringTool.zenkakuKatakanaToHankakuKatakana(kanaName);
+        }
 
-        String name = String.format(" %s（%s）", patient.getFullName(), patient.getKanaName());
+        String name = String.format(" %s（%s）", kanjiName, kanaName);
         nameLabel.setText(name);
+
         ageLabel.setText(patient.getAgeBirthday() + " ");
 
         SimpleAddressModel address = patient.getAddress();
@@ -132,5 +141,15 @@ public class BasicInfoInspector implements IInspector {
                 panel.setBorder(UNKNOWN_BORDER);
                 break;
         }
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public String getTitle() {
+        return NAME;
     }
 }

@@ -47,6 +47,7 @@ import open.dolphin.util.PNSTriple;
  * @author pns
  */
 public class DocumentHistory implements IInspector {
+    public static final InspectorCategory CATEGORY = InspectorCategory.文書履歴;
 
     // 文書履歴テーブル
     private ObjectReflectTableModel<DocInfoModel> tableModel;
@@ -93,6 +94,7 @@ public class DocumentHistory implements IInspector {
     private void initComponent() {
 
         view = new DocumentHistoryPanel();
+        view.setName(CATEGORY.name());
 
         // サイズ
         view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 350));
@@ -469,6 +471,16 @@ public class DocumentHistory implements IInspector {
     @Override
     public JPanel getPanel() {
         return view;
+    }
+
+    @Override
+    public String getName() {
+        return CATEGORY.name();
+    }
+
+    @Override
+    public String getTitle() {
+        return CATEGORY.title();
     }
 
     /**

@@ -30,8 +30,7 @@ import open.dolphin.helper.MenuActionManager.MenuAction;
  * @author pns
  */
 public class DiagnosisInspector implements IInspector {
-
-    public static final String NAME = "diagnosisInspector";
+    public static final InspectorCategory CATEGORY = InspectorCategory.病名;
 
     /** 呼び元の ChartImpl */
     private final ChartImpl context;
@@ -95,7 +94,6 @@ public class DiagnosisInspector implements IInspector {
 
         listModel = new DefaultListModel<>();
         diagList = new JList<>(listModel);
-        diagList.setName(NAME);
         diagList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         diagList.putClientProperty("Quaqua.List.style", "striped");
         diagList.setCellRenderer(new DiagnosisListCellRenderer());
@@ -198,6 +196,7 @@ public class DiagnosisInspector implements IInspector {
 
         // GUI 形成
         diagPanel = new DropPanel(new BorderLayout());
+        diagPanel.setName(CATEGORY.name());
         diagPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
         diagPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, 100));
 
@@ -265,6 +264,16 @@ public class DiagnosisInspector implements IInspector {
     @Override
     public JPanel getPanel() {
         return diagPanel;
+    }
+
+    @Override
+    public String getName() {
+        return CATEGORY.name();
+    }
+
+    @Override
+    public String getTitle() {
+        return CATEGORY.title();
     }
 
     public JList<RegisteredDiagnosisModel> getList() {
