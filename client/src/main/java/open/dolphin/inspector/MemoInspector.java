@@ -23,6 +23,7 @@ import open.dolphin.ui.ExecuteScript;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.ui.PNSTitledBorder;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,6 +43,12 @@ public class MemoInspector implements IInspector {
     private JPanel memoPanel;
     private CompositeArea memoArea;
     private PatientMemoModel patientMemoModel;
+
+    private PNSTitledBorder border;
+    private String titleText;
+    private Font titleFont;
+    private Color titleColor;
+
     private final Logger logger;
 
     private String oldText = "";
@@ -125,6 +132,18 @@ public class MemoInspector implements IInspector {
     @Override
     public Border getBorder() {
         // もし関連文書(/Volumes/documents/.../${患者id}）があれば，メモタイトルを変える
+        createTitle();
+        
+        border = (PNSTitledBorder) PNSBorderFactory.createTitledBorder(
+                null, titleText, TitledBorder.LEFT, TitledBorder.TOP, titleFont, titleColor);
+
+        return border;
+    }
+
+    /**
+     * memo title を作ってフィールド変数にセットする.
+     */
+    private void createTitle() {
         File infoFolder = new File (path);
 
         // jpeg ファイルフィルタ
@@ -137,8 +156,6 @@ public class MemoInspector implements IInspector {
         FileFilter ffAltDrug = file -> file.getName().contains("代替");
 
         StringBuilder memoTitle = new StringBuilder();
-        Color color;
-        Font font;
 
         // 情報ファイルのフォルダがあるかどうか
         if (infoFolder.exists()) {
@@ -164,17 +181,17 @@ public class MemoInspector implements IInspector {
 
             memoTitle.append("あり");
 
-            color = Color.blue;
-            font = new Font(Font.SANS_SERIF,Font.BOLD,12);
+            titleColor = Color.blue;
+            titleFont = new Font(Font.SANS_SERIF,Font.BOLD,12);
 
         } else {
             // フォルダがない
             memoTitle.append(InspectorCategory.メモ.title());
-            color = Color.BLACK;
-            font = null;
+            titleColor = Color.BLACK;
+            titleFont = null;
         }
 
-        return PNSBorderFactory.createTitledBorder(null, memoTitle.toString(), TitledBorder.LEFT, TitledBorder.TOP, font, color);
+        titleText = memoTitle.toString();
     }
 
     /**

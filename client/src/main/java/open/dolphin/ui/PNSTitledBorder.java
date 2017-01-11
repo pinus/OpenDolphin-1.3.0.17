@@ -29,11 +29,11 @@ public class PNSTitledBorder extends AbstractBorder {
     private final Border contentBorder;
     private final Insets borderInsets = new Insets(DEFAULT_INSET + DEFAULT_FONT_HEIGHT + SPACING, DEFAULT_INSET, DEFAULT_INSET, DEFAULT_INSET);
 
-    private final Border titleBorder; // 未対応
-    private final String title;
-    private final int justification, position; // 未対応
-    private final Font font;
-    private final Color fontColor;
+    private Border titleBorder; // 未対応
+    private String title;
+    private int justification, position; // 未対応
+    private Font font;
+    private Color fontColor;
 
     private final int fontHeight;
 
@@ -53,7 +53,7 @@ public class PNSTitledBorder extends AbstractBorder {
         position = titlePosition;
         font = titleFont == null? DEFAULT_TITLE_FONT : titleFont;
         fontColor = titleColor == null? Color.BLACK : titleColor;
-        
+
         fontHeight = DEFAULT_FONT_HEIGHT;
 
         contentBorder = new ImageBevelBorder(GUIConst.ICON_BORDER_GROUPBOX_18, new Insets(7,7,7,7), borderInsets);
@@ -78,5 +78,14 @@ public class PNSTitledBorder extends AbstractBorder {
     @Override
     public Insets getBorderInsets(Component c) {
         return borderInsets;
+    }
+
+    public void setTitle(Border b, String text, int j, int p, Font f, Color c) {
+        titleBorder = b;
+        title = text;
+        justification = j;
+        position = p;
+        if (font != null) { font = f; }
+        if (c != null) { fontColor = c; }
     }
 }

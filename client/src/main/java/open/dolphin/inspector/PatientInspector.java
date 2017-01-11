@@ -123,6 +123,13 @@ public class PatientInspector {
         });
 
         // update
+        update();
+    }
+
+    /**
+     * すべtのインスペクタをアップデートする.
+     */
+    public void update() {
         inspectorMap.values().forEach(inspector -> inspector.update());
     }
 
