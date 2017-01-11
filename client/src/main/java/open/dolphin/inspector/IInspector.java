@@ -46,7 +46,8 @@ public interface IInspector {
 
     /**
      * Tab のバッジを表示したい時に使う.
-     * @param listener
+     * @param listener BadgeListener
+     * @param index Badge を付ける tab のインデックス番号
      */
-    default public void addBadgeListener(BadgeListener listener) {}
+    default public void addBadgeListener(BadgeListener listener, int index) {}
 }

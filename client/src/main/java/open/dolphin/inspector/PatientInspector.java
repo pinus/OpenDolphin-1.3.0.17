@@ -1,23 +1,19 @@
 package open.dolphin.inspector;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.io.File;
-import java.io.FileFilter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
 import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
-import open.dolphin.infomodel.KarteBean;
-import open.dolphin.infomodel.PatientModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.PNSBadgeTabbedPane;
-import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * 各々の Inspecter を生成して配置する.
@@ -26,279 +22,109 @@ import open.dolphin.ui.PNSBorderFactory;
  */
 public class PatientInspector {
 
-    public static final int DEFAULT_WIDTH = ClientContext.isMac()? 280 : 260;
-    public static final int DEFAULT_HEIGHT = ClientContext.isMac()? 175 : 178;
-
     // 個々のインスペクタ
-    // 患者基本情報
+    // 患者基本情報 (固定インスペクタ)
     private BasicInfoInspector basicInfoInspector;
-    // 来院歴
-    //private PatientVisitInspector patientVisitInspector;
-    // 患者メモ
-    //private MemoInspector memoInspector;
-    // 文書履歴
-    //private DocumentHistory docHistory;
-    // アレルギ
-    //private AllergyInspector allergyInspector;
-    // 身長体重
-    //private PhysicalInspector physicalInspector;
-    // 病名インスペクタ
-    //private DiagnosisInspector diagnosisInspector;
-    // 関連文書インスペクタ
-    //private FileInspector fileInspector;
+    // 全インスペクタを入れる map
+    private final HashMap<String, IInspector> inspectorMap = new HashMap<>();
     // DocumentHistory インスペクタを格納するタブペイン. ６個目以降のインスペクタはここに追加される.
     private PNSBadgeTabbedPane tabbedPane;
     // このクラスのコンテナパネル
     private JPanel container;
     // Context このインスペクタの親コンテキスト
-    private ChartImpl context;
-
-    // 優先される 5つに入ったかどうか. これが false ならタブに格納.
-    private boolean bMemo;
-    private boolean bAllergy;
-    private boolean bPhysical;
-    private boolean bCalendar;
-    private boolean bDiagnosis;
-    private boolean bFile;
+    private final ChartImpl context;
 
     /**
      * 患者インスペクタクラスを生成する.
-     * @param context インスペクタの親コンテキスト
+     * @param chart インスペクタの親コンテキスト
      */
-    public PatientInspector(ChartImpl context) {
-        // このインスペクタが格納される Chart Object
-        setContext(context);
-        // GUI を初期化する
+    public PatientInspector(ChartImpl chart) {
+        context = chart;
         initComponents();
     }
 
     private void initComponents() {
 
-        // Preference に保存されているインスペクタの順番を読み込む
-        String topInspector = Project.getPreferences().get("topInspector", InspectorCategory.メモ.name()); //0"メモ"
-        String secondInspector = Project.getPreferences().get("secondInspector", InspectorCategory.病名.name()); //5"病名"
-        String thirdInspector = Project.getPreferences().get("thirdInspector", InspectorCategory.カレンダー.name()); //1"カレンダ"
-        String forthInspector = Project.getPreferences().get("forthInspector", InspectorCategory.文書履歴.name()); //2"文書履歴"
-        String fifthInspector = Project.getPreferences().get("fifthInspector", InspectorCategory.アレルギー.name()); //3"アレルギー"
-
-        // 固定インスペクタ
-        basicInfoInspector = new BasicInfoInspector(context);
-
-        
-        // 浮動インスペクタ
-        HashMap<String, IInspector> map = new HashMap<>();
-        map.put(InspectorCategory.メモ.name(), new MemoInspector(context));
-        map.put(InspectorCategory.カレンダー.name(), new PatientVisitInspector(context));
-        map.put(InspectorCategory.文書履歴.name(), new DocumentHistory(context));
-        map.put(InspectorCategory.アレルギー.name(), new AllergyInspector(context));
-        map.put(InspectorCategory.身長体重.name(), new PhysicalInspector(context));
-        map.put(InspectorCategory.病名.name(), new DiagnosisInspector(context));
-        map.put(InspectorCategory.関連文書.name(), new FileInspector(context));
-
-        //memoInspector = new MemoInspector(context);
-        //patientVisitInspector = new PatientVisitInspector(context);
-        //docHistory = new DocumentHistory(getContext());
-        //allergyInspector = new AllergyInspector(context);
-        //physicalInspector = new PhysicalInspector(context);
-        //diagnosisInspector = new DiagnosisInspector(context);
-        //fileInspector = new FileInspector(context);
-
+        // Preference に保存されているインスペクタの順番を読み込む.
+        // 文書履歴は必ずこの中に入っている.
+        String[] prefName = {
+            Project.getPreferences().get("topInspector", InspectorCategory.メモ.name()),        //0"メモ"
+            Project.getPreferences().get("secondInspector", InspectorCategory.病名.name()),     //5"病名"
+            Project.getPreferences().get("thirdInspector", InspectorCategory.カレンダー.name()), //1"カレンダ"
+            Project.getPreferences().get("forthInspector", InspectorCategory.文書履歴.name()),   //2"文書履歴"
+            Project.getPreferences().get("fifthInspector", InspectorCategory.アレルギー.name()),  //3"アレルギー"
+        };
 
         // タブパネル
         tabbedPane = new PNSBadgeTabbedPane();
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        // docHistory は必ずタブに入れる
-        //tabbedPane.addTab(InspectorCategory.文書履歴.title(), map.get(InspectorCategory.文書履歴.name()).getPanel());
 
         // 全体の container
         container = new HorizontalPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 
-        // 左側のレイアウトを行う
-        layoutRow(container, topInspector);
-        layoutRow(container, secondInspector);
-        layoutRow(container, thirdInspector);
-        layoutRow(container, forthInspector);
-        layoutRow(container, fifthInspector);
+        // 固定インスペクタ
+        basicInfoInspector = new BasicInfoInspector(context);
+        inspectorMap.put(basicInfoInspector.getName(), basicInfoInspector);
 
-        // 左側にレイアウトされなかったものをタブに格納する
-        if (!bMemo) {
-            tabbedPane.addTab(memoInspector.getTitle(), memoInspector.getPanel());
-        }
+        // Preference に記録されたインスペクタを入れる配列: 順番を保持して入れていく
+        IInspector[] prefInspector = new IInspector[prefName.length];
+        // その他のインスペクタを入れる配列
+        List<IInspector> otherInspectors = new ArrayList<>();
 
-        if (!bCalendar) {
-            tabbedPane.addTab(patientVisitInspector.getTitle(), patientVisitInspector.getPanel());
-        }
+        // 浮動インスペクタを生成して分類する
+        Arrays.asList(InspectorCategory.values()).stream()
+                .map(c -> c.clazz()).filter(Objects::nonNull).forEach(clazz -> {
+            try {
+                    // インスペクタを生成する
+                    Constructor<? extends IInspector> c = clazz.getConstructor(ChartImpl.class);
+                    IInspector ins = c.newInstance(context);
 
-        if (!bAllergy) {
-            tabbedPane.addTab(allergyInspector.getTitle(), allergyInspector.getPanel());
-        }
+                    // pref インスペクタかどうか分類
+                    boolean isPref = false;
 
-        if (!bPhysical) {
-            tabbedPane.addTab(physicalInspector.getTitle(), physicalInspector.getPanel());
-        }
+                    for (int i=0; i<prefName.length; i++) {
+                        if (prefName[i].equals(ins.getName())) {
+                            prefInspector[i] = ins;
+                            inspectorMap.put(ins.getName(), ins);
+                            isPref = true;
+                            break;
+                        }
+                    }
+                    if (! isPref) {
+                        otherInspectors.add(ins);
+                        inspectorMap.put(ins.getName(), ins);
+                    }
 
-        if (!bDiagnosis) {
-            tabbedPane.addTab(diagnosisInspector.getTitle(), diagnosisInspector.getPanel());
-        }
-        if (!bFile) {
-            tabbedPane.addTab(fileInspector.getTitle(), fileInspector.getPanel());
-        }
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | InstantiationException ex) {
+                ex.printStackTrace(System.err);
+            }
+        });
 
-        // BadgeListener
-        if (!bFile) {
-            fileInspector.addBadgeListener(tabbedPane::setBadge, tabbedPane.getTabCount()-1);
-        }
+        // 分類したインスペクタをレイアウトしていく
+        for (IInspector pref : prefInspector) {
+            if (pref == null) { continue; }
 
-        memoInspector.update();
-        basicInfoInspector.update();
-        fileInspector.update();
-        allergyInspector.update();
-        physicalInspector.update();
-        patientVisitInspector.update();
-        docHistory.update();
-        diagnosisInspector.update();
-
-        Dimension d = container.getMinimumSize();
-        d.width = DEFAULT_WIDTH;
-        container.setMinimumSize(d);
-    }
-
-    /**
-     * content に inspector をレイアウトする.
-     * @param content
-     * @param itype
-     */
-    private void layoutRow(JPanel content, String itype) {
-
-        if (itype.equals(InspectorCategory.メモ.name())) { //"メモ"
-
-            // もし関連文書(/Volumes/documents/${患者id}）があれば，メモタイトルを変える
-            final String path = FileInspector.getDocumentPath(context.getKarte().getPatient().getPatientId());
-            File infoFolder = new File (path);
-
-            // jpeg ファイルフィルタ
-            FileFilter ffJpg = file -> file.getName().toLowerCase().endsWith(".jpg");
-            // 検査 ファイルフィルタ
-            FileFilter ffExam = file -> file.getName().contains("検査");
-            // 添書 ファイルフィルタ
-            FileFilter ffLetter = file -> file.getName().contains("紹介") | file.getName().contains("返事") | file.getName().contains("手紙");
-            // 代替処方 ファイルフィルタ
-            FileFilter ffAltDrug = file -> file.getName().contains("代替");
-
-            StringBuilder memoTitle = new StringBuilder();
-            Color mColor = null;
-            Font mFont = null;
-
-            // 情報ファイルのフォルダがあるかどうか
-            if (infoFolder.exists()) {
-                boolean miscellaneous = true;
-
-                if (infoFolder.listFiles(ffJpg).length > 0) {
-                    if (!memoTitle.toString().equals("")) { memoTitle.append("・"); }
-                    memoTitle.append("写真");
-                    miscellaneous = false;
-                }
-                if (infoFolder.listFiles(ffExam).length > 0) {
-                    if (!memoTitle.toString().equals("")) { memoTitle.append("・"); }
-                    memoTitle.append("検査");
-                    miscellaneous = false;
-                }
-                if (infoFolder.listFiles(ffLetter).length > 0) {
-                    if (!memoTitle.toString().equals("")) { memoTitle.append("・"); }
-                    memoTitle.append("添書");
-                    miscellaneous = false;
-                }
-                if (infoFolder.listFiles(ffAltDrug).length > 0) {
-                    if (!memoTitle.toString().equals("")) { memoTitle.append("・"); }
-                    memoTitle.append("代替報告");
-                    miscellaneous = false;
-                }
-                if (miscellaneous) {
-                    if (!memoTitle.toString().equals("")) { memoTitle.append("・"); }
-                    memoTitle.append("ファイル");
-                }
-
-                memoTitle.append("あり");
-                if (mColor == null) { mColor = Color.blue; }
-                mFont = new Font(Font.SANS_SERIF,Font.BOLD,12);
-
+            // 文書履歴だけは必ず Tab に入れる.
+            if (pref.getName().equals(InspectorCategory.文書履歴.name())) {
+                tabbedPane.addTab(pref.getTitle(), pref.getPanel());
+                container.add(tabbedPane);
 
             } else {
-                // フォルダがない
-                if (memoTitle.toString().equals("")) {
-                    memoTitle.append(InspectorCategory.メモ.title());
-                    mColor = Color.BLACK;
-                    mFont = null;
-                }
+                pref.getPanel().setBorder(pref.getBorder());
+                container.add(pref.getPanel());
             }
-
-            memoInspector.getPanel().setBorder(PNSBorderFactory.createTitledBorder(
-                    null, memoTitle.toString(), TitledBorder.LEFT, TitledBorder.TOP, mFont, mColor));
-
-            content.add(memoInspector.getPanel());
-            bMemo = true;
-
-        } else if (itype.equals(InspectorCategory.カレンダー.name())) { //"カレンダ"
-            patientVisitInspector.getPanel().setBorder(patientVisitInspector.getBorder());
-            content.add(patientVisitInspector.getPanel());
-            bCalendar = true;
-
-        } else if (itype.equals(InspectorCategory.文書履歴.name())) { //"文書履歴"
-            content.add(tabbedPane);
-
-        } else if (itype.startsWith(InspectorCategory.アレルギー.name())) { //"アレルギ"
-            allergyInspector.getPanel().setBorder(allergyInspector.getBorder());
-            content.add(allergyInspector.getPanel());
-            bAllergy = true;
-
-        } else if (itype.equals(InspectorCategory.身長体重.name())) { // "身長体重"
-            physicalInspector.getPanel().setBorder(physicalInspector.getBorder());
-            content.add(physicalInspector.getPanel());
-            bPhysical = true;
         }
 
-        else if (itype.equals(InspectorCategory.病名.name())) { // "病名"
-            diagnosisInspector.getPanel().setBorder(diagnosisInspector.getBorder());
-            content.add(diagnosisInspector.getPanel());
-            bDiagnosis = true;
+        // その他のインスペクタをタブに収納
+        otherInspectors.forEach(ins -> {
+            tabbedPane.addTab(ins.getTitle(), ins.getPanel());
+            ins.addBadgeListener(tabbedPane::setBadge, tabbedPane.getTabCount()-1);
+        });
 
-        } else if (itype.equals(InspectorCategory.関連文書.name())) { // "関連文書"
-            fileInspector.getPanel().setBorder(fileInspector.getBorder());
-            content.add(fileInspector.getPanel());
-            bFile = true;
-        }
-    }
-
-    /**
-     * コンテキストを返す.
-     * @return
-     */
-    public ChartImpl getContext() {
-        return context;
-    }
-
-    /**
-     * コンテキストを設定する.
-     */
-    private void setContext(ChartImpl context) {
-        this.context = context;
-    }
-
-    /**
-     * 患者カルテを返す.
-     * @return  患者カルテ
-     */
-    public KarteBean getKarte() {
-        return context.getKarte();
-    }
-
-    /**
-     * 患者を返す.
-     * @return 患者
-     */
-    public PatientModel getPatient() {
-        return context.getKarte().getPatient();
+        // update
+        inspectorMap.values().forEach(inspector -> inspector.update());
     }
 
     /**
@@ -314,7 +140,7 @@ public class PatientInspector {
      * @return 来院歴インスペクタ
      */
     public PatientVisitInspector getPatientVisitInspector() {
-        return patientVisitInspector;
+        return (PatientVisitInspector) inspectorMap.get(InspectorCategory.カレンダー.name());
     }
 
     /**
@@ -322,7 +148,7 @@ public class PatientInspector {
      * @return 患者メモインスペクタ
      */
     public MemoInspector getMemoInspector() {
-        return memoInspector;
+        return (MemoInspector) inspectorMap.get(InspectorCategory.メモ.name());
     }
 
     /**
@@ -330,7 +156,7 @@ public class PatientInspector {
      * @return 文書履歴インスペクタ
      */
     public DocumentHistory getDocumentHistory() {
-        return docHistory;
+        return (DocumentHistory) inspectorMap.get(InspectorCategory.文書履歴.name());
     }
 
     /**
@@ -338,15 +164,15 @@ public class PatientInspector {
      * @return
      */
     public DiagnosisInspector getDiagnosisInspector() {
-        return diagnosisInspector;
+        return (DiagnosisInspector) inspectorMap.get(InspectorCategory.病名.name());
     }
 
     /**
-     * 病名インスペクタを返す.
+     * 関連文書インスペクタを返す.
      * @return
      */
     public FileInspector getFileInspector() {
-        return fileInspector;
+        return (FileInspector) inspectorMap.get(InspectorCategory.関連文書.name());
     }
 
     /**
@@ -361,12 +187,7 @@ public class PatientInspector {
      * 終了処理.
      */
     public void dispose() {
-        // List をクリアする
-        //docHistory.clear();
-        //allergyInspector.clear();
-        //physicalInspector.clear();
-
         // memo 欄の自動セーブ
-        memoInspector.save();
+        ((MemoInspector) inspectorMap.get(InspectorCategory.メモ.name())).save();
     }
 }

@@ -83,6 +83,7 @@ public class FileInspector implements IInspector {
         return DEFAULT_DOCUMENT_FOLDER + subfolder + id;
     }
 
+    @Override
     public void addBadgeListener(BadgeListener listener, int index) {
         badgeListener = listener;
         tabIndex = index;

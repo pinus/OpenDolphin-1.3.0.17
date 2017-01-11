@@ -3,10 +3,14 @@ package open.dolphin.inspector;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileFilter;
 import java.util.Date;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.CompositeArea;
@@ -18,6 +22,7 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.ExecuteScript;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSBorderFactory;
 import org.apache.log4j.Logger;
 
 /**
@@ -111,6 +116,65 @@ public class MemoInspector implements IInspector {
     @Override
     public String getTitle() {
         return CATEGORY.title();
+    }
+
+    /**
+     * 関連文書に応じた Border を返す.
+     * @return
+     */
+    @Override
+    public Border getBorder() {
+        // もし関連文書(/Volumes/documents/.../${患者id}）があれば，メモタイトルを変える
+        File infoFolder = new File (path);
+
+        // jpeg ファイルフィルタ
+        FileFilter ffJpg = file -> file.getName().toLowerCase().endsWith(".jpg");
+        // 検査 ファイルフィルタ
+        FileFilter ffExam = file -> file.getName().contains("検査");
+        // 添書 ファイルフィルタ
+        FileFilter ffLetter = file -> file.getName().contains("紹介") | file.getName().contains("返事") | file.getName().contains("手紙");
+        // 代替処方 ファイルフィルタ
+        FileFilter ffAltDrug = file -> file.getName().contains("代替");
+
+        StringBuilder memoTitle = new StringBuilder();
+        Color color;
+        Font font;
+
+        // 情報ファイルのフォルダがあるかどうか
+        if (infoFolder.exists()) {
+
+            if (infoFolder.listFiles(ffJpg).length > 0) {
+                memoTitle.append("写真・");
+            }
+            if (infoFolder.listFiles(ffExam).length > 0) {
+                memoTitle.append("検査・");
+            }
+            if (infoFolder.listFiles(ffLetter).length > 0) {
+                memoTitle.append("添書・");
+            }
+            if (infoFolder.listFiles(ffAltDrug).length > 0) {
+                memoTitle.append("代替報告・");
+            }
+            if (memoTitle.length() > 0) {
+                // 最後の「・」を取る
+                memoTitle.deleteCharAt(memoTitle.length()-1);
+            } else {
+                memoTitle.append("ファイル");
+            }
+
+            memoTitle.append("あり");
+
+            color = Color.blue;
+            font = new Font(Font.SANS_SERIF,Font.BOLD,12);
+
+        } else {
+            // フォルダがない
+            memoTitle.append(InspectorCategory.メモ.title());
+            color = Color.BLACK;
+            font = null;
+        }
+
+        return PNSBorderFactory.createTitledBorder(null, memoTitle.toString(), TitledBorder.LEFT, TitledBorder.TOP, font, color);
     }
 
     /**
