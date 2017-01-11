@@ -381,10 +381,26 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      */
     private class TabButton extends JToggleButton implements ActionListener {
         private static final long serialVersionUID = 1L;
+
+        private final Color INACTIVE_FRAME = new Color(219,219,219);
+        private final Color INACTIVE_FILL_SELECTED = new Color(227,227,227);
+        private final Color INACTIVE_FILL = new Color(246,246,246);
+        private final Color ACTIVE_FRAME = new Color(175,175,175);
+        private final Color ACTIVE_SEPARATOR = new Color(218,218,218);
+        private final Color ACTIVE_FRAME_SELECTED = new Color(91,91,91);
+        private final Color ACTIVE_SEPARATOR_SELECTED = new Color(91,91,91);
+        private final Color ACTIVE_FILL = new Color(240,240,240);
+        private final Color ACTIVE_FILL_SELECTED = new Color(100,100,100);
+        private final Color INACTIVE_TEXT = new Color(180,180,180);
+        private final Color INACTIVE_TEXT_SELECTED = new Color(50,50,50);
+
         private String name;
         private int index;
+        
+        public boolean isTop;
         public boolean isBottom;
         public boolean isRightEnd;
+        public boolean isLeftEnd;
 
         // レイアウトマネージャーでボタンの大きさを調節する時使う
         // public Dimension margin = new Dimension(0,-4); // no quaqua
@@ -430,70 +446,61 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             int h = this.getHeight();
 
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
-            // ボタン枠
-            if (parent.isActive()) { g.setColor(Color.GRAY); }
-            else { g.setColor(Color.LIGHT_GRAY); }
-
-            //g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
-            g.drawLine(0, 0, w-1, 0);
-            g.drawLine(0, 0, 0, h-1);
-            if (this.isBottom || buttonLayout.getVgap() != 0) { g.drawLine(0, h-1, w-1, h-1); }
-            if (this.isRightEnd || buttonLayout.getHgap() != 0) { g.drawLine(w-1, 0, w-1, h-1); }
-
-            // ボタン中身
             if (parent.isActive()) {
                 if (this.isSelected()) {
-                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-                    for(int y=0; y< h; y++) {
-                        int rgb = (int)(y / (float)h * 70f + 50f);
-                        g.setColor(new Color(rgb,rgb,rgb));
-                        g.drawLine(0, y, w, y);
-                    }
-                } else {
-                    g.setColor(Color.WHITE);
-                    float endAlpha = 0.4f;
-                    if (this.isEnabled()) { endAlpha = 0.8f; }
-                    for(int y=1; y< h-1; y++) {
-                        float alpha = y / (float)h * endAlpha;
-                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-                        g.drawLine(1, h-y, w-2, h-y);
+                    renderButton(g, w, h, ACTIVE_FRAME_SELECTED, ACTIVE_FILL_SELECTED);
 
-                    }
-                }
+                } else {
+                    renderButton(g, w, h, ACTIVE_FRAME, ACTIVE_FILL);
+               }
+
             } else {
                 if (this.isSelected()) {
-                    g.setColor(Color.BLACK);
-                    for(int y=0; y< h; y++) {
-                        float alpha = y / (float)h * 0.2f + 0.1f;
-                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-                        g.drawLine(0, h-y, w, h-y);
-                    }
+                    renderButton(g, w, h, INACTIVE_FRAME, INACTIVE_FILL_SELECTED);
+
+                } else {
+                    renderButton(g, w, h, INACTIVE_FRAME, INACTIVE_FILL);
+
                 }
             }
 
             // 文字記入
             FontMetrics fm = g.getFontMetrics();
-            Font font = g.getFont();
+
             int strWidth = fm.stringWidth(name);
 
-            if (this.isSelected()) {
-                // 影
-                g.setColor(Color.BLACK);
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-                g.drawString(name, (w-strWidth)/2+1, fm.getHeight()+3);
-                // boldに
-                g.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));
-                g.setColor(Color.WHITE);
+            if (parent.isActive()) {
+                if (this.isSelected()) {
+                    g.setColor(Color.WHITE);
+                } else{
+                    g.setColor(Color.BLACK);
+                }
+
             } else {
-                if (this.isEnabled()) { g.setColor(Color.BLACK); }
-                else { g.setColor(Color.GRAY); }
+                if (this.isSelected()) {
+                    g.setColor(INACTIVE_TEXT_SELECTED);
+                } else{
+                    g.setColor(INACTIVE_TEXT);
+                }
             }
 
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             g.drawString(name, (w-strWidth)/2, fm.getHeight()+2);
 
             g.dispose();
+        }
+
+        private void renderButton(Graphics2D g, int w, int h, Color frameColor, Color fillColor) {
+            // fill
+            g.setColor(fillColor);
+            g.fillRect(0, 0, w, h);
+            // frame
+            g.setColor(frameColor);
+            g.drawLine(0, 0, w-1, 0); // 上
+            g.drawLine(0, 0, 0, h-1); // 左
+            if (this.isBottom || buttonLayout.getVgap() != 0) { g.drawLine(0, h-1, w-1, h-1); } // 下
+            if (this.isRightEnd || buttonLayout.getHgap() != 0) { g.drawLine(w-1, 0, w-1, h-1); } // 右
         }
     }
 

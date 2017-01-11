@@ -79,6 +79,7 @@ public class PatientInspector {
                     // インスペクタを生成する
                     Constructor<? extends IInspector> c = clazz.getConstructor(ChartImpl.class);
                     IInspector ins = c.newInstance(context);
+                    inspectorMap.put(ins.getName(), ins);
 
                     // pref インスペクタかどうか分類
                     boolean isPref = false;
@@ -86,14 +87,12 @@ public class PatientInspector {
                     for (int i=0; i<prefName.length; i++) {
                         if (prefName[i].equals(ins.getName())) {
                             prefInspector[i] = ins;
-                            inspectorMap.put(ins.getName(), ins);
                             isPref = true;
                             break;
                         }
                     }
                     if (! isPref) {
                         otherInspectors.add(ins);
-                        inspectorMap.put(ins.getName(), ins);
                     }
 
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
