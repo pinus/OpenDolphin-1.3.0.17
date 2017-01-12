@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -133,6 +134,9 @@ public class GUIConst {
 
     // ダブルクリック後の Protection Time：この時間の間にドラッグが始まったらダブルクリックはキャンセルする
     public static final int PROTECTION_TIME = 50;
+
+    // パネルの default background
+    public static final Color PANEL_BACKGROUND = new Color(246,246,246);
 
     //
     // アイコンはここで集中管理

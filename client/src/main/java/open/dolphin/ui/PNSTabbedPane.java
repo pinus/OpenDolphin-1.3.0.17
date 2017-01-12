@@ -376,6 +376,15 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
+     * ButtonPanel のバックグランド色を設定する.
+     * @param b
+     */
+    public void setButtonPanelBackground(Color b) {
+        buttonPanel.setOpaque(true);
+        buttonPanel.setBackground(b);
+    }
+
+    /**
      * タブボタンクラス.
      */
     private class TabButton extends JToggleButton implements ActionListener {
