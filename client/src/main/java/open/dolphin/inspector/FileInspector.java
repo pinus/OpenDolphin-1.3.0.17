@@ -49,11 +49,11 @@ public class FileInspector implements IInspector {
 
     /**
      * MemoInspectorオブジェクトを生成する.
-     * @param context
+     * @param parent
      */
-    public FileInspector(ChartImpl context) {
+    public FileInspector(PatientInspector parent) {
 
-        this.context = context;
+        context = parent.getContext();
         logger = ClientContext.getBootLogger();
         initComponents();
     }

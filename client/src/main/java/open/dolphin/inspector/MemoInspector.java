@@ -22,6 +22,7 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.ExecuteScript;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.MyJSheet;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSTitledBorder;
 import org.apache.log4j.Logger;
@@ -38,6 +39,16 @@ public class MemoInspector implements IInspector {
 
     private static final Color[] ALERT_LINE_COLOR = {new Color(255,100,100), new Color(255,130,130), new Color(255,180,180)};
     private static final Color ALERT_BACK_COLOR = new Color(255,240,240);
+
+    // jpeg ファイルフィルタ
+    private static final FileFilter FF_JPG = file -> file.getName().toLowerCase().endsWith(".jpg");
+    // 検査 ファイルフィルタ
+    private static final FileFilter FF_EXAM = file -> file.getName().contains("検査");
+    // 添書 ファイルフィルタ
+    private static final FileFilter FF_LETTER = file -> file.getName().contains("紹介")
+            | file.getName().contains("返事") | file.getName().contains("手紙");
+    // 代替処方 ファイルフィルタ
+    private static final FileFilter FF_ALTDRUG = file -> file.getName().contains("代替");
 
     private final ChartImpl context;
     private JPanel memoPanel;
@@ -59,12 +70,12 @@ public class MemoInspector implements IInspector {
 
     /**
      * MemoInspectorオブジェクトを生成する.
-     * @param chart
+     * @param parent
      */
-    public MemoInspector(ChartImpl chart) {
-        context = chart;
+    public MemoInspector(PatientInspector parent) {
+        context = parent.getContext();
         logger = ClientContext.getBootLogger();
-        path = FileInspector.getDocumentPath(chart.getKarte().getPatient().getPatientId());
+        path = FileInspector.getDocumentPath(context.getKarte().getPatient().getPatientId());
         initComponents();
     }
 
@@ -100,8 +111,26 @@ public class MemoInspector implements IInspector {
         // kick AppleScript to open target folder
         memoPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                ExecuteScript.openPatientFolder(path);
+            public void mousePressed(MouseEvent e) {
+                File infoFolder = new File (path);
+                if (infoFolder.exists()) {
+                    // folder があれば開く
+                    ExecuteScript.openPatientFolder(path);
+
+                } else {
+                    // なければダイアログを出してフォルダを作ってから表示
+                    MyJSheet.showConfirmSheet(context.getFrame(), "関連文書フォルダを作りますか？", se -> {
+                        // 0=OK，1=いいえ，2=キャンセル
+                        if (se.getOption() == 0) {
+                            infoFolder.mkdir();
+                            ExecuteScript.openPatientFolder(path);
+                            // MemoInspector 表示の update
+                            createTitle();
+                            border.setTitle(border, titleText, TitledBorder.LEFT, TitledBorder.TOP, titleFont, titleColor);
+                            memoPanel.repaint();
+                        }
+                    });
+                }
             }
         });
     }
@@ -133,7 +162,7 @@ public class MemoInspector implements IInspector {
     public Border getBorder() {
         // もし関連文書(/Volumes/documents/.../${患者id}）があれば，メモタイトルを変える
         createTitle();
-        
+
         border = (PNSTitledBorder) PNSBorderFactory.createTitledBorder(
                 null, titleText, TitledBorder.LEFT, TitledBorder.TOP, titleFont, titleColor);
 
@@ -146,30 +175,21 @@ public class MemoInspector implements IInspector {
     private void createTitle() {
         File infoFolder = new File (path);
 
-        // jpeg ファイルフィルタ
-        FileFilter ffJpg = file -> file.getName().toLowerCase().endsWith(".jpg");
-        // 検査 ファイルフィルタ
-        FileFilter ffExam = file -> file.getName().contains("検査");
-        // 添書 ファイルフィルタ
-        FileFilter ffLetter = file -> file.getName().contains("紹介") | file.getName().contains("返事") | file.getName().contains("手紙");
-        // 代替処方 ファイルフィルタ
-        FileFilter ffAltDrug = file -> file.getName().contains("代替");
-
         StringBuilder memoTitle = new StringBuilder();
 
         // 情報ファイルのフォルダがあるかどうか
         if (infoFolder.exists()) {
 
-            if (infoFolder.listFiles(ffJpg).length > 0) {
+            if (infoFolder.listFiles(FF_JPG).length > 0) {
                 memoTitle.append("写真・");
             }
-            if (infoFolder.listFiles(ffExam).length > 0) {
+            if (infoFolder.listFiles(FF_EXAM).length > 0) {
                 memoTitle.append("検査・");
             }
-            if (infoFolder.listFiles(ffLetter).length > 0) {
+            if (infoFolder.listFiles(FF_LETTER).length > 0) {
                 memoTitle.append("添書・");
             }
-            if (infoFolder.listFiles(ffAltDrug).length > 0) {
+            if (infoFolder.listFiles(FF_ALTDRUG).length > 0) {
                 memoTitle.append("代替報告・");
             }
             if (memoTitle.length() > 0) {

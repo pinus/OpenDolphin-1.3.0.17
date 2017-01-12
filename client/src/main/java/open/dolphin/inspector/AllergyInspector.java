@@ -47,10 +47,10 @@ public class AllergyInspector implements IInspector {
 
     /**
      * AllergyInspectorオブジェクトを生成する.
-     * @param context
+     * @param parent
      */
-    public AllergyInspector(ChartImpl context) {
-        this.context = context;
+    public AllergyInspector(PatientInspector parent) {
+        context = parent.getContext();
         initComponents();
     }
 
@@ -61,7 +61,7 @@ public class AllergyInspector implements IInspector {
 
         view = new AllergyView();
         view.setName(CATEGORY.name());
-        
+
         JTable table = view.getTable();
 
         // アレルギーテーブルを設定する

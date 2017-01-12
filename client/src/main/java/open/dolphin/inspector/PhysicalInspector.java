@@ -54,10 +54,10 @@ public class PhysicalInspector implements IInspector {
 
     /**
      * PhysicalInspectorオブジェクトを生成する.
-     * @param ctx
+     * @param parent
      */
-    public PhysicalInspector(ChartImpl ctx) {
-        context = ctx;
+    public PhysicalInspector(PatientInspector parent) {
+        context = parent.getContext();
         logger = ClientContext.getBootLogger();
         initComponents();
     }

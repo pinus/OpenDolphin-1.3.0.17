@@ -22,10 +22,10 @@ public class PatientVisitInspector implements IInspector {
 
     /**
      * PatientVisitInspector を生成する.
-     * @param context
+     * @param parent
      */
-    public PatientVisitInspector(ChartImpl context) {
-        this.context = context;
+    public PatientVisitInspector(PatientInspector parent) {
+        context = parent.getContext();
         initComponent();
     }
 
@@ -55,7 +55,7 @@ public class PatientVisitInspector implements IInspector {
         pvtCode = ClientContext.getString("eventCode.pvt"); // "PVT"
         calendarCardPanel = new CalendarCardPanel(ClientContext.getEventColorTable());
         calendarCardPanel.setName(CATEGORY.name());
-        
+
         calendarCardPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         calendarCardPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         calendarCardPanel.setMaximumSize(new Dimension(1024, DEFAULT_HEIGHT));

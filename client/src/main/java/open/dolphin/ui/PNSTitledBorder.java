@@ -85,7 +85,7 @@ public class PNSTitledBorder extends AbstractBorder {
         title = text;
         justification = j;
         position = p;
-        if (font != null) { font = f; }
-        if (c != null) { fontColor = c; }
+        font = f == null? DEFAULT_TITLE_FONT : f;
+        fontColor = c == null? Color.BLACK : c;
     }
 }

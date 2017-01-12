@@ -45,10 +45,10 @@ public class BasicInfoInspector implements IInspector {
 
     /**
      * BasicInfoInspectorオブジェクトを生成する.
-     * @param context
+     * @param parent
      */
-    public BasicInfoInspector(ChartImpl context) {
-        this.context = context;
+    public BasicInfoInspector(PatientInspector parent) {
+        context = parent.getContext();
         initComponent();
     }
 

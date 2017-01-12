@@ -78,11 +78,11 @@ public class DiagnosisInspector implements IInspector {
 
     /**
      * DiagnosisInspectorオブジェクトを生成する.
-     * @param context
+     * @param parent
      */
-    public DiagnosisInspector(ChartImpl context) {
+    public DiagnosisInspector(PatientInspector parent) {
 
-        this.context = context;
+        context = parent.getContext();
         logger = ClientContext.getBootLogger();
         initComponents();
     }

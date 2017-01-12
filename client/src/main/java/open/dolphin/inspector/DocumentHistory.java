@@ -80,10 +80,10 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 文書履歴オブジェクトを生成する.
-     * @param context
+     * @param parent
      */
-    public DocumentHistory(ChartImpl context) {
-        this.context = context;
+    public DocumentHistory(PatientInspector parent) {
+        context = parent.getContext();
         initComponent();
         connect();
     }

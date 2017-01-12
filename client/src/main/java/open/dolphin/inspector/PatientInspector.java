@@ -64,7 +64,7 @@ public class PatientInspector {
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 
         // 固定インスペクタ
-        basicInfoInspector = new BasicInfoInspector(context);
+        basicInfoInspector = new BasicInfoInspector(PatientInspector.this);
         inspectorMap.put(basicInfoInspector.getName(), basicInfoInspector);
 
         // Preference に記録されたインスペクタを入れる配列: 順番を保持して入れていく
@@ -77,8 +77,8 @@ public class PatientInspector {
                 .map(c -> c.clazz()).filter(Objects::nonNull).forEach(clazz -> {
             try {
                     // インスペクタを生成する
-                    Constructor<? extends IInspector> c = clazz.getConstructor(ChartImpl.class);
-                    IInspector ins = c.newInstance(context);
+                    Constructor<? extends IInspector> c = clazz.getConstructor(PatientInspector.class);
+                    IInspector ins = c.newInstance(PatientInspector.this);
                     inspectorMap.put(ins.getName(), ins);
 
                     // pref インスペクタかどうか分類
@@ -131,6 +131,14 @@ public class PatientInspector {
      */
     public void update() {
         inspectorMap.values().forEach(inspector -> inspector.update());
+    }
+
+    /**
+     * ChartImpl を返す.
+     * @return
+     */
+    public ChartImpl getContext() {
+        return context;
     }
 
     /**
