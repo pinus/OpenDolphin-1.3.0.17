@@ -8,7 +8,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -396,7 +395,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
         private String name;
         private int index;
-        
+
         public boolean isTop;
         public boolean isBottom;
         public boolean isRightEnd;
@@ -492,15 +491,48 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         }
 
         private void renderButton(Graphics2D g, int w, int h, Color frameColor, Color fillColor) {
-            // fill
-            g.setColor(fillColor);
-            g.fillRect(0, 0, w, h);
-            // frame
-            g.setColor(frameColor);
-            g.drawLine(0, 0, w-1, 0); // 上
-            g.drawLine(0, 0, 0, h-1); // 左
-            if (this.isBottom || buttonLayout.getVgap() != 0) { g.drawLine(0, h-1, w-1, h-1); } // 下
-            if (this.isRightEnd || buttonLayout.getHgap() != 0) { g.drawLine(w-1, 0, w-1, h-1); } // 右
+            if (this.isLeftEnd && isTop && isBottom) {
+                // 左端のボタンの角を取る
+                // fill
+                int r = 6;
+                g.setColor(fillColor);
+                g.fillRoundRect(0, 0, w, h, r*2, r*2); // 全体を角丸で塗って
+                g.fillRect(w-r, 0, r, h); // 右端を四角く塗り直す
+                // frame
+                g.setColor(frameColor);
+                g.drawLine(r, 0, w-1, 0); // 上
+                g.drawLine(0, r, 0, h-r-1); // 左
+                g.drawArc(0, 0, r*2, r*2, 90, 90); // 左上 12時から反時計 90度
+                g.drawArc(0, h-r*2-1, r*2, r*2, 180, 90);
+                g.drawLine(r, h-1, w-1, h-1); // 下
+
+            } else if (this.isRightEnd && isTop && isBottom) {
+                // 右端のボタンの角を取る
+                // fill
+                int r = 6;
+                g.setColor(fillColor);
+                g.fillRoundRect(0, 0, w-1, h, r*2, r*2); // 右端のボタンは 1ドット狭い
+                g.fillRect(0, 0, r, h);
+                // frame
+                g.setColor(frameColor);
+                g.drawLine(0, 0, w-r-1, 0); // 上
+                g.drawLine(0, 0, 0, h-1); // 左
+                g.drawArc(w-1-r*2, 0, r*2, r*2, 0, 90); // 右上 3時から反時計 90度
+                g.drawArc(w-1-r*2, h-r*2-1, r*2, r*2, 0, -90); // 右下 3時から時計回り90度
+                g.drawLine(0, h-1, w-1-r, h-1); // 下
+                g.drawLine(w-1, r, w-1, h-1-r); // 右
+
+            } else  {
+                // fill
+                g.setColor(fillColor);
+                g.fillRect(0, 0, w, h);
+                // frame
+                g.setColor(frameColor);
+                g.drawLine(0, 0, w-1, 0); // 上
+                g.drawLine(0, 0, 0, h-1); // 左
+                if (this.isBottom || buttonLayout.getVgap() != 0) { g.drawLine(0, h-1, w-1, h-1); } // 下
+                if (this.isRightEnd || buttonLayout.getHgap() != 0) { g.drawLine(w-1, 0, w-1, h-1); } // 右
+            }
         }
     }
 
@@ -559,14 +591,17 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             totalHeight += tempHeight + (lineCount+1)*vgap;
             buttonCountAtLine.add(tempButtonCount);
 
-            // １行だったら，ボタンの長さをできるだけそろえる
+            // １行だったら
             if (lineCount == 1) {
                 if (width >= maxButtonWidth * buttonCount) {
                     for(int i=0; i< buttonCount; i++) {
                         TabButton button = (TabButton) buttonPanel.getComponent(i);
-                        button.margin.width = (maxButtonWidth - button.getPreferredSize().width);
+                        //ボタンの長さをできるだけそろえる
+                        //button.margin.width = (maxButtonWidth - button.getPreferredSize().width);
+                        button.isTop = true;
                         button.isBottom = true;
                         button.isRightEnd = (i == buttonCount -1);
+                        button.isLeftEnd = (i == 0);
                     }
                 }
             } else {
