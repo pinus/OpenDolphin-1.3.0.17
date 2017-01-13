@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.geom.AffineTransform;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -33,10 +34,11 @@ public class BasicInfoInspector implements IInspector {
     private static final Border MALE_BORDER = PNSBorderFactory.createTitleBarBorderLightBlue(new Insets(0,0,0,0));
     private static final Border FEMALE_BORDER = PNSBorderFactory.createTitleBarBorderPink(new Insets(0,0,0,0));
     private static final Border UNKNOWN_BORDER = PNSBorderFactory.createTitleBarBorderGray(new Insets(0,0,0,0));
-    private static final int WIDTH_EXTENSION = 50;
+    private static final int WIDTH_EXTENSION = 52;
 
     private JPanel panel;
     private JLabel nameLabel;
+    private JLabel kanaLabel;
     private JLabel ageLabel;
     private JLabel addressLabel;
 
@@ -62,6 +64,11 @@ public class BasicInfoInspector implements IInspector {
         nameLabel.setForeground(FONT_COLOR);
         nameLabel.setOpaque(false);
 
+        kanaLabel = new JLabel(" ");
+        kanaLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        kanaLabel.setForeground(FONT_COLOR);
+        kanaLabel.setOpaque(false);
+
         ageLabel = new JLabel(" ");
         ageLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         ageLabel.setForeground(FONT_COLOR);
@@ -73,6 +80,7 @@ public class BasicInfoInspector implements IInspector {
 
         namePanel.setOpaque(false);
         namePanel.add(nameLabel);
+        namePanel.add(kanaLabel);
         namePanel.add(Box.createGlue());
         namePanel.add(ageLabel);
 
@@ -112,14 +120,18 @@ public class BasicInfoInspector implements IInspector {
     public void update() {
         PatientModel patient = context.getPatient();
         String kanjiName = patient.getFullName();
-        String kanaName = patient.getKanaName();
-        // 名前が長い場合は，カナ名を半角にする
-        if (kanjiName.length() + kanaName.length() > 14) {
-            kanaName = StringTool.zenkakuKatakanaToHankakuKatakana(kanaName);
+        String kanaName = "（" + patient.getKanaName() + "）";
+
+        // 名前が長い場合は，カナ名を圧縮する
+        if (kanjiName.length() + kanaName.length() > 15) {
+            //kanaName = StringTool.zenkakuKatakanaToHankakuKatakana(kanaName);
+            float sy = (float) (15.5 - kanjiName.length()) / kanaName.length();
+            Font font = nameLabel.getFont().deriveFont(AffineTransform.getScaleInstance(sy, 1));
+            kanaLabel.setFont(font);
         }
 
-        String name = String.format(" %s（%s）", kanjiName, kanaName);
-        nameLabel.setText(name);
+        nameLabel.setText(kanjiName);
+        kanaLabel.setText(kanaName);
 
         ageLabel.setText(patient.getAgeBirthday() + " ");
 
