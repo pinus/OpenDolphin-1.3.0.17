@@ -22,7 +22,7 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.BadgeListener;
-import open.dolphin.ui.ExecuteScript;
+import open.dolphin.helper.ExecuteScript;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;

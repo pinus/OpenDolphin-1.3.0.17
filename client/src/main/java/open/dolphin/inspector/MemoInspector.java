@@ -19,7 +19,7 @@ import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientMemoModel;
 import open.dolphin.project.Project;
-import open.dolphin.ui.ExecuteScript;
+import open.dolphin.helper.ExecuteScript;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.MyJSheet;

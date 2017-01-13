@@ -1,5 +1,6 @@
-package open.dolphin.ui;
+package open.dolphin.helper;
 
+import open.dolphin.helper.AppleScriptExecutor;
 import java.awt.Window;
 import java.io.BufferedReader;
 import java.io.IOException;

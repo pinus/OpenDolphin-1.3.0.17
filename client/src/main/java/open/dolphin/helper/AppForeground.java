@@ -1,4 +1,4 @@
-package open.dolphin.ui;
+package open.dolphin.helper;
 
 import com.apple.eawt.AppEvent;
 import com.apple.eawt.AppForegroundListener;

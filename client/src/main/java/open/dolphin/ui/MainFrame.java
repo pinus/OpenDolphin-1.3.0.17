@@ -1,5 +1,6 @@
 package open.dolphin.ui;
 
+import open.dolphin.helper.AppForeground;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
