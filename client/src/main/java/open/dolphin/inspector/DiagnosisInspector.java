@@ -124,7 +124,6 @@ public class DiagnosisInspector implements IInspector {
                         // 診断が一つもないときはこっちに入る
                         // ダブルクリックで，エディタを立ち上げる
                         if (e.getClickCount() == 2) {
-                            diagList.setFocusable(false);
                             doc.openEditor2();
                         }
                         return;
@@ -141,15 +140,6 @@ public class DiagnosisInspector implements IInspector {
                     // 診断が一つでもある場合はこちらに入る
                     // ダブルクリックならエディタを立ち上げる
                     else if (e.getClickCount() == 2) {
-
-                        // なぜか diagList がフォーカスを横取りしてしまい，エディタがフォーカスを取れない.
-                        // 同じ現象は DiagnosisDocument からエディタを立ち上げた場合にもおこるが，
-                        // そちらは diagTable.setFocasable(false) を一時的に設定することで回避している
-                        //try{Thread.sleep(10);} catch (InterruptedException ex){}
-
-                        // こちらも，setFocasable で対応することにした
-                        //diagList.setFocusable(false);
-                        // なくても大丈夫になってる?
 
                         int sel = diagList.getSelectedIndex();
                         if (sel < 0) {
@@ -203,6 +193,16 @@ public class DiagnosisInspector implements IInspector {
         MyJScrollPane scrollPane = new MyJScrollPane(diagList);
         scrollPane.putClientProperty("JComponent.sizeVariant", "small");
         diagPanel.add(scrollPane);
+
+        // タイトル部分のダブルクリックで新規病名入力
+        diagPanel.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    doc.openEditor2();
+                }
+            }
+        });
 
         // ここで普通に ChartImpl#getDiagnosisDocument() を呼ぶと，遅延形成される ChartImpl#loadDocuments() が終了していないため
         // null が返ってきてしまう. そこで，ChartImpl#getDiagnosisDocument() に loadDocuments() が終了するまで待ってもらうように
@@ -278,14 +278,6 @@ public class DiagnosisInspector implements IInspector {
 
     public JList<RegisteredDiagnosisModel> getList() {
         return diagList;
-    }
-
-    /**
-     * DiagnosisDocument で，diagList を focasable にしてもらう
-     * @param b
-     */
-    public void setFocasable(boolean b) {
-        diagList.setFocusable(b);
     }
 
     /**
