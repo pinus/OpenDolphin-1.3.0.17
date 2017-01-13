@@ -474,6 +474,14 @@ public class DocumentHistory implements IInspector {
     }
 
     /**
+     * ChartImpl のフォーカス処理用.
+     * @return
+     */
+    public JTable getDocumentHistoryTable() {
+        return view.getTable();
+    }
+
+    /**
      * キーボード入力をブロックするリスナクラス.
      */
     private class BlockKeyListener implements KeyListener {

@@ -450,6 +450,30 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         final MainFrame frame = windowSupport.getFrame();
         frame.setName("chartFrame");
 
+        // FocusTraversalPolicy
+        frame.setFocusTraversalPolicy(new FocusTraversalPolicy(){
+            @Override
+            public Component getDefaultComponent(Container aContainer) {
+                // 最初にフォーカスを取る component
+                return getDocumentHistory().getDocumentHistoryTable();
+            }
+            @Override
+            public Component getComponentAfter(Container aContainer, Component aComponent) {
+                // 余計な focus 移動を行わない
+                return aComponent;
+            }
+            @Override
+            public Component getComponentBefore(Container aContainer, Component aComponent) {
+                // 余計な focus 移動を行わない
+                return aComponent;
+            }
+            @Override
+            public Component getFirstComponent(Container aContainer) { return null; }
+
+            @Override
+            public Component getLastComponent(Container aContainer) { return null; }
+        });
+
         // 患者インスペクタを生成する
         inspector = new PatientInspector(this);
         inspector.getPanel().setBorder(BorderFactory.createEmptyBorder()); // カット&トライ

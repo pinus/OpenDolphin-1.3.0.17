@@ -347,7 +347,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 // 最初にフォーカスを取る component
                 return editor.getSOAPane().getTextPane();
             }
-
             @Override
             public Component getComponentAfter(Container aContainer, Component aComponent) {
                 // 余計な focus 移動を行わない
@@ -358,7 +357,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 // 余計な focus 移動を行わない
                 return aComponent;
             }
-
             @Override
             public Component getFirstComponent(Container aContainer) { return null; }
 
