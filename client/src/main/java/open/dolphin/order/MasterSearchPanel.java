@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -22,6 +21,7 @@ import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.util.StringTool;
@@ -78,15 +78,11 @@ public class MasterSearchPanel extends JPanel {
     }
 
     /**
-     * textfield にフォーカスを取る
+     * textfield にフォーカスを取る.
+     * StampEditor#enter() から呼ばれる
      */
     public void requestFocusOnTextField() {
-        SwingUtilities.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                keywordField.requestFocusInWindow();
-            }
-        });
+        Focuser.requestFocus(keywordField);
     }
 
     private void initComponents() {

@@ -1,20 +1,15 @@
 package open.dolphin.setting;
 
 import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.prefs.Preferences;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import open.dolphin.client.AddFacilityDialog;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.client.ServerInfo;
+import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.DolphinPrincipal;
@@ -23,13 +18,14 @@ import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.IMEControl;
 
 /**
- * HostSettingPanel
+ * HostSettingPanel.
  *
  * @author Kazushi Minagawa
+ * @author pns
  */
 public class HostSettingPanel extends AbstractSettingPanel {
 
-    private String ipAddressPattern = "[A-Za-z0-9.\\-_]*";
+    private final String ipAddressPattern = "[A-Za-z0-9.\\-_]*";
     private static final String ID = "hostSetting";
     private static final String TITLE = "サーバ";
     private static final ImageIcon ICON = GUIConst.ICON_NETWORK_32;
@@ -47,7 +43,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
     private JCheckBox checkIntervalBox;
     private JCheckBox receivePvtBroadcastBox;
 
-    private Preferences prefs;
+    private final Preferences prefs;
 
     // RMI Server PORT
     //private int hostPort = 1099; // jboss 5
@@ -60,10 +56,14 @@ public class HostSettingPanel extends AbstractSettingPanel {
     private static final String DEFAULT_FACILITY_OID = IInfoModel.DEFAULT_FACILITY_OID;
 
     public HostSettingPanel() {
+        prefs = Project.getPreferences();
+        init();
+    }
+
+    private void init() {
         this.setId(ID);
         this.setTitle(TITLE);
         this.setIcon(ICON);
-        prefs = Project.getPreferences();
     }
 
     /**
@@ -71,7 +71,6 @@ public class HostSettingPanel extends AbstractSettingPanel {
      */
     @Override
     public void start() {
-
         // 画面モデルを生成し初期化する
         model = new ServerModel();
         model.populate(getProjectStub());
@@ -100,9 +99,9 @@ public class HostSettingPanel extends AbstractSettingPanel {
         String addSuperUserText = "アカウント作成";
 
         // テキストフィールドを生成する
-        hostAddressField = GUIFactory.createTextField(10, null, null, null);
-        facilityIdField = GUIFactory.createTextField(15, null, null, null);
-        userIdField = GUIFactory.createTextField(10, null, null, null);
+        hostAddressField = new JTextField(10);
+        facilityIdField = new JTextField(15);
+        userIdField = new JTextField(10);
 
         // パターン制約を加える
         // RegexConstrainedDocument hostDoc = new RegexConstrainedDocument(ipAddressPattern);
@@ -190,21 +189,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
         stateMgr = new StateMgr();
 
         // TextField へ入力または削除があった場合，cutState へ checkState() を送る
-        //DocumentListener dl = ProxyDocumentListener.create(stateMgr, "checkState");
-        DocumentListener dl = new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                stateMgr.checkState();
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                stateMgr.checkState();
-            }
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                stateMgr.checkState();
-            }
-        };
+        ProxyDocumentListener dl = e -> stateMgr.checkState();
 
         hostAddressField.getDocument().addDocumentListener(dl);
         facilityIdField.getDocument().addDocumentListener(dl);
@@ -216,46 +201,18 @@ public class HostSettingPanel extends AbstractSettingPanel {
         IMEControl.setImeOffIfFocused(userIdField);
 
         // サーバの利用形態 ラジオボタンがクリックされたら　cutState へ checkState を送る
-        ActionListener al = new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                stateMgr.controlAddressField();
-            }
-
-        };
+        ActionListener al = e -> stateMgr.controlAddressField();
         aspMember.addActionListener(al);
         facilityUser.addActionListener(al);
 
         // 管理者登録ボタンがクリックされたら自身をPropertyChangeListener にし
         // 管理者登録ダイアログを別スレッドでスタートさせる
-        registTesterBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                make5TestAccount();
-            }
-        });
+        registTesterBtn.addActionListener(e -> make5TestAccount());
 
-        facilityIdField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                hostAddressField.requestFocus();
-            }
-        });
-
-        hostAddressField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                userIdField.requestFocus();
-            }
-        });
-
-        userIdField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                hostAddressField.requestFocus();
-            }
-        });
+        // フォーカスを次の text field に送っていく
+        hostAddressField.addActionListener(e -> userIdField.requestFocus());
+        userIdField.addActionListener(e -> facilityIdField.requestFocus());
+        facilityIdField.addActionListener(e -> hostAddressField.requestFocus());
 
         // ログインしている状態の場合，この設定はできないようにする
         if (isLoginState()) {
@@ -271,18 +228,15 @@ public class HostSettingPanel extends AbstractSettingPanel {
             receivePvtBroadcastBox.setEnabled(false);
         }
 
-        checkIntervalBox.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (checkIntervalBox.isSelected()) {
-                    if (! isLoginState()) {
-                        checkIntervalSlider.setEnabled(true);
-                        checkIntervalSpinner.setEnabled(true);
-                    }
-                } else {
-                    checkIntervalSlider.setEnabled(false);
-                    checkIntervalSpinner.setEnabled(false);
+        checkIntervalBox.addChangeListener(e -> {
+            if (checkIntervalBox.isSelected()) {
+                if (! isLoginState()) {
+                    checkIntervalSlider.setEnabled(true);
+                    checkIntervalSpinner.setEnabled(true);
                 }
+            } else {
+                checkIntervalSlider.setEnabled(false);
+                checkIntervalSpinner.setEnabled(false);
             }
         });
     }
@@ -371,12 +325,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
         //masuda アカウント作成前にホストアドレスを保存するため
         save();
         AddFacilityDialog af = new AddFacilityDialog();
-        PropertyChangeListener pl = new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                newAccount((ServerInfo) evt.getNewValue());
-            }
-        };
+        PropertyChangeListener pl = evt -> newAccount((ServerInfo) evt.getNewValue());
         af.addPropertyChangeListener(AddFacilityDialog.ACCOUNT_INFO, pl);
         Thread t = new Thread(af);
         t.setPriority(Thread.NORM_PRIORITY);
@@ -385,6 +334,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
 
     /**
      * 管理者登録ダイアログの結果を受け取り情報を表示する.
+     * @param info
      */
     public void newAccount(ServerInfo info) {
 
@@ -542,8 +492,8 @@ public class HostSettingPanel extends AbstractSettingPanel {
         private boolean isValid() {
 
             boolean hostAddrOk = isIPAddress(hostAddressField.getText().trim());
-            boolean facilityIdOk = (facilityIdField.getText().trim().equals("") == false) ? true : false;
-            boolean userIdOk = (userIdField.getText().trim().equals("") == false) ? true : false;
+            boolean facilityIdOk = (facilityIdField.getText().trim().equals("") == false);
+            boolean userIdOk = (userIdField.getText().trim().equals("") == false);
 
             if (facilityUser.isSelected()) {
                 //masuda registerTesterBtnも制御する
@@ -552,7 +502,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
                 return ret;
 
             } else {
-                return (facilityIdOk && userIdOk) ? true : false;
+                return (facilityIdOk && userIdOk);
             }
         }
 

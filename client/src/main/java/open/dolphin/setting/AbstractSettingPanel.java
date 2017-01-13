@@ -11,7 +11,8 @@ import org.apache.log4j.Logger;
 /**
  * AbstractSettingPanel.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public abstract class AbstractSettingPanel {
 
@@ -34,8 +35,12 @@ public abstract class AbstractSettingPanel {
      * Creates a new instance of SettingPanel.
      */
     public AbstractSettingPanel() {
-        setUI(new JPanel());
         logger = ClientContext.getBootLogger();
+        init();
+    }
+
+    private void init() {
+        setUI(new JPanel());
     }
 
     public String getId() {

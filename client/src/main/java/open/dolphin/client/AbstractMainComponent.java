@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.Callable;
@@ -15,6 +16,7 @@ import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
 
@@ -265,7 +267,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
                 // テーブル以外の場所がクリックされていたら選択クリア（popup はのぞく）
                 if (clickedRow < 0 && !e.isPopupTrigger()) {
                     table.clearSelection();
-                    e.getComponent().requestFocusInWindow();
+                    requestFocus(e.getComponent());
 
                 // 選択のない位置で右クリックされていたら選択する（popup用）
                 } else {
@@ -281,12 +283,19 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
                         // 選択されていない場所でクリックした場合は選択し直す
                         if (!isSelected){
                             table.getSelectionModel().setSelectionInterval(clickedRow, clickedRow);
-                            table.requestFocusInWindow();
+                            requestFocus(table);
                         }
                     }
                 }
                 maybeShowPopup(e);
             }
+        }
+        /**
+         * フォーカス要求.
+         * @param c
+         */
+        private void requestFocus(Component c) {
+            Focuser.requestFocus(c);
         }
     }
 }

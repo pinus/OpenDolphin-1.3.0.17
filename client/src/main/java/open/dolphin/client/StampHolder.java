@@ -28,7 +28,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 /**
  * KartePane に Component　として挿入されるスタンプを保持するクラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc. modified by pns
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public final class StampHolder extends AbstractComponentHolder {
     private static final long serialVersionUID = 5853431116398862958L;
@@ -54,15 +55,11 @@ public final class StampHolder extends AbstractComponentHolder {
     private String startTag = null;
     private String endTag = null;
 
-    public StampHolder(final KartePane kartePane, final ModuleModel stamp) {
+    public StampHolder(final KartePane kartePane, final ModuleModel model) {
         super();
 
-        setForeground(FOREGROUND);
-        setBackground(BACKGROUND);
-        setBorder(MY_CLEAR_BORDER);
-
         this.kartePane = kartePane;
-        this.hints = new StampRenderingHints();
+        hints = new StampRenderingHints();
         hints.setCommentColor(COMMENT_COLOR);
 
         // スタンプの初期幅は ChartImpl の幅から決定する
@@ -70,7 +67,15 @@ public final class StampHolder extends AbstractComponentHolder {
         int w = (bounds.width + 1)/2 - 168; // 実験から連立方程式で求めた
         hints.setWidth((w<320)? 320 : w);
 
-        setStamp(stamp);
+        init(model);
+    }
+
+    private void init(ModuleModel model) {
+        setForeground(FOREGROUND);
+        setBackground(BACKGROUND);
+        setBorder(MY_CLEAR_BORDER);
+
+        setStamp(model);
     }
 
     /**
@@ -163,10 +168,10 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * このホルダのモデルを設定する.
-     * @param stamp
+     * @param model
      */
-    public void setStamp(ModuleModel stamp) {
-        this.stamp = stamp;
+    public void setStamp(ModuleModel model) {
+        stamp = model;
         setMyText();
     }
 
@@ -375,7 +380,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * Shift-commnad-C ショートカットでクリップボードにスタンプをコピーする
+     * Shift-commnad-C ショートカットでクリップボードにスタンプをコピーする.
      */
     private void addHiddenCommand() {
 
@@ -426,7 +431,7 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * 登録した Shift-command-C ショートカットを削除する
+     * 登録した Shift-command-C ショートカットを削除する.
      */
     private void removeHiddenCommand() {
         // Shift+command C

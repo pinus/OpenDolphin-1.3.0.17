@@ -732,7 +732,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * EditorValueListener
+     * EditorValueListener.
      * エディタで作成したスタンプをStampTreeに加える.
      */
     private class EditorValueListener implements PropertyChangeListener {
@@ -778,7 +778,7 @@ public class StampBoxPlugin extends AbstractMainTool {
                     }
                 }
                 // 終わったら tree にフォーカスを取る
-                tree.requestFocusInWindow();
+                Focuser.requestFocus(tree);
 
             } else if (obj != null && obj instanceof ArrayList) {
                 // 傷病名の場合

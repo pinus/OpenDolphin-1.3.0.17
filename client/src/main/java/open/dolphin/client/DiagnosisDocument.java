@@ -539,18 +539,21 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     @Override
     public void enter() {
         super.enter();
-        // undo/redo 可能にする
-//        getContext().enabledAction(GUIConst.ACTION_UNDO, false);
-//        getContext().enabledAction(GUIConst.ACTION_REDO, false);
         getContext().enabledAction(GUIConst.ACTION_SELECT_ALL, true);
         getContext().enabledAction(GUIConst.ACTION_SAVE, true);
         getContext().enabledAction(GUIConst.ACTION_SEND_CLAIM, true);
         // フォーカスを取る
-        EventQueue.invokeLater(() -> {
-            diagTable.requestFocusInWindow();
-            // enter のたびに update, delete, undo, redo ボタン制御
-            controlButtons();
-        });
+        requestFocus(diagTable);
+        // ボタン制御
+        controlButtons();
+    }
+
+    /**
+     * フォーカス処理.
+     * @param c
+     */
+    private void requestFocus(Component c) {
+        Focuser.requestFocus(c);
     }
 
     /**
@@ -1510,7 +1513,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         setDiagnosisCount();
     }
     public void selectAll() {
-        diagTable.requestFocusInWindow();
+        requestFocus(diagTable);
         diagTable.selectAll();
     }
 

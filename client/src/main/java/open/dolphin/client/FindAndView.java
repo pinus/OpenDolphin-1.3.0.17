@@ -29,9 +29,9 @@ public class FindAndView {
     private String searchText;
     private JPanel scrollerPanel; // 検索対象の Panel (KarteDocumentViewer からもってくる
 
-    private SimpleAttributeSet foundAttr = new SimpleAttributeSet(); // 見つかった
-    private SimpleAttributeSet onCursorAttr = new SimpleAttributeSet(); // 現在いるところ
-    private SimpleAttributeSet defaultAttr = new SimpleAttributeSet(); // もともとの背景色（panelに応じて変化）
+    private final SimpleAttributeSet foundAttr = new SimpleAttributeSet(); // 見つかった
+    private final SimpleAttributeSet onCursorAttr = new SimpleAttributeSet(); // 現在いるところ
+    private final SimpleAttributeSet defaultAttr = new SimpleAttributeSet(); // もともとの背景色（panelに応じて変化）
 
     private FoundDataList foundDataList;
     private int row; // 現在の row
@@ -48,7 +48,7 @@ public class FindAndView {
     }
 
     /**
-     * findFirst 検索対象のパネルをスキャンして，検索結果を positions データベースに入れる
+     * findFirst 検索対象のパネルをスキャンして，検索結果を positions データベースに入れる.
      * さらに最初に見つかった部分を表示する
      * @param text
      * @param soaIsOn
@@ -143,12 +143,13 @@ public class FindAndView {
                 setOnCursorAttr(foundDataList.getStamp(row));
             }
             scrollToCenter(panel, foundDataList.getPane(row), foundDataList.getPos(row));
-            panel.requestFocus();
 
-        } else showNotFoundDialog("検索", "はみつかりませんでした");
+        } else {
+            showNotFoundDialog("検索", "はみつかりませんでした");
+        }
     }
     /**
-     * 検索結果データベース(positions)を元に見つかった部分を表示する
+     * 検索結果データベース(positions)を元に見つかった部分を表示する.
      * @param panel
      * @param next
      */
@@ -169,8 +170,8 @@ public class FindAndView {
         if (panel == scrollerPanel) {
 
             // 次の検索の前に onCursorAttr を foundAttr に戻す
-//          if (isText(row)) setFoundAttr(getPane(row), getPos(row));
-//          else setFoundAttr(getStamp(row));
+            // if (isText(row)) setFoundAttr(getPane(row), getPos(row));
+            // else setFoundAttr(getStamp(row));
             if (foundDataList.isText(row)) {
                 removeAttr(foundDataList.getPane(row), foundDataList.getPos(row));
             } else {
@@ -211,7 +212,7 @@ public class FindAndView {
     }
 
     /**
-     * 検索文字列をハイライト表示するための関連メソッド
+     * 検索文字列をハイライト表示するための関連メソッド.
      * @param pane
      * @param pos
      */
@@ -246,7 +247,7 @@ public class FindAndView {
     }
 
     /**
-     * 検索してカーソルがある部分をできるだけ画面の中央に表示する
+     * 検索してカーソルがある部分をできるだけ画面の中央に表示する.
      * @param panel
      * @param pane
      * @param pos
@@ -267,7 +268,7 @@ public class FindAndView {
     }
 
     /**
-     * マーキングを全てクリアする
+     * マーキングを全てクリアする.
      * @param panel
      */
     private void clearMarking(JPanel panel) {
@@ -286,13 +287,12 @@ public class FindAndView {
             KarteStyledDocument kd = (KarteStyledDocument) pPane.getStyledDocument();
             for (int j=0; j<kd.getLength(); j++) {
                 StampHolder sh = (StampHolder) StyleConstants.getComponent(kd.getCharacterElement(j).getAttributes());
-                if (sh != null) removeAttr(sh);
+                if (sh != null) { removeAttr(sh); }
             }
         }
     }
 
     private void showNotFoundDialog(String title, String message) {
-//      JOptionPane.showMessageDialog(scrollerPanel.getRootPane(),
         MyJSheet.showMessageDialog(scrollerPanel,
                 "「" + searchText + "」" + message,
                 title,
@@ -308,14 +308,14 @@ public class FindAndView {
     }
 
     /**
-     * 検索で見つかったデータを入れておく model
+     * 検索で見つかったデータを入れておく model.
      */
     private class FoundDataList {
 
-        private List<Model> list;
+        private final List<Model> list;
 
         public FoundDataList() {
-            list = new ArrayList<Model>();
+            list = new ArrayList<>();
         }
 
         public void addRow(int y, boolean isText, JTextPane pane, int pos, StampHolder sh) {
@@ -354,7 +354,7 @@ public class FindAndView {
             return list.get(row).stampHolder;
         }
 
-        private class Model implements Comparable {
+        private class Model implements Comparable<Model> {
             public int y;
             public boolean isText;
             public JTextPane pane;
@@ -370,8 +370,8 @@ public class FindAndView {
             }
 
             @Override
-            public int compareTo(Object o) {
-                int test = ((Model)o).y;
+            public int compareTo(Model o) {
+                int test = o.y;
                 if (test == y){
                     return 0;
                 } else if (test > y) {

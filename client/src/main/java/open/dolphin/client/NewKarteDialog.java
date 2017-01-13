@@ -8,6 +8,7 @@ import java.util.prefs.Preferences;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
+import open.dolphin.ui.Focuser;
 
 /**
  * 新規カルテ作成のダイアログ.
@@ -238,7 +239,7 @@ public final class NewKarteDialog {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
-                insuranceList.requestFocusInWindow();
+                Focuser.requestFocus(insuranceList);
             }
         });
         dialog.setVisible(true);
@@ -298,14 +299,6 @@ public final class NewKarteDialog {
             default:
                 break;
         }
-    }
-
-    /**
-     * 保険選択リストにフォーカスする.
-     * @param e
-     */
-    public void controlFocus(WindowEvent e) {
-        insuranceList.requestFocusInWindow();
     }
 
     /**

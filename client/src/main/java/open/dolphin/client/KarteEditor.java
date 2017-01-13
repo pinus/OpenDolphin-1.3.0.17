@@ -92,7 +92,12 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private final Logger logger = ClientContext.getBootLogger();
 
     public KarteEditor() {
+        init();
+    }
+
+    private void init() {
         setTitle(DEFAULT_TITLE);
+
     }
 
     /**
@@ -406,11 +411,11 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         ChartMediator mediator = getContext().getChartMediator();
         soaPane.init(editable, mediator);
         pPane.init(editable, mediator);
-        EventQueue.invokeLater(() -> {
+
+        SwingUtilities.invokeLater(() -> {
             // キャレットを先頭にリセット.
             getSOAPane().getTextPane().setCaretPosition(0);
             getPPane().getTextPane().setCaretPosition(0);
-            getSOAPane().getTextPane().requestFocusInWindow();
         });
         enter();
     }

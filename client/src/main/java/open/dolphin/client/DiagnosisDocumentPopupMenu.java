@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import open.dolphin.infomodel.*;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJPopupMenu;
 
 /**
@@ -110,7 +111,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
             }
         }
         if (shouldReselect) {
-            diagTable.requestFocusInWindow();
+            Focuser.requestFocus(diagTable);
             diagTable.getSelectionModel().setSelectionInterval(row, row);
         }
 

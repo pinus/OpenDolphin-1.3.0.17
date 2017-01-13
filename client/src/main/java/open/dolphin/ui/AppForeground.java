@@ -5,7 +5,7 @@ import com.apple.eawt.AppForegroundListener;
 import com.apple.eawt.Application;
 
 /**
- *
+ * アプリケーションが foreground にいるか，background に回っているかの状態を保持する.
  * @author pns
  */
 public class AppForeground {

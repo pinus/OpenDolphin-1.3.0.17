@@ -28,6 +28,7 @@ import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.PNSTriple;
@@ -72,10 +73,8 @@ public class PatientSearchImpl extends AbstractMainComponent {
      * Keyword Field にフォーカスを取る.
      */
     public void requestFocus() {
-        SwingUtilities.invokeLater(() ->{
-            view.getKeywordFld().requestFocusInWindow();
-            view.getKeywordFld().selectAll();
-        });
+        Focuser.requestFocus(view.getKeywordFld());
+        view.getKeywordFld().selectAll();
     }
 
     @Override

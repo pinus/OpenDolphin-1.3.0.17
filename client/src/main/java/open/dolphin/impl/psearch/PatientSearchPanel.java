@@ -21,6 +21,7 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.ui.CompletableJTextField;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
 import open.dolphin.util.PNSPair;
@@ -73,7 +74,7 @@ public class PatientSearchPanel extends MainComponentPanel {
             JMenuItem item = new JMenuItem(pair.getName());
             item.addActionListener(e -> {
                 keywordFld.setText(pair.getValue() + " ");
-                keywordFld.requestFocusInWindow();
+                Focuser.requestFocus(keywordFld);
             });
             popup.add(item);
         });

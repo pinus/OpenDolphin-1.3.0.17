@@ -14,7 +14,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import open.dolphin.client.CalendarCardPanel;
 import open.dolphin.client.ClientContext;
 import open.dolphin.event.ProxyAction;
@@ -22,6 +21,7 @@ import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PhysicalModel;
 import open.dolphin.infomodel.SimpleDate;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJPopupMenu;
 
@@ -86,8 +86,7 @@ public class PhysicalEditor {
         dialog.addWindowListener(new WindowAdapter(){
             @Override
             public void windowOpened(WindowEvent e) {
-                SwingUtilities.invokeLater(view::requestFocusInWindow);
-                SwingUtilities.invokeLater(view.getWeightFld()::requestFocusInWindow);
+                Focuser.requestFocus(view.getWeightFld());
             }
         });
 

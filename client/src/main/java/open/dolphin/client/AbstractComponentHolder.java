@@ -7,11 +7,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.*;
+import open.dolphin.ui.Focuser;
 
 /**
  * ComponentHolder.
- * StampHolder と SchemaHolder
- * @author  Kazushi Minagawa modified by pns
+ * StampHolder と SchemaHolder.
+ * @author Kazushi Minagawa
+ * @author pns
  */
 public abstract class AbstractComponentHolder extends JLabel implements ComponentHolder<JLabel>, MouseListener, MouseMotionListener {
     private static final long serialVersionUID = 1L;
@@ -69,7 +71,7 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
     @Override
     public void mousePressed(MouseEvent e) {
         // requestFocus はここの方がいい. mouseClicked だと，mouseRelease されるまで focus とれないから
-        requestFocusInWindow();
+        Focuser.requestFocus(this);
         // 右クリックで popup 表示
         if (e.isPopupTrigger()) { maybeShowPopup(e); }
         // ダブルクリックでエディタ表示
@@ -93,7 +95,7 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
     @Override
     public void mouseDragged(MouseEvent e) {
         // ドラッグの際にも，スタンプを selected 状態にする
-        requestFocusInWindow();
+        Focuser.requestFocus(this);
 
         int ctrlMask = InputEvent.CTRL_DOWN_MASK;
         int optionMask = InputEvent.ALT_DOWN_MASK;

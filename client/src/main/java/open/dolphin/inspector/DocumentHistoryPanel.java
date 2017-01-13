@@ -60,7 +60,7 @@ public class DocumentHistoryPanel extends JPanel {
         return cntLbl;
     }
 
-    public JComboBox getExtractCombo() {
+    public JComboBox<PNSPair<String,Integer>> getExtractCombo() {
         return extractCombo;
     }
 

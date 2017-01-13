@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJSheet;
 
 /**
@@ -90,12 +91,14 @@ public class FindDialog {
         sheet.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
-                searchTextField.requestFocusInWindow();
-                searchTextField.selectAll();
+                requestFocus();
             }
             @Override
             public void windowActivated(WindowEvent e) {
-                searchTextField.requestFocusInWindow();
+                requestFocus();
+            }
+            private void requestFocus() {
+                Focuser.requestFocus(searchTextField);
                 searchTextField.selectAll();
             }
         });

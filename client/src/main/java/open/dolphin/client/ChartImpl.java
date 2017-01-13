@@ -19,7 +19,6 @@ import open.dolphin.impl.pinfo.PatientInfoDocument;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DiagnosisInspector;
 import open.dolphin.inspector.DocumentHistory;
-import open.dolphin.inspector.MemoInspector;
 import open.dolphin.inspector.PatientInspector;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
@@ -554,37 +553,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                 // allCharts の順番処理 → activate されたらトップに置く
                 if (allCharts.remove(ChartImpl.this)) {
                     allCharts.add(0, ChartImpl.this);
-                }
-
-                // マウスの場所に応じてフォーカス処理を行う
-                Point p = frame.getMousePosition(true);
-                Component c = null;
-                if (p != null) { c = frame.findComponentAt(p); }
-
-                // マウス位置に component がなければ何もしない
-                if (c == null || c.getName() == null) { return; }
-
-                // マウスが stamp にあればフォーカス移動しない
-                // ドラッグ開始時にフォーカス移動があるとばたばたするので
-                if (c instanceof ComponentHolder) {
-                    //System.out.println("focus transition canceled");
-                    return;
-                }
-
-                if (c.getParent() != null) {
-
-                    // Inspector は親パネルに名前がついている
-                    if (MemoInspector.CATEGORY.name().equals(c.getParent().getName())) {
-                        // マウスがメモにあれば，メモにフォーカス
-                        c.requestFocusInWindow();
-
-                    } else if (! DiagnosisInspector.CATEGORY.name().equals(c.getParent().getName())) {
-                        // マウスが DiagnosisInspector にあれば何もしない
-                        // それ以外は plugin の enter() で plugin ごとにフォーカス処理
-                        String key = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
-                        ChartDocument plugin = providers.get(key);
-                        if (plugin != null) { plugin.enter(); }
-                    }
                 }
             }
         });

@@ -13,6 +13,7 @@ import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.TextStampModel;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.order.IStampEditor;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.MyJScrollPane;
 
@@ -83,11 +84,11 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
     }
 
     /**
-     * フォーカスを取る
+     * enter したらフォーカスを取る.
      */
     @Override
     public void enter() {
-        SwingUtilities.invokeLater(textPane::requestFocusInWindow);
+        Focuser.requestFocus(textPane);
     }
 
     /**
@@ -168,10 +169,9 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
         textPane.setText(stamp.getText());
         headerField.setText(model.getModuleInfo().getStampName());
 
-        textPane.requestFocusInWindow();
-
         // reset undo
         paneUndoManager.discardAllEdits();
         fieldUndoManager.discardAllEdits();
+        enter();
     }
 }

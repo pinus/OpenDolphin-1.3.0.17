@@ -153,8 +153,6 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     public void enter() {
         super.enter();
         stateMgr.enter();
-        // フォーカス処理
-        getContext().getDocumentHistory().requestFocus();
     }
 
     /**

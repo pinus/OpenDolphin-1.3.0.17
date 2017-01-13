@@ -10,6 +10,7 @@ import javax.swing.Action;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
@@ -337,6 +338,34 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
         MainFrame frame = windowSupport.getFrame();
         frame.setName("editorFrame");
+
+        // FocusTraversalPolicy
+        // Stamp を cut したときに，余計なフォーカス移動が起こらないようにする
+        frame.setFocusTraversalPolicy(new FocusTraversalPolicy(){
+            @Override
+            public Component getDefaultComponent(Container aContainer) {
+                // 最初にフォーカスを取る component
+                return editor.getSOAPane().getTextPane();
+            }
+
+            @Override
+            public Component getComponentAfter(Container aContainer, Component aComponent) {
+                // 余計な focus 移動を行わない
+                return aComponent;
+            }
+            @Override
+            public Component getComponentBefore(Container aContainer, Component aComponent) {
+                // 余計な focus 移動を行わない
+                return aComponent;
+            }
+
+            @Override
+            public Component getFirstComponent(Container aContainer) { return null; }
+
+            @Override
+            public Component getLastComponent(Container aContainer) { return null; }
+        });
+
         frame.removeStatusPanel();
 
         statusPanel = new StatusPanel(); // dummy 表示はしない　AbstractChartDocument から呼ばれるので
@@ -433,7 +462,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         frame.setVisible(true);
 
         // 先頭を表示
-        EventQueue.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             if (view != null) {
                 view.getUI().scrollRectToVisible(new Rectangle(0,0,view.getUI().getWidth(), 50));
             } else if (editor != null) {

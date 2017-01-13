@@ -19,7 +19,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.Chart;
@@ -54,7 +53,7 @@ public class DocumentHistory implements IInspector {
     //private DocumentHistoryView view;
     private DocumentHistoryPanel view;
     // 抽出期間コンボボックス
-    private JComboBox extractionCombo;
+    private JComboBox<PNSPair<String,Integer>> extractionCombo;
     // 件数フィールド
     private JLabel countField;
     // DocumentHistoryUpdate リスナ
@@ -234,15 +233,6 @@ public class DocumentHistory implements IInspector {
      */
     public void clear() {
         tableModel.clear();
-    }
-
-    /**
-     * 文書履歴テーブルにフォーカスを取る.
-     */
-    public void requestFocus() {
-        SwingUtilities.invokeLater(view.getTable()::requestFocusInWindow);
-        // quaqua を修正して対応した
-        //view.getTable().repaint(); // repaint しないと，選択がグレーのままになる
     }
 
     /**

@@ -13,11 +13,12 @@ import open.dolphin.infomodel.ClaimItem;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.order.ClaimConst;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.util.DailyDoseStringTool;
 
 /**
- * StampHolder を右クリックでいろいろいじる
+ * StampHolder を右クリックでいろいろいじる.
  * @author pns
  */
 public class StampHolderPopupMenu extends MyJPopupMenu {
@@ -68,7 +69,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * 外用剤，内服薬，それぞれに適切なメニュー項目を加える
+     * 外用剤，内服薬，それぞれに適切なメニュー項目を加える.
      */
     public void addStampChangeMenu() {
 
@@ -87,7 +88,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * 内服薬の変更 menu を作る
+     * 内服薬の変更 menu を作る.
      */
     public void addBundleChangeMenu() {
 
@@ -104,9 +105,6 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
         addSeparator();
 
         // 用法メニュー
-//        for (Admin admin : Admin.values()) {
-//            add(new AdminChangeAction(admin));
-//        }
         add(new AdminChangeAction(Admin.once1));
         add(new AdminChangeAction(Admin.once2));
         add(new AdminChangeAction(Admin.once3));
@@ -127,7 +125,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * 外用剤の変更 menu を作る
+     * 外用剤の変更 menu を作る.
      */
     public void addDoseChangeMenu() {
 
@@ -161,7 +159,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * StampHolder に通知
+     * StampHolder に通知.
      * @param stamp
      */
     public void propertyChanged(ModuleModel stamp) {
@@ -169,14 +167,15 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * ClaimItem の code から，１日何回投与かを判断して返す cf. order/AdminMaster.java
+     * ClaimItem の code から，１日何回投与かを判断して返す.
+     * cf. order/AdminMaster.java
      * @param code
      * @return
      */
     private int getTimes(String code) {
-        if (code.startsWith("0010001")) return 1;
-        if (code.startsWith("0010002")) return 2;
-        if (code.startsWith("0010003")) return 3;
+        if (code.startsWith("0010001")) { return 1; }
+        if (code.startsWith("0010002")) { return 2; }
+        if (code.startsWith("0010003")) { return 3; }
 
         return 0;
     }
@@ -225,7 +224,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * ClaimItem を複製して返す
+     * ClaimItem を複製して返す.
      * @param src
      * @return
      */
@@ -243,31 +242,31 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * オリジナルの ClaimItem[] を複製して返す
+     * オリジナルの ClaimItem[] を複製して返す.
      * @return
      */
     private ClaimItem[] createClaimItemInArray() {
         ClaimItem[] src = ((BundleMed)ctx.getStamp().getModel()).getClaimItem();
 
         List<ClaimItem> dist = new ArrayList<>();
-        for(ClaimItem c : src) dist.add(createClaimItem(c));
+        for(ClaimItem c : src) { dist.add(createClaimItem(c)); }
 
         return dist.toArray(new ClaimItem[dist.size()]);
     }
 
     /**
-     * 分数対応で文字列を double にして返す
+     * 分数対応で文字列を double にして返す.
      * @param str
      * @return
      */
     public static double stringToDouble(String str) {
         String[] num = str.split("/");
-        if (num.length == 1) return Double.parseDouble(str);
-        else return Double.parseDouble(num[0]) / Double.parseDouble(num[1]);
+        if (num.length == 1) { return Double.parseDouble(str); }
+        else { return Double.parseDouble(num[0]) / Double.parseDouble(num[1]); }
     }
 
     /**
-     * 処方日数を変更するアクション
+     * 処方日数を変更するアクション.
      */
     private class BundleChangeAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
@@ -283,7 +282,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
         public void actionPerformed(ActionEvent e) {
             // 変更されていなければそのまま帰る
             BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
-            if (srcBundle.getBundleNumber().equals(String.valueOf(value))) return;
+            if (srcBundle.getBundleNumber().equals(String.valueOf(value))) { return; }
 
             // コピーして stamp を新たに作成
             ModuleModel stamp = createModuleModel(ctx.getStamp());
@@ -313,7 +312,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
 
             // 変更されていなければそのまま帰る
             BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
-            if (admin.code.equals(srcBundle.getAdminCode())) return;
+            if (admin.code.equals(srcBundle.getAdminCode())) { return; }
 
             // 新たなスタンプ作成
             ModuleModel stamp = createModuleModel(ctx.getStamp());
@@ -362,7 +361,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
             BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
 
             // 変更されていなければそのまま帰る
-            if (admin.code.equals(srcBundle.getAdminCode())) return;
+            if (admin.code.equals(srcBundle.getAdminCode())) { return; }
 
             ModuleModel stamp = createModuleModel(ctx.getStamp());
             BundleMed bundle = (BundleMed) stamp.getModel();
@@ -375,7 +374,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * 外用剤の処方量を変更するアクション
+     * 外用剤の処方量を変更するアクション.
      */
     private class DoseChangeAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
@@ -418,7 +417,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * 外用剤の部位を変更するアクション
+     * 外用剤の部位を変更するアクション.
      */
     private class PutRegionAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
@@ -436,7 +435,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
 
             // ダイアログ表示位置計算　できればスタンプの上に，上にスペースがなければ下に
             Point p = ctx.getLocationOnScreen();
-            int y; p.y = (y = p.y - dialog.getHeight() - 10)>30? y: p.y + ctx.getHeight() + 10;
+            int y; p.y = (y = p.y - dialog.getHeight() - 10)>30? y : p.y + ctx.getHeight() + 10;
             dialog.setLocation(p);
             dialog.setVisible(true);
 
@@ -532,7 +531,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * コメントを付けるアクション
+     * コメントを付けるアクション.
      */
     private class PutCommentAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
@@ -552,7 +551,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
                     private static final long serialVersionUID = 1L;
                         @Override
                         public void selectInitialValue() {
-                            tf.requestFocusInWindow();
+                            Focuser.requestFocus(tf);
                         }
                     };
 
@@ -561,7 +560,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
 
             // ダイアログ表示位置計算　できればスタンプの上に，上にスペースがなければ下に
             Point p = ctx.getLocationOnScreen();
-            int y; p.y = (y = p.y - dialog.getHeight() - 10)>30? y: p.y + ctx.getHeight() + 10;
+            int y; p.y = (y = p.y - dialog.getHeight() - 10)>30? y : p.y + ctx.getHeight() + 10;
             dialog.setLocation(p);
             dialog.setVisible(true);
 
@@ -610,7 +609,7 @@ public class StampHolderPopupMenu extends MyJPopupMenu {
     }
 
     /**
-     * 一般名記載コメントをつけるアクション
+     * 一般名記載コメントをつけるアクション.
      */
     private class PutGenericNameAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
