@@ -127,7 +127,7 @@ public class PatientInspector {
     }
 
     /**
-     * すべtのインスペクタをアップデートする.
+     * すべてのインスペクタをアップデートする.
      */
     public void update() {
         inspectorMap.values().forEach(inspector -> inspector.update());

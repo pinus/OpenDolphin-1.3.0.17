@@ -34,7 +34,7 @@ public class BasicInfoInspector implements IInspector {
     private static final Border MALE_BORDER = PNSBorderFactory.createTitleBarBorderLightBlue(new Insets(0,0,0,0));
     private static final Border FEMALE_BORDER = PNSBorderFactory.createTitleBarBorderPink(new Insets(0,0,0,0));
     private static final Border UNKNOWN_BORDER = PNSBorderFactory.createTitleBarBorderGray(new Insets(0,0,0,0));
-    private static final int WIDTH_EXTENSION = 52;
+    private static final int WIDTH_EXTENSION = 56;
 
     private JPanel panel;
     private JLabel nameLabel;
