@@ -1,30 +1,27 @@
 package open.dolphin.impl.login;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.helper.ProxyPropertyChangeListener;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.project.DolphinPrincipal;
 import open.dolphin.project.Project;
 import open.dolphin.setting.ProjectSettingDialog;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJSheet;
 import org.apache.log4j.Logger;
@@ -32,12 +29,10 @@ import org.apache.log4j.Logger;
 /**
  * ログインダイアログ　クラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class LoginDialog {
-
-    /** Login Status */
-    public enum LoginStatus {AUTHENTICATED, NOT_AUTHENTICATED, CANCELD};
 
     private LoginView view;
     private BlockGlass blockGlass;
@@ -47,45 +42,30 @@ public class LoginDialog {
     private int tryCount;
     private int maxTryCount;
 
-    // 認証結果のプロパティ
-    private LoginStatus result;
-    private PropertyChangeSupport boundSupport;
+    // 認証状態
+    private LoginState result;
+
+    // 認証状態 Listener
+    private LoginListener loginListener;
 
     // モデル
     private DolphinPrincipal principal;
 
-    // StateMgr
-    private StateMgr stateMgr;
-
+    // State
+    private boolean okState;
 
     /**
-     * Creates new LoginService
+     * Creates new LoginDialog.
      */
     public LoginDialog() {
     }
 
     /**
-     * 認証結果プロパティリスナを登録する.
-     * @param prop
-     * @param listener 登録する認証結果リスナ
+     * ログイン状態リスナーを登録する.
+     * @param listener
      */
-    public void addPropertyChangeListener(String prop, PropertyChangeListener listener) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.addPropertyChangeListener(prop, listener);
-    }
-
-    /**
-     * 認証結果プロパティリスナを登録する.
-     * @param prop
-     * @param listener 削除する認証結果リスナ
-     */
-    public void removePropertyChangeListener(String prop, PropertyChangeListener listener) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.addPropertyChangeListener(prop, listener);
+    public void addLoginListener(LoginListener listener) {
+        loginListener = listener;
     }
 
     /**
@@ -122,19 +102,10 @@ public class LoginDialog {
     }
 
     /**
-     * 認証が成功したかどうかを返す.
-     * @return true 認証が成功した場合
+     * ログインリスナに結果を通知する.
      */
-    public LoginStatus getResult() {
-        return result;
-    }
-
-    /**
-     * PropertyChange で結果を受け取るアプリに通知する.
-     * @param result true 認証が成功した場合
-     */
-    private void notifyResult(final LoginStatus ret) {
-         SwingUtilities.invokeLater(() -> boundSupport.firePropertyChange("LOGIN_PROP", -100, ret));
+    private void notifyResult(final LoginState ret) {
+        loginListener.state(ret);
     }
 
     /**
@@ -206,7 +177,7 @@ public class LoginDialog {
                     Project.getProjectStub().setDolphinPrincipal(principal);
                     Project.getProjectStub().setUserPassword(password);
 
-                    result = LoginStatus.AUTHENTICATED;
+                    result = LoginState.AUTHENTICATED;
                     notifyClose(result);
 
                 } else {
@@ -231,7 +202,7 @@ public class LoginDialog {
                     sb.append(ClientContext.getString("loginDialog.forceClose"));
                     String msg = sb.toString();
                     showMessageDialog(msg);
-                    result = LoginStatus.NOT_AUTHENTICATED;
+                    result = LoginState.NOT_AUTHENTICATED;
                     notifyClose(result);
                 }
             }
@@ -285,7 +256,7 @@ public class LoginDialog {
      * ログインダイアログを終了する.
      * @param result
      */
-    private void notifyClose(LoginStatus result) {
+    private void notifyClose(LoginState result) {
         view.setVisible(false);
         view.dispose();
         notifyResult(result);
@@ -296,7 +267,7 @@ public class LoginDialog {
      */
     private void initComponents() {
 
-        view = new LoginView((Frame) null, false);
+        view = new LoginView(null, false);
         view.getRootPane().setDefaultButton(view.getLoginBtn());
         blockGlass = new BlockGlass();
         view.setGlassPane(blockGlass);
@@ -310,7 +281,7 @@ public class LoginDialog {
     }
 
     /**
-     * window title を表示する　HostAddress-OpenDolphin-Version という表示
+     * window title を表示する.　HostAddress-OpenDolphin-Version という表示.
      */
     private void setWindowTitle() {
         String title = ClientContext.getFrameTitle(Project.getProjectStub().getHostAddress());
@@ -321,25 +292,28 @@ public class LoginDialog {
      * イベント接続を行う.
      */
     private void connect() {
-
-        //
-        // Mediator ライクな StateMgr
-        //
-        stateMgr = new StateMgr();
-
         //
         // フィールドにリスナを登録する
         //
         // User ID Field
         JTextField userIdField = view.getUserIdField();
-        userIdField.getDocument().addDocumentListener((ProxyDocumentListener) e -> stateMgr.checkButtons());
+        userIdField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkButtons());
         IMEControl.setImeOffIfFocused(userIdField);
-        userIdField.addActionListener(e -> stateMgr.onUserIdAction());
+        userIdField.addActionListener(e -> requestFocus(view.getPasswordField()));
+
         // Password Field
         JPasswordField passwdField = view.getPasswordField();
-        passwdField.getDocument().addDocumentListener((ProxyDocumentListener) e -> stateMgr.checkButtons());
+        passwdField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkButtons());
         IMEControl.setImeOffIfFocused(passwdField);
-        passwdField.addActionListener(e -> stateMgr.onPasswordAction());
+        passwdField.addActionListener(e -> {
+            if (view.getUserIdField().getText().equals("")) {
+                requestFocus(view.getUserIdField());
+
+            } else if (view.getPasswordField().getPassword().length != 0 && okState) {
+                // ログインボタンをクリックする
+                view.getLoginBtn().doClick();
+            }
+        });
 
         //
         // ボタンに ActionListener を登録する
@@ -352,7 +326,16 @@ public class LoginDialog {
         //
         // ダイアログに WindowAdapter を設定する
         //
-        view.addWindowListener(stateMgr);
+        view.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+                if (!view.getUserIdField().getText().trim().equals("")) {
+                    // UserId に有効な値が設定されていればパスワードフィールドにフォーカスする
+                    requestFocus(view.getPasswordField());
+                }
+            }
+        });
     }
 
     /**
@@ -394,9 +377,7 @@ public class LoginDialog {
         blockGlass.block();
 
         ProjectSettingDialog sd = new ProjectSettingDialog();
-        PropertyChangeListener pl = --
-                ProxyPropertyChangeListener.create(this, "setNewParams", new Class[]{Boolean.class});
-        sd.addPropertyChangeListener("SETTING_PROP", pl);
+        sd.addValidListener(this::setNewParams);
         sd.setLoginState(false);
         sd.start();
     }
@@ -407,7 +388,6 @@ public class LoginDialog {
      * @param valid
      **/
     public void setNewParams(Boolean valid) {
-
         blockGlass.unblock();
 
         if (valid) {
@@ -425,28 +405,16 @@ public class LoginDialog {
     public void doCancel() {
         view.setVisible(false);
         view.dispose();
-        result = LoginStatus.CANCELD;
+        result = LoginState.CANCELD;
         notifyResult(result);
 
         bindViewToModel();
     }
 
     /**
-     * ログインボタンを制御する簡易 StateMgr クラス.
-     * ProxyDocumentListener から呼ばれるので，public でなければならない
+     * ログインボタンの enable/disable を制御する.
      */
-    public class StateMgr extends WindowAdapter {
-
-        private boolean okState;
-
-        public StateMgr() {
-        }
-
-        /**
-         * ログインボタンの enable/disable を制御する.
-         */
-        public void checkButtons() {
-
+    public void checkButtons() {
             boolean userEmpty = view.getUserIdField().getText().length() == 0;
             boolean passwdEmpty = view.getPasswordField().getPassword().length == 0;
             boolean newOKState = !userEmpty && !passwdEmpty;
@@ -455,47 +423,9 @@ public class LoginDialog {
                 view.getLoginBtn().setEnabled(newOKState);
                 okState = newOKState;
             }
-        }
+    }
 
-        /**
-         * UserId フィールドでリターンきーが押された時の処理を行う.
-         */
-        public void onUserIdAction() {
-            view.getPasswordField().requestFocus();
-        }
-
-        /**
-         * Password フィールドでリターンきーが押された時の処理を行う.
-         */
-        public void onPasswordAction() {
-
-            if (view.getUserIdField().getText().equals("")) {
-
-                view.getUserIdField().requestFocus();
-
-            } else if (view.getPasswordField().getPassword().length != 0 && okState) {
-                //
-                // ログインボタンをクリックする
-                //
-                view.getLoginBtn().doClick();
-            }
-        }
-
-        @Override
-        public void windowClosing(WindowEvent e) {
-            doCancel();
-        }
-
-        @Override
-        public void windowOpened(WindowEvent e) {
-
-            if (!view.getUserIdField().getText().trim().equals("")) {
-                //
-                // UserId に有効な値が設定されていれば
-                // パスワードフィールドにフォーカスする
-                //
-                view.getPasswordField().requestFocus();
-            }
-        }
+    private void requestFocus(Component c) {
+        Focuser.requestFocus(c);
     }
 }
