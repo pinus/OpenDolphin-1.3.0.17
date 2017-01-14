@@ -35,6 +35,7 @@ public class BasicInfoInspector implements IInspector {
     private static final Border FEMALE_BORDER = PNSBorderFactory.createTitleBarBorderPink(new Insets(0,0,0,0));
     private static final Border UNKNOWN_BORDER = PNSBorderFactory.createTitleBarBorderGray(new Insets(0,0,0,0));
     private static final int WIDTH_EXTENSION = 56;
+    private static final int INDENT = 8;
 
     private JPanel panel;
     private JLabel nameLabel;
@@ -79,6 +80,7 @@ public class BasicInfoInspector implements IInspector {
         namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
 
         namePanel.setOpaque(false);
+        namePanel.add(Box.createHorizontalStrut(INDENT));
         namePanel.add(nameLabel);
         namePanel.add(kanaLabel);
         namePanel.add(Box.createGlue());
@@ -89,7 +91,7 @@ public class BasicInfoInspector implements IInspector {
         addressLabel.setForeground(FONT_COLOR);
         addressLabel.setOpaque(false);
         addressLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
-        JPanel addressPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        JPanel addressPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, INDENT, 0));
         addressPanel.setOpaque(false);
         addressPanel.add(addressLabel);
 
