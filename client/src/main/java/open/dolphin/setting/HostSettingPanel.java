@@ -468,10 +468,10 @@ public class HostSettingPanel extends AbstractSettingPanel {
 
         public void checkState() {
 
-            AbstractSettingPanel.State newState = isValid()
-                                                ? AbstractSettingPanel.State.VALID_STATE
-                                                : AbstractSettingPanel.State.INVALID_STATE;
-            if (newState != state) {
+            SettingPanelState newState = isValid()
+                                                ? SettingPanelState.VALID
+                                                : SettingPanelState.INVALID;
+            if (newState != getState()) {
                 setState(newState);
             }
         }

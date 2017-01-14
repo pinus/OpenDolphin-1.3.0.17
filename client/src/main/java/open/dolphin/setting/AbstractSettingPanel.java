@@ -1,6 +1,5 @@
 package open.dolphin.setting;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -17,17 +16,16 @@ import org.apache.log4j.Logger;
 public abstract class AbstractSettingPanel {
 
     public static final String STATE_PROP   = "stateProp";
-    public enum State {NONE_STATE,VALID_STATE,INVALID_STATE};
 
     private ProjectSettingDialog context;
     private ProjectStub projectStub;
-    private PropertyChangeSupport boundSupport;
-    protected State state = State.NONE_STATE;
+    private SettingPanelState state = SettingPanelState.NONE;
     private JPanel ui;
     private boolean loginState;
     private String title;
     private ImageIcon icon;
     private String id;
+    private StateListener stateListener;
 
     private final Logger logger;
 
@@ -41,6 +39,14 @@ public abstract class AbstractSettingPanel {
 
     private void init() {
         setUI(new JPanel());
+    }
+
+    public abstract void start();
+
+    public abstract void save();
+
+    public void addStateListener(StateListener listener) {
+        stateListener = listener;
     }
 
     public String getId() {
@@ -71,12 +77,14 @@ public abstract class AbstractSettingPanel {
         return context;
     }
 
-    public void setContext(ProjectSettingDialog context) {
-        this.context = context;
-        this.addPropertyChangeListener(STATE_PROP, context);
-        this.setLogInState(context.getLoginState());
+    public void setContext(ProjectSettingDialog dialog) {
+        context = dialog;
     }
 
+    /**
+     * ログイン後に呼ばれた場合 true.
+     * @return
+     */
     public boolean isLoginState() {
         return loginState;
     }
@@ -93,26 +101,6 @@ public abstract class AbstractSettingPanel {
         ui = p;
     }
 
-    public abstract void start();
-
-    public abstract void save();
-
-    public void addPropertyChangeListener(String prop, PropertyChangeListener l) {
-
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.addPropertyChangeListener(prop, l);
-    }
-
-    public void removePropertyChangeListener(String prop, PropertyChangeListener l) {
-
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.removePropertyChangeListener(prop, l);
-    }
-
     public ProjectStub getProjectStub() {
         return projectStub;
     }
@@ -124,15 +112,15 @@ public abstract class AbstractSettingPanel {
     /**
      * @param state The state to set.
      */
-    protected void setState(AbstractSettingPanel.State state) {
+    public void setState(SettingPanelState state) {
         this.state = state;
-        boundSupport.firePropertyChange(STATE_PROP, null, this.state);
+        stateListener.state(state);
     }
 
     /**
      * @return Returns the state.
      */
-    protected AbstractSettingPanel.State getState() {
+    public SettingPanelState getState() {
         return state;
     }
 }

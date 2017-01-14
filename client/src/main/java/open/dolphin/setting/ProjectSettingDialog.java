@@ -2,15 +2,13 @@ package open.dolphin.setting;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.*;
 import open.dolphin.client.ClientContext;
+import open.dolphin.event.ValidListener;
 import open.dolphin.project.Project;
 import org.apache.log4j.Logger;
 
@@ -20,7 +18,7 @@ import org.apache.log4j.Logger;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
-public final class ProjectSettingDialog implements PropertyChangeListener {
+public final class ProjectSettingDialog {
     public static final Color BACKGROUND = new Color(244,244,244);
 
     // GUI
@@ -37,13 +35,13 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
     private List<JToggleButton> allBtns;
     private String startSettingName;
     private boolean loginState;
-    private PropertyChangeSupport boundSupport;
-    private static final String SETTING_PROP = "SETTING_PROP";
     private boolean okState;
     private Logger logger;
     private static int DEFAULT_WIDTH = 600;
     private static int DEFAULT_HEIGHT = 630;
     private Frame parentFrame = null;
+
+    private ValidListener validListener;
 
     public ProjectSettingDialog() {
         logger = ClientContext.getBootLogger();
@@ -54,18 +52,8 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
         parentFrame = (Frame) f;
     }
 
-    public void addPropertyChangeListener(String prop, PropertyChangeListener l) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.addPropertyChangeListener(prop, l);
-    }
-
-    public void removePropertyChangeListener(String prop, PropertyChangeListener l) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.addPropertyChangeListener(prop, l);
+    public void addValidListener(ValidListener listener) {
+        validListener = listener;
     }
 
     public boolean getLoginState() {
@@ -82,7 +70,7 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
 
     public void notifyResult() {
         boolean valid = Project.getProjectStub().isValid();
-        boundSupport.firePropertyChange(SETTING_PROP, !valid, valid);
+        validListener.validity(valid);
     }
 
     /**
@@ -301,12 +289,15 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
             // 選択された設定パネルを生成しカードに追加する
             settingMap.put(sp.getId(), sp);
             sp.setContext(ProjectSettingDialog.this);
+            sp.setLogInState(loginState);
+            sp.addStateListener(ProjectSettingDialog.this::controlButtons);
             sp.setProjectStub(Project.getProjectStub());
             sp.start();
 
             SwingUtilities.invokeLater(() -> {
                 // Container のバックグランドを直す
                 setContainerBackground(sp.getUI());
+
                 cardPanel.add(sp.getUI(), sp.getTitle());
                 cardLayout.show(cardPanel, sp.getTitle());
                 if (!dialog.isVisible()) {
@@ -333,29 +324,15 @@ public final class ProjectSettingDialog implements PropertyChangeListener {
     }
 
     /**
-     * SettingPanel の state が変化した場合に通知を受け，
-     * 全てのカードをスキャンして OK ボタンをコントロールする.
-     * @param e
+     * 一つの SettingPanel から state 情報が送られてきたら，全ての state を調べ直す.
+     * @param state
      */
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-
-        String prop = e.getPropertyName();
-        if (!prop.equals(AbstractSettingPanel.STATE_PROP)) {
-            return;
-        }
-
+    public void controlButtons(SettingPanelState state) {
         // 全てのカードをスキャンして OK ボタンをコントロールする
         boolean newOk = true;
-        Iterator<AbstractSettingPanel> iter = settingMap.values().iterator();
-        int cnt = 0;
-        while (iter.hasNext()) {
-            cnt++;
-            AbstractSettingPanel p = iter.next();
-            if (p.getState().equals(AbstractSettingPanel.State.INVALID_STATE)) {
-                newOk = false;
-                break;
-            }
+        if (settingMap.values().stream()
+                .anyMatch(p -> p.getState().equals(SettingPanelState.INVALID))) {
+            newOk = false;
         }
 
         if (okState != newOk) {

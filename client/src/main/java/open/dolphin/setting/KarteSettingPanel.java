@@ -733,10 +733,10 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         if (ok != newOk) {
             ok = newOk;
             if (ok) {
-                setState(AbstractSettingPanel.State.VALID_STATE);
+                setState(SettingPanelState.VALID);
                 infoLabel.setForeground(Color.black);
             } else {
-                setState(AbstractSettingPanel.State.INVALID_STATE);
+                setState(SettingPanelState.INVALID);
                 infoLabel.setForeground(Color.red);
             }
         }
@@ -1012,7 +1012,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         noConfirmAtSave.addActionListener(al2);
 
         // この設定画面は常に有効状態である
-        setState(AbstractSettingPanel.State.VALID_STATE);
+        setState(SettingPanelState.VALID);
     }
 
     /**

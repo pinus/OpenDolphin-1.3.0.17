@@ -9,7 +9,7 @@ import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.ProjectStub;
-import open.dolphin.setting.AbstractSettingPanel.State;
+import open.dolphin.setting.SettingPanelState;
 
 /**
  * コードヘルパー設定パネル.
@@ -56,7 +56,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
 
     private JTextField orca;
 
-    private State curState = State.NONE_STATE;
+    private SettingPanelState curState = SettingPanelState.NONE;
 
     private HelperModel model;
 
@@ -227,7 +227,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
 
     public void checkState() {
 
-        State newState = State.NONE_STATE;
+        SettingPanelState newState = SettingPanelState.NONE;
 
         if (text.getText().trim().equals("") ||
                 path.getText().trim().equals("") ||
@@ -246,10 +246,10 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
                 instraction.getText().trim().equals("") ||
                 orca.getText().trim().equals("")) {
 
-            newState = State.INVALID_STATE;
+            newState = SettingPanelState.INVALID;
 
         } else {
-            newState = State.VALID_STATE;
+            newState = SettingPanelState.VALID;
         }
 
         if (curState != newState) {
