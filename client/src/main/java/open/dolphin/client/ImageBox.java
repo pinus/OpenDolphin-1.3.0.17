@@ -5,10 +5,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.EventHandler;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
@@ -16,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.Task;
@@ -168,7 +167,7 @@ public class ImageBox extends AbstractMainTool {
         refreshBtn.setHorizontalAlignment(SwingConstants.LEADING);
         refreshBtn.putClientProperty("Quaqua.Button.style", "bevel");
         refreshBtn.setFocusable(false);
-        refreshBtn.addActionListener(EventHandler.create(ActionListener.class, this, "refresh"));
+        refreshBtn.addActionListener(new ProxyAction(this::refresh));
         refreshBtn.setToolTipText("シェーマリストを更新します");
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 

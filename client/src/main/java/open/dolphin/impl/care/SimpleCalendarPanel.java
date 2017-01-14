@@ -13,7 +13,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
 import open.dolphin.client.*;
-import open.dolphin.helper.ReflectAction;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
@@ -141,8 +141,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         // Embed popup menu
         appointMenu = new MyJPopupMenu();
-        ReflectAction cancelAction = new ReflectAction("取り消し", this, "appointCancel");
-        JMenuItem item = new JMenuItem(cancelAction);
+        JMenuItem item = new JMenuItem(new ProxyAction("取り消し", this::appointCancel));
         appointMenu.add(item);
 
         // Table を DragTarget, 自身をリスナに設定する

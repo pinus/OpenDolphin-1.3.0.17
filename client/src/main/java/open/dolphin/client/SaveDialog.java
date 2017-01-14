@@ -6,9 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.beans.EventHandler;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.Box;
@@ -270,18 +268,18 @@ public class SaveDialog {
         // OK button
         okButton = new JButton(SAVE);
         okButton.setToolTipText("診療行為の送信はチェックボックスに従います。");
-        okButton.addActionListener((ActionListener) EventHandler.create(ActionListener.class, this, "doOk"));
+        okButton.addActionListener(e -> doOk());
         okButton.setEnabled(false);
 
         // Cancel Button
         String buttonText =  (String)UIManager.get("OptionPane.cancelButtonText");
         cancelButton = new JButton(buttonText);
-        cancelButton.addActionListener((ActionListener) EventHandler.create(ActionListener.class, this, "doCancel"));
+        cancelButton.addActionListener(e -> doCancel());
 
         // 仮保存 button
         tmpButton = new JButton(TMP_SAVE);
         tmpButton.setToolTipText("診療行為は送信しません。");
-        tmpButton.addActionListener((ActionListener) EventHandler.create(ActionListener.class, this, "doTemp"));
+        tmpButton.addActionListener(e -> doTemp());
         tmpButton.setEnabled(false);
         return content;
     }

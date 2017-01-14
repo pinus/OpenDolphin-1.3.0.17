@@ -18,8 +18,8 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.PnsDelegater;
 import open.dolphin.dto.PatientSearchSpec;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.KeyBlocker;
-import open.dolphin.helper.ReflectAction;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
@@ -599,8 +599,8 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
                 if (canOpen()) {
                     String pop1 = ClientContext.getString("waitingList.popup.openKarte");
-                    JMenuItem openKarte = new JMenuItem(new ReflectAction(pop1, PatientSearchImpl.this, "openKarte"));
-                    JMenuItem addAsPvt = new JMenuItem(new ReflectAction("受付登録", PatientSearchImpl.this, "addAsPvt"));
+                    JMenuItem openKarte = new JMenuItem(new ProxyAction(pop1, PatientSearchImpl.this::openKarte));
+                    JMenuItem addAsPvt = new JMenuItem(new ProxyAction("受付登録", PatientSearchImpl.this::addAsPvt));
                     openKarte.setIconTextGap(8);
                     addAsPvt.setIconTextGap(8);
                     contextMenu.add(openKarte);
@@ -611,12 +611,13 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 item.setIconTextGap(12);
                 contextMenu.add(item);
                 item.setSelected(ageDisplay);
-                item.addActionListener(EventHandler.create(ActionListener.class, PatientSearchImpl.this, "switchAgeDisplay"));
+                item.addActionListener(ae -> switchAgeDisplay());
 
                 // 検索結果をファイル保存
                 int selectedRowCount = view.getTable().getSelectedRowCount();
                 if (selectedRowCount > 0) {
-                    JMenuItem export = new JMenuItem(new ReflectAction("選択された " + selectedRowCount + " 件をファイル保存", PatientSearchImpl.this, "exportSearchResult"));
+                    JMenuItem export = new JMenuItem(
+                            new ProxyAction("選択された " + selectedRowCount + " 件をファイル保存", PatientSearchImpl.this::exportSearchResult));
                     export.setIconTextGap(8);
                     contextMenu.add(export);
                 }

@@ -1,4 +1,4 @@
-package open.dolphin.helper;
+package open.dolphin.util;
 
 /**
  *

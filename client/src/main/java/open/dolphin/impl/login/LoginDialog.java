@@ -394,7 +394,8 @@ public class LoginDialog {
         blockGlass.block();
 
         ProjectSettingDialog sd = new ProjectSettingDialog();
-        PropertyChangeListener pl = ProxyPropertyChangeListener.create(this, "setNewParams", new Class[]{Boolean.class});
+        PropertyChangeListener pl = --
+                ProxyPropertyChangeListener.create(this, "setNewParams", new Class[]{Boolean.class});
         sd.addPropertyChangeListener("SETTING_PROP", pl);
         sd.setLoginState(false);
         sd.start();

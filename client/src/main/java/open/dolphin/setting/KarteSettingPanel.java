@@ -7,8 +7,6 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.EventHandler;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.prefs.Preferences;
@@ -477,7 +475,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         bg.add(vSc);
         bg.add(hSc);
 
-        restoreDefaultBtn.addActionListener(EventHandler.create(ActionListener.class, this, "restoreDefault"));
+        restoreDefaultBtn.addActionListener(e -> restoreDefault());
 
         // スタンプ動作
         JPanel stampPanel = new JPanel();
@@ -745,12 +743,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     }
 //pns$
 
-    public void inspectorChanged(int state) {
-        if (state == ItemEvent.SELECTED) {
-            checkState();
-        }
-    }
-
     private void choosePDFDirectory() {
 
 //        try {
@@ -802,7 +794,9 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         // 重複をチェックするためのリスナ
 //pns^
         for (int i=0; i<INSPECTOR_LENGTH; i++) {
-            inspectorCompo[i].addItemListener(EventHandler.create(ItemListener.class, this, "inspectorChanged", "stateChange"));
+            inspectorCompo[i].addItemListener(e -> {
+                if (e.getStateChange() == ItemEvent.SELECTED) { checkState(); }
+            });
         }
         //topCompo.addItemListener(EventHandler.create(ItemListener.class, this, "inspectorChanged", "stateChange"));
         //secondCompo.addItemListener(EventHandler.create(ItemListener.class, this, "inspectorChanged", "stateChange"));
