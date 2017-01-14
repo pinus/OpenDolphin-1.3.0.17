@@ -3,18 +3,17 @@ package open.dolphin.setting;
 import java.awt.GridBagConstraints;
 import java.util.prefs.Preferences;
 import javax.swing.*;
-import javax.swing.event.DocumentListener;
 import open.dolphin.client.*;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.ProjectStub;
-import open.dolphin.setting.SettingPanelState;
 
 /**
  * コードヘルパー設定パネル.
  *
- * @author Kazushi Minagawa
+ * @author Kazushi
+ * @author pns
  */
 public class CodeHelperSettingPanel extends AbstractSettingPanel {
 
@@ -62,12 +61,16 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
 
 
     /**
-     * Creates a new instance of CodeHelperSettingPanel
+     * Creates a new instance of CodeHelperSettingPanel.
      */
     public CodeHelperSettingPanel() {
-        this.setId(ID);
-        this.setTitle(TITLE);
-        this.setIcon(ICON);
+        init();
+    }
+
+    private void init() {
+        setId(ID);
+        setTitle(TITLE);
+        setIcon(ICON);
     }
 
     /**
@@ -102,7 +105,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * GUI を構築する
+     * GUI を構築する.
      */
     private void initComponents() {
 
@@ -227,7 +230,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
 
     public void checkState() {
 
-        SettingPanelState newState = SettingPanelState.NONE;
+        SettingPanelState newState;
 
         if (text.getText().trim().equals("") ||
                 path.getText().trim().equals("") ||
@@ -258,7 +261,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
         }
     }
 
-    class HelperModel {
+    private class HelperModel {
 
         /**
          * 設定した値をプレファレンスに保存する.

@@ -12,15 +12,11 @@ import open.dolphin.util.PNSPair;
 public class ComboBoxFactory {
 
     /**
-     * 病名抽出期間選択 ComboBox
+     * 病名抽出期間選択 ComboBox.
      * @return
      */
-    public static JComboBox<PNSPair<String,Integer>> getDiagnosisExtractionPeriodCombo() {
-        List<PNSPair<String,Integer>> extractionPeriods = getDiagnosisExtractionPeriodModel();
-        JComboBox<PNSPair<String,Integer>> combo = new JComboBox<>();
-        extractionPeriods.forEach(periodPair -> combo.addItem(periodPair));
-
-        return combo;
+    public static JComboBox<PNSPair<String,Integer>> createDiagnosisExtractionPeriodCombo() {
+        return createComboBox(getDiagnosisExtractionPeriodModel());
     }
 
     /**
@@ -39,15 +35,11 @@ public class ComboBoxFactory {
     }
 
     /**
-     * 文書抽出期間選択 ComboBox
+     * 文書抽出期間選択 ComboBox.
      * @return
      */
-    public static JComboBox<PNSPair<String,Integer>> getDocumentExtractionPeriodCombo() {
-        List<PNSPair<String,Integer>> extractionPeriods = getDocumentExtractionPeriodModel();
-        JComboBox<PNSPair<String,Integer>> combo = new JComboBox<>();
-        extractionPeriods.forEach(periodPair -> combo.addItem(periodPair));
-
-        return combo;
+    public static JComboBox<PNSPair<String,Integer>> createDocumentExtractionPeriodCombo() {
+        return createComboBox(getDocumentExtractionPeriodModel());
     }
 
     /**
@@ -64,5 +56,39 @@ public class ComboBoxFactory {
             new PNSPair<>("全て", -360) // 30年 must be enough
         );
         return list;
+    }
+
+    /**
+     * ラボテスト抽出期間選択 ComboBox.
+     * @return
+     */
+    public static JComboBox<PNSPair<String,Integer>> createLaboExtractionPeriodCombo() {
+        return createComboBox(getLaboExtractionPeriodModel());
+    }
+
+    /**
+     * ラボテスト抽出期間選択 ComboBox のモデル List を返す.
+     * @return
+     */
+    public static List<PNSPair<String,Integer>> getLaboExtractionPeriodModel() {
+        List<PNSPair<String,Integer>> list = Arrays.asList(
+            new PNSPair<>("1年", -12),
+            new PNSPair<>("1ヶ月", -1),
+            new PNSPair<>("2ヶ月", -2),
+            new PNSPair<>("3ヶ月", -3),
+            new PNSPair<>("半年", -6),
+            new PNSPair<>("2年", -24),
+            new PNSPair<>("3年", -36),
+            new PNSPair<>("5年", -60),
+            new PNSPair<>("全て", -360) // 30年 must be enough
+        );
+        return list;
+    }
+
+    private static JComboBox<PNSPair<String,Integer>> createComboBox(List<PNSPair<String,Integer>> periods) {
+        JComboBox<PNSPair<String,Integer>> combo = new JComboBox<>();
+        periods.forEach(periodPair -> combo.addItem(periodPair));
+
+        return combo;
     }
 }

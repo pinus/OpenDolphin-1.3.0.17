@@ -1,9 +1,7 @@
 package open.dolphin.setting;
 
 import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import open.dolphin.client.*;
@@ -16,9 +14,10 @@ import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.IMEControl;
 
 /**
- * ClaimSettingPanel
+ * ClaimSettingPanel.
  *
  * @author Kazushi Minagawa Digital Globe, Inc.
+ * @author pns
  *
  */
 public class ClaimSettingPanel extends AbstractSettingPanel {
@@ -30,14 +29,11 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
     // GUI staff
     private JRadioButton sendClaimYes;
     private JRadioButton sendClaimNo;
-    private JComboBox claimHostCombo;
+    private JComboBox<String> claimHostCombo;
     private JCheckBox claim01;
-    //private JRadioButton v34;
-    //private JRadioButton v40;
     private JTextField jmariField;
     private JTextField claimAddressField;
     private JTextField claimPortField;
-    // private JCheckBox useAsPVTServer;
 
     private JRadioButton useOrcaApi;
     private JRadioButton useClaim;
@@ -49,13 +45,14 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
     /** 画面モデル */
     private ClaimModel model;
 
-    private StateMgr stateMgr;
-
-
     public ClaimSettingPanel() {
-        this.setId(ID);
-        this.setTitle(TITLE);
-        this.setIcon(ICON);
+        init();
+    }
+
+    private void init() {
+        setId(ID);
+        setTitle(TITLE);
+        setIcon(ICON);
     }
 
     /**
@@ -112,35 +109,31 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         orcaPasswordField = new JPasswordField(10);
         orcaStaffCodeField = new JTextField(10);
         orcaStaffCodeButton = new JButton("コード検索");
-        orcaStaffCodeButton.addActionListener(new ActionListener(){
-            /**
-             * Orca Dao を使って，職員コードを検索する
-             */
-            @Override
-            public void actionPerformed(ActionEvent ev) {
-                orcaStaffCodeField.setText("");
+        orcaStaffCodeButton.addActionListener(ev -> {
+            //
+            // Orca Dao を使って，職員コードを検索する
+            //
+            orcaStaffCodeField.setText("");
 
-                // 初めて起動したときは orca アドレスがまだ Project に設定されていないので，現在の field から数値を取る
-                getProjectStub().setClaimAddress(claimAddressField.getText().trim());
+            // 初めて起動したときは orca アドレスがまだ Project に設定されていないので，現在の field から数値を取る
+            getProjectStub().setClaimAddress(claimAddressField.getText().trim());
 
-                OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
-                List<OrcaEntry> entry = dao.getSyskanriEntries("1010"); // 1010 職員情報
+            OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
+            List<OrcaEntry> entry = dao.getSyskanriEntries("1010"); // 1010 職員情報
 
-                for (OrcaEntry e : entry) {
-                    String drid = e.getComment();   // 最初の 16 文字が ユーザー ID
-                    String cd = e.getCode();        // ORCA の ドクター ID（職員コード）
+            for (OrcaEntry e : entry) {
+                String drid = e.getComment();   // 最初の 16 文字が ユーザー ID
+                String cd = e.getCode();        // ORCA の ドクター ID（職員コード）
 
-                    if (drid != null && cd != null) {
-                        drid = drid.substring(0, 16).trim();
-                        cd = cd.trim();
-                        // ユーザーID が一致した職員コードを doctor id field に設定する
-                        if (drid.equals(orcaUserIdField.getText())) {
-                            orcaStaffCodeField.setText(cd);
-                            break;
-                        }
+                if (drid != null && cd != null) {
+                    drid = drid.substring(0, 16).trim();
+                    cd = cd.trim();
+                    // ユーザーID が一致した職員コードを doctor id field に設定する
+                    if (drid.equals(orcaUserIdField.getText())) {
+                        orcaStaffCodeField.setText(cd);
+                        break;
                     }
                 }
-
             }
         });
 
@@ -148,15 +141,12 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         claim01 = new JCheckBox("デフォルト01を使用");
 
         // JMARI，ホスト名，アドレス，ポート番号
-        String[] hostNames = ClientContext.getStringArray("settingDialog.claim.hostNames");
-        claimHostCombo = new JComboBox(hostNames);
-        jmariField = GUIFactory.createTextField(10, null, null, null);
+        String[] hostNames = { "日医標準レセコン(ORCA)" };
+        claimHostCombo = new JComboBox<>(hostNames);
+        jmariField = new JTextField(10);
         jmariField.setToolTipText("医療機関コードの数字部分のみ12桁を入力してください。");
-        claimAddressField = GUIFactory.createTextField(10, null, null, null);
-        claimPortField = GUIFactory.createTextField(5, null, null, null);
-
-        // 受付受信ボタン
-        // useAsPVTServer = GUIFactory.createCheckBox("サーバからの患者受付通知を受信する", null);
+        claimAddressField = new JTextField(10);
+        claimPortField = new JTextField(5);
 
         // CLAIM（請求）送信情報
         GridBagBuilder gbl = new GridBagBuilder("CLAIM（請求データ）送信");
@@ -169,24 +159,13 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
 
         // レセコン情報
         gbl = new GridBagBuilder("ORCA通信情報");
-        //row = 0;
-        //label = new JLabel("機種:");
-        //gbl.add(label,          0, row, GridBagConstraints.EAST);
-        //gbl.add(claimHostCombo, 1, row, GridBagConstraints.WEST);
 
-        //row++;
         row = 0;
-        //label = new JLabel("バージョン:");
-        //JPanel vPanel = GUIFactory.createRadioPanel(new JRadioButton[]{v34,v40});
+
         label = new JLabel("通信方法:");
         JPanel vPanel = GUIFactory.createRadioPanel(new JRadioButton[]{useOrcaApi, useClaim});
         gbl.add(label,  0, row, GridBagConstraints.EAST);
         gbl.add(vPanel, 1, row, GridBagConstraints.WEST);
-
-        //row++;
-        //label = new JLabel("CLAIM診療科コード:");
-        //gbl.add(label,  0, row, GridBagConstraints.EAST);
-        //gbl.add(claim01,1, row, GridBagConstraints.WEST);
 
         row++;
         label = new JLabel("ORCA ログインID:");
@@ -223,16 +202,10 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         gbl.add(claimPortField, 1, row, GridBagConstraints.WEST);
         JPanel port = gbl.getProduct();
 
-        // レセコンからの受付受信
-        //gbl = new GridBagBuilder("受付情報の受信");
-        //gbl.add(useAsPVTServer, 0, 0, GridBagConstraints.CENTER);
-        //JPanel pvt = gbl.getProduct();
-
         // 全体レイアウト
         gbl = new GridBagBuilder();
         gbl.add(sendClaim, 0, 0, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
         gbl.add(port,      0, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
-        //gbl.add(pvt,       0, 2, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
         gbl.add(new JLabel(""), 0, 3, GridBagConstraints.BOTH,  1.0, 1.0);
         setUI(gbl.getProduct());
 
@@ -243,11 +216,8 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
      * リスナを接続する.
      */
     private void connect() {
-
-        stateMgr = new StateMgr();
-
         // DocumentListener
-        ProxyDocumentListener dl = e -> stateMgr.checkState();
+        ProxyDocumentListener dl = e -> checkState();
         String jmariPattern = "[0-9]*";
         RegexConstrainedDocument jmariDoc = new RegexConstrainedDocument(jmariPattern);
         jmariField.setDocument(jmariDoc);
@@ -268,17 +238,12 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         IMEControl.setImeOffIfFocused(claimAddressField);
 
         // アクションリスナ
-        ActionListener al = e -> stateMgr.controlClaim();
+        ActionListener al = e -> controlClaim();
         sendClaimYes.addActionListener(al);
         sendClaimNo.addActionListener(al);
 
-        // バージョン制御
-        //ActionListener al2 = ProxyActionListener.create(stateMgr, "controlVersion");
-        //v34.addActionListener(al2);
-        //v40.addActionListener(al2);
-
         // orca api
-        ActionListener al2 = e -> stateMgr.useOrcaApi();
+        ActionListener al2 = e -> useOrcaApi();
         useOrcaApi.addActionListener(al2);
         useClaim.addActionListener(al2);
         orcaUserIdField.getDocument().addDocumentListener(dl);
@@ -290,7 +255,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * ModelToView
+     * ModelToView.
      */
     private void bindModelToView() {
         //
@@ -301,18 +266,10 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         sendClaimNo.setSelected(!sending);
         claimPortField.setEnabled(sending);
 
-        // バージョン 選択
-        //String ver = model.getVersion();
-        //if (ver.startsWith("4")) {
-        //    v40.setSelected(true);
-        //} else {
-        //    v34.setSelected(true);
-        //}
-
         // orca api
         boolean orcaApi = model.isUseOrcaApi();
-        if (orcaApi) useOrcaApi.setSelected(true);
-        else useClaim.setSelected(true);
+        if (orcaApi) { useOrcaApi.setSelected(true); }
+        else { useClaim.setSelected(true); }
         orcaUserIdField.setEnabled(orcaApi);
         orcaUserIdField.setText(model.getOrcaUserId());
         orcaPasswordField.setEnabled(orcaApi);
@@ -341,16 +298,13 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         // ホスト名
         claimHostCombo.setSelectedItem(model.getClaimHostName());
 
-        // 受付受信
-        //useAsPVTServer.setSelected(model.isUseAsPVTServer());
-
         // 01 小児科
         claim01.setSelected(model.isClaim01());
 
     }
 
     /**
-     * ViewToModel
+     * ViewToModel.
      */
     private void bindViewToModel() {
         //
@@ -358,13 +312,7 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         // の設定を保存する
         //
         model.setSendClaim(sendClaimYes.isSelected());
-
-        // バージョン
-        //if (v40.isSelected()) {
-            model.setVersion("40");
-        //} else {
-        //    model.setVersion("34");
-        //}
+        model.setVersion("40");
 
         // orca api
         model.setUseOrcaApi(useOrcaApi.isSelected());
@@ -399,9 +347,6 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
             model.setClaimPort(5001);
         }
 
-        // 受付受信を保存する
-        // model.setUseAsPVTServer(useAsPVTServer.isSelected());
-
         // 01 小児科
         model.setClaim01(claim01.isSelected());
     }
@@ -417,7 +362,6 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         private String jmariCode;
         private String claimAddress;
         private int claimPort;
-        // private boolean useAsPvtServer;
         private boolean claim01;
         private boolean useOrcaApi;
         private String orcaUserId;
@@ -498,14 +442,6 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         public void setSendClaim(boolean sendClaim) {
             this.sendClaim = sendClaim;
         }
-
-        // public boolean isUseAsPVTServer() {
-        //     return useAsPvtServer;
-        // }
-
-        // public void setUseAsPVTServer(boolean useAsPvtServer) {
-        //     this.useAsPvtServer = useAsPvtServer;
-        // }
 
         public String getClaimHostName() {
             return claimHostName == null? "" : claimHostName;
@@ -588,83 +524,64 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         }
     }
 
-    public class StateMgr { // should be 'public'
+    public void checkState() {
 
-        public void checkState() {
+        SettingPanelState newState = isValid()? SettingPanelState.VALID : SettingPanelState.INVALID;
 
-            SettingPanelState newState = isValid()
-            ? SettingPanelState.VALID
-                    : SettingPanelState.INVALID;
-            if (newState != getState()) {
-                setState(newState);
-            }
+        if (newState != getState()) {
+            setState(newState);
+        }
+    }
+
+    public void controlClaim() {
+        //
+        // 診療行為の送信を行う場合のみ
+        // 仮保存，修正，病名送信，ホスト選択，ポートがアクティブになる
+        //
+        boolean b = sendClaimYes.isSelected();
+        claimPortField.setEnabled(b);
+        checkState();
+    }
+
+    public void useOrcaApi() {
+        boolean orcaApi = useOrcaApi.isSelected();
+        orcaUserIdField.setEnabled(orcaApi);
+        orcaPasswordField.setEnabled(orcaApi);
+        orcaStaffCodeField.setEnabled(orcaApi);
+        orcaStaffCodeButton.setEnabled(orcaApi);
+        claimPortField.setEnabled(!orcaApi);
+        checkState();
+    }
+
+    private boolean isValid() {
+
+        boolean jmariOk = false;
+        boolean claimAddrOk;
+        boolean claimPortOk;
+        boolean orcaApiOk;
+
+        String code = jmariField.getText().trim();
+        if (!code.equals("") && code.length() == 12) {
+            jmariOk = true;
         }
 
-        public void controlClaim() {
+        if (sendClaimYes.isSelected()) {
+            claimAddrOk = !claimAddressField.getText().trim().equals("");
 
-            //
-            // 診療行為の送信を行う場合のみ
-            // 仮保存，修正，病名送信，ホスト選択，ポートがアクティブになる
-            //
-            boolean b = sendClaimYes.isSelected();
-
-            //claimHostCombo.setEnabled(b);
-            claimPortField.setEnabled(b);
-
-            this.checkState();
-        }
-
-        //public void controlVersion() {
-
-        //    boolean b = v40.isSelected();
-        //    jmariField.setEnabled(b);
-        //    this.checkState();
-        //}
-
-        public void useOrcaApi() {
-            boolean orcaApi = useOrcaApi.isSelected();
-            orcaUserIdField.setEnabled(orcaApi);
-            orcaPasswordField.setEnabled(orcaApi);
-            orcaStaffCodeField.setEnabled(orcaApi);
-            orcaStaffCodeButton.setEnabled(orcaApi);
-            claimPortField.setEnabled(!orcaApi);
-            this.checkState();
-        }
-
-        private boolean isValid() {
-
-            boolean jmariOk = false;
-            boolean claimAddrOk;
-            boolean claimPortOk;
-            boolean orcaApiOk;
-
-            //if (v40.isSelected()) {
-                String code = jmariField.getText().trim();
-                if (!code.equals("") && code.length() == 12) {
-                    jmariOk = true;
-                }
-            //} else {
-            //    jmariOk = true;
-            //}
-
-            if (sendClaimYes.isSelected()) {
-                claimAddrOk = !claimAddressField.getText().trim().equals("");
-
-                if (useOrcaApi.isSelected()) {
-                    claimPortOk = true;
-                    orcaApiOk = !orcaUserIdField.getText().trim().equals("") && !orcaStaffCodeField.getText().trim().equals("");
-
-                } else {
-                    claimPortOk = !claimPortField.getText().trim().equals("");
-                    orcaApiOk = true;
-                }
-            } else {
-                claimAddrOk = true;
+            if (useOrcaApi.isSelected()) {
                 claimPortOk = true;
+                orcaApiOk = !orcaUserIdField.getText().trim().equals("") && !orcaStaffCodeField.getText().trim().equals("");
+
+            } else {
+                claimPortOk = !claimPortField.getText().trim().equals("");
                 orcaApiOk = true;
             }
-
-            return jmariOk && claimAddrOk && claimPortOk && orcaApiOk;
+        } else {
+            claimAddrOk = true;
+            claimPortOk = true;
+            orcaApiOk = true;
         }
+
+        return jmariOk && claimAddrOk && claimPortOk && orcaApiOk;
     }
 }

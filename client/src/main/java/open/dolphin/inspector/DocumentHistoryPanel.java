@@ -40,7 +40,7 @@ public class DocumentHistoryPanel extends JPanel {
         cntLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 
         // 文書抽出期間の項目は DocumentHistory で管理
-        extractCombo = ComboBoxFactory.getDocumentExtractionPeriodCombo();
+        extractCombo = ComboBoxFactory.createDocumentExtractionPeriodCombo();
         extractCombo.setPreferredSize(new Dimension(76,24));
         extractCombo.setMaximumSize(new Dimension(76,24));
         extractCombo.setMinimumSize(new Dimension(76,24));

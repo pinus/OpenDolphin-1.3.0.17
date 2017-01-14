@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -38,19 +39,24 @@ import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.inspector.InspectorCategory;
 import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
+import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.IMEControl;
+import open.dolphin.util.PNSPair;
 import open.dolphin.util.StringTool;
 
 /**
- * KarteSettingPanel
+ * KarteSettingPanel.
  *
  * @author Minagawa,Kazushi
+ * @author pns
  */
 public class KarteSettingPanel extends AbstractSettingPanel {
 
     private static final String ID = "karteSetting";
     private static final String TITLE = "カルテ";
     private static final ImageIcon ICON = GUIConst.ICON_KARTE_EDIT_32;
+    private static final int INSPECTOR_LENGTH = 5;
+
     private Preferences prefs;
 
     // デフォルト値
@@ -72,7 +78,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     // インスペクタ画面
     private JComboBox[] inspectorCompo;
     private int lastIndexOfCompo;
-    private static int INSPECTOR_LENGTH = 5;
     private JLabel infoLabel;
     private JRadioButton pltform;
     private JRadioButton prefLoc;
@@ -82,29 +87,16 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     private JRadioButton desc;
     private JCheckBox showModifiedCB;
     private JSpinner spinner;
-    private JComboBox periodCombo;
+    private JComboBox<PNSPair<String,Integer>> periodCombo;
     private JRadioButton vSc;
     private JRadioButton hSc;
-    private NameValuePair[] periodObjects = {
-        //new NameValuePair("1ヶ月", "-1"),
-        //new NameValuePair("3ヶ月", "-3"),
-        new NameValuePair("半年", "-6"),
-        new NameValuePair("1年", "-12"),
-        new NameValuePair("2年", "-24"),
-        new NameValuePair("3年", "-36"),
-        new NameValuePair("5年", "-60"),
-        new NameValuePair("全て", "-180") // 15年 must be enough
-    };
-    private JComboBox docNumberCombo;
-    private String[] docNumberObjects;
 
     // 病名関係
     private JRadioButton diagnosisAsc;
     private JRadioButton diagnosisDesc;
-    private JComboBox diagnosisPeriodCombo;
+    private JComboBox<PNSPair<String,Integer>> diagnosisPeriodCombo;
     private JCheckBox autoOutcomeInput;
     private JSpinner outcomeSpinner;
-    private NameValuePair[] diagnosisPeriodObjects;
 
     // 検体検査
     private NameValuePair[] laboTestPeriodObjects;
@@ -159,9 +151,13 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     private JSpinner scrollUnitStamp;
 
     public KarteSettingPanel() {
-        this.setId(ID);
-        this.setTitle(TITLE);
-        this.setIcon(ICON);
+        init();
+    }
+
+    private void init() {
+        setId(ID);
+        setTitle(TITLE);
+        setIcon(ICON);
     }
 
     /**
@@ -181,7 +177,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         // bindModel
         bindModelToView();
-
     }
 
     /**
@@ -215,7 +210,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         defaultLaboTestPeriod = ClientContext.getInt("laboTest.default.period");
 
         // GUI コンポーネントを生成する
-//pns^
         String[] compo = new String[InspectorCategory.values().length];
         for (int i=0; i<compo.length; i++) {
             compo[i] = InspectorCategory.values()[i].name();
@@ -226,14 +220,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         for (int i=0; i<INSPECTOR_LENGTH; i++) {
             inspectorCompo[i] = new JComboBox(compo);
         }
-        //String[] compo = new String[]{
-        //    "メモ", "アレルギー", "身長体重", "文書履歴", "カレンダ", "なし"
-        //};
-        //topCompo = new JComboBox(compo);
-        //secondCompo = new JComboBox(compo);
-        //thirdCompo = new JComboBox(compo);
-        //forthCompo = new JComboBox(compo);
-//pns$
         infoLabel = new JLabel("有効な組み合わせになっています。");
 
         // 患者インスペクタ画面のロケータ
@@ -248,7 +234,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         asc = new JRadioButton("昇順");
         desc = new JRadioButton("降順");
         showModifiedCB = new JCheckBox("修正履歴表示");
-        periodCombo = new JComboBox(periodObjects);
+        periodCombo = ComboBoxFactory.createDocumentExtractionPeriodCombo();
 
         vSc = new JRadioButton("垂直");
         hSc = new JRadioButton("水平");
@@ -256,8 +242,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         // 病名関係
         diagnosisAsc = new JRadioButton("昇順");
         diagnosisDesc = new JRadioButton("降順");
-        diagnosisPeriodObjects = ClientContext.getNameValuePair("diagnosis.combo.period");
-        diagnosisPeriodCombo = new JComboBox(diagnosisPeriodObjects);
+        diagnosisPeriodCombo = ComboBoxFactory.createDiagnosisExtractionPeriodCombo();
         autoOutcomeInput = new JCheckBox("終了日を自動入力する");
 
         // 検体検査
@@ -818,10 +803,10 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         // 抽出期間
         int currentPeriod = model.getKarteExtractionPeriod();
-        periodCombo.setSelectedIndex(NameValuePair.getIndex(String.valueOf(currentPeriod), periodObjects));
+        List<PNSPair<String,Integer>> periodList = ComboBoxFactory.getDocumentExtractionPeriodModel();
+        periodCombo.setSelectedIndex(PNSPair.getIndex(currentPeriod, periodList));
 
         // カルテの取得枚数
-//pns   spinner.setValue(new Integer(model.getFetchKarteCount()));
         spinner.setValue(model.getFetchKarteCount());
 
         // 複数カルテのスクロール方向
@@ -836,7 +821,8 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         // 病名の抽出期間
         int currentDiagnosisPeriod = model.getDiagnosisExtractionPeriod();
-        diagnosisPeriodCombo.setSelectedIndex(NameValuePair.getIndex(String.valueOf(currentDiagnosisPeriod), diagnosisPeriodObjects));
+        List<PNSPair<String,Integer>> diagPeriodList = ComboBoxFactory.getDiagnosisExtractionPeriodModel();
+        diagnosisPeriodCombo.setSelectedIndex(PNSPair.getIndex(currentDiagnosisPeriod, diagPeriodList));
 
         // 転帰のオフセット
         autoOutcomeInput.setSelected(model.isAutoOutcomeInput());
@@ -1051,15 +1037,17 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         model.setScrollKarteV(vSc.isSelected());
 
         // カルテの抽出期間
-        String code = ((NameValuePair) periodCombo.getSelectedItem()).getValue();
-        model.setKarteExtractionPeriod(Integer.parseInt(code));
+        int index = periodCombo.getSelectedIndex();
+        int period = ComboBoxFactory.getDocumentExtractionPeriodModel().get(index).getValue();
+        model.setKarteExtractionPeriod(period);
 
         // 病名の昇順表示
         model.setAscendingDiagnosis(diagnosisAsc.isSelected());
 
         // 病名の抽出期間
-        code = ((NameValuePair) diagnosisPeriodCombo.getSelectedItem()).getValue();
-        model.setDiagnosisExtractionPeriod(Integer.parseInt(code));
+        index = diagnosisPeriodCombo.getSelectedIndex();
+        period = ComboBoxFactory.getDiagnosisExtractionPeriodModel().get(index).getValue();
+        model.setDiagnosisExtractionPeriod(period);
 
         // 転帰入力時の終了日オフセット
         model.setAutoOutcomeInput(autoOutcomeInput.isSelected());
@@ -1067,7 +1055,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         prefs.putInt(Project.OFFSET_OUTCOME_DATE, Integer.parseInt(val));
 
         // ラボテストの抽出期間
-        code = ((NameValuePair) laboTestPeriodCombo.getSelectedItem()).getValue();
+        String code = ((NameValuePair) laboTestPeriodCombo.getSelectedItem()).getValue();
         model.setLabotestExtractionPeriod(Integer.parseInt(code));
 
         // スタンプ関連
@@ -1645,12 +1633,12 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         showModifiedCB.setSelected(defaultShowModified);
 //pns   spinner.setValue(new Integer(defaultFetchCount));
         spinner.setValue(defaultFetchCount);
-        periodCombo.setSelectedIndex(NameValuePair.getIndex(String.valueOf(defaultPeriod), periodObjects));
+        periodCombo.setSelectedIndex(PNSPair.getIndex(defaultPeriod, ComboBoxFactory.getDocumentExtractionPeriodModel()));
         vSc.setSelected(defaultScDirection);
 
         diagnosisAsc.setSelected(defaultDiagnosisAsc);
         diagnosisDesc.setSelected(!defaultDiagnosisAsc);
-        diagnosisPeriodCombo.setSelectedIndex(NameValuePair.getIndex(String.valueOf(defaultDiagnosisPeriod), diagnosisPeriodObjects));
+        diagnosisPeriodCombo.setSelectedIndex(PNSPair.getIndex(defaultDiagnosisPeriod, ComboBoxFactory.getDiagnosisExtractionPeriodModel()));
         autoOutcomeInput.setSelected(defaultAutoOutcomeInput);
 //pns   outcomeSpinner.setValue(new Integer(defaultOffsetOutcomeDate));
         outcomeSpinner.setValue(defaultOffsetOutcomeDate);

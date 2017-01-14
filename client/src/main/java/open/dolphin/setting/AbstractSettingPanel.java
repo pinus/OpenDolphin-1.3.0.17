@@ -1,6 +1,5 @@
 package open.dolphin.setting;
 
-import java.beans.PropertyChangeSupport;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import open.dolphin.client.ClientContext;

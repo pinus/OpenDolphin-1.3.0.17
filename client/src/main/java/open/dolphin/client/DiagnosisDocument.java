@@ -460,7 +460,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         // 抽出期間コンボボックス
         p.add(new JLabel("抽出期間(過去)"));
         p.add(Box.createRigidArea(new Dimension(5, 0)));
-        extractionCombo = ComboBoxFactory.getDiagnosisExtractionPeriodCombo();
+        extractionCombo = ComboBoxFactory.createDiagnosisExtractionPeriodCombo();
 
         Preferences prefs = Project.getPreferences();
         int currentDiagnosisPeriod = prefs.getInt(Project.DIAGNOSIS_PERIOD, 0);
