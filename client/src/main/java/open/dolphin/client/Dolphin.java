@@ -110,10 +110,10 @@ public class Dolphin implements MainWindow {
 
     private void startup() {
         // ログインダイアログを表示し認証を行う
-        PropertyChangeListener pl = e -> {
-            LoginDialog.LoginStatus result = (LoginDialog.LoginStatus) e.getNewValue();
+        LoginDialog login = new LoginDialog();
 
-            switch (result) {
+        login.addLoginListener(state -> {
+            switch (state) {
                 case AUTHENTICATED:
                     startServices();
                     initComponents();
@@ -123,9 +123,8 @@ public class Dolphin implements MainWindow {
                     exit();
                     break;
             }
-        };
-        LoginDialog login = new LoginDialog();
-        login.addPropertyChangeListener("LOGIN_PROP", pl);
+        });
+
         login.start();
     }
 
@@ -156,6 +155,9 @@ public class Dolphin implements MainWindow {
         saveEnv.put(GUIConst.KEY_SEND_MML, GUIConst.SERVICE_NOT_RUNNING);
     }
 
+    /**
+     * GUI を構築して最初の画面を表示する.
+     */
     private void initComponents() {
 
         // デバッグ用-------------------------
@@ -275,6 +277,7 @@ public class Dolphin implements MainWindow {
                     stampBox.getFrame().setVisible(true);
                     providers.put("stampBox", stampBox);
                     windowSupport.getFrame().setVisible(true);
+
                 } else {
                     System.exit(1);
                 }
@@ -418,20 +421,15 @@ public class Dolphin implements MainWindow {
      * プリンターをセットアップする.
      */
     public void printerSetup() {
-
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                PrinterJob printJob = PrinterJob.getPrinterJob();
-                if (pageFormat != null) {
-                    pageFormat = printJob.pageDialog(pageFormat);
-                } else {
-                    pageFormat = printJob.defaultPage();
-                    pageFormat = printJob.pageDialog(pageFormat);
-                }
+        Thread t = new Thread(() -> {
+            PrinterJob printJob = PrinterJob.getPrinterJob();
+            if (pageFormat != null) {
+                pageFormat = printJob.pageDialog(pageFormat);
+            } else {
+                pageFormat = printJob.defaultPage();
+                pageFormat = printJob.pageDialog(pageFormat);
             }
-        };
-        Thread t = new Thread(r);
+        });
         t.setPriority(Thread.NORM_PRIORITY);
         t.start();
     }
@@ -442,7 +440,7 @@ public class Dolphin implements MainWindow {
     public void setKarteEnviroment() {
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         ProjectSettingDialog sd = new ProjectSettingDialog(focusManager.getActiveWindow());
-        sd.addPropertyChangeListener("SETTING_PROP", new PreferenceListener());
+        sd.addValidListener(this::controlService);
         sd.setLoginState(stateMgr.isLogin());
         sd.setProject("karteSetting");
         sd.start();
@@ -455,74 +453,66 @@ public class Dolphin implements MainWindow {
         //ログイン画面の段階で，メニューから環境設定を選択すると null のまま入ってくる
         if (stateMgr == null) { return; }
         ProjectSettingDialog sd = new ProjectSettingDialog();
-        sd.addPropertyChangeListener("SETTING_PROP", new PreferenceListener());
+        sd.addValidListener(this::controlService);
         sd.setLoginState(stateMgr.isLogin());
         sd.setProject(null);
         sd.start();
     }
 
     /**
-     * 環境設定のリスナクラス. 環境設定が終了するとここへ通知される.
+     * 環境設定の値によりサービスを制御する.
+     * @param valid
      */
-    private class PreferenceListener implements PropertyChangeListener {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
+    private void controlService(boolean valid) {
+        if (! valid) { return; }
 
-            if (e.getPropertyName().equals("SETTING_PROP")) {
-                boolean valid = (Boolean) e.getNewValue();
+        // 設定の変化を調べ，サービスの制御を行う
+        List<String> messages = new ArrayList<>(2);
 
-                if (valid) {
+        // SendClaim
+        boolean oldRunning = saveEnv.getProperty(GUIConst.KEY_SEND_CLAIM).equals(GUIConst.SERVICE_RUNNING);
+        boolean newRun = Project.getSendClaim();
+        boolean start = (!oldRunning) && newRun;
+        boolean stop = (oldRunning) && (!newRun);
 
-                    // 設定の変化を調べ，サービスの制御を行う
-                    List<String> messages = new ArrayList<>(2);
+        boolean restart = false;
+        String oldAddress = saveEnv.getProperty(GUIConst.ADDRESS_CLAIM);
+        String newAddress = Project.getClaimAddress();
+        if (oldAddress != null && newAddress != null && (!oldAddress.equals(newAddress)) && newRun) {
+            restart = true;
+        }
 
-                    // SendClaim
-                    boolean oldRunning = saveEnv.getProperty(GUIConst.KEY_SEND_CLAIM).equals(GUIConst.SERVICE_RUNNING);
-                    boolean newRun = Project.getSendClaim();
-                    boolean start = (!oldRunning) && newRun;
-                    boolean stop = (oldRunning) && (!newRun);
+        if (start) {
+            startSendClaim();
+            saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
+            messages.add("CLAIM送信を開始しました。(送信アドレス=" + newAddress + ")");
 
-                    boolean restart = false;
-                    String oldAddress = saveEnv.getProperty(GUIConst.ADDRESS_CLAIM);
-                    String newAddress = Project.getClaimAddress();
-                    if (oldAddress != null && newAddress != null && (!oldAddress.equals(newAddress)) && newRun) {
-                        restart = true;
-                    }
+        } else if (stop && sendClaim != null) {
+            sendClaim.stop();
+            sendClaim = null;
+            saveEnv.put(GUIConst.KEY_SEND_CLAIM, GUIConst.SERVICE_NOT_RUNNING);
+            saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
+            messages.add("CLAIM送信を停止しました。");
 
-                    if (start) {
-                        startSendClaim();
-                        saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
-                        messages.add("CLAIM送信を開始しました。(送信アドレス=" + newAddress + ")");
+        } else if (restart) {
+            sendClaim.stop();
+            sendClaim = null;
+            startSendClaim();
+            saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
+            messages.add("CLAIM送信をリスタートしました。(送信アドレス=" + newAddress + ")");
+        }
 
-                    } else if (stop && sendClaim != null) {
-                        sendClaim.stop();
-                        sendClaim = null;
-                        saveEnv.put(GUIConst.KEY_SEND_CLAIM, GUIConst.SERVICE_NOT_RUNNING);
-                        saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
-                        messages.add("CLAIM送信を停止しました。");
+        if (messages.size() > 0) {
+            String[] msgArray = messages.toArray(new String[messages.size()]);
+            Object msg = msgArray;
+            Component cmp = null;
+            String title = ClientContext.getString("settingDialog.title");
 
-                    } else if (restart) {
-                        sendClaim.stop();
-                        sendClaim = null;
-                        startSendClaim();
-                        saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
-                        messages.add("CLAIM送信をリスタートしました。(送信アドレス=" + newAddress + ")");
-                    }
-
-                    if (messages.size() > 0) {
-                        String[] msgArray = messages.toArray(new String[messages.size()]);
-                        Object msg = msgArray;
-                        Component cmp = null;
-                        String title = ClientContext.getString("settingDialog.title");
-
-                        JOptionPane.showMessageDialog(
-                                cmp,
-                                msg,
-                                ClientContext.getFrameTitle(title),
-                                JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }
-            }
+            JOptionPane.showMessageDialog(
+                    cmp,
+                    msg,
+                    ClientContext.getFrameTitle(title),
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
