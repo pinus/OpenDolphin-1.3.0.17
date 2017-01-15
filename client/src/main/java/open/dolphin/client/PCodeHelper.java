@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -110,112 +109,71 @@ public class PCodeHelper extends AbstractCodeHelper {
 
         popup = new JPopupMenu();
 
-        //
         // メニューのスタックを生成する
-        //
-        LinkedList menus = new LinkedList();
-        menus.addFirst(popup);
+        LinkedList<JMenu> menus = new LinkedList<>();
 
-        //
-        // 親ノードのスタックを生成する
-        //
-        LinkedList parents = new LinkedList();
+        // 親ノードのスタックを生成する - インデックスが menus と一致するようにする
+        LinkedList<StampTreeNode> parents = new LinkedList<>();
 
-
-
-        //
-        // Stamp の名前がキーワードで始まり，それが１個以上あるものを補完メニューに加える
-        //
-        pattern = Pattern.compile("^" + text + ".*");
+        // Stamp を検索する pattern
+        pattern = Pattern.compile(".*" + text + ".*");
 
         for (StampTree tree : allTree) {
 
             DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
-
             Enumeration e = rootNode.preorderEnumeration();
 
+            // スタンプをスキャンする
             if (e != null) {
-
                 e.nextElement(); // consume root
 
                 while (e.hasMoreElements()) {
                     // 調査対象のノードを得る
                     StampTreeNode node = (StampTreeNode) e.nextElement();
-
                     // その親を得る
                     StampTreeNode parent = (StampTreeNode) node.getParent();
-
                     // 親がリストに含まれているかどうか
                     int index = parents.indexOf(parent);
 
                     if (index > -1) {
-                        //
-                        // 自分の親がインデックス=0になるまでポップする
-                        //
-                        for (int i = 0; i < index; i++) {
-                            parents.removeFirst();
-                            menus.removeFirst();
-                        }
-
+                        // 既に親が登録されている場合
                         if (!node.isLeaf()) {
-                            //
-                            // フォルダの場合
-                            //
+                            // フォルダの場合は，新たに親として parents に加える
                             String folderName = node.getUserObject().toString();
                             JMenu subMenu = new JMenu(folderName);
-                            if (menus.getFirst() instanceof JPopupMenu) {
-                                ((JPopupMenu) menus.getFirst()).add(subMenu);
-                            } else {
-                                ((JMenu) menus.getFirst()).add(subMenu);
-                            }
+                            // 頭から入れていく
                             menus.addFirst(subMenu);
                             parents.addFirst(node);
-
+                            // フォルダ item を作って menu 中に入れておく
                             JMenuItem item = new JMenuItem(folderName);
                             item.setIcon(ICON);
                             subMenu.add(item);
                             addActionListner(item, node);
 
                         } else {
+                            // 親のいる item の場合は，親のもとに入れる
                             ModuleInfoBean info = (ModuleInfoBean) node.getUserObject();
                             String completion = info.getStampName();
                             JMenuItem item = new JMenuItem(completion);
                             addActionListner(item, node);
-                            if (menus.getFirst() instanceof JPopupMenu) {
-                                ((JPopupMenu) menus.getFirst()).add(item);
-                            } else {
-                                ((JMenu) menus.getFirst()).add(item);
-                            }
+                            // parents と index は一致しているので，これで対応 menu 下に item が入る
+                            menus.get(index).add(item);
                         }
 
                     } else {
-                        //
-                        // 含まれていないのでマッチ検査が必要
-                        //
+                        // 親がいない場合は検索する
                         if (!node.isLeaf()) {
-                            //
                             // フォルダの場合
-                            //
                             String completion = node.getUserObject().toString();
                             Matcher matcher = pattern.matcher(completion);
                             if (matcher.matches()) {
-                                //
-                                // マッチした場合はカレントメニューへ加える
-                                // 自分がカレントメニューになる
-                                // 親リストに自分を加える
                                 String folderName = node.getUserObject().toString();
                                 JMenu subMenu = new JMenu(folderName);
-                                if (menus.getFirst() instanceof JPopupMenu) {
-                                    ((JPopupMenu) menus.getFirst()).add(subMenu);
-                                } else {
-                                    ((JMenu) menus.getFirst()).add(subMenu);
-                                }
+                                // 親として加える
                                 menus.addFirst(subMenu);
                                 parents.addFirst(node);
 
-                                //
-                                // フォルダ選択のアイテムを生成しサブメニューの要素にする
-                                //
+                                // フォルダ item を作って menu 中に入れておく
                                 JMenuItem item = new JMenuItem(folderName);
                                 item.setIcon(ICON);
                                 subMenu.add(item);
@@ -223,29 +181,26 @@ public class PCodeHelper extends AbstractCodeHelper {
                             }
 
                         } else {
-                            //
-                            // 葉の場合
-                            //
+                            // 親のない item の場合
                             ModuleInfoBean info = (ModuleInfoBean) node.getUserObject();
                             String completion = info.getStampName();
                             Matcher matcher = pattern.matcher(completion);
 
                             if (matcher.matches()) {
-                                //
                                 // 一致した場合
-                                //
                                 JMenuItem item = new JMenuItem(completion);
                                 addActionListner(item, node);
-                                if (menus.getFirst() instanceof JPopupMenu) {
-                                    ((JPopupMenu) menus.getFirst()).add(item);
-                                } else {
-                                    ((JMenu) menus.getFirst()).add(item);
-                                }
+                                // 親の居ない item は popup のルートに直に入れていく
+                                popup.add(item);
                             }
                         }
                     }
                 }
             }
+            // この時点で親のいない item だけが popup に入っている
+            // 親の folder をその頭に加えていく
+            // addFirst で入れて順番は保持されているので，上から取って popu の上に入れていけばいい
+            menus.forEach(menu -> popup.insert(menu,0));
         }
     }
 }
