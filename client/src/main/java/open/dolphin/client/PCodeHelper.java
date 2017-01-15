@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,10 +9,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.util.StringTool;
 
 /**
@@ -95,18 +96,19 @@ public class PCodeHelper extends AbstractCodeHelper {
     }
 
 
+    /**
+     * text に合致する stamp を集めて popup にする.
+     * @param text
+     */
     protected void buildMatchPopup(String text) {
-
         //
         // current StampBoxのP関連 StampTree を取得する
         //
         StampBoxPlugin stampBox = mediator.getStampBox();
         List<StampTree> allTree = stampBox.getAllPTrees();
-        if (allTree == null || allTree.size() == 0) {
-            return;
-        }
+        if (allTree == null || allTree.isEmpty()) { return; }
 
-        popup = new MyJPopupMenu();
+        popup = new JPopupMenu();
 
         //
         // メニューのスタックを生成する
@@ -118,6 +120,8 @@ public class PCodeHelper extends AbstractCodeHelper {
         // 親ノードのスタックを生成する
         //
         LinkedList parents = new LinkedList();
+
+
 
         //
         // Stamp の名前がキーワードで始まり，それが１個以上あるものを補完メニューに加える
@@ -135,21 +139,15 @@ public class PCodeHelper extends AbstractCodeHelper {
                 e.nextElement(); // consume root
 
                 while (e.hasMoreElements()) {
-
-                    //
                     // 調査対象のノードを得る
-                    //
                     StampTreeNode node = (StampTreeNode) e.nextElement();
 
-                    //
                     // その親を得る
-                    //
                     StampTreeNode parent = (StampTreeNode) node.getParent();
 
-                    //
                     // 親がリストに含まれているかどうか
-                    //
                     int index = parents.indexOf(parent);
+
                     if (index > -1) {
                         //
                         // 自分の親がインデックス=0になるまでポップする
@@ -165,15 +163,16 @@ public class PCodeHelper extends AbstractCodeHelper {
                             //
                             String folderName = node.getUserObject().toString();
                             JMenu subMenu = new JMenu(folderName);
-                            if (menus.getFirst() instanceof MyJPopupMenu) {
-                                ((MyJPopupMenu) menus.getFirst()).add(subMenu);
+                            if (menus.getFirst() instanceof JPopupMenu) {
+                                ((JPopupMenu) menus.getFirst()).add(subMenu);
                             } else {
                                 ((JMenu) menus.getFirst()).add(subMenu);
                             }
                             menus.addFirst(subMenu);
                             parents.addFirst(node);
+
                             JMenuItem item = new JMenuItem(folderName);
-                            item.setIcon(icon);
+                            item.setIcon(ICON);
                             subMenu.add(item);
                             addActionListner(item, node);
 
@@ -182,8 +181,8 @@ public class PCodeHelper extends AbstractCodeHelper {
                             String completion = info.getStampName();
                             JMenuItem item = new JMenuItem(completion);
                             addActionListner(item, node);
-                            if (menus.getFirst() instanceof MyJPopupMenu) {
-                                ((MyJPopupMenu) menus.getFirst()).add(item);
+                            if (menus.getFirst() instanceof JPopupMenu) {
+                                ((JPopupMenu) menus.getFirst()).add(item);
                             } else {
                                 ((JMenu) menus.getFirst()).add(item);
                             }
@@ -206,8 +205,8 @@ public class PCodeHelper extends AbstractCodeHelper {
                                 // 親リストに自分を加える
                                 String folderName = node.getUserObject().toString();
                                 JMenu subMenu = new JMenu(folderName);
-                                if (menus.getFirst() instanceof MyJPopupMenu) {
-                                    ((MyJPopupMenu) menus.getFirst()).add(subMenu);
+                                if (menus.getFirst() instanceof JPopupMenu) {
+                                    ((JPopupMenu) menus.getFirst()).add(subMenu);
                                 } else {
                                     ((JMenu) menus.getFirst()).add(subMenu);
                                 }
@@ -218,7 +217,7 @@ public class PCodeHelper extends AbstractCodeHelper {
                                 // フォルダ選択のアイテムを生成しサブメニューの要素にする
                                 //
                                 JMenuItem item = new JMenuItem(folderName);
-                                item.setIcon(icon);
+                                item.setIcon(ICON);
                                 subMenu.add(item);
                                 addActionListner(item, node);
                             }
@@ -237,8 +236,8 @@ public class PCodeHelper extends AbstractCodeHelper {
                                 //
                                 JMenuItem item = new JMenuItem(completion);
                                 addActionListner(item, node);
-                                if (menus.getFirst() instanceof MyJPopupMenu) {
-                                    ((MyJPopupMenu) menus.getFirst()).add(item);
+                                if (menus.getFirst() instanceof JPopupMenu) {
+                                    ((JPopupMenu) menus.getFirst()).add(item);
                                 } else {
                                     ((JMenu) menus.getFirst()).add(item);
                                 }

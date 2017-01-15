@@ -7,10 +7,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.util.StringTool;
 
 /**
@@ -44,7 +44,7 @@ public class SOACodeHelper extends AbstractCodeHelper {
             return;
         }
 
-        popup = new MyJPopupMenu();
+        popup = new JPopupMenu();
 
         //
         // メニューのスタックを生成する
@@ -101,15 +101,15 @@ public class SOACodeHelper extends AbstractCodeHelper {
                         //
                         String folderName = node.getUserObject().toString();
                         JMenu subMenu = new JMenu(folderName);
-                        if (menus.getFirst() instanceof MyJPopupMenu) {
-                            ((MyJPopupMenu) menus.getFirst()).add(subMenu);
+                        if (menus.getFirst() instanceof JPopupMenu) {
+                            ((JPopupMenu) menus.getFirst()).add(subMenu);
                         } else {
                             ((JMenu) menus.getFirst()).add(subMenu);
                         }
                         menus.addFirst(subMenu);
                         parents.addFirst(node);
                         JMenuItem item = new JMenuItem(folderName);
-                        item.setIcon(icon);
+                        item.setIcon(ICON);
                         subMenu.add(item);
                         addActionListner(item, node);
 
@@ -118,8 +118,8 @@ public class SOACodeHelper extends AbstractCodeHelper {
                         String completion = info.getStampName();
                         JMenuItem item = new JMenuItem(completion);
                         addActionListner(item, node);
-                        if (menus.getFirst() instanceof MyJPopupMenu) {
-                            ((MyJPopupMenu) menus.getFirst()).add(item);
+                        if (menus.getFirst() instanceof JPopupMenu) {
+                            ((JPopupMenu) menus.getFirst()).add(item);
                         } else {
                             ((JMenu) menus.getFirst()).add(item);
                         }
@@ -142,8 +142,8 @@ public class SOACodeHelper extends AbstractCodeHelper {
                             // 親リストに自分を加える
                             String folderName = node.getUserObject().toString();
                             JMenu subMenu = new JMenu(folderName);
-                            if (menus.getFirst() instanceof MyJPopupMenu) {
-                                ((MyJPopupMenu) menus.getFirst()).add(subMenu);
+                            if (menus.getFirst() instanceof JPopupMenu) {
+                                ((JPopupMenu) menus.getFirst()).add(subMenu);
                             } else {
                                 ((JMenu) menus.getFirst()).add(subMenu);
                             }
@@ -154,7 +154,7 @@ public class SOACodeHelper extends AbstractCodeHelper {
                             // フォルダ選択のアイテムを生成しサブメニューの要素にする
                             //
                             JMenuItem item = new JMenuItem(folderName);
-                            item.setIcon(icon);
+                            item.setIcon(ICON);
                             subMenu.add(item);
                             addActionListner(item, node);
                         }
@@ -173,8 +173,8 @@ public class SOACodeHelper extends AbstractCodeHelper {
                             //
                             JMenuItem item = new JMenuItem(completion);
                             addActionListner(item, node);
-                            if (menus.getFirst() instanceof MyJPopupMenu) {
-                                ((MyJPopupMenu) menus.getFirst()).add(item);
+                            if (menus.getFirst() instanceof JPopupMenu) {
+                                ((JPopupMenu) menus.getFirst()).add(item);
                             } else {
                                 ((JMenu) menus.getFirst()).add(item);
                             }
