@@ -11,30 +11,12 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
-import open.dolphin.client.NameValuePair;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.inspector.InspectorCategory;
 import open.dolphin.project.Project;
@@ -55,7 +37,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     private static final String ID = "karteSetting";
     private static final String TITLE = "カルテ";
     private static final ImageIcon ICON = GUIConst.ICON_KARTE_EDIT_32;
-    private static final int INSPECTOR_LENGTH = 5;
+    private static final int INSPECTOR_COMBO_COUNT = 5;
 
     private Preferences prefs;
 
@@ -75,9 +57,8 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     private int defaultOffsetOutcomeDate;
     private int defaultLaboTestPeriod;
 
-    // インスペクタ画面
-    private JComboBox[] inspectorCompo;
-    private int lastIndexOfCompo;
+    // インスペクタ選択 Combo
+    private JComboBox<InspectorCategory>[] inspectorCombo;
     private JLabel infoLabel;
     private JRadioButton pltform;
     private JRadioButton prefLoc;
@@ -99,8 +80,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     private JSpinner outcomeSpinner;
 
     // 検体検査
-    private NameValuePair[] laboTestPeriodObjects;
-    private JComboBox laboTestPeriodCombo;
+    private JComboBox<PNSPair<String,Integer>> laboTestPeriodCombo;
 
     // コマンドボタン
     private JButton restoreDefaultBtn;
@@ -209,17 +189,17 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         defaultOffsetOutcomeDate = ClientContext.getInt("diagnosis.default.offsetOutcomeDate");
         defaultLaboTestPeriod = ClientContext.getInt("laboTest.default.period");
 
+        //
         // GUI コンポーネントを生成する
-        String[] compo = new String[InspectorCategory.values().length];
-        for (int i=0; i<compo.length; i++) {
-            compo[i] = InspectorCategory.values()[i].name();
+        //
+
+        // インスペクタ選択コンボ
+        inspectorCombo = new JComboBox[INSPECTOR_COMBO_COUNT];
+
+        for (int i=0; i<INSPECTOR_COMBO_COUNT; i++) {
+            inspectorCombo[i] = new JComboBox<>(InspectorCategory.values());
         }
 
-        lastIndexOfCompo = compo.length - 1;
-        inspectorCompo = new JComboBox[INSPECTOR_LENGTH];
-        for (int i=0; i<INSPECTOR_LENGTH; i++) {
-            inspectorCompo[i] = new JComboBox(compo);
-        }
         infoLabel = new JLabel("有効な組み合わせになっています。");
 
         // 患者インスペクタ画面のロケータ
@@ -246,8 +226,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         autoOutcomeInput = new JCheckBox("終了日を自動入力する");
 
         // 検体検査
-        laboTestPeriodObjects = ClientContext.getNameValuePair("docHistory.combo.period");
-        laboTestPeriodCombo = new JComboBox(laboTestPeriodObjects);
+        laboTestPeriodCombo = ComboBoxFactory.createLaboExtractionPeriodCombo();
 
         // コマンドボタン
         restoreDefaultBtn = new JButton("デフォルト設定に戻す");
@@ -322,27 +301,27 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         JLabel label = new JLabel("左側トップ:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
 //pns   gbb.add(topCompo, 1, row, 1, 1, GridBagConstraints.WEST);
-        gbb.add(inspectorCompo[row], 1, row, 1, 1, GridBagConstraints.WEST);
+        gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
         label = new JLabel("2番目:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
 //pns   gbb.add(secondCompo, 1, row, 1, 1, GridBagConstraints.WEST);
-        gbb.add(inspectorCompo[row], 1, row, 1, 1, GridBagConstraints.WEST);
+        gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
         label = new JLabel("3番目:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
 //pns   gbb.add(thirdCompo, 1, row, 1, 1, GridBagConstraints.WEST);
-        gbb.add(inspectorCompo[row], 1, row, 1, 1, GridBagConstraints.WEST);
+        gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
         label = new JLabel("4番目:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
 //pns   gbb.add(forthCompo, 1, row, 1, 1, GridBagConstraints.WEST);
-        gbb.add(inspectorCompo[row], 1, row, 1, 1, GridBagConstraints.WEST);
+        gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
         label = new JLabel("ボトム:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
 //pns   gbb.add(forthCompo, 1, row, 1, 1, GridBagConstraints.WEST);
-        gbb.add(inspectorCompo[row], 1, row, 1, 1, GridBagConstraints.WEST);
+        gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
 
         label = new JLabel(GUIConst.ICON_INFORMATION_16);
@@ -666,34 +645,34 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         getUI().add(tabbedPane);
     }
 
-//pns^
+    /**
+     * KarteSettingPanel の Valid 判定.
+     */
     private void checkState() {
 
         boolean inspectorOk = true;
-        int[] index = new int[INSPECTOR_LENGTH];
-        int[] count = new int[lastIndexOfCompo + 1];
+        // ComboBox の選択 index
+        int[] index = new int[INSPECTOR_COMBO_COUNT];
+        // 各 Category の選択された個数
+        int[] category = new int[InspectorCategory.values().length];
 
-        for (int i=0; i<INSPECTOR_LENGTH; i++) {
-            index[i] = inspectorCompo[i].getSelectedIndex();
+        for (int i=0; i<INSPECTOR_COMBO_COUNT; i++) {
+            index[i] = inspectorCombo[i].getSelectedIndex();
         }
 
-        // 無効な組み合わせを検出して，infoLabel を設定する部 **********************
-        // 各項目がいくつあったか数えて，「なし」以外の重複を検出
-        for (int i=0; i<INSPECTOR_LENGTH; i++) {
-            count[index[i]]++;
+        // 無効な組み合わせを検出して，infoLabel を設定する部
+        // 各 Category がいくつあったか数えて，「なし」以外の重複を検出
+        for (int combo=0; combo<INSPECTOR_COMBO_COUNT; combo++) {
+            int selected = index[combo];
+            category[selected]++;
             // 「なし」以外が重複してたらダメ
-            if (index[i] != lastIndexOfCompo && count[index[i]] >= 2) {
+            if (selected != InspectorCategory.なし.ordinal() && category[selected] >= 2) {
                 inspectorOk = false;
-                infoLabel.setText("「" + inspectorCompo[i].getSelectedItem() + "」が重複しています");
+                infoLabel.setText("「" + inspectorCombo[combo].getSelectedItem() + "」が重複しています");
             }
         }
-        // 全て「なし」はダメ
-        if (count[lastIndexOfCompo] == INSPECTOR_LENGTH) {
-            inspectorOk = false;
-            infoLabel.setText("何も設定されていません");
-        }
         // 文書履歴はかならず選ばれていなくてはならない
-        if (count[2] == 0) {
+        if (category[InspectorCategory.文書履歴.ordinal()] == 0) {
             inspectorOk = false;
             infoLabel.setText("文書履歴は必ず設定して下さい");
         }
@@ -713,7 +692,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         }
 
         // valid_state セット部 ************************
-        boolean newOk = (inspectorOk && titleOk) ? true : false;
+        boolean newOk = (inspectorOk && titleOk);
 
         if (ok != newOk) {
             ok = newOk;
@@ -726,7 +705,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             }
         }
     }
-//pns$
 
     private void choosePDFDirectory() {
 
@@ -754,18 +732,12 @@ public class KarteSettingPanel extends AbstractSettingPanel {
      */
     private void bindModelToView() {
 
-        // インスペクタの左
-//pns^
-        inspectorCompo[0].setSelectedItem(model.getTopInspector());
-        inspectorCompo[1].setSelectedItem(model.getSecondInspector());
-        inspectorCompo[2].setSelectedItem(model.getThirdInspector());
-        inspectorCompo[3].setSelectedItem(model.getForthInspector());
-        inspectorCompo[4].setSelectedItem(model.getFifthInspector());
-        //topCompo.setSelectedItem(model.getTopInspector());
-        //secondCompo.setSelectedItem(model.getSecondInspector());
-        //thirdCompo.setSelectedItem(model.getThirdInspector());
-        //forthCompo.setSelectedItem(model.getForthInspector());
-//pns$
+        // インスペクタの左  String name から index を調べる
+        inspectorCombo[0].setSelectedIndex(InspectorCategory.orderOfName(model.getTopInspector()));
+        inspectorCombo[1].setSelectedIndex(InspectorCategory.orderOfName(model.getSecondInspector()));
+        inspectorCombo[2].setSelectedIndex(InspectorCategory.orderOfName(model.getThirdInspector()));
+        inspectorCombo[3].setSelectedIndex(InspectorCategory.orderOfName(model.getForthInspector()));
+        inspectorCombo[4].setSelectedIndex(InspectorCategory.orderOfName(model.getFifthInspector()));
 
         // PDF 出力先
         pdfStore.setText(model.getPdfStore());
@@ -776,18 +748,13 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             }
         });
 
-        // 重複をチェックするためのリスナ
-//pns^
-        for (int i=0; i<INSPECTOR_LENGTH; i++) {
-            inspectorCompo[i].addItemListener(e -> {
+        // 重複をチェックするためのリスナを付ける
+        for (int i=0; i<inspectorCombo.length; i++) {
+            inspectorCombo[i].addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) { checkState(); }
             });
         }
-        //topCompo.addItemListener(EventHandler.create(ItemListener.class, this, "inspectorChanged", "stateChange"));
-        //secondCompo.addItemListener(EventHandler.create(ItemListener.class, this, "inspectorChanged", "stateChange"));
-        //thirdCompo.addItemListener(EventHandler.create(ItemListener.class, this, "inspectorChanged", "stateChange"));
-        //forthCompo.addItemListener(EventHandler.create(ItemListener.class, this, "inspectorChanged", "stateChange"));
-//pns$
+
         // インスペクタ画面のロケータ
         boolean curLocator = model.isLocateByPlatform();
         pltform.setSelected(curLocator);
@@ -837,7 +804,8 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         // ラボテストの抽出期間
         int currentLaboTestPeriod = model.getLabotestExtractionPeriod();
-        laboTestPeriodCombo.setSelectedIndex(NameValuePair.getIndex(String.valueOf(currentLaboTestPeriod), laboTestPeriodObjects));
+        List<PNSPair<String,Integer>> laboPeriodList = ComboBoxFactory.getLaboExtractionPeriodModel();
+        laboTestPeriodCombo.setSelectedIndex(PNSPair.getIndex(currentLaboTestPeriod, laboPeriodList));
 
         // スタンプ動作
         replaceStamp.setSelected(model.isReplaceStamp());
@@ -1002,22 +970,17 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     }
 
     /**
-     * ViewToModel
+     * ViewToModel.
      */
     private void bindViewToModel() {
 
         // インスペクタの左
-//pns^
-        model.setTopInspector((String) inspectorCompo[0].getSelectedItem());
-        model.setSecondInspector((String) inspectorCompo[1].getSelectedItem());
-        model.setThirdInspector((String) inspectorCompo[2].getSelectedItem());
-        model.setForthInspector((String) inspectorCompo[3].getSelectedItem());
-        model.setFifthInspector((String) inspectorCompo[4].getSelectedItem());
-        //model.setTopInspector((String) topCompo.getSelectedItem());
-        //model.setSecondInspector((String) secondCompo.getSelectedItem());
-        //model.setThirdInspector((String) thirdCompo.getSelectedItem());
-        //model.setForthInspector((String) forthCompo.getSelectedItem());
-//pns$
+        model.setTopInspector(InspectorCategory.values()[ inspectorCombo[0].getSelectedIndex() ].name());
+        model.setSecondInspector(InspectorCategory.values()[ inspectorCombo[1].getSelectedIndex() ].name());
+        model.setThirdInspector(InspectorCategory.values()[ inspectorCombo[2].getSelectedIndex() ].name());
+        model.setForthInspector(InspectorCategory.values()[ inspectorCombo[3].getSelectedIndex() ].name());
+        model.setFifthInspector(InspectorCategory.values()[ inspectorCombo[4].getSelectedIndex() ].name());
+
         model.setPdfStore(pdfStore.getText().trim());
 
         // インスペクタ画面のロケータ
@@ -1055,8 +1018,9 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         prefs.putInt(Project.OFFSET_OUTCOME_DATE, Integer.parseInt(val));
 
         // ラボテストの抽出期間
-        String code = ((NameValuePair) laboTestPeriodCombo.getSelectedItem()).getValue();
-        model.setLabotestExtractionPeriod(Integer.parseInt(code));
+        index = laboTestPeriodCombo.getSelectedIndex();
+        period = ComboBoxFactory.getLaboExtractionPeriodModel().get(index).getValue();
+        model.setLabotestExtractionPeriod(period);
 
         // スタンプ関連
         model.setReplaceStamp(replaceStamp.isSelected());
@@ -1643,7 +1607,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 //pns   outcomeSpinner.setValue(new Integer(defaultOffsetOutcomeDate));
         outcomeSpinner.setValue(defaultOffsetOutcomeDate);
 
-        laboTestPeriodCombo.setSelectedIndex(NameValuePair.getIndex(String.valueOf(defaultLaboTestPeriod), laboTestPeriodObjects));
+        laboTestPeriodCombo.setSelectedIndex(PNSPair.getIndex(defaultLaboTestPeriod, ComboBoxFactory.getLaboExtractionPeriodModel()));
     }
 
     private JPanel createUnitFieldPanel(JTextField tf, String unit) {

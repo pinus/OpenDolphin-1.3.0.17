@@ -34,4 +34,15 @@ public enum InspectorCategory {
     public Class<? extends IInspector> clazz() {
         return clazz;
     }
+
+    public static int orderOfName(String name) {
+        int index = -1;
+        for (int i=0; i < InspectorCategory.values().length; i++) {
+            if (InspectorCategory.values()[i].name().equals(name)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
 }

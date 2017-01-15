@@ -25,8 +25,6 @@ import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.DocumentSearchSpec;
-import open.dolphin.event.DocumentHistorySelectionListener;
-import open.dolphin.event.DocumentHistoryUpdateListener;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.IInfoModel;

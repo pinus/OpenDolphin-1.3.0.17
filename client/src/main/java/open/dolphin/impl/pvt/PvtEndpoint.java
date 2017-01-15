@@ -5,8 +5,6 @@ import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
 import open.dolphin.JsonConverter;
-import open.dolphin.event.PvtListener;
-import open.dolphin.event.PvtMessageHandler;
 import open.dolphin.infomodel.PatientVisitModel;
 
 /**

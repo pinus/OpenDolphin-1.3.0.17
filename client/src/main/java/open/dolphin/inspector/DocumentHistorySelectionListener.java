@@ -1,4 +1,4 @@
-package open.dolphin.event;
+package open.dolphin.inspector;
 
 import java.util.EventListener;
 import open.dolphin.infomodel.DocInfoModel;

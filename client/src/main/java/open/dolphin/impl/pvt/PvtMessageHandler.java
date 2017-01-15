@@ -1,4 +1,4 @@
-package open.dolphin.event;
+package open.dolphin.impl.pvt;
 
 import javax.websocket.MessageHandler;
 
