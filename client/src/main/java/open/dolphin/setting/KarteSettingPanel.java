@@ -4,19 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
+import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.inspector.InspectorCategory;
 import open.dolphin.project.Project;
@@ -193,9 +190,8 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         // GUI コンポーネントを生成する
         //
 
-        // インスペクタ選択コンボ
+        // インスペクタ選択 Combo を INSPECTOR_COMBO_COUNT だけ作る.
         inspectorCombo = new JComboBox[INSPECTOR_COMBO_COUNT];
-
         for (int i=0; i<INSPECTOR_COMBO_COUNT; i++) {
             inspectorCombo[i] = new JComboBox<>(InspectorCategory.values());
         }
@@ -271,12 +267,10 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         spinner = new JSpinner(fetchModel);
         spinner.setEditor(new JSpinner.NumberEditor(spinner, "#"));
 
-        //転帰入力時に日付を入力する場合のおふせっと値
+        //転帰入力時に日付を入力する場合のオフセット値
         int currentOffsetOutcomeDate = prefs.getInt(Project.OFFSET_OUTCOME_DATE, defaultOffsetOutcomeDate);
         SpinnerModel outcomeModel = new SpinnerNumberModel(currentOffsetOutcomeDate, -31, 0, 1);
         outcomeSpinner = new JSpinner(outcomeModel);
-//pns   ↓バグでね？
-//      spinner.setEditor(new JSpinner.NumberEditor(spinner, "#"));
         outcomeSpinner.setEditor(new JSpinner.NumberEditor(outcomeSpinner, "#"));
 
         // インスペクタ画面 Memo & ロケータ
@@ -300,27 +294,22 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         int row = 0;
         JLabel label = new JLabel("左側トップ:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-//pns   gbb.add(topCompo, 1, row, 1, 1, GridBagConstraints.WEST);
         gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
         label = new JLabel("2番目:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-//pns   gbb.add(secondCompo, 1, row, 1, 1, GridBagConstraints.WEST);
         gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
         label = new JLabel("3番目:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-//pns   gbb.add(thirdCompo, 1, row, 1, 1, GridBagConstraints.WEST);
         gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
         label = new JLabel("4番目:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-//pns   gbb.add(forthCompo, 1, row, 1, 1, GridBagConstraints.WEST);
         gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
         label = new JLabel("ボトム:", SwingConstants.RIGHT);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-//pns   gbb.add(forthCompo, 1, row, 1, 1, GridBagConstraints.WEST);
         gbb.add(inspectorCombo[row], 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
 
@@ -334,19 +323,8 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         gbb.add(frameLocator, 1, row, 1, 1, GridBagConstraints.WEST);
         JPanel insP = gbb.getProduct();
 
-//        gbb = new GridBagBuilder("紹介状等PDFの出力先");
-//        row = 0;
-//        label = new JLabel("出力先:", SwingConstants.RIGHT);
-//        gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-//        JPanel pdfPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-//        pdfPanel.add(pdfStore);
-//        pdfPanel.add(pdfDir);
-//        gbb.add(pdfPanel, 1, row, 1, 1, GridBagConstraints.WEST);
-//        JPanel pdfP = gbb.getProduct();
-
         gbb = new GridBagBuilder();
         gbb.add(insP,           0, 0, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
-//        gbb.add(pdfP,           0, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
         gbb.add(new JLabel(""), 0, 2, GridBagConstraints.BOTH, 1.0, 1.0);
         JPanel inspectorPanel = gbb.getProduct();
 
@@ -417,8 +395,9 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         gbb = new GridBagBuilder();
         gbb.add(kartePanel, 0, 0, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
         gbb.add(diagnosisPanel, 0, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
-        gbb.add(cmd, 0, 2, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
-        gbb.add(new JLabel(""), 0, 3, GridBagConstraints.BOTH, 1.0, 1.0);
+        gbb.add(laboPanel, 0, 2, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
+        gbb.add(cmd, 0, 3, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
+        gbb.add(new JLabel(""), 0, 4, GridBagConstraints.BOTH, 1.0, 1.0);
 
         JPanel docPanel = gbb.getProduct();
 
@@ -528,7 +507,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         confirmPanel.setLayout(new BoxLayout(confirmPanel, BoxLayout.Y_AXIS));
         NumberFormat numFormat = NumberFormat.getNumberInstance();
         printCount = new JFormattedTextField(numFormat);
-//pns   printCount.setValue(new Integer(0));
         printCount.setValue(0);
 
         row = 0;
@@ -596,7 +574,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         bg.add(save);
         bg.add(saveTmp);
 
-//pns^  スクロール速度設定
+        // スクロール速度設定
         JPanel uiPanel = new JPanel();
         uiPanel.setLayout(new BoxLayout(uiPanel, BoxLayout.Y_AXIS));
         row = 0;
@@ -607,39 +585,37 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         JPanel slider = GUIFactory.createSliderPanel(1,32, prefs.getInt(Project.SCROLL_UNIT_KARTE, 15));
         scrollUnitKarte = (JSpinner) slider.getComponent(1);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-        gbb.add(slider, 1, row++, 1, 1, GridBagConstraints.WEST);
+        gbb.add(slider, 1, row, 1, 1, GridBagConstraints.WEST);
+        row ++;
 
         // テーブルのスクロール速度
         label = new JLabel("テーブル :", SwingConstants.RIGHT);
         slider = GUIFactory.createSliderPanel(1,32, prefs.getInt(Project.SCROLL_UNIT_TABLE, 15));
         scrollUnitTable = (JSpinner) slider.getComponent(1);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-        gbb.add(slider, 1, row++, 1, 1, GridBagConstraints.WEST);
+        gbb.add(slider, 1, row, 1, 1, GridBagConstraints.WEST);
+        row ++;
 
         // スタンプのスクロール速度
         label = new JLabel("スタンプ :", SwingConstants.RIGHT);
         slider = GUIFactory.createSliderPanel(1,32, prefs.getInt(Project.SCROLL_UNIT_STAMP, 15));
         scrollUnitStamp = (JSpinner) slider.getComponent(1);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-        gbb.add(slider, 1, row++, 1, 1, GridBagConstraints.WEST);
+        gbb.add(slider, 1, row, 1, 1, GridBagConstraints.WEST);
+        row++;
 
         uiPanel.add(gbb.getProduct());
         uiPanel.add(Box.createVerticalStrut(500));
         uiPanel.add(Box.createVerticalGlue());
 
-//pns$
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("インスペクタ", inspectorPanel);
         tabbedPane.addTab("文 書", docPanel);
         tabbedPane.addTab("スタンプ", stampPanel);
         tabbedPane.addTab("診療行為", sendPanel);
         tabbedPane.addTab("確認ダイアログ", confirmPanel);
-//pns^  スクロール速度設定
+        // スクロール速度設定
         tabbedPane.addTab("UI", uiPanel);
-//pns$
-
-//pns   quaquaで表示が乱れるのを防ぐ
-//      tabbedPane.setPreferredSize(docPanel.getPreferredSize());
 
         getUI().setLayout(new BorderLayout());
         getUI().add(tabbedPane);
@@ -691,7 +667,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             }
         }
 
-        // valid_state セット部 ************************
+        // valid_state セット部
         boolean newOk = (inspectorOk && titleOk);
 
         if (ok != newOk) {
@@ -708,27 +684,22 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
     private void choosePDFDirectory() {
 
-//        try {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-            String baseDir = pdfStore.getText().trim();
-            if (baseDir != null && (!baseDir.equals(""))) {
-                File f = new File(baseDir);
-                chooser.setSelectedFile(f);
-            }
-            int returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                pdfStore.setText(chooser.getSelectedFile().getPath());
-            }
-
-//        } catch (Exception ex) {
-//            logger.warn(ex);
-//        }
+        String baseDir = pdfStore.getText().trim();
+        if (baseDir != null && (!baseDir.equals(""))) {
+            File f = new File(baseDir);
+            chooser.setSelectedFile(f);
+        }
+        int returnVal = chooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            pdfStore.setText(chooser.getSelectedFile().getPath());
+        }
     }
 
     /**
-     * ModelToView
+     * ModelToView.
      */
     private void bindModelToView() {
 
@@ -741,14 +712,9 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         // PDF 出力先
         pdfStore.setText(model.getPdfStore());
-        pdfDir.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                choosePDFDirectory();
-            }
-        });
+        pdfDir.addActionListener(e -> choosePDFDirectory());
 
-        // 重複をチェックするためのリスナを付ける
+        // 選択インスペクタの重複をチェックするためのリスナを付ける
         for (int i=0; i<inspectorCombo.length; i++) {
             inspectorCombo[i].addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) { checkState(); }
@@ -794,13 +760,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         // 転帰のオフセット
         autoOutcomeInput.setSelected(model.isAutoOutcomeInput());
         outcomeSpinner.setEnabled(autoOutcomeInput.isSelected());
-        autoOutcomeInput.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                outcomeSpinner.setEnabled(autoOutcomeInput.isSelected());
-            }
-        });
+        autoOutcomeInput.addActionListener(e -> outcomeSpinner.setEnabled(autoOutcomeInput.isSelected()));
 
         // ラボテストの抽出期間
         int currentLaboTestPeriod = model.getLabotestExtractionPeriod();
@@ -816,10 +776,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         defaultMizuyakuNum.setText(model.getDefaultMizuyakuNum());
         defaultSanyakuNum.setText(model.getDefaultSanyakuNum());
         defaultRpNum.setText(model.getDefaultRpNum());
-//pns   defaultZyozaiNum.addFocusListener(AutoRomanListener.getInstance());
-//pns   defaultMizuyakuNum.addFocusListener(AutoRomanListener.getInstance());
-//pns   defaultSanyakuNum.addFocusListener(AutoRomanListener.getInstance());
-//pns   defaultRpNum.addFocusListener(AutoRomanListener.getInstance());
+
         IMEControl.setImeOffIfFocused(defaultZyozaiNum);
         IMEControl.setImeOffIfFocused(defaultMizuyakuNum);
         IMEControl.setImeOffIfFocused(defaultSanyakuNum);
@@ -855,66 +812,22 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         }
 
         // カルテタイトル
-        ActionListener a = new ActionListener() {
+        useTop15AsTitle.addActionListener(e -> {
+            boolean enabled = useTop15AsTitle.isSelected();
+            defaultKarteTitle.setEnabled(!enabled);
+        });
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean enabled = useTop15AsTitle.isSelected();
-                defaultKarteTitle.setEnabled(!enabled);
-            }
-        };
-        useTop15AsTitle.addActionListener(a);
         defaultKarteTitle.setText(model.getDefaultKarteTitle());
         if (model.isUseTop15AsTitle()) {
             useTop15AsTitle.doClick();
         }
-        DocumentListener emptyListener = new DocumentListener() {
 
-            @Override
-            public void insertUpdate(DocumentEvent arg0) {
-                checkState();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent arg0) {
-                checkState();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent arg0) {
-                checkState();
-            }
-        };
-        defaultKarteTitle.getDocument().addDocumentListener(emptyListener);
-//pns   defaultKarteTitle.addFocusListener(AutoKanjiListener.getInstance());
+        defaultKarteTitle.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkState());
         IMEControl.setImeOnIfFocused(defaultKarteTitle);
 
         //
         // 確認ダイアログ関係
         //
-        ActionListener al = new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean enabled = noConfirmAtNew.isSelected();
-                emptyNew.setEnabled(enabled);
-                applyRp.setEnabled(enabled);
-                copyNew.setEnabled(enabled);
-                placeWindow.setEnabled(enabled);
-                palceTabbedPane.setEnabled(enabled);
-            }
-        };
-
-        ActionListener al2 = new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean enabled = noConfirmAtSave.isSelected();
-                printCount.setEnabled(enabled);
-                save.setEnabled(enabled);
-                saveTmp.setEnabled(enabled);
-            }
-        };
 
         // カルテの作成モード
         switch (model.getCreateKarteMode()) {
@@ -946,7 +859,14 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         copyNew.setEnabled(!curConfirmAtNew);
         placeWindow.setEnabled(!curConfirmAtNew);
         palceTabbedPane.setEnabled(!curConfirmAtNew);
-        noConfirmAtNew.addActionListener(al);
+        noConfirmAtNew.addActionListener(e -> {
+            boolean enabled = noConfirmAtNew.isSelected();
+            emptyNew.setEnabled(enabled);
+            applyRp.setEnabled(enabled);
+            copyNew.setEnabled(enabled);
+            placeWindow.setEnabled(enabled);
+            palceTabbedPane.setEnabled(enabled);
+        });
 
         // 保存時のデフォルト動作
         if (model.getSaveKarteMode() == 0) {
@@ -958,12 +878,16 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         // 保存時の確認ダイログ
         boolean curConfirmAtSave = model.isConfirmAtSave();
         noConfirmAtSave.setSelected(!curConfirmAtSave);
-//pns   printCount.setValue(new Integer(model.getPrintKarteCount()));
         printCount.setValue(model.getPrintKarteCount());
         printCount.setEnabled(!curConfirmAtSave);
         save.setEnabled(!curConfirmAtSave);
         saveTmp.setEnabled(!curConfirmAtSave);
-        noConfirmAtSave.addActionListener(al2);
+        noConfirmAtSave.addActionListener(e -> {
+            boolean enabled = noConfirmAtSave.isSelected();
+            printCount.setEnabled(enabled);
+            save.setEnabled(enabled);
+            saveTmp.setEnabled(enabled);
+        });
 
         // この設定画面は常に有効状態である
         setState(SettingPanelState.VALID);
@@ -1069,12 +993,12 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         // 印刷枚数
         Integer ival = (Integer) printCount.getValue();
-        model.setPrintKarteCount(ival.intValue());
+        model.setPrintKarteCount(ival);
 
         // 保存時のデフォルト動作
         int sMode = save.isSelected() ? 0 : 1;
         model.setSaveKarteMode(sMode); // 0=save, 1=saveTmp
-//pns^
+
         // スクロール速度を pref に書き戻す
         val = scrollUnitKarte.getValue().toString();
         prefs.putInt(Project.SCROLL_UNIT_KARTE, Integer.parseInt(val));
@@ -1082,7 +1006,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         prefs.putInt(Project.SCROLL_UNIT_TABLE, Integer.parseInt(val));
         val = scrollUnitStamp.getValue().toString();
         prefs.putInt(Project.SCROLL_UNIT_STAMP, Integer.parseInt(val));
-//pns$
     }
 
     /**
@@ -1586,7 +1509,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         }
     }
 
-//pns private void restoreDefault() {
     public void restoreDefault() {
 
         pltform.setSelected(defaultLocator);
@@ -1595,7 +1517,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         asc.setSelected(defaultAsc);
         desc.setSelected(!defaultAsc);
         showModifiedCB.setSelected(defaultShowModified);
-//pns   spinner.setValue(new Integer(defaultFetchCount));
         spinner.setValue(defaultFetchCount);
         periodCombo.setSelectedIndex(PNSPair.getIndex(defaultPeriod, ComboBoxFactory.getDocumentExtractionPeriodModel()));
         vSc.setSelected(defaultScDirection);
@@ -1604,7 +1525,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         diagnosisDesc.setSelected(!defaultDiagnosisAsc);
         diagnosisPeriodCombo.setSelectedIndex(PNSPair.getIndex(defaultDiagnosisPeriod, ComboBoxFactory.getDiagnosisExtractionPeriodModel()));
         autoOutcomeInput.setSelected(defaultAutoOutcomeInput);
-//pns   outcomeSpinner.setValue(new Integer(defaultOffsetOutcomeDate));
         outcomeSpinner.setValue(defaultOffsetOutcomeDate);
 
         laboTestPeriodCombo.setSelectedIndex(PNSPair.getIndex(defaultLaboTestPeriod, ComboBoxFactory.getLaboExtractionPeriodModel()));

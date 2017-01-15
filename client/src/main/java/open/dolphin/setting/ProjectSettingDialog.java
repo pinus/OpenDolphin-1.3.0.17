@@ -38,7 +38,7 @@ public final class ProjectSettingDialog {
     private boolean okState;
     private Logger logger;
     private static int DEFAULT_WIDTH = 600;
-    private static int DEFAULT_HEIGHT = 630;
+    private static int DEFAULT_HEIGHT = 700;
     private Frame parentFrame = null;
 
     private ValidListener validListener;
