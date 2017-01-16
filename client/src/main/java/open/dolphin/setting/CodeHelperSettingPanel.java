@@ -1,5 +1,6 @@
 package open.dolphin.setting;
 
+import open.dolphin.codehelper.AbstractCodeHelper;
 import java.awt.GridBagConstraints;
 import java.util.prefs.Preferences;
 import javax.swing.*;
@@ -11,7 +12,7 @@ import open.dolphin.project.ProjectStub;
 
 /**
  * コードヘルパー設定パネル.
- *
+ * Preferences の node は AbstractCodeHelper.class を使っている.
  * @author Kazushi
  * @author pns
  */

@@ -1506,7 +1506,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         setDiagnosisCount();
     }
     public void selectAll() {
-        requestFocus(diagTable);
         diagTable.selectAll();
     }
 
