@@ -109,7 +109,7 @@ public class PCodeHelper extends AbstractCodeHelper {
 
         // current StampBoxのP関連 StampTree を取得する
         StampBoxPlugin stampBox = getMediator().getStampBox();
-        List<StampTree> allTree = stampBox.getAllPTrees();
+        List<StampTree> allTree = stampBox.getAllTrees();
         if (allTree == null || allTree.isEmpty()) { return; }
 
         // 親メニューのスタックを生成する

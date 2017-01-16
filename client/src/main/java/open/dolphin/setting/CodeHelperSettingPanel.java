@@ -23,38 +23,24 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
     private static final ImageIcon ICON = GUIConst.ICON_SHORTCUTS_32;
 
     private JRadioButton ctrlMask;
-
     private JRadioButton metaMask;
 
     private JTextField text;
-
     private JTextField path;
-
     private JTextField general;
-
     private JTextField other;
-
     private JTextField treatment;
-
     private JTextField surgery;
-
     private JTextField radiology;
-
     private JTextField labo;
-
     private JTextField physiology;
-
     private JTextField bacteria;
-
     private JTextField injection;
-
     private JTextField rp;
-
     private JTextField baseCharge;
-
     private JTextField instraction;
-
     private JTextField orca;
+    private JTextField diag;
 
     private SettingPanelState curState = SettingPanelState.NONE;
 
@@ -128,7 +114,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
         baseCharge = new JTextField(5);
         instraction = new JTextField(5);
         orca = new JTextField(5);
-
+        diag = new JTextField(5);
         //
         // 修飾キー
         //
@@ -188,6 +174,9 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
         gbl.add(new JLabel("ORCA:"),            0, 7, GridBagConstraints.EAST);
         gbl.add(orca,                           1, 7, GridBagConstraints.WEST);
 
+        gbl.add(new JLabel("病名:"),            2, 7, GridBagConstraints.EAST);
+        gbl.add(diag,                           3, 7, GridBagConstraints.WEST);
+
         JPanel stamp = gbl.getProduct();
 
         // 全体をレイアウトする
@@ -226,6 +215,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
         baseCharge.getDocument().addDocumentListener(dl);
         instraction.getDocument().addDocumentListener(dl);
         orca.getDocument().addDocumentListener(dl);
+        diag.getDocument().addDocumentListener(dl);
 
     }
 
@@ -248,7 +238,8 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
                 rp.getText().trim().equals("") ||
                 baseCharge.getText().trim().equals("") ||
                 instraction.getText().trim().equals("") ||
-                orca.getText().trim().equals("")) {
+                orca.getText().trim().equals("") ||
+                diag.getText().trim().equals("")) {
 
             newState = SettingPanelState.INVALID;
 
@@ -276,34 +267,21 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
             prefs.put("modifier", mask);
 
             prefs.put(IInfoModel.ENTITY_TEXT, text.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_PATH, path.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_GENERAL_ORDER, general.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_OTHER_ORDER, other.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_TREATMENT, treatment.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_SURGERY_ORDER, surgery.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_RADIOLOGY_ORDER, radiology.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_LABO_TEST, labo.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_PHYSIOLOGY_ORDER, physiology.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_BACTERIA_ORDER, bacteria.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_INJECTION_ORDER, injection.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_MED_ORDER, rp.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_BASE_CHARGE_ORDER, baseCharge.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_INSTRACTION_CHARGE_ORDER, instraction.getText().trim());
-
             prefs.put(IInfoModel.ENTITY_ORCA, orca.getText().trim());
+            prefs.put(IInfoModel.ENTITY_DIAGNOSIS, diag.getText().trim());
         }
 
         /**
@@ -325,38 +303,24 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
             }
 
             text.setText(prefs.get(IInfoModel.ENTITY_TEXT, "tx").trim());
-
             path.setText(prefs.get(IInfoModel.ENTITY_PATH, "pat").trim());
-
             general.setText(prefs.get(IInfoModel.ENTITY_GENERAL_ORDER, "gen").trim());
-
             other.setText(prefs.get(IInfoModel.ENTITY_OTHER_ORDER, "oth").trim());
-
             treatment.setText(prefs.get(IInfoModel.ENTITY_TREATMENT, "tr").trim());
-
             surgery.setText(prefs.get(IInfoModel.ENTITY_SURGERY_ORDER, "sur").trim());
-
             radiology.setText(prefs.get(IInfoModel.ENTITY_RADIOLOGY_ORDER, "rad").trim());
-
             labo.setText(prefs.get(IInfoModel.ENTITY_LABO_TEST, "lab").trim());
-
             physiology.setText(prefs.get(IInfoModel.ENTITY_PHYSIOLOGY_ORDER, "phy").trim());
-
             bacteria.setText(prefs.get(IInfoModel.ENTITY_BACTERIA_ORDER, "bac").trim());
-
             injection.setText(prefs.get(IInfoModel.ENTITY_INJECTION_ORDER, "inj").trim());
-
             rp.setText(prefs.get(IInfoModel.ENTITY_MED_ORDER, "rp").trim());
-
             baseCharge.setText(prefs.get(IInfoModel.ENTITY_BASE_CHARGE_ORDER, "base").trim());
-
             instraction.setText(prefs.get(IInfoModel.ENTITY_INSTRACTION_CHARGE_ORDER, "ins").trim());
-
             orca.setText(prefs.get(IInfoModel.ENTITY_ORCA, "orca").trim());
+            diag.setText(prefs.get(IInfoModel.ENTITY_DIAGNOSIS, "diag").trim());
 
             connect();
             checkState();
-
         }
     }
 }

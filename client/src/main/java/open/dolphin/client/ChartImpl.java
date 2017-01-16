@@ -1269,7 +1269,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         dirtyList.stream().filter(undoc -> undoc.isNeedSave()).forEach(undoc -> {
             ChartDocument doc = providers.get(tabbedPane.getTitleAt(undoc.getIndex()));
             if (doc != null && doc.isDirty()) {
-                tabbedPane.setSelectedIndex(undoc.getIndex());
+                //tabbedPane.setSelectedIndex(undoc.getIndex());
                 doc.save();
             }
         });

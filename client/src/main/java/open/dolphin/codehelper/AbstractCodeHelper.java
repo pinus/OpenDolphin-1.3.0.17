@@ -5,6 +5,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
@@ -17,7 +18,10 @@ import javax.swing.JTextPane;
 import javax.swing.TransferHandler;
 import javax.swing.text.BadLocationException;
 import javax.swing.tree.DefaultMutableTreeNode;
+import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ChartMediator;
+import open.dolphin.client.DiagnosisDocumentTable;
+import open.dolphin.client.EditorFrame;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.KartePane;
 import open.dolphin.client.LocalStampTreeNodeTransferable;
@@ -40,6 +44,7 @@ public abstract class AbstractCodeHelper {
     public static final String[] WORD_SEPARATOR = {" ", " ", "，", "," , "、", "。", "\n", "\t"};
     /** KartePane の JTextPane */
     private final JTextPane textPane;
+    private final DiagnosisDocumentTable diagTable;
     /** 補完リストメニュー */
     private JPopupMenu popup;
     /** キーワードの開始位置 */
@@ -58,6 +63,8 @@ public abstract class AbstractCodeHelper {
 
         mediator = chartMediator;
         textPane = kartePane.getTextPane();
+        ChartImpl realChart = (ChartImpl) ((EditorFrame) kartePane.getParent().getContext()).getChart();
+        diagTable = realChart.getDiagnosisDocument().getDiagnosisTable();
 
         Preferences prefs = Preferences.userNodeForPackage(AbstractCodeHelper.class);
         int modifier = prefs.get("modifier", "ctrl").equals("ctrl")? KeyEvent.CTRL_DOWN_MASK : KeyEvent.META_DOWN_MASK;
@@ -190,10 +197,8 @@ public abstract class AbstractCodeHelper {
         List<JMenu> subMenus = new ArrayList<>();
         // 親のない item のスタック
         List<JMenuItem> rootItems = new ArrayList<>();
-        // 親ノードのスタックを生成する - インデックスが subMenus と一致するようにする
-        List<StampTreeNode> parents = new ArrayList<>();
-        // Stamp を検索する pattern - text が null の場合は pattern も null にしておく
-        //Pattern pattern = searchText == null? null : Pattern.compile(searchText);
+        // parent をキーに，対応する JMenu を取り出す HashMap
+        HashMap<StampTreeNode, JMenu> parentMap = new HashMap<>();
 
         DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
         Enumeration e = rootNode.preorderEnumeration();
@@ -207,18 +212,18 @@ public abstract class AbstractCodeHelper {
                 StampTreeNode node = (StampTreeNode) e.nextElement();
                 // その親を得る
                 StampTreeNode parent = (StampTreeNode) node.getParent();
-                // 親がリストに含まれているかどうか
-                int index = parents.indexOf(parent);
 
-                if (index > -1) {
+                if (parentMap.containsKey(parent)) {
                     // 既に親が登録されている場合
                     if (!node.isLeaf()) {
-                        // フォルダの場合は，新たに親として parents に加える
+                        // フォルダの場合
                         String folderName = node.getUserObject().toString();
                         JMenu subMenu = new JMenu(folderName);
-                        // 頭から入れていく
-                        subMenus.add(subMenu);
-                        parents.add(node);
+                        // subMenu は parent の subMenu 内に加える
+                        parentMap.get(parent).add(subMenu);
+                        // この node も parentMap に加える
+                        parentMap.put(node, subMenu);
+
                         // フォルダ item を作って menu 中に入れておく
                         JMenuItem item = new JMenuItem(folderName);
                         item.setIcon(ICON);
@@ -231,8 +236,7 @@ public abstract class AbstractCodeHelper {
                         String completion = info.getStampName();
                         JMenuItem item = new JMenuItem(completion);
                         addActionListner(item, node, isDiagnosis);
-                        // parents と index は一致しているので，これで対応 menu 下に item が入る
-                        subMenus.get(index).add(item);
+                        parentMap.get(parent).add(item);
                     }
 
                 } else {
@@ -247,7 +251,7 @@ public abstract class AbstractCodeHelper {
                             JMenu subMenu = new JMenu(folderName);
                             // 親として加える
                             subMenus.add(subMenu);
-                            parents.add(node);
+                            parentMap.put(node, subMenu);
 
                             // フォルダ item を作って menu 中に入れておく
                             JMenuItem item = new JMenuItem(folderName);
@@ -295,13 +299,14 @@ public abstract class AbstractCodeHelper {
     }
 
     /**
-     * node を textPane に挿入するアクションを menuItem に登録する.
+     * node を textPane / diagTable に挿入するアクションを menuItem に登録する.
      * @param item
      * @param node
+     * @param isDiagnosis
      */
     protected void addActionListner(JMenuItem item, StampTreeNode node, boolean isDiagnosis) {
         if (isDiagnosis) {
-            System.out.println("----------- Diagnosis ------------");
+            item.addActionListener(e -> importStamp(diagTable, diagTable.getTransferHandler(), new LocalStampTreeNodeTransferable(node)));
         } else {
             item.addActionListener(e -> importStamp(textPane, textPane.getTransferHandler(), new LocalStampTreeNodeTransferable(node)));
         }

@@ -34,9 +34,6 @@ public class SOACodeHelper extends AbstractCodeHelper {
         if (prefs.get(IInfoModel.ENTITY_TEXT, "tx").startsWith(StringTool.toHankakuUpperLower(text).toLowerCase())) {
             buildEntityPopup(IInfoModel.ENTITY_TEXT);
 
-        } else if (prefs.get(IInfoModel.ENTITY_DIAGNOSIS, "dx").startsWith(StringTool.toHankakuUpperLower(text).toLowerCase())) {
-            buildEntityPopup(IInfoModel.ENTITY_DIAGNOSIS);
-
         } else {
             buildMatchPopup(text);
         }
