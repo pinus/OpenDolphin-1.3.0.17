@@ -1158,7 +1158,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         int maxEstimation = 10000;
         int delay = 3000;
 
-        Task task = new Task<Boolean>(c, message, note, maxEstimation) {
+        Task<Boolean> task = new Task<Boolean>(c, message, note, maxEstimation) {
 
             @Override
             protected Boolean doInBackground() throws Exception {

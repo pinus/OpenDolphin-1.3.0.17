@@ -86,6 +86,8 @@ public class PCodeHelper extends AbstractCodeHelper {
         } else if (prefs.get(IInfoModel.ENTITY_ORCA, "orca").startsWith(test)) {
             entity = IInfoModel.ENTITY_ORCA;
 
+        } else if (prefs.get(IInfoModel.ENTITY_DIAGNOSIS, "dx").startsWith(test)) {
+            entity = IInfoModel.ENTITY_DIAGNOSIS;
         }
 
         if (entity != null) {

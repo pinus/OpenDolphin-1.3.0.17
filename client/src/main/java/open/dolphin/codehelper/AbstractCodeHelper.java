@@ -24,6 +24,7 @@ import open.dolphin.client.LocalStampTreeNodeTransferable;
 import open.dolphin.client.StampBoxPlugin;
 import open.dolphin.client.StampTree;
 import open.dolphin.client.StampTreeNode;
+import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 
 /**
@@ -183,6 +184,7 @@ public abstract class AbstractCodeHelper {
      */
     protected MenuModel createMenu(StampTree tree, String searchText) {
         MenuModel model = new MenuModel();
+        boolean isDiagnosis = tree.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS);
 
         // 親メニューのスタックを生成する
         List<JMenu> subMenus = new ArrayList<>();
@@ -221,14 +223,14 @@ public abstract class AbstractCodeHelper {
                         JMenuItem item = new JMenuItem(folderName);
                         item.setIcon(ICON);
                         subMenu.add(item);
-                        addActionListner(item, node);
+                        addActionListner(item, node, isDiagnosis);
 
                     } else {
                         // 親のいる item の場合は，親のもとに入れる
                         ModuleInfoBean info = (ModuleInfoBean) node.getUserObject();
                         String completion = info.getStampName();
                         JMenuItem item = new JMenuItem(completion);
-                        addActionListner(item, node);
+                        addActionListner(item, node, isDiagnosis);
                         // parents と index は一致しているので，これで対応 menu 下に item が入る
                         subMenus.get(index).add(item);
                     }
@@ -251,7 +253,7 @@ public abstract class AbstractCodeHelper {
                             JMenuItem item = new JMenuItem(folderName);
                             item.setIcon(ICON);
                             subMenu.add(item);
-                            addActionListner(item, node);
+                            addActionListner(item, node, isDiagnosis);
                         }
 
                     } else {
@@ -263,7 +265,7 @@ public abstract class AbstractCodeHelper {
                         if (matches(searchText, completion)) {
                             // 一致した場合
                             JMenuItem item = new JMenuItem(completion);
-                            addActionListner(item, node);
+                            addActionListner(item, node, isDiagnosis);
                             // 親のない item
                             rootItems.add(item);
                         }
@@ -297,8 +299,12 @@ public abstract class AbstractCodeHelper {
      * @param item
      * @param node
      */
-    protected void addActionListner(JMenuItem item, StampTreeNode node) {
-        item.addActionListener(e -> importStamp(textPane, textPane.getTransferHandler(), new LocalStampTreeNodeTransferable(node)));
+    protected void addActionListner(JMenuItem item, StampTreeNode node, boolean isDiagnosis) {
+        if (isDiagnosis) {
+            System.out.println("----------- Diagnosis ------------");
+        } else {
+            item.addActionListener(e -> importStamp(textPane, textPane.getTransferHandler(), new LocalStampTreeNodeTransferable(node)));
+        }
     }
 
     /**
