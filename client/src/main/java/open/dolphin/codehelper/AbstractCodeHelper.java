@@ -44,6 +44,7 @@ public abstract class AbstractCodeHelper {
     public static final String[] WORD_SEPARATOR = {" ", " ", "，", "," , "、", "。", "\n", "\t"};
     /** KartePane の JTextPane */
     private final JTextPane textPane;
+    /** DiagnosisDocument の JTable */
     private final DiagnosisDocumentTable diagTable;
     /** 補完リストメニュー */
     private JPopupMenu popup;

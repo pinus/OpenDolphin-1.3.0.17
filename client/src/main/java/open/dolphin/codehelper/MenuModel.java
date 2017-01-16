@@ -6,8 +6,10 @@ import javax.swing.JMenuItem;
 
 /**
  * Stamp からメニューを作って格納するための model.
- * subMenus: 子に JMenuItem を入れる JMenu を集めたもの.
- * rootItems: サブメニューに入らない JMenuItem を集めたもの.
+ * <ul>
+ * <li>subMenus<br>子に JMenuItem を入れる JMenu を集めたもの.
+ * <li>rootItems<br>サブメニューに入らない JMenuItem を集めたもの.
+ * </ul>
  * @author pns
  */
 public class MenuModel {
