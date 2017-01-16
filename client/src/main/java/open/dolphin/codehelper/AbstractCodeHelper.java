@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.prefs.Preferences;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -168,66 +167,18 @@ public abstract class AbstractCodeHelper {
         StampTree tree = stampBox.getStampTree(entity);
         if (tree == null) { return; }
 
-        // 親メニューのスタックを生成する
-        List<JMenu> subMenus = new ArrayList<>();
-        // 親のない item のスタック
-        List<JMenuItem> rootItems = new ArrayList<>();
-        // 親ノードのスタックを生成する - インデックスが subMenus と一致するようにする
-        List<StampTreeNode> parents = new ArrayList<>();
+        // searchText == null で入ると，tree 全体が返ってくる
+        MenuModel model = createMenu(tree, null);
 
-        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
-        Enumeration e = rootNode.preorderEnumeration();
-
-        if (e != null) {
-            e.nextElement(); // consume root
-
-            while (e.hasMoreElements()) {
-                // 調査対象のノードを得る
-                StampTreeNode node = (StampTreeNode) e.nextElement();
-                // その親を得る
-                StampTreeNode parent = (StampTreeNode) node.getParent();
-
-                if (!node.isLeaf()) {
-                    // フォルダーの場合
-                    JMenu subMenu = new JMenu(node.getUserObject().toString());
-                    // node を親として登録
-                    subMenus.add(subMenu);
-                    parents.add(node);
-                    // フォルダ item を作って menu 中に入れておく
-                    JMenuItem item = new JMenuItem(node.getUserObject().toString());
-                    item.setIcon(ICON);
-                    subMenu.add(item);
-                    addActionListner(item, node);
-
-                } else {
-                    // item の場合
-                    ModuleInfoBean info = (ModuleInfoBean) node.getUserObject();
-                    String stampName = info.getStampName();
-                    JMenuItem item = new JMenuItem(stampName);
-                    addActionListner(item, node);
-
-                    // 親がリストに含まれているかどうかを調べる
-                    int index = parents.indexOf(parent);
-
-                    if (index > -1) {
-                        // 親がいる場合
-                        subMenus.get(index).add(item);
-                    } else {
-                        // 親がいない場合
-                        rootItems.add(item);
-                    }
-                }
-            }
-            popup = new JPopupMenu();
-            subMenus.forEach(menu -> popup.add(menu));
-            rootItems.forEach(item -> popup.add(item));
-        }
+        popup = new JPopupMenu();
+        model.getSubMenus().forEach(menu -> popup.add(menu));
+        model.getRootItems().forEach(item -> popup.add(item));
     }
 
     /**
      * StampTree から searchText に合致するスタンプを検索してメニューを作成し，MenuModel に格納する.
      * @param tree
-     * @param searchText
+     * @param searchText - null の場合は全て一致と判断して ENTITY 全体を返す
      * @return
      */
     protected MenuModel createMenu(StampTree tree, String searchText) {
@@ -239,8 +190,8 @@ public abstract class AbstractCodeHelper {
         List<JMenuItem> rootItems = new ArrayList<>();
         // 親ノードのスタックを生成する - インデックスが subMenus と一致するようにする
         List<StampTreeNode> parents = new ArrayList<>();
-        // Stamp を検索する pattern
-        Pattern pattern = Pattern.compile(searchText);
+        // Stamp を検索する pattern - text が null の場合は pattern も null にしておく
+        //Pattern pattern = searchText == null? null : Pattern.compile(searchText);
 
         DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
         Enumeration e = rootNode.preorderEnumeration();
@@ -287,8 +238,9 @@ public abstract class AbstractCodeHelper {
                     if (!node.isLeaf()) {
                         // フォルダの場合
                         String completion = node.getUserObject().toString();
-                        Matcher matcher = pattern.matcher(completion);
-                        if (matcher.matches()) {
+
+                        // searchText が null の場合は合致と判断して全部返す
+                        if (matches(searchText, completion)) {
                             String folderName = node.getUserObject().toString();
                             JMenu subMenu = new JMenu(folderName);
                             // 親として加える
@@ -306,9 +258,9 @@ public abstract class AbstractCodeHelper {
                         // 親のない item の場合
                         ModuleInfoBean info = (ModuleInfoBean) node.getUserObject();
                         String completion = info.getStampName();
-                        Matcher matcher = pattern.matcher(completion);
 
-                        if (matcher.matches()) {
+                        // searchText が null の場合は合致と判断して全部返す
+                        if (matches(searchText, completion)) {
                             // 一致した場合
                             JMenuItem item = new JMenuItem(completion);
                             addActionListner(item, node);
@@ -323,6 +275,21 @@ public abstract class AbstractCodeHelper {
         model.setRootItems(rootItems);
         model.setSubMenus(subMenus);
         return model;
+    }
+
+    /**
+     * searchText が completion にマッチするかどうかを判断する.
+     * @param searchText - null の場合は合致と判断
+     * @param completion
+     * @return
+     */
+    private boolean matches(String searchText, String completion) {
+        // searchText が null の場合は合致と判断
+        if (searchText == null) { return true; }
+
+        // 大文字，小文字を無視するために小文字に変換して比較
+        Pattern pattern = Pattern.compile(searchText.toLowerCase());
+        return pattern.matcher(completion.toLowerCase()).matches();
     }
 
     /**
