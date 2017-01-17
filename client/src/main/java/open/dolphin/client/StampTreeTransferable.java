@@ -16,21 +16,27 @@ public final class StampTreeTransferable implements Transferable, ClipboardOwner
 
     public static final DataFlavor[] flavors = {StampTreeTransferable.stampTreeNodeFlavor};
 
-    private StampTreeNode node;
+    private final StampTreeNode node;
 
-    /** Creates new StampTreeTransferable */
+    /**
+     * Creates new StampTreeTransferable.
+     * @param node
+     */
     public StampTreeTransferable(StampTreeNode node) {
         this.node = node;
     }
 
+    @Override
     public synchronized DataFlavor[] getTransferDataFlavors() {
         return flavors;
     }
 
+    @Override
     public boolean isDataFlavorSupported(DataFlavor flavor)  {
         return flavor.equals(stampTreeNodeFlavor) ? true : false;
     }
 
+    @Override
     public synchronized Object getTransferData(DataFlavor flavor)
 	    throws UnsupportedFlavorException, IOException {
 
@@ -46,6 +52,7 @@ public final class StampTreeTransferable implements Transferable, ClipboardOwner
         return "StampTreeTransferable";
     }
 
+    @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
     }
 }

@@ -11,7 +11,7 @@ import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
 
 /**
- * StampTreePanel
+ * StampTreePanel.
  *
  * @author  Kazushi Minagawa
  */

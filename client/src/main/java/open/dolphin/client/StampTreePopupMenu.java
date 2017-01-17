@@ -10,13 +10,13 @@ import open.dolphin.ui.MyJSheet;
 import open.dolphin.helper.MenuActionManager.MenuAction;
 
 /**
- * StampTree に PopupMenu を表示する　StampTreePopupAdapter から切換
+ * StampTree に PopupMenu を表示する　StampTreePopupAdapter から切換.
  * @author pns
  */
 public class StampTreePopupMenu extends MyJPopupMenu {
     private static final long serialVersionUID = 1L;
 
-    private StampTree tree;
+    private final StampTree tree;
 
     public StampTreePopupMenu(StampTree tree) {
         super();
@@ -45,14 +45,14 @@ public class StampTreePopupMenu extends MyJPopupMenu {
         int ans = MyJSheet.showConfirmDialog(SwingUtilities.getWindowAncestor(tree),
                 "本当に削除しますか", "スタンプ削除", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
         if (ans == JOptionPane.OK_OPTION) {
-            if (isEditable()) tree.deleteNode();
-            else Toolkit.getDefaultToolkit().beep();
+            if (isEditable()) { tree.deleteNode(); }
+            else { Toolkit.getDefaultToolkit().beep(); }
         }
     }
     @MenuAction
     public void renameNode() {
-        if (isEditable()) tree.renameNode();
-        else Toolkit.getDefaultToolkit().beep();
+        if (isEditable()) { tree.renameNode(); }
+        else { Toolkit.getDefaultToolkit().beep(); }
     }
     @MenuAction
     public void expandAll() {

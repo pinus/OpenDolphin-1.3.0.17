@@ -238,7 +238,7 @@ public class SOATransferHandler extends TransferHandler {
         try {
             // Schemaリストを取得する
             SchemaList list = (SchemaList) tr.getTransferData(SchemaListTransferable.schemaListFlavor);
-            SchemaModel[] schemas = list.schemaList;
+            SchemaModel[] schemas = list.getSchemaList();
             for (int i = 0; i < schemas.length; i++) {
                 soaPane.stampSchema(schemas[i]);
             }

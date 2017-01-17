@@ -20,10 +20,10 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.PatchedTransferHandler;
 
 /**
- * StampHolderTransferHandler
- *
+ * StampHolderTransferHandler.<br>
+ * with {@Code getVisualRepresentation(Transferable t)}
  * @author Kazushi Minagawa
- *
+ * @author pns
  */
 public class StampHolderTransferHandler extends PatchedTransferHandler {
     private static final long serialVersionUID = -9182879162438446790L;
@@ -59,7 +59,7 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
                 StampModel stampModel = sdl.getStamp(stampInfo.getStampId());
                 final ModuleModel module = new ModuleModel();
                 if (stampModel != null) {
-                    module.setModel((IInfoModel) stampModel.getStamp());
+                    module.setModel(stampModel.getStamp());
                     module.setModuleInfo(stampInfo);
                 }
                 SwingUtilities.invokeLater(new Runnable() {
@@ -88,7 +88,7 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
                                 for (ClaimItem c : orgBundle.getClaimItem()) {
                                     String code = c.getCode();
                                     // 量を保存
-                                    if (dose == null && code.startsWith("6")) dose = c.getNumber();
+                                    if (dose == null && code.startsWith("6")) { dose = c.getNumber(); }
                                     // コメントを追加
                                     if (code.matches("^[0,8,9].*") &&
                                             ! code.equals("001000001") && // 混合 は除外
@@ -102,13 +102,13 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
                                                 break;
                                             }
                                         }
-                                        if (!found) bundle.addClaimItem(c);
+                                        if (!found) { bundle.addClaimItem(c); }
                                     }
                                 }
                                 // 量を設定
                                 if (dose != null) {
                                     for (ClaimItem c : bundle.getClaimItem()) {
-                                        if (c.getCode().startsWith("6")) c.setNumber(dose);
+                                        if (c.getCode().startsWith("6")) { c.setNumber(dose); }
                                     }
                                 }
                             }
@@ -242,7 +242,7 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
     }
 
     /**
-     * 半透明 drag のために dragged component とマウス位置を保存する
+     * 半透明 drag のために dragged component とマウス位置を保存する.
      * @param comp
      * @param e
      * @param action
@@ -260,13 +260,13 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
     }
 
     /**
-     * 半透明のフィードバックを返す
+     * 半透明のフィードバックを返す.
      * @param t
      * @return
      */
     @Override
     public Icon getVisualRepresentation(Transferable t) {
-        if (draggedComp == null) return null;
+        if (draggedComp == null) { return null; }
 
         int width = draggedComp.getWidth();
         int height = draggedComp.getHeight();

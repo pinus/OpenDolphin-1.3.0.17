@@ -11,11 +11,11 @@ import open.dolphin.infomodel.ModuleInfoBean;
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
 public class StampTreeModel extends DefaultTreeModel {
-
     private static final long serialVersionUID = -2227174337081687786L;
 
     /**
-     * デフォルトコンストラクタ
+     * デフォルトコンストラクタ.
+     * @param node
      */
     public StampTreeModel(TreeNode node) {
         super(node);
@@ -23,6 +23,8 @@ public class StampTreeModel extends DefaultTreeModel {
 
     /**
      * ノード名の変更をインターセプトして処理する
+     * @param path
+     * @param newValue
      */
     @Override
     public void valueForPathChanged(TreePath path, Object newValue) {

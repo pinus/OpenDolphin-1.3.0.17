@@ -33,7 +33,7 @@ public class SchemaHolderTransferHandler extends PatchedTransferHandler {
         context.setDraggedCount(1);
         SchemaModel schema = source.getSchema();
         SchemaList list = new SchemaList();
-        list.schemaList = new SchemaModel[]{schema};
+        list.setSchemaList(new SchemaModel[]{ schema });
         Transferable tr = new SchemaListTransferable(list);
         return tr;
     }

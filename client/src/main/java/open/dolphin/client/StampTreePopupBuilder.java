@@ -14,7 +14,7 @@ import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.ui.MyJPopupMenu;
 
 /**
- * StmapTreeMenuBuilder
+ * StampTreePopupBuilder.
  *
  * @author Kazushi Minagawa
  */

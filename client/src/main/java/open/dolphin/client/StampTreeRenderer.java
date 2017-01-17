@@ -9,7 +9,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import open.dolphin.ui.PNSBorder;
 
 /**
- * StampBox をレンダリングするクラス（StampTree から分離）
+ * StampBox をレンダリングするクラス.（StampTree から分離）
  * @author pns
  */
 public class StampTreeRenderer extends DefaultTreeCellRenderer {
@@ -38,7 +38,7 @@ public class StampTreeRenderer extends DefaultTreeCellRenderer {
 
     @Override
     public Icon getLeafIcon() {
-        if (isUserTree) return LOCAL_ICON;
+        if (isUserTree) { return LOCAL_ICON; }
         return ASP_ICON;
     }
     /**

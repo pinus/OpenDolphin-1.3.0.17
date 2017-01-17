@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
@@ -16,7 +15,6 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.InfoModelTransferable;
 import open.dolphin.infomodel.ModuleModel;
@@ -24,7 +22,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.ui.PatchedTransferHandler;
 
 /**
- * StampTreeTransferHandler
+ * StampTreeTransferHandler.
  *
  * @author Minagawa,Kazushi
  * @author pns
@@ -77,7 +75,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
 
         JTree tree = (JTree)comp;
         TreePath path = tree.getSelectionPath();
-        if (path == null) return; // １回ヌルポがでた
+        if (path == null) { return; } // １回ヌルポがでた
 
         TreeNode node = (TreeNode) path.getLastPathComponent();
         StampTreeRenderer r = (StampTreeRenderer) tree.getCellRenderer();
@@ -102,6 +100,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
     }
     /**
      * 選択されたノードでDragを開始する.
+     * @return
      */
     @Override
     protected Transferable createTransferable(JComponent c) {
@@ -117,6 +116,9 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
 
     /**
      * DropされたFlavorをStampTreeにインポートする.
+     * @param c
+     * @param tr
+     * @return
      */
     @Override
     public boolean importData(JComponent c, Transferable tr) {
@@ -175,7 +177,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
                         if (sourceNode.getParent() == newParent && insertPosition != Insert.INTO_FOLDER) {
                             int sourceRow = tree.getRowForPath(new TreePath(sourceNode.getPath()));
                             int targetRow = tree.getRowForPath(targetPath);
-                            if (sourceRow < targetRow) index--;
+                            if (sourceRow < targetRow) { index--; }
                         }
 
                         switch(insertPosition) {
@@ -192,7 +194,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
                                 model.insertNodeInto(sourceNode, targetNode, targetNode.getChildCount());
                         }
                         TreeNode[] path = model.getPathToRoot(sourceNode);
-                        ((JTree) tree).setSelectionPath(new TreePath(path));
+                        tree.setSelectionPath(new TreePath(path));
                     }
                     return true;
 
@@ -243,7 +245,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
 
             } catch (IOException ex) {
                 System.out.println("StampTreeTransferHandler.java: "+ ex);
-                ex.printStackTrace();
+                ex.printStackTrace(System.err);
             } catch (UnsupportedFlavorException ex) {
                 System.out.println("StampTreeTransferHandler.java: "+ ex);
             }
@@ -253,6 +255,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
 
     /**
      * DnD後，Dragしたノードを元のStamptreeから削除する.
+     * @param c
      */
     @Override
     protected void exportDone(JComponent c, Transferable data, int action) {
@@ -260,6 +263,9 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
 
     /**
      * インポート可能かどうかを返す.
+     * @param c
+     * @param flavors
+     * @return
      */
     @Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {
@@ -270,10 +276,10 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
 
     private boolean isFlavorMatched(DataFlavor[] flavors) {
         for (DataFlavor flavor : flavors) {
-            if (stampTreeNodeFlavor.equals(flavor)) return true;
-            if (orderFlavor.equals(flavor)) return true;
-            if (stringFlavor.equals(flavor)) return true;
-            if (infoModelFlavor.equals(flavor)) return true;
+            if (stampTreeNodeFlavor.equals(flavor)) { return true; }
+            if (orderFlavor.equals(flavor)) { return true; }
+            if (stringFlavor.equals(flavor)) { return true; }
+            if (infoModelFlavor.equals(flavor)) { return true; }
         }
         return false;
     }
@@ -285,7 +291,7 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
      */
     @Override
     public Icon getVisualRepresentation(Transferable t) {
-        if (draggedComp == null) return null;
+        if (draggedComp == null) { return null; }
 
         int width = draggedComp.getWidth();
         int height = draggedComp.getHeight();

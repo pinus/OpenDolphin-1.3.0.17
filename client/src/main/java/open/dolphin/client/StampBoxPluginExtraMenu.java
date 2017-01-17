@@ -30,7 +30,7 @@ import open.dolphin.helper.MenuActionManager.MenuAction;
 /**
  * StampBox の特別(gear)メニュー
  * @author pns
- * modified by masuda
+ * @author masuda-sensei
  */
 public class StampBoxPluginExtraMenu extends MouseAdapter {
 
