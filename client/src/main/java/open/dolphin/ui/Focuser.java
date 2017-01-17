@@ -2,7 +2,9 @@ package open.dolphin.ui;
 
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
+import java.util.List;
 import javax.swing.SwingUtilities;
+import open.dolphin.util.StackTracer;
 import org.apache.log4j.Logger;
 
 /**
@@ -33,15 +35,22 @@ public class Focuser {
     private static final Logger logger = Logger.getLogger(Focuser.class);
     private static Component component;
 
+    private static List<StackTraceElement> stackTrace;
+
     public static void requestFocus(Component c) {
+        stackTrace = StackTracer.getTrace();
+
         component = c;
         KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
         SwingUtilities.invokeLater(Focuser::request);
     }
 
     private static void request() {
-        boolean result = component.requestFocusInWindow();
+        boolean succeeded = component.requestFocusInWindow();
 
-        logger.info(component.getClass().toString() + ": request focus " + ((result)? "succeeded" : "failed"));
+        logger.info(component.getClass().toString() + ": request focus " + ((succeeded)? "succeeded" : "failed"));
+        if (! succeeded) {
+            stackTrace.stream().map(e -> e.toString()).forEach(System.out::println);
+        }
     }
 }
