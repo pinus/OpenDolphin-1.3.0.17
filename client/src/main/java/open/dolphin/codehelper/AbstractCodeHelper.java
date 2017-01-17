@@ -323,6 +323,9 @@ public abstract class AbstractCodeHelper {
             // 病名の場合は "dx" だけ消して，入力した検索語は使うので残す
             if (textPane.getSelectedText().equals(prefs.get(IInfoModel.ENTITY_DIAGNOSIS, "dx"))) {
                 textPane.replaceSelection("");
+            } else {
+                // 選択クリア
+                textPane.setSelectionStart(end);
             }
         }
         handler.importData(comp, tr);
