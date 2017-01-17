@@ -39,7 +39,7 @@ public class PCodeHelper extends AbstractCodeHelper {
         //
         // StampTree のキーワードに一致しているかどうかを判定する
         //
-        Preferences prefs = Preferences.userNodeForPackage(AbstractCodeHelper.class);
+        Preferences prefs = getPreferences();
 
         if (prefs.get(IInfoModel.ENTITY_TEXT, "tx").startsWith(test)) {
             entity = IInfoModel.ENTITY_TEXT;
@@ -85,9 +85,6 @@ public class PCodeHelper extends AbstractCodeHelper {
 
         } else if (prefs.get(IInfoModel.ENTITY_ORCA, "orca").startsWith(test)) {
             entity = IInfoModel.ENTITY_ORCA;
-
-        } else if (prefs.get(IInfoModel.ENTITY_DIAGNOSIS, "dx").startsWith(test)) {
-            entity = IInfoModel.ENTITY_DIAGNOSIS;
         }
 
         if (entity != null) {
@@ -109,7 +106,7 @@ public class PCodeHelper extends AbstractCodeHelper {
 
         // current StampBoxのP関連 StampTree を取得する
         StampBoxPlugin stampBox = getMediator().getStampBox();
-        List<StampTree> allTree = stampBox.getAllTrees();
+        List<StampTree> allTree = stampBox.getAllPTrees();
         if (allTree == null || allTree.isEmpty()) { return; }
 
         // 親メニューのスタックを生成する

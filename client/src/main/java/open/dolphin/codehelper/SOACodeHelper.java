@@ -11,6 +11,7 @@ import open.dolphin.util.StringTool;
 
 /**
  * SOAペインのコードヘルパークラス.
+ * テキストスタンプと病名スタンプの入力補助.
  *
  * @author Kazyshi Minagawa
  * @author pns
@@ -29,10 +30,14 @@ public class SOACodeHelper extends AbstractCodeHelper {
     @Override
     protected void buildPopup(String text) {
 
-        Preferences prefs = Preferences.userNodeForPackage(AbstractCodeHelper.class);
+        Preferences prefs = getPreferences();
+        String test = StringTool.toHankakuUpperLower(text).toLowerCase();
 
-        if (prefs.get(IInfoModel.ENTITY_TEXT, "tx").startsWith(StringTool.toHankakuUpperLower(text).toLowerCase())) {
+        if (prefs.get(IInfoModel.ENTITY_TEXT, "tx").startsWith(test)) {
             buildEntityPopup(IInfoModel.ENTITY_TEXT);
+
+        } else if (prefs.get(IInfoModel.ENTITY_DIAGNOSIS, "dx").startsWith(test)) {
+            buildEntityPopup(IInfoModel.ENTITY_DIAGNOSIS);
 
         } else {
             buildMatchPopup(text);
@@ -46,17 +51,22 @@ public class SOACodeHelper extends AbstractCodeHelper {
     protected void buildMatchPopup(String text) {
 
         StampBoxPlugin stampBox = getMediator().getStampBox();
-        StampTree tree = stampBox.getStampTree(IInfoModel.ENTITY_TEXT);
-        if (tree == null) { return; }
+        StampTree textTree = stampBox.getStampTree(IInfoModel.ENTITY_TEXT);
+        StampTree diagTree = stampBox.getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
+        if (textTree == null || diagTree == null) { return; }
 
         // Stamp を検索する検索文字列
         String searchText = ".*" + text + ".*";
 
-        MenuModel model = createMenu(tree, searchText);
+        MenuModel modelText = createMenu(textTree, searchText);
+        MenuModel modelDiag = createMenu(diagTree, searchText);
 
         JPopupMenu popup = new JPopupMenu();
-        model.getSubMenus().forEach(menu -> popup.add(menu));
-        model.getRootItems().forEach(item -> popup.add(item));
+
+        modelText.getSubMenus().forEach(menu -> popup.add(menu));
+        modelText.getRootItems().forEach(item -> popup.add(item));
+        modelDiag.getSubMenus().forEach(menu -> popup.add(menu));
+        modelDiag.getRootItems().forEach(item -> popup.add(item));
 
         setPopup(popup);
     }

@@ -41,7 +41,7 @@ public abstract class AbstractCodeHelper {
     public static final Icon ICON = GUIConst.ICON_FOLDER_16;
 
     /** キーワードの境界となる文字 */
-    public static final String[] WORD_SEPARATOR = {" ", " ", "，", "," , "、", "。", "\n", "\t"};
+    public static final String[] WORD_SEPARATOR = {" ", "　", "，", "," , "、", "。", ".", "：", ":", "；", ";", "\n", "\t"};
     /** KartePane の JTextPane */
     private final JTextPane textPane;
     /** DiagnosisDocument の JTable */
@@ -54,6 +54,8 @@ public abstract class AbstractCodeHelper {
     private int end;
     /** ChartMediator */
     private final ChartMediator mediator;
+    /** Preferences */
+    private final Preferences prefs = Preferences.userNodeForPackage(AbstractCodeHelper.class);
 
     /**
      * Creates a new instance of CodeHelper.
@@ -67,7 +69,6 @@ public abstract class AbstractCodeHelper {
         ChartImpl realChart = (ChartImpl) ((EditorFrame) kartePane.getParent().getContext()).getChart();
         diagTable = realChart.getDiagnosisDocument().getDiagnosisTable();
 
-        Preferences prefs = Preferences.userNodeForPackage(AbstractCodeHelper.class);
         int modifier = prefs.get("modifier", "ctrl").equals("ctrl")? KeyEvent.CTRL_DOWN_MASK : KeyEvent.META_DOWN_MASK;
 
         textPane.addKeyListener(new KeyAdapter() {
@@ -136,14 +137,6 @@ public abstract class AbstractCodeHelper {
      */
     protected void setPopup(JPopupMenu p) {
         popup = p;
-    }
-
-    /**
-     * ChartMediator を返す.
-     * @return
-     */
-    protected ChartMediator getMediator() {
-        return mediator;
     }
 
     /**
@@ -322,7 +315,16 @@ public abstract class AbstractCodeHelper {
     public void importStamp(JComponent comp, TransferHandler handler, LocalStampTreeNodeTransferable tr) {
         textPane.setSelectionStart(start);
         textPane.setSelectionEnd(end);
-        textPane.replaceSelection("");
+
+        if (comp instanceof JTextPane) {
+            // 病名以外の場合はテキストは不要なので消す
+            textPane.replaceSelection("");
+        } else {
+            // 病名の場合は "dx" だけ消して，入力した検索語は使うので残す
+            if (textPane.getSelectedText().equals(prefs.get(IInfoModel.ENTITY_DIAGNOSIS, "dx"))) {
+                textPane.replaceSelection("");
+            }
+        }
         handler.importData(comp, tr);
         closePopup();
     }
@@ -332,5 +334,21 @@ public abstract class AbstractCodeHelper {
             popup.removeAll();
             popup = null;
         }
+    }
+
+    /**
+     * ChartMediator を返す.
+     * @return
+     */
+    protected ChartMediator getMediator() {
+        return mediator;
+    }
+
+    /**
+     * Preferences を返す.
+     * @return
+     */
+    protected Preferences getPreferences() {
+        return prefs;
     }
 }
