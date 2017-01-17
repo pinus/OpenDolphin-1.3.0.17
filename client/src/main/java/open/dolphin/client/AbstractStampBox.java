@@ -10,7 +10,7 @@ import open.dolphin.infomodel.StampTreeBean;
 import open.dolphin.ui.PNSTabbedPane;
 
 /**
- * AbstractStampBox
+ * AbstractStampBox.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

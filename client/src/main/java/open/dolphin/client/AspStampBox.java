@@ -4,7 +4,7 @@ import java.util.List;
 import open.dolphin.util.StampTreeUtils;
 
 /**
- * AspStampBox
+ * AspStampBox.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

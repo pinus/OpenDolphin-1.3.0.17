@@ -6,7 +6,7 @@ import open.dolphin.infomodel.IInfoModel;
 
 
 /**
- * AbstractStampTreeBuilder
+ * AbstractStampTreeBuilder.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -52,6 +52,8 @@ public abstract class AbstractStampTreeBuilder {
 
     /**
      * 特殊文字を変換する.
+     * @param text
+     * @return
      */
     protected String toXmlText(String text) {
         for (int i = 0; i < REPLACES.length; i++) {

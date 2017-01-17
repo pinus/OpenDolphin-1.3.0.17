@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import open.dolphin.infomodel.ModuleInfoBean;
 
 /**
- * AspStampTreeBuilder
+ * AspStampTreeBuilder.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

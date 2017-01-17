@@ -2,18 +2,15 @@ package open.dolphin.client;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-
 import javax.swing.JComponent;
-import javax.swing.TransferHandler;
 
 /**
- * AspStampTreeTransferHandler
+ * AspStampTreeTransferHandler.
  *
  * @author Minagawa,Kazushi
- *
  */
-//pns public class AspStampTreeTransferHandler extends TransferHandler {
 public class AspStampTreeTransferHandler extends StampTreeTransferHandler {
+    private static final long serialVersionUID = 1L;
 
     @Override
     protected Transferable createTransferable(JComponent c) {
