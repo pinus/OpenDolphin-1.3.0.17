@@ -21,7 +21,7 @@ import open.dolphin.ui.PatchedTransferHandler;
 
 /**
  * StampHolderTransferHandler.<br>
- * with {@Code getVisualRepresentation(Transferable t)}
+ * {@code getVisualRepresentation(Transferable t)} 対応.
  * @author Kazushi Minagawa
  * @author pns
  */

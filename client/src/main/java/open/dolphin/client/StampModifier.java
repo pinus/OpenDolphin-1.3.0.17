@@ -12,13 +12,13 @@ import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.StringTool;
 
 /**
- * drop された stamp を加工する
+ * drop された stamp を加工する.
  * @author pns
  */
 public class StampModifier {
 
     /**
-     * スタンプ加工バッチ処理
+     * スタンプ加工バッチ処理.
      * @param stamp
      */
     public static void modify(ModuleModel stamp) {
@@ -35,7 +35,7 @@ public class StampModifier {
 
     /**
      * 重複スタンプがあれば注意を促す.
-     * KartePane，PTransferHandler から呼ばれる
+     * KartePane，PTransferHandler から呼ばれる.
      * @param srcStamp
      * @param kartePane
      * @return duplicate の数
@@ -48,7 +48,7 @@ public class StampModifier {
         List<StampHolder> distStamps = kartePane.getDocument().getStampHolders();
         ClaimItem[] srcItems = srcModel.getClaimItem();
 
-        final List<String> duplicates = new ArrayList<String>();
+        final List<String> duplicates = new ArrayList<>();
 
         for (ClaimItem srcItem : srcItems) {
 
@@ -112,9 +112,9 @@ public class StampModifier {
     }
 
     /**
-     * 外用剤の bundleNumber，number を補正する
-     * 外用剤の場合は bundle は常に 1 にして，その分を dose の方に増やす
-     * ドレニゾンテープ 1枚 x 3回分 → ドレニゾンテープ 3枚 x 1回分 という形式にする
+     * 外用剤の bundleNumber，number を補正する.
+     * 外用剤の場合は bundle は常に 1 にして，その分を dose の方に増やす.
+     * ドレニゾンテープ 1枚 x 3回分 → ドレニゾンテープ 3枚 x 1回分 という形式にする.
      * @param stamp
      */
     public static void adjustNumber(ModuleModel stamp) {
@@ -139,7 +139,7 @@ public class StampModifier {
     }
 
     /**
-     * 単位の付いてない薬剤に単位を付ける
+     * 単位の付いてない薬剤に単位を付ける.
      * @param stamp
      */
     private static void addUnit(ModuleModel stamp) {

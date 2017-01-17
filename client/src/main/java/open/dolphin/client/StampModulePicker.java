@@ -38,8 +38,8 @@ public class StampModulePicker {
     }
 
     /**
-     * entity のスタンプ箱から key に一致する module を探して返す. 無ければ null が返る
-     * ただし，フォルダの中身までは検索しない
+     * entity のスタンプ箱から key に一致する module を探して返す. 無ければ null が返る.
+     * ただし，フォルダの中身までは検索しない.
      * @param entity
      * @param key
      * @return ModuleInfoBean or null
@@ -73,7 +73,7 @@ public class StampModulePicker {
     }
 
     /**
-     * テキストスタンプから title のスタンプを取ってきて返す
+     * テキストスタンプから title のスタンプを取ってきて返す.
      * @param title
      * @return ModuleModel
      */

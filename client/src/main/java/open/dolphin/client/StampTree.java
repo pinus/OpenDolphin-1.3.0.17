@@ -26,7 +26,7 @@ import open.dolphin.util.GUIDGenerator;
 import org.apache.log4j.Logger;
 
 /**
- * StampTree
+ * StampTree.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

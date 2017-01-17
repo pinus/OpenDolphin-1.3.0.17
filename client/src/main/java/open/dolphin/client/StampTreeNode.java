@@ -26,7 +26,7 @@ public class StampTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * 葉かどうかを返す
+     * 葉かどうかを返す.
      * @return
      */
     @Override
@@ -35,7 +35,7 @@ public class StampTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * StampInfo を返す
+     * StampInfo を返す.
      * @return
      */
     public ModuleInfoBean getStampInfo() {

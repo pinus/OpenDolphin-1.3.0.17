@@ -3,10 +3,10 @@ package open.dolphin.client;
 import java.awt.Color;
 
 /**
- * StampRenderingHints
- *
- * @author Minagawa, Kazushi
- *
+ * StampRenderingHints.
+
+* @author Minagawa, Kazushi
+ * @autho pns
  */
 public class StampRenderingHints {
 
@@ -98,20 +98,23 @@ public class StampRenderingHints {
             return Integer.toHexString(getLabelColor().getRGB()).substring(2);
         }
     }
-//pns^
+
     private int width ;
+
     public void setWidth(int width) {
         this.width = width;
     }
+
     public int getWidth() {
         return width;
     }
+
     public void setCommentColor(Color color) {
         this.commentColor = color;
     }
+
     public String getCommentColorAs16String() {
-        if (commentColor == null) return getForegroundAs16String();
-        else return Integer.toHexString(commentColor.getRGB()).substring(2);
+        if (commentColor == null) { return getForegroundAs16String(); }
+        else { return Integer.toHexString(commentColor.getRGB()).substring(2); }
     }
-//pns$
 }

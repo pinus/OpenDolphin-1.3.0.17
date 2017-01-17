@@ -22,7 +22,7 @@ public class StampTreeModel extends DefaultTreeModel {
     }
 
     /**
-     * ノード名の変更をインターセプトして処理する
+     * ノード名の変更をインターセプトして処理する.
      * @param path
      * @param newValue
      */
@@ -38,8 +38,8 @@ public class StampTreeModel extends DefaultTreeModel {
         //System.out.println (oldString + " -> " + newString);
 
         /**
-         * 葉ノードの場合は StampInfo の name を変更する
-         * そうでない場合は新しい文字列を userObject に設定する
+         * 葉ノードの場合は StampInfo の name を変更する.
+         * そうでない場合は新しい文字列を userObject に設定する.
          */
         if (node.isLeaf()) {
             ModuleInfoBean info = (ModuleInfoBean) node.getUserObject();

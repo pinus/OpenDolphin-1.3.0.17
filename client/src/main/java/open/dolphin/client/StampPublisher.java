@@ -45,10 +45,9 @@ import open.dolphin.util.StampTreeUtils;
 import org.apache.log4j.Logger;
 
 /**
- * StampTreePublisher
+ * StampTreePublisher.
  *
  * @author Kazushi, Minagawa
- *
  */
 public class StampPublisher {
 

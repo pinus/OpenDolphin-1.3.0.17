@@ -4,7 +4,6 @@ import java.util.*;
 import java.io.*;
 import javax.swing.tree.*;
 
-
 /**
  * Director to build StampTree XML data.
  *

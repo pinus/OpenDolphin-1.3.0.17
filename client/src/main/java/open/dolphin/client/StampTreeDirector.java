@@ -35,7 +35,7 @@ public class StampTreeDirector {
     protected AbstractStampTreeBuilder builder;
 
     /**
-     * Creates new StampTreeDirector
+     * Creates new StampTreeDirector.
      */
     public StampTreeDirector() {}
 

@@ -9,7 +9,7 @@ import java.awt.dnd.DropTargetListener;
 import javax.swing.tree.TreePath;
 
 /**
- * StampTree の DropTargetListener（StampTree から分離）
+ * StampTree の DropTargetListener.（StampTree から分離）
  * @author pns
  */
 public class StampTreeDropTargetListener implements DropTargetListener {
@@ -23,6 +23,7 @@ public class StampTreeDropTargetListener implements DropTargetListener {
     private TreePath source;
     private TreePath target;
 
+    @Override
     public void dragEnter(DropTargetDragEvent dtde) {
         // drag 開始時の path を記録しておく
         tree = (StampTree) dtde.getDropTargetContext().getComponent();
@@ -31,6 +32,7 @@ public class StampTreeDropTargetListener implements DropTargetListener {
         source = tree.getSelectionPath();
     }
 
+    @Override
     public void dragOver(DropTargetDragEvent dtde) {
 
         Point p = dtde.getLocation();
@@ -78,18 +80,18 @@ public class StampTreeDropTargetListener implements DropTargetListener {
     }
 
     /**
-     * drop 位置の node の上半分にいるか，下半分にいるか
+     * drop 位置の node の上半分にいるか，下半分にいるか.
      * @param p
      * @param r
      * @return
      */
     private Position topOrBottom(Point p, Rectangle r) {
         int offsetToTop = p.y - r.y;
-        if (offsetToTop < r.height/2) return Position.TOP;
-        else return Position.BOTTOM;
+        if (offsetToTop < r.height/2) { return Position.TOP; }
+        else { return Position.BOTTOM; }
     }
     /**
-     * drop 位置の上半分にいるか，下半分にいるか，真ん中にいるか
+     * drop 位置の上半分にいるか，下半分にいるか，真ん中にいるか.
      * @param p
      * @param r
      * @return
@@ -97,10 +99,11 @@ public class StampTreeDropTargetListener implements DropTargetListener {
     private Position topOrBottomOrCenter(Point p, Rectangle r) {
         int offsetToTop = p.y - r.y;
         int offsetToBottom = r.y+r.height - p.y;
-        if (offsetToTop < r.height/3) return Position.TOP;
-        else if (offsetToBottom < r.height/3) return Position.BOTTOM;
-        else return Position.CENTER;
+        if (offsetToTop < r.height/3) { return Position.TOP; }
+        else if (offsetToBottom < r.height/3) { return Position.BOTTOM; }
+        else { return Position.CENTER; }
     }
+
     private void targetWithUpperLine() {
         // 一番上か，上と親が違う場合は UpperLine で処理. それ以外は UnderLine に変換
         int row = tree.getRowForPath(target);
@@ -125,18 +128,22 @@ public class StampTreeDropTargetListener implements DropTargetListener {
 /*      renderer.setDrawMode(StampTreeRenderer.UPPER_LINE);
         handler.setPosition(StampTreeTransferHandler.INSERT_BEFORE);*/
     }
+
     private void targetWithUnderLine() {
         renderer.setDrawMode(StampTreeRenderer.UNDER_LINE);
         handler.setPosition(StampTreeTransferHandler.Insert.AFTER);
     }
+    
     private void targetWithSquare() {
         renderer.setDrawMode(StampTreeRenderer.SQUARE);
         handler.setPosition(StampTreeTransferHandler.Insert.INTO_FOLDER);
     }
 
+    @Override
     public void dropActionChanged(DropTargetDragEvent dtde) {
     }
 
+    @Override
     public void dragExit(DropTargetEvent dte) {
         // drop 領域から出たら，開始時の path に戻しておく
         tree.setSelectionPath(source);
@@ -144,6 +151,7 @@ public class StampTreeDropTargetListener implements DropTargetListener {
         tree.repaint();
     }
 
+    @Override
     public void drop(DropTargetDropEvent dtde) {
 
         handler.importData(tree, dtde.getTransferable());
@@ -156,8 +164,8 @@ public class StampTreeDropTargetListener implements DropTargetListener {
 
     private void scrollTargetToVisible() {
         int row = tree.getRowForPath(target);
-        if (row >= 1) tree.scrollRowToVisible(row-1);
-        if (row < tree.getRowCount()) tree.scrollRowToVisible(row+1);
+        if (row >= 1) { tree.scrollRowToVisible(row-1); }
+        if (row < tree.getRowCount()) { tree.scrollRowToVisible(row+1); }
         tree.scrollRowToVisible(row);
     }
 }

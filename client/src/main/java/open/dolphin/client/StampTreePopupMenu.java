@@ -10,7 +10,8 @@ import open.dolphin.ui.MyJSheet;
 import open.dolphin.helper.MenuActionManager.MenuAction;
 
 /**
- * StampTree に PopupMenu を表示する　StampTreePopupAdapter から切換.
+ * StampTree に PopupMenu を表示する.
+ * StampTreePopupAdapter から切換.
  * @author pns
  */
 public class StampTreePopupMenu extends MyJPopupMenu {

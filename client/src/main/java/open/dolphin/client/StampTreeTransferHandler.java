@@ -22,8 +22,9 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.ui.PatchedTransferHandler;
 
 /**
- * StampTreeTransferHandler.
- *
+ * StampTreeTransferHandler.<br>
+ * {@code getVisualRepresentation(Transferable t) } 対応.
+
  * @author Minagawa,Kazushi
  * @author pns
  *
