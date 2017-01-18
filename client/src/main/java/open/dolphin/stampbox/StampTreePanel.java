@@ -1,11 +1,9 @@
 package open.dolphin.stampbox;
 
 import java.awt.*;
-
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
@@ -18,16 +16,19 @@ import open.dolphin.ui.StatusPanel;
 public class StampTreePanel extends JPanel implements TreeSelectionListener {
     private static final long serialVersionUID = -268963413379453444L;
 
-    protected StampTree stampTree;
+    private final StampTree stampTree;
     private StatusPanel statusPanel;
 
     public StampTreePanel(StampTree tree) {
+        stampTree = tree;
+        initComponents();
+    }
 
-        this.stampTree = tree;
+    private void initComponents() {
         JScrollPane scroller = new MyJScrollPane(stampTree);
 
-        this.setLayout(new BorderLayout());
-        this.add(scroller, BorderLayout.CENTER);
+        setLayout(new BorderLayout());
+        add(scroller, BorderLayout.CENTER);
 
         String treeEntity = stampTree.getEntity();
         if (treeEntity != null) {
@@ -39,7 +40,7 @@ public class StampTreePanel extends JPanel implements TreeSelectionListener {
             this.add(statusPanel, BorderLayout.SOUTH);
 
             //this.add(infoArea, BorderLayout.SOUTH);
-            tree.addTreeSelectionListener(this);
+            stampTree.addTreeSelectionListener(this);
         }
     }
 

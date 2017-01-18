@@ -4,8 +4,8 @@ import java.awt.Color;
 
 /**
  * StampRenderingHints.
-
-* @author Minagawa, Kazushi
+ *
+ * @author Minagawa, Kazushi
  * @autho pns
  */
 public class StampRenderingHints {

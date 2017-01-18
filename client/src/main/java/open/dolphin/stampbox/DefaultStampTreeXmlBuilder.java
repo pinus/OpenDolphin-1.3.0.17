@@ -1,15 +1,10 @@
 package open.dolphin.stampbox;
 
-import open.dolphin.stampbox.StampTreeNode;
-import open.dolphin.stampbox.TreeInfo;
 import java.io.*;
 import java.util.*;
 import open.dolphin.client.ClientContext;
-
-import org.apache.log4j.Logger;
-
 import open.dolphin.infomodel.ModuleInfoBean;
-
+import org.apache.log4j.Logger;
 
 /**
  * StampTree XML builder.
@@ -24,16 +19,14 @@ public class DefaultStampTreeXmlBuilder {
 
     /** Control staffs */
     private LinkedList<StampTreeNode> linkedList;
-//  private BufferedWriter writer;
     protected BufferedWriter writer;
-//    private StringWriter stringWriter;
     protected StringWriter stringWriter;
     private StampTreeNode rootNode;
 
     private Logger logger;
 
     /**
-     * Creates new DefaultStampTreeXmlBuilder
+     * Creates new DefaultStampTreeXmlBuilder.
      */
     public DefaultStampTreeXmlBuilder() {
         super();
@@ -76,7 +69,7 @@ public class DefaultStampTreeXmlBuilder {
         writer.write(" entity=");
         writer.write(addQuote(treeInfo.getEntity()));
         writer.write(">\n");
-        linkedList = new LinkedList<StampTreeNode>();
+        linkedList = new LinkedList<>();
         linkedList.addFirst(rootNode);
     }
 
@@ -116,7 +109,6 @@ public class DefaultStampTreeXmlBuilder {
         }
     }
 
-//  private void buildLeafNode(StampTreeNode node) throws IOException {
     protected void buildLeafNode(StampTreeNode node) throws IOException {
 
         if (logger != null) {
@@ -179,12 +171,10 @@ public class DefaultStampTreeXmlBuilder {
         writer.flush();
     }
 
-//  private StampTreeNode getCurrentNode() {
     protected StampTreeNode getCurrentNode() {
-        return (StampTreeNode) linkedList.getFirst();
+        return linkedList.getFirst();
     }
 
-//  private void closeBeforeMyParent(StampTreeNode parent) throws IOException {
     protected void closeBeforeMyParent(StampTreeNode parent) throws IOException {
 
         int index = linkedList.indexOf(parent);
@@ -198,9 +188,8 @@ public class DefaultStampTreeXmlBuilder {
         }
     }
 
-//  private String addQuote(String s) {
     protected String addQuote(String s) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("\"");
         buf.append(s);
         buf.append("\"");
@@ -210,7 +199,6 @@ public class DefaultStampTreeXmlBuilder {
     /**
      * 特殊文字を変換する.
      */
-//  private String toXmlText(String text) {
     protected String toXmlText(String text) {
         for (int i = 0; i < REPLACES.length; i++) {
             text = text.replaceAll(MATCHES[i], REPLACES[i]);

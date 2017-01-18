@@ -15,17 +15,9 @@ import org.jdom2.input.SAXBuilder;
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
-// public final class StampTreeDirector {
+
 public class StampTreeDirector {
 
-/*  private final int TT_STAMP_INFO  	= 0;
-    private final int TT_NODE  		= 1;
-    private final int TT_ROOT  		= 2;
-    private final int TT_STAMP_TREE  	= 3;
-    private final int TT_STAMP_BOX  	= 4;
-
-    private AbstractStampTreeBuilder builder;
-*/
     protected final int TT_STAMP_INFO  	= 0;
     protected final int TT_NODE  	= 1;
     protected final int TT_ROOT  	= 2;
@@ -56,12 +48,8 @@ public class StampTreeDirector {
             builder.buildEnd();
         }
         // indicates a well-formedness error
-        catch (JDOMException e) {
-            e.printStackTrace();
-            System.out.println("StampTreeDirector.java: Not well-formed.");
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println("StampTreeDirector.java: " + e);
+        catch (JDOMException | IOException e) {
+            e.printStackTrace(System.err);
         }
 
         return builder.getProduct();
@@ -85,25 +73,33 @@ public class StampTreeDirector {
 
     public int startElement(String eName, Element e) {
 
-        if (eName.equals("stampInfo")) {
-            builder.buildStampInfo(e.getAttributeValue("name"),
-                    e.getAttributeValue("role"),
-                    e.getAttributeValue("entity"),
-                    e.getAttributeValue("editable"),
-                    e.getAttributeValue("memo"),
-                    e.getAttributeValue("stampId")
-                    );
-            return TT_STAMP_INFO;
-        } else if (eName.equals("node")) {
-            builder.buildNode(e.getAttributeValue("name"));
-            return TT_NODE;
-        } else if (eName.equals("root")) {
-            builder.buildRoot(e.getAttributeValue("name"), e.getAttributeValue("entity"));
-            return TT_ROOT;
-        } else if (eName.equals("stampTree")) {
-            return TT_STAMP_TREE;
-        } else if (eName.equals("stampBox")) {
-            return TT_STAMP_BOX;
+        switch (eName) {
+            case "stampInfo":
+                builder.buildStampInfo(e.getAttributeValue("name"),
+                        e.getAttributeValue("role"),
+                        e.getAttributeValue("entity"),
+                        e.getAttributeValue("editable"),
+                        e.getAttributeValue("memo"),
+                        e.getAttributeValue("stampId")
+                );
+                return TT_STAMP_INFO;
+
+            case "node":
+                builder.buildNode(e.getAttributeValue("name"));
+                return TT_NODE;
+
+            case "root":
+                builder.buildRoot(e.getAttributeValue("name"), e.getAttributeValue("entity"));
+                return TT_ROOT;
+
+            case "stampTree":
+                return TT_STAMP_TREE;
+
+            case "stampBox":
+                return TT_STAMP_BOX;
+
+            default:
+                break;
         }
         return -1;
     }

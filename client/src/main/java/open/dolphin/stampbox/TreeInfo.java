@@ -1,7 +1,7 @@
 package open.dolphin.stampbox;
 
 /**
- * TreeInfo
+ * TreeInfo.
  *
  * @author Minagawa,Kazushi
  *

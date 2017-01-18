@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
  * StampImporter.
  *
  * @author Minagawa,Kazushi
+ * @author pns
  */
 public class StampImporter {
     private static final String TITLE = "スタンプインポート";

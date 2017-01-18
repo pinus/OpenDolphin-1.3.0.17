@@ -37,7 +37,7 @@ public class OrcaTree extends StampTree {
 
         if (!fetched) {
             String address = Project.getClaimAddress();
-            if (address == null || address.equals("")) return;
+            if (address == null || address.equals("")) { return; }
             fetchOrcaInputCd();
         }
     }
@@ -48,7 +48,7 @@ public class OrcaTree extends StampTree {
         String updateMsg = MONITOR_NOTE;
         int masEstimation = 30000;
 
-        Task task = new Task<Boolean>(c, message, updateMsg, masEstimation) {
+        Task<Boolean> task = new Task<Boolean>(c, message, updateMsg, masEstimation) {
 
             @Override
             protected Boolean doInBackground() throws Exception {
@@ -57,12 +57,12 @@ public class OrcaTree extends StampTree {
                 List<OrcaEntry> entries = dao.getOrcaInputCdList();
                 StampTreeNode root = (StampTreeNode) getModel().getRoot();
 
-                for (OrcaEntry entry : entries) {
+                entries.forEach(entry -> {
                     ModuleInfoBean stampInfo = entry.getStampInfo();
                     StampTreeNode node = new StampTreeNode(stampInfo);
                     root.add(node);
-                }
-
+                });
+                
                 DefaultTreeModel model = (DefaultTreeModel) getModel();
                 model.reload(root);
 

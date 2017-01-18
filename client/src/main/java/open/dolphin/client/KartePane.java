@@ -1,8 +1,5 @@
 package open.dolphin.client;
 
-import open.dolphin.stampbox.StampListTransferable;
-import open.dolphin.codehelper.PCodeHelper;
-import open.dolphin.codehelper.SOACodeHelper;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -41,6 +38,8 @@ import open.dolphin.order.StampEditorDialog;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
+import open.dolphin.codehelper.PCodeHelper;
+import open.dolphin.codehelper.SOACodeHelper;
 import org.apache.log4j.Logger;
 
 /**
@@ -1084,27 +1083,22 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      * @return ペースト可能な時 true
      */
     protected boolean canPaste() {
-
         boolean ret = false;
-        Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-        if (t == null) {
-            return false;
-        }
 
-        if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            return true;
-        }
+        Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+
+        if (t == null) { return false; }
+
+        if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) { return true; }
 
         if (getMyRole().equals(IInfoModel.ROLE_P)) {
-            if (t.isDataFlavorSupported(OrderListTransferable.orderListFlavor)) {
-                ret = true;
-            }
+            if (t.isDataFlavorSupported(OrderListTransferable.orderListFlavor)) { ret = true; }
+
         } else {
-            if (t.isDataFlavorSupported(StampListTransferable.stampListFlavor) || t.isDataFlavorSupported(SchemaListTransferable.schemaListFlavor)) {
-                ret = true;
-            }
+            if (t.isDataFlavorSupported(SchemaListTransferable.schemaListFlavor)) { return true; }
         }
-        return ret;
+
+        return false;
     }
 
     /**

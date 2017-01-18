@@ -162,10 +162,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
 
     public List<String> getEntities() {
         List<String> ret = new ArrayList<>();
-        List<TreeInfo> infos = getAllTreeInfos();
-        for (TreeInfo ti : infos) {
-            ret.add(ti.getEntity());
-        }
+        getAllTreeInfos().forEach(info -> ret.add(info.getEntity()));
         return ret;
     }
 

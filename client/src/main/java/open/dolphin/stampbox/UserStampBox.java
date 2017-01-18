@@ -30,9 +30,10 @@ import open.dolphin.inspector.DiagnosisInspector;
 import open.dolphin.util.StampTreeUtils;
 
 /**
- * UserStampBox
+ * UserStampBox.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class UserStampBox extends AbstractStampBox {
     private static final long serialVersionUID = 1L;
@@ -117,7 +118,7 @@ public class UserStampBox extends AbstractStampBox {
                     }
                 }
 
-                /**
+                /*
                  * スタンプを右クリックポップメニューからカルテに入力できるようにする
                  */
                 private void showPopup(MouseEvent e) {
@@ -142,7 +143,7 @@ public class UserStampBox extends AbstractStampBox {
                     popup.show(stampTree, e.getX(), e.getY());
                 }
 
-                /**
+                /*
                  * スタンプをダブルクリックでカルテに入力できるようにする
                  * 入力先が１つの場合はダイレクトに入力，入力先が複数の時は手前のカルテに送る
                  */
@@ -214,7 +215,7 @@ public class UserStampBox extends AbstractStampBox {
     }
 
     /**
-     * StampEditor が無いタブを enable/disable 切換
+     * StampEditor が無いタブを enable/disable 切換.
      * @param b
      */
     @Override
@@ -229,7 +230,7 @@ public class UserStampBox extends AbstractStampBox {
     }
 
     /**
-     * 選択されたスタンプをリストにする
+     * 選択されたスタンプをリストにする.
      * @param selected
      * @return
      */
@@ -255,7 +256,7 @@ public class UserStampBox extends AbstractStampBox {
     }
 
     /**
-     * AbstractAction which sends Stamps to a Chart
+     * AbstractAction which sends Stamps to a Chart.
      */
     private abstract class SendStampBase extends AbstractAction {
         private static final long serialVersionUID = 1L;
@@ -287,7 +288,7 @@ public class UserStampBox extends AbstractStampBox {
     }
 
     /**
-     * DiagnosisDocument に StampTree から Diagnosis を送る Action
+     * DiagnosisDocument に StampTree から Diagnosis を送る Action.
      */
     private class SendDiagnosisAction extends SendStampBase {
         private static final long serialVersionUID = 1L;
@@ -310,7 +311,7 @@ public class UserStampBox extends AbstractStampBox {
     }
 
     /**
-     * Action which sends selected Stamps to PPane
+     * Action which sends selected Stamps to PPane.
      */
     private class SendStampAction extends SendStampBase {
         private static final long serialVersionUID = 1L;

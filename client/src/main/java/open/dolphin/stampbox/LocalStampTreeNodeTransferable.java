@@ -13,14 +13,13 @@ import java.io.IOException;
 public class LocalStampTreeNodeTransferable implements Transferable {
 
     /** Data Flavor of this class */
-    public static DataFlavor localStampTreeNodeFlavor = new DataFlavor(LocalStampTreeNodeTransferable.class, "Local StampTree");
+    public static final DataFlavor localStampTreeNodeFlavor = new DataFlavor(LocalStampTreeNodeTransferable.class, "Local StampTree");
+    private static final DataFlavor[] FLAVORS = { LocalStampTreeNodeTransferable.localStampTreeNodeFlavor };
 
-    public static final DataFlavor[] flavors = { LocalStampTreeNodeTransferable.localStampTreeNodeFlavor };
-
-    private StampTreeNode node;
+    private final StampTreeNode node;
 
     /**
-     * Creates new StampTreeTransferable
+     * Creates new StampTreeTransferable.
      * @param node
      */
     public LocalStampTreeNodeTransferable(StampTreeNode node) {
@@ -29,12 +28,12 @@ public class LocalStampTreeNodeTransferable implements Transferable {
 
     @Override
     public synchronized DataFlavor[] getTransferDataFlavors() {
-        return flavors;
+        return FLAVORS;
     }
 
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor)  {
-        return flavor.equals(localStampTreeNodeFlavor) ? true : false;
+        return flavor.equals(localStampTreeNodeFlavor);
     }
 
     @Override
@@ -43,6 +42,7 @@ public class LocalStampTreeNodeTransferable implements Transferable {
 
         if (flavor.equals(localStampTreeNodeFlavor)) {
             return node;
+
         } else {
             throw new UnsupportedFlavorException(flavor);
         }

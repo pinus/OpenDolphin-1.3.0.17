@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
  * StampTree.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class StampTree extends JTree implements TreeModelListener {
     private static final long serialVersionUID = -4651151848166376384L;
@@ -58,30 +59,30 @@ public class StampTree extends JTree implements TreeModelListener {
      * @param model TreeModel
      */
     public StampTree(TreeModel model) {
-
         super(model);
-
         logger = ClientContext.getBootLogger();
 
-        this.putClientProperty("JTree.lineStyle", "Angled"); // 水平及び垂直線を使用する
-        // this.setEditable(false); // ノード名を編集不可にする
-        this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); // Single Selection// にする
+        init(model);
+    }
+
+    private void init(TreeModel model) {
+        putClientProperty("JTree.lineStyle", "Angled"); // 水平及び垂直線を使用する
+
+        // setEditable(false); // ノード名を編集不可にする
+        getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION); // Single Selection// にする
 
         // ロックをかけたときに inset のないボーダーを表示したら，選択したときと，focus がうつった時にボーダーを消してしまう
         // inset のないボーダについては StampBoxPlugin を inset で検索
-        this.addTreeSelectionListener(new TreeSelectionListener(){
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                stampBox.getCurrentBox().repaint();
-            }
-        });
-        this.addFocusListener(new FocusAdapter(){
+        addTreeSelectionListener(e -> stampBox.getCurrentBox().repaint());
+
+        addFocusListener(new FocusAdapter(){
             @Override
             public void focusLost(FocusEvent e) {
                 stampBox.getCurrentBox().repaint();
             }
         });
-        this.addTreeExpansionListener(new TreeExpansionListener(){
+
+        addTreeExpansionListener(new TreeExpansionListener(){
             @Override
             public void treeExpanded(TreeExpansionEvent event) {
                 stampBox.getCurrentBox().repaint();
@@ -92,13 +93,13 @@ public class StampTree extends JTree implements TreeModelListener {
             }
         });
 
-        this.setRootVisible(false);
+        setRootVisible(false);
 
         // Java 1.6 対応
-        this.putClientProperty("Quaqua.Tree.style", "striped"); //pns  Quaqua property
+        putClientProperty("Quaqua.Tree.style", "striped"); //pns  Quaqua property
         // this.setDragEnabled(true); // これだと，項目から外れたところをドラッグしても無視されてしまう
         // this.setDropMode(DropMode.ON_OR_INSERT); // 何だかんだで結局自分で実装するはめに orz
-        this.addMouseMotionListener(new MouseMotionAdapter() {
+        addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged (MouseEvent e) {
                 getCellEditor().stopCellEditing(); // drag 開始したら、cell editor を止める
@@ -112,11 +113,11 @@ public class StampTree extends JTree implements TreeModelListener {
 
         // デフォルトのセルレンダラーを置き換える
         DefaultTreeCellRenderer renderer = new StampTreeRenderer();
-        this.setCellRenderer(renderer);
+        setCellRenderer(renderer);
 
         // TreeCellEditor セット
-        this.setEditable(true);
-        this.setCellEditor(new MyDefaultTreeCellEditor(this, renderer));
+        setEditable(true);
+        setCellEditor(new MyDefaultTreeCellEditor(this, renderer));
 
         // Listens TreeModelEvent
         model.addTreeModelListener(this);
@@ -126,7 +127,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * tooltip を html で出す
+     * tooltip を html で出す.
      * @param event
      * @return
      */
@@ -207,7 +208,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * Enable or disable tooltip
+     * Enable or disable tooltip.
      * @param state
      */
     public void enableToolTips(boolean state) {
@@ -223,7 +224,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * Set StampBox reference
+     * Set StampBox reference.
      * @param stampBox
      */
     public void setStampBox(StampBoxPlugin stampBox) {
@@ -370,11 +371,12 @@ public class StampTree extends JTree implements TreeModelListener {
                     model.insertNodeInto(node, selected, selected.getChildCount());
             }
             // replace
-            if (isReplace) deleteNode();
+            if (isReplace) { deleteNode(); }
 
             // 追加したノードを選択する
             TreeNode[] path = model.getPathToRoot(node);
-            ((JTree)this).setSelectionPath(new TreePath(path));
+            this.setSelectionPath(new TreePath(path));
+
         } else {
 
             // Drop 位置のノードが null でコールされるケースがある
@@ -394,23 +396,20 @@ public class StampTree extends JTree implements TreeModelListener {
 
             // 追加したノードを選択する
             TreeNode[] path = model.getPathToRoot(node);
-            ((JTree)this).setSelectionPath(new TreePath(path));
+            this.setSelectionPath(new TreePath(path));
 
             // メッセージを表示する
             if (!myTree) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        StringBuilder buf = new StringBuilder();
-                        buf.append("スタンプは個人用の ");
-                        buf.append(treeName);
-                        buf.append(" に保存しました。");
-                        MyJSheet.showMessageDialog(
-                                StampTree.this,
-                                buf.toString(),
-                                ClientContext.getFrameTitle(STAMP_SAVE_TASK_NAME),
-                                JOptionPane.INFORMATION_MESSAGE);
-                    }
+                SwingUtilities.invokeLater(() -> {
+                    StringBuilder buf = new StringBuilder();
+                    buf.append("スタンプは個人用の ");
+                    buf.append(treeName);
+                    buf.append(" に保存しました。");
+                    MyJSheet.showMessageDialog(
+                            StampTree.this,
+                            buf.toString(),
+                            ClientContext.getFrameTitle(STAMP_SAVE_TASK_NAME),
+                            JOptionPane.INFORMATION_MESSAGE);
                 });
             }
             System.out.println("StampTree.java: dropped Entity= " + info.getEntity() + "  this entity = " + this.getEntity());
@@ -505,15 +504,15 @@ public class StampTree extends JTree implements TreeModelListener {
         final List<StampModel> stampList = new ArrayList<>();
         final List<ModuleInfoBean> infoList = new ArrayList<>();
 
-        for (RegisteredDiagnosisModel rd : list) {
+        list.stream().map(rd -> {
             RegisteredDiagnosisModel add = new RegisteredDiagnosisModel();
             add.setDiagnosis(rd.getDiagnosis());
             add.setDiagnosisCode(rd.getDiagnosisCode());
             add.setDiagnosisCodeSystem(rd.getDiagnosisCodeSystem());
-
+            return add;
+        }).map(add -> {
             ModuleModel module = new ModuleModel();
             module.setModel(add);
-
             // データベースへ Stamp のデータモデルを永続化する
             StampModel stampModel = new StampModel();
             String stampId = GUIDGenerator.generate(stampModel);
@@ -522,14 +521,12 @@ public class StampTree extends JTree implements TreeModelListener {
             stampModel.setEntity(IInfoModel.ENTITY_DIAGNOSIS);
             stampModel.setStamp(module.getModel());
             stampList.add(stampModel);
-
             // Tree に加える 新しい StampInfo を生成する
             ModuleInfoBean info = new ModuleInfoBean();
             info.setStampId(stampId);                       // Stamp ID
             info.setStampName(add.getDiagnosis());          // 傷病名
             info.setEntity(IInfoModel.ENTITY_DIAGNOSIS);    // カテゴリ
             info.setStampRole(IInfoModel.ENTITY_DIAGNOSIS); // Role
-
             StringBuilder buf = new StringBuilder();
             buf.append(add.getDiagnosis());
             String cd = add.getDiagnosisCode();
@@ -539,8 +536,10 @@ public class StampTree extends JTree implements TreeModelListener {
                 buf.append(")"); // Tooltip
             }
             info.setStampMemo(buf.toString());
+            return info;
+        }).forEach(info -> {
             infoList.add(info);
-        }
+        });
 
         final StampDelegater sdl = new StampDelegater();
 
@@ -560,7 +559,7 @@ public class StampTree extends JTree implements TreeModelListener {
             protected void succeeded(List<String> result) {
                 logger.debug("addDiagnosis succeeded");
                 if (sdl.isNoError()) {
-                    for(ModuleInfoBean info : infoList) {
+                    infoList.forEach(info -> {
                         // 選択されているとき
                         StampTreeNode target = getSelectedNode();
                         if (target != null) {
@@ -573,7 +572,7 @@ public class StampTree extends JTree implements TreeModelListener {
                             }
                         }
                         addInfoToTree(info, target);
-                    }
+                    });
                 } else {
                     logger.warn(sdl.getErrorMessage());
                 }
@@ -820,7 +819,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * 新規のフォルダを追加する
+     * 新規のフォルダを追加する.
      */
     public void createNewFolder() {
         if (!isUserTree()) {
@@ -854,7 +853,7 @@ public class StampTree extends JTree implements TreeModelListener {
         //this.expandPath(parentPath);
     }
     /**
-     * Tree をすべて展開する pns
+     * Tree をすべて展開する.
      */
     public void expandAll() {
         int row = 0;
@@ -865,7 +864,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * Tree をすべて閉じる pns
+     * Tree をすべて閉じる.
      */
     public void collapseAll() {
         oldPreferredSize.height = 0;
@@ -877,7 +876,7 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     /**
-     * 飛ばない StampTree by pns
+     * 飛ばない StampTree.
      * @return
      */
     @Override

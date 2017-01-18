@@ -1,11 +1,5 @@
 package open.dolphin.stampbox;
 
-import open.dolphin.stampbox.StampTreeNode;
-import open.dolphin.stampbox.OrcaTree;
-import open.dolphin.stampbox.TreeInfo;
-import open.dolphin.stampbox.AbstractStampTreeBuilder;
-import open.dolphin.stampbox.StampTree;
-import open.dolphin.stampbox.StampTreeModel;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
