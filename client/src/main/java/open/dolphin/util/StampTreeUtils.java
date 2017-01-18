@@ -4,12 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-import open.dolphin.client.AbstractStampTreeBuilder;
-import open.dolphin.client.DefaultStampTreeBuilder;
-import open.dolphin.client.DefaultStampTreeXmlBuilder;
-import open.dolphin.client.StampTree;
-import open.dolphin.client.StampTreeDirector;
-import open.dolphin.client.StampTreeXmlDirector;
+import open.dolphin.stampbox.AbstractStampTreeBuilder;
+import open.dolphin.stampbox.DefaultStampTreeBuilder;
+import open.dolphin.stampbox.DefaultStampTreeXmlBuilder;
+import open.dolphin.stampbox.StampTree;
+import open.dolphin.stampbox.StampTreeDirector;
+import open.dolphin.stampbox.StampTreeXmlDirector;
 import open.dolphin.infomodel.PersonalTreeModel;
 import open.dolphin.infomodel.PublishedTreeModel;
 

@@ -1,11 +1,12 @@
 package open.dolphin.codehelper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
-import javax.swing.JPopupMenu;
 import open.dolphin.client.ChartMediator;
 import open.dolphin.client.KartePane;
-import open.dolphin.client.StampBoxPlugin;
-import open.dolphin.client.StampTree;
+import open.dolphin.stampbox.StampBoxPlugin;
+import open.dolphin.stampbox.StampTree;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.util.StringTool;
 
@@ -40,34 +41,13 @@ public class SOACodeHelper extends AbstractCodeHelper {
             buildEntityPopup(IInfoModel.ENTITY_DIAGNOSIS);
 
         } else {
-            buildMatchPopup(text);
+
+            List<StampTree> trees = new ArrayList<>();
+            StampBoxPlugin stampBox = getMediator().getStampBox();
+            trees.add(stampBox.getStampTree(IInfoModel.ENTITY_TEXT));
+            trees.add(stampBox.getStampTree(IInfoModel.ENTITY_DIAGNOSIS));
+
+            buildMatchedPopup(trees, text);
         }
-    }
-
-    /**
-     * キーワードを含む stamp から popup を作ってセットする.
-     * @param text
-     */
-    protected void buildMatchPopup(String text) {
-
-        StampBoxPlugin stampBox = getMediator().getStampBox();
-        StampTree textTree = stampBox.getStampTree(IInfoModel.ENTITY_TEXT);
-        StampTree diagTree = stampBox.getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
-        if (textTree == null || diagTree == null) { return; }
-
-        // Stamp を検索する検索文字列
-        String searchText = ".*" + text + ".*";
-
-        MenuModel modelText = createMenu(textTree, searchText);
-        MenuModel modelDiag = createMenu(diagTree, searchText);
-
-        JPopupMenu popup = new JPopupMenu();
-
-        modelText.getSubMenus().forEach(menu -> popup.add(menu));
-        modelText.getRootItems().forEach(item -> popup.add(item));
-        modelDiag.getSubMenus().forEach(menu -> popup.add(menu));
-        modelDiag.getRootItems().forEach(item -> popup.add(item));
-
-        setPopup(popup);
     }
 }

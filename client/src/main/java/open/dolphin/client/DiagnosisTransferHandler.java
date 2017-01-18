@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -27,6 +28,7 @@ import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.PatchedTransferHandler;
+import open.dolphin.stampbox.StampTreeNode;
 
 /**
  * DiagnosisTransferHandler

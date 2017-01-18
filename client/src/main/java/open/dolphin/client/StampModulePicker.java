@@ -7,6 +7,8 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.StampModel;
+import open.dolphin.stampbox.StampTree;
+import open.dolphin.stampbox.StampTreeNode;
 
 /**
  * StampTree から ModuleModel を取り出す.

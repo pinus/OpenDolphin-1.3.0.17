@@ -200,7 +200,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
      * PPaneを返す.
      * @return PPane
      */
-    protected KartePane getPPane() {
+    public KartePane getPPane() {
         return pPane;
     }
 

@@ -18,6 +18,8 @@ import open.dolphin.infomodel.*;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PatchedTransferHandler;
+import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
+import open.dolphin.stampbox.StampTreeNode;
 
 /**
  * StampHolderTransferHandler.<br>

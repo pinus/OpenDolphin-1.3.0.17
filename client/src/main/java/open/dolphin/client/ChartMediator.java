@@ -19,7 +19,11 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextPane;
 import javax.swing.TransferHandler;
 import javax.swing.text.StyledEditorKit;
+import open.dolphin.stampbox.DefaultStampTreeMenuListener;
 import open.dolphin.ui.MyJPopupMenu;
+import open.dolphin.stampbox.StampBoxPlugin;
+import open.dolphin.stampbox.StampTree;
+import open.dolphin.stampbox.StampTreeMenuBuilder;
 import org.apache.log4j.Logger;
 
 /**
@@ -302,10 +306,10 @@ public final class ChartMediator extends MenuSupport {
 
         } else {
             // 傷病名Tree，テーブル，ハンドラからメニューを構築する
-            JComponent comp = diagnosis.getDiagnosisTable();
-            TransferHandler handler = comp.getTransferHandler();
-            StampTreeMenuBuilder builder = new StampTreeMenuBuilder();
-            myMenu = builder.build(stampTree, comp, handler);
+            StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
+            builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(diagnosis.getDiagnosisTable()));
+            myMenu = new JMenu();
+            builder.build(myMenu);
         }
         return myMenu;
     }
@@ -352,9 +356,10 @@ public final class ChartMediator extends MenuSupport {
                 comp = kartePane.getTextPane();
             }
             if (comp != null) {
-                TransferHandler handler = comp.getTransferHandler();
-                StampTreeMenuBuilder builder = new StampTreeMenuBuilder();
-                myMenu = builder.build(stampTree, comp, handler);
+                StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
+                builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(comp));
+                myMenu = new JMenu();
+                builder.build(myMenu);
             }
         }
 
@@ -390,10 +395,10 @@ public final class ChartMediator extends MenuSupport {
 
         } else if (kartePane != null) {
             // StampTree，JTextPane，Handler からメニューを構築する
-            JComponent comp = kartePane.getTextPane();
-            TransferHandler handler = comp.getTransferHandler();
-            StampTreeMenuBuilder builder = new StampTreeMenuBuilder();
-            myMenu = builder.build(stampTree, comp, handler);
+            StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
+            builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(kartePane.getTextPane()));
+            myMenu = new JMenu();
+            builder.build(myMenu);
         }
 
         return myMenu;
@@ -424,10 +429,9 @@ public final class ChartMediator extends MenuSupport {
                 popup.add(myMenu);
 
             } else {
-                JComponent comp = diagnosis.getDiagnosisTable();
-                TransferHandler handler = comp.getTransferHandler();
-                StampTreePopupBuilder builder = new StampTreePopupBuilder();
-                builder.build(stampTree, popup, comp, handler);
+                StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
+                builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(diagnosis.getDiagnosisTable()));
+                builder.build(popup);
             }
         }
     }
@@ -467,9 +471,9 @@ public final class ChartMediator extends MenuSupport {
                     comp = kartePane.getTextPane();
                 }
                 if (comp != null) {
-                    TransferHandler handler = comp.getTransferHandler();
-                    StampTreePopupBuilder builder = new StampTreePopupBuilder();
-                    builder.build(stampTree, popup, comp, handler);
+                    StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
+                    builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(comp));
+                    builder.build(popup);
                 }
             }
         }
@@ -488,17 +492,11 @@ public final class ChartMediator extends MenuSupport {
 
             StampBoxPlugin stampBox = getStampBox();
 
-            List<StampTree> trees = stampBox.getAllTrees();
+            List<StampTree> trees = stampBox.getAllPTrees();
 
-            StampTreeMenuBuilder builder = new StampTreeMenuBuilder();
-            JComponent cmp = kartePane.getTextPane();
-            TransferHandler handler = cmp.getTransferHandler();
-
-            // StampBox内の全Treeをイテレートする
-            trees.stream()
-                    .filter(tree -> !tree.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS))
-                    .filter(tree -> !tree.getEntity().equals(IInfoModel.ENTITY_TEXT))
-                    .forEach(tree -> menu.add(builder.build(tree, cmp, handler)));
+            StampTreeMenuBuilder builder = new StampTreeMenuBuilder(trees);
+            builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(kartePane.getTextPane()));
+            builder.build(menu);
         }
     }
 

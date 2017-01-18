@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.stampbox.StampListTransferable;
 import open.dolphin.codehelper.PCodeHelper;
 import open.dolphin.codehelper.SOACodeHelper;
 import java.awt.*;
@@ -213,7 +214,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      * JTextPaneのStyledDocumentを返す.
      * @return JTextPaneのStyledDocument
      */
-    protected KarteStyledDocument getDocument() {
+    public KarteStyledDocument getDocument() {
         return (KarteStyledDocument) getTextPane().getDocument();
     }
 

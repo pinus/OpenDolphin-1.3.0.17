@@ -10,6 +10,8 @@ import javax.swing.text.*;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
+import open.dolphin.stampbox.StampTreeNode;
 
 /**
  * KartePaneTransferHandler

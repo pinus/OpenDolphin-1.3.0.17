@@ -1,15 +1,11 @@
 package open.dolphin.codehelper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import open.dolphin.client.ChartMediator;
 import open.dolphin.client.KartePane;
-import open.dolphin.client.StampBoxPlugin;
-import open.dolphin.client.StampTree;
+import open.dolphin.stampbox.StampBoxPlugin;
+import open.dolphin.stampbox.StampTree;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.util.StringTool;
 
@@ -91,44 +87,11 @@ public class PCodeHelper extends AbstractCodeHelper {
             buildEntityPopup(entity);
 
         } else {
-            //
-            // 全てのスタンプツリーをなめる
-            //
-            buildMatchPopup(text);
+            // current StampBoxのP関連 StampTree を取得する
+            StampBoxPlugin stampBox = getMediator().getStampBox();
+            List<StampTree> allTree = stampBox.getAllPTrees();
+
+            buildMatchedPopup(allTree, text);
         }
-    }
-
-    /**
-     * キーワードを含む stamp から popup を作ってセットする.
-     * @param text
-     */
-    protected void buildMatchPopup(String text) {
-
-        // current StampBoxのP関連 StampTree を取得する
-        StampBoxPlugin stampBox = getMediator().getStampBox();
-        List<StampTree> allTree = stampBox.getAllPTrees();
-        if (allTree == null || allTree.isEmpty()) { return; }
-
-        // 親メニューのスタックを生成する
-        List<JMenu> subMenus = new ArrayList<>();
-        // 親のない item のスタック
-        List<JMenuItem> rootItems = new ArrayList<>();
-
-        // Stamp を検索する検索文字列
-        String searchText = ".*" + text + ".*";
-
-        allTree.forEach(tree -> {
-            MenuModel model = createMenu(tree, searchText);
-            model.getRootItems().forEach(item -> rootItems.add(item));
-            model.getSubMenus().forEach(menu -> subMenus.add(menu));
-        });
-
-        // できあがった subMenus と rootItems を popup にセットしていく
-        JPopupMenu popup = new JPopupMenu();
-
-        subMenus.forEach(menu -> popup.add(menu));
-        rootItems.forEach(item -> popup.add(item));
-
-        setPopup(popup);
     }
 }

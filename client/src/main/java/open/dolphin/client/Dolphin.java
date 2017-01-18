@@ -28,6 +28,7 @@ import open.dolphin.project.AbstractProjectFactory;
 import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.setting.ProjectSettingDialog;
+import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.SettingForMac;
