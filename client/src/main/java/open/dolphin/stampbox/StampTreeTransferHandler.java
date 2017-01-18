@@ -246,11 +246,9 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
                     return false;
                 }
 
-            } catch (IOException ex) {
+            } catch (IOException | UnsupportedFlavorException ex) {
                 System.out.println("StampTreeTransferHandler.java: "+ ex);
                 ex.printStackTrace(System.err);
-            } catch (UnsupportedFlavorException ex) {
-                System.out.println("StampTreeTransferHandler.java: "+ ex);
             }
         }
         return false;

@@ -11,7 +11,8 @@ import open.dolphin.ui.StatusPanel;
 /**
  * StampTreePanel.
  *
- * @author  Kazushi Minagawa
+ * @author Kazushi Minagawa
+ * @author pns
  */
 public class StampTreePanel extends JPanel implements TreeSelectionListener {
     private static final long serialVersionUID = -268963413379453444L;

@@ -27,7 +27,7 @@ import open.dolphin.ui.PatchedTransferHandler;
 public class MasterItemTransferHandler extends PatchedTransferHandler {
     private static final long serialVersionUID = 4871088750931696219L;
 
-    private final DataFlavor masterItemFlavor = MasterItemTransferable.MASTER_ITEM_FLAVOR;
+    private final DataFlavor masterItemFlavor = MasterItemTransferable.masterItemFlavor;
 
     private JTable sourceTable;
     private boolean shouldRemove;

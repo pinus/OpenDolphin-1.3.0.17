@@ -12,24 +12,29 @@ public final class SchemaListTransferable implements Transferable, ClipboardOwne
 
     /** Data Flavor of this class */
     public static DataFlavor schemaListFlavor = new DataFlavor(open.dolphin.client.SchemaList.class, "Schema List");
+    private static final DataFlavor[] flavors = {SchemaListTransferable.schemaListFlavor};
 
-    public static final DataFlavor[] flavors = {SchemaListTransferable.schemaListFlavor};
+    private final SchemaList list;
 
-    private SchemaList list;
-
-    /** Creates new SchemaListTransferable */
+    /**
+     * Creates new SchemaListTransferable.
+     * @param list
+     */
     public SchemaListTransferable(SchemaList list) {
         this.list = list;
     }
 
+    @Override
     public synchronized DataFlavor[] getTransferDataFlavors() {
 	return flavors;
     }
 
+    @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
 	return flavor.equals(schemaListFlavor) ? true : false;
     }
 
+    @Override
     public synchronized Object getTransferData(DataFlavor flavor)
 	    throws UnsupportedFlavorException, IOException {
 
@@ -45,6 +50,7 @@ public final class SchemaListTransferable implements Transferable, ClipboardOwne
         return "Icon List Transferable";
     }
 
+    @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
     }
 }

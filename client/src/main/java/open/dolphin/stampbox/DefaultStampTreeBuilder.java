@@ -36,7 +36,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     }
 
     /**
-     * Returns the product of this builder
+     * Returns the product of this builder.
      * @return vector that contains StampTree instances
      */
     @Override

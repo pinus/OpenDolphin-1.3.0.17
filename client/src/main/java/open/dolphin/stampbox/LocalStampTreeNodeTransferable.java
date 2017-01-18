@@ -14,7 +14,7 @@ public class LocalStampTreeNodeTransferable implements Transferable {
 
     /** Data Flavor of this class */
     public static final DataFlavor localStampTreeNodeFlavor = new DataFlavor(LocalStampTreeNodeTransferable.class, "Local StampTree");
-    private static final DataFlavor[] FLAVORS = { LocalStampTreeNodeTransferable.localStampTreeNodeFlavor };
+    private static final DataFlavor[] flavors = { LocalStampTreeNodeTransferable.localStampTreeNodeFlavor };
 
     private final StampTreeNode node;
 
@@ -28,7 +28,7 @@ public class LocalStampTreeNodeTransferable implements Transferable {
 
     @Override
     public synchronized DataFlavor[] getTransferDataFlavors() {
-        return FLAVORS;
+        return flavors;
     }
 
     @Override
