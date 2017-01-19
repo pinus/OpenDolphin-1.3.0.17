@@ -89,7 +89,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     // ExtraMenu(gear) ボタン
     private JButton extraBtn;
     // ExtraMenu を押すと呼ばれる
-    private StampBoxPluginExtraMenu extraMenu;
+    private StampBoxExtraMenu extraMenu;
     // collapseAll ボタン
     private JButton collapseBtn;
     private boolean isLocked = true;
@@ -468,7 +468,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         extraBtn.setToolTipText("特別メニュー");
         extraBtn.setFocusable(false);
         extraBtn.setPreferredSize(new java.awt.Dimension(16,16));
-        extraMenu = new StampBoxPluginExtraMenu(this);
+        extraMenu = new StampBoxExtraMenu(this);
         extraBtn.addMouseListener(extraMenu);
 
         // collapseAll ボタン

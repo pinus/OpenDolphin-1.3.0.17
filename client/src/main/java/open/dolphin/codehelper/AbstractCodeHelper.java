@@ -30,6 +30,10 @@ public abstract class AbstractCodeHelper {
 
     /** キーワードの境界となる文字 */
     public static final String[] WORD_SEPARATOR = {" ", "　", "，", "," , "、", "。", ".", "：", ":", "；", ";", "\n", "\t"};
+    /** 対応する ChartImpl */
+    private final ChartImpl realChart;
+    /** ChartMediator */
+    private final ChartMediator mediator;
     /** KartePane の JTextPane */
     private final JTextPane textPane;
     /** DiagnosisDocument の JTable */
@@ -40,8 +44,6 @@ public abstract class AbstractCodeHelper {
     private int start;
     /** キーワードの終了位置 */
     private int end;
-    /** ChartMediator */
-    private final ChartMediator mediator;
     /** Preferences */
     private final Preferences prefs = Preferences.userNodeForPackage(AbstractCodeHelper.class);
 
@@ -54,7 +56,7 @@ public abstract class AbstractCodeHelper {
 
         mediator = chartMediator;
         textPane = kartePane.getTextPane();
-        ChartImpl realChart = (ChartImpl) ((EditorFrame) kartePane.getParent().getContext()).getChart();
+        realChart = (ChartImpl) ((EditorFrame) kartePane.getParent().getContext()).getChart();
         diagTable = realChart.getDiagnosisDocument().getDiagnosisTable();
 
         int modifier = prefs.get("modifier", "ctrl").equals("ctrl")? KeyEvent.CTRL_DOWN_MASK : KeyEvent.META_DOWN_MASK;
@@ -175,13 +177,13 @@ public abstract class AbstractCodeHelper {
      * @param e
      */
     public void importStamp(StampTreeMenuEvent e) {
-
         JComponent comp;
+        boolean isDiagnosis = e.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS);
 
         textPane.setSelectionStart(start);
         textPane.setSelectionEnd(end);
 
-        if (e.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS)) {
+        if (isDiagnosis) {
             comp = diagTable;
 
             // 病名の場合は "dx" だけ消して，入力した検索語は使うので残す
@@ -198,17 +200,6 @@ public abstract class AbstractCodeHelper {
             textPane.replaceSelection("");
         }
         comp.getTransferHandler().importData(comp, e.getTransferable());
-        closePopup();
-    }
-
-    /**
-     * popup を閉じる.
-     */
-    protected void closePopup() {
-        if (popup != null) {
-            popup.removeAll();
-            popup = null;
-        }
     }
 
     /**

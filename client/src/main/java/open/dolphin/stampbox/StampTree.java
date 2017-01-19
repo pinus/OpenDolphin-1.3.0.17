@@ -21,7 +21,7 @@ import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
-import open.dolphin.ui.MyDefaultTreeCellEditor;
+import open.dolphin.ui.PNSTreeCellEditor;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.GUIDGenerator;
 import org.apache.log4j.Logger;
@@ -117,7 +117,7 @@ public class StampTree extends JTree implements TreeModelListener {
 
         // TreeCellEditor セット
         setEditable(true);
-        setCellEditor(new MyDefaultTreeCellEditor(this, renderer));
+        setCellEditor(new PNSTreeCellEditor(this, renderer));
 
         // Listens TreeModelEvent
         model.addTreeModelListener(this);

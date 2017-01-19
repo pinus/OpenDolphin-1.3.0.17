@@ -32,7 +32,7 @@ import open.dolphin.helper.MenuActionManager.MenuAction;
  * @author pns
  * @author masuda-sensei
  */
-public class StampBoxPluginExtraMenu extends MouseAdapter {
+public class StampBoxExtraMenu extends MouseAdapter {
 
     private MyJPopupMenu popup;
     private final StampBoxPlugin context;
@@ -41,7 +41,7 @@ public class StampBoxPluginExtraMenu extends MouseAdapter {
     // @MenuAction で定義された action の actionMap， key は method 名
     private ActionMap actionMap;
 
-    public StampBoxPluginExtraMenu(StampBoxPlugin ctx) {
+    public StampBoxExtraMenu(StampBoxPlugin ctx) {
         super();
         context = ctx;
         stampBox = context.getUserStampBox();
