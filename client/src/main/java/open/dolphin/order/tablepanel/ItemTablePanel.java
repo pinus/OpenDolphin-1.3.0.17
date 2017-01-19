@@ -31,13 +31,13 @@ import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.util.StringTool;
 
 /**
- * ItemTablePanel
+ * ItemTablePanel.
  * BaseCharge, General, Injection, InstructionCharge, Other, Physiology,
- * Surgery, Test, Treatment の StampEditor で共通して使う TablePanel
+ * Surgery, Test, Treatment の StampEditor で共通して使う TablePanel.
  *
  * RecipeTablePanel, DiagnosisTablePanel, RadiologyTablePanel は，
- * これをベースに extend して作る
- *
+ * これをベースに extend して作る.
+ * <pre>
  * +---------------+
  * |               |
  * |  CenterPanel  | JTable or JTable + RadiologyMethodPanel
@@ -46,7 +46,7 @@ import open.dolphin.util.StringTool;
  * +---------------+
  * |  SouthPanel   | stampNameField, deleteButton, clearButton etc
  * +---------------+
- *
+ * </pre>
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * modified by pns
  */

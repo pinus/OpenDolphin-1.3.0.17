@@ -1,4 +1,4 @@
-package open.dolphin.order;
+package open.dolphin.stampbox;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,11 +10,13 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
-import open.dolphin.stampbox.StampTree;
-import open.dolphin.stampbox.StampTreeNode;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.Task;
-import open.dolphin.infomodel.*;
+import open.dolphin.infomodel.ModuleInfoBean;
+import open.dolphin.infomodel.StampModel;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.order.StampEditorProxyPanel;
 import open.dolphin.ui.HorizontalPanel;
 
 /**
@@ -164,7 +166,7 @@ public class StampMakerPanel extends JPanel implements TreeSelectionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             // 無効なデータは読まない
-            if (selectedNode == null || !(selectedNode.getUserObject() instanceof ModuleInfoBean)) return;
+            if (selectedNode == null || !(selectedNode.getUserObject() instanceof ModuleInfoBean)) { return; }
 
             final ModuleInfoBean stampInfo = (ModuleInfoBean) selectedNode.getUserObject();
 
@@ -187,7 +189,7 @@ public class StampMakerPanel extends JPanel implements TreeSelectionListener {
                         if (stamp != null) {
                             // diagnosis の場合
                             if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampModel.getEntity())) {
-                                editorPanel.setValue((RegisteredDiagnosisModel) stamp);
+                                editorPanel.setValue(stamp);
 
                             } else {
                                 ModuleModel module = new ModuleModel();

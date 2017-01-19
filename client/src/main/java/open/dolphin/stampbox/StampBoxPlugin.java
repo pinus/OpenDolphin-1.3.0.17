@@ -33,7 +33,6 @@ import open.dolphin.infomodel.PersonalTreeModel;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.WindowSupport;
-import open.dolphin.order.StampMakerPanel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import org.apache.log4j.Logger;

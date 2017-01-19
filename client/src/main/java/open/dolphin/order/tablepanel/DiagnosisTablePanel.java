@@ -18,7 +18,7 @@ import open.dolphin.order.MasterSearchPanel;
 import open.dolphin.table.ObjectReflectTableModel;
 
 /**
- * ItemTablePanel を extend して作った DiagnosisTablePanel
+ * ItemTablePanel を extend して作った DiagnosisTablePanel.
  * オリジナルは RegisteredDiagnosisModel ベースだったが，
  * ItemTablePanel に合わせて MasterItem ベースに変更した
  * @author pns
@@ -231,7 +231,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
      * 受けるのは DiagnosisDocument#propertyChange，StampBoxPlugin.EditorValueListener
      * alias が設定されている場合は，スタンプに登録されたとき alias　がスタンプ名として採用される
      * see ModuleInfoBean#toString()
-     * @return ArrayList<RegisteredDiagnosisModel>
+     * @return ArrayList&lt;RegisteredDiagnosisModel&gt;
      */
     @Override
     public Object getValue() {
@@ -245,7 +245,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
     /**
      * 病名修飾のある場合の getValue
-     * @return List<RegisteredDiagnosisModel>
+     * @return List&lt;RegisteredDiagnosisModel&gt;
      */
     private Object getValue1() {
 
