@@ -26,6 +26,7 @@ import open.dolphin.client.ChartImpl;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.DocumentSearchSpec;
 import open.dolphin.helper.DBTask;
+import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
@@ -74,6 +75,8 @@ public class DocumentHistory implements IInspector {
     private BlockKeyListener blockKeyListener;
     // 編集終了したカルテの日付を保存する. 編集終了した時に必ず選択するために使う
     private String editDate = null;
+    // CellEditor の UndoManager
+    private TextComponentUndoManager undoManager;
 
     /**
      * 文書履歴オブジェクトを生成する.
@@ -137,8 +140,19 @@ public class DocumentHistory implements IInspector {
         view.getTable().getColumnModel().getColumn(0).setMaxWidth(90);
         view.getTable().getColumnModel().getColumn(0).setMinWidth(90);
 
-        // タイトルカラムに IME ON を設定する
-        JTextField tf = new JTextField();
+        // タイトルカラムに CellEditor を登録
+        JTextField tf = new JTextField() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void setText(String text) {
+                super.setText(text);
+                // undo 開始
+                undoManager.discardAllEdits();
+            }
+        };
+        // UndoManager 登録
+        undoManager = TextComponentUndoManager.getManager(tf);
+
         IMEControl.setImeOnIfFocused(tf);
         TableColumn column = view.getTable().getColumnModel().getColumn(1);
         column.setCellEditor(new MyDefaultCellEditor(tf));

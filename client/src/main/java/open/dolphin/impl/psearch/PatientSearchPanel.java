@@ -52,6 +52,8 @@ public class PatientSearchPanel extends MainComponentPanel {
     private JProgressBar progressBar;
     private JMenuItem hibernateIndexItem;
 
+    private TextComponentUndoManager undoManager;
+
     public PatientSearchPanel() {
         initComponents();
     }
@@ -110,6 +112,8 @@ public class PatientSearchPanel extends MainComponentPanel {
                 g2d.fillRect(5, 5, getWidth()-11, getHeight()-11);
             }
         };
+
+        undoManager = TextComponentUndoManager.getManager(keywordFld);
 
         Dimension tfSize = new Dimension(280,32);
         keywordFld.setPreferredSize(tfSize);
