@@ -56,7 +56,7 @@ public class StampEditor extends JPanel implements IStampEditor {
 
         // MasterSearchPanel 作成
         masterSearchPanel = new MasterSearchPanel(entity);
-        masterSearchPanel.addPropertyChangeListener(tablePanel);
+        masterSearchPanel.addOrderListener(tablePanel::receiveMaster);
 
         // CLAIM パラメータを設定する
         tablePanel.setOrderName(ClaimConst.EntityNameMap.get(entity));
@@ -82,7 +82,6 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     @Override
     public void dispose() {
-        masterSearchPanel.removePropertyChangeListener(tablePanel);
     }
 
     /**

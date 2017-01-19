@@ -18,6 +18,7 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
+import open.dolphin.event.OrderListener;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
@@ -33,8 +34,7 @@ import open.dolphin.util.StringTool;
  */
 public class MasterSearchPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    /** マスタ項目選択プロパティ名，リスナは ItemTablePanel */
-    public static final String SELECTED_ITEM_PROP = "selectedItemProp";
+
     /** Preferences に部分一致の on/off を記録するための key */
     private static final String PARTIAL_MATCH = "partialMatch";
 
@@ -43,7 +43,9 @@ public class MasterSearchPanel extends JPanel {
     /** キーワードフィールドの長さ */
     private static final int KEYWORD_FIELD_LENGTH = 30;
     /** この SearchPanel の entity */
-    private String entity;
+    private final String entity;
+    /** ItemTablePanel からリスンされる */
+    private OrderListener<MasterItem> orderListener;
     /** キーワードフィールド */
     private JTextField keywordField;
     /** 検索アイコン */
@@ -63,9 +65,9 @@ public class MasterSearchPanel extends JPanel {
     /** 検索結果テーブルの table model */
     private ObjectReflectTableModel tableModel;
     /** 20120519 形式の今日の日付 */
-    private String todayDate;
+    private final String todayDate;
     /** プレファレンス */
-    private Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+    private final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 
     public MasterSearchPanel(String entity) {
         super();
@@ -83,6 +85,14 @@ public class MasterSearchPanel extends JPanel {
      */
     public void requestFocusOnTextField() {
         Focuser.requestFocus(keywordField);
+    }
+
+    /**
+     * ItemTablePanel に MasterItem を伝えるリスナ.
+     * @param listener
+     */
+    public void addOrderListener(OrderListener<MasterItem> listener) {
+        orderListener = listener;
     }
 
     private void initComponents() {
@@ -254,7 +264,7 @@ public class MasterSearchPanel extends JPanel {
                         mItem.setMasterTableId(ClaimConst.DISEASE_MASTER_TABLE_ID);
                     }
                     // ItemTablePanel に通知
-                    firePropertyChange(SELECTED_ITEM_PROP, null, mItem);
+                    orderListener.order(mItem);
 
                     // 用法コンボを元に戻す
                     adminCombo.setSelectedIndex(0);

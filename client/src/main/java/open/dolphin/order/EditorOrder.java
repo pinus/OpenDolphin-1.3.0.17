@@ -8,7 +8,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
  *
  * @author pns
  */
-public class EditorProduct {
+public class EditorOrder {
     private String entity;
     private List<RegisteredDiagnosisModel> diagnosisList;
     private ModuleModel moduleModel;

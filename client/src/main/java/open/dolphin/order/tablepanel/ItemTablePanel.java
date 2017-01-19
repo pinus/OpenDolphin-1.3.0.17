@@ -7,8 +7,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.*;
@@ -16,12 +14,16 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import open.dolphin.client.GUIConst;
-import open.dolphin.infomodel.*;
+import open.dolphin.infomodel.BundleDolphin;
+import open.dolphin.infomodel.ClaimItem;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.InfoModel;
+import open.dolphin.infomodel.ModuleInfoBean;
+import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MMLTable;
 import open.dolphin.order.MasterItem;
-import open.dolphin.order.MasterSearchPanel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
@@ -50,7 +52,7 @@ import open.dolphin.util.StringTool;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * modified by pns
  */
-public class ItemTablePanel extends JPanel implements PropertyChangeListener {
+public class ItemTablePanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public static final String DEFAULT_STAMP_NAME = "新規スタンプ";
@@ -603,17 +605,11 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
 
     /**
      * マスターテーブルで選択されたアイテムの通知を受け，セットテーブルへ追加する.
-     * ItemTablePanel, RadiologyTablePanel 共通
-     * @param e
+     * ItemTablePanel, RadiologyTablePanel 共通.
+     * @param item
      */
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        Object newValue = e.getNewValue();
-        if (newValue == null
-                || !(newValue instanceof MasterItem)
-                || !MasterSearchPanel.SELECTED_ITEM_PROP.equals(e.getPropertyName())) return;
+    public void receiveMaster(MasterItem item) {
 
-        MasterItem item = (MasterItem) newValue;
         String textVal = stampNameField.getText().trim();
 
         // マスターアイテムを判別して自動設定を行う

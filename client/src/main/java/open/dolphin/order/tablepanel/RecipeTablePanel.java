@@ -140,17 +140,10 @@ public class RecipeTablePanel extends ItemTablePanel {
 
     /**
      * MasterPanel から医薬品及び用法の通知を受け，データをセットする.
-     * @param e PropertyChangeEvent
      */
     @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        Object newValue = e.getNewValue();
-        if (newValue == null
-                || !(newValue instanceof MasterItem)
-                || !MasterSearchPanel.SELECTED_ITEM_PROP.equals(e.getPropertyName())) return;
+    public void receiveMaster(MasterItem item) {
 
-        // MasterPanel からは MasterItem が通知される
-        MasterItem item = (MasterItem) newValue;
         // テーブルに登録されているのオブジェクトの数
         int oCount = tableModel.getObjectCount();
         //テーブルの１つ上のアイテムが[用法]かどうか

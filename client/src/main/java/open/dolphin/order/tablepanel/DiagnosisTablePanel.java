@@ -151,21 +151,16 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
     /**
      * マスタ検索テーブルで選択されたアイテムを編集テーブルへ取り込む.
-     * @param e PropertyChangeEvent
+     * @param mItem
      */
     @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        Object newValue = e.getNewValue();
-        if (newValue == null
-                || !(newValue instanceof MasterItem)
-                || !MasterSearchPanel.SELECTED_ITEM_PROP.equals(e.getPropertyName())) return;
+    public void receiveMaster(MasterItem mItem) {
 
-        MasterItem mItem = (MasterItem) e.getNewValue();
-        if (mItem == null) return;
+        if (mItem == null) { return; }
 
         // ZZZ コードなら，接頭語（ZZZ1~7）なら頭から挿入
-        if (mItem.getCode().matches("^ZZZ[1-7].*")) tableModel.insertRow(0, mItem);
-        else tableModel.addRow(mItem);
+        if (mItem.getCode().matches("^ZZZ[1-7].*")) { tableModel.insertRow(0, mItem); }
+        else { tableModel.addRow(mItem); }
 
         // ボタンコントロールと通知
         checkState();
