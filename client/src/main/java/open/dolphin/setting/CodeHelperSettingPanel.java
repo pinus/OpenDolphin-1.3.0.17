@@ -291,8 +291,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
 
             Preferences prefs = Preferences.userNodeForPackage(AbstractCodeHelper.class);
 
-            String mask = ClientContext.isMac() ? "meta" : "ctrl";
-            String modifier = prefs.get("modifier", mask);
+            String modifier = prefs.get("modifier", "ctrl");
 
             if (modifier.equals("ctrl")) {
                 ctrlMask.setSelected(true);
@@ -317,7 +316,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
             baseCharge.setText(prefs.get(IInfoModel.ENTITY_BASE_CHARGE_ORDER, "base").trim());
             instraction.setText(prefs.get(IInfoModel.ENTITY_INSTRACTION_CHARGE_ORDER, "ins").trim());
             orca.setText(prefs.get(IInfoModel.ENTITY_ORCA, "orca").trim());
-            diag.setText(prefs.get(IInfoModel.ENTITY_DIAGNOSIS, "diag").trim());
+            diag.setText(prefs.get(IInfoModel.ENTITY_DIAGNOSIS, "dx").trim());
 
             connect();
             checkState();
