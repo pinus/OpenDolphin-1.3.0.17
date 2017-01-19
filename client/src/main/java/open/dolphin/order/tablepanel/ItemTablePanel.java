@@ -26,7 +26,7 @@ import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyDefaultCellEditor;
+import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.util.StringTool;
 
@@ -217,7 +217,7 @@ public class ItemTablePanel extends JPanel implements PropertyChangeListener {
 
             JTextField tf = new JTextField();
             IMEControl.setImeOffIfFocused(tf);
-            DefaultCellEditor de = new MyDefaultCellEditor(tf);
+            DefaultCellEditor de = new PNSCellEditor(tf);
             int ccts = Project.getPreferences().getInt("order.table.clickCountToStart", 1);
             de.setClickCountToStart(ccts);
             column.setCellEditor(de);

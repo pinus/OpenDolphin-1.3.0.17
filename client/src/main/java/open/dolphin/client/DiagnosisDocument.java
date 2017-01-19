@@ -380,14 +380,14 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         column = diagTable.getColumnModel().getColumn(START_DATE_COL);
         startDateField = new JTextField();
         startDateField.setDocument(new RegexConstrainedDocument(datePattern));
-        final DefaultCellEditor startDateCellEditor = new MyDefaultCellEditor(startDateField);
+        final DefaultCellEditor startDateCellEditor = new PNSCellEditor(startDateField);
         column.setCellEditor(startDateCellEditor);
         startDateCellEditor.setClickCountToStart(clickCountToStart);
 
         column = diagTable.getColumnModel().getColumn(END_DATE_COL);
         endDateField = new JTextField();
         endDateField.setDocument(new RegexConstrainedDocument(datePattern));
-        final DefaultCellEditor endDateCellEditor = new MyDefaultCellEditor(endDateField);
+        final DefaultCellEditor endDateCellEditor = new PNSCellEditor(endDateField);
         column.setCellEditor(endDateCellEditor);
         endDateCellEditor.setClickCountToStart(clickCountToStart);
 
@@ -1438,7 +1438,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     /**
      * JComboBox を細かくコントロールするための Cell Editor.
      */
-    private class MyCellEditor extends MyDefaultCellEditor {
+    private class MyCellEditor extends PNSCellEditor {
         private static final long serialVersionUID = 1L;
 
         JComboBox combo;

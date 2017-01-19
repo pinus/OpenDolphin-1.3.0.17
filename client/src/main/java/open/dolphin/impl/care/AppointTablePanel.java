@@ -2,7 +2,7 @@ package open.dolphin.impl.care;
 
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.ui.AdditionalTableSettings;
-import open.dolphin.ui.MyDefaultCellEditor;
+import open.dolphin.ui.PNSCellEditor;
 import javax.swing.*;
 import javax.swing.table.*;
 import open.dolphin.infomodel.AppointmentModel;
@@ -47,7 +47,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         careTable.setRowSelectionAllowed(true);
 
         // CellEditor を設定する
-        DefaultCellEditor ce = new MyDefaultCellEditor(new JTextField());
+        DefaultCellEditor ce = new PNSCellEditor(new JTextField());
         ce.setClickCountToStart(Project.getPreferences().getInt("diagnosis.table.clickCountToStart", 1));
 
         // Set the column width

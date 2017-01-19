@@ -35,7 +35,7 @@ import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyDefaultCellEditor;
+import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.util.PNSPair;
 import open.dolphin.util.PNSTriple;
 
@@ -75,8 +75,6 @@ public class DocumentHistory implements IInspector {
     private BlockKeyListener blockKeyListener;
     // 編集終了したカルテの日付を保存する. 編集終了した時に必ず選択するために使う
     private String editDate = null;
-    // CellEditor の UndoManager
-    private TextComponentUndoManager undoManager;
 
     /**
      * 文書履歴オブジェクトを生成する.
@@ -141,21 +139,10 @@ public class DocumentHistory implements IInspector {
         view.getTable().getColumnModel().getColumn(0).setMinWidth(90);
 
         // タイトルカラムに CellEditor を登録
-        JTextField tf = new JTextField() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void setText(String text) {
-                super.setText(text);
-                // restart undoing
-                undoManager.discardAllEdits();
-            }
-        };
-        // UndoManager 登録
-        undoManager = TextComponentUndoManager.getManager(tf);
-
+        JTextField tf = new JTextField();
         IMEControl.setImeOnIfFocused(tf);
         TableColumn column = view.getTable().getColumnModel().getColumn(1);
-        column.setCellEditor(new MyDefaultCellEditor(tf));
+        column.setCellEditor(new PNSCellEditor(tf));
 
         // isReadOnly対応
         tf.setEnabled(!context.isReadOnly());

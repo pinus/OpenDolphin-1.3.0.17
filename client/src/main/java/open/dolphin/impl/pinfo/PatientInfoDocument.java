@@ -20,7 +20,7 @@ import open.dolphin.infomodel.PVTPublicInsuranceItemModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.ui.MyDefaultCellEditor;
+import open.dolphin.ui.PNSCellEditor;
 
 /**
  * Documet to show Patient and Health Insurance info.
@@ -170,7 +170,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
         pTable = new JTable(pModel);
 //pns   pTable.setDefaultRenderer(Object.class, new OddEvenRowRenderer());
         TableColumn column = pTable.getColumnModel().getColumn(1);
-        DefaultCellEditor de = new MyDefaultCellEditor(new JTextField());
+        DefaultCellEditor de = new PNSCellEditor(new JTextField());
         de.setClickCountToStart(2);
         column.setCellEditor(de);
 
