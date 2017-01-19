@@ -1,11 +1,8 @@
 package open.dolphin.ui;
 
-import java.awt.Font;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTree;
 import javax.swing.Timer;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
@@ -21,7 +18,7 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
     // 編集が始まるまでの delay
     private static final int DELAY = 900; //in msec (default = 1200)
     // UndoManager
-    private TextComponentUndoManager manager;
+    private TextComponentUndoManager undoManager;
 
     public PNSTreeCellEditor(JTree tree, DefaultTreeCellRenderer renderer) {
         super(tree, renderer);
@@ -35,30 +32,17 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
             @Override
             public void setText(String text) {
                 super.setText(text);
-                // start undoing
-                manager.discardAllEdits();
+                // restart undoing
+                undoManager.discardAllEdits();
+                // editor の cell を５文字分大きめに作る
+                setColumns(text.length() + 5);
             }
         };
 
-        manager = TextComponentUndoManager.getManager(textField);
+       undoManager = TextComponentUndoManager.getManager(textField);
 
         textField.putClientProperty("Quaqua.TextComponent.showPopup", false); // 勝手に cut,copy,past の popup を作らせない
         textField.setOpaque(true); // これをしないと，編集時のバックグランドが白くならない
-        textField.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-
-        textField.getDocument().addDocumentListener(new DocumentListener(){
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                // editor の cell を５文字分大きめに作る
-                textField.setColumns(e.getDocument().getLength() + 5);
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-            }
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-            }
-        });
 
         DefaultCellEditor editor = new DefaultCellEditor(textField);
 
@@ -68,7 +52,7 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
     }
 
     /**
-     * 編集が始まるまでの delay を設定
+     * 編集が始まるまでの delay を設定.
      */
     @Override
     protected void startEditingTimer() {

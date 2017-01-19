@@ -146,7 +146,7 @@ public class DocumentHistory implements IInspector {
             @Override
             public void setText(String text) {
                 super.setText(text);
-                // undo 開始
+                // restart undoing
                 undoManager.discardAllEdits();
             }
         };
