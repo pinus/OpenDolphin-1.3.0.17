@@ -23,7 +23,10 @@ import open.dolphin.ui.MyJSheet;
 /**
  * Main Window コンポーネントプラグインの抽象クラス.
  * WaitingListImpl, PatientSearchImpl, LaboTestImpoter で これを extends している.
+ * <br>
+ * <pre>
  * AbstractMainComponent > MainComponent > MainTool > MainService
+ * </pre>
  */
 public abstract class AbstractMainComponent extends MouseAdapter implements MainComponent {
 

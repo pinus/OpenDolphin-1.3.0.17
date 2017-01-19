@@ -4,8 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.im.InputSubset;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.Date;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -14,8 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.event.ValidListener;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.infomodel.DepartmentModel;
 import open.dolphin.infomodel.FacilityModel;
@@ -24,18 +22,15 @@ import open.dolphin.infomodel.LicenseModel;
 import open.dolphin.infomodel.UserModel;
 
 /**
- * AccountInfoPanel
+ * AccountInfoPanel.
  *
  * @author Minagawa,Kazushi
- *
+ * @author pns
  */
 public class AccountInfoPanel extends JPanel {
-
     private static final long serialVersionUID = -7695417342865642933L;
 
-    public static final String VALID_INFO_PROP = "validInfoProp";
-
-//masuda^   FACILITY_USERにしておく. FACILITY_OIDはデフォを使う
+    // FACILITY_USERにしておく. FACILITY_OIDはデフォを使う (masuda-sensei)
     //private static final String MEMBER_TYPE = "ASP_TESTER";
     private static final String MEMBER_TYPE = "FACILITY_USER";
     private static final String DEFAULT_FACILITY_OID = IInfoModel.DEFAULT_FACILITY_OID;
@@ -54,23 +49,20 @@ public class AccountInfoPanel extends JPanel {
     private JPasswordField adminPassword2;
     private JTextField adminSir;
     private JTextField adminGiven;
-    private JComboBox licenseCombo;
-    private JComboBox deptCombo;
+    private JComboBox<LicenseModel> licenseCombo;
+    private JComboBox<DepartmentModel> deptCombo;
     private LicenseModel[] licenses;
     private DepartmentModel[] depts;
     private JTextField emailField;
     private int[] userIdLength;
     private int[] passwordLength;
-
     private UserModel adminModel;
     private boolean validInfo;
-    private PropertyChangeSupport boundSupport = new PropertyChangeSupport(this);
-
+    private ValidListener validListener;
 
     public AccountInfoPanel() {
         initialize();
         connect();
-        setModel(adminModel);
     }
 
     public UserModel getModel() {
@@ -82,22 +74,17 @@ public class AccountInfoPanel extends JPanel {
         this.adminModel = adminModel;
     }
 
+    public void addValidListener(ValidListener listener) {
+        validListener = listener;
+    }
+
     public boolean isValidInfo() {
         return validInfo;
     }
 
-    public void setValidInfo(boolean b) {
-        boolean old = this.validInfo;
-        this.validInfo = b;
-        boundSupport.firePropertyChange(VALID_INFO_PROP, old, this.validInfo);
-    }
-
-    public void addValidInfoPropertyListener(PropertyChangeListener l) {
-        boundSupport.addPropertyChangeListener(VALID_INFO_PROP, l);
-    }
-
-    public void removeValidInfoPropertyListener(PropertyChangeListener l) {
-        boundSupport.removePropertyChangeListener(VALID_INFO_PROP, l);
+    public void setValidInfo(boolean valid) {
+        validInfo = valid;
+        validListener.validity(valid);
     }
 
     private UserModel getAdminUser(UserModel admin) {
@@ -108,9 +95,8 @@ public class AccountInfoPanel extends JPanel {
         // 医療機関ID
         //String fid = facilityId.getText().trim();
         //facility.setFacilityId(fid);
-//masuda^   ここでFacilityIdをセット
+        // ここでFacilityIdをセット (masuda-sensei)
         facility.setFacilityId(DEFAULT_FACILITY_OID);
-//masuda$
 
         // 医療機関名
         facility.setFacilityName(facilityName.getText().trim());
@@ -233,14 +219,14 @@ public class AccountInfoPanel extends JPanel {
         emailField.setToolTipText("折り返し施設IDを送信します");
 
         licenses = ClientContext.getLicenseModel();
-        licenseCombo = new JComboBox(licenses);
+        licenseCombo = new JComboBox<>(licenses);
 
         depts = ClientContext.getDepartmentModel();
-        deptCombo = new JComboBox(depts);
+        deptCombo = new JComboBox<>(depts);
 
         GridBagBuilder gbl = new GridBagBuilder("施設情報 - URL以外の全ての項目が必要です");
-        JLabel label = null;
-        StringBuilder sb = null;
+        JLabel label;
+        StringBuilder sb;
 
         int x = 0;
         int y = 0;
@@ -338,16 +324,7 @@ public class AccountInfoPanel extends JPanel {
 
     private void connect() {
 
-        DocumentListener dl = new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
-                checkValidInfo();
-            }
-            public void removeUpdate(DocumentEvent e) {
-                checkValidInfo();
-            }
-            public void changedUpdate(DocumentEvent e) {
-            }
-        };
+        ProxyDocumentListener dl = e -> checkValidInfo();
 
         facilityName.getDocument().addDocumentListener(dl);
         zipField1.getDocument().addDocumentListener(dl);
@@ -365,7 +342,7 @@ public class AccountInfoPanel extends JPanel {
     }
 
     private void checkValidInfo() {
-        boolean infoOk = (
+        boolean infoOk = ! (
                 facilityName.getText().trim().equals("") ||
                 zipField1.getText().trim().equals("") ||
                 zipField2.getText().trim().equals("") ||
@@ -379,7 +356,7 @@ public class AccountInfoPanel extends JPanel {
                 adminGiven.getText().trim().equals("") ||
                 (licenseCombo.getSelectedItem() == null) ||
                 (deptCombo.getSelectedItem() == null ||
-                emailField.getText().trim().equals("")) ) ? false : true;
+                emailField.getText().trim().equals("")) );
 
         setValidInfo(infoOk);
     }
@@ -390,15 +367,10 @@ public class AccountInfoPanel extends JPanel {
         if (val.equals("")) {
             return false;
         }
-        if (val.length() < userIdLength[0] || val.length() > userIdLength[1]) {
-            return false;
-        }
-
-        return true;
+        return !(val.length() < userIdLength[0] || val.length() > userIdLength[1]);
     }
 
     private boolean validPassword() {
-
 
         String passwd1 = new String(adminPassword1.getPassword());
         String passwd2 = new String(adminPassword2.getPassword());
@@ -415,6 +387,6 @@ public class AccountInfoPanel extends JPanel {
             return false;
         }
 
-        return passwd1.equals(passwd2)? true : false;
+        return passwd1.equals(passwd2);
     }
 }

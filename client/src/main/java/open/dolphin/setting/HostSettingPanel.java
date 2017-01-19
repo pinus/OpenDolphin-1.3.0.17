@@ -2,13 +2,10 @@ package open.dolphin.setting;
 
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 import java.util.prefs.Preferences;
 import javax.swing.*;
-import open.dolphin.client.AddFacilityDialog;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
-import open.dolphin.client.ServerInfo;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.infomodel.IInfoModel;
@@ -148,6 +145,7 @@ public class HostSettingPanel extends AbstractSettingPanel {
         label = new JLabel("");
         gb.add(label,           0, row, GridBagConstraints.EAST);
         gb.add(registTesterBtn, 1, row, GridBagConstraints.CENTER);
+        registTesterBtn.setEnabled(false);
         JPanel iip = gb.getProduct();
 
         //masuda   facility user固定にしておく
@@ -323,29 +321,29 @@ public class HostSettingPanel extends AbstractSettingPanel {
      */
     public void make5TestAccount() {
         //masuda アカウント作成前にホストアドレスを保存するため
-        save();
-        AddFacilityDialog af = new AddFacilityDialog();
-        PropertyChangeListener pl = evt -> newAccount((ServerInfo) evt.getNewValue());
-        af.addPropertyChangeListener(AddFacilityDialog.ACCOUNT_INFO, pl);
-        Thread t = new Thread(af);
-        t.setPriority(Thread.NORM_PRIORITY);
-        t.start();
+        //save();
+        //AddFacilityDialog af = new AddFacilityDialog();
+        //PropertyChangeListener pl = evt -> newAccount((ServerInfo) evt.getNewValue());
+        //af.addPropertyChangeListener(AddFacilityDialog.ACCOUNT_INFO, pl);
+        //Thread t = new Thread(af);
+        //t.setPriority(Thread.NORM_PRIORITY);
+        //t.start();
     }
 
     /**
      * 管理者登録ダイアログの結果を受け取り情報を表示する.
      * @param info
      */
-    public void newAccount(ServerInfo info) {
-
-        if (info != null) {
-            facilityIdField.setText(info.getFacilityId());
-            userIdField.setText(info.getAdminId());
+    //public void newAccount(ServerInfo info) {
+    //
+    //    if (info != null) {
+    //        facilityIdField.setText(info.getFacilityId());
+    //        userIdField.setText(info.getAdminId());
             //masuda facility user固定にしておく
             //aspMember.doClick();
-            facilityUser.doClick();
-        }
-    }
+    //        facilityUser.doClick();
+    //    }
+    //}
 
     /**
      * 設定値を保存する.
@@ -495,15 +493,15 @@ public class HostSettingPanel extends AbstractSettingPanel {
             boolean facilityIdOk = (facilityIdField.getText().trim().equals("") == false);
             boolean userIdOk = (userIdField.getText().trim().equals("") == false);
 
-            if (facilityUser.isSelected()) {
+            //if (facilityUser.isSelected()) {
                 //masuda registerTesterBtnも制御する
-                boolean ret = facilityIdOk && hostAddrOk && userIdOk;
-                registTesterBtn.setEnabled(ret);
-                return ret;
+                //boolean ret = facilityIdOk && hostAddrOk && userIdOk;
+                //registTesterBtn.setEnabled(ret);
+                //return ret;
 
-            } else {
+            //} else {
                 return (facilityIdOk && userIdOk);
-            }
+            //}
         }
 
         private boolean isIPAddress(String test) {

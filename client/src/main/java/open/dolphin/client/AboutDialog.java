@@ -4,43 +4,44 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import open.dolphin.ui.MoreInfoPanel;
 
-
 /**
- * About dialog
- * modified by pns
+ * About dialog.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class AboutDialog extends JDialog {
     private static final long serialVersionUID = 1L;
 
-    /** Creates new AboutDialog */
+    /**
+     * Creates new AboutDialog.
+     * @param f
+     * @param title
+     * @param imageFile
+     */
     public AboutDialog(Frame f, String title, String imageFile) {
-
         super(f, title, true);
+        init();
+    }
 
+    private void init() {
         //ラベル作成
         final JLabel imageLabel = new JLabel();
         final Icon icon1 = GUIConst.ICON_SPLASH_DOLPHIN;
         final Icon icon2 = GUIConst.ICON_SPLASH_USAGI;
         imageLabel.setIcon(icon1);
         imageLabel.addMouseListener(new MouseAdapter() {
-            boolean flg = true;
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (flg) {
+                if (imageLabel.getIcon().equals(icon1)) {
                     imageLabel.setIcon(icon2);
-                    flg = false;
-                } else {
+                } else  {
                     imageLabel.setIcon(icon1);
-                    flg = true;
                 }
             }
         });
@@ -74,11 +75,8 @@ public class AboutDialog extends JDialog {
         this.getRootPane().setDefaultButton(closeButton);
         closeButton.setSelected(true);
         closeButton.setFocusPainted(false);
-        closeButton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-                close();
-            }
-        });
+        closeButton.addActionListener(e -> close());
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(closeButton);
 
@@ -92,17 +90,17 @@ public class AboutDialog extends JDialog {
 
         content.setOpaque(true);
 
-        this.setContentPane(content);
-        this.pack();
+        setContentPane(content);
+        pack();
         Point loc = GUIFactory.getCenterLoc(this.getWidth(), this.getHeight());
-        this.setLocation(loc);
-        this.setResizable(false);
-        this.setVisible(true);
+        setLocation(loc);
+        setResizable(false);
+        setVisible(true);
     }
 
     private void close() {
-        this.setVisible(false);
-        this.dispose();
+        setVisible(false);
+        dispose();
     }
 
     private JScrollPane getMoreInfoPane() {

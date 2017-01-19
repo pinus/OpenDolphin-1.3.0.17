@@ -38,7 +38,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
  * 医療機関と管理責任者を登録するクラス.
  *
  * @Author Kazushi Minagawa, Digital Globe, Inc.
- *
  */
 public class AddFacilityDialog extends JDialog implements ComponentListener, Runnable {
     private static final long serialVersionUID = 1L;
@@ -209,7 +208,10 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
 
         agreement.addAgreePropertyListener(new AgreementListener());
 
-        accountInfo.addValidInfoPropertyListener(new AccountInfoListener());
+        accountInfo.addValidListener(valid -> {
+            accountInfoOk = valid;
+            controlButton();
+        });
 
         backBtn.addActionListener(new ActionListener() {
             @Override
@@ -268,15 +270,6 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
         public void propertyChange(PropertyChangeEvent e) {
             boolean agree = ((Boolean)e.getNewValue()).booleanValue();
             agreementOk = agree;
-            controlButton();
-        }
-    }
-
-    private class AccountInfoListener implements PropertyChangeListener {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-            boolean account = ((Boolean)e.getNewValue()).booleanValue();
-            accountInfoOk = account;
             controlButton();
         }
     }
@@ -474,20 +467,24 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
         }
     }
 
+    @Override
     public void componentMoved(java.awt.event.ComponentEvent componentEvent) {
         //Point loc = getLocation();
         //System.out.println(getTitle() + " : x=" + loc.x+ " y=" + loc.y);
     }
 
+    @Override
     public void componentResized(java.awt.event.ComponentEvent componentEvent) {
         //int width = getWidth();
         //int height = getHeight();
         //System.out.println(getTitle() + " : width=" + width + " height=" + height);
     }
 
+    @Override
     public void componentShown(java.awt.event.ComponentEvent componentEvent) {
     }
 
+    @Override
     public void componentHidden(java.awt.event.ComponentEvent componentEvent) {
     }
 }
