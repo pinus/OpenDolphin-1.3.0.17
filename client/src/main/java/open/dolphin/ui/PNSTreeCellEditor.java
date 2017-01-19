@@ -39,7 +39,7 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
             }
         };
 
-       undoManager = TextComponentUndoManager.getManager(textField);
+        undoManager = TextComponentUndoManager.getManager(textField);
 
         textField.putClientProperty("Quaqua.TextComponent.showPopup", false); // 勝手に cut,copy,past の popup を作らせない
         textField.setOpaque(true); // これをしないと，編集時のバックグランドが白くならない
