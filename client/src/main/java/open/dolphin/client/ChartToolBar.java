@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 import open.dolphin.event.ProxyAction;
@@ -48,32 +50,14 @@ public class ChartToolBar extends JToolBar {
         setOpaque(false);
         setBorder(BorderFactory.createEmptyBorder());
 
-        JButton textStampButton = new JButton();
-        textStampButton.setBorderPainted(false);
-        textStampButton.setName("textBtn");
-        textStampButton.setAction(mediator.getActions().get(GUIConst.ACTION_INSERT_TEXT));
-        textStampButton.setText("");
-        textStampButton.setToolTipText("テキストスタンプを挿入します。");
-        textStampButton.setIcon(GUIConst.ICON_STAMP_TEXT_22);
-        textStampButton.setOpaque(false);
-        textStampButton.addActionListener(e -> {
-            JButton b = (JButton) e.getSource();
-            JPopupMenu popup = new JPopupMenu();
-            mediator.addTextMenu(popup);
-            Point loc = b.getLocation();
-            popup.show(b.getParent(), loc.x + b.getWidth()/2, loc.y + b.getHeight()/2);
-        });
+        add(createStampButton());
+        add(createTextStampButton());
+        add(createSchemaButton());
+        add(createWindowButton());
+        add(createDiagnosisSearchPanel());
+    }
 
-        JButton schemaButton = new JButton();
-        schemaButton.setBorderPainted(false);
-        schemaButton.setName("schemaBtn");
-        schemaButton.setAction(mediator.getActions().get(GUIConst.ACTION_INSERT_SCHEMA));
-        schemaButton.setText("");
-        schemaButton.setToolTipText("シェーマボックスを起動します。");
-        schemaButton.setIcon(GUIConst.ICON_GRAPHICS_BRUSH_22);
-        schemaButton.setOpaque(false);
-        schemaButton.addActionListener(e -> window.showSchemaBox());
-
+    private JButton createStampButton() {
         JButton stampButton = new JButton();
         stampButton.setBorderPainted(false);
         stampButton.setName("stampBtn");
@@ -89,7 +73,42 @@ public class ChartToolBar extends JToolBar {
             Point loc = b.getLocation();
             popup.show(b.getParent(), loc.x + b.getWidth()/2, loc.y + b.getHeight()/2);
         });
+        return stampButton;
+    }
 
+    private JButton createTextStampButton() {
+        JButton textStampButton = new JButton();
+        textStampButton.setBorderPainted(false);
+        textStampButton.setName("textBtn");
+        textStampButton.setAction(mediator.getActions().get(GUIConst.ACTION_INSERT_TEXT));
+        textStampButton.setText("");
+        textStampButton.setToolTipText("テキストスタンプを挿入します。");
+        textStampButton.setIcon(GUIConst.ICON_STAMP_TEXT_22);
+        textStampButton.setOpaque(false);
+        textStampButton.addActionListener(e -> {
+            JButton b = (JButton) e.getSource();
+            JPopupMenu popup = new JPopupMenu();
+            mediator.addTextMenu(popup);
+            Point loc = b.getLocation();
+            popup.show(b.getParent(), loc.x + b.getWidth()/2, loc.y + b.getHeight()/2);
+        });
+        return textStampButton;
+    }
+
+    private JButton createSchemaButton() {
+        JButton schemaButton = new JButton();
+        schemaButton.setBorderPainted(false);
+        schemaButton.setName("schemaBtn");
+        schemaButton.setAction(mediator.getActions().get(GUIConst.ACTION_INSERT_SCHEMA));
+        schemaButton.setText("");
+        schemaButton.setToolTipText("シェーマボックスを起動します。");
+        schemaButton.setIcon(GUIConst.ICON_GRAPHICS_BRUSH_22);
+        schemaButton.setOpaque(false);
+        schemaButton.addActionListener(e -> window.showSchemaBox());
+        return schemaButton;
+    }
+
+    private JButton createWindowButton() {
         JButton windowButton = new JButton();
         windowButton.setBorderPainted(false);
         windowButton.setIcon(GUIConst.ICON_WINDOWS_22);
@@ -151,6 +170,13 @@ public class ChartToolBar extends JToolBar {
             popup.show(b.getParent(), loc.x + b.getWidth()/2, loc.y + b.getHeight()/2);
         });
 
+        return windowButton;
+    }
+
+    private JPanel createDiagnosisSearchPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
         CompletableJTextField keywordFld = new CompletableJTextField(15);
         keywordFld.setPreferences(prefs);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
@@ -178,11 +204,8 @@ public class ChartToolBar extends JToolBar {
         clearBtn.setIcon(GUIConst.ICON_REMOVE_22);
         clearBtn.addActionListener(e -> keywordFld.setText(""));
 
-        add(stampButton);
-        add(textStampButton);
-        add(schemaButton);
-        add(windowButton);
-        add(keywordFld);
-        add(clearBtn);
+        panel.add(keywordFld);
+        panel.add(clearBtn);
+        return panel;
     }
 }
