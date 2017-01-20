@@ -12,7 +12,6 @@ import java.util.Arrays;
 import javax.swing.*;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
-import open.dolphin.event.OrderListener;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.ui.HorizontalPanel;
@@ -37,8 +36,6 @@ public class StampEditorDialog {
     /** target editor */
     private StampEditor editor;
     private final PropertyChangeSupport boundSupport;
-
-    private OrderListener<EditorValue> orderListener;
 
     private JFrame dialog;
     private final String entity;
@@ -155,10 +152,6 @@ public class StampEditorDialog {
         boundSupport.addPropertyChangeListener(prop, listener);
     }
 
-    public void addOrderListener(OrderListener<EditorValue> listener) {
-        orderListener = listener;
-    }
-
     /**
      * ダイアログを閉じる.
      * 閉じるときにリスナに通知する.
@@ -172,6 +165,5 @@ public class StampEditorDialog {
         glass.unblock();
 
         Arrays.asList(boundSupport.getPropertyChangeListeners()).forEach(listener -> boundSupport.removePropertyChangeListener(listener));
-        orderListener = null;
     }
 }
