@@ -15,12 +15,12 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextPane;
 import javax.swing.TransferHandler;
 import javax.swing.text.StyledEditorKit;
 import open.dolphin.stampbox.DefaultStampTreeMenuListener;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
@@ -408,7 +408,7 @@ public final class ChartMediator extends MenuSupport {
      * 引数のポップアップメニューへ傷病名メニューを追加する.
      * @param popup 傷病名メニューを追加するポップアップメニュー
      */
-    public void addDiseaseMenu(MyJPopupMenu popup) {
+    public void addDiseaseMenu(JPopupMenu popup) {
         //
         // Chain の ChartDocument層 が DiagnosisDocument の時のみ追加する
         //
@@ -440,7 +440,7 @@ public final class ChartMediator extends MenuSupport {
      * 引数のポップアップメニューへテキストメニューを追加する.
      * @param popup テキストメニューを追加するポップアップメニュー
      */
-    public void addTextMenu(MyJPopupMenu popup) {
+    public void addTextMenu(JPopupMenu popup) {
 
         boolean enabled = false;
 
@@ -484,7 +484,7 @@ public final class ChartMediator extends MenuSupport {
      * @param menu Ppane のコンテキストメニュー
      * @param kartePane PPnae
      */
-    public void addStampMenu(MyJPopupMenu menu, final KartePane kartePane) {
+    public void addStampMenu(JPopupMenu menu, final KartePane kartePane) {
 
         // 引数のPaneがPかつ編集可の時のみ追加する
         // コンテキストメニューなのでこれはOK
@@ -505,7 +505,7 @@ public final class ChartMediator extends MenuSupport {
      * このメソッドはツールバーの stamp icon の actionPerformed からコールされる.
      * @param popup
      */
-    public void addStampMenu(MyJPopupMenu popup) {
+    public void addStampMenu(JPopupMenu popup) {
 
         boolean enabled = false;
 

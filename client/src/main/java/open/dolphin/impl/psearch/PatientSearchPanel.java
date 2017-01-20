@@ -52,8 +52,6 @@ public class PatientSearchPanel extends MainComponentPanel {
     private JProgressBar progressBar;
     private JMenuItem hibernateIndexItem;
 
-    private TextComponentUndoManager undoManager;
-
     public PatientSearchPanel() {
         initComponents();
     }
@@ -113,14 +111,12 @@ public class PatientSearchPanel extends MainComponentPanel {
             }
         };
 
-        undoManager = TextComponentUndoManager.getManager(keywordFld);
+        TextComponentUndoManager undoManager = TextComponentUndoManager.getManager(keywordFld);
 
         Dimension tfSize = new Dimension(280,32);
         keywordFld.setPreferredSize(tfSize);
         keywordFld.setMaximumSize(tfSize);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
-        TextComponentUndoManager manager = TextComponentUndoManager.getManager(keywordFld);
-        manager.discardAllEdits();
 
         clearBtn = new JButton();
         clearBtn.setFocusable(false);
