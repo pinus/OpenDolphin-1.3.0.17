@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import javax.swing.Action;
 import javax.swing.ActionMap;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -367,17 +368,17 @@ public class MenuFactory {
         if (chart != null) {
             fileBar = new JToolBar();
             fileBar.setName("fileBar");
+            fileBar.setFloatable(false);
+            fileBar.setOpaque(false);
+
             editBar = new JToolBar();
             editBar.setName("editBar");
-
-            fileBar.setFloatable(false);
             editBar.setFloatable(false);
-            //fileBar.setBorder(MyBorderFactory.createGroupBoxBorder(new Insets(1,5,1,5)));
-            //editBar.setBorder(MyBorderFactory.createGroupBoxBorder(new Insets(1,5,1,5)));
-            fileBar.setOpaque(false);
             editBar.setOpaque(false);
 
-            toolPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            toolPanel = new JPanel();
+            BoxLayout layout = new BoxLayout(toolPanel, BoxLayout.X_AXIS);
+            toolPanel.setLayout(layout);
             toolPanel.add(editBar);
             toolPanel.add(fileBar);
         }

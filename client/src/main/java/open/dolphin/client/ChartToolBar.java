@@ -45,8 +45,8 @@ public class ChartToolBar extends JToolBar {
     private void initComponents() {
 
         setFloatable(false);
-        //setBorder(MyBorderFactory.createGroupBoxBorder(new Insets(1,5,1,5)));
         setOpaque(false);
+        setBorder(BorderFactory.createEmptyBorder());
 
         JButton textStampButton = new JButton();
         textStampButton.setBorderPainted(false);
@@ -166,7 +166,7 @@ public class ChartToolBar extends JToolBar {
             builder.buildRootless(popup);
 
             Point loc = keywordFld.getLocation();
-            popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight());
+            popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight() - 10);
         });
 
         JButton clearBtn = new JButton();

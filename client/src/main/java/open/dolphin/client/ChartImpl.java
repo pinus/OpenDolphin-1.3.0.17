@@ -48,8 +48,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private PatientInspector inspector;
     // Window Menu をサポートする委譲クラス
     private WindowSupport windowSupport;
-    // Toolbar
-    private JPanel myToolPanel;
     // 検索状況等を表示する共通のパネル
     private StatusPanel statusPanel;
     // 患者来院情報
@@ -518,13 +516,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         appMenu.setMenuSupports(getContext().getMenuSupport(), mediator);
         appMenu.build(myMenuBar);
         mediator.registerActions(appMenu.getActionMap());
-        myToolPanel = appMenu.getToolPanelProduct();
-        myToolPanel.add(inspector.getBasicInfoInspector().getPanel(), 0);
-        JPanel spacer = new JPanel();
-        spacer.setPreferredSize(new Dimension(24,16));
-        spacer.setMinimumSize(new Dimension(24,16));
-        spacer.setOpaque(false);
-        myToolPanel.add(spacer, 1);
+        JPanel myToolPanel = appMenu.getToolPanelProduct();
+        myToolPanel.setOpaque(false);
 
         // このクラス固有のToolBarを生成する
         ChartToolBar toolBar = new ChartToolBar(this);
@@ -535,7 +528,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // 全体をレイアウトする
         MainFrame.CommandPanel comPanel = frame.getCommandPanel();
-        myToolPanel.setOpaque(false);
+        comPanel.add(inspector.getBasicInfoInspector().getPanel());
         comPanel.add(myToolPanel);
 
         final MainFrame.MainPanel mainPanel = frame.getMainPanel();
