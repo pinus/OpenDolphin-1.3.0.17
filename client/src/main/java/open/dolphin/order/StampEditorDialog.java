@@ -8,9 +8,11 @@ import java.awt.Point;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
 import javax.swing.*;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
+import open.dolphin.event.OrderListener;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.ui.HorizontalPanel;
@@ -18,8 +20,9 @@ import org.apache.log4j.Logger;
 
 /**
  * Stamp 編集用の外枠を提供する Dialog.
- * カルテの StampHolder から呼ばれる.
+ * StampHolder, DiagnosisDocument, KartePane から呼ばれる.
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class StampEditorDialog {
 
@@ -34,6 +37,8 @@ public class StampEditorDialog {
     /** target editor */
     private StampEditor editor;
     private final PropertyChangeSupport boundSupport;
+
+    private OrderListener<EditorValue> orderListener;
 
     private JFrame dialog;
     private final String entity;
@@ -69,7 +74,7 @@ public class StampEditorDialog {
         okButton = new JButton("カルテに展開");
         okButton.setEnabled(false);
         okButton.addActionListener(e -> {
-            value = getValue();
+            value = editor.getValue();
             close();
         });
 
@@ -127,8 +132,7 @@ public class StampEditorDialog {
                 if (sheetEvent.getOption() == 0) {
                     okButton.doClick();
                 } else if (sheetEvent.getOption() == 1) {
-                    value = null;
-                    close();
+                    cancelButton.doClick();
                 }
             });
         }));
@@ -143,14 +147,6 @@ public class StampEditorDialog {
     }
 
     /**
-     * 編集した Stamp を返す.
-     * @return
-     */
-    public Object getValue() {
-        return editor.getValue();
-    }
-
-    /**
      * プロパティチェンジリスナを登録する.
      * @param prop プロパティ名
      * @param listener プロパティチェンジリスナ
@@ -159,17 +155,13 @@ public class StampEditorDialog {
         boundSupport.addPropertyChangeListener(prop, listener);
     }
 
-    /**
-     * プロパティチェンジリスナを削除する.
-     * @param prop プロパティ名
-     * @param listener プロパティチェンジリスナ
-     */
-    public void remopvePropertyChangeListener(String prop, PropertyChangeListener listener) {
-        boundSupport.removePropertyChangeListener(prop, listener);
+    public void addOrderListener(OrderListener<EditorValue> listener) {
+        orderListener = listener;
     }
 
     /**
-     * ダイアログを閉じる
+     * ダイアログを閉じる.
+     * 閉じるときにリスナに通知する.
      */
     public void close() {
         glass.block();
@@ -178,5 +170,8 @@ public class StampEditorDialog {
         dialog.dispose();
         boundSupport.firePropertyChange(VALUE_PROP, isNew, value);
         glass.unblock();
+
+        Arrays.asList(boundSupport.getPropertyChangeListeners()).forEach(listener -> boundSupport.removePropertyChangeListener(listener));
+        orderListener = null;
     }
 }

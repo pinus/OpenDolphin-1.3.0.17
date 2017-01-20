@@ -547,7 +547,7 @@ public class StampTree extends JTree implements TreeModelListener {
         String note = "病名スタンプを保存しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        Task task = new Task<List<String>>(c, message, note, 60*1000) {
+        Task<List<String>> task = new Task<List<String>>(c, message, note, 60*1000) {
 
             @Override
             protected List<String> doInBackground() throws Exception {

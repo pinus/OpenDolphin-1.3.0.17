@@ -68,6 +68,10 @@ public class MainFrame extends JFrame {
      */
     @Override
     public boolean isActive() {
+        if (super.isActive() && !AppForeground.isForeground()) {
+            System.out.println("MainFrame window state inconsistent: Window is active while Application in background.");
+        }
+
         return super.isActive() && AppForeground.isForeground();
     }
 

@@ -444,7 +444,7 @@ public class ItemTablePanel extends JPanel {
     }
 
     /**
-     * 親の StampModelEditor を返す
+     * 親の StampEditor を返す
      * @return
      */
     public IStampEditor getMyParent() {
@@ -452,7 +452,7 @@ public class ItemTablePanel extends JPanel {
     }
 
     /**
-     * 親の StampModelEditor をセットする
+     * 親の StampEditor をセットする
      * @param parent
      */
     public void setMyParent(IStampEditor parent) {

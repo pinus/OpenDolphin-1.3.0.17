@@ -144,6 +144,10 @@ public class StampEditor extends JPanel implements IStampEditor {
         tablePanel.setValue(val);
     }
 
+    /**
+     * StampEditorDialog の OK ボタンを制御するためのリスナ.
+     * @param listener
+     */
     @Override
     public void addValidListener(ValidListener listener) {
         validListener = listener;

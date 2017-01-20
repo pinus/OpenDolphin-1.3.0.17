@@ -16,6 +16,7 @@ import open.dolphin.order.IStampEditor;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * TextStampEditor.
@@ -54,6 +55,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
         headerField = new JTextField();
         headerField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkState());
         headerField.setBackground(STAMP_NAME_FIELD_BACKGROUND);
+        headerField.setBorder(PNSBorderFactory.createSelectedGrayBorder());
         headerField.setOpaque(true);
 
         // Undo

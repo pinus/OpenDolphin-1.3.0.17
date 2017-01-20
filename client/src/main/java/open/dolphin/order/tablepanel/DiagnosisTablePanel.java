@@ -1,7 +1,6 @@
 package open.dolphin.order.tablepanel;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
@@ -14,13 +13,14 @@ import open.dolphin.helper.Task;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
-import open.dolphin.order.MasterSearchPanel;
 import open.dolphin.table.ObjectReflectTableModel;
 
 /**
  * ItemTablePanel を extend して作った DiagnosisTablePanel.
  * オリジナルは RegisteredDiagnosisModel ベースだったが，
- * ItemTablePanel に合わせて MasterItem ベースに変更した
+ * ItemTablePanel に合わせて MasterItem ベースに変更した.
+ * setValue で入ってくるときは必ず１個だが，getValue で出て行くときには複数病名になっている可能性があるため，
+ * List&lt;RegisteredDiagnosisModel&hgt; で処理する.
  * @author pns
  */
 public class DiagnosisTablePanel extends ItemTablePanel {

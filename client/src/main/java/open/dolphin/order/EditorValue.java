@@ -8,8 +8,9 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
  *
  * @author pns
  */
-public class EditorOrder {
+public class EditorValue {
     private String entity;
+    private boolean isNew = false;
     private List<RegisteredDiagnosisModel> diagnosisList;
     private ModuleModel moduleModel;
 
@@ -53,5 +54,19 @@ public class EditorOrder {
      */
     public void setModuleModel(ModuleModel moduleModel) {
         this.moduleModel = moduleModel;
+    }
+
+    /**
+     * @return the isNew
+     */
+    public boolean isNew() {
+        return isNew;
+    }
+
+    /**
+     * @param isNew the isNew to set
+     */
+    public void setNew(boolean isNew) {
+        this.isNew = isNew;
     }
 }

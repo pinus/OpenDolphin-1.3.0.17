@@ -218,8 +218,8 @@ public final class StampHolder extends AbstractComponentHolder {
     public void edit() {
 
         if (kartePane.getTextPane().isEditable() && this.isEditable()) {
-            String category = stamp.getModuleInfo().getEntity();
-            StampEditorDialog stampEditor = new StampEditorDialog(category, stamp);
+            String entity = stamp.getModuleInfo().getEntity();
+            StampEditorDialog stampEditor = new StampEditorDialog(entity, stamp);
             stampEditor.addPropertyChangeListener(StampEditorDialog.VALUE_PROP, this);
             stampEditor.start();
             // 二重起動の禁止 - エディタから戻ったら propertyChange で解除する
