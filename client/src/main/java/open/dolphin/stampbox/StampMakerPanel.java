@@ -7,7 +7,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.StampDelegater;
@@ -25,7 +24,7 @@ import open.dolphin.ui.HorizontalPanel;
  * StampEditorProxyPanel と ButtonPanel からなる.
  * @author pns
  */
-public class StampMakerPanel extends JPanel implements TreeSelectionListener {
+public class StampMakerPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public static final String EDITOR_VALUE_PROP = "editorSetProp";
@@ -93,7 +92,7 @@ public class StampMakerPanel extends JPanel implements TreeSelectionListener {
     }
 
     /**
-     * StampMakerPanel を閉じてリソースを解放する
+     * StampMakerPanel を閉じてリソースを解放する.
      */
     public void close() {
         editorPanel.close();
@@ -122,12 +121,12 @@ public class StampMakerPanel extends JPanel implements TreeSelectionListener {
     }
 
     /**
-     * スタンプツリーで選択が変わると呼ばれる
-     * StampBoxPlugin で，全 StampTree に addTreeSelectionListener(StampMakerPanel) されている
+     * スタンプツリーで選択が変わると呼ばれる.
+     * StampBoxPlugin で，全 StampTree に listener が付けられている.
      * 選択されたスタンプに応じて左ボタンを制御する.
+     * @param e
      */
-    @Override
-    public void valueChanged(TreeSelectionEvent e) {
+    public void treeSelectionChanged(TreeSelectionEvent e) {
         StampTree tree = (StampTree) e.getSource();
         StampTreeNode node =(StampTreeNode) tree.getLastSelectedPathComponent();
 

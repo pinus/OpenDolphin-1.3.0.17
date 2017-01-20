@@ -643,7 +643,10 @@ public class StampBoxPlugin extends AbstractMainTool {
 
         // エディタを生成する
         stampMaker = new StampMakerPanel();
-        allTrees.forEach(st -> st.addTreeSelectionListener(stampMaker));
+
+        // 全ての Tree に TreeSelectionChangeListener を付ける
+        allTrees.forEach(st -> st.addTreeSelectionListener(stampMaker::treeSelectionChanged));
+
         // StampMakerPanel で編集が終わると fire されて，ここの EditorValueListener が呼ばれる
         editorValueListener = new EditorValueListener();
         stampMaker.addPropertyChangeListener(StampMakerPanel.EDITOR_VALUE_PROP, editorValueListener);
@@ -708,7 +711,6 @@ public class StampBoxPlugin extends AbstractMainTool {
         stampMaker.close();
         stampMaker.removePropertyChangeListener(StampMakerPanel.EDITOR_VALUE_PROP, editorValueListener);
         List<StampTree> allTrees = userBox.getAllTrees();
-        allTrees.stream().forEach((st) -> st.removeTreeSelectionListener(stampMaker));
 
         MainFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.remove(stampMaker);
