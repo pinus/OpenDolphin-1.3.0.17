@@ -409,9 +409,12 @@ public class StampBoxPlugin extends AbstractMainTool {
         //
         // スタンプメーカを起動するためのボタンを生成する
         //
-        toolBtn = new JToggleButton(GUIConst.ICON_PENCIL_16);
-        toolBtn.setSelectedIcon(GUIConst.ICON_PENCIL_PRESSED_16);
-        toolBtn.setPressedIcon(GUIConst.ICON_PENCIL_PRESSED_16);
+        //toolBtn = new JToggleButton(GUIConst.ICON_PENCIL_16);
+        toolBtn = new JToggleButton(GUIConst.ICON_EDIT_ALT1_16);
+        //toolBtn.setSelectedIcon(GUIConst.ICON_PENCIL_PRESSED_16);
+        //toolBtn.setPressedIcon(GUIConst.ICON_PENCIL_PRESSED_16);
+        toolBtn.setSelectedIcon(GUIConst.ICON_EDIT_ALT2_16);
+        toolBtn.setPressedIcon(GUIConst.ICON_EDIT_ALT2_16);
         toolBtn.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         toolBtn.setToolTipText("スタンプメーカを起動します");
         toolBtn.setFocusable(false);
@@ -433,8 +436,10 @@ public class StampBoxPlugin extends AbstractMainTool {
         // ロックボタンを生成する
         lockBtn = new MyJToggleButton();
         lockBtn.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-        lockBtn.setIcon(GUIConst.ICON_LOCK_16);
-        lockBtn.setSelectedIcon(GUIConst.ICON_LOCK_OPEN_16);
+        //lockBtn.setIcon(GUIConst.ICON_LOCK_16);
+        lockBtn.setIcon(GUIConst.ICON_PADLOCK_CLOSED_16);
+        //lockBtn.setSelectedIcon(GUIConst.ICON_LOCK_OPEN_16);
+        lockBtn.setSelectedIcon(GUIConst.ICON_PADLOCK_OPEN_16);
         lockBtn.setToolTipText("ダブルクリックでツリー内での入れ替えのロック／解除をします");
         lockBtn.setFocusable(false);
         lockBtn.setPreferredSize(new java.awt.Dimension(16,16));

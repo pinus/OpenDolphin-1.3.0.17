@@ -528,8 +528,10 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // 全体をレイアウトする
         MainFrame.CommandPanel comPanel = frame.getCommandPanel();
+        comPanel.add(Box.createHorizontalStrut(5));
         comPanel.add(inspector.getBasicInfoInspector().getPanel());
         comPanel.add(myToolPanel);
+        comPanel.add(Box.createHorizontalStrut(5));
 
         final MainFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0,0));

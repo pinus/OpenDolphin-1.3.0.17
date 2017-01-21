@@ -45,7 +45,8 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
     // 年齢表示カラム
     private static final int AGE_COLUMN = 4;
-    private static final ImageIcon SEARCH_ICON = GUIConst.ICON_SYSTEM_SEARCH_22;
+    //private static final ImageIcon SEARCH_ICON = GUIConst.ICON_SYSTEM_SEARCH_22;
+    private static final ImageIcon SEARCH_ICON = GUIConst.ICON_SEARCH_16;
     private static final int[] COLUMN_WIDTH = {80,100,120,40,120,120};
     // Preferences の key
     private static final String NARROWING_SEARCH = "narrowingSearch";

@@ -92,7 +92,8 @@ public class StampBoxExtraMenu extends MouseAdapter {
         popup.add(m.getMenuItem("collapseAll", "フォルダを全て閉じる", GUIConst.ICON_TREE_COLLAPSED_16));
         popup.add(m.getMenuItem("expandAll", "フォルダを全て展開する", GUIConst.ICON_TREE_EXPANDED_16));
         popup.addSeparator();
-        popup.add(m.getMenuItem("exportUserStampBox", "スタンプをファイルに保存する...", GUIConst.ICON_DISK_16));
+        //popup.add(m.getMenuItem("exportUserStampBox", "スタンプをファイルに保存する...", GUIConst.ICON_DISK_16));
+        popup.add(m.getMenuItem("exportUserStampBox", "スタンプをファイルに保存する...", GUIConst.ICON_SAVE_16));
         popup.add(m.getMenuItem("importUserStampBox", "スタンプをファイルから読み込む...", GUIConst.ICON_EMPTY_16));
         popup.addSeparator();
         popup.add(m.getMenuItem("publishStamp", "スタンプ公開...", GUIConst.ICON_EMPTY_16));

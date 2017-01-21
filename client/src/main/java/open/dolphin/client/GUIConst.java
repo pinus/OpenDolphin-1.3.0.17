@@ -175,6 +175,39 @@ public class GUIConst {
     public static final ImageIcon ICON_STAMP_EXPORT_22 = ClientContext.getImageIcon("icons/22x22/database_up.png");
     public static final ImageIcon ICON_STAMP_IMPORT_22 = ClientContext.getImageIcon("icons/22x22/database_down.png");
 
+    // black & white icons
+    public static final ImageIcon ICON_SEARCH_16 = ClientContext.getImageIcon("bw/16x16/search.png");
+    public static final ImageIcon ICON_PRINT_16 = ClientContext.getImageIcon("bw/16x16/print.png");
+    public static final ImageIcon ICON_PRINT_32 = ClientContext.getImageIcon("bw/32x32/print.png");
+    public static final ImageIcon ICON_SAVE_16 = ClientContext.getImageIcon("bw/16x16/save.png");
+    public static final ImageIcon ICON_SAVE_32 = ClientContext.getImageIcon("bw/32x32/save.png");
+    public static final ImageIcon ICON_DELETE_16 = ClientContext.getImageIcon("bw/16x16/delete.png");
+    public static final ImageIcon ICON_FILE_16 = ClientContext.getImageIcon("bw/16x16/file-add.png");
+    public static final ImageIcon ICON_FILE_32 = ClientContext.getImageIcon("bw/32x32/file-add.png");
+    //public static final ImageIcon ICON_FILE_32 = ClientContext.getImageIcon("bw/32x32/note32.png");
+    public static final ImageIcon ICON_FILE_EDIT_16 = ClientContext.getImageIcon("bw/16x16/file-edit.png");
+    public static final ImageIcon ICON_FILE_EDIT_32 = ClientContext.getImageIcon("bw/32x32/file-edit.png");
+    //public static final ImageIcon ICON_FILE_EDIT_32 = ClientContext.getImageIcon("bw/32x32/notepencil32.png");
+    public static final ImageIcon ICON_UNDO_16 = ClientContext.getImageIcon("bw/16x16/arrow-1-backward.png");
+    public static final ImageIcon ICON_UNDO_32 = ClientContext.getImageIcon("bw/32x32/arrow-1-backward.png");
+    public static final ImageIcon ICON_REDO_16 = ClientContext.getImageIcon("bw/16x16/arrow-1-forward.png");
+    public static final ImageIcon ICON_REDO_32 = ClientContext.getImageIcon("bw/32x32/arrow-1-forward.png");
+    public static final ImageIcon ICON_WINDOW_STACK_16 = ClientContext.getImageIcon("bw/16x16/window-stack.png");
+    public static final ImageIcon ICON_WINDOW_STACK_32 = ClientContext.getImageIcon("bw/32x32/window-stack.png");
+    public static final ImageIcon ICON_STAMP_32 = ClientContext.getImageIcon("bw/32x32/stamp.png");
+    public static final ImageIcon ICON_BRUSH_32 = ClientContext.getImageIcon("bw/32x32/brush.png");
+    public static final ImageIcon ICON_CUT_16 = ClientContext.getImageIcon("bw/16x16/cut.png");
+    public static final ImageIcon ICON_COPY_16 = ClientContext.getImageIcon("bw/16x16/copy.png");
+    public static final ImageIcon ICON_PASTE_16 = ClientContext.getImageIcon("bw/16x16/paste.png");
+    public static final ImageIcon ICON_OPEN_16 = ClientContext.getImageIcon("bw/16x16/open-in-new-window.png");
+    public static final ImageIcon ICON_EDIT_ALT1_16 = ClientContext.getImageIcon("bw/16x16/edit-alt-1.png");
+    public static final ImageIcon ICON_EDIT_ALT2_16 = ClientContext.getImageIcon("bw/16x16/edit-alt-2.png");
+    public static final ImageIcon ICON_PADLOCK_CLOSED_16 = ClientContext.getImageIcon("bw/16x16/padlock-closed.png");
+    public static final ImageIcon ICON_PADLOCK_OPEN_16 = ClientContext.getImageIcon("bw/16x16/padlock-open.png");
+    public static final ImageIcon ICON_GEAR_16 = ClientContext.getImageIcon("bw/16x16/settings.png");
+
+
+
 //  fugue series ----------------------
     // 受付リストのアイコン
     public static final ImageIcon ICON_BOOK_OPEN_BOOKMARK_16 = ClientContext.getImageIcon("fugue/16x16/book-open-bookmark.png");
@@ -185,10 +218,10 @@ public class GUIConst {
     // 受付リスト，シェーマボックスの refresh アイコン
     public static final ImageIcon ICON_ARROW_CIRCLE_DOUBLE_16 = ClientContext.getImageIcon("fugue/16x16/arrow-circle-double-135.png");
     // スタンプ箱のカギ
-    public static final ImageIcon ICON_LOCK_16 = ClientContext.getImageIcon("fugue/16x16/lock.png");
-    public static final ImageIcon ICON_LOCK_OPEN_16 = ClientContext.getImageIcon("fugue/16x16/lock-unlock.png");
+    //public static final ImageIcon ICON_LOCK_16 = ClientContext.getImageIcon("fugue/16x16/lock.png");
+    //public static final ImageIcon ICON_LOCK_OPEN_16 = ClientContext.getImageIcon("fugue/16x16/lock-unlock.png");
     // スタンプアイコン
-    public static final ImageIcon ICON_STAMP_EDIT_22 = ClientContext.getImageIcon("fugue/22x22/stamp-edit.png");
+    //public static final ImageIcon ICON_STAMP_EDIT_22 = ClientContext.getImageIcon("fugue/22x22/stamp-edit.png");
     //public static final ImageIcon ICON_STAMP_16 = ClientContext.getImageIcon("fugue/16x16/stamp.png");
     //public static final ImageIcon ICON_STAMP_EDIT_16 = ClientContext.getImageIcon("fugue/16x16/stamp-edit.png");
     //public static final ImageIcon ICON_STAMP_EXPORT_16 = ClientContext.getImageIcon("fugue/16x16/stamp-export.png");
@@ -196,7 +229,7 @@ public class GUIConst {
     //public static final ImageIcon ICON_STAMP_EXPORT_22 = ClientContext.getImageIcon("fugue/22x22/stamp-export.png");
     //public static final ImageIcon ICON_STAMP_IMPORT_22 = ClientContext.getImageIcon("fugue/22x22/stamp-import.png");
     public static final ImageIcon ICON_STAMP_22 = ClientContext.getImageIcon("fugue/22x22/stamp.png");
-    public static final ImageIcon ICON_STAMP_32 = ClientContext.getImageIcon("fugue/32x32/stamp.png");
+    //public static final ImageIcon ICON_STAMP_32 = ClientContext.getImageIcon("fugue/32x32/stamp.png");
     public static final ImageIcon ICON_STAMP_TEXT_22 = ClientContext.getImageIcon("fugue/22x22/stamp-text.png");
     public static final ImageIcon ICON_STAMP_TEXT_32 = ClientContext.getImageIcon("fugue/32x32/stamp-text.png");
     // StampTree node アイコン
@@ -206,11 +239,11 @@ public class GUIConst {
     // スタンプエディタ
     public static final ImageIcon ICON_DOCUMENT_IMPORT_16 = ClientContext.getImageIcon("fugue/16x16/document-import.png");
     // スタンプ箱のギア
-    public static final ImageIcon ICON_GEAR_16 = ClientContext.getImageIcon("fugue/16x16/gear.png");
+    //public static final ImageIcon ICON_GEAR_16 = ClientContext.getImageIcon("fugue/16x16/gear.png");
     // ギアメニューに入っているディスクアイコン
     public static final ImageIcon ICON_DISK_16 = ClientContext.getImageIcon("fugue/16x16/disk-black.png");
     // 鉛筆
-    public static final ImageIcon ICON_PENCIL_16 = ClientContext.getImageIcon("fugue/16x16/pencil.png");
+    //public static final ImageIcon ICON_PENCIL_16 = ClientContext.getImageIcon("fugue/16x16/pencil.png");
     public static final ImageIcon ICON_PENCIL_SELECTED_16 = ClientContext.getImageIcon("fugue/16x16/pencil-color.png");
     public static final ImageIcon ICON_PENCIL_PRESSED_16 = ClientContext.getImageIcon("fugue/16x16/pencil-pressed.png");
     // info, question
@@ -245,13 +278,13 @@ public class GUIConst {
     public static final ImageIcon ICON_FLOPPY_22 = ClientContext.getImageIcon("tango/22x22/devices/media-floppy.png");
     public static final ImageIcon ICON_FLOPPY_32 = ClientContext.getImageIcon("tango/32x32/devices/media-floppy.png");
     public static final ImageIcon ICON_DOCUMENT_OPEN_22 = ClientContext.getImageIcon("tango/22x22/actions/document-open.png");
-    public static final ImageIcon ICON_DOCUMENT_PRINT_22 = ClientContext.getImageIcon("tango/22x22/actions/document-print.png");
-    public static final ImageIcon ICON_DOCUMENT_PRINT_32 = ClientContext.getImageIcon("tango/32x32/actions/document-print.png");
-    public static final ImageIcon ICON_WINDOWS_22 = ClientContext.getImageIcon("tango/22x22/apps/preferences-system-windows.png");
+    //public static final ImageIcon ICON_DOCUMENT_PRINT_22 = ClientContext.getImageIcon("tango/22x22/actions/document-print.png");
+    //public static final ImageIcon ICON_DOCUMENT_PRINT_32 = ClientContext.getImageIcon("tango/32x32/actions/document-print.png");
+    //public static final ImageIcon ICON_WINDOWS_22 = ClientContext.getImageIcon("tango/22x22/apps/preferences-system-windows.png");
 
     public static final ImageIcon ICON_EDIT_DELETE_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-delete.png");
     public static final ImageIcon ICON_EDIT_CLEAR_16 = ClientContext.getImageIcon("tango/16x16/actions/edit-clear.png");
-    public static final ImageIcon ICON_EDIT_CUT_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-cut.png");
+    //public static final ImageIcon ICON_EDIT_CUT_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-cut.png");
     public static final ImageIcon ICON_EDIT_CUT_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-cut.png");
     public static final ImageIcon ICON_EDIT_PASTE_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-paste.png");
     public static final ImageIcon ICON_EDIT_PASTE_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-paste.png");

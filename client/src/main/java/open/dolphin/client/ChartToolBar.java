@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -48,11 +49,11 @@ public class ChartToolBar extends JToolBar {
 
         setFloatable(false);
         setOpaque(false);
-        setBorder(BorderFactory.createEmptyBorder());
+        setBorderPainted(false);
 
         add(createStampButton());
-        add(createTextStampButton());
-        add(createSchemaButton());
+        //add(createTextStampButton());
+        //add(createSchemaButton());
         add(createWindowButton());
         add(createDiagnosisSearchPanel());
     }
@@ -64,7 +65,8 @@ public class ChartToolBar extends JToolBar {
         stampButton.setAction(mediator.getActions().get(GUIConst.ACTION_INSERT_STAMP));
         stampButton.setText("");
         stampButton.setToolTipText("スタンプを挿入します。");
-        stampButton.setIcon(GUIConst.ICON_STAMP_22);
+        //stampButton.setIcon(GUIConst.ICON_STAMP_22);
+        stampButton.setIcon(GUIConst.ICON_STAMP_32);
         stampButton.setOpaque(false);
         stampButton.addActionListener(e-> {
             JButton b = (JButton) e.getSource();
@@ -102,7 +104,8 @@ public class ChartToolBar extends JToolBar {
         schemaButton.setAction(mediator.getActions().get(GUIConst.ACTION_INSERT_SCHEMA));
         schemaButton.setText("");
         schemaButton.setToolTipText("シェーマボックスを起動します。");
-        schemaButton.setIcon(GUIConst.ICON_GRAPHICS_BRUSH_22);
+        //schemaButton.setIcon(GUIConst.ICON_GRAPHICS_BRUSH_22);
+        schemaButton.setIcon(GUIConst.ICON_BRUSH_32);
         schemaButton.setOpaque(false);
         schemaButton.addActionListener(e -> window.showSchemaBox());
         return schemaButton;
@@ -111,7 +114,8 @@ public class ChartToolBar extends JToolBar {
     private JButton createWindowButton() {
         JButton windowButton = new JButton();
         windowButton.setBorderPainted(false);
-        windowButton.setIcon(GUIConst.ICON_WINDOWS_22);
+        //windowButton.setIcon(GUIConst.ICON_WINDOWS_22);
+        windowButton.setIcon(GUIConst.ICON_WINDOW_STACK_32);
         windowButton.setToolTipText("開いているカルテの一覧を表示します。");
         windowButton.setOpaque(false);
         windowButton.addActionListener(e -> {
@@ -148,7 +152,8 @@ public class ChartToolBar extends JToolBar {
             if (count != 0) {
                 popup.addSeparator();
 
-                Action a = new ProxyAction("インスペクタを整列", GUIConst.ICON_WINDOWS_22, () -> {
+                //Action a = new ProxyAction("インスペクタを整列", GUIConst.ICON_WINDOWS_22, () -> {
+                Action a = new ProxyAction("インスペクタを整列", GUIConst.ICON_WINDOW_STACK_16, () -> {
                     int x = WindowSupport.INITIAL_X; int y = WindowSupport.INITIAL_Y; int width = 0; int height = 0;
 
                     for (WindowSupport ws : windows) {

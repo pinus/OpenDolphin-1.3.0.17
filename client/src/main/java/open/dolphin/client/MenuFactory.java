@@ -370,11 +370,13 @@ public class MenuFactory {
             fileBar.setName("fileBar");
             fileBar.setFloatable(false);
             fileBar.setOpaque(false);
+            fileBar.setBorderPainted(false);
 
             editBar = new JToolBar();
             editBar.setName("editBar");
             editBar.setFloatable(false);
             editBar.setOpaque(false);
+            editBar.setBorderPainted(false);
 
             toolPanel = new JPanel();
             BoxLayout layout = new BoxLayout(toolPanel, BoxLayout.X_AXIS);
@@ -391,15 +393,18 @@ public class MenuFactory {
         // 新規カルテ
         JMenuItem newKarte = new JMenuItem();
         newKarte.setName("newKarte");
-        setAction(newKarte, "newKarte", "新規カルテ...", GUIConst.ICON_KARTE_NEW_22, "新しいカルテを作成します");
+        //setAction(newKarte, "newKarte", "新規カルテ...", GUIConst.ICON_KARTE_NEW_22, "新しいカルテを作成します");
+        setAction(newKarte, "newKarte", "新規カルテ...", GUIConst.ICON_FILE_16, "新しいカルテを作成します");
         setAccelerator(newKarte, KeyEvent.VK_N);
         file.add(newKarte);
-        setToolBar(editBar, "newKarte", GUIConst.ICON_KARTE_NEW_22);
+        //setToolBar(editBar, "newKarte", GUIConst.ICON_KARTE_NEW_22);
+        setToolBar(editBar, "newKarte", GUIConst.ICON_FILE_32);
 
         // 開く
         JMenuItem openKarte = new JMenuItem();
         openKarte.setName("openKarte");
-        setAction(openKarte, "openKarte", "開く...", GUIConst.ICON_DOCUMENT_OPEN_22, "カルテを開きます");
+        //setAction(openKarte, "openKarte", "開く...", GUIConst.ICON_DOCUMENT_OPEN_22, "カルテを開きます");
+        setAction(openKarte, "openKarte", "開く...", GUIConst.ICON_OPEN_16, "カルテを開きます");
         setAccelerator(openKarte, KeyEvent.VK_O);
         file.add(openKarte);
 
@@ -408,24 +413,27 @@ public class MenuFactory {
         // 閉じる
         JMenuItem close = new JMenuItem();
         close.setName("close");
-        setAction(close, "close", "閉じる", GUIConst.ICON_EMPTY_22, "カルテを閉じます");
+        setAction(close, "close", "閉じる", GUIConst.ICON_EMPTY_16, "カルテを閉じます");
         setAccelerator(close, KeyEvent.VK_W);
         file.add(close);
 
         // 保存
         JMenuItem save = new JMenuItem();
         save.setName("save");
-        setAction(save, "save", "保存...", GUIConst.ICON_FLOPPY_22, "保存します");
+        //setAction(save, "save", "保存...", GUIConst.ICON_FLOPPY_22, "保存します");
+        setAction(save, "save", "保存...", GUIConst.ICON_SAVE_16, "保存します");
         setAccelerator(save, KeyEvent.VK_S);
         file.add(save);
-        setToolBar(fileBar, "save", GUIConst.ICON_FLOPPY_22);
+        //setToolBar(fileBar, "save", GUIConst.ICON_FLOPPY_22);
+        setToolBar(fileBar, "save", GUIConst.ICON_SAVE_32);
 
         file.add(new JSeparator());
 
         // 削除
         JMenuItem delete = new JMenuItem();
         delete.setName("delete");
-        setAction(delete, "delete", "削除", GUIConst.ICON_EDIT_DELETE_22, "削除します");
+        //setAction(delete, "delete", "削除", GUIConst.ICON_EDIT_DELETE_22, "削除します");
+        setAction(delete, "delete", "削除", GUIConst.ICON_DELETE_16, "削除します");
         file.add(delete);
 
         file.add(new JSeparator());
@@ -433,22 +441,24 @@ public class MenuFactory {
         // 印刷設定
         JMenuItem printerSetup = new JMenuItem();
         printerSetup.setName("printerSetup");
-        setAction(printerSetup, "printerSetup", "ページ設定...", GUIConst.ICON_EMPTY_22, "プリンタの設定をします");
+        setAction(printerSetup, "printerSetup", "ページ設定...", GUIConst.ICON_EMPTY_16, "プリンタの設定をします");
         file.add(printerSetup);
 
         // 印刷
         JMenuItem print = new JMenuItem();
         print.setName("print");
-        setAction(print, "print", "プリント...", GUIConst.ICON_DOCUMENT_PRINT_22, "プリントします");
+        //setAction(print, "print", "プリント...", GUIConst.ICON_DOCUMENT_PRINT_22, "プリントします");
+        setAction(print, "print", "プリント...", GUIConst.ICON_PRINT_16, "プリントします");
         setAccelerator(print, KeyEvent.VK_P);
         file.add(print);
-        setToolBar(fileBar, "print", GUIConst.ICON_DOCUMENT_PRINT_22);
+        //setToolBar(fileBar, "print", GUIConst.ICON_DOCUMENT_PRINT_22);
+        setToolBar(fileBar, "print", GUIConst.ICON_PRINT_32);
 
         // 終了 - Window のみ
         if (!isMac) {
             JMenuItem exit = new JMenuItem();
             exit.setName("processExit");
-            setAction(exit, "processExit", "終了", GUIConst.ICON_EMPTY_22, "プログラムを終了します");
+            setAction(exit, "processExit", "終了", GUIConst.ICON_EMPTY_16, "プログラムを終了します");
             file.add(exit);
             setAccelerator(exit, KeyEvent.VK_Q);
         }
@@ -462,56 +472,66 @@ public class MenuFactory {
         // 修正
         JMenuItem modifyKarte = new JMenuItem();
         modifyKarte.setName("modifyKarte");
-        setAction(modifyKarte, "modifyKarte", "修正", GUIConst.ICON_KARTE_EDIT_22, "表示されているカルテを編集します");
+        //setAction(modifyKarte, "modifyKarte", "修正", GUIConst.ICON_KARTE_EDIT_22, "表示されているカルテを編集します");
+        setAction(modifyKarte, "modifyKarte", "修正", GUIConst.ICON_FILE_EDIT_16, "表示されているカルテを編集します");
         setAccelerator(modifyKarte, KeyEvent.VK_M);
         edit.add(modifyKarte);
-        setToolBar(editBar, "modifyKarte", GUIConst.ICON_KARTE_EDIT_22);
+        //setToolBar(editBar, "modifyKarte", GUIConst.ICON_KARTE_EDIT_22);
+        setToolBar(editBar, "modifyKarte", GUIConst.ICON_FILE_EDIT_32);
 
         edit.add(new JSeparator());
 
         // Undo
         JMenuItem undo = new JMenuItem();
         undo.setName("undo");
-        setAction(undo, "undo", "取り消す", GUIConst.ICON_EDIT_UNDO_22, "作業を取り消します");
+        setAction(undo, "undo", "取り消す", GUIConst.ICON_UNDO_16, "作業を取り消します");
+        //setAction(undo, "undo", "取り消す", GUIConst.ICON_EDIT_UNDO_22, "作業を取り消します");
         setAccelerator(undo, KeyEvent.VK_Z);
         edit.add(undo);
-        setToolBar(editBar, "undo", GUIConst.ICON_EDIT_UNDO_22);
+        //setToolBar(editBar, "undo", GUIConst.ICON_EDIT_UNDO_22);
+        setToolBar(editBar, "undo", GUIConst.ICON_UNDO_32);
 
         // Redo
         JMenuItem redo = new JMenuItem();
         redo.setName("redo");
-        setAction(redo, "redo", "やり直す", GUIConst.ICON_EDIT_REDO_22, "作業をやり直します");
+        //setAction(redo, "redo", "やり直す", GUIConst.ICON_EDIT_REDO_22, "作業をやり直します");
+        setAction(redo, "redo", "やり直す", GUIConst.ICON_REDO_16, "作業をやり直します");
         setAccelerator(redo, KeyEvent.VK_Z, true);
         edit.add(redo);
-        setToolBar(editBar, "redo", GUIConst.ICON_EDIT_REDO_22);
+        //setToolBar(editBar, "redo", GUIConst.ICON_EDIT_REDO_22);
+        setToolBar(editBar, "redo", GUIConst.ICON_REDO_32);
 
         edit.add(new JSeparator());
 
         // Cut
         JMenuItem cut = new JMenuItem();
         cut.setName("cut");
-        setAction(cut, "cut", "カット", GUIConst.ICON_EDIT_CUT_22, "選択部分をカットします");
+        //setAction(cut, "cut", "カット", GUIConst.ICON_EDIT_CUT_22, "選択部分をカットします");
+        setAction(cut, "cut", "カット", GUIConst.ICON_CUT_16, "選択部分をカットします");
         setAccelerator(cut, KeyEvent.VK_X);
         edit.add(cut);
 
         // Copy
         JMenuItem copy = new JMenuItem();
         copy.setName("copy");
-        setAction(copy, "copy", "コピー", GUIConst.ICON_EDIT_COPY_22, "選択部分をコピーします");
+        //setAction(copy, "copy", "コピー", GUIConst.ICON_EDIT_COPY_22, "選択部分をコピーします");
+        setAction(copy, "copy", "コピー", GUIConst.ICON_COPY_16, "選択部分をコピーします");
         setAccelerator(copy, KeyEvent.VK_C);
         edit.add(copy);
 
         // Paste
         JMenuItem paste = new JMenuItem();
         paste.setName("paste");
-        setAction(paste, "paste", "ペースト", GUIConst.ICON_EDIT_PASTE_22, "カーソル位置にペーストします");
+        //setAction(paste, "paste", "ペースト", GUIConst.ICON_EDIT_PASTE_22, "カーソル位置にペーストします");
+        setAction(paste, "paste", "ペースト", GUIConst.ICON_PASTE_16, "カーソル位置にペーストします");
         setAccelerator(paste, KeyEvent.VK_V);
         edit.add(paste);
 
         // SelectAll
         JMenuItem selectAll = new JMenuItem();
         selectAll.setName("selectAll");
-        setAction(selectAll, "selectAll", "全てを選択", GUIConst.ICON_EDIT_SELECT_ALL_22, "全てを選択します");
+        //setAction(selectAll, "selectAll", "全てを選択", GUIConst.ICON_EDIT_SELECT_ALL_22, "全てを選択します");
+        setAction(selectAll, "selectAll", "全てを選択", GUIConst.ICON_EMPTY_16, "全てを選択します");
         setAccelerator(selectAll, KeyEvent.VK_A);
         edit.add(selectAll);
 
@@ -520,22 +540,23 @@ public class MenuFactory {
         // Find
         JMenuItem findFirst = new JMenuItem();
         findFirst.setName("findFirst");
-        setAction(findFirst, "findFirst", "検索", GUIConst.ICON_EDIT_FIND_22, "表示されているカルテを検索します");
+        //setAction(findFirst, "findFirst", "検索", GUIConst.ICON_EDIT_FIND_22, "表示されているカルテを検索します");
+        setAction(findFirst, "findFirst", "検索", GUIConst.ICON_SEARCH_16, "表示されているカルテを検索します");
         setAccelerator(findFirst, KeyEvent.VK_F);
         edit.add(findFirst);
-        setToolBar(editBar, "findFirst", GUIConst.ICON_EDIT_FIND_22);
+        //setToolBar(editBar, "findFirst", GUIConst.ICON_EDIT_FIND_22);
 
         // Find Next
         JMenuItem findNext = new JMenuItem();
         findNext.setName("findNext");
-        setAction(findNext, "findNext", "次を検索", GUIConst.ICON_EMPTY_22, "次を検索します");
+        setAction(findNext, "findNext", "次を検索", GUIConst.ICON_EMPTY_16, "次を検索します");
         setAccelerator(findNext, KeyEvent.VK_G);
         edit.add(findNext);
 
         // Find Previous
         JMenuItem findPrevious = new JMenuItem();
         findPrevious.setName("findPrevious");
-        setAction(findPrevious, "findPrevious", "前を検索", GUIConst.ICON_EMPTY_22, "前を検索します");
+        setAction(findPrevious, "findPrevious", "前を検索", GUIConst.ICON_EMPTY_16, "前を検索します");
         setAccelerator(findPrevious, KeyEvent.VK_G, true);
         edit.add(findPrevious);
 
@@ -885,18 +906,3 @@ public class MenuFactory {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
