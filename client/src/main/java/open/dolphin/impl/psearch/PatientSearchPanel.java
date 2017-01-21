@@ -39,7 +39,6 @@ public class PatientSearchPanel extends MainComponentPanel {
     // command panel
     private CompletableSearchField keywordFld;
     private JCheckBoxMenuItem narrowingSearchCb;
-    private JButton clearBtn;
     // main panel
     private JTable table;
     // status panel
@@ -105,18 +104,8 @@ public class PatientSearchPanel extends MainComponentPanel {
             }
         });
 
-        clearBtn = new JButton();
-        clearBtn.setFocusable(false);
-        clearBtn.setBorder(BorderFactory.createEmptyBorder());
-        clearBtn.setBorderPainted(false);
-        clearBtn.setContentAreaFilled(false);
-        clearBtn.setOpaque(false);
-        clearBtn.setIcon(GUIConst.ICON_REMOVE_22);
-
         comPanel.addGlue();
         comPanel.add(keywordFld);
-        comPanel.add(clearBtn);
-        comPanel.addSpace(5);
 
         MainPanel mainPanel = getMainPanel();
 
@@ -167,9 +156,5 @@ public class PatientSearchPanel extends MainComponentPanel {
 
     public JCheckBoxMenuItem getNarrowingSearchCb() {
         return narrowingSearchCb;
-    }
-
-    public JButton getClearBtn() {
-        return clearBtn;
     }
 }

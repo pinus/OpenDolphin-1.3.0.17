@@ -208,6 +208,7 @@ public class GUIConst {
     public static final ImageIcon ICON_ARROW_CIRCULAR_ALT1_16 = ClientContext.getImageIcon("bw/16x16/arrow-circular-alt-1.png");
     public static final ImageIcon ICON_INFORMATION_16 = ClientContext.getImageIcon("bw/16x16/about.png");
     public static final ImageIcon ICON_REMOVE_16 = ClientContext.getImageIcon("bw/16x16/cancel.png");
+    public static final ImageIcon ICON_CROSS_16 = ClientContext.getImageIcon("bw/16x16/cross.png");
     public static final ImageIcon ICON_ARROW1_LEFT_16 = ClientContext.getImageIcon("bw/16x16/arrow-1-left.png");
     public static final ImageIcon ICON_ARROW1_RIGHT_16 = ClientContext.getImageIcon("bw/16x16/arrow-1-right.png");
     public static final ImageIcon ICON_ERASER_16 = ClientContext.getImageIcon("bw/16x16/eraser.png");

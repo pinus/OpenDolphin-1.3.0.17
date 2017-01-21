@@ -6,6 +6,8 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import open.dolphin.client.GUIConst;
@@ -22,6 +24,7 @@ public class CompletableSearchField extends CompletableJTextField {
     private static final int ICON_TEXT_GAP = 5;
 
     private BufferedImage icon;
+    private BufferedImage clearButton;
     private String label = "検索";
     private Font font;
     private int verticalDeviation = 0;
@@ -34,7 +37,20 @@ public class CompletableSearchField extends CompletableJTextField {
     private void init() {
         putClientProperty("Quaqua.TextField.style", "search");
         icon = ImageHelper.imageToBufferedImage(GUIConst.ICON_SEARCH_16);
+        clearButton = ImageHelper.imageToBufferedImage(GUIConst.ICON_CROSS_16);
         font = new Font(getFont().getFontName(), Font.PLAIN, 12);
+
+        // Field の右端に X を出して，そこをクリックしたらテキストをクリアする.
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (getWidth() - e.getX() <= 20) {
+                    setText("");
+                    // リターンキー入力されたことにする
+                    fireActionPerformed();
+                }
+            }
+        });
     }
 
     /**
@@ -60,25 +76,28 @@ public class CompletableSearchField extends CompletableJTextField {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        Graphics2D g = (Graphics2D) graphics.create();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
 
         if (getText() == null || getText().equals("")) {
-            Graphics2D g = (Graphics2D) graphics.create();
-
+            // 虫眼鏡とラベル
             FontMetrics fm = g.getFontMetrics();
             int iconWidth = icon.getWidth();
             int labelWidth = iconWidth + fm.stringWidth(label) + ICON_TEXT_GAP;
 
             int x = (getWidth() - labelWidth) / 2;
 
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-
             g.setFont(font);
             g.drawImage(icon, null, x - ICON_TEXT_GAP, verticalDeviation + 8);
             g.drawString(label, x + iconWidth, fm.getHeight() + verticalDeviation + 5);
 
-            g.dispose();
+        } else {
+            // 右端のクリアボタン（X マーク）
+            g.drawImage(clearButton, null, getWidth()-22, verticalDeviation + 8);
         }
+
+        g.dispose();
     }
 
     public static void main(String[] arg) {

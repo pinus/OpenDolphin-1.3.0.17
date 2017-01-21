@@ -188,31 +188,26 @@ public class ChartToolBar extends JToolBar {
         keywordFld.setPreferences(prefs);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
         keywordFld.addActionListener(e -> {
-            JPopupMenu popup = new JPopupMenu();
-            String pattern = ".*" + keywordFld.getText() + ".*";
+            String text = keywordFld.getText();
 
-            StampBoxPlugin stampBox = mediator.getStampBox();
-            StampTree tree = stampBox.getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
+            if (text != null && ! text.equals("")) {
+                JPopupMenu popup = new JPopupMenu();
+                String pattern = ".*" + keywordFld.getText() + ".*";
 
-            StampTreeMenuBuilder builder = new StampTreeMenuBuilder(tree, pattern);
-            builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(realChart.getDiagnosisDocument().getDiagnosisTable()));
-            builder.buildRootless(popup);
+                StampBoxPlugin stampBox = mediator.getStampBox();
+                StampTree tree = stampBox.getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
 
-            Point loc = keywordFld.getLocation();
-            popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight() - 10);
+                StampTreeMenuBuilder builder = new StampTreeMenuBuilder(tree, pattern);
+                builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(realChart.getDiagnosisDocument().getDiagnosisTable()));
+                builder.buildRootless(popup);
+
+                Point loc = keywordFld.getLocation();
+                popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight() - 10);
+            }
         });
 
-        JButton clearBtn = new JButton();
-        clearBtn.setFocusable(false);
-        clearBtn.setBorder(BorderFactory.createEmptyBorder());
-        clearBtn.setBorderPainted(false);
-        clearBtn.setContentAreaFilled(false);
-        clearBtn.setOpaque(false);
-        clearBtn.setIcon(GUIConst.ICON_REMOVE_22);
-        clearBtn.addActionListener(e -> keywordFld.setText(""));
-
         panel.add(keywordFld);
-        panel.add(clearBtn);
+
         return panel;
     }
 }

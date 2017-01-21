@@ -230,14 +230,6 @@ public class PatientSearchImpl extends AbstractMainComponent {
         // 履歴保存する prefs をセット
         view.getKeywordFld().setPreferences(prefs);
 
-        // クリアボタンの動作
-        view.getClearBtn().addActionListener(e -> {
-            view.getKeywordFld().setText("");
-            ((ObjectReflectTableModel) view.getTable().getModel()).clear();
-            view.getCntLbl().setText("0 件");
-            requestFocus();
-        });
-
         // IME off
         IMEControl.setImeOffIfFocused(view.getKeywordFld());
 
