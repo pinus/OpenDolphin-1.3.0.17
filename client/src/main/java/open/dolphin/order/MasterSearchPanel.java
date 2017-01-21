@@ -24,6 +24,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.ComboBoxFactory;
+import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
@@ -51,9 +52,7 @@ public class MasterSearchPanel extends JPanel {
     /** ItemTablePanel からリスンされる */
     private OrderListener<MasterItem> orderListener;
     /** キーワードフィールド */
-    private JTextField keywordField;
-    /** 検索アイコン */
-    private JLabel searchLabel;
+    private CompletableSearchField keywordField;
     /** 部分一致チェックボックス */
     private JCheckBox partialMatchBox;
     /** 件数ラベル */
@@ -145,10 +144,9 @@ public class MasterSearchPanel extends JPanel {
             }
         };
 
-        searchLabel = new JLabel(GUIConst.ICON_SEARCH_16);
-        searchLabel.setText("マスタ検索：");
+        keywordField = new CompletableSearchField(KEYWORD_FIELD_LENGTH);
+        keywordField.setLabel("マスタ検索");
 
-        keywordField = new JTextField(KEYWORD_FIELD_LENGTH);
         keywordField.setAlignmentY(0.6f); // tuning for el capitan
         keywordField.setMaximumSize(keywordField.getPreferredSize());
         keywordField.setToolTipText(TOOLTIP_KEYWORD);
@@ -184,7 +182,6 @@ public class MasterSearchPanel extends JPanel {
         countLabel.setMinimumSize(d);
         countLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        panel.add(searchLabel);
         panel.add(keywordField);
         panel.add(partialMatchBox);
         panel.add(Box.createHorizontalGlue());

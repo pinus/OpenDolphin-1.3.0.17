@@ -1,10 +1,7 @@
 package open.dolphin.impl.psearch;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
@@ -21,6 +18,7 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.ui.CompletableJTextField;
+import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
@@ -39,9 +37,7 @@ public class PatientSearchPanel extends MainComponentPanel {
     public static final Color NARROWING_SEARCH_BACKGROUND_COLOR = new Color(255,255,0);
 
     // command panel
-    private JLabel searchLbl;
-    //private JTextField keywordFld;
-    private CompletableJTextField keywordFld;
+    private CompletableSearchField keywordFld;
     private JCheckBoxMenuItem narrowingSearchCb;
     private JButton clearBtn;
     // main panel
@@ -90,26 +86,8 @@ public class PatientSearchPanel extends MainComponentPanel {
         hibernateIndexItem = new JMenuItem("インデックス作成");
         popup.add(hibernateIndexItem);
 
-        searchLbl = new JLabel("");
-        searchLbl.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mousePressed(MouseEvent e) {
-                popup.show(e.getComponent(), e.getX(), e.getY());
-            }
-        });
-
-        keywordFld = new CompletableJTextField(20) {
-            private static final long serialVersionUID = 1L;
-            @Override
-            protected void paintBorder(Graphics g) {
-                super.paintBorder(g);
-                Graphics2D g2d = (Graphics2D) g;
-                //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f));
-                g2d.setColor(getBackground());
-                g2d.fillRect(5, 5, getWidth()-11, getHeight()-11);
-            }
-        };
+        keywordFld = new CompletableSearchField(20);
+        keywordFld.setLabel("患者検索");
 
         TextComponentUndoManager undoManager = TextComponentUndoManager.getManager(keywordFld);
 
@@ -117,6 +95,15 @@ public class PatientSearchPanel extends MainComponentPanel {
         keywordFld.setPreferredSize(tfSize);
         keywordFld.setMaximumSize(tfSize);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
+
+        keywordFld.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
 
         clearBtn = new JButton();
         clearBtn.setFocusable(false);
@@ -127,7 +114,6 @@ public class PatientSearchPanel extends MainComponentPanel {
         clearBtn.setIcon(GUIConst.ICON_REMOVE_22);
 
         comPanel.addGlue();
-        comPanel.add(searchLbl);
         comPanel.add(keywordFld);
         comPanel.add(clearBtn);
         comPanel.addSpace(5);
@@ -173,10 +159,6 @@ public class PatientSearchPanel extends MainComponentPanel {
 
     public JProgressBar getProgressBar() {
         return progressBar;
-    }
-
-    public JLabel getSearchLbl() {
-        return searchLbl;
     }
 
     public JMenuItem getHibernateIndexItem() {

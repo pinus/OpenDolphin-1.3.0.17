@@ -111,7 +111,8 @@ public class AboutDialog extends JDialog {
                 "OpenDolphin 1.4m-2.3m Copyright (C) Masuda Naika Clinic,  " +
                 "Fugue Icons 2.4.2 Copyright (C) Yusuke Kamiyamane, " +
                 "Aesthetica Icons 1.12 (http://dryicons.com), " +
-                "Icons from Tango Desktop Project" +
+                "Icons from Tango Desktop Project, " +
+                "DefaultIcon ver 2.0 Copyright (c) 2010-2011 Apostolos Paschalidis interactivemania" +
                 "", 5, 20);
         area.setLineWrap(true);
         area.setWrapStyleWord(true);

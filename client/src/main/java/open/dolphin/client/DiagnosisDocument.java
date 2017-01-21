@@ -68,7 +68,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private static final ImageIcon DELETE_BUTTON_IMAGE = GUIConst.ICON_REMOVE_16;
     private static final ImageIcon ADD_BUTTON_IMAGE = GUIConst.ICON_LIST_ADD_16;
     private static final ImageIcon UPDATE_BUTTON_IMAGE = GUIConst.ICON_SAVE_16;
-    private static final ImageIcon ORCA_VIEW_IMAGE = GUIConst.ICON_FOLDER_REMOTE_16;
+    private static final ImageIcon ORCA_VIEW_IMAGE = GUIConst.ICON_DOWNLOAD_16;
     private static final String ORCA_VIEW = "ORCA View";
     private static final Color ORCA_BACK_COLOR = ClientContext.getColor("color.CALENDAR_BACK");
     public static final Color IKOU_BYOMEI_COLOR = Color.red;

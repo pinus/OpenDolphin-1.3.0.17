@@ -103,7 +103,6 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         view = new PatientSearchPanel();
         setUI(view);
-        view.getSearchLbl().setIcon(SEARCH_ICON);
         JTable table = view.getTable();
 
         List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
@@ -209,7 +208,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         view.getTable().addMouseListener(new ContextListener());
 
         // カレンダによる日付検索を設定する
-        new PopupListener(view.getKeywordFld());
+        //new PopupListener(view.getKeywordFld());
         keyBlocker = new KeyBlocker(view.getKeywordFld());
 
         // KeywordFld に ActionListener 登録

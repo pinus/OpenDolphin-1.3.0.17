@@ -208,11 +208,13 @@ public class GUIConst {
     public static final ImageIcon ICON_ARROW_CIRCULAR_ALT1_16 = ClientContext.getImageIcon("bw/16x16/arrow-circular-alt-1.png");
     public static final ImageIcon ICON_INFORMATION_16 = ClientContext.getImageIcon("bw/16x16/about.png");
     public static final ImageIcon ICON_REMOVE_16 = ClientContext.getImageIcon("bw/16x16/cancel.png");
-    public static final ImageIcon ICON_ARROW_UP_LEFT_16 = ClientContext.getImageIcon("bw/16x16/arrow-1-left.png");
+    public static final ImageIcon ICON_ARROW1_LEFT_16 = ClientContext.getImageIcon("bw/16x16/arrow-1-left.png");
+    public static final ImageIcon ICON_ARROW1_RIGHT_16 = ClientContext.getImageIcon("bw/16x16/arrow-1-right.png");
     public static final ImageIcon ICON_ERASER_16 = ClientContext.getImageIcon("bw/16x16/eraser.png");
     public static final ImageIcon ICON_LIST_ADD_16 = ClientContext.getImageIcon("bw/16x16/add.png");
     public static final ImageIcon ICON_LIST_REMOVE_16 = ClientContext.getImageIcon("bw/16x16/trash-empty.png");
     public static final ImageIcon ICON_FOLDER_NEW_16 = ClientContext.getImageIcon("bw/16x16/folder.png");
+    public static final ImageIcon ICON_DOWNLOAD_16 = ClientContext.getImageIcon("bw/16x16/download-alt-3.png");
 
 
 
@@ -272,7 +274,7 @@ public class GUIConst {
     // 仮保存アイコン
     public static final ImageIcon ICON_ONEDIT_16 = ClientContext.getImageIcon("fugue/16x16/edit-signiture.png");
     // スタンプ箱からスタンプをカルテに送る
-    //public static final ImageIcon ICON_ARROW_UP_LEFT_16 = ClientContext.getImageIcon("fugue/16x16/arrow-135.png");
+    //public static final ImageIcon ICON_ARROW1_LEFT_16 = ClientContext.getImageIcon("fugue/16x16/arrow-135.png");
 
 //  tango series ---------------------
     //public static final ImageIcon ICON_SYSTEM_SEARCH_16 = ClientContext.getImageIcon("tango/16x16/actions/system-search.png");
@@ -307,12 +309,12 @@ public class GUIConst {
     //public static final ImageIcon ICON_EDIT_FIND_NEXT_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-find-next.png");
     //public static final ImageIcon ICON_EDIT_FIND_PREVIOUS_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-find-previous.png");
     //public static final ImageIcon ICON_EDIT_SELECT_ALL_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-select-all.png");
-    public static final ImageIcon ICON_GO_NEXT_16 = ClientContext.getImageIcon("tango/16x16/actions/go-next.png");
-    public static final ImageIcon ICON_GO_PREVIOUS_16 = ClientContext.getImageIcon("tango/16x16/actions/go-previous.png");
+    //public static final ImageIcon ICON_GO_NEXT_16 = ClientContext.getImageIcon("tango/16x16/actions/go-next.png");
+    //public static final ImageIcon ICON_GO_PREVIOUS_16 = ClientContext.getImageIcon("tango/16x16/actions/go-previous.png");
     //public static final ImageIcon ICON_LIST_ADD_16 = ClientContext.getImageIcon("tango/16x16/actions/list-add.png");
     //public static final ImageIcon ICON_LIST_REMOVE_16 = ClientContext.getImageIcon("tango/16x16/actions/list-remove.png");
-    public static final ImageIcon ICON_FOLDER_16 = ClientContext.getImageIcon("tango/16x16/places/folder.png");
-    public static final ImageIcon ICON_FOLDER_REMOTE_16 = ClientContext.getImageIcon("tango/16x16/places/folder-remote.png");
+    public static final ImageIcon ICON_FOLDER_16 = ClientContext.getImageIcon("icons/16x16/Folder-icon.png");
+    //public static final ImageIcon ICON_FOLDER_REMOTE_16 = ClientContext.getImageIcon("tango/16x16/places/folder-remote.png");
     //public static final ImageIcon ICON_FOLDER_NEW_16 = ClientContext.getImageIcon("tango/16x16/actions/folder-new.png");
     // 地球儀
     public static final ImageIcon ICON_EARTH_16 = ClientContext.getImageIcon("tango/16x16/apps/internet-web-browser.png");

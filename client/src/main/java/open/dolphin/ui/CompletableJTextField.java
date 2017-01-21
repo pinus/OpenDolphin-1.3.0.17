@@ -215,7 +215,8 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
                     if (selection > 0) {
                         selection --;
                         completionList.getSelectionModel().setSelectionInterval(selection, selection);
-                    }   e.consume();
+                    }
+                    e.consume();
                     break;
 
                 case KeyEvent.VK_DOWN:
@@ -226,7 +227,8 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
                         // ウインドウが表示されていて選択されていない状態
                         selection = 0;
                         completionList.getSelectionModel().setSelectionInterval(selection, selection);
-                    }   e.consume();
+                    }
+                    e.consume();
                     break;
 
                 case KeyEvent.VK_CLEAR:
@@ -239,7 +241,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
             }
         } else {
             // リストが表示されていないとき，下キーで候補を全部出す
-            if (keyCode == KeyEvent.VK_DOWN && getText().length() < 1) {
+            if (keyCode == KeyEvent.VK_DOWN && getText().length() < 1 && ! getCompletions().isEmpty()) {
                 completer.showAll();
             }
         }

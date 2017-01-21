@@ -19,6 +19,7 @@ import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
 import open.dolphin.ui.CompletableJTextField;
+import open.dolphin.ui.CompletableSearchField;
 
 /**
  * ChartImpl と EditorFrame 特有の JToolBar.
@@ -181,7 +182,10 @@ public class ChartToolBar extends JToolBar {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-        CompletableJTextField keywordFld = new CompletableJTextField(15);
+        CompletableSearchField keywordFld = new CompletableSearchField(15);
+        keywordFld.setLabel("病名検索");
+        keywordFld.setVerticalDeviation(6);
+
         keywordFld.setPreferences(prefs);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
         keywordFld.addActionListener(e -> {

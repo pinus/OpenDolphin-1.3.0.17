@@ -128,7 +128,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         p.add(Box.createHorizontalStrut(11));
 
         // カレンダーの範囲を１ケ月以に戻すボタン
-        JButton prevBtn = new JButton(GUIConst.ICON_GO_PREVIOUS_16);
+        JButton prevBtn = new JButton(GUIConst.ICON_ARROW1_LEFT_16);
 
         prevBtn.addActionListener(new ActionListener() {
 
@@ -187,7 +187,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         });
 
         // カレンダーの範囲を１ケ月送るボタン
-        JButton nextBtn = new JButton(GUIConst.ICON_GO_NEXT_16);
+        JButton nextBtn = new JButton(GUIConst.ICON_ARROW1_RIGHT_16);
 
         nextBtn.addActionListener(new ActionListener() {
 

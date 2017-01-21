@@ -51,13 +51,13 @@ public class StampMakerPanel extends JPanel {
         editorPanel = new StampEditorProxyPanel();
 
          // 編集したスタンプをボックスへ登録する右向きボタンを生成する
-        rightArrowBtn = new JButton(GUIConst.ICON_GO_NEXT_16);
+        rightArrowBtn = new JButton(GUIConst.ICON_ARROW1_RIGHT_16);
         rightArrowBtn.addActionListener(new ToStampBoxPlugin());
         rightArrowBtn.setEnabled(false);
         editorPanel.addValidListener(rightArrowBtn::setEnabled);
 
         // スタンプボックスのスタンプをセットテーブルへ取り込む左向きのボタンを生成する
-        leftArrowBtn = new JButton(GUIConst.ICON_GO_PREVIOUS_16);
+        leftArrowBtn = new JButton(GUIConst.ICON_ARROW1_LEFT_16);
         leftArrowBtn.addActionListener(new FromStampBoxPlugin());
         leftArrowBtn.setEnabled(false);
 

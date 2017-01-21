@@ -272,7 +272,7 @@ public class UserStampBox extends AbstractStampBox {
 
         private void initComponent() {
             putValue(Action.NAME, getName(chart));
-            putValue(Action.SMALL_ICON, GUIConst.ICON_ARROW_UP_LEFT_16);
+            putValue(Action.SMALL_ICON, GUIConst.ICON_ARROW1_LEFT_16);
         }
 
         /**
