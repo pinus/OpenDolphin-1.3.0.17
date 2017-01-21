@@ -348,7 +348,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
                 final File file = fileChooser.getSelectedFile();
                 if (!file.exists() || overwriteConfirmed(file)) {
 
-                    SwingWorker worker = new SwingWorker<String, Void>() {
+                    SwingWorker<String,Void> worker = new SwingWorker<String, Void>() {
 
                         @Override
                         protected String doInBackground() throws Exception {
