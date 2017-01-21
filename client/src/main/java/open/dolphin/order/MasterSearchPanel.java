@@ -147,7 +147,7 @@ public class MasterSearchPanel extends JPanel {
         keywordField = new CompletableSearchField(KEYWORD_FIELD_LENGTH);
         keywordField.setLabel("マスタ検索");
 
-        keywordField.setAlignmentY(0.6f); // tuning for el capitan
+        //keywordField.setAlignmentY(0.6f); // tuning for el capitan
         keywordField.setMaximumSize(keywordField.getPreferredSize());
         keywordField.setToolTipText(TOOLTIP_KEYWORD);
         keywordField.addActionListener(listener);
