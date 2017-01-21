@@ -162,14 +162,14 @@ public class ImageBox extends AbstractMainTool {
         //
         // 更新ボタンを生成する
         //
-        refreshBtn = new JButton(GUIConst.ICON_ARROW_CIRCLE_DOUBLE_16);
-        refreshBtn.setText("更新");
-        refreshBtn.setHorizontalAlignment(SwingConstants.LEADING);
-        refreshBtn.putClientProperty("Quaqua.Button.style", "bevel");
-        refreshBtn.setFocusable(false);
-        refreshBtn.addActionListener(new ProxyAction(this::refresh));
-        refreshBtn.setToolTipText("シェーマリストを更新します");
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        //refreshBtn = new JButton(GUIConst.ICON_ARROW_CIRCLE_DOUBLE_16);
+        //refreshBtn.setText("更新");
+        //refreshBtn.setHorizontalAlignment(SwingConstants.LEADING);
+        //refreshBtn.putClientProperty("Quaqua.Button.style", "bevel");
+        //refreshBtn.setFocusable(false);
+        //refreshBtn.addActionListener(new ProxyAction(this::refresh));
+        //refreshBtn.setToolTipText("シェーマリストを更新します");
+        //JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         // mac で SchemaBox にもメニューバーを出す
         if (isMac) {

@@ -242,7 +242,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         });
 
         // 予約表テーブルを生成する
-        updateAppoBtn = new JButton(GUIConst.ICON_FLOPPY_22);
+        updateAppoBtn = new JButton(GUIConst.ICON_SAVE_16);
         updateAppoBtn.setEnabled(false);
         updateAppoBtn.addActionListener(new ActionListener() {
             @Override

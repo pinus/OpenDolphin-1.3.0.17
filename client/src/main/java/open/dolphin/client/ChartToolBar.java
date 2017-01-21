@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.util.List;
 import java.util.prefs.Preferences;

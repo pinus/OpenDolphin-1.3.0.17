@@ -59,7 +59,7 @@ public class ItemTablePanel extends JPanel {
     public static final String FROM_EDITOR_STAMP_NAME = "エディタから";
     public static final String DEFAULT_NUMBER = "1";
     public final ImageIcon REMOVE_BUTTON_IMAGE = GUIConst.ICON_REMOVE_16;
-    public final ImageIcon CLEAR_BUTTON_IMAGE = GUIConst.ICON_EDIT_CLEAR_16;
+    public final ImageIcon CLEAR_BUTTON_IMAGE = GUIConst.ICON_ERASER_16;
 
     public static final String TOOLTIP_DELETE_TEXT = "選択したアイテムを削除します。";
     public static final String TOOLTIP_CLEAR_TEXT = "セット内容をクリアします。";

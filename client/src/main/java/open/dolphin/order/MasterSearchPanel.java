@@ -145,7 +145,7 @@ public class MasterSearchPanel extends JPanel {
             }
         };
 
-        searchLabel = new JLabel(GUIConst.ICON_SYSTEM_SEARCH_16);
+        searchLabel = new JLabel(GUIConst.ICON_SEARCH_16);
         searchLabel.setText("マスタ検索：");
 
         keywordField = new JTextField(KEYWORD_FIELD_LENGTH);

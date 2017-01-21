@@ -205,6 +205,14 @@ public class GUIConst {
     public static final ImageIcon ICON_PADLOCK_CLOSED_16 = ClientContext.getImageIcon("bw/16x16/padlock-closed.png");
     public static final ImageIcon ICON_PADLOCK_OPEN_16 = ClientContext.getImageIcon("bw/16x16/padlock-open.png");
     public static final ImageIcon ICON_GEAR_16 = ClientContext.getImageIcon("bw/16x16/settings.png");
+    public static final ImageIcon ICON_ARROW_CIRCULAR_ALT1_16 = ClientContext.getImageIcon("bw/16x16/arrow-circular-alt-1.png");
+    public static final ImageIcon ICON_INFORMATION_16 = ClientContext.getImageIcon("bw/16x16/about.png");
+    public static final ImageIcon ICON_REMOVE_16 = ClientContext.getImageIcon("bw/16x16/cancel.png");
+    public static final ImageIcon ICON_ARROW_UP_LEFT_16 = ClientContext.getImageIcon("bw/16x16/arrow-1-left.png");
+    public static final ImageIcon ICON_ERASER_16 = ClientContext.getImageIcon("bw/16x16/eraser.png");
+    public static final ImageIcon ICON_LIST_ADD_16 = ClientContext.getImageIcon("bw/16x16/add.png");
+    public static final ImageIcon ICON_LIST_REMOVE_16 = ClientContext.getImageIcon("bw/16x16/trash-empty.png");
+    public static final ImageIcon ICON_FOLDER_NEW_16 = ClientContext.getImageIcon("bw/16x16/folder.png");
 
 
 
@@ -216,7 +224,7 @@ public class GUIConst {
     public static final ImageIcon ICON_USER_RED_16 = ClientContext.getImageIcon("fugue/16x16/user-red.png");
     public static final ImageIcon ICON_USER_BLUE_16 = ClientContext.getImageIcon("fugue/16x16/user-blue.png");
     // 受付リスト，シェーマボックスの refresh アイコン
-    public static final ImageIcon ICON_ARROW_CIRCLE_DOUBLE_16 = ClientContext.getImageIcon("fugue/16x16/arrow-circle-double-135.png");
+    //public static final ImageIcon ICON_ARROW_CIRCLE_DOUBLE_16 = ClientContext.getImageIcon("fugue/16x16/arrow-circle-double-135.png");
     // スタンプ箱のカギ
     //public static final ImageIcon ICON_LOCK_16 = ClientContext.getImageIcon("fugue/16x16/lock.png");
     //public static final ImageIcon ICON_LOCK_OPEN_16 = ClientContext.getImageIcon("fugue/16x16/lock-unlock.png");
@@ -228,30 +236,30 @@ public class GUIConst {
     //public static final ImageIcon ICON_STAMP_IMPORT_16 = ClientContext.getImageIcon("fugue/16x16/stamp-import.png");
     //public static final ImageIcon ICON_STAMP_EXPORT_22 = ClientContext.getImageIcon("fugue/22x22/stamp-export.png");
     //public static final ImageIcon ICON_STAMP_IMPORT_22 = ClientContext.getImageIcon("fugue/22x22/stamp-import.png");
-    public static final ImageIcon ICON_STAMP_22 = ClientContext.getImageIcon("fugue/22x22/stamp.png");
+    //public static final ImageIcon ICON_STAMP_22 = ClientContext.getImageIcon("fugue/22x22/stamp.png");
     //public static final ImageIcon ICON_STAMP_32 = ClientContext.getImageIcon("fugue/32x32/stamp.png");
     public static final ImageIcon ICON_STAMP_TEXT_22 = ClientContext.getImageIcon("fugue/22x22/stamp-text.png");
-    public static final ImageIcon ICON_STAMP_TEXT_32 = ClientContext.getImageIcon("fugue/32x32/stamp-text.png");
+    //public static final ImageIcon ICON_STAMP_TEXT_32 = ClientContext.getImageIcon("fugue/32x32/stamp-text.png");
     // StampTree node アイコン
     //public static final ImageIcon ICON_DOCUMENT_CONVERT_16 = ClientContext.getImageIcon("fugue/16x16/document-convert.png");
     public static final ImageIcon ICON_DOCUMENT_CONVERT_16 = ClientContext.getImageIcon("fugue/16x16/document.png");
     public static final ImageIcon ICON_DOCUMENT_ATTRIBUTE_16 = ClientContext.getImageIcon("fugue/16x16/document-attribute.png");
     // スタンプエディタ
-    public static final ImageIcon ICON_DOCUMENT_IMPORT_16 = ClientContext.getImageIcon("fugue/16x16/document-import.png");
+    //public static final ImageIcon ICON_DOCUMENT_IMPORT_16 = ClientContext.getImageIcon("fugue/16x16/document-import.png");
     // スタンプ箱のギア
     //public static final ImageIcon ICON_GEAR_16 = ClientContext.getImageIcon("fugue/16x16/gear.png");
     // ギアメニューに入っているディスクアイコン
-    public static final ImageIcon ICON_DISK_16 = ClientContext.getImageIcon("fugue/16x16/disk-black.png");
+    //public static final ImageIcon ICON_DISK_16 = ClientContext.getImageIcon("fugue/16x16/disk-black.png");
     // 鉛筆
     //public static final ImageIcon ICON_PENCIL_16 = ClientContext.getImageIcon("fugue/16x16/pencil.png");
-    public static final ImageIcon ICON_PENCIL_SELECTED_16 = ClientContext.getImageIcon("fugue/16x16/pencil-color.png");
-    public static final ImageIcon ICON_PENCIL_PRESSED_16 = ClientContext.getImageIcon("fugue/16x16/pencil-pressed.png");
+    //public static final ImageIcon ICON_PENCIL_SELECTED_16 = ClientContext.getImageIcon("fugue/16x16/pencil-color.png");
+    //public static final ImageIcon ICON_PENCIL_PRESSED_16 = ClientContext.getImageIcon("fugue/16x16/pencil-pressed.png");
     // info, question
-    public static final ImageIcon ICON_INFORMATION_16 = ClientContext.getImageIcon("fugue/16x16/information.png");
+    //public static final ImageIcon ICON_INFORMATION_16 = ClientContext.getImageIcon("fugue/16x16/information.png");
     public static final ImageIcon ICON_QUESTION_16 = ClientContext.getImageIcon("fugue/16x16/question.png");
 
     // イメージブラウザで使う pdf アイコン
-    public static final ImageIcon ICON_PDF_32 = ClientContext.getImageIcon("fugue/32x32/pdf.png");
+    //public static final ImageIcon ICON_PDF_32 = ClientContext.getImageIcon("fugue/32x32/pdf.png");
     // StampImporter
     public static final ImageIcon ICON_HOME_16 = ClientContext.getImageIcon("fugue/16x16/home.png");
     public static final ImageIcon ICON_FLAG_16 = ClientContext.getImageIcon("fugue/16x16/flag.png");
@@ -259,56 +267,56 @@ public class GUIConst {
     public static final ImageIcon ICON_STATUS_BUSY_16 = ClientContext.getImageIcon("fugue/16x16/status-busy.png");
     public static final ImageIcon ICON_STATUS_OFFLINE_16 = ClientContext.getImageIcon("fugue/16x16/status-offline.png");
     // 削除アイコン
-    public static final ImageIcon ICON_REMOVE_16 = ClientContext.getImageIcon("fugue/16x16/cross.png");
+    //public static final ImageIcon ICON_REMOVE_16 = ClientContext.getImageIcon("fugue/16x16/cross.png");
     public static final ImageIcon ICON_REMOVE_22 = ClientContext.getImageIcon("icons/22x22/gtk_cancel.png");
     // 仮保存アイコン
     public static final ImageIcon ICON_ONEDIT_16 = ClientContext.getImageIcon("fugue/16x16/edit-signiture.png");
     // スタンプ箱からスタンプをカルテに送る
-    public static final ImageIcon ICON_ARROW_UP_LEFT_16 = ClientContext.getImageIcon("fugue/16x16/arrow-135.png");
+    //public static final ImageIcon ICON_ARROW_UP_LEFT_16 = ClientContext.getImageIcon("fugue/16x16/arrow-135.png");
 
 //  tango series ---------------------
-    public static final ImageIcon ICON_SYSTEM_SEARCH_16 = ClientContext.getImageIcon("tango/16x16/actions/system-search.png");
-    public static final ImageIcon ICON_SYSTEM_SEARCH_22 = ClientContext.getImageIcon("tango/22x22/actions/system-search.png");
+    //public static final ImageIcon ICON_SYSTEM_SEARCH_16 = ClientContext.getImageIcon("tango/16x16/actions/system-search.png");
+    //public static final ImageIcon ICON_SYSTEM_SEARCH_22 = ClientContext.getImageIcon("tango/22x22/actions/system-search.png");
     public static final ImageIcon ICON_DOCUMENT_SAVE_22 = ClientContext.getImageIcon("tango/22x22/actions/document-save.png");
-    public static final ImageIcon ICON_GRAPHICS_BRUSH_22 = ClientContext.getImageIcon("tango/22x22/categories/applications-graphics.png");
-    public static final ImageIcon ICON_GRAPHICS_BRUSH_32 = ClientContext.getImageIcon("tango/32x32/categories/applications-graphics.png");
-    public static final ImageIcon ICON_DOCUMENT_NEW_22 = ClientContext.getImageIcon("tango/22x22/actions/document-new.png");
-    public static final ImageIcon ICON_DOCUMENT_NEW_32 = ClientContext.getImageIcon("tango/32x32/actions/document-new.png");
-    public static final ImageIcon ICON_FLOPPY_16 = ClientContext.getImageIcon("tango/16x16/devices/media-floppy.png");
-    public static final ImageIcon ICON_FLOPPY_22 = ClientContext.getImageIcon("tango/22x22/devices/media-floppy.png");
+    //public static final ImageIcon ICON_GRAPHICS_BRUSH_22 = ClientContext.getImageIcon("tango/22x22/categories/applications-graphics.png");
+    //public static final ImageIcon ICON_GRAPHICS_BRUSH_32 = ClientContext.getImageIcon("tango/32x32/categories/applications-graphics.png");
+    //public static final ImageIcon ICON_DOCUMENT_NEW_22 = ClientContext.getImageIcon("tango/22x22/actions/document-new.png");
+    //public static final ImageIcon ICON_DOCUMENT_NEW_32 = ClientContext.getImageIcon("tango/32x32/actions/document-new.png");
+    //public static final ImageIcon ICON_FLOPPY_16 = ClientContext.getImageIcon("tango/16x16/devices/media-floppy.png");
+    //public static final ImageIcon ICON_FLOPPY_22 = ClientContext.getImageIcon("tango/22x22/devices/media-floppy.png");
     public static final ImageIcon ICON_FLOPPY_32 = ClientContext.getImageIcon("tango/32x32/devices/media-floppy.png");
     public static final ImageIcon ICON_DOCUMENT_OPEN_22 = ClientContext.getImageIcon("tango/22x22/actions/document-open.png");
     //public static final ImageIcon ICON_DOCUMENT_PRINT_22 = ClientContext.getImageIcon("tango/22x22/actions/document-print.png");
     //public static final ImageIcon ICON_DOCUMENT_PRINT_32 = ClientContext.getImageIcon("tango/32x32/actions/document-print.png");
     //public static final ImageIcon ICON_WINDOWS_22 = ClientContext.getImageIcon("tango/22x22/apps/preferences-system-windows.png");
 
-    public static final ImageIcon ICON_EDIT_DELETE_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-delete.png");
-    public static final ImageIcon ICON_EDIT_CLEAR_16 = ClientContext.getImageIcon("tango/16x16/actions/edit-clear.png");
+    //public static final ImageIcon ICON_EDIT_DELETE_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-delete.png");
+    //public static final ImageIcon ICON_EDIT_CLEAR_16 = ClientContext.getImageIcon("tango/16x16/actions/edit-clear.png");
     //public static final ImageIcon ICON_EDIT_CUT_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-cut.png");
-    public static final ImageIcon ICON_EDIT_CUT_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-cut.png");
-    public static final ImageIcon ICON_EDIT_PASTE_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-paste.png");
-    public static final ImageIcon ICON_EDIT_PASTE_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-paste.png");
-    public static final ImageIcon ICON_EDIT_COPY_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-copy.png");
-    public static final ImageIcon ICON_EDIT_COPY_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-copy.png");
-    public static final ImageIcon ICON_EDIT_UNDO_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-undo.png");
-    public static final ImageIcon ICON_EDIT_UNDO_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-undo.png");
-    public static final ImageIcon ICON_EDIT_REDO_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-redo.png");
-    public static final ImageIcon ICON_EDIT_REDO_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-redo.png");
-    public static final ImageIcon ICON_EDIT_FIND_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-find.png");
-    public static final ImageIcon ICON_EDIT_FIND_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-find.png");
-    public static final ImageIcon ICON_EDIT_FIND_NEXT_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-find-next.png");
-    public static final ImageIcon ICON_EDIT_FIND_PREVIOUS_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-find-previous.png");
-    public static final ImageIcon ICON_EDIT_SELECT_ALL_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-select-all.png");
+    //public static final ImageIcon ICON_EDIT_CUT_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-cut.png");
+    //public static final ImageIcon ICON_EDIT_PASTE_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-paste.png");
+    //public static final ImageIcon ICON_EDIT_PASTE_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-paste.png");
+    //public static final ImageIcon ICON_EDIT_COPY_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-copy.png");
+    //public static final ImageIcon ICON_EDIT_COPY_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-copy.png");
+    //public static final ImageIcon ICON_EDIT_UNDO_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-undo.png");
+    //public static final ImageIcon ICON_EDIT_UNDO_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-undo.png");
+    //public static final ImageIcon ICON_EDIT_REDO_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-redo.png");
+    //public static final ImageIcon ICON_EDIT_REDO_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-redo.png");
+    //public static final ImageIcon ICON_EDIT_FIND_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-find.png");
+    //public static final ImageIcon ICON_EDIT_FIND_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-find.png");
+    //public static final ImageIcon ICON_EDIT_FIND_NEXT_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-find-next.png");
+    //public static final ImageIcon ICON_EDIT_FIND_PREVIOUS_32 = ClientContext.getImageIcon("tango/32x32/actions/edit-find-previous.png");
+    //public static final ImageIcon ICON_EDIT_SELECT_ALL_22 = ClientContext.getImageIcon("tango/22x22/actions/edit-select-all.png");
     public static final ImageIcon ICON_GO_NEXT_16 = ClientContext.getImageIcon("tango/16x16/actions/go-next.png");
     public static final ImageIcon ICON_GO_PREVIOUS_16 = ClientContext.getImageIcon("tango/16x16/actions/go-previous.png");
-    public static final ImageIcon ICON_LIST_ADD_16 = ClientContext.getImageIcon("tango/16x16/actions/list-add.png");
-    public static final ImageIcon ICON_LIST_REMOVE_16 = ClientContext.getImageIcon("tango/16x16/actions/list-remove.png");
+    //public static final ImageIcon ICON_LIST_ADD_16 = ClientContext.getImageIcon("tango/16x16/actions/list-add.png");
+    //public static final ImageIcon ICON_LIST_REMOVE_16 = ClientContext.getImageIcon("tango/16x16/actions/list-remove.png");
     public static final ImageIcon ICON_FOLDER_16 = ClientContext.getImageIcon("tango/16x16/places/folder.png");
     public static final ImageIcon ICON_FOLDER_REMOTE_16 = ClientContext.getImageIcon("tango/16x16/places/folder-remote.png");
-    public static final ImageIcon ICON_FOLDER_NEW_16 = ClientContext.getImageIcon("tango/16x16/actions/folder-new.png");
+    //public static final ImageIcon ICON_FOLDER_NEW_16 = ClientContext.getImageIcon("tango/16x16/actions/folder-new.png");
     // 地球儀
     public static final ImageIcon ICON_EARTH_16 = ClientContext.getImageIcon("tango/16x16/apps/internet-web-browser.png");
-    public static final ImageIcon ICON_EARTH_32 = ClientContext.getImageIcon("tango/32x32/apps/internet-web-browser.png");
+    //public static final ImageIcon ICON_EARTH_32 = ClientContext.getImageIcon("tango/32x32/apps/internet-web-browser.png");
     // コンピューター
     public static final ImageIcon ICON_COMPUTER_32 = ClientContext.getImageIcon("tango/32x32/devices/computer.png");
     // ショートカット

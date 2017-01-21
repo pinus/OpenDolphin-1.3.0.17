@@ -49,7 +49,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
     private static final int[] EDITABLE_ROWS = {3, 6, 7, 11, 12};
 
     // 保存アイコン
-    private static final ImageIcon SAVE_ICON = GUIConst.ICON_FLOPPY_16;
+    private static final ImageIcon SAVE_ICON = GUIConst.ICON_SAVE_16;
 
     // 保存ボタン
     private JButton saveBtn;

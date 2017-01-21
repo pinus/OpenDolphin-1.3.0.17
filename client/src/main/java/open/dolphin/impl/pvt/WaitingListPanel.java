@@ -1,8 +1,10 @@
 package open.dolphin.impl.pvt;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
@@ -13,6 +15,8 @@ import open.dolphin.ui.StatusPanel;
  */
 public class WaitingListPanel extends MainComponentPanel {
     private static final long serialVersionUID = 1L;
+
+    private static final ImageIcon KUTU_ICON = GUIConst.ICON_ARROW_CIRCULAR_ALT1_16;
 
     // command panel
     private JButton kutuBtn;
@@ -33,15 +37,17 @@ public class WaitingListPanel extends MainComponentPanel {
     private void initComponents() {
 
         CommandPanel comPanel = getCommandPanel();
-        kutuBtn = new JButton("更新");
+
+        kutuBtn = new JButton(KUTU_ICON);
+        kutuBtn.setBorderPainted(false);
         kutuBtn.setFocusable(false);
         legendLbl = new JLabel();
         //atokLbl = new JLabel("ATOKメモリ");
-        comPanel.add(kutuBtn);
-        comPanel.addGlue();
+        //comPanel.add(kutuBtn);
+        //comPanel.addGlue();
         //comPanel.add(atokLbl);
-        comPanel.add(legendLbl);
-        comPanel.setMargin(4);
+        //comPanel.add(legendLbl);
+        //comPanel.setMargin(4);
 
         MainPanel mainPanel = getMainPanel();
         table = new RowTipsTable();
@@ -54,6 +60,7 @@ public class WaitingListPanel extends MainComponentPanel {
         countLbl = new JLabel("来院数10人，待ち10人，待ち時間 00:00");
         dateLbl = new JLabel("2011-11-11(土)");
         intervalLbl = new JLabel("チェック間隔：30秒");
+        statusPanel.add(kutuBtn);
         statusPanel.add(checkedTimeLbl);
         statusPanel.addSeparator();
         statusPanel.add(intervalLbl);

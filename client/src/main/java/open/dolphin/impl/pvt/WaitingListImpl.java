@@ -55,7 +55,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     protected static final ImageIcon OPEN_USED_NONE = GUIConst.ICON_USER_WHITE_16;
     protected static final ImageIcon OPEN_USED_SAVE = GUIConst.ICON_USER_BLUE_16;
     protected static final ImageIcon OPEN_USED_UNFINISHED = GUIConst.ICON_USER_RED_16;
-    private static final ImageIcon KUTU_ICON = GUIConst.ICON_ARROW_CIRCLE_DOUBLE_16;
 
     // Font
     private static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
@@ -176,9 +175,6 @@ public class WaitingListImpl extends AbstractMainComponent {
         //view = new WaitingListView();
         view = new WaitingListPanel();
         setUI(view);
-
-        // ラベル初期化
-        view.getKutuBtn().setIcon(KUTU_ICON);
 
         // popup で状態アイコンの legend を出す
         JLabel legend = view.getLegendLbl();
