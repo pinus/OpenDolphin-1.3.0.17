@@ -230,8 +230,6 @@ public class Dolphin implements MainWindow {
             tabbedPane.addTab(plugin[index].getName(), plugin[index].getUI());
             providers.put(String.valueOf(index), plugin[index]);
         }
-        // WaitingListImpl に BadgeListener を付ける
-        plugin[0].addBadgeListener(tabbedPane::setBadge);
 
         mediator.addChain(plugin[0]);
 
@@ -301,6 +299,14 @@ public class Dolphin implements MainWindow {
         };
         //stampTask.setMillisToPopup(200);
         stampTask.execute();
+    }
+
+    /**
+     * MainComponent を入れる TabbedPane を返す.
+     * @return
+     */
+    public PNSBadgeTabbedPane getTabbedPane() {
+        return tabbedPane;
     }
 
     @Override

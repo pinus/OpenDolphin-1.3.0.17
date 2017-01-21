@@ -894,6 +894,7 @@ public class MenuFactory {
         action.putValue(Action.SHORT_DESCRIPTION, toolTipText);
         item.setAction(action);
     }
+    
     private void setToolBar(JToolBar toolBar, String text, ImageIcon icon) {
         if (chart != null) {
             JButton button = new JButton();

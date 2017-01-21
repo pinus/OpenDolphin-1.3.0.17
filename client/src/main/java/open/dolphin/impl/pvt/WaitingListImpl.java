@@ -109,8 +109,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     private ExecutorService executor;
     // PvtChecker を定期起動するための ExecutorService
     private ScheduledExecutorService schedule;
-    // BadgeListener
-    private BadgeListener badgeListener;
 
     private Logger logger;
 
@@ -466,29 +464,12 @@ public class WaitingListImpl extends AbstractMainComponent {
             }
         }
         view.getCountLbl().setText(String.format("来院数%d人，待ち%d人，待ち時間 %s", pvtCount, waitingCount, waitingTime));
-        fireBadgeEvent(waitingCount);
-    }
 
-    /**
-     * 待ち人数を送る listener.
-     * @param listener
-     */
-    @Override
-    public void addBadgeListener(BadgeListener listener) {
-        badgeListener = listener;
-    }
-
-    /**
-     * 待ち人数 listener に待ち人数を送る.
-     * @param n
-     */
-    private void fireBadgeEvent(int n) {
-        if (badgeListener != null) {
-            BadgeEvent e = new BadgeEvent(this);
-            e.setBadgeNumber(n);
-            e.setTabIndex(0);
-            badgeListener.badgeChanged(e);
-        }
+        // PNSBadgeTabbedPane に待ち人数を伝える
+        BadgeEvent e = new BadgeEvent(this);
+        e.setBadgeNumber(waitingCount);
+        e.setTabIndex(0);
+        ((Dolphin)getContext()).getTabbedPane().setBadge(e);
     }
 
     /**

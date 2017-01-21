@@ -55,6 +55,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     private CardLayout card;
     /** タブ切り替えボタンのボタングループ */
     private ButtonGroup buttonGroup;
+    /** ButtonPanel 部分に何かを加えたりするためのフックパネル */
+    private JPanel accessoryPanel;
     /** セレクションモデル */
     private DefaultSingleSelectionModel selectionModel;
     /** タブの総数 */
@@ -102,6 +104,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         buttonLayout = new RightJustifiedFlowLayout();
         buttonPanel.setLayout(buttonLayout);
 
+        accessoryPanel = new JPanel(new BorderLayout());
+        accessoryPanel.add(buttonPanel, BorderLayout.CENTER);
+
         // 内容表示パネル作成
         contentPanel = new JPanel();
         card = new CardLayout(0,0);
@@ -113,8 +118,17 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
         // 全体のレイアウト
         setLayout(new BorderLayout(0,0));
-        add(buttonPanel, BorderLayout.NORTH);
+        add(accessoryPanel, BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
+    }
+
+    /**
+     * ButtonPanel を入れる Container.
+     * BorderLayout にしてある.
+     * @return
+     */
+    public JPanel getAccessoryPanel() {
+        return accessoryPanel;
     }
 
     /**
@@ -558,7 +572,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         @Override
         public Dimension preferredLayoutSize(Container buttonPanel) {
             Dimension padding = ((ButtonPanel)buttonPanel).getPadding();
-            int width = buttonPanel.getWidth() - padding.width;
+            // accessory panel 対応
+            int width = accessoryPanel.getWidth() - padding.width;
             if (width <= 0) { return new Dimension(1,1); }
 
             int hgap = this.getHgap();
