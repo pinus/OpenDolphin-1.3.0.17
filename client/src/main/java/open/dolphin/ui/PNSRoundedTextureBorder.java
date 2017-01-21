@@ -11,6 +11,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.border.AbstractBorder;
+import open.dolphin.helper.ImageHelper;
 
 /**
  * イメージを texture で，角丸 fill するボーダ.
@@ -32,7 +33,7 @@ public class PNSRoundedTextureBorder extends AbstractBorder {
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
         Graphics2D g2d = (Graphics2D) g.create();
 
-        BufferedImage buf = PNSBorderFactory.imageToBufferedImage(image);
+        BufferedImage buf = ImageHelper.imageToBufferedImage(image);
         TexturePaint paint = new TexturePaint(buf, new Rectangle2D.Double(0, 0, buf.getWidth(), buf.getHeight()));
         g2d.setPaint(paint);
         g2d.fillRoundRect(x, y, width-1, height-1, 10, 10);

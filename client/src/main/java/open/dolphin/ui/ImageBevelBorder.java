@@ -9,6 +9,7 @@ import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.border.AbstractBorder;
+import open.dolphin.helper.ImageHelper;
 
 /**
  * Subset of ch.randelshofer.quaqua.border.ImageBevelBorder.
@@ -22,7 +23,7 @@ public class ImageBevelBorder extends AbstractBorder {
     private final Insets imageInsets;
 
     public ImageBevelBorder(ImageIcon img, Insets imageInsets, Insets borderInsets) {
-        this.image = PNSBorderFactory.imageToBufferedImage(img);
+        this.image = ImageHelper.imageToBufferedImage(img);
         this.imageInsets = imageInsets;
         this.borderInsets = borderInsets;
     }

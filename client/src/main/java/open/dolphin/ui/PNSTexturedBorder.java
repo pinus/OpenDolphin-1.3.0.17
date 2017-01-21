@@ -9,6 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.border.AbstractBorder;
+import open.dolphin.helper.ImageHelper;
 
 /**
  * イメージを texture で fill するボーダ.
@@ -21,7 +22,7 @@ public class PNSTexturedBorder extends AbstractBorder {
     private final Insets insets;
 
     public PNSTexturedBorder(ImageIcon image, Insets insets) {
-        this.image = PNSBorderFactory.imageToBufferedImage(image);
+        this.image = ImageHelper.imageToBufferedImage(image);
         this.insets = insets;
     }
 

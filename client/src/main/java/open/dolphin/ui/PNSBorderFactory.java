@@ -2,10 +2,7 @@ package open.dolphin.ui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import open.dolphin.client.GUIConst;
@@ -107,27 +104,5 @@ public class PNSBorderFactory {
      */
     public static Border createTitleBarBorderGray(Insets borderInsets) {
        return new PNSRoundedTextureBorder(GUIConst.ICON_BORDER_TITLE_38, borderInsets);
-    }
-
-    /**
-     * ImageIcon から BufferedImage に変換.
-     * alpha 対応.
-     * @param src
-     * @return
-     */
-    public static BufferedImage imageToBufferedImage(ImageIcon src) {
-        if (src == null) { return null; }
-
-        int width = src.getImage().getWidth(null);
-        int height = src.getImage().getHeight(null);
-
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-
-        src.paintIcon(null, g, 0, 0);
-
-        g.dispose();
-
-        return image;
     }
 }

@@ -12,7 +12,9 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.helper.ImageHelper;
 
 /**
- *
+ * CompletableSearchField.
+ * 未入力の Text Field に，半透明の虫眼鏡アイコンと Label を表示する.
+ * 入力が始まるとアイコンと Label は消える.
  * @author pns
  */
 public class CompletableSearchField extends CompletableJTextField {
@@ -35,14 +37,26 @@ public class CompletableSearchField extends CompletableJTextField {
         font = new Font(getFont().getFontName(), Font.PLAIN, 12);
     }
 
+    /**
+     * 未入力の Text Field に表示する文字列を設定.
+     * @param s
+     */
     public void setLabel(String s) {
         label = s;
     }
 
+    /**
+     * 組み込む Container によって Label が上下方向にずれるのを修正する.
+     * @param i
+     */
     public void setVerticalDeviation(int i) {
         verticalDeviation = i;
     }
 
+    /**
+     * 虫眼鏡と Label 文字列を表示する.
+     * @param graphics
+     */
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);

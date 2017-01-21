@@ -18,7 +18,6 @@ import open.dolphin.stampbox.DefaultStampTreeMenuListener;
 import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
-import open.dolphin.ui.CompletableJTextField;
 import open.dolphin.ui.CompletableSearchField;
 
 /**

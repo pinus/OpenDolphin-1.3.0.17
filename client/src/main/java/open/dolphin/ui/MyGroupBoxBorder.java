@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.AbstractBorder;
+import open.dolphin.helper.ImageHelper;
 
 /**
  * 難しい！！　未完成
@@ -31,7 +32,7 @@ public class MyGroupBoxBorder extends AbstractBorder {
         Graphics2D g2d = (Graphics2D) g.create();
 
 
-        BufferedImage buf = PNSBorderFactory.imageToBufferedImage(image);
+        BufferedImage buf = ImageHelper.imageToBufferedImage(image);
 
         RectangleGenerator src = new RectangleGenerator(0, 0, buf.getWidth(), buf.getHeight(), insets);
         RectangleGenerator dist = new RectangleGenerator(x, y, width, height, insets);
