@@ -572,8 +572,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         @Override
         public Dimension preferredLayoutSize(Container buttonPanel) {
             Dimension padding = ((ButtonPanel)buttonPanel).getPadding();
-            // accessory panel 対応
-            int width = accessoryPanel.getWidth() - padding.width;
+
+            int width = PNSTabbedPane.this.getWidth() - padding.width;
             if (width <= 0) { return new Dimension(1,1); }
 
             int hgap = this.getHgap();
@@ -683,9 +683,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     //================== TEST =================
     public static void main(String[] argv) {
         open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
-        testPattern1();
+        //testPattern1();
         //testPattern2();
-        //testPattern3();
+        testPattern3();
     }
 
     /**

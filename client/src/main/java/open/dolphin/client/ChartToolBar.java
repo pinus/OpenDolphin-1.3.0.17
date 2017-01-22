@@ -51,7 +51,7 @@ public class ChartToolBar extends JToolBar {
 
         add(createStampButton());
         //add(createTextStampButton());
-        //add(createSchemaButton());
+        add(createSchemaButton());
         add(createWindowButton());
         add(createDiagnosisSearchPanel());
     }
