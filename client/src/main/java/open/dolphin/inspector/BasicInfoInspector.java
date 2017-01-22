@@ -34,7 +34,7 @@ public class BasicInfoInspector implements IInspector {
     private static final Border MALE_BORDER = PNSBorderFactory.createTitleBarBorderLightBlue(new Insets(0,0,0,0));
     private static final Border FEMALE_BORDER = PNSBorderFactory.createTitleBarBorderPink(new Insets(0,0,0,0));
     private static final Border UNKNOWN_BORDER = PNSBorderFactory.createTitleBarBorderGray(new Insets(0,0,0,0));
-    private static final int WIDTH_EXTENSION = 56;
+    private static final int WIDTH = 340;
     private static final int INDENT = 8;
 
     private JPanel panel;
@@ -101,9 +101,9 @@ public class BasicInfoInspector implements IInspector {
         panel.add(namePanel, BorderLayout.NORTH);
 
         // サイズ調節
-        panel.setPreferredSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
-        panel.setMaximumSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
-        panel.setMinimumSize(new Dimension(DEFAULT_WIDTH + WIDTH_EXTENSION, 42));
+        panel.setPreferredSize(new Dimension(WIDTH, 42));
+        panel.setMaximumSize(new Dimension(WIDTH, 42));
+        panel.setMinimumSize(new Dimension(WIDTH, 42));
     }
 
     /**

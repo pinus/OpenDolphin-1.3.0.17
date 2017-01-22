@@ -2,7 +2,6 @@ package open.dolphin.inspector;
 
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import open.dolphin.client.ClientContext;
 import open.dolphin.event.BadgeListener;
 import open.dolphin.ui.PNSBorderFactory;
 
@@ -12,8 +11,8 @@ import open.dolphin.ui.PNSBorderFactory;
  */
 public interface IInspector {
 
-    public static final int DEFAULT_WIDTH = ClientContext.isMac()? 280 : 260;
-    public static final int DEFAULT_HEIGHT = ClientContext.isMac()? 175 : 178;
+    public static final int DEFAULT_WIDTH = 260;
+    public static final int DEFAULT_HEIGHT = 175;
 
     /**
      * Inspector を区別する ID としての名前.
