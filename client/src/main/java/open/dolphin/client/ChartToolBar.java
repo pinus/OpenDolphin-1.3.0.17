@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;

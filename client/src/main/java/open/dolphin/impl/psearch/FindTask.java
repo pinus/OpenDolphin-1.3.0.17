@@ -2,6 +2,7 @@ package open.dolphin.impl.psearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import open.dolphin.client.ClientContext;
@@ -18,12 +19,12 @@ import org.apache.log4j.Logger;
  */
 class FindTask extends Task<Collection> {
 
-    private PatientSearchPanel view;
-    private ObjectReflectTableModel tableModel;
-    private PatientSearchSpec spec;
+    private final PatientSearchPanel view;
+    private final ObjectReflectTableModel<PatientModel> tableModel;
+    private final PatientSearchSpec spec;
     private List<PatientModel> result;
 
-    private Logger logger = ClientContext.getBootLogger();
+    private final Logger logger = ClientContext.getBootLogger();
 
     /**
      * メモ検索 or 全文検索のコンストラクタ
@@ -33,11 +34,12 @@ class FindTask extends Task<Collection> {
      * @param searchText
      * @param option
      */
+    @SuppressWarnings("unchecked")
     public FindTask(PatientSearchPanel view, Object message, String note, PatientSearchSpec spec) {
         super(SwingUtilities.getWindowAncestor(view), message, note);
         this.view = view;
         this.spec = spec;
-        tableModel = (ObjectReflectTableModel) view.getTable().getModel();
+        tableModel = (ObjectReflectTableModel<PatientModel>) view.getTable().getModel();
     }
 
     @Override
@@ -48,13 +50,11 @@ class FindTask extends Task<Collection> {
         // table のリストが空の場合は全患者から，リストがあればその中で検索する
         // そのために，spec に PatientModel の id をセットしておく
 
-        List<Long> ids = new ArrayList<Long>();
+        List<Long> ids = new ArrayList<>();
 
         if (view.getNarrowingSearchCb().isSelected()) {
             List<PatientModel> ptOnTable = tableModel.getObjectList();
-            for (PatientModel pm : ptOnTable) {
-                ids.add(pm.getId());
-            }
+            ptOnTable.stream().forEach(patientModel -> ids.add(patientModel.getId()));
         }
         spec.setNarrowingIds(ids);
 
@@ -73,10 +73,10 @@ class FindTask extends Task<Collection> {
             pm = pdl.getPatients(spec);
         }
 
-        result = new ArrayList<PatientModel>();
+        result = new ArrayList<>();
         result.addAll(pm);
 
-        return result;
+        return Collections.unmodifiableCollection(result);
     }
 
     @Override
@@ -102,11 +102,11 @@ class FindTask extends Task<Collection> {
 
     private void unfinished() {
         // 途中経過の書き込み
-        if (tableModel.getObjectCount() == 0) setResult();
+        if (tableModel.getObjectCount() == 0) { setResult(); }
     }
 
     /**
-     * table に result をセットする
+     * table に result をセットする.
      */
     protected void setResult() {
 

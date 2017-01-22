@@ -24,7 +24,6 @@ import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.PatientDelegater;
 import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.event.BadgeEvent;
-import open.dolphin.event.BadgeListener;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
@@ -33,6 +32,7 @@ import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.util.PNSTriple;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
@@ -466,10 +466,11 @@ public class WaitingListImpl extends AbstractMainComponent {
         view.getCountLbl().setText(String.format("来院数%d人，待ち%d人，待ち時間 %s", pvtCount, waitingCount, waitingTime));
 
         // PNSBadgeTabbedPane に待ち人数を伝える
+        PNSBadgeTabbedPane pane = ((Dolphin)getContext()).getTabbedPane();
         BadgeEvent e = new BadgeEvent(this);
         e.setBadgeNumber(waitingCount);
-        e.setTabIndex(0);
-        ((Dolphin)getContext()).getTabbedPane().setBadge(e);
+        e.setTabIndex(pane.indexOfTab(getName()));
+        pane.setBadge(e);
     }
 
     /**

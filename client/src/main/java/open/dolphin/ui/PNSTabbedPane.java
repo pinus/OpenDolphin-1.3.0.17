@@ -66,7 +66,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     /** タブの場所　上か下か */
     private int tabPlacement = JTabbedPane.TOP;
     /** ChangeListener */
-    private ChangeListener listener = null;
+    private final List<ChangeListener> listeners = new ArrayList<>();
     /** 親の Window */
     private Window parent = null;
 
@@ -258,7 +258,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * @param listener
      */
     public void addChangeListener(ChangeListener listener) {
-        this.listener = listener;
+        listeners.add(listener);
     }
 
     /**
@@ -322,7 +322,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      */
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (listener != null) { listener.stateChanged(e); }
+        listeners.forEach(listener -> listener.stateChanged(e));
 
         int index = selectionModel.getSelectedIndex();
         card.show(contentPanel, String.valueOf(index));
@@ -724,6 +724,12 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         f.pack();
         f.setVisible(true);
 
+        JPanel p = tabPane.getAccessoryPanel();
+        JButton button1 = new JButton("西ボタン");
+        JButton button2 = new JButton("東ボタン");
+        p.add(button1, BorderLayout.WEST);
+        p.add(button2, BorderLayout.EAST);
+        f.pack();
     }
 
     private static JPanel createMainPanel() {

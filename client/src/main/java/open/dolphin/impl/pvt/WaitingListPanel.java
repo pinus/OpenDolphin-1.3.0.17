@@ -37,6 +37,7 @@ public class WaitingListPanel extends MainComponentPanel {
     private void initComponents() {
 
         CommandPanel comPanel = getCommandPanel();
+        remove(comPanel);
 
         kutuBtn = new JButton(KUTU_ICON);
         kutuBtn.setBorderPainted(false);

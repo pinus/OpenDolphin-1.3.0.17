@@ -6,18 +6,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
-import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.helper.TextComponentUndoManager;
-import open.dolphin.ui.CompletableJTextField;
 import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJScrollPane;
@@ -26,6 +22,7 @@ import open.dolphin.util.PNSPair;
 
 /**
  * PatientSearchView 互換 JPanel.
+ * Keyword Field を各 MainComponent で共有することにした.
  * @author pns
  */
 public class PatientSearchPanel extends MainComponentPanel {
@@ -54,6 +51,7 @@ public class PatientSearchPanel extends MainComponentPanel {
     private void initComponents() {
 
         CommandPanel comPanel = getCommandPanel();
+        remove(comPanel);
 
         final JPopupMenu popup = new JPopupMenu();
         final List<PNSPair<String,String>> menuPair = Arrays.asList(
@@ -87,12 +85,10 @@ public class PatientSearchPanel extends MainComponentPanel {
 
         keywordFld = new CompletableSearchField(20);
         keywordFld.setLabel("患者検索");
+        keywordFld.setVerticalDeviation(1);
 
         TextComponentUndoManager undoManager = TextComponentUndoManager.getManager(keywordFld);
 
-        Dimension tfSize = new Dimension(280,32);
-        keywordFld.setPreferredSize(tfSize);
-        keywordFld.setMaximumSize(tfSize);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
 
         keywordFld.addMouseListener(new MouseAdapter(){
@@ -103,9 +99,6 @@ public class PatientSearchPanel extends MainComponentPanel {
                 }
             }
         });
-
-        comPanel.addGlue();
-        comPanel.add(keywordFld);
 
         MainPanel mainPanel = getMainPanel();
 
@@ -142,7 +135,7 @@ public class PatientSearchPanel extends MainComponentPanel {
         return table;
     }
 
-    public CompletableJTextField getKeywordFld() {
+    public CompletableSearchField getKeywordFld() {
         return keywordFld;
     }
 

@@ -158,12 +158,14 @@ public class LaboTestImporter extends AbstractMainComponent {
         // 全体をレイアウトする
         MainComponentPanel view = new MainComponentPanel();
         MainComponentPanel.CommandPanel comPanel = view.getCommandPanel();
+        view.remove(comPanel);
+
         MainComponentPanel.MainPanel mainPanel = view.getMainPanel();
         StatusPanel statusPanel = view.getStatusPanel();
 
-        comPanel.add(iconLabel);
-        comPanel.add(instLabel);
-        comPanel.setMargin(4);
+        //comPanel.add(iconLabel);
+        //comPanel.add(instLabel);
+        //comPanel.setMargin(4);
 
         mainPanel.add(scroller);
 

@@ -1,5 +1,6 @@
 package open.dolphin.impl.psearch;
 
+import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.beans.*;
 import java.io.File;
@@ -14,6 +15,7 @@ import javax.swing.table.TableRowSorter;
 import open.dolphin.client.AbstractMainComponent;
 import open.dolphin.client.CalendarCardPanel;
 import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.PnsDelegater;
@@ -31,6 +33,7 @@ import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.util.PNSTriple;
 import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;
@@ -82,6 +85,18 @@ public class PatientSearchImpl extends AbstractMainComponent {
     public void start() {
         initComponents();
         connect();
+
+        // Tabbed pane にサーチフィールドを表示してしまう.
+        PNSBadgeTabbedPane tab = ((Dolphin)getContext()).getTabbedPane();
+        JPanel panel = tab.getAccessoryPanel();
+        panel.add(view.getKeywordFld(), BorderLayout.EAST);
+
+        // 別の MainComponent に tab が切り替わったらクリアする
+        tab.addChangeListener(e -> {
+            if (tab.getSelectedIndex() != tab.indexOfTab(getName())) {
+                view.getKeywordFld().setText("");
+            }
+        });
     }
 
     @Override
@@ -195,6 +210,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         // 絞り込み検索ボタンの初期値
         view.getNarrowingSearchCb().setSelected(prefs.getBoolean(NARROWING_SEARCH, false));
+        setTextFieldBackground(view.getNarrowingSearchCb().isSelected());
 
         // 追加のテーブル設定
         AdditionalTableSettings.setTable(table);
@@ -215,9 +231,14 @@ public class PatientSearchImpl extends AbstractMainComponent {
         view.getKeywordFld().addActionListener(e -> {
             JTextField tf = (JTextField) e.getSource();
             String test = tf.getText().trim();
+
             if (!test.equals("")) {
                 // 検索開始
                 find(test);
+
+                // この MainComponent を選択
+                PNSBadgeTabbedPane pane = ((Dolphin)getContext()).getTabbedPane();
+                pane.setSelectedIndex(pane.indexOfTab(getName()));
 
             } else {
                 // キーワードが "" ならテーブルクリアして，検索件数をリセット
@@ -254,25 +275,23 @@ public class PatientSearchImpl extends AbstractMainComponent {
             }
         });
 
-        // 絞り込み選択ボタンが解除されたときは背景もクリアする
+        // 絞り込み選択ボタンで背景を制御
         view.getNarrowingSearchCb().addActionListener(e -> {
             prefs.putBoolean(NARROWING_SEARCH, view.getNarrowingSearchCb().isSelected());
-
-            if (tableModel.getObjectCount() > 0 && view.getNarrowingSearchCb().isSelected()) {
-                view.getKeywordFld().setBackground(PatientSearchPanel.NARROWING_SEARCH_BACKGROUND_COLOR);
-            } else {
-                view.getKeywordFld().setBackground(PatientSearchPanel.NORMAL_SEARCH_BACKGROUND_COLOR);
-            }
+            setTextFieldBackground(view.getNarrowingSearchCb().isSelected());
         });
+    }
 
-        // テーブルの状態による絞り込み検索モードの制御
-        tableModel.addTableModelListener(e -> {
-            if (tableModel.getObjectCount() > 0 && view.getNarrowingSearchCb().isSelected()) {
-                view.getKeywordFld().setBackground(PatientSearchPanel.NARROWING_SEARCH_BACKGROUND_COLOR);
-            } else {
-                view.getKeywordFld().setBackground(PatientSearchPanel.NORMAL_SEARCH_BACKGROUND_COLOR);
-            }
-        });
+    /**
+     * 検索フィールドの背景ラベルを変更する.
+     * @param isNarrowing
+     */
+    private void setTextFieldBackground(boolean isNarrowing) {
+        if (isNarrowing) {
+            view.getKeywordFld().setLabel("絞り込み検索モード");
+        } else {
+            view.getKeywordFld().setLabel("患者検索");
+        }
     }
 
     /**
