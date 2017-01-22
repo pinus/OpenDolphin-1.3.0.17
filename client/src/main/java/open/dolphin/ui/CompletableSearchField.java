@@ -1,6 +1,7 @@
 package open.dolphin.ui;
 
 import java.awt.AlphaComposite;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -8,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import open.dolphin.client.GUIConst;
@@ -48,6 +50,21 @@ public class CompletableSearchField extends CompletableJTextField {
                     setText("");
                     // リターンキー入力されたことにする
                     fireActionPerformed();
+                }
+            }
+        });
+
+        // 右端の X のところでカーソルの形を変える
+        addMouseMotionListener(new MouseMotionListener(){
+            @Override
+            public void mouseDragged(MouseEvent e) {}
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (getText() != null && ! getText().equals("") && getWidth() - e.getX() <= 20) {
+                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                } else {
+                    setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
                 }
             }
         });
