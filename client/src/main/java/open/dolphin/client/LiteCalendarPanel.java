@@ -157,7 +157,7 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
                 int col = table.columnAtPoint(p);
                 if (row != -1 && col != -1) {
                     //Object o = table.getValueAt(row, col);
-                    Object o = tableModel.getDate(row, col);
+                    Object o = tableModel.getValueAt(row, col);
                     setSelectedDate(o);
                 }
             }
@@ -617,7 +617,7 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
                 }
 
                 // 休日 masuda
-                SimpleDate sd = tableModel.getDate(row, col);
+                SimpleDate sd = (SimpleDate) tableModel.getValueAt(row, col);
                 if (Holiday.isHoliday(new GregorianCalendar(sd.getYear(), sd.getMonth(), sd.getDay()))) {
                     this.setForeground(getSundayFore());
                 }
