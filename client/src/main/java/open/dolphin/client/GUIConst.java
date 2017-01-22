@@ -148,10 +148,10 @@ public class GUIConst {
     public static final ImageIcon ICON_CHECK_LIGHTBLUE_16 = ClientContext.getImageIcon("icons/16x16/check-lightblue.png");
     public static final ImageIcon ICON_CHECK_RED_16 = ClientContext.getImageIcon("icons/16x16/check-red.png");
     public static final ImageIcon ICON_CHECK_GRAY_16 = ClientContext.getImageIcon("icons/16x16/check-gray.png");
-    public static final ImageIcon ICON_ARROW_DOWN_16 = ClientContext.getImageIcon("icons/16x16/arrow-down.gif");
-    public static final ImageIcon ICON_ARROW_RIGHT_16 = ClientContext.getImageIcon("icons/16x16/arrow-right.gif");
-    public static final ImageIcon ICON_ARROW_LEFT_16 = ClientContext.getImageIcon("icons/16x16/arrow-left.gif");
-    public static final ImageIcon ICON_ARROW_UP_16 = ClientContext.getImageIcon("icons/16x16/arrow-up.gif");
+    //public static final ImageIcon ICON_ARROW_DOWN_16 = ClientContext.getImageIcon("icons/16x16/arrow-down.gif");
+    //public static final ImageIcon ICON_ARROW_RIGHT_16 = ClientContext.getImageIcon("icons/16x16/arrow-right.gif");
+    //public static final ImageIcon ICON_ARROW_LEFT_16 = ClientContext.getImageIcon("icons/16x16/arrow-left.gif");
+    //public static final ImageIcon ICON_ARROW_UP_16 = ClientContext.getImageIcon("icons/16x16/arrow-up.gif");
     // Tree の expand, collapse アイコン
     public static final ImageIcon ICON_TREE_EXPANDED_16 = ClientContext.getImageIcon("icons/16x16/Tree.expandedIcon.png");
     public static final ImageIcon ICON_TREE_COLLAPSED_16 = ClientContext.getImageIcon("icons/16x16/Tree.collapsedIcon.png");
@@ -216,7 +216,10 @@ public class GUIConst {
     public static final ImageIcon ICON_LIST_REMOVE_16 = ClientContext.getImageIcon("bw/16x16/trash-empty.png");
     public static final ImageIcon ICON_FOLDER_NEW_16 = ClientContext.getImageIcon("bw/16x16/folder.png");
     public static final ImageIcon ICON_DOWNLOAD_16 = ClientContext.getImageIcon("bw/16x16/download-alt-3.png");
-
+    public static final ImageIcon ICON_MD_FORWARD_16 = ClientContext.getImageIcon("bw/16x16/MD-play.png");
+    public static final ImageIcon ICON_MD_BACKWARD_16 = ClientContext.getImageIcon("bw/16x16/MD-backward.png");
+    public static final ImageIcon ICON_MD_STOP_16 = ClientContext.getImageIcon("bw/16x16/MD-stop.png");
+    public static final ImageIcon ICON_MD_EJECT_16 = ClientContext.getImageIcon("bw/16x16/MD-eject.png");
 
 
 //  fugue series ----------------------
@@ -347,10 +350,10 @@ public class GUIConst {
     public static final ImageIcon ICON_BORDER_GROUPBOX_EMPTY_18 = ClientContext.getImageIcon("borders/18/GroupBox.empty.png");
 
     // progress bar for ATOK memory monitor
-    public static final ImageIcon PROGRSS_BAR_1 = ClientContext.getImageIcon("icons/64x8/progressBar1.png");
-    public static final ImageIcon PROGRSS_BAR_2 = ClientContext.getImageIcon("icons/64x8/progressBar2.png");
-    public static final ImageIcon PROGRSS_BAR_3 = ClientContext.getImageIcon("icons/64x8/progressBar3.png");
-    public static final ImageIcon PROGRSS_BAR_4 = ClientContext.getImageIcon("icons/64x8/progressBar4.png");
+    //public static final ImageIcon PROGRSS_BAR_1 = ClientContext.getImageIcon("icons/64x8/progressBar1.png");
+    //public static final ImageIcon PROGRSS_BAR_2 = ClientContext.getImageIcon("icons/64x8/progressBar2.png");
+    //public static final ImageIcon PROGRSS_BAR_3 = ClientContext.getImageIcon("icons/64x8/progressBar3.png");
+    //public static final ImageIcon PROGRSS_BAR_4 = ClientContext.getImageIcon("icons/64x8/progressBar4.png");
 
     // RegionView の背景
     public static final ImageIcon ICON_BODY = ClientContext.getImageIcon("body.png");

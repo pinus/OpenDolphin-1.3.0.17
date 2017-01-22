@@ -32,10 +32,10 @@ public class CalendarCardPanel extends JPanel  {
 
     private JPanel cardPanel = new JPanel();
     private CardLayout cardLayout = new CardLayout();
-    private ImageIcon backIcon = GUIConst.ICON_ARROW_LEFT_16;
-    private ImageIcon stopIcon = GUIConst.ICON_ARROW_DOWN_16;
-    private ImageIcon forwardIcon = GUIConst.ICON_ARROW_RIGHT_16;
-    private ImageIcon upIcon = GUIConst.ICON_ARROW_UP_16;
+    private ImageIcon backIcon = GUIConst.ICON_MD_BACKWARD_16;
+    private ImageIcon stopIcon = GUIConst.ICON_MD_STOP_16;
+    private ImageIcon forwardIcon = GUIConst.ICON_MD_FORWARD_16;
+    private ImageIcon upIcon = GUIConst.ICON_MD_EJECT_16;
     private JButton backBtn = new JButton(backIcon);
     private JButton stopBtn = new JButton(stopIcon);
     private JButton forwardBtn = new JButton(forwardIcon);
