@@ -3,40 +3,39 @@ package open.dolphin.client;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
-
 import javax.swing.table.AbstractTableModel;
-
 import open.dolphin.infomodel.SimpleDate;
 
-
 /**
- * CalendarTableModel
+ * CalendarTableModel.
  *
  * @author Kazushi Minagawa Digital Globe, Inc.
- *
+ * @author pns
  */
 public class CalendarTableModel extends AbstractTableModel {
+    private static final long serialVersionUID = 1L;
 
-    private static final String[] COLUMN_NAMES = {
-        "日", "月", "火", "水", "木", "金", "土"
-    };
-    private String[] columnNames = COLUMN_NAMES;
-    private Object[][] data;
-    private Collection markDates;
-    private int year;
-    private int month;
-    private int startDay;
+    private static final String[] COLUMN_NAME = { "日", "月", "火", "水", "木", "金", "土" };
+
+    private final int year;
+    private final int month;
+
+    // このカレンダーの最初の日
+    private final int startDay;
+
+    // この月の開始日，終了日の対応する Cell 番号 (0から始まる)
     private int firstCell;
     private int lastCell;
-    private int numCols = columnNames.length;
-    private int numRows;
-    private int numDaysOfMonth;
 
-    //private GregorianCalendar firstDate;
-    //private GregorianCalendar lastDate;
-    private GregorianCalendar startDate;
+    private final int numCols = COLUMN_NAME.length;
+    private final int numRows;
+    private final int numDaysOfMonth;
 
+    // この月の SimpleDate を入れる
+    private SimpleDate[] data;
+
+    // Event のマークされた SimpleDate を登録する
+    private Collection<SimpleDate> markDates;
 
     /**
      * CalendarTableModel を生成する.
@@ -50,19 +49,16 @@ public class CalendarTableModel extends AbstractTableModel {
 
         // 作成する月の最初の日  yyyyMM1
         GregorianCalendar gc = new GregorianCalendar(year, month, 1);
-        //firstDate = (GregorianCalendar) gc.clone();
 
-        // 最初の日は週の何日目か
-        // 1=SUN 6=SAT
+        // 最初の日は週の何日目か 1=SUN 7=SAT
         firstCell = gc.get(Calendar.DAY_OF_WEEK);
-        firstCell--;  // table のセル番号へ変換する
+        firstCell--;  // TableModel の Cell 番号へ変換する
 
         // この月の日数を得る
         numDaysOfMonth = gc.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        // その月の最後の日を求める 1日 + （日数-1）
+        // gc をその月の最後の日まで進める　1日 + （日数-1）
         gc.add(Calendar.DAY_OF_MONTH, numDaysOfMonth - 1);
-        //lastDate = (GregorianCalendar) gc.clone();
 
         // 最後の日はその月の何週目か
         numRows = gc.get(Calendar.WEEK_OF_MONTH);
@@ -72,119 +68,96 @@ public class CalendarTableModel extends AbstractTableModel {
         lastCell--;
 
         // １次元のセル番号へ変換する
-        lastCell += (numRows-1)*numCols; // table のセル番号へ変換する
+        lastCell += (numRows-1) * numCols;
 
         // このカレンダの表示開始日を求める
-        // 一度一日に戻し，それからさらにカラム番号分の日数を引く
-        gc.add(Calendar.DAY_OF_MONTH, 1 - numDaysOfMonth);
-        gc.add(Calendar.DAY_OF_MONTH, -firstCell);
-        startDate = (GregorianCalendar) gc.clone();
+        GregorianCalendar startDate = new GregorianCalendar(year, month, 1);
+        startDate.add(Calendar.DAY_OF_MONTH, - firstCell);
 
-        startDay = gc.get(Calendar.DAY_OF_MONTH);
+        // startDay はたいてい前の月になる
+        startDay = startDate.get(Calendar.DAY_OF_MONTH);
 
-        // 空のデータ配列
-        data = new Object[numRows][numCols];
-    }
-
-    public String[] getColumnNames() {
-        return columnNames;
-    }
-
-    public void setColumnNames(String[] columnNames) {
-        this.columnNames = columnNames;
+        // データ配列作成
+        data = new SimpleDate[numRows * 7];
     }
 
     @Override
     public String getColumnName(int col) {
-        return columnNames[col];
+        return COLUMN_NAME[col];
     }
 
+    @Override
     public int getRowCount() {
         return numRows;
     }
 
+    @Override
     public int getColumnCount() {
-        return numCols;
+        return COLUMN_NAME.length;
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
 
         // Cell 番号を得る
-        int cellNumber = row*numCols + col;
-        Object ret = null;
+        int cellNumber = row * numCols + col;
 
-        // 先月か
-        if (cellNumber < firstCell) {
-            ret = String.valueOf(startDay + cellNumber);
+        // データがない場合は作る
+        if (data[cellNumber] == null) {
+            if (cellNumber < firstCell) {
+                // 先月
+                data[cellNumber] = month == 0?
+                        new SimpleDate(year-1, 11, startDay + cellNumber):
+                        new SimpleDate(year, month-1, startDay + cellNumber);
 
-            // 来月か
-        } else if (cellNumber > lastCell) {
-            ret = String.valueOf(cellNumber - lastCell);
+            } else if (cellNumber > lastCell) {
+                // 来月
+                data[cellNumber] = month == 11?
+                        new SimpleDate(year+1, 0, cellNumber - lastCell):
+                        new SimpleDate(year, month+1, cellNumber - lastCell);
 
-            // 当月	の場合
-        } else {
-            // data 配列から取り出す
-            ret = data[row][col];
-
-            // null でなければそれを返す
-            // null なら日を返す
-            if (ret == null) {
-
-                return String.valueOf(1 + cellNumber - firstCell);
+            } else {
+                // 当月
+                data[cellNumber] = new SimpleDate(year, month, cellNumber - firstCell + 1);
             }
         }
 
-        return ret;
+        return data[cellNumber];
     }
 
     @Override
     public void setValueAt(Object value, int row, int col) {
 
-        int cellNumber = row*numCols + col;
-
-        // 先月または来月の時は何もしない
-        if ( (cellNumber < firstCell) || (cellNumber > lastCell) ) {
-            return;
-        }
-
-        // 当月の場合はそれを単純に設定する
-        data[row][col] = value;
+        int cellNumber = row * numCols + col;
+        data[cellNumber] = (SimpleDate) value;
     }
 
-    public void setMarkDates(Collection c) {
+    public void setMarkDates(Collection<SimpleDate> c) {
+        markDates = c;
 
-        this.markDates = c;
+        // 既存のデータを消去して，SimpleDate を登録し直す
         clear();
-        if (markDates != null) {
-            Iterator iter = markDates.iterator();
-            SimpleDate date = null;
-
-            while (iter.hasNext()) {
-                date = (SimpleDate)iter.next();
-                if ( (year != date.getYear()) || (month != date.getMonth()) ) {
-                    continue;
-                }
-                int day = date.getDay();
-                int cellNumber = firstCell + (day-1);
-                int row = cellNumber / numCols;
-                int col = cellNumber % numCols;
-                setValueAt(date, row, col);
-            }
-        }
-        this.fireTableDataChanged();
+        c.stream().filter(date -> year == date.getYear() && month == date.getMonth()).forEach(date -> {
+            int day = date.getDay();
+            int cellNumber = firstCell + (day-1);
+            int row = cellNumber / numCols;
+            int col = cellNumber % numCols;
+            setValueAt(date, row, col);
+        });
+        fireTableDataChanged();
     }
 
-    public Collection getMarkDates() {
+    public Collection<SimpleDate> getMarkDates() {
         return markDates;
     }
 
     public void clear() {
-        data = new Object[numRows][numCols];
+        data = new SimpleDate[numRows * 7];
     }
 
     public boolean isOutOfMonth(int row, int col) {
-        int cellNumber = row*numCols + col;
-        return ( (cellNumber < firstCell) || (cellNumber > lastCell) ) ? true : false;
+        int cellNumber = row * numCols + col;
+        return cellNumber < firstCell || cellNumber > lastCell;
     }
 
     public SimpleDate getFirstDate() {
@@ -193,15 +166,5 @@ public class CalendarTableModel extends AbstractTableModel {
 
     public SimpleDate getLastDate() {
         return new SimpleDate(year, month, numDaysOfMonth);
-    }
-
-    public SimpleDate getDate(int row, int col) {
-        int cellNumber = row*numCols + col;
-        GregorianCalendar gc = (GregorianCalendar) startDate.clone();
-        gc.add(Calendar.DAY_OF_MONTH, cellNumber);
-        int y = gc.get(Calendar.YEAR);
-        int m = gc.get(Calendar.MONTH);
-        int d = gc.get(Calendar.DAY_OF_MONTH);
-        return new SimpleDate(y, m, d);
     }
 }
