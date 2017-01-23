@@ -1,15 +1,19 @@
 package open.dolphin.client;
 
+import com.sun.glass.events.KeyEvent;
 import java.awt.Point;
+import java.awt.event.InputEvent;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.IInfoModel;
@@ -206,6 +210,11 @@ public class ChartToolBar extends JToolBar {
                 }
             }
         });
+
+        // ctrl-return でもリターンキーの notify-field-accept が発生するようにする
+        InputMap map = keywordFld.getInputMap();
+        Object value =  map.get(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+        map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), value);
 
         panel.add(keywordFld);
 
