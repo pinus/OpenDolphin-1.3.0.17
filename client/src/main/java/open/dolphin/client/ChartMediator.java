@@ -681,7 +681,6 @@ public final class ChartMediator extends MenuSupport {
 
     public void fontUnderline() {
         JComponent focusOwner = getCurrentComponent();
-        System.out.println("--------------- focusOwner = " + focusOwner);
         if (focusOwner != null) {
             Action a = focusOwner.getActionMap().get("font-underline");
             if (a != null) {
