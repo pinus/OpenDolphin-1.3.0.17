@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import open.dolphin.infomodel.BundleMed;
 import open.dolphin.infomodel.ClaimItem;
@@ -14,14 +15,13 @@ import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.util.DailyDoseStringTool;
 
 /**
  * StampHolder を右クリックでいろいろいじる.
  * @author pns
  */
-public class StampHolderPopupMenu extends MyJPopupMenu {
+public class StampHolderPopupMenu extends JPopupMenu {
     private static final long serialVersionUID = 1L;
 
     private final StampHolder ctx;

@@ -9,10 +9,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.BorderFactory;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import open.dolphin.infomodel.*;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.MyJPopupMenu;
 
 /**
  * DiagnosisDocument のポップアップメニューを一手に引き受ける
@@ -30,10 +30,10 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
     private DiagnosisDocument parent;
 
     private int[] lastVisitYmd;
-    private MyJPopupMenu calendarPopup;
-    private MyJPopupMenu diagPopup;
-    private MyJPopupMenu categoryPopup;
-    private MyJPopupMenu outcomePopup;
+    private JPopupMenu calendarPopup;
+    private JPopupMenu diagPopup;
+    private JPopupMenu categoryPopup;
+    private JPopupMenu outcomePopup;
     private int targetColumn;
 
     private PropertyChangeSupport boundSupport;
@@ -168,7 +168,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
      * @param e
      */
     private void popupCalendar(MouseEvent e) {
-        calendarPopup = new MyJPopupMenu();
+        calendarPopup = new JPopupMenu();
         calendarPopup.setBorder(BorderFactory.createEmptyBorder());
         GregorianCalendar gc = new GregorianCalendar();
         int this_month = gc.get(Calendar.MONTH);
@@ -218,7 +218,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
      * 病名修飾ポップアップメニュー作成
      */
     private void createDiagnosisPopupMenu() {
-        diagPopup = new MyJPopupMenu();
+        diagPopup = new JPopupMenu();
 
         // Diagnosis preposition 項目の作成
         for (DiagnosisPreposition p : DiagnosisPreposition.values()) {
@@ -240,7 +240,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
      * DiagnosisInspector で diagPopup を使う
      * @return
      */
-    public MyJPopupMenu getDiagPopup() {
+    public JPopupMenu getDiagPopup() {
         return diagPopup;
     }
 
@@ -248,7 +248,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
      * DiagnosisInspector で outcomePopup を使う
      * @return
      */
-    public MyJPopupMenu getOutcomePopup() {
+    public JPopupMenu getOutcomePopup() {
         return outcomePopup;
     }
 
@@ -256,7 +256,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
      * DiagnosisInspector で categoryPopup を使う
      * @return
      */
-    public MyJPopupMenu getCategoryPopup() {
+    public JPopupMenu getCategoryPopup() {
         return categoryPopup;
     }
 
@@ -418,7 +418,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
      * 主病名／疑い病名ポップアップを作る
      */
     private void createCategoryPopupMenu() {
-        categoryPopup = new MyJPopupMenu();
+        categoryPopup = new JPopupMenu();
 
         for (DiagnosisCategory c : DiagnosisCategory.values()) {
             JMenuItem item = new JMenuItem(c.model().getDiagnosisCategoryDesc());
@@ -430,7 +430,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
      * 転帰ポップアップを作る
      */
     private void createOutcomePopupMenu() {
-        outcomePopup = new MyJPopupMenu();
+        outcomePopup = new JPopupMenu();
 
         for (DiagnosisOutcome o : DiagnosisOutcome.values()) {
             JMenuItem item = new JMenuItem(o.model().getOutcomeDesc());
@@ -489,7 +489,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         doClickPopup(outcomePopup, s);
     }
 
-    private void doClickPopup(MyJPopupMenu popup, String s) {
+    private void doClickPopup(JPopupMenu popup, String s) {
         JMenuItem m = null;
         for(Component c : popup.getComponents()) {
             if (c instanceof JMenuItem) {

@@ -2,11 +2,11 @@ package open.dolphin.stampbox;
 
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import open.dolphin.client.GUIConst;
 import open.dolphin.helper.MenuActionManager;
 import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.helper.MenuActionManager.MenuAction;
 
@@ -15,7 +15,7 @@ import open.dolphin.helper.MenuActionManager.MenuAction;
  * StampTreePopupAdapter から切換.
  * @author pns
  */
-public class StampTreePopupMenu extends MyJPopupMenu {
+public class StampTreePopupMenu extends JPopupMenu {
     private static final long serialVersionUID = 1L;
 
     private final StampTree tree;

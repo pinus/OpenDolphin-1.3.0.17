@@ -14,6 +14,7 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -33,7 +34,6 @@ import open.dolphin.infomodel.PhysicalModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.util.PNSTriple;
 import org.apache.log4j.Logger;
 
@@ -100,7 +100,7 @@ public class PhysicalInspector implements IInspector {
                 // isReadOnly対応
                 if (context.isReadOnly()) { return; }
 
-                MyJPopupMenu pop = new MyJPopupMenu();
+                JPopupMenu pop = new JPopupMenu();
                 JMenuItem item = new JMenuItem("追加");
                 item.setIcon(GUIConst.ICON_LIST_ADD_16);
                 pop.add(item);

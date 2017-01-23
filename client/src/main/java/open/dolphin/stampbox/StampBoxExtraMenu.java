@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingWorker;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.GUIConst;
@@ -21,7 +22,6 @@ import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.StampModel;
 import open.dolphin.project.Project;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.HexBytesTool;
 import org.jdom2.Element;
@@ -34,7 +34,7 @@ import open.dolphin.helper.MenuActionManager.MenuAction;
  */
 public class StampBoxExtraMenu extends MouseAdapter {
 
-    private MyJPopupMenu popup;
+    private JPopupMenu popup;
     private final StampBoxPlugin context;
     private final AbstractStampBox stampBox;
     private final BlockGlass blockGlass;
@@ -88,7 +88,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
         MenuActionManager m = new MenuActionManager(this);
         actionMap = m.getActionMap();
 
-        popup = new MyJPopupMenu();
+        popup = new JPopupMenu();
         popup.add(m.getMenuItem("collapseAll", "フォルダを全て閉じる", GUIConst.ICON_TREE_COLLAPSED_16));
         popup.add(m.getMenuItem("expandAll", "フォルダを全て展開する", GUIConst.ICON_TREE_EXPANDED_16));
         popup.addSeparator();

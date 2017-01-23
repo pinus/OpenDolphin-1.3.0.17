@@ -17,7 +17,6 @@ import open.dolphin.event.ProxyAction;
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.*;
 
@@ -71,7 +70,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     private CareMapDocument parent;
     private boolean dirty;
 
-    private MyJPopupMenu appointMenu;
+    private JPopupMenu appointMenu;
     private int popedRow;
     private int popedCol;
 
@@ -140,7 +139,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         this.setMaximumSize(dim);
 
         // Embed popup menu
-        appointMenu = new MyJPopupMenu();
+        appointMenu = new JPopupMenu();
         JMenuItem item = new JMenuItem(new ProxyAction("取り消し", this::appointCancel));
         appointMenu.add(item);
 

@@ -36,7 +36,6 @@ import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.codehelper.PCodeHelper;
 import open.dolphin.codehelper.SOACodeHelper;
@@ -444,9 +443,9 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         return getTextPane();
     }
 
-    protected MyJPopupMenu createMenus() {
+    protected JPopupMenu createMenus() {
 
-        final MyJPopupMenu contextMenu = new MyJPopupMenu();
+        final JPopupMenu contextMenu = new JPopupMenu();
 
         // cut, copy, paste メニューを追加する
         contextMenu.add(mediator.getAction(GUIConst.ACTION_CUT));
@@ -485,7 +484,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     private void mabeShowPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {
-            MyJPopupMenu contextMenu = createMenus();
+            JPopupMenu contextMenu = createMenus();
             contextMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }

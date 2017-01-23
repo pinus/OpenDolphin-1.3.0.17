@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -27,7 +28,6 @@ import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.util.PNSTriple;
 
 /**
@@ -99,7 +99,7 @@ public class AllergyInspector implements IInspector {
                 //  isReadOnly対応
                 if (context.isReadOnly()) { return; }
 
-                MyJPopupMenu pop = new MyJPopupMenu();
+                JPopupMenu pop = new JPopupMenu();
                 // 追加
                 JMenuItem item = new JMenuItem("追加");
                 item.setIcon(GUIConst.ICON_LIST_ADD_16);

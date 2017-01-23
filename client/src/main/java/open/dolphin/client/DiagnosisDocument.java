@@ -253,7 +253,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 if (!e.isPopupTrigger()) {
                     // ASP StampBox が選択されていて傷病名Treeがない場合がある
                     if (getContext().getChartMediator().hasTree(IInfoModel.ENTITY_DIAGNOSIS)) {
-                        MyJPopupMenu popup = new MyJPopupMenu();
+                        JPopupMenu popup = new JPopupMenu();
                         getContext().getChartMediator().addDiseaseMenu(popup);
                         popup.show(e.getComponent(), e.getX(), e.getY());
                     } else {

@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.util.concurrent.Callable;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import open.dolphin.delegater.PvtDelegater;
@@ -16,7 +17,6 @@ import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJSheet;
 
 /**
@@ -215,7 +215,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
 
         private JTable table;
         private ObjectReflectTableModel<T> tableModel;
-        private final MyJPopupMenu contextMenu = new MyJPopupMenu();
+        private final JPopupMenu contextMenu = new JPopupMenu();
 
         public ContextListener() {
         }
@@ -232,7 +232,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
          */
         public abstract void maybeShowPopup(MouseEvent e);
 
-        public MyJPopupMenu getContextMenu() {
+        public JPopupMenu getContextMenu() {
             return contextMenu;
         }
 

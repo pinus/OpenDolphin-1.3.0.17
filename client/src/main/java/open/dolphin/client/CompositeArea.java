@@ -4,11 +4,11 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import javax.swing.ActionMap;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import open.dolphin.helper.TextComponentUndoManager;
-import open.dolphin.ui.MyJPopupMenu;
 
 /**
  * CompositeArea.
@@ -48,7 +48,7 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
         undoManager.setUndoAction(map.get(GUIConst.ACTION_UNDO));
         undoManager.setRedoAction(map.get(GUIConst.ACTION_REDO));
 
-        MyJPopupMenu menu = new MyJPopupMenu();
+        JPopupMenu menu = new JPopupMenu();
         menu.add(map.get(GUIConst.ACTION_COPY));
         menu.add(map.get(GUIConst.ACTION_CUT));
         menu.add(map.get(GUIConst.ACTION_PASTE));

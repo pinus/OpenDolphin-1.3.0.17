@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -25,7 +26,6 @@ import open.dolphin.infomodel.PatientModel;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
-import open.dolphin.ui.MyJPopupMenu;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
 import open.dolphin.util.PNSTriple;
@@ -196,7 +196,7 @@ public class LaboTestImporter extends AbstractMainComponent {
      * 受付リストのコンテキストメニュークラス.
      */
     private class ContextListener extends AbstractMainComponent.ContextListener<LaboImportSummary> {
-        private final MyJPopupMenu contextMenu;
+        private final JPopupMenu contextMenu;
 
         public ContextListener() {
             contextMenu = getContextMenu();

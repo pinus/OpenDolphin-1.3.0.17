@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import open.dolphin.client.CalendarCardPanel;
 import open.dolphin.client.ClientContext;
@@ -23,7 +24,6 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJPopupMenu;
 
 /**
  * アレルギデータを編集するエディタクラス.
@@ -139,7 +139,7 @@ public class AllergyEditor {
 
     private class PopupListener extends MouseAdapter {
 
-        private MyJPopupMenu popup;
+        private JPopupMenu popup;
 
         public PopupListener() {
         }
@@ -159,7 +159,7 @@ public class AllergyEditor {
 
         private void maybeShowPopup(MouseEvent e) {
 
-            popup = new MyJPopupMenu();
+            popup = new JPopupMenu();
             CalendarCardPanel cc = new CalendarCardPanel(ClientContext.getEventColorTable());
             cc.addPropertyChangeListener(CalendarCardPanel.PICKED_DATE, ev -> {
                 if (ev.getPropertyName().equals(CalendarCardPanel.PICKED_DATE)) {
