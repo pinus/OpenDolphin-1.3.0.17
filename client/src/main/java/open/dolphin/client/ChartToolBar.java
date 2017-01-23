@@ -200,8 +200,10 @@ public class ChartToolBar extends JToolBar {
                 builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(realChart.getDiagnosisDocument().getDiagnosisTable()));
                 builder.buildRootless(popup);
 
-                Point loc = keywordFld.getLocation();
-                popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight() - 10);
+                if (popup.getComponentCount() != 0) {
+                    Point loc = keywordFld.getLocation();
+                    popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight() - 10);
+                }
             }
         });
 
