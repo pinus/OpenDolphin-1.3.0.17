@@ -3,12 +3,13 @@ package open.dolphin.client;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
 import open.dolphin.infomodel.SimpleDate;
 
 /**
  * CalendarTableModel.
- *
+ * GregorianCalendar and HashMap based.
  * @author Kazushi Minagawa Digital Globe, Inc.
  * @author pns
  */
@@ -17,22 +18,18 @@ public class CalendarTableModel extends AbstractTableModel {
 
     private static final String[] COLUMN_NAME = { "日", "月", "火", "水", "木", "金", "土" };
 
-    private final int year;
-    private final int month;
+    // このカレンダーテーブルの年月
+    private int year;
+    private int month;
 
-    // このカレンダーの最初の日
-    private final int startDay;
+    // このカレンダーテーブルの１番左上隅の日（前月かもしれない）
+    private GregorianCalendar startDate;
 
-    // この月の開始日，終了日の対応する Cell 番号 (0から始まる)
-    private int firstCell;
-    private int lastCell;
+    private int numRows;
+    private final int numCols = 7; // 7日で固定
 
-    private final int numCols = COLUMN_NAME.length;
-    private final int numRows;
-    private final int numDaysOfMonth;
-
-    // この月の SimpleDate を入れる
-    private SimpleDate[] data;
+    // SimpleDate を入れる HashMap
+    private final HashMap<GregorianCalendar, SimpleDate> data = new HashMap<>();
 
     // Event のマークされた SimpleDate を登録する
     private Collection<SimpleDate> markDates;
@@ -43,42 +40,32 @@ public class CalendarTableModel extends AbstractTableModel {
      * @param month　 カレンダの月
      */
     public CalendarTableModel(int year, int month) {
+        init(year, month);
+    }
 
-        this.year = year;
-        this.month = month;
+    /**
+     * 指定した year, month で初期化する.
+     * @param y
+     * @param m
+     */
+    private void init(int y, int m) {
+        year = y;
+        month = m;
 
         // 作成する月の最初の日  yyyyMM1
         GregorianCalendar gc = new GregorianCalendar(year, month, 1);
 
-        // 最初の日は週の何日目か 1=SUN 7=SAT
-        firstCell = gc.get(Calendar.DAY_OF_WEEK);
-        firstCell--;  // TableModel の Cell 番号へ変換する
+        // その月の１日の日付は週の何日目か 1=SUN 7=SAT
+        int diff = gc.get(Calendar.DAY_OF_WEEK);
 
-        // この月の日数を得る
-        numDaysOfMonth = gc.getActualMaximum(Calendar.DAY_OF_MONTH);
+        // このカレンダーの左上の日まで戻して左上の日を登録
+        startDate = (GregorianCalendar) gc.clone();
+        startDate.add(Calendar.DAY_OF_MONTH, - diff +1);
 
-        // gc をその月の最後の日まで進める　1日 + （日数-1）
-        gc.add(Calendar.DAY_OF_MONTH, numDaysOfMonth - 1);
-
-        // 最後の日はその月の何週目か
+        // 最終日の週数がテーブルの行数になる
+        int num = gc.getActualMaximum(Calendar.DAY_OF_MONTH);
+        gc.add(Calendar.DAY_OF_MONTH, num - 1);
         numRows = gc.get(Calendar.WEEK_OF_MONTH);
-
-        // それは週の何日目か
-        lastCell = gc.get(Calendar.DAY_OF_WEEK);
-        lastCell--;
-
-        // １次元のセル番号へ変換する
-        lastCell += (numRows-1) * numCols;
-
-        // このカレンダの表示開始日を求める
-        GregorianCalendar startDate = new GregorianCalendar(year, month, 1);
-        startDate.add(Calendar.DAY_OF_MONTH, - firstCell);
-
-        // startDay はたいてい前の月になる
-        startDay = startDate.get(Calendar.DAY_OF_MONTH);
-
-        // データ配列作成
-        data = new SimpleDate[numRows * 7];
     }
 
     @Override
@@ -93,78 +80,100 @@ public class CalendarTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return COLUMN_NAME.length;
+        return numCols;
     }
 
+    /**
+     * 指定された row, col から SimpleDate を取り出す.
+     * @param row
+     * @param col
+     * @return
+     */
     @Override
     public Object getValueAt(int row, int col) {
 
         // Cell 番号を得る
         int cellNumber = row * numCols + col;
 
+        // startDay から cellNumber だけ進める
+        GregorianCalendar targetDay = (GregorianCalendar) startDate.clone();
+        targetDay.add(Calendar.DAY_OF_MONTH, cellNumber);
+
+        // 戻り値の SimpleDate
+        SimpleDate ret = data.get(targetDay);
+
         // データがない場合は作る
-        if (data[cellNumber] == null) {
-            if (cellNumber < firstCell) {
-                // 先月
-                data[cellNumber] = month == 0?
-                        new SimpleDate(year-1, 11, startDay + cellNumber):
-                        new SimpleDate(year, month-1, startDay + cellNumber);
-
-            } else if (cellNumber > lastCell) {
-                // 来月
-                data[cellNumber] = month == 11?
-                        new SimpleDate(year+1, 0, cellNumber - lastCell):
-                        new SimpleDate(year, month+1, cellNumber - lastCell);
-
-            } else {
-                // 当月
-                data[cellNumber] = new SimpleDate(year, month, cellNumber - firstCell + 1);
-            }
+        if (ret == null) {
+            ret = new SimpleDate(targetDay);
+            data.put(targetDay, ret);
         }
 
-        return data[cellNumber];
+        return ret;
     }
 
+    /**
+     * 指定された row, col に SimpleDate を設定する.
+     * SimpleDate の日付に設定することにしたので，row, col は使ってない.
+     * @param value
+     * @param row
+     * @param col
+     */
     @Override
     public void setValueAt(Object value, int row, int col) {
-
-        int cellNumber = row * numCols + col;
-        data[cellNumber] = (SimpleDate) value;
+        SimpleDate d = (SimpleDate) value;
+        GregorianCalendar gc = new GregorianCalendar(d.getYear(), d.getMonth(), d.getDay());
+        data.put(gc, d);
     }
 
+    /**
+     * マークされた SimpleDate をモデルに追加する.
+     * @param c
+     */
     public void setMarkDates(Collection<SimpleDate> c) {
         markDates = c;
 
         // 既存のデータを消去して，SimpleDate を登録し直す
         clear();
         c.stream().filter(date -> year == date.getYear() && month == date.getMonth()).forEach(date -> {
-            int day = date.getDay();
-            int cellNumber = firstCell + (day-1);
-            int row = cellNumber / numCols;
-            int col = cellNumber % numCols;
-            setValueAt(date, row, col);
+            GregorianCalendar gc = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDay());
+            data.put(gc, date);
         });
         fireTableDataChanged();
     }
 
+    /**
+     * マークされた SimpleDate のコレクションを返す.
+     * @return
+     */
     public Collection<SimpleDate> getMarkDates() {
         return markDates;
     }
 
+    /**
+     * この月の SimpleDate を消す.
+     */
     public void clear() {
-        data = new SimpleDate[numRows * 7];
+        GregorianCalendar gc = new GregorianCalendar(year, month ,1);
+        int days = gc.getActualMaximum(Calendar.DAY_OF_MONTH);
+        for(int i=0; i<days; i++) {
+            // null で消去
+            data.put(gc, null);
+            gc.add(Calendar.DAY_OF_MONTH, 1);
+        }
     }
 
+    /**
+     * 指定 row, col が今月から外れているかどうか.
+     * @param row
+     * @param col
+     * @return
+     */
     public boolean isOutOfMonth(int row, int col) {
+        // startDate から cellNumber 進める
         int cellNumber = row * numCols + col;
-        return cellNumber < firstCell || cellNumber > lastCell;
-    }
+        GregorianCalendar gc = (GregorianCalendar) startDate.clone();
+        gc.add(Calendar.DAY_OF_MONTH, cellNumber);
 
-    public SimpleDate getFirstDate() {
-        return new SimpleDate(year, month, 1);
-    }
-
-    public SimpleDate getLastDate() {
-        return new SimpleDate(year, month, numDaysOfMonth);
+        return year != gc.get(Calendar.YEAR) || month != gc.get(Calendar.MONTH);
     }
 }

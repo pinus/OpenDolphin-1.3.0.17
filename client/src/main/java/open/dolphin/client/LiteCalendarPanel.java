@@ -258,14 +258,6 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
         return relativeMonth;
     }
 
-    public SimpleDate getFirstDate() {
-        return tableModel.getFirstDate();
-    }
-
-    public SimpleDate getLastDate() {
-        return tableModel.getLastDate();
-    }
-
     public HashMap getEventColorTable() {
         return eventColorTable;
     }
