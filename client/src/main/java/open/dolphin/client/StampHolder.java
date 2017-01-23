@@ -216,7 +216,6 @@ public final class StampHolder extends AbstractComponentHolder {
      */
     @Override
     public void edit() {
-
         if (kartePane.getTextPane().isEditable() && this.isEditable()) {
             String entity = stamp.getModuleInfo().getEntity();
             StampEditorDialog stampEditor = new StampEditorDialog(entity, stamp);
@@ -225,18 +224,21 @@ public final class StampHolder extends AbstractComponentHolder {
             // 二重起動の禁止 - エディタから戻ったら propertyChange で解除する
             //kartePane.getTextPane().setEditable(false); // こうすると，なぜか focus が次の component にうつってしまう
             this.setEditable(false);
+
         } else {
             // ダブルクリックで EditorFrame に入力
             java.util.List<Chart> allFrames = EditorFrame.getAllEditorFrames();
             if (! allFrames.isEmpty()) {
                 Chart frame = allFrames.get(0);
-                KartePane pane = ((EditorFrame) frame).getEditor().getPPane();
-                // caret を最後に送ってから import する
-                JTextPane textPane = pane.getTextPane();
-                KarteStyledDocument doc = pane.getDocument();
-                textPane.setCaretPosition(doc.getLength());
+                if (this.isEditable()) {
+                    KartePane pane = ((EditorFrame) frame).getEditor().getPPane();
+                    // caret を最後に送ってから import する
+                    JTextPane textPane = pane.getTextPane();
+                    KarteStyledDocument doc = pane.getDocument();
+                    textPane.setCaretPosition(doc.getLength());
 
-                pane.stampWithDuplicateCheck(stamp);
+                    pane.stampWithDuplicateCheck(stamp);
+                }
             }
         }
     }

@@ -15,6 +15,7 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.ui.HorizontalPanel;
+import open.dolphin.ui.MyJSheet;
 import org.apache.log4j.Logger;
 
 /**
@@ -124,14 +125,14 @@ public class StampEditorDialog {
         key = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.META_DOWN_MASK);
         im.put(key, "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new ProxyAction(() -> {
-            JSheet.showConfirmSheet(dialog, "カルテに展開しますか？", sheetEvent -> {
-                // 0=はい, 1=いいえ, 2=キャンセル -1=エスケープキー
-                if (sheetEvent.getOption() == 0) {
-                    okButton.doClick();
-                } else if (sheetEvent.getOption() == 1) {
-                    cancelButton.doClick();
-                }
-            });
+            int ans = MyJSheet.showOptionDialog(dialog, "カルテに展開しますか", "",
+                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                    new String[] { "はい", "いいえ", "キャンセル" }, "はい");
+            if (ans == 0) {
+                okButton.doClick();
+            } else if (ans == 1) {
+                cancelButton.doClick();
+            }
         }));
 
         // Command + ENTER で入力
