@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import org.jboss.logging.Logger;
 
 /**
  * ３段構造フレーム
@@ -27,6 +28,8 @@ public class MainFrame extends JFrame {
     private CommandPanel commandPanel;
     private MainPanel mainPanel;
     private StatusPanel statusPanel;
+
+    private final Logger logger = Logger.getLogger(MainFrame.class);
 
     public MainFrame() {
         //setBackground(new Color(0,0,0,0));
@@ -69,7 +72,7 @@ public class MainFrame extends JFrame {
     @Override
     public boolean isActive() {
         if (super.isActive() && !AppForeground.isForeground()) {
-            System.out.println("MainFrame window state inconsistent: Window is active while Application in background.");
+            logger.info(String.format("Window (%s) is active while Application in background.", getTitle()));
         }
 
         return super.isActive() && AppForeground.isForeground();

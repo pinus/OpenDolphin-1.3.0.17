@@ -1,8 +1,5 @@
 package open.dolphin.order.tablepanel;
 
-import ch.randelshofer.quaqua.JSheet;
-import ch.randelshofer.quaqua.SheetEvent;
-import ch.randelshofer.quaqua.SheetListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,6 +27,7 @@ import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.StringTool;
 
 /**
@@ -273,17 +271,11 @@ public class ItemTablePanel extends JPanel {
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JSheet.showConfirmSheet(SwingUtilities.getWindowAncestor(table),
-                        "クリアしますか？", JOptionPane.OK_CANCEL_OPTION, new SheetListener(){
-                    @Override
-                    public void optionSelected(SheetEvent se) {
-                        // 0=はい, 1=いいえ, 2=キャンセル -1=エスケープキー
-                        // System.out.println("se=" + se.getOption());
-                        if (se.getOption() == 0) {
-                            tableModel.clear();
-                        }
-                    }
-                });
+                int ans = MyJSheet.showOptionDialog(SwingUtilities.getWindowAncestor(table), "クリアしますか？", "",
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                        new String[] { "はい", "いいえ", "キャンセル" }, "はい");
+
+                if (ans == 0) { tableModel.clear(); }
             }
         });
         clearButton.setToolTipText(TOOLTIP_CLEAR_TEXT);

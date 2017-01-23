@@ -1,7 +1,6 @@
 package open.dolphin.order;
 
 import open.dolphin.order.stampeditor.StampEditor;
-import ch.randelshofer.quaqua.JSheet;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -125,7 +124,7 @@ public class StampEditorDialog {
         key = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.META_DOWN_MASK);
         im.put(key, "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new ProxyAction(() -> {
-            int ans = MyJSheet.showOptionDialog(dialog, "カルテに展開しますか", "",
+            int ans = MyJSheet.showOptionDialog(dialog, "カルテに展開しますか？", "",
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null,
                     new String[] { "はい", "いいえ", "キャンセル" }, "はい");
             if (ans == 0) {
