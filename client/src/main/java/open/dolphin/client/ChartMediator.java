@@ -24,6 +24,7 @@ import open.dolphin.stampbox.DefaultStampTreeMenuListener;
 import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
+import open.dolphin.ui.Focuser;
 import org.apache.log4j.Logger;
 
 /**
@@ -770,27 +771,13 @@ public final class ChartMediator extends MenuSupport {
     public void fontBlack() {
         colorAction(Color.BLACK);
     }
+    /**
+     * DiagnosisInspector にフォーカスする.
+     */
+    public void focusDiagnosisInspector() {
+        ChartImpl realChart = chart instanceof EditorFrame?
+                (ChartImpl) ((EditorFrame)chart).getChart() : (ChartImpl) chart;
+        realChart.getFrame().toFront();
+        Focuser.requestFocus(realChart.getDiagnosisInspector().getList());
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

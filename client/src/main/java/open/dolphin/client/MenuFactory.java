@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import javax.swing.Action;
@@ -300,6 +299,11 @@ public class MenuFactory {
     @MenuAction
     public void showWaitingList() {
         main.sendToChain("showWaitingList");
+    }
+
+    @MenuAction
+    public void focusDiagnosisInspector() {
+        chart.sendToChain("focusDiagnosisInspector");
     }
 
     @MenuAction
@@ -816,6 +820,13 @@ public class MenuFactory {
         setAccelerator(showSchemaBox, KeyEvent.VK_2);
         tool.add(showSchemaBox);
 
+        JMenuItem focusDiagnosisInspector = new JMenuItem();
+        focusDiagnosisInspector.setName("focusDiagnosisInspector");
+        focusDiagnosisInspector.setAction(actionMap.get("focusDiagnosisInspector"));
+        focusDiagnosisInspector.setText("病名インスペクタ");
+        setAccelerator(focusDiagnosisInspector, KeyEvent.VK_3);
+        tool.add(focusDiagnosisInspector);
+
         JMenuItem showWaitingList = new JMenuItem();
         showWaitingList.setName("showWaitingList");
         showWaitingList.setAction(actionMap.get("showWaitingList"));
@@ -894,7 +905,7 @@ public class MenuFactory {
         action.putValue(Action.SHORT_DESCRIPTION, toolTipText);
         item.setAction(action);
     }
-    
+
     private void setToolBar(JToolBar toolBar, String text, ImageIcon icon) {
         if (chart != null) {
             JButton button = new JButton();
