@@ -8,13 +8,15 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
- *
+ * CalendarPanel ヘッダーの曜日部分のレンダラ.
  * @author pns
  */
 public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
+    private static final long serialVersionUID = 1L;
+
     // バックグランドのグラデーションカラー
-    private static int[] BG = {240,255,255,255,255,255,255,251,247,244,241,231,231,231,231,231,231,241,234};
-    private static Color[] BGCOL = new Color[BG.length];
+    private static final int[] BG = {240,255,255,255,255,255,255,251,247,244,241,231,231,231,231,231,231,241,234};
+    private static final Color[] BGCOL = new Color[BG.length];
     static {
         for (int i=0; i<BG.length; i++) {
             BGCOL[i] = new Color(BG[i], BG[i], BG[i]);
@@ -22,6 +24,10 @@ public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
     }
 
     public CalendarHeaderRenderer() {
+        init();
+    }
+
+    private void init() {
         setHorizontalAlignment(SwingConstants.CENTER);
         setOpaque(false);
         setBackground(new Color(0,true));
@@ -33,12 +39,15 @@ public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
 
         switch (col) {
             case 0:
+                // 日曜
                 setForeground(Color.red);
                 break;
             case 6:
+                // 土曜
                 setForeground(Color.blue);
                 break;
             default:
+                // 平日
                 setForeground(Color.black);
         }
 
