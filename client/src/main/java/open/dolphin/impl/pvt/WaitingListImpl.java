@@ -471,6 +471,10 @@ public class WaitingListImpl extends AbstractMainComponent {
         e.setBadgeNumber(waitingCount);
         e.setTabIndex(pane.indexOfTab(getName()));
         pane.setBadge(e);
+
+        // Dock のアイコンにバッジを出す
+        com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
+        app.setDockIconBadge(waitingCount == 0? null: String.valueOf(waitingCount));
     }
 
     /**
