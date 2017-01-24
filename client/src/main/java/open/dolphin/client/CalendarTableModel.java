@@ -22,10 +22,10 @@ public class CalendarTableModel extends AbstractTableModel {
     private int year;
     private int month;
 
-    // このカレンダーテーブルの１番左上隅の日（前月かもしれない）
+    // このカレンダーテーブルの左上隅の日
     private GregorianCalendar startDate;
 
-    private int numRows;
+    private final int numRows = 6; // 6週で固定
     private final int numCols = 7; // 7日で固定
 
     // SimpleDate を入れる HashMap
@@ -61,11 +61,77 @@ public class CalendarTableModel extends AbstractTableModel {
         // このカレンダーの左上の日まで戻して左上の日を登録
         startDate = (GregorianCalendar) gc.clone();
         startDate.add(Calendar.DAY_OF_MONTH, - diff +1);
+    }
 
-        // 最終日の週数がテーブルの行数になる
-        int num = gc.getActualMaximum(Calendar.DAY_OF_MONTH);
-        gc.add(Calendar.DAY_OF_MONTH, num - 1);
-        numRows = gc.get(Calendar.WEEK_OF_MONTH);
+    /**
+     * model を１週間進める.
+     */
+    public void nextWeek() {
+        startDate.add(Calendar.DAY_OF_MONTH, 7);
+        calibrateYearMonth();
+    }
+
+    /**
+     * model を１週間戻す.
+     */
+    public void previousWeek() {
+        startDate.add(Calendar.DAY_OF_MONTH, -7);
+        calibrateYearMonth();
+    }
+
+    /**
+     * model を１ヶ月進める.
+     */
+    public void nextMonth() {
+        if (month == 11) { reset(year+1, 0); }
+        else { reset(year, month+1); }
+    }
+
+    /**
+     * model を１ヶ月戻す.
+     */
+    public void previousMonth() {
+        if (month == 0) { reset(year-1, 11); }
+        else { reset(year, month-1); }
+    }
+
+    /**
+     * 今表示しているカレンダーがどの月か決める.
+     * startDate の２週後の週の週末(20日後)を含む月がこのモデルの表す月と定義する.
+     */
+    private void calibrateYearMonth() {
+        GregorianCalendar gc = (GregorianCalendar) startDate.clone();
+        gc.add(Calendar.DAY_OF_MONTH, 20);
+        year = gc.get(Calendar.YEAR);
+        month = gc.get(Calendar.MONTH);
+
+        fireTableDataChanged();
+    }
+
+    /**
+     * model を y年 m月にリセットする.
+     * @param y
+     * @param m
+     */
+    public void reset(int y, int m) {
+        init(y, m);
+        fireTableDataChanged();
+    }
+
+    /**
+     * 現在の model の年を返す.
+     * @return
+     */
+    public int getYear() {
+        return year;
+    }
+
+    /**
+     * 現在の model の月を返す.
+     * @return
+     */
+    public int getMonth() {
+        return month;
     }
 
     @Override

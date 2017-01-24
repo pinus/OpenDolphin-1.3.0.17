@@ -69,13 +69,12 @@ public class MainFrame extends JFrame {
      * Window が active でかつアプリケーションが Foreground の時のみ active を返す.
      * @return
      */
-    @Override
-    public boolean isActive() {
-        if (super.isActive() && !AppForeground.isForeground()) {
+    public boolean isActiveAndForeground() {
+        if (isActive() && !AppForeground.isForeground()) {
             logger.info(String.format("Window (%s) is active while Application in background.", getTitle()));
         }
 
-        return super.isActive() && AppForeground.isForeground();
+        return isActive() && AppForeground.isForeground();
     }
 
     /**
