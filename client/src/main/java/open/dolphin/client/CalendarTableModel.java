@@ -1,11 +1,14 @@
 package open.dolphin.client;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import open.dolphin.infomodel.SimpleDate;
+import open.dolphin.util.Holiday;
 
 /**
  * CalendarTableModel.
@@ -31,8 +34,10 @@ public class CalendarTableModel extends AbstractTableModel {
     // SimpleDate を入れる HashMap
     private final HashMap<GregorianCalendar, SimpleDate> data = new HashMap<>();
 
-    // Event のマークされた SimpleDate を登録する
-    private Collection<SimpleDate> markDates;
+    // 今日
+    private final SimpleDate today = new SimpleDate(new GregorianCalendar());
+    // 誕生日
+    private final List<SimpleDate> annualEvents = new ArrayList<>();
 
     /**
      * CalendarTableModel を生成する.
@@ -170,7 +175,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
         // データがない場合は作る
         if (ret == null) {
-            ret = new SimpleDate(targetDay);
+            ret = createSimpleDate(targetDay);
             data.put(targetDay, ret);
         }
 
@@ -192,39 +197,44 @@ public class CalendarTableModel extends AbstractTableModel {
     }
 
     /**
+     * EventCode に今日情報，休日情報，誕生日を入れた SimpleDate を作る.
+     * @param gc
+     * @return
+     */
+    private SimpleDate createSimpleDate(GregorianCalendar gc) {
+        SimpleDate ret = Holiday.createSimpleDate(gc);
+
+        // 今日登録
+        if (ret.equals(today)) {
+            ret.setEventCode("TODAY");
+        }
+
+        // 誕生日登録
+        annualEvents.stream()
+                .filter(date -> date.getMonth() == ret.getMonth() && date.getDay() == ret.getDay())
+                .map(date -> date.getEventCode())
+                .forEach(code -> ret.setEventCode(code));
+
+        return ret;
+    }
+
+    /**
      * マークされた SimpleDate をモデルに追加する.
      * @param c
      */
     public void setMarkDates(Collection<SimpleDate> c) {
-        markDates = c;
-
-        // 既存のデータを消去して，SimpleDate を登録し直す
-        clear();
-        c.stream().filter(date -> year == date.getYear() && month == date.getMonth()).forEach(date -> {
-            GregorianCalendar gc = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDay());
-            data.put(gc, date);
-        });
-        fireTableDataChanged();
-    }
-
-    /**
-     * マークされた SimpleDate のコレクションを返す.
-     * @return
-     */
-    public Collection<SimpleDate> getMarkDates() {
-        return markDates;
-    }
-
-    /**
-     * この月の SimpleDate を消す.
-     */
-    public void clear() {
-        GregorianCalendar gc = new GregorianCalendar(year, month ,1);
-        int days = gc.getActualMaximum(Calendar.DAY_OF_MONTH);
-        for(int i=0; i<days; i++) {
-            // null で消去
-            data.put(gc, null);
-            gc.add(Calendar.DAY_OF_MONTH, 1);
+        if (c != null) {
+            // 既存のデータを消去して，SimpleDate を登録し直す
+            // data.clear();
+            c.stream().forEach(date -> {
+                // 誕生日
+                if ("BIRTHDAY".equals(date.getEventCode())) {
+                    annualEvents.add(date);
+                }
+                GregorianCalendar gc = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDay());
+                data.put(gc, date);
+            });
+            fireTableDataChanged();
         }
     }
 

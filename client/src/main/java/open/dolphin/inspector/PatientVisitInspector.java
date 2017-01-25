@@ -63,20 +63,29 @@ public class PatientVisitInspector implements IInspector {
 
     @Override
     public void update() {
+        List<SimpleDate> markList = new ArrayList<>();
 
         // 来院歴を取り出す
         List<String> latestVisit = context.getKarte().getPvtDateEntry();
 
         // 来院歴
-        if (latestVisit != null && !latestVisit.isEmpty()) {
-            List<SimpleDate> simpleDates = new ArrayList<>(latestVisit.size());
+        if (latestVisit != null) {
+            List<SimpleDate> visits = new ArrayList<>();
             latestVisit.forEach(pvtDate -> {
                 SimpleDate sd = SimpleDate.mmlDateToSimpleDate(pvtDate);
                 sd.setEventCode(pvtCode);
-                simpleDates.add(sd);
+                visits.add(sd);
             });
-            // CardCalendarに通知する
-            calendarCardPanel.setMarkList(simpleDates);
+            markList.addAll(visits);
         }
+
+        // 誕生日
+        String mmlBirthday = context.getPatient().getBirthday();
+        SimpleDate birthday = SimpleDate.mmlDateToSimpleDate(mmlBirthday);
+        birthday.setEventCode("BIRTHDAY");
+        markList.add(birthday);
+
+        // CardCalendarに通知する
+        calendarCardPanel.setMarkList(markList);
     }
 }

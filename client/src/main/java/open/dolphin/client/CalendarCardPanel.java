@@ -12,7 +12,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -66,8 +65,6 @@ public class CalendarCardPanel extends JPanel  {
         LiteCalendarPanel lc = new LiteCalendarPanel(current, true);
         lc.addPropertyChangeListener(LiteCalendarPanel.SELECTED_DATE_PROP, calendarListener);
         lc.setEventColorTable(colorTable);
-        SimpleDate today = new SimpleDate(new GregorianCalendar());
-        lc.setToday(today);
         String name = String.valueOf(current);
         calendars.put(name, lc);
         cardPanel.setLayout(cardLayout);

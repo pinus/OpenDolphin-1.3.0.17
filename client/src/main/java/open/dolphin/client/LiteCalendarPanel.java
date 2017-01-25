@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -25,10 +24,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
-
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.util.Holiday;
 
 /**
  * LiteCalendarPanel
@@ -59,9 +56,8 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
     private PropertyChangeSupport boundSupport;
     private Object selectedDate;
     private JLabel titleLabel;
-    private SimpleDate today;
 
-    private HashMap eventColorTable;
+    private HashMap<String,Color> eventColorTable;
 
     // 表示用の属性
     private Color titleFore = ClientContext.getColor("color.calendar.title.fore");
@@ -113,7 +109,16 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
         month = gc.get(Calendar.MONTH);
 
         tableModel = new CalendarTableModel(year, month);
-        table = new JTable(tableModel);
+        table = new JTable(tableModel) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public String getToolTipText(MouseEvent e) {
+                int row = rowAtPoint(e.getPoint());
+                int col = columnAtPoint(e.getPoint());
+                SimpleDate d = (SimpleDate) getValueAt(row, col);
+                return d.getEventCode();
+            }
+        };
         setAutoResizeMode(autoResizeMode);
         table.setBackground(calendarBack);
 
@@ -258,11 +263,11 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
         return relativeMonth;
     }
 
-    public HashMap getEventColorTable() {
+    public HashMap<String, Color> getEventColorTable() {
         return eventColorTable;
     }
 
-    public void setEventColorTable(HashMap ht) {
+    public void setEventColorTable(HashMap<String, Color> ht) {
         eventColorTable = ht;
     }
 
@@ -510,10 +515,6 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
         return outOfMonthFont;
     }
 
-    public void setToday(SimpleDate today) {
-        this.today = today;
-    }
-
     /**
      * @param titleLabel
      *            The titleLabel to set.
@@ -532,15 +533,17 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
     /**
      * Custom table cell renderer for the carendar panel.
      */
-    protected class DateRenderer extends DefaultTableCellRenderer {
-
+    private class DateRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 5817292848730765481L;
 
         public DateRenderer() {
             super();
-            this.setOpaque(true);
-//pns       this.setHorizontalAlignment(SwingConstants.RIGHT);
-            this.setHorizontalAlignment(SwingConstants.CENTER);
+            init();
+        }
+
+        private void init() {
+            setOpaque(true);
+            setHorizontalAlignment(SwingConstants.CENTER);
         }
 
         // grid for retina iMac
@@ -558,72 +561,51 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
                 Object value, boolean isSelected, boolean isFocused, int row,
                 int col) {
 
-            Component compo = super.getTableCellRendererComponent(table, value,
-                    isSelected, isFocused, row, col);
+            Component compo = super.getTableCellRendererComponent(table, value, isSelected, isFocused, row, col);
+
             if (compo != null && value != null) {
-//pns^
-                if (getOutOfMonthFont() == null && tableModel.isOutOfMonth(row, col)) {
-                    return null;
-                }
-//pns$
 
-                // 日を書く
-                String day = null;
-                Color color = null;
+                SimpleDate targetDate = (SimpleDate) value;
 
-                if (value instanceof SimpleDate) {
-                    day = ((SimpleDate) value).toString();
-                    if (today != null
-                            && today.compareTo((SimpleDate) value) == 0) {
-                        // color = todayBack;
-                        color = (Color) eventColorTable.get("TODAY");
-                    } else {
-                        color = (Color) eventColorTable
-                                .get(((SimpleDate) value).getEventCode());
-                        // color = Color.black;
-                    }
-
-                } else if (value instanceof String) {
-                    day = (String) value;
-                    if (today != null
-                            && today.equalDate(year, month, Integer
-                            .parseInt(day))) {
-                        // color = todayBack;
-                        color = (Color) eventColorTable.get("TODAY");
-                    } else {
-                        color = getCalendarBack();
-                    }
-                }
-
-                ((JLabel) compo).setText(day);
+                Color foregroundColor;
+                Color backgroundColor;
 
                 // 曜日によって ForeColor を変える
-                if (col == 0) {
-                    this.setForeground(getSundayFore());
-
-                } else if (col == 6) {
-                    this.setForeground(getSaturdayFore());
-
-                } else {
-                    this.setForeground(getWeekdayFore());
+                switch (col) {
+                    // 当院は日・水は休み
+                    case 0:
+                    case 3:
+                        foregroundColor = getSundayFore();
+                        break;
+                    case 6:
+                        foregroundColor = getSaturdayFore();
+                        break;
+                    default:
+                        foregroundColor = getWeekdayFore();
+                        break;
                 }
 
-                // 休日 masuda
-                SimpleDate sd = (SimpleDate) tableModel.getValueAt(row, col);
-                if (Holiday.isHoliday(new GregorianCalendar(sd.getYear(), sd.getMonth(), sd.getDay()))) {
-                    this.setForeground(getSundayFore());
+                // Event "PVT", "TODAY", "BIRTHDAY"
+                backgroundColor = eventColorTable.get(targetDate.getEventCode());
+
+                // Holiday
+                if (backgroundColor == null && targetDate.getEventCode() != null) {
+                    foregroundColor = getSundayFore();
                 }
-                // masuda
+
+                String day = String.valueOf(targetDate.getDay());
+                ((JLabel) compo).setText(day);
 
                 // このカレンダ月内の日かどうかでフォントを変える
                 if (tableModel.isOutOfMonth(row, col)) {
-                    this.setFont(getOutOfMonthFont());
-                    this.setBackground(getCalendarBack());
+                    setFont(getOutOfMonthFont());
 
                 } else {
-                    this.setFont(getCalendarFont());
-                    this.setBackground(color);
+                    setFont(getCalendarFont());
                 }
+
+                setForeground(foregroundColor);
+                setBackground(backgroundColor);
             }
             return compo;
         }
