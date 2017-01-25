@@ -184,7 +184,8 @@ public class ImageBox extends AbstractMainTool {
                 GUIConst.ACTION_SHOW_STAMPBOX,
                 GUIConst.ACTION_SET_KARTE_ENVIROMENT,
                 "showWaitingList",
-                "showPatientSearch"
+                "showPatientSearch",
+                "focusDiagnosisInspector"
             };
             mediator.enableMenus(enables);
         } else {
@@ -305,6 +306,16 @@ public class ImageBox extends AbstractMainTool {
         @Override
         public boolean accept(File path) {
             return path.isDirectory();
+        }
+    }
+
+    /**
+     * ChartIml が開いていたら，DiagnosisInspector にフォーカスする.
+     */
+    public void focusDiagnosisInspector() {
+        if (! ChartImpl.getAllChart().isEmpty()) {
+            ChartImpl chart = ChartImpl.getAllChart().get(0);
+            chart.getChartMediator().focusDiagnosisInspector();
         }
     }
 }

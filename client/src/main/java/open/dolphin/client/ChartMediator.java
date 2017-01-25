@@ -4,22 +4,23 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
-import javax.swing.event.MenuEvent;
-import javax.swing.text.SimpleAttributeSet;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.helper.MenuSupport;
-import open.dolphin.project.Project;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextPane;
 import javax.swing.TransferHandler;
+import javax.swing.event.MenuEvent;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledEditorKit;
+import open.dolphin.helper.MenuSupport;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.project.Project;
 import open.dolphin.stampbox.DefaultStampTreeMenuListener;
 import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.stampbox.StampTree;
@@ -777,7 +778,11 @@ public final class ChartMediator extends MenuSupport {
     public void focusDiagnosisInspector() {
         ChartImpl realChart = chart instanceof EditorFrame?
                 (ChartImpl) ((EditorFrame)chart).getChart() : (ChartImpl) chart;
+        JList diagList = realChart.getDiagnosisInspector().getList();
+        if (diagList.getSelectedIndex() == -1) {
+            diagList.setSelectedIndex(0);
+        }
         realChart.getFrame().toFront();
-        Focuser.requestFocus(realChart.getDiagnosisInspector().getList());
+        Focuser.requestFocus(diagList);
     }
 }

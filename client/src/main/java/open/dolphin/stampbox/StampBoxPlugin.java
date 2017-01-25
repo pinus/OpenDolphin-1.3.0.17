@@ -18,21 +18,22 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import open.dolphin.client.AbstractMainTool;
 import open.dolphin.client.BlockGlass;
+import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.MenuFactory;
 import open.dolphin.delegater.StampDelegater;
-import open.dolphin.infomodel.FacilityModel;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.StampTreeBean;
-import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.infomodel.PublishedTreeModel;
-import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.infomodel.PersonalTreeModel;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.WindowSupport;
+import open.dolphin.infomodel.FacilityModel;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.ModuleInfoBean;
+import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.infomodel.PersonalTreeModel;
+import open.dolphin.infomodel.PublishedTreeModel;
+import open.dolphin.infomodel.RegisteredDiagnosisModel;
+import open.dolphin.infomodel.StampTreeBean;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import org.apache.log4j.Logger;
@@ -293,7 +294,8 @@ public class StampBoxPlugin extends AbstractMainTool {
                 GUIConst.ACTION_SHOW_SCHEMABOX,
                 GUIConst.ACTION_SET_KARTE_ENVIROMENT,
                 "showWaitingList",
-                "showPatientSearch"
+                "showPatientSearch",
+                "focusDiagnosisInspector"
             };
             mediator.enableMenus(enables);
 
@@ -999,5 +1001,15 @@ public class StampBoxPlugin extends AbstractMainTool {
      */
     public List<ModuleInfoBean> getAllStamps(String entity) {
         return getCurrentBox().getAllStamps(entity);
+    }
+
+    /**
+     * ChartIml が開いていたら，DiagnosisInspector にフォーカスする.
+     */
+    public void focusDiagnosisInspector() {
+        if (! ChartImpl.getAllChart().isEmpty()) {
+            ChartImpl chart = ChartImpl.getAllChart().get(0);
+            chart.getChartMediator().focusDiagnosisInspector();
+        }
     }
 }

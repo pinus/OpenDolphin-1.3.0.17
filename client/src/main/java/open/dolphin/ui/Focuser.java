@@ -2,9 +2,7 @@ package open.dolphin.ui;
 
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
-import java.util.List;
 import javax.swing.SwingUtilities;
-import open.dolphin.util.StackTracer;
 import org.apache.log4j.Logger;
 
 /**
@@ -16,6 +14,7 @@ import org.apache.log4j.Logger;
  * <li>AddUser - text fields
  * <li>AllergyEditor - factorFld
  * <li>ChangePassword - text fields
+ * <li>ChartMediator - focusDiagnosisInspector
  * <li>DiagnosisDocument - enter(), selectAll()
  * <li>DiagnosisDocumentPopupMenu - rightPressed(e)
  * <li>FindDialog - searchTextField
@@ -35,10 +34,10 @@ public class Focuser {
     private static final Logger logger = Logger.getLogger(Focuser.class);
     private static Component component;
 
-    private static List<StackTraceElement> stackTrace;
+    //private static List<StackTraceElement> stackTrace;
 
     public static void requestFocus(Component c) {
-        stackTrace = StackTracer.getTrace();
+        //stackTrace = StackTracer.getTrace();
 
         component = c;
         KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
@@ -48,9 +47,9 @@ public class Focuser {
     private static void request() {
         boolean succeeded = component.requestFocusInWindow();
 
-        logger.info(component.getClass().toString() + ": request focus " + ((succeeded)? "succeeded" : "failed"));
         if (! succeeded) {
-            stackTrace.stream().map(e -> e.toString()).forEach(System.out::println);
+        //    stackTrace.stream().map(e -> e.toString()).forEach(System.out::println);
+            logger.info(component.getClass().toString() + ": request focus " + ((succeeded)? "succeeded" : "failed"));
         }
     }
 }
