@@ -1,11 +1,9 @@
 package open.dolphin.client;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.util.Holiday;
@@ -37,7 +35,7 @@ public class CalendarTableModel extends AbstractTableModel {
     // 今日
     private final SimpleDate today = new SimpleDate(new GregorianCalendar());
     // 誕生日
-    private final List<SimpleDate> annualEvents = new ArrayList<>();
+    private SimpleDate birthday;
 
     /**
      * CalendarTableModel を生成する.
@@ -202,7 +200,10 @@ public class CalendarTableModel extends AbstractTableModel {
      * @return
      */
     private SimpleDate createSimpleDate(GregorianCalendar gc) {
-        SimpleDate ret = Holiday.createSimpleDate(gc);
+        SimpleDate ret = new SimpleDate(gc);
+
+        // 休日登録
+        Holiday.setTo(ret);
 
         // 今日登録
         if (ret.equals(today)) {
@@ -210,10 +211,9 @@ public class CalendarTableModel extends AbstractTableModel {
         }
 
         // 誕生日登録
-        annualEvents.stream()
-                .filter(date -> date.getMonth() == ret.getMonth() && date.getDay() == ret.getDay())
-                .map(date -> date.getEventCode())
-                .forEach(code -> ret.setEventCode(code));
+        if (birthday.getMonth() == ret.getMonth() && birthday.getDay() == ret.getDay()) {
+            ret.setEventCode(birthday.getEventCode());
+        }
 
         return ret;
     }
@@ -229,7 +229,7 @@ public class CalendarTableModel extends AbstractTableModel {
             c.stream().forEach(date -> {
                 // 誕生日
                 if ("BIRTHDAY".equals(date.getEventCode())) {
-                    annualEvents.add(date);
+                    birthday = date;
                 }
                 GregorianCalendar gc = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDay());
                 data.put(gc, date);

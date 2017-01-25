@@ -1,7 +1,5 @@
 package open.dolphin.util;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import open.dolphin.infomodel.SimpleDate;
 
@@ -35,28 +33,11 @@ public class Holiday {
     }
 
     /**
-     * EventCode に休日情報を入れた SimpleDate を作る.
-     * @param gc
-     * @return
+     * 指定された SimpleDate に休日名をセットする.
+     * @param sd
      */
-    public static SimpleDate createSimpleDate(GregorianCalendar gc) {
-        int year = gc.get(Calendar.YEAR);
-        int month = gc.get(Calendar.MONTH);
-        int day = gc.get(Calendar.DAY_OF_MONTH);
-        return createSimpleDate(year, month, day);
-    }
-
-    /**
-     * EventCode に休日情報を入れた SimpleDate を作る.
-     * @param year
-     * @param month
-     * @param day
-     * @return
-     */
-    public static SimpleDate createSimpleDate(int year, int month, int day) {
-        SimpleDate sd = new SimpleDate(year, month, day);
+    public static void setTo(SimpleDate sd) {
         String key = createKey(sd);
         sd.setEventCode(DATABASE.get(key));
-        return sd;
     }
 }
