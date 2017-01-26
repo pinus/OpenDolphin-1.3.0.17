@@ -1,10 +1,12 @@
 package open.dolphin.client;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -13,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,13 +32,16 @@ import open.dolphin.infomodel.SimpleDate;
 public class CalendarTable extends JTable {
     private static final long serialVersionUID = 1L;
 
-    private static Color CALENDAR_BACKGROUND = new Color(227,250,207);
-    private static Color SUNDAY_FOREGROUND = new Color(255,0,130);
-    private static Color SATURDAY_FOREGROUND = new Color(0,0,255);
-    private static Color WEEKDAY_FOREGROUND = new Color(20,20,70);
-    private static Font CALENDAR_FONT = new Font("Dialog", Font.PLAIN, 14);
-    private static Font CALENDAR_FONT_SMALL = new Font("Dialog", Font.PLAIN, 10);
-    private static int ROW_HEIGHT = 24;
+    private static final String[] MONTH_NAME = new String[] {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+
+    private static final Color CALENDAR_BACKGROUND = new Color(227,250,207);
+    private static final Color SUNDAY_FOREGROUND = new Color(255,0,130);
+    private static final Color SATURDAY_FOREGROUND = new Color(0,0,255);
+    private static final Color WEEKDAY_FOREGROUND = new Color(20,20,70);
+    private static final Font TITLE_FONT = new Font("Courier", Font.BOLD, 72);
+    private static final Font CALENDAR_FONT = new Font("Dialog", Font.PLAIN, 14);
+    private static final Font CALENDAR_FONT_SMALL = new Font("Dialog", Font.PLAIN, 10);
+    private static final int ROW_HEIGHT = 24;
 
     private CalendarTableModel tableModel;
 
@@ -93,13 +99,15 @@ public class CalendarTable extends JTable {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Point p = e.getPoint();
-                int row = rowAtPoint(p);
-                int col = columnAtPoint(p);
+                if (listener != null) {
+                    Point p = e.getPoint();
+                    int row = rowAtPoint(p);
+                    int col = columnAtPoint(p);
 
-                if (row != -1 && col != -1) {
-                    SimpleDate date = (SimpleDate) tableModel.getValueAt(row, col);
-                    listener.dateSelected(date);
+                    if (row != -1 && col != -1) {
+                        SimpleDate date = (SimpleDate) tableModel.getValueAt(row, col);
+                        listener.dateSelected(date);
+                    }
                 }
             }
         });
@@ -140,12 +148,38 @@ public class CalendarTable extends JTable {
     }
 
     /**
+     * バックグランドに月と年を出す.
+     * @param graphics
+     */
+    @Override
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+        Graphics2D g = (Graphics2D) graphics.create();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f));
+
+        String month = MONTH_NAME[tableModel.getMonth()];
+        String year = String.valueOf(tableModel.getYear());
+
+        g.setFont(TITLE_FONT);
+        g.setColor(Color.BLUE);
+        FontMetrics fm = g.getFontMetrics();
+        int x1 = (getWidth() - fm.stringWidth(month)) / 2;
+        int x2 = (getWidth() - fm.stringWidth(year)) / 2;
+        int y = (getHeight() - fm.getHeight()*2) / 2;
+
+        g.drawString(month, x1, y + fm.getAscent());
+        g.drawString(year, x2, y + fm.getHeight() + fm.getAscent());
+
+    }
+
+    /**
      * Custom table cell renderer for CalendarTable.
      */
     private class DateRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 5817292848730765481L;
 
-        private Color backgroundColor;
+        private Color eventColor;
 
         public DateRenderer() {
             super();
@@ -153,30 +187,42 @@ public class CalendarTable extends JTable {
         }
 
         private void init() {
+            setBorder(BorderFactory.createLineBorder(Color.red));
             setOpaque(true);
             setHorizontalAlignment(SwingConstants.CENTER);
         }
 
+        // Event の色を，円のバックグランドで描く
         @Override
         public void paintComponent (Graphics graphics) {
-            super.paintComponent(graphics);
+            //super.paintComponent(graphics);
+            Graphics2D g = (Graphics2D) graphics.create();
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
 
-            if (backgroundColor != null) {
-                Graphics2D g = (Graphics2D) graphics.create();
+            int w = getWidth();
+            int h = getHeight();
 
-                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                //g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-
-                int w = getWidth();
-                int h = getHeight();
-                int d = Math.min(w, h) - 2;
+            if (eventColor != null) {
+                int d = Math.min(w, h);
                 int x = (w-d)/2;
                 int y = (h-d)/2;
-                //g.setColor(backgroundColor);
-                //g.fillOval(x, y, d, d);
-
-                g.dispose();
+                g.setColor(eventColor);
+                g.fillOval(x, y, d, d);
             }
+
+            String text = getText();
+            FontMetrics fm = g.getFontMetrics();
+            int strWidth = fm.stringWidth(text);
+
+            int x = (w - strWidth)/2;
+            int y = (h - fm.getHeight())/2 + fm.getAscent(); // height でセンタリングして ascent 分下げる
+
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+            g.setColor(getForeground());
+            g.drawString(text, x, y);
+
+            g.dispose();
         }
 
         @Override
@@ -208,10 +254,10 @@ public class CalendarTable extends JTable {
                 }
 
                 // Event "PVT", "TODAY", "BIRTHDAY"
-                backgroundColor = CalendarEvent.getColor(targetDate.getEventCode());
+                eventColor = CalendarEvent.getColor(targetDate.getEventCode());
 
                 // Holiday
-                if (backgroundColor == null && targetDate.getEventCode() != null) {
+                if (eventColor == null && targetDate.getEventCode() != null) {
                     foregroundColor = SUNDAY_FOREGROUND;
                 }
 
@@ -227,7 +273,6 @@ public class CalendarTable extends JTable {
                 }
 
                 setForeground(foregroundColor);
-                setBackground(backgroundColor);
             }
             return compo;
         }

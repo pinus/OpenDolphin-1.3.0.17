@@ -186,8 +186,6 @@ public class ChartToolBar extends JToolBar {
 
         CompletableSearchField keywordFld = new CompletableSearchField(15);
         keywordFld.setLabel("病名検索");
-        keywordFld.setVerticalDeviation(6);
-
         keywordFld.setPreferences(prefs);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
         keywordFld.addActionListener(e -> {

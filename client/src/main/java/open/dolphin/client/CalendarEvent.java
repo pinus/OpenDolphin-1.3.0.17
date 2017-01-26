@@ -48,6 +48,6 @@ public enum CalendarEvent {
         for (CalendarEvent event : CalendarEvent.values()) {
             if (event.name().equals(code)) { return event.title(); }
         }
-        return "";
+        return code;
     }
 }
