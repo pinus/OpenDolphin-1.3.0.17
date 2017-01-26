@@ -39,6 +39,14 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * CalendarTableModel を生成する.
+     * @param gc
+     */
+    public CalendarTableModel(GregorianCalendar gc) {
+        this(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH));
+    }
+
+    /**
+     * CalendarTableModel を生成する.
      * @param year   カレンダの年
      * @param month　 カレンダの月
      */
@@ -108,6 +116,14 @@ public class CalendarTableModel extends AbstractTableModel {
         year = gc.get(Calendar.YEAR);
         month = gc.get(Calendar.MONTH);
 
+        fireTableDataChanged();
+    }
+
+    /**
+     * model を今日にリセットする.
+     */
+    public void reset() {
+        init(today.getYear(), today.getMonth());
         fireTableDataChanged();
     }
 
@@ -205,13 +221,13 @@ public class CalendarTableModel extends AbstractTableModel {
         // 休日登録
         Holiday.setTo(ret);
 
-        // 今日登録
+        // 今日なら上書き登録
         if (ret.equals(today)) {
-            ret.setEventCode("TODAY");
+            ret.setEventCode(CalendarEvent.TODAY.name());
         }
 
-        // 誕生日登録
-        if (birthday.getMonth() == ret.getMonth() && birthday.getDay() == ret.getDay()) {
+        // さらに誕生日なら上書き登録
+        if (birthday != null && birthday.getMonth() == ret.getMonth() && birthday.getDay() == ret.getDay()) {
             ret.setEventCode(birthday.getEventCode());
         }
 
@@ -228,7 +244,7 @@ public class CalendarTableModel extends AbstractTableModel {
             // data.clear();
             c.stream().forEach(date -> {
                 // 誕生日
-                if ("BIRTHDAY".equals(date.getEventCode())) {
+                if (CalendarEvent.BIRTHDAY.name().equals(date.getEventCode())) {
                     birthday = date;
                 }
                 GregorianCalendar gc = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDay());

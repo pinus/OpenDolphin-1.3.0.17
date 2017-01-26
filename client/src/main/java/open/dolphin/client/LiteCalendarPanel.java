@@ -116,7 +116,7 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
                 int row = rowAtPoint(e.getPoint());
                 int col = columnAtPoint(e.getPoint());
                 SimpleDate d = (SimpleDate) getValueAt(row, col);
-                return d.getEventCode();
+                return CalendarEvent.getTitle(d.getEventCode());
             }
         };
         setAutoResizeMode(autoResizeMode);
@@ -586,7 +586,7 @@ public class LiteCalendarPanel extends JPanel implements PropertyChangeListener 
                 }
 
                 // Event "PVT", "TODAY", "BIRTHDAY"
-                backgroundColor = eventColorTable.get(targetDate.getEventCode());
+                backgroundColor = CalendarEvent.getColor(targetDate.getEventCode());
 
                 // Holiday
                 if (backgroundColor == null && targetDate.getEventCode() != null) {

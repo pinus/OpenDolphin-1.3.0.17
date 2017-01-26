@@ -216,8 +216,11 @@ public class GUIConst {
     public static final ImageIcon ICON_LIST_REMOVE_16 = ClientContext.getImageIcon("bw/16x16/trash-empty.png");
     public static final ImageIcon ICON_FOLDER_NEW_16 = ClientContext.getImageIcon("bw/16x16/folder.png");
     public static final ImageIcon ICON_DOWNLOAD_16 = ClientContext.getImageIcon("bw/16x16/download-alt-3.png");
+
     public static final ImageIcon ICON_MD_FORWARD_16 = ClientContext.getImageIcon("bw/16x16/MD-play.png");
     public static final ImageIcon ICON_MD_BACKWARD_16 = ClientContext.getImageIcon("bw/16x16/MD-backward.png");
+    public static final ImageIcon ICON_MD_FAST_FORWARD_16 = ClientContext.getImageIcon("bw/16x16/MD-fast-forward.png");
+    public static final ImageIcon ICON_MD_FAST_BACKWARD_16 = ClientContext.getImageIcon("bw/16x16/MD-fast-backward.png");
     public static final ImageIcon ICON_MD_STOP_16 = ClientContext.getImageIcon("bw/16x16/MD-stop.png");
     public static final ImageIcon ICON_MD_EJECT_16 = ClientContext.getImageIcon("bw/16x16/MD-eject.png");
 

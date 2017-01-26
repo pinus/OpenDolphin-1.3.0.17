@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import open.dolphin.client.CalendarCardPanel;
+import open.dolphin.client.CalendarEvent;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
 import open.dolphin.infomodel.SimpleDate;
@@ -82,7 +83,7 @@ public class PatientVisitInspector implements IInspector {
         // 誕生日
         String mmlBirthday = context.getPatient().getBirthday();
         SimpleDate birthday = SimpleDate.mmlDateToSimpleDate(mmlBirthday);
-        birthday.setEventCode("BIRTHDAY");
+        birthday.setEventCode(CalendarEvent.BIRTHDAY.name());
         markList.add(birthday);
 
         // CardCalendarに通知する
