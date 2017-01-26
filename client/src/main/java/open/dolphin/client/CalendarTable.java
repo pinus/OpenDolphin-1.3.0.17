@@ -11,10 +11,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -41,7 +45,6 @@ public class CalendarTable extends JTable {
     private static final Font TITLE_FONT = new Font("Courier", Font.BOLD, 72);
     private static final Font CALENDAR_FONT = new Font("Dialog", Font.PLAIN, 14);
     private static final Font CALENDAR_FONT_SMALL = new Font("Dialog", Font.PLAIN, 10);
-    private static final int ROW_HEIGHT = 24;
 
     private CalendarTableModel tableModel;
 
@@ -89,7 +92,6 @@ public class CalendarTable extends JTable {
         getTableHeader().setReorderingAllowed(false);
 
         // その他の設定
-        setRowHeight(ROW_HEIGHT);
         setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         setBackground(CALENDAR_BACKGROUND);
         setIntercellSpacing(new Dimension(0,0));
@@ -110,6 +112,25 @@ public class CalendarTable extends JTable {
                     }
                 }
             }
+        });
+
+        // RowHeight をサイズに合わせる
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                setRowHeight(getHeight()/getRowCount());
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+                setRowHeight(getHeight()/getRowCount());
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {}
+
+            @Override
+            public void componentHidden(ComponentEvent e) {}
         });
 
         // ヘッダのついた Panel を作る
@@ -156,7 +177,7 @@ public class CalendarTable extends JTable {
         super.paintComponent(graphics);
         Graphics2D g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f));
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.05f));
 
         String month = MONTH_NAME[tableModel.getMonth()];
         String year = String.valueOf(tableModel.getYear());
@@ -192,23 +213,27 @@ public class CalendarTable extends JTable {
             setHorizontalAlignment(SwingConstants.CENTER);
         }
 
-        // Event の色を，円のバックグランドで描く
+        /**
+         * Event の色を，円のバックグランドで描く
+         */
         @Override
         public void paintComponent (Graphics graphics) {
             //super.paintComponent(graphics);
             Graphics2D g = (Graphics2D) graphics.create();
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
 
             int w = getWidth();
             int h = getHeight();
 
             if (eventColor != null) {
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
                 int d = Math.min(w, h);
                 int x = (w-d)/2;
                 int y = (h-d)/2;
                 g.setColor(eventColor);
-                g.fillOval(x, y, d, d);
+                g.fillOval(x, y, d-1, d-1);
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+                g.drawOval(x, y, d-1, d-1);
             }
 
             String text = getText();
@@ -283,6 +308,19 @@ public class CalendarTable extends JTable {
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         CalendarTable table = new CalendarTable();
+
+        List<SimpleDate> dates = new ArrayList<>();
+        GregorianCalendar gc = new GregorianCalendar();
+
+        for (CalendarEvent e : CalendarEvent.values()) {
+            SimpleDate d = new SimpleDate(gc);
+            d.setEventCode(e.name());
+            dates.add(d);
+            gc.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        CalendarTableModel model = (CalendarTableModel) table.getModel();
+        model.setMarkDates(dates);
 
         f.add(table.getPanel());
         f.pack();

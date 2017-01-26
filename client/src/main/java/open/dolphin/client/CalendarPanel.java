@@ -14,15 +14,19 @@ import javax.swing.JFrame;
 import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.plaf.LayerUI;
+import open.dolphin.infomodel.SimpleDate;
 
 /**
- * コントローラー付きの CalendarPanel.
+ * CalendarTable にコントローラーを付けたパネル.
  * @author pns
  */
 public class CalendarPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private int monthDiff;
+    private CalendarTable table;
+    private CalendarTableModel tableModel;
+    private CalendarListener listener;
 
     public CalendarPanel() {
         this(0);
@@ -34,8 +38,8 @@ public class CalendarPanel extends JPanel {
     }
 
     private void initComponents() {
-        CalendarTable table = new CalendarTable(monthDiff);
-        CalendarTableModel tableModel = (CalendarTableModel) table.getModel();
+        table = new CalendarTable(monthDiff);
+        tableModel = (CalendarTableModel) table.getModel();
 
         // control panel 生成
         JButton nextWeek = createButton(GUIConst.ICON_MD_FORWARD_16, e -> tableModel.nextWeek());
@@ -44,7 +48,24 @@ public class CalendarPanel extends JPanel {
         JButton prevMonth = createButton(GUIConst.ICON_MD_FAST_BACKWARD_16, e -> tableModel.previousMonth());
         JButton reset = createButton(GUIConst.ICON_MD_STOP_16, e -> tableModel.reset());
 
+        // Control Panel を作る
         JPanel controlPanel = new JPanel();
+        controlPanel.setOpaque(true);
+        controlPanel.setBackground(table.getBackground());
+        controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
+        controlPanel.add(prevMonth);
+        controlPanel.add(prevWeek);
+        controlPanel.add(Box.createVerticalGlue());
+        controlPanel.add(reset);
+        controlPanel.add(Box.createVerticalGlue());
+        controlPanel.add(nextWeek);
+        controlPanel.add(nextMonth);
+        Dimension size = controlPanel.getPreferredSize();
+        size.width = 14;
+        controlPanel.setPreferredSize(size);
+        controlPanel.setMaximumSize(size);
+        controlPanel.setMinimumSize(size);
+
         // 境界線を描く
         LayerUI<JPanel> layerUI = new LayerUI<JPanel>() {
             private static final long serialVersionUID = 1L;
@@ -57,21 +78,6 @@ public class CalendarPanel extends JPanel {
         };
         JLayer<JPanel> controlLayer = new JLayer<>(controlPanel, layerUI);
 
-        // Control Panel を作る
-        controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
-        controlPanel.add(prevMonth);
-        controlPanel.add(prevWeek);
-        controlPanel.add(Box.createVerticalGlue());
-        controlPanel.add(reset);
-        controlPanel.add(Box.createVerticalGlue());
-        controlPanel.add(nextWeek);
-        controlPanel.add(nextMonth);
-        Dimension size = controlPanel.getPreferredSize();
-        size.width = 16;
-        controlPanel.setPreferredSize(size);
-        controlPanel.setMaximumSize(size);
-        controlPanel.setMinimumSize(size);
-
         // CalendarPanel 生成
         setLayout(new BorderLayout());
         add(table.getPanel(), BorderLayout.CENTER);
@@ -81,10 +87,36 @@ public class CalendarPanel extends JPanel {
     private JButton createButton(ImageIcon icon, ActionListener l) {
         JButton button = new JButton(icon);
         button.setBorderPainted(false);
-        button.addActionListener(l);
+        button.addActionListener(e -> {
+            l.actionPerformed(e);
+            listener.dateSelected(new SimpleDate(tableModel.getYear(), tableModel.getMonth(), 1));
+        });
         return button;
     }
 
+    /**
+     * 表示年月のリスナ.
+     * @param l
+     */
+    public void addCalendarListener(CalendarListener l) {
+        listener = l;
+    }
+
+    /**
+     * CalendarTable を返す.
+     * @return
+     */
+    public CalendarTable getTable() {
+        return table;
+    }
+
+    /**
+     * CalendarTableModel を返す.
+     * @return
+     */
+    public CalendarTableModel getModel() {
+        return tableModel;
+    }
 
     public static void main (String[] arg) {
         open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());

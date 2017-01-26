@@ -4,10 +4,9 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
-import open.dolphin.client.CalendarCardPanel;
 import open.dolphin.client.CalendarEvent;
+import open.dolphin.client.CalendarPanel;
 import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
 import open.dolphin.infomodel.SimpleDate;
 
 /**
@@ -17,7 +16,7 @@ import open.dolphin.infomodel.SimpleDate;
 public class PatientVisitInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.カレンダー;
 
-    private CalendarCardPanel calendarCardPanel;
+    private CalendarPanel calendarPanel;
     private String pvtCode; // PVT
     private final ChartImpl context;
 
@@ -36,7 +35,7 @@ public class PatientVisitInspector implements IInspector {
      */
     @Override
     public JPanel getPanel() {
-        return calendarCardPanel;
+        return calendarPanel;
     }
 
     @Override
@@ -53,18 +52,20 @@ public class PatientVisitInspector implements IInspector {
      * GUIコンポーネントを初期化する.
      */
     private void initComponent() {
-        pvtCode = ClientContext.getString("eventCode.pvt"); // "PVT"
-        calendarCardPanel = new CalendarCardPanel(ClientContext.getEventColorTable());
-        calendarCardPanel.setName(CATEGORY.name());
+        pvtCode = CalendarEvent.PVT.name();
+        calendarPanel = new CalendarPanel();
+        calendarPanel.setName(CATEGORY.name());
 
-        calendarCardPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-        calendarCardPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-        calendarCardPanel.setMaximumSize(new Dimension(1024, DEFAULT_HEIGHT));
+        calendarPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        calendarPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        calendarPanel.setMaximumSize(new Dimension(1024, DEFAULT_HEIGHT));
+
+        calendarPanel.addCalendarListener(this::calendarUpdated);
     }
 
     @Override
     public void update() {
-        List<SimpleDate> markList = new ArrayList<>();
+        List<SimpleDate> markDates = new ArrayList<>();
 
         // 来院歴を取り出す
         List<String> latestVisit = context.getKarte().getPvtDateEntry();
@@ -77,16 +78,20 @@ public class PatientVisitInspector implements IInspector {
                 sd.setEventCode(pvtCode);
                 visits.add(sd);
             });
-            markList.addAll(visits);
+            markDates.addAll(visits);
         }
 
         // 誕生日
         String mmlBirthday = context.getPatient().getBirthday();
         SimpleDate birthday = SimpleDate.mmlDateToSimpleDate(mmlBirthday);
         birthday.setEventCode(CalendarEvent.BIRTHDAY.name());
-        markList.add(birthday);
+        markDates.add(birthday);
 
         // CardCalendarに通知する
-        calendarCardPanel.setMarkList(markList);
+        calendarPanel.getModel().setMarkDates(markDates);
+    }
+
+    public void calendarUpdated(SimpleDate date) {
+        System.out.println("updated calendar " + date.getYear() + " / " + date.getMonth());
     }
 }
