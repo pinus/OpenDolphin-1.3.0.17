@@ -2,10 +2,12 @@ package open.dolphin.ui;
 
 import open.dolphin.helper.AppForeground;
 import java.awt.BorderLayout;
+import java.awt.KeyboardFocusManager;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import org.jboss.logging.Logger;
 
 /**
@@ -69,12 +71,12 @@ public class MainFrame extends JFrame {
      * Window が active でかつアプリケーションが Foreground の時のみ active を返す.
      * @return
      */
-    public boolean isActiveAndForeground() {
-        if (isActive() && !AppForeground.isForeground()) {
-            logger.info(String.format("Window (%s) is active while Application in background.", getTitle()));
+    @Override
+    public boolean isActive() {
+        if (super.isActive() && !AppForeground.isForeground()) {
+            logger.info("Window is active while Application in background");
         }
-
-        return isActive() && AppForeground.isForeground();
+        return super.isActive();
     }
 
     /**

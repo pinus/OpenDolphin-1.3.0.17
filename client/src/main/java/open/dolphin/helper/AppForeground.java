@@ -3,6 +3,7 @@ package open.dolphin.helper;
 import com.apple.eawt.AppEvent;
 import com.apple.eawt.AppForegroundListener;
 import com.apple.eawt.Application;
+import java.awt.KeyboardFocusManager;
 
 /**
  * アプリケーションが foreground にいるか，background に回っているかの状態を保持する.
@@ -23,6 +24,7 @@ public class AppForeground {
             @Override
             public void appMovedToBackground(AppEvent.AppForegroundEvent afe) {
                 appForeground = false;
+                KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
             }
         });
     }

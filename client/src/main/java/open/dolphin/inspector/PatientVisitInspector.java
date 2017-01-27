@@ -72,7 +72,7 @@ public class PatientVisitInspector implements IInspector {
         CalendarTableModel tableModel = (CalendarTableModel)calendarPanel.getTable().getModel();
         int year = tableModel.getYear();
         int month = tableModel.getMonth();
-        titleText = String.format("%d年%d月", year, month+1);
+        titleText = String.format("%s %d年%d月", CATEGORY.title(), year, month+1);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class PatientVisitInspector implements IInspector {
      * @param date
      */
     public void calendarUpdated(SimpleDate date) {
-        titleText = String.format("%d年%d月", date.getYear(), date.getMonth()+1);
+        titleText = String.format("%s %d年%d月", CATEGORY.title(), date.getYear(), date.getMonth()+1);
         border.setTitle(titleText);
         context.getFrame().repaint();
     }

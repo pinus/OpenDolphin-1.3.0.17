@@ -2,6 +2,7 @@ package open.dolphin.client;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
@@ -31,6 +32,9 @@ public class CalendarTableModel extends AbstractTableModel {
 
     // SimpleDate を入れる HashMap
     private final HashMap<GregorianCalendar, SimpleDate> data = new HashMap<>();
+
+    // 外部から登録された，EventCode でマークされた SimpleDate のコレクション
+    private Collection<SimpleDate> markDates;
 
     // 今日
     private final SimpleDate today = new SimpleDate(new GregorianCalendar());
@@ -239,6 +243,7 @@ public class CalendarTableModel extends AbstractTableModel {
      * @param c
      */
     public void setMarkDates(Collection<SimpleDate> c) {
+        markDates = c;
         if (c != null) {
             // 既存のデータを消去して，SimpleDate を登録し直す
             // data.clear();
@@ -252,6 +257,14 @@ public class CalendarTableModel extends AbstractTableModel {
             });
             fireTableDataChanged();
         }
+    }
+
+    /**
+     * 登録された マーク付き SimpleDate のリストを返す.
+     * @return
+     */
+    public Collection<SimpleDate> getMarkDates() {
+        return markDates;
     }
 
     /**

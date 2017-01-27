@@ -50,8 +50,6 @@ public class CalendarTable extends JTable {
 
     private CalendarTableModel tableModel;
 
-    // 今月からの変位月数
-    private int monthDiff;
     // 日付がマウスで選択された時に呼ばれる listener
     private CalendarListener listener;
     // header 付きのカレンダー
@@ -63,28 +61,25 @@ public class CalendarTable extends JTable {
      * 今月のカレンダーを作る.
      */
     public CalendarTable() {
-        this(0);
+        initComponents(new GregorianCalendar());
     }
 
     /**
-     * 今月から differntial 月分だけずれたカレンダーを作る.
-     * @param differential
+     * GregorianCalendar で指定された月のカレンダーを作る.
+     * @param gc
      */
-    public CalendarTable(int differential) {
-        monthDiff = differential;
-        initComponents();
+    public CalendarTable(GregorianCalendar gc) {
+        initComponents(gc);
     }
 
-    private void initComponents() {
+    private void initComponents(GregorianCalendar gc) {
         // TableModel をセット
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.add(Calendar.MONTH, monthDiff);
         tableModel = new CalendarTableModel(gc);
         setModel(tableModel);
 
         // SelectionModel をセット
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setCellSelectionEnabled(true);
+        setCellSelectionEnabled(false);
         setRowSelectionAllowed(false);
 
         // TableCellRenderer をセット
@@ -112,7 +107,7 @@ public class CalendarTable extends JTable {
 
                     if (row != -1 && col != -1) {
                         SimpleDate date = (SimpleDate) tableModel.getValueAt(row, col);
-                        listener.dateSelected(date);
+                        fireDateSelected(date);
                     }
                 }
             }
@@ -152,11 +147,28 @@ public class CalendarTable extends JTable {
     }
 
     /**
-     * カレンダーリスナーを登録する.
+     * 日付選択リスナーを登録する.
      * @param l
      */
     public void addCalendarListener(CalendarListener l) {
         listener = l;
+    }
+
+    /**
+     * 日付選択リスナーを返す.
+     * @return
+     */
+    public CalendarListener getCalendarListener() {
+        return listener;
+    }
+
+    /**
+     * リスナに日付選択を通知する.
+     */
+    private void fireDateSelected(SimpleDate date) {
+        if (listener != null) {
+            listener.dateSelected(date);
+        }
     }
 
     /**
