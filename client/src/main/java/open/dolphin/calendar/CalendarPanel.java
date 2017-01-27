@@ -2,9 +2,9 @@ package open.dolphin.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
@@ -14,13 +14,14 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLayer;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.plaf.LayerUI;
 import open.dolphin.client.GUIConst;
 import open.dolphin.infomodel.SimpleDate;
+import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * CalendarTable にコントローラーを付けたパネル.
@@ -120,19 +121,21 @@ public class CalendarPanel extends JPanel {
     }
 
     /**
-     * 3ヶ月分のカレンダーをポップアップする.
+     * 過去1年分のカレンダーをポップアップする.
      */
     private void expand() {
-        JPopupMenu popup = new JPopupMenu();
+        JDialog dialog = new JDialog();
+        dialog.setLayout(new GridLayout(4,3));
         GregorianCalendar gc = new GregorianCalendar(tableModel.getYear(), tableModel.getMonth(), 1);
+        gc.add(Calendar.MONTH, -11);
 
-        for (int i=0; i<3; i++) {
+        for (int i=0; i<12; i++) {
             CalendarTable tbl = new CalendarTable(gc);
-            ((CalendarTableModel)tbl.getModel()).setMarkDates(tableModel.getMarkDates());
+            CalendarTableModel mdl = (CalendarTableModel)tbl.getModel();
+            mdl.setMarkDates(tableModel.getMarkDates());
 
-            Dimension size = new Dimension(table.getPanel().getWidth(), table.getPanel().getHeight());
-            size.width -= 16;
-            tbl.getPanel().setPreferredSize(size);
+            tbl.getPanel().setPreferredSize(new Dimension(200,150));
+            tbl.getPanel().setBorder(PNSBorderFactory.createTitledBorder(String.format("%d年%d月", mdl.getYear(), mdl.getMonth()+1)));
 
             tbl.addCalendarListener(date -> {
                 // リスナのブリッジ
@@ -140,11 +143,13 @@ public class CalendarPanel extends JPanel {
                 if (l != null) { l.dateSelected(date); }
             });
 
-            popup.add(tbl.getPanel(), 0);
-            gc.add(Calendar.MONTH, -1);
+            dialog.add(tbl.getPanel());
+            gc.add(Calendar.MONTH, 1);
         }
-        Point p = getLocation();
-        popup.show(getParent(), p.x, p.y - table.getPanel().getHeight()*2);
+        Point p = getLocationOnScreen();
+        dialog.pack();
+        dialog.setLocation(p);
+        dialog.setVisible(true);
     }
 
     /**
