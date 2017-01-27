@@ -1,8 +1,7 @@
-package open.dolphin.client;
+package open.dolphin.calendar;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;

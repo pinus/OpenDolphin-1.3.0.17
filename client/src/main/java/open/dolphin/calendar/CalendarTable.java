@@ -1,4 +1,4 @@
-package open.dolphin.client;
+package open.dolphin.calendar;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;

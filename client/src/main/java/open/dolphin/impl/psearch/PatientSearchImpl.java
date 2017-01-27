@@ -2,7 +2,6 @@ package open.dolphin.impl.psearch;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
-import java.beans.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +12,6 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import open.dolphin.client.AbstractMainComponent;
-import open.dolphin.client.CalendarCardPanel;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
@@ -26,7 +24,6 @@ import open.dolphin.helper.Task;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
-import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.AdditionalTableSettings;
@@ -131,7 +128,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         ObjectReflectTableModel<PatientModel> tableModel = new ObjectReflectTableModel<>(reflectList);
         table.setModel(tableModel);
-        TableRowSorter<ObjectReflectTableModel> sorter = new TableRowSorter<ObjectReflectTableModel>(tableModel) {
+        TableRowSorter<ObjectReflectTableModel<PatientModel>> sorter = new TableRowSorter<ObjectReflectTableModel<PatientModel>>(tableModel) {
             // ASCENDING -> DESENDING -> 初期状態 と切り替える
             @Override
             public void toggleSortOrder(int column) {
@@ -223,8 +220,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         // コンテキスト・リスナを登録する
         view.getTable().addMouseListener(new ContextListener());
 
-        // カレンダによる日付検索を設定する
-        //new PopupListener(view.getKeywordFld());
+        // キーブロッカー
         keyBlocker = new KeyBlocker(view.getKeywordFld());
 
         // KeywordFld に ActionListener 登録
@@ -256,7 +252,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         // Table に ListSelectionListener 登録
         final JTable table = view.getTable();
-        final ObjectReflectTableModel tableModel = (ObjectReflectTableModel) table.getModel();
+        final ObjectReflectTableModel<PatientModel> tableModel = (ObjectReflectTableModel<PatientModel>) table.getModel();
 
         table.getSelectionModel().addListSelectionListener(e -> {
             if (e.getValueIsAdjusting() == false) {
@@ -268,7 +264,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
                     PatientModel[] patients = new PatientModel[rows.length];
                     for (int i=0; i < rows.length; i++) {
                         rows[i] = table.convertRowIndexToModel(rows[i]);
-                        patients[i] = (PatientModel) tableModel.getObject(rows[i]);
+                        patients[i] = tableModel.getObject(rows[i]);
                     }
                     setSelectedPatinet(patients);
                 }
@@ -693,61 +689,4 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         return false;
     }
-
-    /**
-     * テキストフィールドへ日付を入力するためのカレンダーポップアップメニュークラス.
-     */
-    private class PopupListener extends MouseAdapter implements PropertyChangeListener {
-
-        /** ポップアップメニュー */
-        private JPopupMenu popup;
-        /** ターゲットのテキストフィールド */
-        private final JTextField tf;
-
-        public PopupListener(JTextField tf) {
-            this.tf = tf;
-            connect();
-        }
-
-        private void connect() {
-            tf.addMouseListener(this);
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            maybeShowPopup(e);
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            maybeShowPopup(e);
-        }
-
-        private void maybeShowPopup(MouseEvent e) {
-
-            if (e.isPopupTrigger()) {
-                popup = new JPopupMenu();
-                CalendarCardPanel cc = new CalendarCardPanel(ClientContext.getEventColorTable());
-                cc.addPropertyChangeListener(CalendarCardPanel.PICKED_DATE, this);
-                cc.setCalendarRange(new int[]{-12, 0});
-                popup.insert(cc, 0);
-                popup.show(e.getComponent(), e.getX(), e.getY());
-            }
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-            if (e.getPropertyName().equals(CalendarCardPanel.PICKED_DATE)) {
-                SimpleDate sd = (SimpleDate) e.getNewValue();
-                tf.setText(SimpleDate.simpleDateToMmldate(sd));
-                popup.setVisible(false);
-                popup = null;
-                String test = tf.getText().trim();
-                if (!test.equals("")) {
-                    find(test);
-                }
-            }
-        }
-    }
 }
-

@@ -8,10 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.ui.CompletableSearchField;
@@ -71,6 +73,17 @@ public class PatientSearchPanel extends MainComponentPanel {
             });
             popup.add(item);
         });
+
+        JMenu pvtMenu = new JMenu("受診日検索");
+        CalendarPanel cp = new CalendarPanel();
+        cp.setPreferredSize(new Dimension(200,150));
+        cp.getTable().addCalendarListener(date -> {
+            keywordFld.setText(String.format("%d-%02d-%02d", date.getYear(), date.getMonth()+1, date.getDay()));
+            popup.setVisible(false);
+            keywordFld.postActionEvent();
+        });
+        pvtMenu.add(cp);
+        popup.add(pvtMenu);
 
         popup.addSeparator();
 

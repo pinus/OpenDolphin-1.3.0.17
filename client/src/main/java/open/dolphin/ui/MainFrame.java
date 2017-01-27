@@ -2,12 +2,10 @@ package open.dolphin.ui;
 
 import open.dolphin.helper.AppForeground;
 import java.awt.BorderLayout;
-import java.awt.KeyboardFocusManager;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 import org.jboss.logging.Logger;
 
 /**

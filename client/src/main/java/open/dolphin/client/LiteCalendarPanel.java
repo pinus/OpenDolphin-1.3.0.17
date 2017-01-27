@@ -1,5 +1,8 @@
 package open.dolphin.client;
 
+import open.dolphin.calendar.CalendarTableModel;
+import open.dolphin.calendar.CalendarEvent;
+import open.dolphin.calendar.CalendarHeaderRenderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;

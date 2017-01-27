@@ -1,7 +1,8 @@
-package open.dolphin.client;
+package open.dolphin.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -18,6 +19,7 @@ import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.plaf.LayerUI;
+import open.dolphin.client.GUIConst;
 import open.dolphin.infomodel.SimpleDate;
 
 /**
@@ -142,7 +144,7 @@ public class CalendarPanel extends JPanel {
             gc.add(Calendar.MONTH, -1);
         }
         Point p = getLocation();
-        popup.show(this.getParent(), p.x, p.y - table.getPanel().getHeight()*2);
+        popup.show(getParent(), p.x, p.y - table.getPanel().getHeight()*2);
     }
 
     /**

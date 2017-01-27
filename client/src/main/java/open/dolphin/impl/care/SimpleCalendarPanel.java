@@ -1,5 +1,6 @@
 package open.dolphin.impl.care;
 
+import open.dolphin.calendar.CalendarHeaderRenderer;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.dnd.*;
