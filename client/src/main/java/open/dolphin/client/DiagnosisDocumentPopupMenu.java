@@ -2,8 +2,6 @@ package open.dolphin.client;
 
 import java.awt.Component;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -11,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.infomodel.*;
 import open.dolphin.ui.Focuser;
 
@@ -18,7 +17,7 @@ import open.dolphin.ui.Focuser;
  * DiagnosisDocument のポップアップメニューを一手に引き受ける
  * @author pns
  */
-public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMotionListener,PropertyChangeListener {
+public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMotionListener {
 
     private DiagnosisDocument diagnosisDocument;
     private DiagnosisDocumentTable diagTable;
@@ -174,35 +173,28 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         int this_month = gc.get(Calendar.MONTH);
         int dif = lastVisitYmd[1] - this_month; //lastVisit, this_month は gc なので，両者とも値が0-11 になる
         if (dif > 0) { dif -= 12; }
-        CalendarCardPanel cc = new CalendarCardPanel(ClientContext.getEventColorTable(), dif);
 
-        cc.addPropertyChangeListener(CalendarCardPanel.PICKED_DATE, this);
-        cc.setCalendarRange(new int[]{-12, 0});
-        calendarPopup.insert(cc, 0);
+        CalendarPanel cp = new CalendarPanel();
+        cp.getTable().addCalendarListener(this::setDate);
+
+        calendarPopup.insert(cp, 0);
         calendarPopup.show(e.getComponent(), e.getX(), e.getY());
     }
 
     /**
-     * PropertyChange のお仕事
-     * @param e
+     * SimpleDate を diagTable にセットする.
+     * @param date
      */
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-
-        // カレンダーで選択した場合
-        if (CalendarCardPanel.PICKED_DATE.equals(prop)) {
-            SimpleDate sd = (SimpleDate) e.getNewValue();
-            String date = SimpleDate.simpleDateToMmldate(sd);
-            textField.setText(date);
-            int[] rows = diagTable.getSelectedRows();
-            for (int r : rows) {
-                int row = diagTable.convertRowIndexToModel(r);
-                diagTableModel.setValueAt(date, row, targetColumn);
-            }
-            calendarPopup.setVisible(false);
-            calendarPopup = null;
+    public void setDate(SimpleDate date) {
+        String d = SimpleDate.simpleDateToMmldate(date);
+        textField.setText(d);
+        int[] rows = diagTable.getSelectedRows();
+        for (int r : rows) {
+            int row = diagTable.convertRowIndexToModel(r);
+            diagTableModel.setValueAt(d, row, targetColumn);
         }
+        calendarPopup.setVisible(false);
+        calendarPopup = null;
     }
 
     /**

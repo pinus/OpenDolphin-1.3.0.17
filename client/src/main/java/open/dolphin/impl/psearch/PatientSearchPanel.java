@@ -1,6 +1,5 @@
 package open.dolphin.impl.psearch;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -29,11 +28,6 @@ import open.dolphin.util.PNSPair;
  */
 public class PatientSearchPanel extends MainComponentPanel {
     private static final long serialVersionUID = 1L;
-
-    // narrowing search 時の text field の背景色
-    public static final Color NORMAL_SEARCH_BACKGROUND_COLOR = Color.WHITE;
-    //public static final Color NARROWING_SEARCH_BACKGROUND_COLOR = new Color(255,255,230);
-    public static final Color NARROWING_SEARCH_BACKGROUND_COLOR = new Color(255,255,0);
 
     // command panel
     private CompletableSearchField keywordFld;

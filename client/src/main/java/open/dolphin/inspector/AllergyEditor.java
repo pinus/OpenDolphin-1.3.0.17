@@ -15,8 +15,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
-import open.dolphin.client.CalendarCardPanel;
-import open.dolphin.client.ClientContext;
+import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.infomodel.AllergyModel;
@@ -160,17 +159,14 @@ public class AllergyEditor {
         private void maybeShowPopup(MouseEvent e) {
 
             popup = new JPopupMenu();
-            CalendarCardPanel cc = new CalendarCardPanel(ClientContext.getEventColorTable());
-            cc.addPropertyChangeListener(CalendarCardPanel.PICKED_DATE, ev -> {
-                if (ev.getPropertyName().equals(CalendarCardPanel.PICKED_DATE)) {
-                    SimpleDate sd = (SimpleDate) ev.getNewValue();
-                    view.getIdentifiedFld().setText(SimpleDate.simpleDateToMmldate(sd));
-                    popup.setVisible(false);
-                    popup = null;
-                }
+            CalendarPanel cp = new CalendarPanel();
+            cp.getTable().addCalendarListener(date -> {
+                view.getIdentifiedFld().setText(SimpleDate.simpleDateToMmldate(date));
+                popup.setVisible(false);
+                popup = null;
             });
-            cc.setCalendarRange(new int[]{-12, 0});
-            popup.insert(cc, 0);
+
+            popup.insert(cp, 0);
             popup.show(e.getComponent(), e.getX(), e.getY());
         }
     }

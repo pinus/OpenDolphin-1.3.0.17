@@ -134,6 +134,7 @@ public class CalendarTable extends JTable {
 
         // ヘッダのついた Panel を作る
         calendarPanel = new JPanel(new BorderLayout());
+        calendarPanel.setPreferredSize(new Dimension(200,150));
         calendarPanel.add(getTableHeader(), BorderLayout.NORTH);
         calendarPanel.add(this, BorderLayout.CENTER);
     }
