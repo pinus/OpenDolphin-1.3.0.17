@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.plaf.LayerUI;
 import open.dolphin.client.GUIConst;
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * CalendarTable にコントローラーを付けたパネル.
@@ -134,16 +133,13 @@ public class CalendarPanel extends JPanel {
             CalendarTableModel mdl = (CalendarTableModel)tbl.getModel();
             mdl.setMarkDates(tableModel.getMarkDates());
 
-            tbl.getPanel().setPreferredSize(new Dimension(200,150));
-            tbl.getPanel().setBorder(PNSBorderFactory.createTitledBorder(String.format("%d年%d月", mdl.getYear(), mdl.getMonth()+1)));
-
             tbl.addCalendarListener(date -> {
                 // リスナのブリッジ
                 CalendarListener l = table.getCalendarListener();
                 if (l != null) { l.dateSelected(date); }
             });
 
-            dialog.add(tbl.getPanel());
+            dialog.add(tbl.getTitledPanel());
             gc.add(Calendar.MONTH, 1);
         }
         Point p = getLocationOnScreen();

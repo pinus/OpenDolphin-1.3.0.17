@@ -27,8 +27,10 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import open.dolphin.infomodel.SimpleDate;
+import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * Calendar を表示する JTable.
@@ -144,6 +146,13 @@ public class CalendarTable extends JTable {
      * @return
      */
     public JPanel getPanel() {
+        return calendarPanel;
+    }
+
+    public JPanel getTitledPanel() {
+        String title = String.format("%d年%d月", tableModel.getYear(), tableModel.getMonth()+1);
+        Border border = PNSBorderFactory.createTitledBorder(title);
+        calendarPanel.setBorder(border);
         return calendarPanel;
     }
 
@@ -358,7 +367,7 @@ public class CalendarTable extends JTable {
         CalendarTableModel model = (CalendarTableModel) table.getModel();
         model.setMarkDates(dates);
 
-        f.add(table.getPanel());
+        f.add(table.getTitledPanel());
         f.pack();
         f.setVisible(true);
     }
