@@ -4,10 +4,15 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import open.dolphin.client.CalendarEvent;
 import open.dolphin.client.CalendarPanel;
+import open.dolphin.client.CalendarTableModel;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.infomodel.SimpleDate;
+import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.ui.PNSTitledBorder;
 
 /**
  *
@@ -19,6 +24,8 @@ public class PatientVisitInspector implements IInspector {
     private CalendarPanel calendarPanel;
     private String pvtCode; // PVT
     private final ChartImpl context;
+    private String titleText;
+    private PNSTitledBorder border;
 
     /**
      * PatientVisitInspector を生成する.
@@ -61,6 +68,11 @@ public class PatientVisitInspector implements IInspector {
         calendarPanel.setMaximumSize(new Dimension(1024, DEFAULT_HEIGHT));
 
         calendarPanel.addCalendarListener(this::calendarUpdated);
+        // タイトル
+        CalendarTableModel tableModel = (CalendarTableModel)calendarPanel.getTable().getModel();
+        int year = tableModel.getYear();
+        int month = tableModel.getMonth();
+        titleText = String.format("%d年%d月", year, month+1);
     }
 
     @Override
@@ -91,7 +103,26 @@ public class PatientVisitInspector implements IInspector {
         calendarPanel.getModel().setMarkDates(markDates);
     }
 
+    /**
+     * タイトルに年月をつけたボーダーを返す.
+     * @return
+     */
+    @Override
+    public Border getBorder() {
+
+        border = (PNSTitledBorder) PNSBorderFactory.createTitledBorder(
+                null, titleText, TitledBorder.LEFT, TitledBorder.TOP, null, null);
+
+        return border;
+    }
+
+    /**
+     * CalendarPanel から月変更の通知を受ける.
+     * @param date
+     */
     public void calendarUpdated(SimpleDate date) {
-        System.out.println("updated calendar " + date.getYear() + " / " + date.getMonth());
+        titleText = String.format("%d年%d月", date.getYear(), date.getMonth()+1);
+        border.setTitle(titleText);
+        context.getFrame().repaint();
     }
 }

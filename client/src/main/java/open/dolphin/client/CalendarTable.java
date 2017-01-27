@@ -15,6 +15,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,14 +37,15 @@ import open.dolphin.infomodel.SimpleDate;
 public class CalendarTable extends JTable {
     private static final long serialVersionUID = 1L;
 
-    private static final String[] MONTH_NAME = new String[] {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+    //private static final String[] MONTH_NAME = new String[] {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+    private static final String[] MONTH_NAME = new String[] {"睦月", "如月", "弥生", "卯月", "皐月", "水無月", "文月", "葉月", "長月", "神無月", "霜月", "師走"};
 
     private static final Color CALENDAR_BACKGROUND = new Color(227,250,207);
     private static final Color SUNDAY_FOREGROUND = new Color(255,0,130);
     private static final Color SATURDAY_FOREGROUND = new Color(0,0,255);
     private static final Color WEEKDAY_FOREGROUND = new Color(20,20,70);
     private static final Font TITLE_FONT = new Font("Courier", Font.BOLD, 72);
-    private static final Font CALENDAR_FONT = new Font("Dialog", Font.PLAIN, 14);
+    private static final Font CALENDAR_FONT = new Font("Dialog", Font.PLAIN, 13);
     private static final Font CALENDAR_FONT_SMALL = new Font("Dialog", Font.PLAIN, 10);
 
     private CalendarTableModel tableModel;
@@ -54,6 +56,8 @@ public class CalendarTable extends JTable {
     private CalendarListener listener;
     // header 付きのカレンダー
     private JPanel calendarPanel;
+    // バックグランドのタイトルを付けるかどうか
+    private boolean showBackgroundTitle = true;
 
     /**
      * 今月のカレンダーを作る.
@@ -156,6 +160,14 @@ public class CalendarTable extends JTable {
     }
 
     /**
+     * バックグランドに月と年を出すかどうか.
+     * @param b
+     */
+    public void setShowBackgroundTitle(boolean b) {
+        showBackgroundTitle = b;
+    }
+
+    /**
      * SimpleDate の Event 名を表示する.
      * @param e
      * @return
@@ -175,6 +187,8 @@ public class CalendarTable extends JTable {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        if (! showBackgroundTitle) { return; }
+
         Graphics2D g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.05f));
@@ -182,16 +196,25 @@ public class CalendarTable extends JTable {
         String month = MONTH_NAME[tableModel.getMonth()];
         String year = String.valueOf(tableModel.getYear());
 
-        g.setFont(TITLE_FONT);
         g.setColor(Color.BLUE);
+        g.setFont(TITLE_FONT);
         FontMetrics fm = g.getFontMetrics();
+
+        // 画面の大きさに合わせて，フォントの大きさを調節する.
+        float h = getHeight();
+        float fh = fm.getHeight() *2 + 10;
+        float s = h / fh;
+        g.setFont(TITLE_FONT.deriveFont(AffineTransform.getScaleInstance(s, s)));
+        fm = g.getFontMetrics();
+
         int x1 = (getWidth() - fm.stringWidth(month)) / 2;
         int x2 = (getWidth() - fm.stringWidth(year)) / 2;
-        int y = (getHeight() - fm.getHeight()*2) / 2;
+        int y = (getHeight() - fm.getHeight()*2) / 2 + 5; // 5 dot shift
 
         g.drawString(month, x1, y + fm.getAscent());
         g.drawString(year, x2, y + fm.getHeight() + fm.getAscent());
 
+        g.dispose();
     }
 
     /**
@@ -214,7 +237,7 @@ public class CalendarTable extends JTable {
         }
 
         /**
-         * Event の色を，円のバックグランドで描く
+         * Event の色を，円のバックグランドで描く.
          */
         @Override
         public void paintComponent (Graphics graphics) {

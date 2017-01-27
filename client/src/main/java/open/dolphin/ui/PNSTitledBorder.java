@@ -48,7 +48,7 @@ public class PNSTitledBorder extends AbstractBorder {
      */
     PNSTitledBorder(Border border, String text, int titleJustification, int titlePosition, Font titleFont, Color titleColor) {
         titleBorder = border;
-        title = text;
+        title = text == null? "" : text;
         justification = titleJustification;
         position = titlePosition;
         font = titleFont == null? DEFAULT_TITLE_FONT : titleFont;
@@ -82,10 +82,14 @@ public class PNSTitledBorder extends AbstractBorder {
 
     public void setTitle(Border b, String text, int j, int p, Font f, Color c) {
         titleBorder = b;
-        title = text;
+        title = text == null? "":text;
         justification = j;
         position = p;
         font = f == null? DEFAULT_TITLE_FONT : f;
         fontColor = c == null? Color.BLACK : c;
+    }
+
+    public void setTitle(String text) {
+        setTitle(null, text, justification, position, font, fontColor);
     }
 }
