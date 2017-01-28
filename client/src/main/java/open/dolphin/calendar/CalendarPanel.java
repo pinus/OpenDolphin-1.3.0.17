@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.Box;
@@ -124,6 +126,9 @@ public class CalendarPanel extends JPanel {
      */
     private void expand() {
         JDialog dialog = new JDialog();
+        dialog.getRootPane().putClientProperty( "Window.style", "small" );
+        dialog.getRootPane().putClientProperty( "apple.awt.brushMetalLook", Boolean.TRUE );
+
         dialog.setLayout(new GridLayout(4,3));
         GregorianCalendar gc = new GregorianCalendar(tableModel.getYear(), tableModel.getMonth(), 1);
         gc.add(Calendar.MONTH, -11);
@@ -138,6 +143,24 @@ public class CalendarPanel extends JPanel {
                 CalendarListener l = table.getCalendarListener();
                 if (l != null) { l.dateSelected(date); }
             });
+
+            // 内容をつかんでドラッグできるようにする
+            MouseAdapter ma = new MouseAdapter() {
+                private final Point startPt = new Point();
+                private final Point windowPt = new Point();
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    startPt.setLocation(e.getLocationOnScreen());
+                    windowPt.setLocation(dialog.getLocation());
+                }
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    Point pt = e.getLocationOnScreen();
+                    dialog.setLocation(windowPt.x + pt.x - startPt.x, windowPt.y + pt.y - startPt.y);
+                }
+            };
+            tbl.getTitledPanel().addMouseListener(ma);
+            tbl.getTitledPanel().addMouseMotionListener(ma);
 
             dialog.add(tbl.getTitledPanel());
             gc.add(Calendar.MONTH, 1);

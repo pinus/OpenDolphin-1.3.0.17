@@ -6,12 +6,14 @@ import open.dolphin.event.BadgeListener;
 import open.dolphin.ui.PNSBorderFactory;
 
 /**
- *
+ * Inspector が持つインターフェース.
+ * Calendar の cell 幅が一定になるために DEFAULT_WIDTH は
+ * 261 から 14ドット単位で調節する必要がある.
  * @author pns
  */
 public interface IInspector {
 
-    public static final int DEFAULT_WIDTH = 260;
+    public static final int DEFAULT_WIDTH = 261;
     public static final int DEFAULT_HEIGHT = 175;
 
     /**

@@ -247,8 +247,11 @@ public class CalendarTableModel extends AbstractTableModel {
             // 既存のデータを消去して，SimpleDate を登録し直す
             // data.clear();
             c.stream().forEach(date -> {
+                // 今日
+                if (today.equals(date)) {
+                    date.setEventCode(CalendarEvent.TODAY.name());
                 // 誕生日
-                if (CalendarEvent.BIRTHDAY.name().equals(date.getEventCode())) {
+                } else if (CalendarEvent.BIRTHDAY.name().equals(date.getEventCode())) {
                     birthday = date;
                 }
                 GregorianCalendar gc = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDay());
