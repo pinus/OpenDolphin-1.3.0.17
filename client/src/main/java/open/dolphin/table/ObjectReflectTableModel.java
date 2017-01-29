@@ -47,6 +47,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * カラム名から TableModel を生成する.
+     * これで作った場合は getValueAt を自前で用意する必要がある.
      * @param columnNames
      */
     public ObjectReflectTableModel(String[] columnNames) {

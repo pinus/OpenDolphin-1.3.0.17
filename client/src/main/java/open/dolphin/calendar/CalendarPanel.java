@@ -122,7 +122,7 @@ public class CalendarPanel extends JPanel {
     }
 
     /**
-     * 過去1年分のカレンダーをポップアップする.
+     * １年分のカレンダーをポップアップする.
      */
     private void expand() {
         JDialog dialog = new JDialog();
@@ -131,7 +131,7 @@ public class CalendarPanel extends JPanel {
 
         dialog.setLayout(new GridLayout(4,3));
         GregorianCalendar gc = new GregorianCalendar(tableModel.getYear(), tableModel.getMonth(), 1);
-        gc.add(Calendar.MONTH, -11);
+        gc.add(Calendar.MONTH, -6);
 
         for (int i=0; i<12; i++) {
             CalendarTable tbl = new CalendarTable(gc);

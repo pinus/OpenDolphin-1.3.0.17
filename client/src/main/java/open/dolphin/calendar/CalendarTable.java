@@ -149,9 +149,27 @@ public class CalendarTable extends JTable {
         return calendarPanel;
     }
 
+    /**
+     * タイトル部分に年月ラベルを付けた，TitledBorder 付きカレンダーを返す.
+     * @return
+     */
     public JPanel getTitledPanel() {
         String title = String.format("%d年%d月", tableModel.getYear(), tableModel.getMonth()+1);
-        Border border = PNSBorderFactory.createTitledBorder(title);
+
+        // 今月はラベルの色を変える
+        GregorianCalendar gc = new GregorianCalendar();
+        int y = gc.get(Calendar.YEAR);
+        int m = gc.get(Calendar.MONTH);
+
+        Color color = null;
+        Font font = null;
+        if ((y == tableModel.getYear()) && (m == tableModel.getMonth())) {
+            color = Color.BLUE;
+            font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+            title += " (今月)";
+        }
+
+        Border border = PNSBorderFactory.createTitledBorder(null, title, 0, 0, font, color);
         calendarPanel.setBorder(border);
         return calendarPanel;
     }
