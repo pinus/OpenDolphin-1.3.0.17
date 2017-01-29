@@ -1,6 +1,5 @@
 package open.dolphin.impl.care;
 
-import open.dolphin.calendar.CalendarHeaderRenderer;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.dnd.*;
@@ -13,23 +12,25 @@ import java.util.HashMap;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
+import open.dolphin.calendar.CalendarEvent;
+import open.dolphin.calendar.CalendarTable;
+import open.dolphin.calendar.CalendarTableModel;
 import open.dolphin.client.*;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.*;
 
 /**
- * SimpleCalendarPanel
- *
+ * SimpleCalendarPanel.
  * @author Kazushi Minagawa
+ * @author pns
  */
 public final class SimpleCalendarPanel extends JPanel implements DragGestureListener, DropTargetListener, DragSourceListener {
     private static final long serialVersionUID = 3030024622746649784L;
-
-    private String[] columnNames = ClientContext.getStringArray("calendar.day.week");
 
     private int year;
     private int month;
@@ -41,8 +42,11 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     private GregorianCalendar today;
     private String birthday;
 
-    private JTable table;
+    private CalendarTable table;
+    private CalendarTableModel tableModel;
+    private HashMap<String, MedicalEvent> map = new HashMap<>();
     private MedicalEvent[][] days;
+
     private int rowHeight = ClientContext.getInt("calendar.cell.height");
     private int columnWidth = ClientContext.getInt("calendar.cell.width");
     private int horizontalAlignment = SwingConstants.CENTER;
@@ -103,27 +107,37 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         gc.add(Calendar.MONTH, n);
         this.year = gc.get(Calendar.YEAR);
         this.month = gc.get(Calendar.MONTH);
-        table = createCalendarTable(gc);
-        table.addMouseListener(new MouseAdapter() {
+        //table = createCalendarTable(gc);
+        table = new CalendarTable(gc);
+        tableModel = (CalendarTableModel) table.getModel();
 
+        days = createDays(gc);
+
+        table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
-                if (e.getClickCount() != 1) {
-                    return;
-                }
-
                 Point p = e.getPoint();
                 int row = table.rowAtPoint(p);
                 int col = table.columnAtPoint(p);
                 if (row != -1 && col != -1) {
-                    MedicalEvent evt = days[row][col];
+
+                    SimpleDate date = (SimpleDate) table.getValueAt(row, col);
+                    //MedicalEvent evt = days[row][col];
+                    MedicalEvent evt = map.get(SimpleDate.simpleDateToMmldate(date));
+
                     if (evt.getMedicalCode() != null) {
                         boundSupport.firePropertyChange(CareMapDocument.SELECTED_DATE_PROP, null, evt.getDisplayDate());
 
                     } else if (evt.getAppointmentName() != null) {
                         boundSupport.firePropertyChange(CareMapDocument.SELECTED_APPOINT_DATE_PROP, null, evt.getDisplayDate());
                     }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    doPopup(e);
                 }
             }
         });
@@ -209,7 +223,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         // 1 週目を調べる
         for (int col = firstCol; col < 7; col++) {
-            event = days[0][col];
+            //event = days[0][col];
+            event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(0, col)));
             appoint = event.getAppointEntry();
             if (appoint != null && appoint.getName() != null) {
                 results.add(appoint);
@@ -219,7 +234,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         // 2 週目以降を調べる
         for (int row = 1; row < numRows - 1; row++) {
             for (int col = 0; col < 7; col++) {
-                event = days[row][col];
+                //event = days[row][col];
+                event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(row, col)));
                 appoint = event.getAppointEntry();
                 if (appoint != null && appoint.getName() != null) {
                     results.add(appoint);
@@ -229,7 +245,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         // 最後の週を調べる
         for (int col = 0; col < lastCol + 1; col++) {
-            event = days[numRows - 1][col];
+            //event = days[numRows - 1][col];
+            event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(numRows -1 , col)));
             appoint = event.getAppointEntry();
             if (appoint != null && appoint.getName() != null) {
                 results.add(appoint);
@@ -251,7 +268,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         // 1 週目を調べる
         for (int col = firstCol; col < 7; col++) {
-            event = days[0][col];
+            //event = days[0][col];
+            event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(0, col)));
             appoint = event.getAppointEntry();
             if (appoint != null && appoint.getState() != AppointmentModel.TT_NONE) {
                 results.add(appoint);
@@ -261,7 +279,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         // 2週目以降を調べる
         for (int row = 1; row < numRows - 1; row++) {
             for (int col = 0; col < 7; col++) {
-                event = days[row][col];
+                //event = days[row][col];
+                event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(row, col)));
                 appoint = event.getAppointEntry();
                 if (appoint != null && appoint.getState() != AppointmentModel.TT_NONE) {
                     results.add(appoint);
@@ -271,7 +290,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         // 最後の週を調べる
         for (int col = 0; col < lastCol + 1; col++) {
-            event = days[numRows - 1][col];
+            //event = days[numRows - 1][col];
+            event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(numRows -1 , col)));
             appoint = event.getAppointEntry();
             if (appoint != null && appoint.getState() != AppointmentModel.TT_NONE) {
                 results.add(appoint);
@@ -315,8 +335,13 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             row = shiftDay / 7;
             col = shiftDay % 7;
 
-            me = days[row][col];
+            //me = days[row][col];
+            System.out.println("-------  module event = " + markEvent);
+            SimpleDate date = (SimpleDate)table.getValueAt(row, col);
+            System.out.println("-------  module date = " + SimpleDate.simpleDateToMmldate(date));
+            me = map.get(SimpleDate.simpleDateToMmldate(date));
             me.setMedicalCode(markEvent);
+            date.setEventCode(markEvent);
 
             ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
         }
@@ -356,7 +381,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             row = shiftDay / 7;
             col = shiftDay % 7;
 
-            me = days[row][col];
+            //me = days[row][col];
+            me = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(row, col)));
             me.setMedicalCode(markEvent);
 
             ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
@@ -400,8 +426,16 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             int row = shiftDay / 7;
             int col = shiftDay % 7;
 
-            MedicalEvent me = days[row][col];
+            //MedicalEvent me = days[row][col];
+            SimpleDate dt = (SimpleDate)table.getValueAt(row, col);
+            MedicalEvent me = map.get(SimpleDate.simpleDateToMmldate(dt));
             me.setAppointEntry(ae);
+
+            dt.setEventCode(CalendarEvent.getCode(ae.getName()));
+
+            System.out.println("-------  appo name = " + ae.getName());
+            System.out.println("-------  appo code = " + CalendarEvent.getCode(ae.getName()));
+
 
             ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
         }
@@ -419,7 +453,9 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
             for (int col = 0; col < 7; col++) {
 
-                me = days[row][col];
+                //me = days[row][col];
+                SimpleDate date = (SimpleDate)tableModel.getValueAt(row, col);
+                me = map.get(SimpleDate.simpleDateToMmldate(date));
 
                 if (me.isToday()) {
                     exit = true;
@@ -428,6 +464,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
                 } else if (me.getMedicalCode() != null) {
 
                     me.setMedicalCode(null);
+                    date.setEventCode(null);
                     ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
                 }
             }
@@ -450,7 +487,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         dragRow = row;
         dragCol = col;
-        MedicalEvent me = days[row][col];
+        //MedicalEvent me = days[row][col];
+        MedicalEvent me = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
         AppointmentModel appo = me.getAppointEntry();
         if (appo == null) {
             //System.out.println("No Appoint");
@@ -525,8 +563,9 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
 
         // outOfMonth ?
-        MedicalEvent evt = days[row][col];
-        if (evt.isOutOfMonth()) {
+        //MedicalEvent evt = days[row][col];
+        MedicalEvent evt = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
+        if (evt == null || evt.isOutOfMonth()) {
             e.getDropTargetContext().dropComplete(false);
             return;
         }
@@ -604,93 +643,6 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         table.setBorder(BorderFactory.createLineBorder(c, 2));
     }
 
-
-    /**
-     * カレンダーテーブルを生成する
-     */
-    private JTable createCalendarTable(GregorianCalendar gc) {
-
-        days = createDays(gc);
-
-        AbstractTableModel model = new AbstractTableModel() {
-
-            private static final long serialVersionUID = -6437119956252935580L;
-
-            @Override
-            public int getRowCount() {
-                return days.length;
-            }
-
-            @Override
-            public int getColumnCount() {
-                return days[0].length;
-            }
-
-            @Override
-            public Object getValueAt(int row, int col) {
-                return days[row][col];
-            }
-
-            @Override
-            public String getColumnName(int col) {
-                return columnNames[col];
-            }
-
-            @Override
-            public Class getColumnClass(int col) {
-                return java.lang.String.class;
-            }
-
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
-        };
-
-        // Basic settings
-        JTable tbl = new JTable(model);
-        tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tbl.setCellSelectionEnabled(true);
-        tbl.setAutoResizeMode(autoResizeMode);
-        tbl.setBackground(calendarBackground);
-
-        // Replace DefaultRender
-        DateRenderer dateRenderer = new DateRenderer();
-        dateRenderer.setHorizontalAlignment(horizontalAlignment);
-        tbl.setDefaultRenderer(java.lang.Object.class, dateRenderer);
-        tbl.getTableHeader().setDefaultRenderer(new CalendarHeaderRenderer());
-
-        // Set ColumnWidth
-        TableColumn column = null;
-        for (int i = 0; i < 7; i++) {
-            column = tbl.getColumnModel().getColumn(i);
-            column.setMinWidth(columnWidth);
-            column.setPreferredWidth(columnWidth);
-            column.setMaxWidth(columnWidth);
-        }
-        tbl.setRowHeight(rowHeight);
-
-        // Embed popupMenu
-        tbl.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    doPopup(e);
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    doPopup(e);
-                }
-            }
-        });
-
-        return tbl;
-    }
-
     private void doPopup(MouseEvent e) {
 
         // ReadOnly 時の予約は不可
@@ -705,7 +657,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
 
         // クリックされた位置の MedicalEvent
-        MedicalEvent me = days[popedRow][popedCol];
+        //MedicalEvent me = days[popedRow][popedCol];
+        MedicalEvent me = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(popedRow, popedCol)));
 
         // 予約のない日
         // popup menu がキャンセルのみなので
@@ -748,8 +701,10 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
     private void processAppoint(int row, int col, String appointName, String memo) {
 
-        MedicalEvent entry = days[row][col];
+        //MedicalEvent entry = days[row][col];
+        MedicalEvent entry = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
         AppointmentModel appoint = entry.getAppointEntry();
+        System.out.println("------name = " + appointName);
 
         if (appoint == null) {
             appoint = new AppointmentModel();
@@ -782,6 +737,10 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         appoint.setName(appointName);
         appoint.setMemo(memo);
 
+
+        SimpleDate date = (SimpleDate)table.getValueAt(row, col);
+        date.setEventCode(CalendarEvent.getCode(appointName));
+
         ((AbstractTableModel)table.getModel()).fireTableCellUpdated(popedRow, popedCol);
 
         boundSupport.firePropertyChange(CareMapDocument.APPOINT_PROP, null, appoint);
@@ -794,7 +753,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
     private void processCancel(int row, int col) {
 
-        MedicalEvent entry = days[row][col];
+        //MedicalEvent entry = days[row][col];
+        MedicalEvent entry = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
         AppointmentModel appoint = entry.getAppointEntry();
         if (appoint == null) {
             return;
@@ -822,6 +782,9 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         appoint.setState(nextState);
         appoint.setName(null);
+
+        SimpleDate date = (SimpleDate) table.getValueAt(row, col);
+        date.setEventCode(null);
 
         ((AbstractTableModel)table.getModel()).fireTableCellUpdated(popedRow, popedCol);
 
@@ -892,6 +855,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
                 me.setToday(b);
 
                 data[i][j] = me;
+                SimpleDate sd = new SimpleDate(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH), gc.get(Calendar.DAY_OF_MONTH));
+                map.put(SimpleDate.simpleDateToMmldate(sd), me);
 
                 // 次の日
                 gc.add(Calendar.DAY_OF_MONTH, 1);
