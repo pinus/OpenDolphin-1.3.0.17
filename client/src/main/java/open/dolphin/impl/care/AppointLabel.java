@@ -1,4 +1,3 @@
-
 package open.dolphin.impl.care;
 
 import java.awt.datatransfer.*;
@@ -32,7 +31,7 @@ public class AppointLabel extends JLabel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                th.exportAsDrag(AppointLabel.this, e, AppointTransferHandler.COPY_OR_MOVE);
+                th.exportAsDrag(AppointLabel.this, e, AppointTransferHandler.COPY);
             }
         });
     }

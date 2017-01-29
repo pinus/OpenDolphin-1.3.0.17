@@ -321,7 +321,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         JPanel han = new JPanel();
         han.setLayout(new BoxLayout(han, BoxLayout.X_AXIS));
 
-        han.add(new JLabel("予約( "));
+        han.add(new JLabel("予約 ( "));
         AppointNameColor.forEach(pair -> {
             han.add(new AppointLabel(pair.getName(), new ColorFillIcon(pair.getValue(), 10, 10, 1), SwingConstants.CENTER));
             han.add(Box.createHorizontalStrut(7));
