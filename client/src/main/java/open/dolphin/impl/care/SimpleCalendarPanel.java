@@ -142,16 +142,17 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             }
         });
 
-        String title = getCalendarTitle();
-        this.add(table.getTableHeader(), BorderLayout.NORTH);
-        this.add(table, BorderLayout.CENTER);
-        this.setBorder(PNSBorderFactory.createTitledBorder(title));
+        //String title = getCalendarTitle();
+        //this.add(table.getTableHeader(), BorderLayout.NORTH);
+        //this.add(table, BorderLayout.CENTER);
+        //this.setBorder(PNSBorderFactory.createTitledBorder(title));
+        add(table.getTitledPanel(), BorderLayout.CENTER);
 
         // Adjust cut & try
-        Dimension dim = new Dimension(columnWidth*7 + 10, rowHeight*8 + 5);
-        this.setPreferredSize(dim);
-        this.setMinimumSize(dim);
-        this.setMaximumSize(dim);
+        //Dimension dim = new Dimension(columnWidth*7 + 10, rowHeight*8 + 5);
+        //this.setPreferredSize(dim);
+        //this.setMinimumSize(dim);
+        //this.setMaximumSize(dim);
 
         // Embed popup menu
         appointMenu = new JPopupMenu();

@@ -31,6 +31,7 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.ui.PNSTitledBorder;
 
 /**
  * Calendar を表示する JTable.
@@ -154,6 +155,24 @@ public class CalendarTable extends JTable {
      * @return
      */
     public JPanel getTitledPanel() {
+        // タイトルを変えるためにリスナを付ける
+        tableModel.addTableModelListener(e -> setCalendarTitle());
+
+        // タイトルボーダーを付ける
+        Border border = PNSBorderFactory.createTitledBorder("");
+        calendarPanel.setBorder(border);
+
+        // タイトルボーダーにタイトルを記入
+        setCalendarTitle();
+
+        return calendarPanel;
+    }
+
+    /**
+     * カレンダーのタイトル部分を描画する.
+     * @return
+     */
+    private void setCalendarTitle() {
         String title = String.format("%d年%d月", tableModel.getYear(), tableModel.getMonth()+1);
 
         // 今月はラベルの色を変える
@@ -163,15 +182,16 @@ public class CalendarTable extends JTable {
 
         Color color = null;
         Font font = null;
+
         if ((y == tableModel.getYear()) && (m == tableModel.getMonth())) {
+            title += " (今月)";
             color = Color.BLUE;
             font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
-            title += " (今月)";
         }
 
-        Border border = PNSBorderFactory.createTitledBorder(null, title, 0, 0, font, color);
-        calendarPanel.setBorder(border);
-        return calendarPanel;
+        PNSTitledBorder border = (PNSTitledBorder) calendarPanel.getBorder();
+        border.setTitle(null, title, 0, 0, font, color);
+        calendarPanel.repaint();
     }
 
     /**
