@@ -21,7 +21,6 @@ import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.*;
 
 /**
@@ -47,23 +46,6 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     private HashMap<String, MedicalEvent> map = new HashMap<>();
     private MedicalEvent[][] days;
 
-    private int rowHeight = ClientContext.getInt("calendar.cell.height");
-    private int columnWidth = ClientContext.getInt("calendar.cell.width");
-    private int horizontalAlignment = SwingConstants.CENTER;
-    private int autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS;
-
-    // Color
-    private Color sundayColor = ClientContext.getColor("color.SUNDAY_FORE");
-    private Color saturdayColor = ClientContext.getColor("color.SATURDAY_FORE");
-    private Color todayBackground = ClientContext.getColor("color.TODAY_BACK");
-    private Color calendarBackground = ClientContext.getColor("color.CALENDAR_BACK");
-    private Color weekdayColor = ClientContext.getColor("color.WEEKDAY_FORE");
-    private Color birthdayColor = ClientContext.getColor("color.BIRTHDAY_BACK");
-
-    // Font
-    private Font outOfMonthFont = new Font("Dialog", Font.PLAIN, ClientContext.getInt("calendar.font.size.outOfMonth"));
-    private Font inMonthFont = new Font("Dialog", Font.PLAIN, ClientContext.getInt("calendar.font.size"));
-
     // DnD
     private DragSource dragSource;
     private int dragRow;
@@ -83,16 +65,18 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
     private PropertyChangeSupport boundSupport;
 
-    private SimpleCalendarPanel() {
-        super(new BorderLayout());
+    public SimpleCalendarPanel() {
+        this(0);
     }
 
-    private SimpleCalendarPanel(int n) {
-
-        this();
-
+    public SimpleCalendarPanel(int n) {
         // 今月を基点とした相対月数
         relativeMonth = n;
+        init();
+    }
+
+    private void init() {
+
 
         // Get right now
         today = new GregorianCalendar();
@@ -104,7 +88,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         // Create requested month calendar
         // Add relative number to create
-        gc.add(Calendar.MONTH, n);
+        gc.add(Calendar.MONTH, relativeMonth);
         this.year = gc.get(Calendar.YEAR);
         this.month = gc.get(Calendar.MONTH);
         //table = createCalendarTable(gc);
@@ -142,17 +126,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             }
         });
 
-        //String title = getCalendarTitle();
-        //this.add(table.getTableHeader(), BorderLayout.NORTH);
-        //this.add(table, BorderLayout.CENTER);
-        //this.setBorder(PNSBorderFactory.createTitledBorder(title));
+        setLayout(new BorderLayout());
         add(table.getTitledPanel(), BorderLayout.CENTER);
-
-        // Adjust cut & try
-        //Dimension dim = new Dimension(columnWidth*7 + 10, rowHeight*8 + 5);
-        //this.setPreferredSize(dim);
-        //this.setMinimumSize(dim);
-        //this.setMaximumSize(dim);
 
         // Embed popup menu
         appointMenu = new JPopupMenu();
@@ -864,102 +839,6 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             }
         }
         return data;
-    }
-
-    /**
-     * Custom table cell renderer for the carendar panel.
-     */
-    private class DateRenderer extends DefaultTableCellRenderer {
-
-        private static final long serialVersionUID = -5061911803358533448L;
-
-        public DateRenderer() {
-            super();
-            setOpaque(true);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
-            Component compo = super.getTableCellRendererComponent(table,
-                    value,
-                    isSelected,
-                    isFocused,
-                    row, col);
-            if (value != null) {
-                MedicalEvent me = (MedicalEvent)value;
-                String eventCode = me.getMedicalCode();
-
-                int dayOfWeek = me.getDayOfWeek();
-
-                if (dayOfWeek == 1) {
-                    this.setForeground(sundayColor);
-
-                } else if (dayOfWeek == 7) {
-                    this.setForeground(saturdayColor);
-
-                } else {
-                    this.setForeground(weekdayColor);
-                }
-
-                if (me.isOutOfMonth()) {
-                    this.setFont(outOfMonthFont);
-
-                } else {
-                    this.setFont(inMonthFont);
-                }
-
-                // 誕生日
-                if (me.getDisplayDate().endsWith(birthday)) {
-                    this.setBackground(birthdayColor);
-
-                    // 本日
-                } else if (me.isToday() && (!me.isOutOfMonth())) {
-                    this.setBackground(todayBackground);
-
-                    // 実施オーダのある日
-                } else if (eventCode != null) {
-                    Color c = parent.getOrderColor(eventCode);
-                    this.setBackground(c);
-
-                    // 予約のある日
-                } else if (me.getAppointEntry() != null) {
-
-                    String appoName = me.getAppointmentName();
-
-                    if (appoName == null) {
-                        // Cancel
-                        this.setBackground(calendarBackground);
-
-                    } else {
-
-                        Color c = parent.getAppointColor(appoName);
-
-                        // 本日以前
-                        if (me.before(today)) {
-                            this.setBackground(calendarBackground);
-                            this.setBorder(BorderFactory.createLineBorder(c));
-
-                        } else {
-                            // 本日以降
-                            this.setBackground(c);
-                        }
-                    }
-
-                    // 何もない日
-                } else {
-
-                    this.setBackground(calendarBackground);
-                }
-
-                ((JLabel)compo).setText(me.toString());
-
-            }
-            return compo;
-        }
     }
 
     /**

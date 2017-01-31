@@ -6,6 +6,7 @@ import java.beans.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
+import open.dolphin.calendar.CalendarEvent;
 import open.dolphin.client.*;
 import open.dolphin.delegater.AppointmentDelegater;
 import open.dolphin.delegater.DocumentDelegater;
@@ -43,10 +44,10 @@ public final class CareMapDocument extends AbstractChartDocument {
     );
 
     private static final List<PNSPair<String,Color>> AppointNameColor = Arrays.asList(
-            new PNSPair<>("再診", ClientContext.getColor("color.EXAM_APPO")),
-            new PNSPair<>("検体検査", ClientContext.getColor("color.TEST")),
-            new PNSPair<>("画像検査", ClientContext.getColor("color.IMAGE")),
-            new PNSPair<>("その他", ClientContext.getColor("color.MISC"))
+            new PNSPair<>("再診", CalendarEvent.EXAM_APPO.color()),
+            new PNSPair<>("検体検査", CalendarEvent.TEST.color()),
+            new PNSPair<>("画像検査", CalendarEvent.IMAGE.color()),
+            new PNSPair<>("その他", CalendarEvent.MISC.color())
     );
 
     private static final String[] orderNames = { "処方", "処置", "指導", "ラボテスト", "生体検査", "放射線"};
@@ -330,7 +331,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         han.add(new JLabel(" )"));
 
         han.add(Box.createHorizontalStrut(7));
-        Color birthdayColor = ClientContext.getColor("color.BIRTHDAY_BACK");
+        Color birthdayColor = CalendarEvent.BIRTHDAY.color();
         han.add(new JLabel("誕生日", new ColorFillIcon(birthdayColor, 10, 10, 1), SwingConstants.CENTER));
         han.add(Box.createHorizontalStrut(11));
         cp.add(han);
