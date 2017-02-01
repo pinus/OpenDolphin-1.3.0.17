@@ -659,7 +659,31 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             parent.setDirty(dirty);
         }
     }
+/*
+    private class CalendarTableTransferHandler extends PatchedTransferHandler {
+        private static final long serialVersionUID = 1L;
 
+        @Override
+        public int getSourceActions(JComponent c) {
+            return COPY_OR_MOVE;
+        }
+
+        @Override
+        protected Transferable createTransferable(JComponent c) {
+
+        }
+
+        @Override
+        public boolean canImport(TransferSupport support) {
+
+        }
+
+        @Override
+        public boolean importData(TransferSupport support) {
+
+        }
+    }
+*/
     /**
      * CalendarPool Class
      */
