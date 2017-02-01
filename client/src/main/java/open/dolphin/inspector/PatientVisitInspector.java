@@ -15,8 +15,9 @@ import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSTitledBorder;
 
 /**
- *
+ * PatientVisitInspector.
  * @author kazm
+ * @author pns
  */
 public class PatientVisitInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.カレンダー;
@@ -95,9 +96,7 @@ public class PatientVisitInspector implements IInspector {
 
         // 誕生日
         String mmlBirthday = context.getPatient().getBirthday();
-        SimpleDate birthday = SimpleDate.mmlDateToSimpleDate(mmlBirthday);
-        birthday.setEventCode(CalendarEvent.BIRTHDAY.name());
-        markDates.add(birthday);
+        calendarPanel.getModel().setBirthday(mmlBirthday);
 
         // CardCalendarに通知する
         calendarPanel.getModel().setMarkDates(markDates);

@@ -1,10 +1,12 @@
 package open.dolphin.impl.care;
 
 import java.awt.*;
-import java.awt.datatransfer.*;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.beans.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -31,27 +33,18 @@ import open.dolphin.util.*;
 public final class SimpleCalendarPanel extends JPanel implements DragGestureListener, DropTargetListener, DragSourceListener {
     private static final long serialVersionUID = 3030024622746649784L;
 
-    private int year;
-    private int month;
-    private int numRows;
-    private int firstCol;
-    private int lastCol;
-    private GregorianCalendar firstDay;
-    private GregorianCalendar lastDay;
-    private GregorianCalendar today;
-    private String birthday;
+    private SimpleDate today;
+    private int relativeMonth;
 
     private CalendarTable table;
     private CalendarTableModel tableModel;
-    private HashMap<String, MedicalEvent> map = new HashMap<>();
-    private MedicalEvent[][] days;
+    // MmlDate 型式の日付をキー，AppointmentModel を value とする HashMap
+    private final HashMap<String, AppointmentModel> map = new HashMap<>();
 
     // DnD
     private DragSource dragSource;
     private int dragRow;
     private int dragCol;
-
-    private int relativeMonth;
 
     private Chart context;
     private CareMapDocument parent;
@@ -60,8 +53,6 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     private JPopupMenu appointMenu;
     private int popedRow;
     private int popedCol;
-
-    private String markEvent = "-1";
 
     private PropertyChangeSupport boundSupport;
 
@@ -76,26 +67,16 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     }
 
     private void init() {
-
-
         // Get right now
-        today = new GregorianCalendar();
-        today.clear(Calendar.MILLISECOND);
-        today.clear(Calendar.SECOND);
-        today.clear(Calendar.MINUTE);
-        today.clear(Calendar.HOUR_OF_DAY);
-        GregorianCalendar gc = (GregorianCalendar)today.clone();
+        today = new SimpleDate(new GregorianCalendar());
+        GregorianCalendar gc = new GregorianCalendar(today.getYear(), today.getMonth(), today.getDay());
 
         // Create requested month calendar
         // Add relative number to create
         gc.add(Calendar.MONTH, relativeMonth);
-        this.year = gc.get(Calendar.YEAR);
-        this.month = gc.get(Calendar.MONTH);
         //table = createCalendarTable(gc);
         table = new CalendarTable(gc);
         tableModel = (CalendarTableModel) table.getModel();
-
-        days = createDays(gc);
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -106,14 +87,13 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
                 if (row != -1 && col != -1) {
 
                     SimpleDate date = (SimpleDate) table.getValueAt(row, col);
-                    //MedicalEvent evt = days[row][col];
-                    MedicalEvent evt = map.get(SimpleDate.simpleDateToMmldate(date));
+                    String mmlDate = SimpleDate.simpleDateToMmldate(date);
 
-                    if (evt.getMedicalCode() != null) {
-                        boundSupport.firePropertyChange(CareMapDocument.SELECTED_DATE_PROP, null, evt.getDisplayDate());
+                    if (date.getEventCode() != null) {
+                        boundSupport.firePropertyChange(CareMapDocument.SELECTED_DATE_PROP, null, mmlDate);
 
-                    } else if (evt.getAppointmentName() != null) {
-                        boundSupport.firePropertyChange(CareMapDocument.SELECTED_APPOINT_DATE_PROP, null, evt.getDisplayDate());
+                    } else if (map.get(mmlDate) != null) {
+                        boundSupport.firePropertyChange(CareMapDocument.SELECTED_APPOINT_DATE_PROP, null, mmlDate);
                     }
                 }
             }
@@ -142,25 +122,38 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         new DropTarget(table, this);
     }
 
+    /**
+     * ChartImpl を保存，誕生日を登録.
+     * @param context
+     */
     public void setChartContext(Chart context) {
         this.context = context;
-        birthday = context.getPatient().getBirthday().substring(5);
+        String mmlBirthday = context.getPatient().getBirthday();
+        tableModel.setBirthday(mmlBirthday);
     }
 
+    /**
+     * 親の ChartDocument を登録する.
+     * @param doc
+     */
     public void setParent(CareMapDocument doc) {
         parent = doc;
     }
 
-    public String getCalendarTitle() {
-        return String.format("%s年%s月", year, month+1);
-    }
-
+    /**
+     * 今月からの相対月数を返す.
+     * @return
+     */
     public int getRelativeMonth() {
         return relativeMonth;
     }
 
+    /**
+     * 今月かどうかを返す.
+     * @return
+     */
     public boolean isThisMonth() {
-        return relativeMonth == 0 ? true : false;
+        return relativeMonth == 0;
     }
 
     @Override
@@ -179,12 +172,30 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         boundSupport.removePropertyChangeListener(propName, l);
     }
 
+    /**
+     * このカレンダーの月の１日を MML 型式で返す.
+     * @return
+     */
     public String getFirstDate() {
+        int year = tableModel.getYear();
+        int month = tableModel.getMonth();
+        GregorianCalendar firstDay = new GregorianCalendar(year, month, 1);
+
         return MMLDate.getDate(firstDay);
     }
 
+    /**
+     * このカレンダーの月の末日を MML 型式で返す.
+     * @return
+     */
     public String getLastDate() {
-        return MMLDate.getDate(lastDay);
+        int year = tableModel.getYear();
+        int month = tableModel.getMonth();
+        GregorianCalendar gc = new GregorianCalendar(year, month, 1);
+        int days = gc.getActualMaximum(Calendar.DAY_OF_MONTH);
+        gc.add(Calendar.DAY_OF_MONTH, days-1);
+
+        return MMLDate.getDate(gc);
     }
 
     /**
@@ -194,38 +205,20 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     public List<AppointmentModel> getAppointDays() {
 
         List<AppointmentModel> results = new ArrayList<>();
-        MedicalEvent event = null;
-        AppointmentModel appoint = null;
 
-        // 1 週目を調べる
-        for (int col = firstCol; col < 7; col++) {
-            //event = days[0][col];
-            event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(0, col)));
-            appoint = event.getAppointEntry();
-            if (appoint != null && appoint.getName() != null) {
-                results.add(appoint);
-            }
-        }
+        for (int row=0; row<tableModel.getRowCount(); row++) {
+            for (int col=0; col<tableModel.getColumnCount(); col++) {
+                SimpleDate date = (SimpleDate) table.getValueAt(row, col);
 
-        // 2 週目以降を調べる
-        for (int row = 1; row < numRows - 1; row++) {
-            for (int col = 0; col < 7; col++) {
-                //event = days[row][col];
-                event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(row, col)));
-                appoint = event.getAppointEntry();
-                if (appoint != null && appoint.getName() != null) {
-                    results.add(appoint);
+                if (date.getYear() == tableModel.getYear() && date.getMonth() == tableModel.getMonth()) {
+                    String mmlDate = SimpleDate.simpleDateToMmldate(date);
+
+                    AppointmentModel appoint = map.get(mmlDate);
+
+                    if (appoint != null && appoint.getName() != null) {
+                        results.add(appoint);
+                    }
                 }
-            }
-        }
-
-        // 最後の週を調べる
-        for (int col = 0; col < lastCol + 1; col++) {
-            //event = days[numRows - 1][col];
-            event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(numRows -1 , col)));
-            appoint = event.getAppointEntry();
-            if (appoint != null && appoint.getName() != null) {
-                results.add(appoint);
             }
         }
 
@@ -239,215 +232,117 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     public List<AppointmentModel> getUpdatedAppoints() {
 
         List<AppointmentModel> results = new ArrayList<>();
-        MedicalEvent event = null;
-        AppointmentModel appoint = null;
 
-        // 1 週目を調べる
-        for (int col = firstCol; col < 7; col++) {
-            //event = days[0][col];
-            event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(0, col)));
-            appoint = event.getAppointEntry();
-            if (appoint != null && appoint.getState() != AppointmentModel.TT_NONE) {
-                results.add(appoint);
-            }
-        }
+        for (int row=0; row<tableModel.getRowCount(); row++) {
+            for (int col=0; col<tableModel.getColumnCount(); col++) {
+                SimpleDate date = (SimpleDate) table.getValueAt(row, col);
 
-        // 2週目以降を調べる
-        for (int row = 1; row < numRows - 1; row++) {
-            for (int col = 0; col < 7; col++) {
-                //event = days[row][col];
-                event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(row, col)));
-                appoint = event.getAppointEntry();
-                if (appoint != null && appoint.getState() != AppointmentModel.TT_NONE) {
-                    results.add(appoint);
+                if (date.getYear() == tableModel.getYear() && date.getMonth() == tableModel.getMonth()) {
+                    String mmlDate = SimpleDate.simpleDateToMmldate(date);
+
+                    AppointmentModel appoint = map.get(mmlDate);
+
+                    if (appoint != null && appoint.getState() != AppointmentModel.TT_NONE) {
+                        results.add(appoint);
+                    }
                 }
-            }
-        }
-
-        // 最後の週を調べる
-        for (int col = 0; col < lastCol + 1; col++) {
-            //event = days[numRows - 1][col];
-            event = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(numRows -1 , col)));
-            appoint = event.getAppointEntry();
-            if (appoint != null && appoint.getState() != AppointmentModel.TT_NONE) {
-                results.add(appoint);
             }
         }
 
         return results;
     }
 
-    public void setModuleList(String event, List list) {
+    /**
+     * ModuleModel のリストを登録する.
+     * @param event
+     * @param list
+     */
+    public void setModuleList(String event, List<ModuleModel> list) {
+        if (list == null || list.isEmpty()) { return; }
 
-        markEvent = event;
-        clearMark();
+        clearMark(event);
 
-        if (list == null || list.isEmpty()) {
-            return;
-        }
+        list.forEach(module -> {
+            String mmlDate = ModelUtils.getDateAsString(module.getConfirmed());
+            SimpleDate date = SimpleDate.mmlDateToSimpleDate(mmlDate);
 
-        int size = list.size();
-        String mkDate = null;
-        MedicalEvent me = null;
-        int index = 0;
-        int[] ymd = null;
-        int row = 0;
-        int col = 0;
+            date.setEventCode(event);
 
-        ModuleModel module = null;
+            // CalendarTableModel で row, col は使ってない
+            table.setValueAt(date, 0, 0);
+        });
 
-        for (int i = 0; i < size; i++) {
-
-            module = (ModuleModel)list.get(i);
-            //mkDate = ModelUtils.getDateAsString(module.getModuleInfo().getConfirmDate());
-            mkDate = ModelUtils.getDateAsString(module.getConfirmed());
-            index = mkDate.indexOf('T');
-            if (index > 0) {
-                mkDate = mkDate.substring(0, index);
-            }
-            ymd = MMLDate.getCalendarYMD(mkDate);
-
-            int shiftDay = ymd[2] + (firstCol -1);
-            row = shiftDay / 7;
-            col = shiftDay % 7;
-
-            //me = days[row][col];
-            System.out.println("-------  module event = " + markEvent);
-            SimpleDate date = (SimpleDate)table.getValueAt(row, col);
-            System.out.println("-------  module date = " + SimpleDate.simpleDateToMmldate(date));
-            me = map.get(SimpleDate.simpleDateToMmldate(date));
-            me.setMedicalCode(markEvent);
-            date.setEventCode(markEvent);
-
-            ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
-        }
-    }
-
-    public void setImageList(String event, List list) {
-
-        markEvent = event;
-        clearMark();
-
-        if (list == null || list.isEmpty()) {
-            return;
-        }
-
-        int size = list.size();
-        String mkDate = null;
-        MedicalEvent me = null;
-        int index = 0;
-        int[] ymd = null;
-        int row = 0;
-        int col = 0;
-
-        ImageEntry image = null;
-
-        for (int i = 0; i < size; i++) {
-
-            image = (ImageEntry)list.get(i);
-            mkDate = image.getConfirmDate();
-            index = mkDate.indexOf('T');
-            if (index > 0) {
-                mkDate = mkDate.substring(0, index);
-            }
-            //System.out.println("PVT date: " + pvtDate);
-            ymd = MMLDate.getCalendarYMD(mkDate);
-
-            int shiftDay = ymd[2] + (firstCol -1);
-            row = shiftDay / 7;
-            col = shiftDay % 7;
-
-            //me = days[row][col];
-            me = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)table.getValueAt(row, col)));
-            me.setMedicalCode(markEvent);
-
-            ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
-        }
-    }
-
-    public void setAppointmentList(List list) {
-
-        // 当月以降のカレンダのみ検索する
-        if (relativeMonth < 0 ) {
-            return;
-        }
-
-        // 空ならリターン
-        if ( list == null || list.isEmpty() ) {
-            return;
-        }
-
-        // 当月であれば本日の３日前から検索，そうでない場合はカレンダの最初の日から検索する
-        String startDate = isThisMonth() ? MMLDate.getDayFromToday(-3) : MMLDate.getDate(firstDay);
-
-        // 表示する
-        int size = list.size();
-        for (int i = 0; i < size; i++) {
-            AppointmentModel ae = (AppointmentModel)list.get(i);
-            ae.setState(AppointmentModel.TT_HAS);
-            String date = ModelUtils.getDateAsString(ae.getDate());
-            int index = date.indexOf('T');
-            if (index > 0) {
-                date = date.substring(0, index);
-            }
-
-            // startDate 以前の場合は表示しない
-            if (date.compareTo(startDate) < 0 ) {
-                continue;
-            }
-
-            int[] ymd = MMLDate.getCalendarYMD(date);
-
-            int shiftDay = ymd[2] + (firstCol -1);
-            int row = shiftDay / 7;
-            int col = shiftDay % 7;
-
-            //MedicalEvent me = days[row][col];
-            SimpleDate dt = (SimpleDate)table.getValueAt(row, col);
-            MedicalEvent me = map.get(SimpleDate.simpleDateToMmldate(dt));
-            me.setAppointEntry(ae);
-
-            dt.setEventCode(CalendarEvent.getCode(ae.getName()));
-
-            System.out.println("-------  appo name = " + ae.getName());
-            System.out.println("-------  appo code = " + CalendarEvent.getCode(ae.getName()));
-
-
-            ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
-        }
+        tableModel.fireTableDataChanged();
     }
 
     /**
-     * 現在の表示をクリアする
+     * ImageEntry のリストを登録する.
+     * @param event
+     * @param list
      */
-    private void clearMark() {
-        MedicalEvent me = null;
-        boolean exit = false;
-        //String val = null;
+    public void setImageList(String event, List<ImageEntry> list) {
+        if (list == null || list.isEmpty()) { return; }
 
-        for (int row = 0; row < numRows; row++) {
+        clearMark(event);
 
-            for (int col = 0; col < 7; col++) {
+        list.forEach(entry -> {
+            String mmlDate = entry.getConfirmDate();
+            SimpleDate date = SimpleDate.mmlDateToSimpleDate(mmlDate);
 
-                //me = days[row][col];
-                SimpleDate date = (SimpleDate)tableModel.getValueAt(row, col);
-                me = map.get(SimpleDate.simpleDateToMmldate(date));
+            date.setEventCode(event);
 
-                if (me.isToday()) {
-                    exit = true;
-                    break;
+            // CalendarTableModel で row, col は使ってない
+            table.setValueAt(date, 0, 0);
+        });
 
-                } else if (me.getMedicalCode() != null) {
+        tableModel.fireTableDataChanged();
+    }
 
-                    me.setMedicalCode(null);
+    /**
+     * AppointModel のリストを登録する.
+     * @param list
+     */
+    public void setAppointmentList(List<AppointmentModel> list) {
+        if (list == null || list.isEmpty()) { return; }
+
+        list.forEach(appoint -> {
+            appoint.setState(AppointmentModel.TT_HAS);
+            String mmlToday = SimpleDate.simpleDateToMmldate(today);
+            String mmlAppointDate = ModelUtils.getDateAsString(appoint.getDate());
+
+            // 今日以降のものだけ登録
+            if (mmlAppointDate.compareTo(mmlToday) >= 0 ) {
+                SimpleDate date = SimpleDate.mmlDateToSimpleDate(mmlAppointDate);
+                date.setEventCode(CalendarEvent.getCode(appoint.getName()));
+
+                map.put(mmlAppointDate, appoint);
+                table.setValueAt(date, 0, 0);
+            }
+        });
+
+        tableModel.fireTableDataChanged();
+    }
+
+    /**
+     * eventCode のイベントをクリアする.
+     * @param eventCode
+     */
+    private void clearMark(String eventCode) {
+
+        boolean changed = false;
+
+        for (int row=0; row<tableModel.getRowCount(); row++) {
+            for (int col=0; col<tableModel.getColumnCount(); col++) {
+                SimpleDate date = (SimpleDate) table.getValueAt(row, col);
+
+                if (date.getEventCode().equals(eventCode)) {
                     date.setEventCode(null);
-                    ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
+                    changed = true;
                 }
             }
-            if (exit) {
-                break;
-            }
         }
+
+        if (changed) { tableModel.fireTableDataChanged(); }
     }
 
     //////////////   Drag Support //////////////////
@@ -457,19 +352,20 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         int row = table.getSelectedRow();
         int col = table.getSelectedColumn();
-        if (row == -1 || col == -1) {
-            return;
-        }
+        if (row == -1 || col == -1) { return; }
 
         dragRow = row;
         dragCol = col;
         //MedicalEvent me = days[row][col];
-        MedicalEvent me = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
-        AppointmentModel appo = me.getAppointEntry();
+        //MedicalEvent me = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
+        SimpleDate date = (SimpleDate) table.getValueAt(row, col);
+        String mmlDate = SimpleDate.simpleDateToMmldate(date);
+        AppointmentModel appo = map.get(mmlDate);
+
         if (appo == null) {
-            //System.out.println("No Appoint");
             return;
         }
+
         Transferable t = new AppointEntryTransferable(appo);
         Cursor cursor = DragSource.DefaultCopyDrop;
         int action = event.getDragAction();
@@ -538,16 +434,16 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             return;
         }
 
+        SimpleDate date = (SimpleDate) tableModel.getValueAt(row, col);
+
         // outOfMonth ?
-        //MedicalEvent evt = days[row][col];
-        MedicalEvent evt = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
-        if (evt == null || evt.isOutOfMonth()) {
+        if (tableModel.getYear() != date.getYear() || tableModel.getMonth() != date.getMonth()) {
             e.getDropTargetContext().dropComplete(false);
             return;
         }
 
         // 本日以前
-        if (evt.before(today)) {
+        if (today.compareTo(date) >= 0) {
             e.getDropTargetContext().dropComplete(false);
             return;
         }
@@ -555,9 +451,9 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         // Drop 処理
         AppointmentModel source = null;
         try {
-            source = (AppointmentModel)tr.getTransferData(AppointEntryTransferable.appointFlavor);
+            source = (AppointmentModel) tr.getTransferData(AppointEntryTransferable.appointFlavor);
 
-        } catch (Exception ue) {
+        } catch (UnsupportedFlavorException | IOException ue) {
             System.out.println(ue);
             source = null;
         }
@@ -632,25 +528,14 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             return;
         }
 
-        // クリックされた位置の MedicalEvent
-        //MedicalEvent me = days[popedRow][popedCol];
-        MedicalEvent me = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(popedRow, popedCol)));
+        SimpleDate date = (SimpleDate)tableModel.getValueAt(popedRow, popedCol);
+        AppointmentModel appoint = map.get(SimpleDate.simpleDateToMmldate(date));
 
-        // 予約のない日
-        // popup menu がキャンセルのみなので
-        if (me.getAppointmentName() == null) {
-            return;
-        }
-
-        // 月外の日の予約は不可
-        //if (me.isOutOfMonth()) {
-        //return;
-        //}
+        // 予約のない日. popup menu がキャンセルのみなので
+        if (appoint == null) { return; }
 
         // 本日以前の予約は不可
-        if (me.before(today)) {
-            return;
-        }
+        if (today.compareTo(date) >= 0) { return; }
 
         appointMenu.show(e.getComponent(),e.getX(), e.getY());
     }
@@ -675,17 +560,23 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         processCancel(popedRow, popedCol);
     }
 
+    /**
+     * 予約を設定する.
+     * @param row
+     * @param col
+     * @param appointName
+     * @param memo
+     */
     private void processAppoint(int row, int col, String appointName, String memo) {
 
-        //MedicalEvent entry = days[row][col];
-        MedicalEvent entry = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
-        AppointmentModel appoint = entry.getAppointEntry();
-        System.out.println("------name = " + appointName);
+        SimpleDate date = (SimpleDate)tableModel.getValueAt(row, col);
+        String mmlDate = SimpleDate.simpleDateToMmldate(date);
+        AppointmentModel appoint = map.get(mmlDate);
 
         if (appoint == null) {
             appoint = new AppointmentModel();
-            appoint.setDate(ModelUtils.getDateAsObject(entry.getDisplayDate()));
-            entry.setAppointEntry(appoint);
+            appoint.setDate(ModelUtils.getDateAsObject(mmlDate));
+            map.put(mmlDate, appoint);
         }
 
         int oldState = appoint.getState();
@@ -709,12 +600,8 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
                 break;
         }
         appoint.setState(next);
-
         appoint.setName(appointName);
         appoint.setMemo(memo);
-
-
-        SimpleDate date = (SimpleDate)table.getValueAt(row, col);
         date.setEventCode(CalendarEvent.getCode(appointName));
 
         ((AbstractTableModel)table.getModel()).fireTableCellUpdated(popedRow, popedCol);
@@ -727,14 +614,17 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         }
     }
 
+    /**
+     * 予約をキャンセルする.
+     * @param row
+     * @param col
+     */
     private void processCancel(int row, int col) {
 
-        //MedicalEvent entry = days[row][col];
-        MedicalEvent entry = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
-        AppointmentModel appoint = entry.getAppointEntry();
-        if (appoint == null) {
-            return;
-        }
+        SimpleDate date = (SimpleDate)tableModel.getValueAt(row, col);
+        AppointmentModel appoint = map.get(SimpleDate.simpleDateToMmldate(date));
+
+        if (appoint == null) { return; }
 
         int oldState = appoint.getState();
         int nextState = 0;
@@ -758,8 +648,6 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         appoint.setState(nextState);
         appoint.setName(null);
-
-        SimpleDate date = (SimpleDate) table.getValueAt(row, col);
         date.setEventCode(null);
 
         ((AbstractTableModel)table.getModel()).fireTableCellUpdated(popedRow, popedCol);
@@ -770,75 +658,6 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             dirty = true;
             parent.setDirty(dirty);
         }
-    }
-
-    /**
-     * カレンダテーブルのデータを生成する
-     */
-    private MedicalEvent[][] createDays(GregorianCalendar gc) {
-
-        MedicalEvent[][] data = null;
-
-        // Ｎケ月前／先の今日と同じ日
-        int dayOfMonth = gc.get(Calendar.DAY_OF_MONTH);
-
-        // 作成するカレンダ月の日数
-        int numDaysOfMonth = gc.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-        // 最後の日が月の何週目か
-        gc.add(Calendar.DAY_OF_MONTH, numDaysOfMonth - dayOfMonth);  // Last day
-        lastDay = (GregorianCalendar)gc.clone();                     // Save last day
-        numRows = gc.get(Calendar.WEEK_OF_MONTH);                    // Week of month
-
-        // それは何カラム目か
-        lastCol = gc.get(Calendar.DAY_OF_WEEK);
-        lastCol--;
-
-        // 月の最初の日
-        numDaysOfMonth--;
-        gc.add(Calendar.DAY_OF_MONTH, -numDaysOfMonth);
-        firstDay = (GregorianCalendar)gc.clone();
-
-        // 週の何日目か
-        firstCol = gc.get(Calendar.DAY_OF_WEEK);
-        firstCol--;
-
-        // この月のカレンダーに表示する最初の日
-        gc.add(Calendar.DAY_OF_MONTH, -firstCol);
-
-        // データ配列を生成
-        data = new MedicalEvent[numRows][7];
-
-        // 一日づつ増加させながら埋め込み
-        MedicalEvent me;
-        boolean b;
-        for (int i = 0; i < numRows; i++) {
-
-            for (int j = 0; j < 7; j++) {
-
-                me = new MedicalEvent(
-                        gc.get(Calendar.YEAR),
-                        gc.get(Calendar.MONTH),
-                        gc.get(Calendar.DAY_OF_MONTH),
-                        gc.get(Calendar.DAY_OF_WEEK));
-
-                // 月外の日か
-                b = month == gc.get(Calendar.MONTH) ? true : false;
-                me.setOutOfMonth(!b);
-
-                // 今日か
-                b = today.equals(gc) ? true : false;
-                me.setToday(b);
-
-                data[i][j] = me;
-                SimpleDate sd = new SimpleDate(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH), gc.get(Calendar.DAY_OF_MONTH));
-                map.put(SimpleDate.simpleDateToMmldate(sd), me);
-
-                // 次の日
-                gc.add(Calendar.DAY_OF_MONTH, 1);
-            }
-        }
-        return data;
     }
 
     /**

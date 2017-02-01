@@ -10,7 +10,7 @@ import open.dolphin.util.Holiday;
 
 /**
  * CalendarTableModel.
- * GregorianCalendar and HashMap based.
+
  * @author Kazushi Minagawa Digital Globe, Inc.
  * @author pns
  */
@@ -231,10 +231,18 @@ public class CalendarTableModel extends AbstractTableModel {
 
         // さらに誕生日なら上書き登録
         if (birthday != null && birthday.getMonth() == ret.getMonth() && birthday.getDay() == ret.getDay()) {
-            ret.setEventCode(birthday.getEventCode());
+            ret.setEventCode(CalendarEvent.BIRTHDAY.name());
         }
 
         return ret;
+    }
+
+    /**
+     * 誕生日を登録する.
+     * @param mmlBirthday
+     */
+    public void setBirthday(String mmlBirthday) {
+        birthday = SimpleDate.mmlDateToSimpleDate(mmlBirthday);
     }
 
     /**
@@ -244,15 +252,10 @@ public class CalendarTableModel extends AbstractTableModel {
     public void setMarkDates(Collection<SimpleDate> c) {
         markDates = c;
         if (c != null) {
-            // 既存のデータを消去して，SimpleDate を登録し直す
-            // data.clear();
-            c.stream().forEach(date -> {
+            c.forEach(date -> {
                 // 今日
                 if (today.equals(date)) {
                     date.setEventCode(CalendarEvent.TODAY.name());
-                // 誕生日
-                } else if (CalendarEvent.BIRTHDAY.name().equals(date.getEventCode())) {
-                    birthday = date;
                 }
                 GregorianCalendar gc = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDay());
                 data.put(gc, date);
