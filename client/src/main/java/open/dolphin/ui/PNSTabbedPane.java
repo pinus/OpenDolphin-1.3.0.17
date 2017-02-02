@@ -36,6 +36,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import open.dolphin.helper.AppForeground;
 
 /**
  * JTabbedPane 的な何か.
@@ -470,7 +471,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
-            if (parent.isActive()) {
+            if (parent.isActive() && AppForeground.isForeground()) {
                 if (this.isSelected()) {
                     renderButton(g, w, h, ACTIVE_FRAME_SELECTED, ACTIVE_FILL_SELECTED);
 
@@ -493,7 +494,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
             int strWidth = fm.stringWidth(name);
 
-            if (parent.isActive()) {
+            if (parent.isActive() && AppForeground.isForeground()) {
                 if (this.isSelected()) {
                     g.setColor(Color.WHITE);
                 } else{

@@ -3,8 +3,8 @@ package open.dolphin.impl.care;
 import java.awt.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.beans.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.*;
+import static javax.swing.TransferHandler.MOVE;
 import javax.swing.table.*;
 import open.dolphin.calendar.CalendarEvent;
 import open.dolphin.calendar.CalendarTable;
@@ -23,6 +24,7 @@ import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SimpleDate;
+import open.dolphin.ui.PatchedTransferHandler;
 import open.dolphin.util.*;
 
 /**
@@ -30,7 +32,7 @@ import open.dolphin.util.*;
  * @author Kazushi Minagawa
  * @author pns
  */
-public final class SimpleCalendarPanel extends JPanel implements DragGestureListener, DropTargetListener, DragSourceListener {
+public final class SimpleCalendarPanel extends JPanel {
     private static final long serialVersionUID = 3030024622746649784L;
 
     private SimpleDate today;
@@ -38,21 +40,13 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
     private CalendarTable table;
     private CalendarTableModel tableModel;
+
     // MmlDate 型式の日付をキー，AppointmentModel を value とする HashMap
     private final HashMap<String, AppointmentModel> map = new HashMap<>();
-
-    // DnD
-    private DragSource dragSource;
-    private int dragRow;
-    private int dragCol;
 
     private Chart context;
     private CareMapDocument parent;
     private boolean dirty;
-
-    private JPopupMenu appointMenu;
-    private int popedRow;
-    private int popedCol;
 
     private PropertyChangeSupport boundSupport;
 
@@ -74,11 +68,26 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         // Create requested month calendar
         // Add relative number to create
         gc.add(Calendar.MONTH, relativeMonth);
-        //table = createCalendarTable(gc);
+
         table = new CalendarTable(gc);
         tableModel = (CalendarTableModel) table.getModel();
 
+        CalendarTableTransferHandler th = new CalendarTableTransferHandler();
+        table.setTransferHandler(th);
+
         table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    // 取り消しポップアップ
+                    doPopup(e);
+
+                } else {
+                    // ドラッグ開始
+                    th.exportAsDrag(table, e, TransferHandler.MOVE);
+                }
+            }
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point p = e.getPoint();
@@ -97,29 +106,10 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
                     }
                 }
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    doPopup(e);
-                }
-            }
         });
 
         setLayout(new BorderLayout());
         add(table.getTitledPanel(), BorderLayout.CENTER);
-
-        // Embed popup menu
-        appointMenu = new JPopupMenu();
-        JMenuItem item = new JMenuItem(new ProxyAction("取り消し", this::appointCancel));
-        appointMenu.add(item);
-
-        // Table を DragTarget, 自身をリスナに設定する
-        dragSource = new DragSource();
-        dragSource.createDefaultDragGestureRecognizer(table, DnDConstants.ACTION_COPY_OR_MOVE, this);
-
-        // Table を DropTarget, 自身をリスナに設定する
-        new DropTarget(table, this);
     }
 
     /**
@@ -173,7 +163,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
     }
 
     /**
-     * このカレンダーの月の１日を MML 型式で返す.
+     * このカレンダーの月の初日を MML 型式で返す.
      * @return
      */
     public String getFirstDate() {
@@ -215,6 +205,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
                     AppointmentModel appoint = map.get(mmlDate);
 
+                    // 取り消し済み予約は appoint.getName = null になっている
                     if (appoint != null && appoint.getName() != null) {
                         results.add(appoint);
                     }
@@ -345,176 +336,10 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         if (changed) { tableModel.fireTableDataChanged(); }
     }
 
-    //////////////   Drag Support //////////////////
-
-    @Override
-    public void dragGestureRecognized(DragGestureEvent event) {
-
-        int row = table.getSelectedRow();
-        int col = table.getSelectedColumn();
-        if (row == -1 || col == -1) { return; }
-
-        dragRow = row;
-        dragCol = col;
-        //MedicalEvent me = days[row][col];
-        //MedicalEvent me = map.get(SimpleDate.simpleDateToMmldate((SimpleDate)tableModel.getValueAt(row, col)));
-        SimpleDate date = (SimpleDate) table.getValueAt(row, col);
-        String mmlDate = SimpleDate.simpleDateToMmldate(date);
-        AppointmentModel appo = map.get(mmlDate);
-
-        if (appo == null) {
-            return;
-        }
-
-        Transferable t = new AppointEntryTransferable(appo);
-        Cursor cursor = DragSource.DefaultCopyDrop;
-        int action = event.getDragAction();
-        if (action == DnDConstants.ACTION_MOVE) {
-            cursor = DragSource.DefaultMoveDrop;
-        }
-
-        // Starts the drag
-        dragSource.startDrag(event, cursor, t, this);
-    }
-
-    @Override
-    public void dragDropEnd(DragSourceDropEvent event) {
-
-        if (! event.getDropSuccess() || event.getDropAction() == DnDConstants.ACTION_COPY) {
-            return;
-        }
-
-        processCancel(dragRow, dragCol);
-    }
-
-    @Override
-    public void dragEnter(DragSourceDragEvent event) {
-    }
-
-    @Override
-    public void dragOver(DragSourceDragEvent event) {
-    }
-
-    @Override
-    public void dragExit(DragSourceEvent event) {
-    }
-
-    @Override
-    public void dropActionChanged( DragSourceDragEvent event) {
-    }
-
-    //////////// Drop Support ////////////////
-
-    @Override
-    public void drop(DropTargetDropEvent e) {
-
-        if (! isDropAcceptable(e)) {
-            e.rejectDrop();
-            setDropTargetBorder(false);
-            return;
-        }
-
-        // Transferable を取得する
-        final Transferable tr = e.getTransferable();
-
-        // Drop 位置を得る
-        final Point loc = e.getLocation();
-
-        // accept?
-        int action = e.getDropAction();
-        e.acceptDrop(action);
-        //e.getDropTargetContext().dropComplete(true);
-        setDropTargetBorder(false);
-
-        int row = table.rowAtPoint(loc);
-        int col = table.columnAtPoint(loc);
-        //System.out.println("row = " + droppedRow + " col = " + droppedCol);
-        if (row == -1 || col == -1) {
-            e.getDropTargetContext().dropComplete(false);
-            return;
-        }
-
-        SimpleDate date = (SimpleDate) tableModel.getValueAt(row, col);
-
-        // outOfMonth ?
-        if (tableModel.getYear() != date.getYear() || tableModel.getMonth() != date.getMonth()) {
-            e.getDropTargetContext().dropComplete(false);
-            return;
-        }
-
-        // 本日以前
-        if (today.compareTo(date) >= 0) {
-            e.getDropTargetContext().dropComplete(false);
-            return;
-        }
-
-        // Drop 処理
-        AppointmentModel source = null;
-        try {
-            source = (AppointmentModel) tr.getTransferData(AppointEntryTransferable.appointFlavor);
-
-        } catch (UnsupportedFlavorException | IOException ue) {
-            System.out.println(ue);
-            source = null;
-        }
-        if (source == null) {
-            e.getDropTargetContext().dropComplete(false);
-            return;
-        }
-
-        processAppoint(row, col, source.getName(), source.getMemo());
-
-        e.getDropTargetContext().dropComplete(true);
-    }
-
-    public boolean isDragAcceptable(DropTargetDragEvent evt) {
-        return (evt.getDropAction() & DnDConstants.ACTION_COPY_OR_MOVE) != 0;
-    }
-
-    public boolean isDropAcceptable(DropTargetDropEvent evt) {
-        return (evt.getDropAction() & DnDConstants.ACTION_COPY_OR_MOVE) != 0;
-    }
-
-    /** DropTaregetListener interface method */
-    @Override
-    public void dragEnter(DropTargetDragEvent e) {
-        if (! isDragAcceptable(e)) {
-            e.rejectDrag();
-        }
-    }
-
-    /** DropTaregetListener interface method */
-    @Override
-    public void dragExit(DropTargetEvent e) {
-        setDropTargetBorder(false);
-    }
-
-    /** DropTaregetListener interface method */
-    @Override
-    public void dragOver(DropTargetDragEvent e) {
-        if (isDragAcceptable(e)) {
-            setDropTargetBorder(true);
-            // Drop 位置を得る
-            Point loc = e.getLocation();
-            int row = table.rowAtPoint(loc);
-            int col = table.columnAtPoint(loc);
-            table.changeSelection(row, col, false, false);
-        }
-    }
-
-    /** DropTaregetListener interface method */
-    @Override
-    public void dropActionChanged(DropTargetDragEvent e) {
-        if (! isDragAcceptable(e)) {
-            e.rejectDrag();
-        }
-    }
-
-    private void setDropTargetBorder(final boolean b) {
-        Color c = b ? GUIFactory.getDropOkColor() : this.getBackground();
-        table.setBorder(BorderFactory.createLineBorder(c, 2));
-    }
-
+    /**
+     * 取り消しのポップアップを出す.
+     * @param e
+     */
     private void doPopup(MouseEvent e) {
 
         // ReadOnly 時の予約は不可
@@ -522,13 +347,13 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             return;
         }
 
-        popedRow = table.rowAtPoint(e.getPoint());
-        popedCol = table.columnAtPoint(e.getPoint());
-        if (popedRow == -1 || popedCol == -1) {
+        int row = table.rowAtPoint(e.getPoint());
+        int col = table.columnAtPoint(e.getPoint());
+        if (row == -1 || col == -1) {
             return;
         }
 
-        SimpleDate date = (SimpleDate)tableModel.getValueAt(popedRow, popedCol);
+        SimpleDate date = (SimpleDate)table.getValueAt(row, col);
         AppointmentModel appoint = map.get(SimpleDate.simpleDateToMmldate(date));
 
         // 予約のない日. popup menu がキャンセルのみなので
@@ -537,27 +362,12 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         // 本日以前の予約は不可
         if (today.compareTo(date) >= 0) { return; }
 
+        // Embed popup menu
+        JPopupMenu appointMenu = new JPopupMenu();
+        JMenuItem item = new JMenuItem(new ProxyAction("取り消し", () -> processCancel(row, col)));
+        appointMenu.add(item);
+
         appointMenu.show(e.getComponent(),e.getX(), e.getY());
-    }
-
-    public void appointInspect(ActionEvent e) {
-        //processAppoint(popedRow, popedCol, "再診", null);
-    }
-
-    public void appointTest(ActionEvent e) {
-        processAppoint(popedRow, popedCol, "検体検査", null);
-    }
-
-    public void appointImage(ActionEvent e) {
-        processAppoint(popedRow, popedCol, "画像診断", null);
-    }
-
-    public void appointOther(ActionEvent e) {
-        processAppoint(popedRow, popedCol, "その他", null);
-    }
-
-    public void appointCancel() {
-        processCancel(popedRow, popedCol);
     }
 
     /**
@@ -569,7 +379,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      */
     private void processAppoint(int row, int col, String appointName, String memo) {
 
-        SimpleDate date = (SimpleDate)tableModel.getValueAt(row, col);
+        SimpleDate date = (SimpleDate)table.getValueAt(row, col);
         String mmlDate = SimpleDate.simpleDateToMmldate(date);
         AppointmentModel appoint = map.get(mmlDate);
 
@@ -604,7 +414,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
         appoint.setMemo(memo);
         date.setEventCode(CalendarEvent.getCode(appointName));
 
-        ((AbstractTableModel)table.getModel()).fireTableCellUpdated(popedRow, popedCol);
+        tableModel.fireTableCellUpdated(row, col);
 
         boundSupport.firePropertyChange(CareMapDocument.APPOINT_PROP, null, appoint);
 
@@ -621,7 +431,7 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
      */
     private void processCancel(int row, int col) {
 
-        SimpleDate date = (SimpleDate)tableModel.getValueAt(row, col);
+        SimpleDate date = (SimpleDate)table.getValueAt(row, col);
         AppointmentModel appoint = map.get(SimpleDate.simpleDateToMmldate(date));
 
         if (appoint == null) { return; }
@@ -631,26 +441,22 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
 
         switch (oldState) {
             case AppointmentModel.TT_NONE:
-                break;
-
             case AppointmentModel.TT_NEW:
                 nextState = AppointmentModel.TT_NONE;
                 break;
 
             case AppointmentModel.TT_HAS:
-                nextState = AppointmentModel.TT_REPLACE;
-                break;
-
             case AppointmentModel.TT_REPLACE:
                 nextState = AppointmentModel.TT_REPLACE;
                 break;
         }
 
+        // 変更されたことを記憶するために，キャンセルされる前の AppointMentModel を残す
         appoint.setState(nextState);
         appoint.setName(null);
         date.setEventCode(null);
 
-        ((AbstractTableModel)table.getModel()).fireTableCellUpdated(popedRow, popedCol);
+        ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
 
         boundSupport.firePropertyChange(CareMapDocument.APPOINT_PROP, null, appoint);
 
@@ -659,31 +465,133 @@ public final class SimpleCalendarPanel extends JPanel implements DragGestureList
             parent.setDirty(dirty);
         }
     }
-/*
+
+    /**
+     * 予約の TransferHandler.
+     */
     private class CalendarTableTransferHandler extends PatchedTransferHandler {
         private static final long serialVersionUID = 1L;
 
+        private int srcRow;
+        private int srcCol;
+        private SimpleDate srcDate;
+
+        @Override
+        public void exportAsDrag(JComponent comp, InputEvent e, int action) {
+            srcRow = table.getSelectedRow();
+            srcCol = table.getSelectedColumn();
+            srcDate = (SimpleDate) table.getValueAt(srcRow, srcCol);
+            super.exportAsDrag(comp, e, action);
+        }
+
         @Override
         public int getSourceActions(JComponent c) {
-            return COPY_OR_MOVE;
+            return MOVE;
         }
 
         @Override
         protected Transferable createTransferable(JComponent c) {
+            if (srcRow == -1 || srcCol == -1) { return null; }
 
+            SimpleDate date = (SimpleDate) table.getValueAt(srcRow, srcCol);
+            String mmlDate = SimpleDate.simpleDateToMmldate(date);
+            AppointmentModel appo = map.get(mmlDate);
+
+            // appo がないか，変更されて name = null になっている場合
+            if (appo == null || appo.getName() == null) { return null; }
+
+            return new AppointEntryTransferable(appo);
         }
 
         @Override
-        public boolean canImport(TransferSupport support) {
+        public boolean canImport(TransferHandler.TransferSupport support) {
+            support.setShowDropLocation(true);
 
+            Point loc = support.getDropLocation().getDropPoint();
+            int row = table.rowAtPoint(loc);
+            int col = table.columnAtPoint(loc);
+
+            if (row == -1 || col == -1) { return false; }
+
+            SimpleDate date = (SimpleDate) table.getValueAt(row, col);
+
+            // 自分?
+            if (date.equals(srcDate)) { return false; }
+
+            // outOfMonth ?
+            if (tableModel.getYear() != date.getYear() || tableModel.getMonth() != date.getMonth()) {
+                return false;
+            }
+
+            // 本日以前?
+            if (today.compareTo(date) >= 0) {
+                return false;
+            }
+
+            return true;
         }
 
         @Override
-        public boolean importData(TransferSupport support) {
+        public boolean importData(TransferHandler.TransferSupport support) {
+            try {
+                Transferable tr = support.getTransferable();
+                AppointmentModel appoint = (AppointmentModel) tr.getTransferData(AppointEntryTransferable.appointFlavor);
 
+                Point loc = support.getDropLocation().getDropPoint();
+                int row = table.rowAtPoint(loc);
+                int col = table.columnAtPoint(loc);
+
+                if (row != -1 && col != -1) {
+                    processAppoint(row, col, appoint.getName(), appoint.getMemo());
+                    return true;
+
+                } else {
+                    return false;
+                }
+
+            } catch (UnsupportedFlavorException | IOException ue) {
+                System.out.println(ue);
+                return false;
+            }
+        }
+
+        @Override
+        protected void exportDone(JComponent source, Transferable data, int action) {
+            if (action == MOVE) {
+                // 移動の場合ソースは消す
+                processCancel(srcRow, srcCol);
+            }
+            // リセット
+            srcRow = -1;
+            srcCol = -1;
+            srcDate = null;
+        }
+
+        /**
+         * 半透明の visual representation を返す.
+         * table からドラッグ該当部分のイメージを切り出して使う.
+         * @param t
+         * @return
+         */
+        @Override
+        public Icon getVisualRepresentation(Transferable t) {
+            int width = table.getWidth();
+            int height = table.getHeight();
+            int x = srcCol * width/7;
+            int y = srcRow * height/6;
+
+            Point loc = table.getMousePosition();
+            mousePosition.x = - x + loc.x;
+            mousePosition.y = - y + loc.y;
+
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+            table.paint(image.getGraphics());
+            image = image.getSubimage(x, y, width/7, height/6);
+
+            return new ImageIcon(image);
         }
     }
-*/
+
     /**
      * CalendarPool Class
      */

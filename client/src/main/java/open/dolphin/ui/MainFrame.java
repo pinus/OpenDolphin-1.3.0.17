@@ -66,18 +66,6 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Window が active でかつアプリケーションが Foreground の時のみ active を返す.
-     * @return
-     */
-    @Override
-    public boolean isActive() {
-        if (super.isActive() && !AppForeground.isForeground()) {
-            logger.info("Window is active while Application in background");
-        }
-        return super.isActive();
-    }
-
-    /**
      * 上部のコマンドパネル
      */
     public class CommandPanel extends HorizontalPanel {

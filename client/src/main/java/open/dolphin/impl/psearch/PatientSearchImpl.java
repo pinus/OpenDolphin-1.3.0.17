@@ -45,8 +45,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
     // 年齢表示カラム
     private static final int AGE_COLUMN = 4;
-    //private static final ImageIcon SEARCH_ICON = GUIConst.ICON_SYSTEM_SEARCH_22;
-    private static final ImageIcon SEARCH_ICON = GUIConst.ICON_SEARCH_16;
+
     private static final int[] COLUMN_WIDTH = {80,100,120,40,120,120};
     // Preferences の key
     private static final String NARROWING_SEARCH = "narrowingSearch";
@@ -269,12 +268,6 @@ public class PatientSearchImpl extends AbstractMainComponent {
                     setSelectedPatinet(patients);
                 }
             }
-        });
-
-        // 絞り込み選択ボタンで背景を制御
-        view.getNarrowingSearchCb().addActionListener(e -> {
-            prefs.putBoolean(NARROWING_SEARCH, view.getNarrowingSearchCb().isSelected());
-            setTextFieldBackground(view.getNarrowingSearchCb().isSelected());
         });
     }
 
