@@ -16,6 +16,7 @@ import javax.swing.*;
 import static javax.swing.TransferHandler.MOVE;
 import javax.swing.table.*;
 import open.dolphin.calendar.CalendarEvent;
+import open.dolphin.calendar.CalendarListener;
 import open.dolphin.calendar.CalendarTable;
 import open.dolphin.calendar.CalendarTableModel;
 import open.dolphin.client.*;
@@ -49,6 +50,7 @@ public final class SimpleCalendarPanel extends JPanel {
     private boolean dirty;
 
     private PropertyChangeSupport boundSupport;
+    private CalendarListener listener;
 
     public SimpleCalendarPanel() {
         this(0);
@@ -144,6 +146,10 @@ public final class SimpleCalendarPanel extends JPanel {
      */
     public boolean isThisMonth() {
         return relativeMonth == 0;
+    }
+
+    public void addCalendarListener(CalendarListener l) {
+        listener = l;
     }
 
     @Override
@@ -481,6 +487,8 @@ public final class SimpleCalendarPanel extends JPanel {
             srcRow = table.getSelectedRow();
             srcCol = table.getSelectedColumn();
             srcDate = (SimpleDate) table.getValueAt(srcRow, srcCol);
+            mousePosition = ((MouseEvent)e).getPoint();
+
             super.exportAsDrag(comp, e, action);
         }
 

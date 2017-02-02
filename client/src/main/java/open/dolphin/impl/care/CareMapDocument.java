@@ -45,9 +45,9 @@ public final class CareMapDocument extends AbstractChartDocument {
 
     private static final List<PNSPair<String,Color>> AppointNameColor = Arrays.asList(
             new PNSPair<>("再診", CalendarEvent.EXAM_APPO.color()),
-            new PNSPair<>("検体検査", CalendarEvent.TEST.color()),
-            new PNSPair<>("画像検査", CalendarEvent.IMAGE.color()),
-            new PNSPair<>("その他", CalendarEvent.MISC.color())
+            new PNSPair<>("検体検査", CalendarEvent.TEST_APPO.color()),
+            new PNSPair<>("画像検査", CalendarEvent.IMAGE_APPO.color()),
+            new PNSPair<>("その他", CalendarEvent.MISC_APPO.color())
     );
 
     private static final String[] orderNames = { "処方", "処置", "指導", "ラボテスト", "生体検査", "放射線"};
