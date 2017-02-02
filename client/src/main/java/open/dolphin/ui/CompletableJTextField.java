@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
@@ -42,7 +44,8 @@ import org.apache.commons.lang.StringUtils;
  * modified from JAVA SWING HACKS.
  * @author pns
  */
-public class CompletableJTextField extends JTextField implements ListSelectionListener, FocusListener, KeyListener, ComponentListener {
+public class CompletableJTextField extends JTextField
+        implements ListSelectionListener, FocusListener, KeyListener, ComponentListener, ActionListener {
     private static final long serialVersionUID = 1L;
     private static final String PREFS = "prefs";
 
@@ -76,6 +79,7 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
         addFocusListener(this);
         addKeyListener(this);
         addComponentListener(this);
+        addActionListener(this);
     }
 
     public void dispose() {
@@ -179,28 +183,29 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     }
 
     /**
-     * キー入力を監視.
-     * リストが選択された状態でリターン：リストの文字をフィールドにセット.
-     * 上キー：選択を上へ，下キー：選択を下へ
+     * Enter キー入力の動作.
+     * リストが選択された状態でリターン＝リストの文字をフィールドにセット.
      * @param e
      */
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void actionPerformed(ActionEvent e) {
+        // リストが選択されている時の enter の処理
+        if (completionList.getSelectedIndex() != -1) {
+            completer.setUpdate(true);
+            completionList.getSelectionModel().clearSelection();
+            listWindow.setVisible(false);
 
-        if (keyCode == KeyEvent.VK_ENTER) {
-            // リストが選択されている時の enter の処理
-            if (completionList.getSelectedIndex() != -1) {
-                completer.setUpdate(true);
-                completionList.getSelectionModel().clearSelection();
-                listWindow.setVisible(false);
-                e.consume();
-            } else {
-                // リストが選択されていないとき
-                addCompletion(getText());
-            }
+        } else {
+            // リストが選択されていないとき
+            addCompletion(getText());
         }
     }
 
+    /**
+     * キー入力を監視.
+     * 上キー：選択を上へ，下キー：選択を下へ
+     * @param e
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         keyCode = e.getKeyCode();
@@ -248,9 +253,10 @@ public class CompletableJTextField extends JTextField implements ListSelectionLi
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-        e.consume();
-    }
+    public void keyReleased(KeyEvent e) {}
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
 
     // window が動いたら listWindow は消す
     @Override
