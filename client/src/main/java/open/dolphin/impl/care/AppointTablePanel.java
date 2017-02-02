@@ -1,18 +1,18 @@
 package open.dolphin.impl.care;
 
-import open.dolphin.infomodel.ModelUtils;
-import open.dolphin.ui.AdditionalTableSettings;
-import open.dolphin.ui.PNSCellEditor;
-import javax.swing.*;
-import javax.swing.table.*;
-import open.dolphin.infomodel.AppointmentModel;
 import java.awt.*;
 import java.beans.*;
 import java.util.*;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.table.*;
+import open.dolphin.infomodel.AppointmentModel;
+import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.util.MMLDate;
 
 /**
@@ -118,7 +118,6 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
      * @param date
      */
     private void findAppoint(String date) {
-        System.out.println(date);
         int size = tableModel.getObjectCount();
         String val;
         for (int i = 0; i < size; i++) {

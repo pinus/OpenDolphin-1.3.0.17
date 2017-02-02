@@ -148,8 +148,21 @@ public final class SimpleCalendarPanel extends JPanel {
         return relativeMonth == 0;
     }
 
+    /**
+     * CalendarListener を登録する.
+     * @param l
+     */
     public void addCalendarListener(CalendarListener l) {
         listener = l;
+    }
+
+    /**
+     * MmlDate に対応する AppointmentModel を返す.
+     * @param mmlDate
+     * @return
+     */
+    public AppointmentModel getAppointmentModel(String mmlDate) {
+        return map.get(mmlDate);
     }
 
     @Override
