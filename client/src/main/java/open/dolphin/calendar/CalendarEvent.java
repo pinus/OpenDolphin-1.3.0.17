@@ -13,8 +13,8 @@ public enum CalendarEvent {
     EXAM_APPO("再診", new Color(255,165,0)), IMAGE_APPO("画像検査", new Color(119,200,211)),
     TEST_APPO("検体検査", new Color(255, 69, 0)), MISC_APPO("その他", new Color(251,239,128)),
 
-    medOrder("処方", new Color(255,140,0)), treatmentOrder("処置", new Color(255,140,0)), instractionChargeOrder("指導", Color.PINK),
-    testOrder("ラボテスト", new Color(255,69,0)), physiologyOrder("生体検査", Color.PINK), radiologyOrder("放射線", Color.PINK)
+    medOrder("処方", Color.PINK), treatmentOrder("処置", Color.PINK), instractionChargeOrder("指導", Color.PINK),
+    testOrder("ラボテスト", Color.PINK), physiologyOrder("生体検査", Color.PINK), radiologyOrder("放射線", Color.PINK)
 
     ;
     private final Color color;

@@ -2,7 +2,6 @@ package open.dolphin.impl.care;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -64,8 +63,6 @@ public final class CareMapDocument extends AbstractChartDocument {
     private JPanel historyContainer;
     private JButton updateAppoBtn; // 予約の更新はこのボタンで行う
 
-    private PropertyChangeSupport boundSupport;
-
     /**
      * Creates new CareMapDocument.
      */
@@ -97,27 +94,31 @@ public final class CareMapDocument extends AbstractChartDocument {
         // カレンダーの範囲を１ケ月以に戻すボタン
         JButton prevBtn = new JButton(GUIConst.ICON_ARROW1_LEFT_16);
         prevBtn.addActionListener(e -> {
-            origin --;
-            calendarMap.values().forEach(calendar -> calendar.getTableModel().previousMonth());
+            SwingUtilities.invokeLater(() -> {
+                origin --;
+                calendarMap.values().forEach(calendar -> calendar.getTableModel().previousMonth());
 
-            // オーダ履歴の抽出期間全体が変化したので通知する
-            Period p = new Period(this);
-            p.setStartDate(calendarMap.get(-1).getFirstDate());
-            p.setEndDate(calendarMap.get(1).getLastDate());
-            setSelectedPeriod(p);
+                // オーダ履歴の抽出期間全体が変化したので通知する
+                Period p = new Period(this);
+                p.setStartDate(calendarMap.get(-1).getFirstDate());
+                p.setEndDate(calendarMap.get(1).getLastDate());
+                setSelectedPeriod(p);
+            });
         });
 
         // カレンダーの範囲を１ケ月送るボタン
         JButton nextBtn = new JButton(GUIConst.ICON_ARROW1_RIGHT_16);
         nextBtn.addActionListener(e -> {
-            origin ++;
-            calendarMap.values().forEach(calendar -> calendar.getTableModel().nextMonth());
+            SwingUtilities.invokeLater(() -> {
+                origin ++;
+                calendarMap.values().forEach(calendar -> calendar.getTableModel().nextMonth());
 
-            // オーダ履歴の抽出期間全体が変化したので通知する
-            Period p = new Period(this);
-            p.setStartDate(calendarMap.get(-1).getFirstDate());
-            p.setEndDate(calendarMap.get(1).getLastDate());
-            setSelectedPeriod(p);
+                // オーダ履歴の抽出期間全体が変化したので通知する
+                Period p = new Period(this);
+                p.setStartDate(calendarMap.get(-1).getFirstDate());
+                p.setEndDate(calendarMap.get(1).getLastDate());
+                setSelectedPeriod(p);
+            });
         });
 
         // 更新の保存ボタン -> dirty 状況によって enable/disable される
@@ -277,33 +278,6 @@ public final class CareMapDocument extends AbstractChartDocument {
     }
 
     /**
-     * プロパティチェンジリスナを追加する.
-     *
-     * @param prop プロパティ名
-     * @param l リスナ
-     */
-    public void addPropertyChangeListener(String prop, PropertyChangeListener l) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.addPropertyChangeListener(prop, l);
-    }
-
-    /**
-     * プロパティチェンジリスナを削除する.
-     *
-     * @param prop プロパティ名
-     * @param l リスナ
-     */
-    public void removePropertyChangeListener(String prop,
-            PropertyChangeListener l) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.removePropertyChangeListener(prop, l);
-    }
-
-    /**
      * 表示している期間内にあるモジュールの日をマークする.
      * @param newModules  表示している期間内にあるモジュールのリスト
      */
@@ -376,7 +350,12 @@ public final class CareMapDocument extends AbstractChartDocument {
      * @param code
      */
     public void setSelectedEvent(String code) {
-        //String old = selectedEvent;
+        // 登録前に以前の event はクリアする
+        calendarMap.values().forEach(calendar -> {
+            calendar.getTableModel().clearMarkDates(selectedEvent);
+            calendar.getTableModel().clearMarkDates(code);
+        });
+
         selectedEvent = code;
 
         if (getSelectedEvent().equals(IMAGE_EVENT)) {

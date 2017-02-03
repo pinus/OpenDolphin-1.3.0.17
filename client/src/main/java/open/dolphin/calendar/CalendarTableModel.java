@@ -273,6 +273,15 @@ public class CalendarTableModel extends AbstractTableModel {
     }
 
     /**
+     * event のマークをクリアする.
+     * @param event
+     */
+    public void clearMarkDates(String event) {
+        data.values().stream().filter(date -> event.equals(date.getEventCode())).forEach(date -> date.setEventCode(null));
+        fireTableDataChanged();
+    }
+
+    /**
      * 指定 row, col が今月から外れているかどうか.
      * @param row
      * @param col

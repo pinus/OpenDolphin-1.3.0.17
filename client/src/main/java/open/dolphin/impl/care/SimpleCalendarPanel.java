@@ -250,8 +250,6 @@ public final class SimpleCalendarPanel extends JPanel {
     public void setModuleList(String event, List<ModuleModel> list) {
         if (list == null || list.isEmpty()) { return; }
 
-        clearMark(event);
-
         list.forEach(module -> {
             String mmlDate = ModelUtils.getDateAsString(module.getConfirmed());
             SimpleDate date = SimpleDate.mmlDateToSimpleDate(mmlDate);
@@ -272,8 +270,6 @@ public final class SimpleCalendarPanel extends JPanel {
      */
     public void setImageList(String event, List<ImageEntry> list) {
         if (list == null || list.isEmpty()) { return; }
-
-        clearMark(event);
 
         list.forEach(entry -> {
             String mmlDate = entry.getConfirmDate();
@@ -311,28 +307,6 @@ public final class SimpleCalendarPanel extends JPanel {
         });
 
         tableModel.fireTableDataChanged();
-    }
-
-    /**
-     * eventCode のイベントをクリアする.
-     * @param eventCode
-     */
-    private void clearMark(String eventCode) {
-
-        boolean changed = false;
-
-        for (int row=0; row<tableModel.getRowCount(); row++) {
-            for (int col=0; col<tableModel.getColumnCount(); col++) {
-                SimpleDate date = (SimpleDate) table.getValueAt(row, col);
-
-                if (eventCode.equals(date.getEventCode())) {
-                    date.setEventCode(null);
-                    changed = true;
-                }
-            }
-        }
-
-        if (changed) { tableModel.fireTableDataChanged(); }
     }
 
     /**
@@ -588,43 +562,6 @@ public final class SimpleCalendarPanel extends JPanel {
             image = image.getSubimage(x, y, width/7, height/6);
 
             return new ImageIcon(image);
-        }
-    }
-
-    /**
-     * CalendarPool Class
-     */
-    public static class SimpleCalendarPool {
-
-        private static SimpleCalendarPool instance = new SimpleCalendarPool();
-        private HashMap<String, List> poolDictionary = new HashMap<>();
-
-        private SimpleCalendarPool() {
-        }
-
-        public static SimpleCalendarPool getInstance() {
-            return instance;
-        }
-
-        public synchronized SimpleCalendarPanel acquireSimpleCalendar(int n) {
-            List pool = poolDictionary.get(String.valueOf(n));
-            if (pool != null) {
-                int size = pool.size();
-                size--;
-                return (SimpleCalendarPanel)pool.remove(size);
-            }
-            return new SimpleCalendarPanel(n);
-        }
-
-        public synchronized void releaseSimpleCalendar(SimpleCalendarPanel c) {
-            int n = c.getRelativeMonth();
-            String key = String.valueOf(n);
-            List pool = poolDictionary.get(key);
-            if (pool == null) {
-                pool = new ArrayList<>(5);
-                poolDictionary.put(key, pool);
-            }
-            pool.add(c);
         }
     }
 }
