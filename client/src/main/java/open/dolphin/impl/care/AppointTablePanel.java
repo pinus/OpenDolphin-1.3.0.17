@@ -1,7 +1,6 @@
 package open.dolphin.impl.care;
 
 import java.awt.*;
-import java.beans.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -17,11 +16,12 @@ import open.dolphin.util.MMLDate;
 
 /**
  * AppointTablePanel.
- * CareMapDocument の一番下に配置されるパネル
+ * CareMapDocument の一番下に配置されるパネル.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
-public class AppointTablePanel extends JPanel implements PropertyChangeListener {
+public class AppointTablePanel extends JPanel {
     private static final long serialVersionUID = 1013931150179503017L;
 
     private final String[] COLUMN_NAMES   = { "予約日","内  容","メ   モ" };
@@ -29,7 +29,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
     private final int MEMO_COLUMN         = 2;
 
     private CareTableModel tableModel;
-    private JTable careTable;
+    private JTable appointTable;
     private CareMapDocument parent;
     private boolean dirty;
 
@@ -41,10 +41,10 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
     private void initComponents(JButton updateBtn) {
         tableModel = new CareTableModel(COLUMN_NAMES);
 
-        careTable = new JTable(tableModel);
-        careTable.setDefaultRenderer(Object.class, new TodayRowRenderer());
-        careTable.setSurrendersFocusOnKeystroke(true);
-        careTable.setRowSelectionAllowed(true);
+        appointTable = new JTable(tableModel);
+        appointTable.setDefaultRenderer(Object.class, new TodayRowRenderer());
+        appointTable.setSurrendersFocusOnKeystroke(true);
+        appointTable.setRowSelectionAllowed(true);
 
         // CellEditor を設定する
         DefaultCellEditor ce = new PNSCellEditor(new JTextField());
@@ -53,11 +53,11 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         // Set the column width
         TableColumn column;
         for (int i=0; i < COLUMN_WIDTH.length; i++) {
-            column = careTable.getColumnModel().getColumn(i);
+            column = appointTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(COLUMN_WIDTH[i]);
         }
 
-        MyJScrollPane scroller = new MyJScrollPane(careTable,
+        MyJScrollPane scroller = new MyJScrollPane(appointTable,
                 MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -67,11 +67,11 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         this.add(cmd, BorderLayout.NORTH);
         this.add(scroller, BorderLayout.CENTER);
 
-        AdditionalTableSettings.setTable(careTable);
+        AdditionalTableSettings.setTable(appointTable);
     }
 
     /**
-     *
+     * 親の ChartDocument を登録する.
      * @param doc
      */
     public void setParent(CareMapDocument doc) {
@@ -79,58 +79,40 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
     }
 
     /**
-     * PropertyChangeListener としての仕事
-     * @param e
+     * AppointmentModel のリストを登録する.
+     * @param list
      */
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-
-        switch (e.getPropertyName()) {
-            case CareMapDocument.CALENDAR_PROP:
-                // CareMapDocument で予約日をカレンダーにセットするときに fire される.
-                // newValue = 予約日がセットされた SimpleCalendarPanel[]
-                SimpleCalendarPanel[] calendars = (SimpleCalendarPanel[]) e.getNewValue();
-
-                List<AppointmentModel> allList = new ArrayList<>();
-                Arrays.asList(calendars).forEach(calendar -> allList.addAll(calendar.getAppointDays()));
-
-                // table を全部描き直す
-                tableModel.setObjectList(allList);
-                break;
-
-            case CareMapDocument.APPOINT_PROP:
-                // Appoint に変化があったときに SimpleCalendarPanel から fire される
-                // newValue = AppointmentModel
-                AppointmentModel appoint = (AppointmentModel)e.getNewValue();
-                tableModel.updateAppoint(appoint);
-                break;
-
-            case CareMapDocument.SELECTED_APPOINT_DATE_PROP:
-                // SimpleCalendarPanel をクリックしたとき，その日に予約があれば呼ばれる
-                // newValue = MedicalEvent.getDisplayDate()
-                findAppoint((String)e.getNewValue());
-                break;
-        }
+    public void setAppointmentList(List<AppointmentModel> list) {
+        tableModel.setObjectList(list);
     }
 
     /**
-     * date に一致する行を選択する
-     * @param date
+     * AppointmentModel を更新して，テーブルの行選択する.
+     * @param appoint
      */
-    private void findAppoint(String date) {
-        int size = tableModel.getObjectCount();
-        String val;
-        for (int i = 0; i < size; i++) {
-            val = (String)tableModel.getValueAt(i, 0); // date column
-            if (val.equals(date)) {
-                careTable.setRowSelectionInterval(i, i);
+    public void updateAppoint(AppointmentModel appoint) {
+        tableModel.updateAppoint(appoint);
+
+        String mmlDate = MMLDate.getDate(appoint.getDate());
+        findAppoint(mmlDate);
+    }
+
+    /**
+     * MmlDate に一致する行を選択する.
+     * @param mmlDate
+     */
+    private void findAppoint(String mmlDate) {
+        for (int i=0; i<tableModel.getObjectCount(); i++) {
+            String val = (String)tableModel.getValueAt(i, 0); // date column
+            if (val.equals(mmlDate)) {
+                appointTable.setRowSelectionInterval(i, i);
                 break;
             }
         }
     }
 
     /**
-     * TableModel of AppointmentModel
+     * TableModel of AppointmentTable.
      */
     private class CareTableModel extends ObjectReflectTableModel<AppointmentModel> {
         private static final long serialVersionUID = -5342312972368806563L;
@@ -140,7 +122,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         }
 
         /**
-         * メモ列だけ編集できる
+         * メモ列だけ編集できる.
          * @param row
          * @param col
          * @return
@@ -173,7 +155,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         }
 
         /**
-         * メモ列に文字列を入れる
+         * メモ列に文字列を入れる.
          * @param val
          * @param row
          * @param col
@@ -202,11 +184,11 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         }
 
         /**
-         * update AppointmentModel
+         * update AppointmentModel.
          * @param appoint
          */
         public void updateAppoint(AppointmentModel appoint) {
-
+            
             int row = findAppointEntry(appoint);
 
             if (row == -1 && appoint.getState() == AppointmentModel.TT_NEW) {
@@ -224,7 +206,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
         }
 
         /**
-         * ObjectList に entry を加えてソートする
+         * ObjectList に entry を加えてソートする.
          * @param entry
          */
         public void addAppointEntry(AppointmentModel entry) {
@@ -257,7 +239,7 @@ public class AppointTablePanel extends JPanel implements PropertyChangeListener 
     }
 
     /**
-     * 今日の予約のバックグランドに色を付けるレンダラ
+     * 今日の予約のバックグランドに色を付けるレンダラ.
      */
     private class TodayRowRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 4422900791807822090L;

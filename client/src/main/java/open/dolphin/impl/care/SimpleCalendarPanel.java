@@ -5,7 +5,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.beans.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,8 +12,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.*;
-import static javax.swing.TransferHandler.MOVE;
-import javax.swing.table.*;
 import open.dolphin.calendar.CalendarEvent;
 import open.dolphin.calendar.CalendarListener;
 import open.dolphin.calendar.CalendarTable;
@@ -49,7 +46,6 @@ public final class SimpleCalendarPanel extends JPanel {
     private CareMapDocument parent;
     private boolean dirty;
 
-    private PropertyChangeSupport boundSupport;
     private CalendarListener listener;
 
     public SimpleCalendarPanel() {
@@ -96,16 +92,8 @@ public final class SimpleCalendarPanel extends JPanel {
                 int row = table.rowAtPoint(p);
                 int col = table.columnAtPoint(p);
                 if (row != -1 && col != -1) {
-
                     SimpleDate date = (SimpleDate) table.getValueAt(row, col);
-                    String mmlDate = SimpleDate.simpleDateToMmldate(date);
-
-                    if (date.getEventCode() != null) {
-                        boundSupport.firePropertyChange(CareMapDocument.SELECTED_DATE_PROP, null, mmlDate);
-
-                    } else if (map.get(mmlDate) != null) {
-                        boundSupport.firePropertyChange(CareMapDocument.SELECTED_APPOINT_DATE_PROP, null, mmlDate);
-                    }
+                    listener.dateSelected(date);
                 }
             }
         });
@@ -157,32 +145,7 @@ public final class SimpleCalendarPanel extends JPanel {
     }
 
     /**
-     * MmlDate に対応する AppointmentModel を返す.
-     * @param mmlDate
-     * @return
-     */
-    public AppointmentModel getAppointmentModel(String mmlDate) {
-        return map.get(mmlDate);
-    }
-
-    @Override
-    public void addPropertyChangeListener(String prop, PropertyChangeListener l) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.addPropertyChangeListener(prop, l);
-    }
-
-    @Override
-    public void removePropertyChangeListener(String propName, PropertyChangeListener l) {
-        if (boundSupport == null) {
-            boundSupport = new PropertyChangeSupport(this);
-        }
-        boundSupport.removePropertyChangeListener(propName, l);
-    }
-
-    /**
-     * このカレンダーの月の初日を MML 型式で返す.
+     * この月の初日を MML 型式で返す.
      * @return
      */
     public String getFirstDate() {
@@ -194,7 +157,7 @@ public final class SimpleCalendarPanel extends JPanel {
     }
 
     /**
-     * このカレンダーの月の末日を MML 型式で返す.
+     * この月の末日を MML 型式で返す.
      * @return
      */
     public String getLastDate() {
@@ -208,7 +171,16 @@ public final class SimpleCalendarPanel extends JPanel {
     }
 
     /**
-     * 予約のある日をリストで返す.
+     * MmlDate に対応する AppointmentModel を返す.
+     * @param mmlDate
+     * @return
+     */
+    public AppointmentModel getAppointmentModel(String mmlDate) {
+        return map.get(mmlDate);
+    }
+
+    /**
+     * この月の有効な AppointmentModel のリストを返す.
      * @return 予約日リスト
      */
     public List<AppointmentModel> getAppointDays() {
@@ -236,7 +208,7 @@ public final class SimpleCalendarPanel extends JPanel {
     }
 
     /**
-     * 更新された予約のリストを返す.
+     * この月の更新された AppointModel のリストを返す.
      * @return 更新された予約のリスト
      */
     public List<AppointmentModel> getUpdatedAppoints() {
@@ -345,7 +317,7 @@ public final class SimpleCalendarPanel extends JPanel {
             for (int col=0; col<tableModel.getColumnCount(); col++) {
                 SimpleDate date = (SimpleDate) table.getValueAt(row, col);
 
-                if (date.getEventCode().equals(eventCode)) {
+                if (eventCode.equals(date.getEventCode())) {
                     date.setEventCode(null);
                     changed = true;
                 }
@@ -434,8 +406,7 @@ public final class SimpleCalendarPanel extends JPanel {
         date.setEventCode(CalendarEvent.getCode(appointName));
 
         tableModel.fireTableCellUpdated(row, col);
-
-        boundSupport.firePropertyChange(CareMapDocument.APPOINT_PROP, null, appoint);
+        listener.dateSelected(date);
 
         if (! dirty) {
             dirty = true;
@@ -475,9 +446,8 @@ public final class SimpleCalendarPanel extends JPanel {
         appoint.setName(null);
         date.setEventCode(null);
 
-        ((AbstractTableModel)table.getModel()).fireTableCellUpdated(row, col);
-
-        boundSupport.firePropertyChange(CareMapDocument.APPOINT_PROP, null, appoint);
+        tableModel.fireTableCellUpdated(row, col);
+        listener.dateSelected(date);
 
         if (! dirty) {
             dirty = true;

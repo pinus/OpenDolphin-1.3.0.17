@@ -1,41 +1,44 @@
-
 package open.dolphin.impl.care;
 
-import open.dolphin.ui.AdditionalTableSettings;
-import java.beans.*;
 import java.util.*;
 import java.util.List;
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
 import javax.swing.table.*;
 import open.dolphin.client.*;
-
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.ImageSearchSpec;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.SchemaModel;
+import open.dolphin.infomodel.SimpleDate;
+import open.dolphin.ui.AdditionalTableSettings;
+import open.dolphin.ui.MyJScrollPane;
 
 /**
- * ImageHistoryPanel
+ * ImageHistoryPanel.
  *
  * @author Kazushi Minagawa
+ * @author pns
  */
-public class ImageHistoryPanel extends JPanel implements PropertyChangeListener {
+public class ImageHistoryPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
 
     private String pid;
     private CareMapDocument myParent;
     private ImageTableModel tModel;
     private JTable table;
-    private int columnCount = 5;
-    private int imageWidth = 132;
-    private int imageHeight = 132;
+    private final int columnCount = 5;
+    private final int imageWidth = 132;
+    private final int imageHeight = 132;
     private javax.swing.Timer taskTimer;
 
     public ImageHistoryPanel() {
-
         super(new BorderLayout());
+        init();
+    }
+
+    private void init() {
 
         tModel = new ImageTableModel();
         table = new JTable(tModel);
@@ -43,19 +46,16 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
         table.setCellSelectionEnabled(true);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        TableColumn column = null;
-        for (int i = 0; i < columnCount; i++) {
-            column = table.getColumnModel().getColumn(i);
-            column.setPreferredWidth(imageWidth);
-        }
+        Collections.list(table.getColumnModel().getColumns())
+                .forEach(column -> column.setPreferredWidth(imageWidth));
+
         table.setRowHeight(imageHeight + 20);
 
         ImageRenderer imageRenderer = new ImageRenderer();
         imageRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        table.setDefaultRenderer(java.lang.Object.class, imageRenderer);
+        table.setDefaultRenderer(Object.class, imageRenderer);
 
         table.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() != 2) {
@@ -70,11 +70,10 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
             }
         });
 
-        JScrollPane scroller = new JScrollPane(table,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        this.add(scroller, BorderLayout.CENTER);
-//pns
+        MyJScrollPane scroller = new MyJScrollPane(table,
+                MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        add(scroller, BorderLayout.CENTER);
         AdditionalTableSettings.setTable(table);
     }
 
@@ -90,44 +89,23 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
         myParent = doc;
     }
 
-    public void setImageList(List allImages) {
+    public void setImageList(List<List<ImageEntry>> allImages) {
 
         if (allImages != null) {
 
-            int size = allImages.size();
-            List list = new ArrayList();
-
-            for (int i = 0; i < size; i++) {
-                List l = (List) allImages.get(i);
-                if (l != null) {
-                    for (int j = 0; j < l.size(); j++) {
-                        list.add(l.get(j));
-                    }
-                }
-            }
+            List<ImageEntry> list = new ArrayList<>();
+            allImages.forEach(imageList -> list.addAll(imageList));
             tModel.setImageList(list);
+
         } else {
-            tModel.setImageList(allImages);
+            tModel.setImageList(null);
         }
     }
 
-    public void propertyChange(PropertyChangeEvent e) {
+    public void findDate(SimpleDate date) {
+        String mmlDate = SimpleDate.simpleDateToMmldate(date);
+        int index = tModel.findDate(mmlDate);
 
-        String prop = e.getPropertyName();
-
-        if (prop.equals(CareMapDocument.SELECTED_DATE_PROP)) {
-
-            String date = (String) e.getNewValue();
-            // if (isMyCode()) {
-            // System.out.println("my propertyChange: " + date);
-            findDate(date);
-        // }
-        }
-
-    }
-
-    private void findDate(String date) {
-        int index = tModel.findDate(date);
         if (index != -1) {
             int row = index / columnCount;
             int col = index % columnCount;
@@ -136,10 +114,6 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
         }
     }
 
-    /*private boolean isMyCode() {
-    // return markEvent.equals(imageCode) ? true : false;
-    return markEvent.equals("image") ? true : false;
-    }*/
     private void openImage(int row, int col) {
 
         ImageEntry entry = (ImageEntry) tModel.getValueAt(row, col);
@@ -148,7 +122,7 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
         spec.setId(entry.getId());
         final DocumentDelegater ddl = new DocumentDelegater();
 
-        DBTask task = new DBTask<SchemaModel>(myParent.getContext()) {
+        DBTask<SchemaModel> task = new DBTask<SchemaModel>(myParent.getContext()) {
 
             @Override
             public SchemaModel doInBackground() throws Exception {
@@ -168,15 +142,17 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
 
     }
 
-    protected class ImageTableModel extends AbstractTableModel {
-
+    private class ImageTableModel extends AbstractTableModel {
         private static final long serialVersionUID = -2683619747572366737L;
-        private List imageList;
 
+        private List<ImageEntry> imageList;
+
+        @Override
         public int getColumnCount() {
             return columnCount;
         }
 
+        @Override
         public int getRowCount() {
             if (imageList == null) {
                 return 0;
@@ -188,17 +164,18 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
             return ((size % columnCount) != 0) ? rowCount + 1 : rowCount;
         }
 
+        @Override
         public Object getValueAt(int row, int col) {
             int index = row * columnCount + col;
             if (!isValidIndex(index)) {
                 return null;
             }
 
-            ImageEntry s = (ImageEntry) imageList.get(index);
-            return (Object) s;
+            ImageEntry s = imageList.get(index);
+            return s;
         }
 
-        public void setImageList(List list) {
+        public void setImageList(List<ImageEntry> list) {
             if (imageList != null) {
                 int last = getRowCount();
                 imageList.clear();
@@ -219,7 +196,7 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
 
             int size = imageList.size();
             for (int i = 0; i < size; i++) {
-                ImageEntry entry = (ImageEntry) imageList.get(i);
+                ImageEntry entry = imageList.get(i);
                 if (entry.getConfirmDate().startsWith(date)) {
                     ret = i;
                     break;
@@ -229,16 +206,18 @@ public class ImageHistoryPanel extends JPanel implements PropertyChangeListener 
         }
 
         private boolean isValidIndex(int index) {
-            return (imageList == null || index < 0 || index >= imageList.size()) ? false
-                    : true;
+            return imageList != null && index >= 0 && index < imageList.size();
         }
     }
 
-    protected class ImageRenderer extends DefaultTableCellRenderer {
-
+    private class ImageRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = -8136363583689791913L;
 
         public ImageRenderer() {
+            init();
+        }
+
+        private void init() {
             setVerticalTextPosition(JLabel.BOTTOM);
             setHorizontalTextPosition(JLabel.CENTER);
         }

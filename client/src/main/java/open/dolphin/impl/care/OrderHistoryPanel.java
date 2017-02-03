@@ -3,8 +3,6 @@ package open.dolphin.impl.care;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.client.*;
 import open.dolphin.infomodel.IInfoModel;
@@ -26,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
+import open.dolphin.calendar.CalendarEvent;
+import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.ui.MyJScrollPane;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -33,11 +33,12 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 /**
- * オーダ履歴を表示するパネルクラス.  表示するオーダと抽出期間は PropertyChange で通知される.
+ * オーダ履歴を表示するパネルクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @pns
  */
-public final class OrderHistoryPanel extends JPanel implements PropertyChangeListener {
+public final class OrderHistoryPanel extends JPanel {
     private static final long serialVersionUID = -2302784717739085879L;
 
     private ObjectReflectTableModel<ModuleModel> tModel;
@@ -135,20 +136,6 @@ public final class OrderHistoryPanel extends JPanel implements PropertyChangeLis
     }
 
     /**
-     * カレンダーの日が選択されたときに通知を受け，テーブルで日付が一致するオーダの行を選択する.
-     * @param e
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-
-        if (prop.equals(CareMapDocument.SELECTED_DATE_PROP)) {
-            String date = (String) e.getNewValue();
-            findDate(date);
-        }
-    }
-
-    /**
      * オーダ履歴のテーブル行がクリックされたとき，データモデルの ModuleModel を表示する.
      */
     private void displayOrder(int index) {
@@ -186,17 +173,20 @@ public final class OrderHistoryPanel extends JPanel implements PropertyChangeLis
     }
 
     /**
-     * date の行を選択する.
+     * SimpleDate 型式の date の行を選択する.
      * 日付は column 0 に String として入っている
      * @param date
      */
-    private void findDate(String date) {
-        int size = tModel.getObjectCount();
-        for (int row = 0; row < size; row++) {
-            String rowDate = (String) tModel.getValueAt(row, 0);
-            if (rowDate.equals(date)) {
-                table.setRowSelectionInterval(row, row);
-                break;
+    public void findDate(SimpleDate date) {
+        if (CalendarEvent.isModule(date.getEventCode())) {
+            String mmlDate = SimpleDate.simpleDateToMmldate(date);
+
+            for (int row=0; row<tModel.getObjectCount(); row++) {
+                String rowDate = (String) tModel.getValueAt(row, 0);
+                if (rowDate.equals(mmlDate)) {
+                    table.setRowSelectionInterval(row, row);
+                    break;
+                }
             }
         }
     }
