@@ -121,6 +121,14 @@ public final class SimpleCalendarPanel extends JPanel {
     }
 
     /**
+     * CalendarTableModel を返す.
+     * @return
+     */
+    public CalendarTableModel getTableModel() {
+        return tableModel;
+    }
+
+    /**
      * 今月からの相対月数を返す.
      * @return
      */

@@ -36,7 +36,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
  * オーダ履歴を表示するパネルクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
- * @pns
+ * @author pns
  */
 public final class OrderHistoryPanel extends JPanel {
     private static final long serialVersionUID = -2302784717739085879L;
