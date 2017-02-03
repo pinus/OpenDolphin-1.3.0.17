@@ -45,6 +45,14 @@ public class CalendarPanel extends JPanel {
         table = new CalendarTable();
         tableModel = (CalendarTableModel) table.getModel();
 
+        // mouse wheel でカレンダースクロール
+        table.addMouseWheelListener(e -> {
+            int r = e.getWheelRotation();
+            if (r > 0) { tableModel.nextWeek(); }
+            else if (r < 0) { tableModel.previousWeek(); }
+            fireCalendarChanged();
+        });
+
         // control panel 生成
         JButton expand = new JButton(GUIConst.ICON_MD_EJECT_16);
         expand.setBorderPainted(false);

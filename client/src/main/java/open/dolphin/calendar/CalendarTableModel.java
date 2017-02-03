@@ -219,22 +219,28 @@ public class CalendarTableModel extends AbstractTableModel {
      * @return
      */
     private SimpleDate createSimpleDate(GregorianCalendar gc) {
-        SimpleDate ret = new SimpleDate(gc);
+        return createSimpleDate(new SimpleDate(gc));
+    }
 
+    /**
+     * SimpleDate の EventCode に今日情報，休日情報，誕生日を入れる.
+     * @param date
+     * @return
+     */
+    private SimpleDate createSimpleDate(SimpleDate date) {
         // 休日登録
-        Holiday.setTo(ret);
+        Holiday.setTo(date);
 
         // 今日なら上書き登録
-        if (ret.equals(today)) {
-            ret.setEventCode(CalendarEvent.TODAY.name());
+        if (date.equals(today)) {
+            date.setEventCode(CalendarEvent.TODAY.name());
         }
 
         // さらに誕生日なら上書き登録
-        if (birthday != null && birthday.getMonth() == ret.getMonth() && birthday.getDay() == ret.getDay()) {
-            ret.setEventCode(CalendarEvent.BIRTHDAY.name());
+        if (birthday != null && birthday.getMonth() == date.getMonth() && birthday.getDay() == date.getDay()) {
+            date.setEventCode(CalendarEvent.BIRTHDAY.name());
         }
-
-        return ret;
+        return date;
     }
 
     /**
@@ -277,7 +283,11 @@ public class CalendarTableModel extends AbstractTableModel {
      * @param event
      */
     public void clearMarkDates(String event) {
-        data.values().stream().filter(date -> event.equals(date.getEventCode())).forEach(date -> date.setEventCode(null));
+        data.values().stream().filter(date -> event.equals(date.getEventCode())).forEach(date -> {
+            date.setEventCode(null);
+            // 休日，今日，誕生日情報をリストア
+            createSimpleDate(date);
+        });
         fireTableDataChanged();
     }
 
