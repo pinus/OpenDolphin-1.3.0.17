@@ -12,7 +12,6 @@ import open.dolphin.dto.ImageSearchSpec;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.MyJScrollPane;
 
 /**
