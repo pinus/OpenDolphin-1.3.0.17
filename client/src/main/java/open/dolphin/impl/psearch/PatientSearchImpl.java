@@ -206,6 +206,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         // 絞り込み検索ボタンの初期値
         view.getNarrowingSearchCb().setSelected(prefs.getBoolean(NARROWING_SEARCH, false));
+        view.getNarrowingSearchCb().addActionListener(e -> setTextFieldBackground(view.getNarrowingSearchCb().isSelected()));
         setTextFieldBackground(view.getNarrowingSearchCb().isSelected());
 
         // 追加のテーブル設定
