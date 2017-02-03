@@ -31,7 +31,6 @@ public class ImageHistoryPanel extends JPanel {
     private final int columnCount = 5;
     private final int imageWidth = 132;
     private final int imageHeight = 132;
-    private javax.swing.Timer taskTimer;
 
     public ImageHistoryPanel() {
         super(new BorderLayout());
@@ -74,7 +73,6 @@ public class ImageHistoryPanel extends JPanel {
                 MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         add(scroller, BorderLayout.CENTER);
-        AdditionalTableSettings.setTable(table);
     }
 
     public String getPid() {

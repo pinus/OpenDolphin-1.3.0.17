@@ -94,31 +94,27 @@ public final class CareMapDocument extends AbstractChartDocument {
         // カレンダーの範囲を１ケ月以に戻すボタン
         JButton prevBtn = new JButton(GUIConst.ICON_ARROW1_LEFT_16);
         prevBtn.addActionListener(e -> {
-            SwingUtilities.invokeLater(() -> {
-                origin --;
-                calendarMap.values().forEach(calendar -> calendar.getTableModel().previousMonth());
+            origin --;
+            calendarMap.values().forEach(calendar -> calendar.getTableModel().previousMonth());
 
-                // オーダ履歴の抽出期間全体が変化したので通知する
-                Period p = new Period(this);
-                p.setStartDate(calendarMap.get(-1).getFirstDate());
-                p.setEndDate(calendarMap.get(1).getLastDate());
-                setSelectedPeriod(p);
-            });
+            // オーダ履歴の抽出期間全体が変化したので通知する
+            Period p = new Period(this);
+            p.setStartDate(calendarMap.get(-1).getFirstDate());
+            p.setEndDate(calendarMap.get(1).getLastDate());
+            setSelectedPeriod(p);
         });
 
         // カレンダーの範囲を１ケ月送るボタン
         JButton nextBtn = new JButton(GUIConst.ICON_ARROW1_RIGHT_16);
         nextBtn.addActionListener(e -> {
-            SwingUtilities.invokeLater(() -> {
-                origin ++;
-                calendarMap.values().forEach(calendar -> calendar.getTableModel().nextMonth());
+            origin ++;
+            calendarMap.values().forEach(calendar -> calendar.getTableModel().nextMonth());
 
-                // オーダ履歴の抽出期間全体が変化したので通知する
-                Period p = new Period(this);
-                p.setStartDate(calendarMap.get(-1).getFirstDate());
-                p.setEndDate(calendarMap.get(1).getLastDate());
-                setSelectedPeriod(p);
-            });
+            // オーダ履歴の抽出期間全体が変化したので通知する
+            Period p = new Period(this);
+            p.setStartDate(calendarMap.get(-1).getFirstDate());
+            p.setEndDate(calendarMap.get(1).getLastDate());
+            setSelectedPeriod(p);
         });
 
         // 更新の保存ボタン -> dirty 状況によって enable/disable される
@@ -150,7 +146,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         orderCombo = new JComboBox<>();
         ORDERS.forEach(item -> orderCombo.addItem(item));
 
-        Dimension dim = new Dimension(120, 26);
+        Dimension dim = new Dimension(100, 26);
         orderCombo.setPreferredSize(dim);
         orderCombo.setMaximumSize(dim);
         ComboBoxRenderer r = new ComboBoxRenderer();
@@ -227,6 +223,11 @@ public final class CareMapDocument extends AbstractChartDocument {
         myPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
     }
 
+    /**
+     * SimpleCalendarPanel の日付選択で呼ばれる.
+     * @param target
+     * @param date
+     */
     private void updatePanel(SimpleCalendarPanel target, SimpleDate date) {
         String code = date.getEventCode();
         String mmlDate = SimpleDate.simpleDateToMmldate(date);

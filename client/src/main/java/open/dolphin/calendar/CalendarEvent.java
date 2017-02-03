@@ -14,7 +14,7 @@ public enum CalendarEvent {
     TEST_APPO("検体検査", new Color(255, 69, 0)), MISC_APPO("その他", new Color(251,239,128)),
 
     medOrder("処方", Color.PINK), treatmentOrder("処置", Color.PINK), instractionChargeOrder("指導", Color.PINK),
-    testOrder("ラボテスト", Color.PINK), physiologyOrder("生体検査", Color.PINK), radiologyOrder("放射線", Color.PINK)
+    testOrder("ラボテスト", Color.PINK), physiologyOrder("生体検査", Color.PINK), radiologyOrder("放射線", Color.PINK), image("画像", Color.PINK)
 
     ;
     private final Color color;
