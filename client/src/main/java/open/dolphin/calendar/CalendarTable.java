@@ -29,6 +29,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
+import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSTitledBorder;
@@ -254,7 +255,8 @@ public class CalendarTable extends JTable {
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.05f));
 
         String month = MONTH_NAME[tableModel.getMonth()];
-        String year = String.valueOf(tableModel.getYear());
+        //String year = String.valueOf(tableModel.getYear());
+        String year = getNengo();
 
         g.setColor(Color.BLUE);
         g.setFont(TITLE_FONT);
@@ -275,6 +277,18 @@ public class CalendarTable extends JTable {
         g.drawString(year, x2, y + fm.getHeight() + fm.getAscent());
 
         g.dispose();
+    }
+
+    /**
+     * バックグランドタイトル表示用に年号型式の年を作る.
+     * @return
+     */
+    private String getNengo() {
+        SimpleDate date = new SimpleDate(tableModel.getYear(), tableModel.getMonth(), 1);
+        String mmlDate = SimpleDate.simpleDateToMmldate(date);
+        String nengo = ModelUtils.toNengo(mmlDate);
+        String[] split = nengo.split("-");
+        return split[0];
     }
 
     /**
