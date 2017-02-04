@@ -92,6 +92,7 @@ public class Dolphin implements MainWindow {
         //UIManager.put("Component.visualMargin", new Insets(0,2,0,2));
         UIManager.put("ComboBox.maximumRowCount", ClientContext.getInt("ComboBox.maximumRowCount"));
         UIManager.put("TextComponent.autoSelect", ClientContext.getBoolean("TextComponent.autoSelect"));
+
         //Option Pane Strings and Icons
         UIManager.put("OptionPane.okButtonText", ClientContext.getString("OptionPane.okButtonText"));
         UIManager.put("OptionPane.yesButtonText", ClientContext.getString("OptionPane.yesButtonText"));
@@ -101,6 +102,10 @@ public class Dolphin implements MainWindow {
         UIManager.put("OptionPane.informationIcon", GUIConst.ICON_INFORMATION_32);
         UIManager.put("OptionPane.questionIcon", GUIConst.ICON_QUESTION_32);
         UIManager.put("OptionPane.warningIcon", GUIConst.ICON_WARNING_32);
+
+        // ToolTip を自然に消えないようにする
+        ToolTipManager manager = ToolTipManager.sharedInstance();
+        manager.setDismissDelay(Integer.MAX_VALUE);
 
         // PluginClassLoader
         pluginClassLoader = ClientContext.getPluginClassLoader();

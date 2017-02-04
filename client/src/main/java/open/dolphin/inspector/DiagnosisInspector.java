@@ -19,11 +19,12 @@ import java.util.TooManyListenersException;
 import javax.swing.*;
 import open.dolphin.client.*;
 import open.dolphin.helper.MenuActionManager;
-import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.ui.PNSBorder;
-import open.dolphin.ui.MyJScrollPane;
-import org.apache.log4j.Logger;
 import open.dolphin.helper.MenuActionManager.MenuAction;
+import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.infomodel.RegisteredDiagnosisModel;
+import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSBorder;
+import org.apache.log4j.Logger;
 
 /**
  * インスペクタに病名を表示するクラス.
@@ -93,7 +94,25 @@ public class DiagnosisInspector implements IInspector {
     private void initComponents() {
 
         listModel = new DefaultListModel<>();
-        diagList = new JList<>(listModel);
+
+        diagList = new JList<RegisteredDiagnosisModel>(listModel) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public String getToolTipText(MouseEvent e) {
+                int index = locationToIndex(e.getPoint());
+                RegisteredDiagnosisModel rd = listModel.getElementAt(index);
+                String startDate = rd.getStartDate();
+                String endDate = rd.getEndDate();
+                String text = "開始日 " + ModelUtils.toNengo(startDate);
+                if (endDate != null) {
+                    text += String.format(" (終了日 %s)", ModelUtils.toNengo(endDate));
+                }
+
+                super.getToolTipText();
+                return text;
+            }
+        };
+
         diagList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         diagList.putClientProperty("Quaqua.List.style", "striped");
         diagList.setCellRenderer(new DiagnosisListCellRenderer());
