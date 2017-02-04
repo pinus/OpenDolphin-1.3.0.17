@@ -15,8 +15,8 @@ import open.dolphin.client.AbstractMainComponent;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
-import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.PnsDelegater;
+import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.KeyBlocker;
@@ -128,20 +128,50 @@ public class PatientSearchImpl extends AbstractMainComponent {
         ObjectReflectTableModel<PatientModel> tableModel = new ObjectReflectTableModel<>(reflectList);
         table.setModel(tableModel);
         TableRowSorter<ObjectReflectTableModel<PatientModel>> sorter = new TableRowSorter<ObjectReflectTableModel<PatientModel>>(tableModel) {
-            // ASCENDING -> DESENDING -> 初期状態 と切り替える
             @Override
             public void toggleSortOrder(int column) {
-                if(column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
-                    List<? extends SortKey> keys = new ArrayList<>(getSortKeys());
-                    if(!keys.isEmpty()) {
-                        SortKey sortKey = keys.get(0);
-                        if(sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {
-                            setSortKeys(null);
-                            return;
-                        }
+                List<SortKey> keys = new ArrayList<>(getSortKeys());
+                SortKey key = null;
+
+                // SortKey があるかどうか
+                int index = -1;
+                for (int i=0; i<keys.size(); i++) {
+                    if (keys.get(i).getColumn() == column) {
+                        index = i;
+                        break;
                     }
                 }
-                super.toggleSortOrder(column);
+                // SortKey がない場合作る
+                if (index == -1) {
+                    // 受診日コラムは DESCENDING -> ASCENDING -> UNSORTED の純
+                    if (column == 5) {
+                        key = new SortKey(5, SortOrder.DESCENDING);
+
+                    // それ以外は ASCENDING -> DESCENDING -> UNSORTED の純
+                    } else {
+                        key = new SortKey(column, SortOrder.ASCENDING);
+                    }
+                // SortKey がある場合新たなキーと置き換える
+                } else {
+                    SortOrder order = keys.get(index).getSortOrder();
+                    switch(order) {
+                        case ASCENDING:
+                            if (column == 5) { key = new SortKey(5, SortOrder.UNSORTED); }
+                            else { key = new SortKey(column, SortOrder.DESCENDING); }
+                            break;
+                        case DESCENDING:
+                            if (column == 5) { key = new SortKey(5, SortOrder.ASCENDING); }
+                            else { key = new SortKey(column, SortOrder.UNSORTED); }
+                            break;
+                        case UNSORTED:
+                            if (column == 5) { key = new SortKey(5, SortOrder.DESCENDING); }
+                            else { key = new SortKey(column, SortOrder.ASCENDING); }
+                            break;
+                    }
+                    keys.remove(index);
+                }
+                keys.add(0, key);
+                setSortKeys(keys);
             }
         };
         //
@@ -166,8 +196,6 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 return birthday1.compareTo(birthday2);
             }
         });
-        // 最終受診日コラムのソート順序を逆に＝最近に受診した人が上に来る
-        sorter.setComparator(5, (String o1, String o2) -> o2.compareTo(o1));
 
         table.setRowSorter(sorter);
 
