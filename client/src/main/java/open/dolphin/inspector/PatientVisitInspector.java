@@ -120,8 +120,10 @@ public class PatientVisitInspector implements IInspector {
      * @param date
      */
     public void calendarUpdated(SimpleDate date) {
-        titleText = String.format("%s %d年%d月", CATEGORY.title(), date.getYear(), date.getMonth()+1);
-        border.setTitle(titleText);
-        context.getFrame().repaint();
+        if (border != null) {
+            titleText = String.format("%s %d年%d月", CATEGORY.title(), date.getYear(), date.getMonth()+1);
+            border.setTitle(titleText);
+            context.getFrame().repaint();
+        }
     }
 }
