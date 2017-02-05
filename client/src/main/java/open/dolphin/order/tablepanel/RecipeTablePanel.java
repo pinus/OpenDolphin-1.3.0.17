@@ -1,6 +1,7 @@
 package open.dolphin.order.tablepanel;
 
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.*;
@@ -9,6 +10,7 @@ import open.dolphin.infomodel.*;
 import open.dolphin.order.*;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.util.PNSTriple;
 import open.dolphin.util.StringTool;
 
 /**
@@ -58,11 +60,17 @@ public class RecipeTablePanel extends ItemTablePanel {
      */
     @Override
     public ObjectReflectTableModel createTableModel() {
-        String[] columns = { " コード", "　診療内容", " 数 量"," 単 位", " ", " 回 数" };
-        String[] methods = { "getCode", "getName", "getNumber", "getUnit", "getDummy", "getBundleNumber" };
+        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+                new PNSTriple<>(" コード", String.class, "getCode"),
+                new PNSTriple<>("　診療内容", String.class, "getName"),
+                new PNSTriple<>(" 数 量", String.class, "getNumber"),
+                new PNSTriple<>(" 単 位", String.class, "getUnit"),
+                new PNSTriple<>(" ", String.class, "getDummy"),
+                new PNSTriple<>(" 回 数", String.class, "getBundleNumber")
+        );
         setTableColumnWidth(new int[]{90, 200, 50, 80, 30, 50});
 
-        return new ObjectReflectTableModel(columns, 1, methods, null) {
+        return new ObjectReflectTableModel<MasterItem>(reflectList) {
             private static final long serialVersionUID = 1L;
             @Override
             public boolean isCellEditable(int row, int col) {
@@ -73,14 +81,14 @@ public class RecipeTablePanel extends ItemTablePanel {
 
             @Override
             public void setValueAt(Object o, int row, int col) {
-                if (o == null || ((String)o).trim().equals("")) return;
+                if (o == null || ((String)o).trim().equals("")) { return; }
                 // tableModel のオブジェクトは MasterItem
-                MasterItem mItem = (MasterItem) getObject(row);
-                if (mItem == null) return;
+                MasterItem mItem = getObject(row);
+                if (mItem == null) { return; }
 
-                if ( col == 2) mItem.setNumber((String) o); // １日量
-                else if ( col == 5) mItem.setBundleNumber((String) o); // 何日分
-                else if (col == 1 && mItem != null) mItem.setName((String) o); // 入力したコメントは name に入れる
+                if ( col == 2) { mItem.setNumber((String) o); } // １日量
+                else if ( col == 5) { mItem.setBundleNumber((String) o); }// 何日分
+                else if (col == 1 && mItem != null) { mItem.setName((String) o); }// 入力したコメントは name に入れる
 
                 checkState();
             }
@@ -160,14 +168,22 @@ public class RecipeTablePanel extends ItemTablePanel {
                 String inputNum = DEFAULT_NUMBER;
                 if (item.getUnit()!= null) {
                     String unit = item.getUnit();
-                    if (unit.equals("錠")) {
-                        inputNum = Project.getPreferences().get("defaultZyozaiNum", "3");
-                    } else if (unit.equals("ｇ")) {
-                        inputNum = Project.getPreferences().get("defaultSanyakuNum", "1.0");
-                    } else if (unit.equals("ｍＬ")) {
-                        inputNum = Project.getPreferences().get("defaultMizuyakuNum", "1");
+                    switch (unit) {
+                        case "錠":
+                            inputNum = Project.getPreferences().get("defaultZyozaiNum", "3");
+                            break;
+                        case "ｇ":
+                            inputNum = Project.getPreferences().get("defaultSanyakuNum", "1.0");
+                            break;
+                        case "ｍＬ":
+                            inputNum = Project.getPreferences().get("defaultMizuyakuNum", "1");
+                            break;
+                        default:
+                            break;
                     }
-                }   item.setNumber(inputNum);
+                }
+                item.setNumber(inputNum);
+
                 // １つ上のアイテムが[用法]ならば，その上に挿入する
                 if (isAdmin) {
                     tableModel.insertRow(oCount-1, item);

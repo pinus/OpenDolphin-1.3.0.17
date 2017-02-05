@@ -10,8 +10,9 @@ import open.dolphin.util.PNSTriple;
 
 /**
  * ObjectReflectTableModel.
- * Generics 対応 by pns
+ * 
  * @author Minagawa,Kazushi
+ * @author pns
  * @param <T>
  */
 public class ObjectReflectTableModel<T> extends AbstractTableModel {
@@ -24,12 +25,12 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     // 属性値を取得するためのメソッド名
     private String[] methodNames;
     // カラム数
-    private int columnCount;
+    private final int columnCount;
     // データオブジェクトリスト
     private List<T> objectList = new ArrayList<>();
 
     /**
-     * PNSTriple<columnName,columnClass,methodName> から TableModel を生成する.
+     * PNSTriple&lt;columnName,columnClass,methodName&gt; から TableModel を生成する.
      * @param reflectionList
      */
     public ObjectReflectTableModel(List<PNSTriple<String,Class<?>,String>> reflectionList) {
@@ -47,28 +48,13 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * カラム名から TableModel を生成する.
+     * AppointTablePanel, OrderHistoryPanel で使っている.
      * これで作った場合は getValueAt を自前で用意する必要がある.
      * @param columnNames
      */
     public ObjectReflectTableModel(String[] columnNames) {
         this.columnNames = columnNames;
         this.columnCount = columnNames.length;
-    }
-
-    /**
-     * ObjectReflectTableModelを生成する.
-     * @param columnNames カラム名配列
-     * @param startNumRows	開始時行数
-     * @param methodNames メソッド名配列
-     * @param columnClasses カラムクラス配列
-     */
-    public ObjectReflectTableModel(String[] columnNames, int startNumRows, String[] methodNames, Class<?>[] columnClasses) {
-        this.columnNames = columnNames;
-        this.methodNames = methodNames;
-        this.columnClasses = columnClasses;
-        if (columnNames != null) {
-            columnCount = columnNames.length;
-        }
     }
 
     /**
