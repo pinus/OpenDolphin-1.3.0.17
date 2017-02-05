@@ -56,7 +56,7 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
             try {
                 MasterItem dropItem = (MasterItem) support.getTransferable().getTransferData(masterItemFlavor);
                 JTable dropTable = (JTable) support.getComponent();
-                ObjectReflectTableModel tableModel = (ObjectReflectTableModel) dropTable.getModel();
+                ObjectReflectTableModel<MasterItem> tableModel = (ObjectReflectTableModel<MasterItem>) dropTable.getModel();
                 JTable.DropLocation dropLocation = (JTable.DropLocation) support.getDropLocation();
 
                 toIndex = dropLocation.getRow();

@@ -2,6 +2,7 @@ package open.dolphin.order.tablepanel;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.*;
 import open.dolphin.client.ClientContext;
@@ -14,6 +15,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
 import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.util.PNSTriple;
 
 /**
  * ItemTablePanel を extend して作った DiagnosisTablePanel.
@@ -40,12 +42,16 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     private JLabel stateLabel;
     // ItemTableModel のフィールド変数
     private JTable table;
-    private ObjectReflectTableModel tableModel;
+    private ObjectReflectTableModel<MasterItem> tableModel;
     private JButton removeButton;
     private JButton clearButton;
 
     public DiagnosisTablePanel(IStampEditor parent) {
         super(parent);
+        init();
+    }
+
+    private void init() {
         // フィールド変数のコピー
         table = getTable();
         tableModel = getTableModel();
@@ -54,22 +60,25 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * DiagnosisTablePanel の TableModel
-     * 収納されている Object は MasterItem
+     * DiagnosisTablePanel の TableModel.
+     * 収納されている Object は MasterItem.
      * @return
      */
     @Override
-    public ObjectReflectTableModel createTableModel() {
-        String[] columns = { " コード", "　疾患名/修飾語", "　エイリアス" };
-        String[] methods = { "getCode", "getName", "getDummy" };
+    public ObjectReflectTableModel<MasterItem> createTableModel() {
+        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+                new PNSTriple<>(" コード", String.class, "getCode"),
+                new PNSTriple<>("　疾患名/修飾語", String.class, "getName"),
+                new PNSTriple<>("　エイリアス", String.class, "getDummy")
+        );
         setTableColumnWidth(new int[]{90, 200, 200});
 
-        return new ObjectReflectTableModel(columns, 1, methods, null) {
+        return new ObjectReflectTableModel<MasterItem>(reflectList) {
             private static final long serialVersionUID = 1L;
 
             @Override
             public boolean isCellEditable(int row, int col) {
-                MasterItem model = (MasterItem) getObject(row);
+                MasterItem model = getObject(row);
 
                 // 疾患名カラムは HAND_CODE の時のみ編集可能
                 if (col == 1) {
@@ -84,10 +93,10 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
             @Override
             public void setValueAt(Object o, int row, int col) {
-                if (o == null) return;
+                if (o == null) { return; }
                 String value = (String)o;
 
-                MasterItem model = (MasterItem) getObject(row);
+                MasterItem model = getObject(row);
 
                 if (col == 1) {
                     // 名前コラムに Object が入力されていた場合は HAND_CODE とする
@@ -119,7 +128,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * テーブル下のコンポネントを作る
+     * テーブル下のコンポネントを作る.
      * @return
      */
     @Override
@@ -167,14 +176,14 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * テーブルをスキャンし，傷病名コンポジットして combinedDiagnosis に表示する
+     * テーブルをスキャンし，傷病名コンポジットして combinedDiagnosis に表示する.
      */
     public void reconstractDiagnosis() {
 
         StringBuilder sb = new StringBuilder();
         int count = tableModel.getObjectCount();
         for (int i = 0; i < count; i++) {
-            MasterItem diag = (MasterItem) tableModel.getObject(i);
+            MasterItem diag = tableModel.getObject(i);
             sb.append(diag.getName());
         }
         combinedDiagnosis.setText(sb.toString());
@@ -187,7 +196,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         boolean hasModifier = false;
         int count = tableModel.getObjectCount();
         for (int i = 0; i < count; i++) {
-            MasterItem diag = (MasterItem) tableModel.getObject(i);
+            MasterItem diag = tableModel.getObject(i);
             if (diag.getCode().startsWith(MODIFIER_CODE)) {
                 hasModifier = true;
                 break;
@@ -197,35 +206,35 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * diagnosis と alias から "diagnosis,alias" の名前を作る
-     * getValue で使う
+     * diagnosis と alias から "diagnosis,alias" の名前を作る.
+     * getValue で使う.
      * @param diag
      * @param alias
      * @return
      */
     private String getDiagnosisWithAlias(String diag, String alias) {
-        if (alias == null || alias.equals("")) return diag;
-        else return String.format("%s,%s", diag, alias);
+        if (alias == null || alias.equals("")) { return diag; }
+        else { return String.format("%s,%s", diag, alias); }
     }
 
     /**
-     * "diagnosis,alias" の形の病名から Alias を取り出す
-     * setValue で使う
+     * "diagnosis,alias" の形の病名から Alias を取り出す.
+     * setValue で使う.
      * @param name
      * @return
      */
     private String getDiagnosisAlias(String name) {
         String ret = null;
         int idx = name.indexOf(',');
-        if (idx > 0) ret = name.substring(idx+1).trim();
+        if (idx > 0) { ret = name.substring(idx+1).trim(); }
         return ret;
     }
 
     /**
-     * 傷病名テーブルをスキャンし修飾語つきの傷病にして返す
-     * 受けるのは DiagnosisDocument#propertyChange，StampBoxPlugin.EditorValueListener
-     * alias が設定されている場合は，スタンプに登録されたとき alias　がスタンプ名として採用される
-     * see ModuleInfoBean#toString()
+     * 傷病名テーブルをスキャンし修飾語つきの傷病にして返す.
+     * 受けるのは DiagnosisDocument#propertyChange，StampBoxPlugin.EditorValueListener.
+     * alias が設定されている場合は，スタンプに登録されたとき alias　がスタンプ名として採用される.
+     * see ModuleInfoBean#toString().
      * @return ArrayList&lt;RegisteredDiagnosisModel&gt;
      */
     @Override
@@ -239,7 +248,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * 病名修飾のある場合の getValue
+     * 病名修飾のある場合の getValue.
      * @return List&lt;RegisteredDiagnosisModel&gt;
      */
     private Object getValue1() {
@@ -271,7 +280,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                 alias = mItem.getDummy(); // alias を保存
             }
             // コードを . で連結する
-            if (code.length() > 0) code.append(".");
+            if (code.length() > 0) { code.append("."); }
             code.append(diagCode);
             // 名前を連結する
             name.append(mItem.getName());
@@ -286,14 +295,13 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * 病名修飾のない場合の getValue
-     * @return List<RegisteredDiagnosisModel>
+     * 病名修飾のない場合の getValue.
+     * @return List&lt;RegisteredDiagnosisModel&gt;
      */
     private Object getValue2() {
         List<RegisteredDiagnosisModel> ret = new ArrayList<>();
 
-        for(Object o : tableModel.getObjectList()) {
-            MasterItem mItem = (MasterItem) o;
+        tableModel.getObjectList().forEach(mItem -> {
             RegisteredDiagnosisModel rd = new RegisteredDiagnosisModel();
             // 診断にエリアスが指定されている場合，dummy に入っている
             rd.setDiagnosis( getDiagnosisWithAlias(mItem.getName(), mItem.getDummy()) );
@@ -304,18 +312,18 @@ public class DiagnosisTablePanel extends ItemTablePanel {
             rd.setCategoryCodeSys(open.dolphin.infomodel.IInfoModel.DEFAULT_DIAGNOSIS_CATEGORY_CODESYS);
 
             ret.add(rd);
-        }
+        });
         return ret;
     }
 
     /**
-     * スタンプから RegisteredDiagnosis を受け取って，MasterItem に変換してセット
-     * ここで受け取る病名は alias を含んでいる可能性がある
+     * スタンプから RegisteredDiagnosis を受け取って，MasterItem に変換してセット.
+     * ここで受け取る病名は alias を含んでいる可能性がある.
      * @param o
      */
     @Override
     public void setValue(Object o) {
-        if (o == null) return;
+        if (o == null) { return; }
 
         RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) o;
         // . で区切られたコードを分解してコード配列を作る
@@ -334,19 +342,19 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         String note = "傷病名を検索しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        Task task = new Task<Object>(c, message, note, 30*1000) {
+        Task<List<OrcaEntry>> task = new Task<List<OrcaEntry>>(c, message, note, 30*1000) {
             @Override
-            protected Object doInBackground() throws Exception {
+            protected List<OrcaEntry> doInBackground() throws Exception {
                 // 傷病名コードからDiseaseEntryを取得
                 OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
                 List<OrcaEntry> result = dao.getByomeiEntries(codes);
                 return result;
             }
             @Override
-            protected void succeeded(Object result) {
-                if (result == null) return;
+            protected void succeeded(List<OrcaEntry> result) {
+                if (result == null) { return; }
 
-                List<OrcaEntry> deList = (List<OrcaEntry>) result;
+                List<OrcaEntry> deList = result;
 
                 // 取得したDiseaseEntryから MasterItem を作成しテーブルに追加
                 // 順番がばらばらで帰ってくるので元の順に並べ替える
@@ -360,7 +368,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                             model.setCode(entry.getCode());
                             model.setMasterTableId(codeSystem);
                             // alias は dummy を間借りする
-                            if (! entry.getCode().startsWith(MODIFIER_CODE)) model.setDummy(alias);
+                            if (! entry.getCode().startsWith(MODIFIER_CODE)) { model.setDummy(alias); }
                             tableModel.addRow(model);
                             break;
                         }
@@ -375,7 +383,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     }
 
     /**
-     * DiagnosisTableModel 独自の checkState
+     * DiagnosisTableModel 独自の checkState.
      */
     @Override
     public void checkState() {
