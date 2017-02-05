@@ -19,8 +19,7 @@ import open.dolphin.util.PNSTriple;
 
 /**
  * ItemTablePanel を extend して作った DiagnosisTablePanel.
- * オリジナルは RegisteredDiagnosisModel ベースだったが，
- * ItemTablePanel に合わせて MasterItem ベースに変更した.
+ * オリジナルは RegisteredDiagnosisModel ベースだったが，ItemTablePanel に合わせて MasterItem ベースに変更した.
  * setValue で入ってくるときは必ず１個だが，getValue で出て行くときには複数病名になっている可能性があるため，
  * List&lt;RegisteredDiagnosisModel&hgt; で処理する.
  * @author pns
@@ -114,7 +113,6 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                             model.setCode(HAND_CODE);
                             fireTableCellUpdated(row, col);
                         }
-                        // これで StampEditor の呼び主の propertyChange が呼ばれる
                         checkState();
                     }
                 } else if (col == 2) {
