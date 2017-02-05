@@ -21,8 +21,8 @@ import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
-import open.dolphin.ui.PNSTreeCellEditor;
 import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.PNSTreeCellEditor;
 import open.dolphin.util.GUIDGenerator;
 import org.apache.log4j.Logger;
 
@@ -158,9 +158,10 @@ public class StampTree extends JTree implements TreeModelListener {
             }
         }
         // No tip from the renderer get our own tip
-        if (tip.toString().equals("")) {
+        if (tip.toString().equals("null")) {
             tip.append(getToolTipText());
 	}
+
         return (tip.toString().equals(""))? null: tip.toString();
     }
 

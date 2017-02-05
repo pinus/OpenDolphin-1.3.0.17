@@ -12,6 +12,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 /**
  *
  * @author kazm
+ * @author pns
  */
 public class RowTipsTable extends JTable {
     private static final long serialVersionUID = 1L;
@@ -21,18 +22,26 @@ public class RowTipsTable extends JTable {
 
         ObjectReflectTableModel model = (ObjectReflectTableModel) getModel();
         int row = rowAtPoint(e.getPoint());
+        int col = columnAtPoint(e.getPoint());
         PatientVisitModel pvt = (PatientVisitModel) model.getObject(row);
 
-        // 待ち時間表示
         if (pvt == null) { return null; }
-        Date pvtDate = ModelUtils.getDateTimeAsObject(pvt.getPvtDate());
-        int pvtState = pvt.getState();
-        String waitingTime = "";
-        if (pvtDate != null &&
-                (pvtState == KarteState.CLOSE_NONE || pvtState == KarteState.OPEN_NONE)) {
-            waitingTime = " - 待ち時間 " + DurationFormatUtils.formatPeriod(pvtDate.getTime(), new Date().getTime(), "HH:mm");
+
+        String text = null;
+
+        if (col == 5) {
+            // 生年月日
+            text = pvt.getPatientBirthday();
+
+        } else {
+            Date pvtDate = ModelUtils.getDateTimeAsObject(pvt.getPvtDate());
+            int pvtState = pvt.getState();
+            if (pvtDate != null && (pvtState == KarteState.CLOSE_NONE || pvtState == KarteState.OPEN_NONE)) {
+                text = pvt.getPatient().getKanaName();
+                text += " - 待ち時間 " + DurationFormatUtils.formatPeriod(pvtDate.getTime(), new Date().getTime(), "HH:mm");
+            }
         }
 
-        return pvt.getPatient().getKanaName() + waitingTime;
+        return text;
     }
 }

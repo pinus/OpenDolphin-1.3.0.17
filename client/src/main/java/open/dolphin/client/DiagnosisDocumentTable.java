@@ -1,6 +1,9 @@
 package open.dolphin.client;
 
+import java.awt.event.MouseEvent;
 import javax.swing.JTable;
+import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.infomodel.RegisteredDiagnosisModel;
 
 /**
  * object の hashCode で row が取れる JTable
@@ -33,5 +36,22 @@ public class DiagnosisDocumentTable extends JTable {
         }
         // 見つからなかった
         return -1;
+    }
+
+    @Override
+    public String getToolTipText(MouseEvent e) {
+        int row = rowAtPoint(e.getPoint());
+
+        RegisteredDiagnosisModel rd = model.getObject(row);
+
+        String startDate = rd.getStartDate();
+        String endDate = rd.getEndDate();
+        String text = "開始日 " + ModelUtils.toNengo(startDate);
+        if (endDate != null) {
+            text += String.format(" (終了日 %s)", ModelUtils.toNengo(endDate));
+        }
+
+        super.getToolTipText();
+        return text;
     }
 }
