@@ -48,9 +48,9 @@ public class CalendarTable extends JTable {
     private static final Color SUNDAY_FOREGROUND = new Color(255,0,130);
     private static final Color SATURDAY_FOREGROUND = new Color(0,0,255);
     private static final Color WEEKDAY_FOREGROUND = new Color(20,20,70);
-    private static final Font TITLE_FONT = new Font("Courier", Font.BOLD, 72);
-    private static final Font CALENDAR_FONT = new Font("Dialog", Font.PLAIN, 13);
-    private static final Font CALENDAR_FONT_SMALL = new Font("Dialog", Font.PLAIN, 10);
+    private static final Font TITLE_FONT = new Font("Meiryo", Font.BOLD, 72);
+    private static final Font CALENDAR_FONT = new Font(Font.DIALOG, Font.PLAIN, 13);
+    private static final Font CALENDAR_FONT_SMALL = new Font(Font.DIALOG, Font.PLAIN, 10);
 
     private CalendarTableModel tableModel;
 
@@ -264,9 +264,9 @@ public class CalendarTable extends JTable {
 
         // 画面の大きさに合わせて，フォントの大きさを調節する.
         float h = getHeight();
-        float fh = fm.getHeight() *2 + 10;
+        float fh = fm.getHeight() *2 -25; // cut and try
         float s = h / fh;
-        g.setFont(TITLE_FONT.deriveFont(AffineTransform.getScaleInstance(s, s)));
+        g.setFont(TITLE_FONT.deriveFont(AffineTransform.getScaleInstance(s*1.4, s)));
         fm = g.getFontMetrics();
 
         int x1 = (getWidth() - fm.stringWidth(month)) / 2;
@@ -286,9 +286,15 @@ public class CalendarTable extends JTable {
     private String getNengo() {
         SimpleDate date = new SimpleDate(tableModel.getYear(), tableModel.getMonth(), 1);
         String mmlDate = SimpleDate.simpleDateToMmldate(date);
-        String nengo = ModelUtils.toNengo(mmlDate);
-        String[] split = nengo.split("-");
-        return split[0];
+        String nengoDate = ModelUtils.toNengo(mmlDate);
+        String[] split = nengoDate.split("-");
+
+        String nengoAlphabet = String.valueOf(split[0].charAt(0));
+        int year = Integer.valueOf(split[0].substring(1));
+
+        String nengo = nengoAlphabet.replace('H', '㍻').replace('S', '㍼').replace('T', '㍽').replace('M', '㍾');
+
+        return String.format("%s%2d", nengo, year);
     }
 
     /**

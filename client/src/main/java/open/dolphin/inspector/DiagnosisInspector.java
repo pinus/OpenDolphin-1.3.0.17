@@ -100,15 +100,16 @@ public class DiagnosisInspector implements IInspector {
             @Override
             public String getToolTipText(MouseEvent e) {
                 int index = locationToIndex(e.getPoint());
-                RegisteredDiagnosisModel rd = listModel.getElementAt(index);
-                String startDate = rd.getStartDate();
-                String endDate = rd.getEndDate();
-                String text = "開始日 " + ModelUtils.toNengo(startDate);
-                if (endDate != null) {
-                    text += String.format(" (終了日 %s)", ModelUtils.toNengo(endDate));
+                String text = null;
+                if (index != -1) {
+                    RegisteredDiagnosisModel rd = listModel.getElementAt(index);
+                    String startDate = rd.getStartDate();
+                    String endDate = rd.getEndDate();
+                    text = "開始日 " + ModelUtils.toNengo(startDate);
+                    if (endDate != null) {
+                        text += String.format(" (終了日 %s)", ModelUtils.toNengo(endDate));
+                    }
                 }
-
-                super.getToolTipText();
                 return text;
             }
         };
