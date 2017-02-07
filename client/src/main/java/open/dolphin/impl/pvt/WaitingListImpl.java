@@ -654,7 +654,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "force-edit");
         am.put("force-edit", new ProxyAction(forceEditBtn::doClick));
 
-        dialog.show();
+        dialog.setVisible(true);
     }
 
     /**

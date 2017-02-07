@@ -89,7 +89,7 @@ public class SaveDialog2 {
                 else if(result == CANCEL) doCancel();
             }
         });
-        dialog.show();
+        dialog.setVisible(true);
     }
 
     public SaveParams getValue() {
