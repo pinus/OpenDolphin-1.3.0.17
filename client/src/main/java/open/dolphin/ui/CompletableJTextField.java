@@ -247,6 +247,11 @@ public class CompletableJTextField extends JTextField
                     e.consume();
                     break;
 
+                case KeyEvent.VK_ESCAPE:
+                    listWindow.setVisible(false);
+                    e.consume();
+                    break;
+
                 default:
                     break;
             }
