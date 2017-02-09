@@ -1,6 +1,7 @@
 package open.dolphin.ui;
 
 import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -68,9 +70,13 @@ public class CompletableJTextField extends JTextField
         completionListModel = new DefaultListModel<>();
         completionList = new JList<>(completionListModel);
         completionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        completionList.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        completionList.setBackground(new Color(255,255,240));
+
         listWindow = new JWindow();
         listWindow.setOpacity(0.7f);
-        listWindow.getContentPane().add(completionList);
+        listWindow.getContentPane().setLayout(new BorderLayout());
+        listWindow.getContentPane().add(completionList, BorderLayout.CENTER);
     }
 
     private void connect() {
@@ -140,7 +146,7 @@ public class CompletableJTextField extends JTextField
         int popY = los.y + getHeight();
         listWindow.pack();
         int h = listWindow.getHeight();
-        listWindow.setBounds(popX+5, popY, getWidth()-10, h);
+        listWindow.setBounds(popX+5, popY-5, getWidth()-10, h);
         listWindow.setVisible(true);
     }
 

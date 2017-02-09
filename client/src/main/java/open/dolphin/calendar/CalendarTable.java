@@ -329,7 +329,7 @@ public class CalendarTable extends JTable {
             int h = getHeight();
 
             if (eventColor != null) {
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
                 int d = Math.min(w, h);
                 int x = (w-d)/2;
                 int y = (h-d)/2;
