@@ -20,11 +20,12 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import open.dolphin.client.*;
 import open.dolphin.delegater.DolphinClientContext;
-import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.PatientDelegater;
+import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.ProxyAction;
+import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
@@ -1023,6 +1024,8 @@ public class WaitingListImpl extends AbstractMainComponent {
             }
             // 待ち時間更新
             setPvtCount();
+            // 通知を表示
+            ScriptExecutor.displayNotification(hostPvt.getPatientAgeBirthday(), "受付 " + String.valueOf(row+1)+"（更新）", hostPvt.getPatientName());
 
         } else{
             // localPvt がなければ，それは追加である
@@ -1033,6 +1036,8 @@ public class WaitingListImpl extends AbstractMainComponent {
             //logger.info("pvt added at row " + row);
             // 患者数セット
             setPvtCount(row+1);
+            // 通知を表示
+            ScriptExecutor.displayNotification(hostPvt.getPatientAgeBirthday(), "受付 " + String.valueOf(row+1), hostPvt.getPatientName());
         }
     }
 

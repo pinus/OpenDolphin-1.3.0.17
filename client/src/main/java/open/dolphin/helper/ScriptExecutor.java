@@ -1,6 +1,5 @@
 package open.dolphin.helper;
 
-import open.dolphin.helper.AppleScriptExecutor;
 import java.awt.Window;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +13,7 @@ import java.util.Locale;
  * Script でいろいろする.
  * @author pns
  */
-public class ExecuteScript {
+public class ScriptExecutor {
 
     private static final String CR = "\n";
 
@@ -59,14 +58,14 @@ public class ExecuteScript {
 
     /**
      * 通知センターに通知を表示する.
-     * 動かない!!!!!  コマンドラインだと表示されるのに.
      * @param message
      * @param title
      * @param subtitle
      */
     public static void displayNotification(String message, String title, String subtitle) {
         String script = String.format(DISPLAY_NOTIFICATION_SCRIPT, message, title, subtitle);
-        new AppleScriptExecutor(script).start();
+        //new AppleScriptExecutor(script).start(); // これだとダメ
+        executeShellScript( new String[] {"osascript", "-e", script});
     }
 
     /**
@@ -223,8 +222,8 @@ public class ExecuteScript {
         //ExecuteScript.openPatientFolder("/Volumes/Documents/000001/");
         //ExecuteScript.quickLook("/Volumes/documents/008113/お返事2011-01-11.pdf");
         //ExecuteScript.restartAtok24();
-        //System.out.println(ExecuteScript.getAtok24MemSize());
+        //System.out.println(ScriptExecutor.getAtok24MemSize());
         //ExecuteScript.setImeOff();
-        ExecuteScript.displayNotification("message", "title", "subtitle");
+        ScriptExecutor.displayNotification("message", "title", "subtitle");
     }
 }

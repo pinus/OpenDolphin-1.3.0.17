@@ -22,7 +22,7 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.BadgeListener;
-import open.dolphin.helper.ExecuteScript;
+import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;
@@ -169,7 +169,7 @@ public class FileInspector implements IInspector {
                 list.clearSelection();
             } else {
                 String path = model.getElementAt(index).getPath();
-                ExecuteScript.quickLook(path);
+                ScriptExecutor.quickLook(path);
             }
         }
     }

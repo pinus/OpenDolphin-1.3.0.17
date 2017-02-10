@@ -19,7 +19,7 @@ import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientMemoModel;
 import open.dolphin.project.Project;
-import open.dolphin.helper.ExecuteScript;
+import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.MyJSheet;
@@ -115,7 +115,7 @@ public class MemoInspector implements IInspector {
                 File infoFolder = new File (path);
                 if (infoFolder.exists()) {
                     // folder があれば開く
-                    ExecuteScript.openPatientFolder(path);
+                    ScriptExecutor.openPatientFolder(path);
 
                 } else {
                     // なければダイアログを出してフォルダを作ってから表示
@@ -123,7 +123,7 @@ public class MemoInspector implements IInspector {
                         // 0=OK，1=いいえ，2=キャンセル
                         if (se.getOption() == 0) {
                             infoFolder.mkdir();
-                            ExecuteScript.openPatientFolder(path);
+                            ScriptExecutor.openPatientFolder(path);
                             // MemoInspector 表示の update
                             createTitle();
                             border.setTitle(border, titleText, TitledBorder.LEFT, TitledBorder.TOP, titleFont, titleColor);
