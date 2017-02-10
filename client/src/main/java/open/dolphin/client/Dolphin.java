@@ -105,6 +105,7 @@ public class Dolphin implements MainWindow {
 
         // ToolTip を自然に消えないようにする
         ToolTipManager manager = ToolTipManager.sharedInstance();
+        manager.setInitialDelay(100);
         manager.setDismissDelay(Integer.MAX_VALUE);
 
         // PluginClassLoader
