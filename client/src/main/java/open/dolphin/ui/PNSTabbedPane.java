@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -46,6 +47,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     private static final long serialVersionUID = 1L;
     /** タブ切り替えボタン格納パネル */
     private ButtonPanel buttonPanel;
+    /** ボタンパネルのフォント */
+    private Font buttonPanelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 13);
     /** 切り替えボタンを入れておくリスト */
     private List<TabButton> buttonList;
     /** 切り替えボタン格納パネルのレイアウト */
@@ -347,6 +350,14 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
+     * ボタンパネルのフォントをセットする.
+     * @param font
+     */
+    public void setButtonPanelFont(Font font) {
+        buttonPanelFont = font;
+    }
+
+    /**
      * ボタンパネル.
      */
     private class ButtonPanel extends HorizontalPanel {
@@ -426,8 +437,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         public boolean isLeftEnd;
 
         // レイアウトマネージャーでボタンの大きさを調節する時使う
-        // public Dimension margin = new Dimension(0,-4); // no quaqua
-        public Dimension margin = new Dimension(0,-2); // quaqua 8.0
+        public Dimension margin = new Dimension(0,0); // no quaqua
+        //public Dimension margin = new Dimension(0,-2); // quaqua 8.0
         //public Dimension margin = new Dimension(0,4); // quaqua 7.2
 
         public TabButton(String name, int index) {
@@ -440,6 +451,11 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             addActionListener(this);
             setFocusable(false);
             setBorderPainted(false);
+            setFont(buttonPanelFont);
+
+            float w = ((float)name.length()*buttonPanelFont.getSize()) * 1.3f;
+            int h = buttonPanelFont.getSize()*2;
+            setPreferredSize(new Dimension((int)w, h));
         }
         @Override
         public final void setName(String name) {
@@ -509,7 +525,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                 }
             }
 
-            g.drawString(name, (w-strWidth)/2, fm.getHeight()+2);
+            g.drawString(name, (w-strWidth)/2, (h+fm.getHeight())/2-fm.getDescent());
 
             g.dispose();
         }
@@ -618,16 +634,14 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
             // １行だったら
             if (lineCount == 1) {
-                if (width >= maxButtonWidth * buttonCount) {
-                    for(int i=0; i< buttonCount; i++) {
-                        TabButton button = (TabButton) buttonPanel.getComponent(i);
-                        //ボタンの長さをできるだけそろえる
-                        //button.margin.width = (maxButtonWidth - button.getPreferredSize().width);
-                        button.isTop = true;
-                        button.isBottom = true;
-                        button.isRightEnd = (i == buttonCount -1);
-                        button.isLeftEnd = (i == 0);
-                    }
+                for(int i=0; i< buttonCount; i++) {
+                    TabButton button = (TabButton) buttonPanel.getComponent(i);
+                    //ボタンの長さをできるだけそろえる
+                    //button.margin.width = (maxButtonWidth - button.getPreferredSize().width);
+                    button.isTop = true;
+                    button.isBottom = true;
+                    button.isRightEnd = (i == buttonCount -1);
+                    button.isLeftEnd = (i == 0);
                 }
             } else {
             // ２行以上だったら right justification する
