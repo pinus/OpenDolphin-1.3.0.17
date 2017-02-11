@@ -4,6 +4,7 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.util.Enumeration;
+import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
@@ -11,28 +12,30 @@ import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.client.Dolphin;
 
 /**
- * mac バージョンとのコード共通化を図った
- * windows バージョンに特異的なコードはなるべく open.dolphin.ui に集めたが，
- * 集めきれなかったものには windows specific setting というコメントを入れた
+ *
  * @author pns
  */
 public class SettingForWin {
     public static void set(Dolphin context) {
+        // necessary to initialize JavaFX Toolkit
         new JFXPanel();
-        
+        // JavaFX thread が SchemaEditor 終了後に shutdown してしまわないようにする
+        Platform.setImplicitExit(false);
+
         try {
             // true だと白で書かれてしまう
             UIManager.put("Tree.rendererFillBackground", false);
 
             UIManager.setLookAndFeel(new MyLookAndFeel());
             //UIManager.setLookAndFeel(new MyNimbusLookAndFeel());
-            
+
         } catch (UnsupportedLookAndFeelException ex) {
         }
         //setUIFonts();
     }
 
     private static class MyLookAndFeel extends WindowsLookAndFeel {
+        private static final long serialVersionUID = 1L;
 
         @Override
         public UIDefaults getDefaults() {
@@ -43,12 +46,14 @@ public class SettingForWin {
                 "TreeUI", "open.dolphin.ui.MyTreeUI",
                 "TableUI", "open.dolphin.ui.MyTableUI",
                 "TableHeaderUI", "open.dolphin.ui.MyTableHeaderUI",
+                "TextFieldUI", "open.dolphin.ui.MyTextFieldUI",
+                "PasswordFieldUI", "open.dolphin.ui.MyPasswordFieldUI",
             });
 
             return uiDefaults;
         }
     }
-    
+
     /**
      * Windows のデフォルトフォントを設定する。
      */
