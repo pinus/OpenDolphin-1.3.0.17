@@ -1024,8 +1024,6 @@ public class WaitingListImpl extends AbstractMainComponent {
             }
             // 待ち時間更新
             setPvtCount();
-            // 通知を表示
-            ScriptExecutor.displayNotification(hostPvt.getPatientAgeBirthday(), "受付 " + String.valueOf(row+1)+"（更新）", hostPvt.getPatientName());
 
         } else{
             // localPvt がなければ，それは追加である
