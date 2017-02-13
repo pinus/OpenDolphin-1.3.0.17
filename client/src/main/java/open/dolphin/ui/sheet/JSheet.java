@@ -117,11 +117,29 @@ public class JSheet extends JDialog implements ActionListener {
     }
 
     /**
-     * Dialog を JSheet として表示する.
+     * ソースとなる Dialog をセットする.
      * @param dialog
      */
-    public void showJDialogAsSheet(JDialog dialog) {
+    public void setSourceDialog(JDialog dialog) {
         sourcePane = (JComponent) dialog.getContentPane();
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        if (visible && !isVisible() && ! animating) {
+            super.setVisible(true);
+            showSheet();
+
+        } else if (!visible && isVisible() && ! animating) {
+            // hideSheet -> animation -> super.setVisible(false) となる
+            hideSheet();
+        }
+    }
+
+    /**
+     * Sheet を表示する.
+     */
+    public void showSheet() {
         animationDirection = INCOMING;
         startAnimation();
     }
@@ -142,8 +160,6 @@ public class JSheet extends JDialog implements ActionListener {
 
         animatingSheet.setSource(sourcePane);
         content.add(animatingSheet, BorderLayout.CENTER);
-
-        setVisible(true);
 
         locateSheet();
 
@@ -199,7 +215,7 @@ public class JSheet extends JDialog implements ActionListener {
                     finishShowingSheet();
                 } else {
                     content.removeAll();
-                    setVisible(false);
+                    super.setVisible(false);
                 }
             }
         }
@@ -293,10 +309,11 @@ public class JSheet extends JDialog implements ActionListener {
                     }
                 }
             });
-            js.showJDialogAsSheet(dialog);
+            js.setSourceDialog(dialog);
+            js.setVisible(true);
         });
         t.start();
-
+        // modal 動作のための lock
         synchronized(lock) {
             try {
                 lock.wait();
@@ -347,11 +364,11 @@ public class JSheet extends JDialog implements ActionListener {
                     lock.notify();
                 }
             });
-
-            js.showJDialogAsSheet(dialog);
+            js.setSourceDialog(dialog);
+            js.setVisible(true);
         });
         t.start();
-
+        // modal 動作のための lock
         synchronized(lock) {
             try {
                 lock.wait();
@@ -367,6 +384,7 @@ public class JSheet extends JDialog implements ActionListener {
      * @param listener
      */
     public static void showSaveSheet(JFileChooser chooser, Component parent, SheetListener listener) {
+        chooser.setDialogType(JFileChooser.SAVE_DIALOG);
         showSheet(chooser, parent, "保存", listener);
     }
 
@@ -377,9 +395,15 @@ public class JSheet extends JDialog implements ActionListener {
      * @param listener
      */
     public static void showOpenSheet(JFileChooser chooser, Component parent, SheetListener listener) {
+        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         showSheet(chooser, parent, "開く", listener);
     }
 
+
+
+
+
+    
     public static void main(String[] arg) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
