@@ -60,6 +60,9 @@ public class JSheet extends JDialog implements ActionListener {
     private Timer animationTimer;
     private long animationStart;
 
+    private SheetListener sheetListener;
+    private JFrame dummyFrame;
+
     public JSheet(Frame owner) {
         super(owner);
         init(owner);
@@ -117,20 +120,77 @@ public class JSheet extends JDialog implements ActionListener {
     }
 
     /**
-     * ソースとなる Dialog をセットする.
+     * SheetListener を登録する.
+     * JOptionPane の場合
+     * <ul>
+     * <li>YES_OPTION = 0
+     * <li>NO_OPTION = 1
+     * <li>CANCEL_OPTION = 2
+     * <li>CLOSED_OPTION = -1
+     * </ul>
+     * JFileChooser の場合
+     * <ul>
+     * <li>APPROVE_OPTION = 0
+     * <li>CANCEL_OPTION = 1
+     * <li>ERROR_OPTION = -1;
+     * </ul>
+     * @param listener
+     */
+    public void addSheetListener(SheetListener listener) {
+        sheetListener = listener;
+    }
+
+    /**
+     * ソースとなる Dialog をセットしてリスナを付ける.
      * @param dialog
      */
     public void setSourceDialog(JDialog dialog) {
         sourcePane = (JComponent) dialog.getContentPane();
+        connectListeners(sourcePane.getComponent(0)); // JOptionPane or JFileChooser
     }
 
+    /**
+     * リスナを SheetListener にブリッジする.
+     * @param c
+     */
+    private void connectListeners(Component c) {
+        if (c instanceof JOptionPane) {
+            c.addPropertyChangeListener(e -> {
+                if (e.getPropertyName().equals(JOptionPane.VALUE_PROPERTY)) {
+                    SheetEvent se = new SheetEvent(e.getSource());
+                    se.setOption((int) e.getNewValue());
+                    sheetListener.optionSelected(se);
+                    hideSheet();
+                }
+            });
+
+        } else if (c instanceof JFileChooser) {
+            ((JFileChooser)c).addActionListener(e -> {
+                // CANCEL_SELECTION = "CancelSelection";
+                // APPROVE_SELECTION = "ApproveSelection";
+                SheetEvent se = new SheetEvent(e.getSource());
+                if (JFileChooser.APPROVE_SELECTION.equals(e.getActionCommand())) {
+                    se.setOption(JFileChooser.APPROVE_OPTION);
+                } else {
+                    se.setOption(JFileChooser.CANCEL_OPTION);
+                }
+                sheetListener.optionSelected(se);
+                hideSheet();
+            });
+        }
+    }
+
+    /**
+     * Sheet を表示／消去する.
+     * @param visible
+     */
     @Override
     public void setVisible(boolean visible) {
-        if (visible && !isVisible() && ! animating) {
+        if (visible) {
             super.setVisible(true);
             showSheet();
 
-        } else if (!visible && isVisible() && ! animating) {
+        } else {
             // hideSheet -> animation -> super.setVisible(false) となる
             hideSheet();
         }
@@ -181,7 +241,7 @@ public class JSheet extends JDialog implements ActionListener {
     }
 
     /**
-     * アニメーション終了後の表示状態.
+     * アニメーション終了後の Sheet が表示された状態.
      */
     private void finishShowingSheet() {
         content.removeAll();
@@ -274,7 +334,28 @@ public class JSheet extends JDialog implements ActionListener {
     }
 
     /**
+     * JOptionPane を source とする JSheet を作成する.
+     * @param pane
+     * @param parentComponent
+     * @return
+     */
+    public static JSheet createDialog(final JOptionPane pane, Component parentComponent) {
+        // create corresponding dialog
+        pane.setBorder(new LineBorder(Color.LIGHT_GRAY));
+        JDialog dialog = pane.createDialog(null);
+        dialog.pack();
+
+        // create JSheet
+        Window owner = JOptionPane.getFrameForComponent(parentComponent);
+        JSheet js = (owner instanceof Frame)? new JSheet((Frame)owner) : new JSheet((Dialog)owner);
+        js.setSourceDialog(dialog);
+
+        return js;
+    }
+
+    /**
      * JOptionPane を Sheet で表示する.
+     * listener に通知されるまでブロックされる.
      * @param pane JOptionPane
      * @param parentComponent parent window or component
      * @param listener SheetListener
@@ -283,33 +364,14 @@ public class JSheet extends JDialog implements ActionListener {
         Object lock = new Object();
 
         Thread t = new Thread(() -> {
-            // create corresponding dialog
-            pane.setBorder(new LineBorder(Color.LIGHT_GRAY));
-            JDialog dialog = pane.createDialog(null);
-            dialog.pack();
-
-
-            // create JSheet
-            Window owner = JOptionPane.getFrameForComponent(parentComponent);
-            JSheet js = (owner instanceof Frame)? new JSheet((Frame)owner) : new JSheet((Dialog)owner);
-            pane.addPropertyChangeListener(e -> {
-                if (e.getPropertyName().equals(JOptionPane.VALUE_PROPERTY)) {
-                    // YES_OPTION = 0;
-                    // NO_OPTION = 1;
-                    // CANCEL_OPTION = 2;
-                    // CLOSED_OPTION = -1; (ESCAPE)
-                    SheetEvent se = new SheetEvent(pane);
-                    se.setOption((int) e.getNewValue());
-
-                    listener.optionSelected(se);
-                    js.hideSheet();
-
-                    synchronized(lock) {
-                        lock.notify();
-                    }
+            JSheet js = createDialog(pane, parentComponent);
+            js.addSheetListener(se -> {
+                listener.optionSelected(se);
+                // modal 解除
+                synchronized(lock) {
+                    lock.notify();
                 }
             });
-            js.setSourceDialog(dialog);
             js.setVisible(true);
         });
         t.start();
@@ -347,25 +409,16 @@ public class JSheet extends JDialog implements ActionListener {
             // create JSheet
             Window owner = JOptionPane.getFrameForComponent(parentComponent);
             JSheet js = (owner instanceof Frame)? new JSheet((Frame)owner) : new JSheet((Dialog)owner);
-            chooser.addActionListener(e -> {
-                // CANCEL_SELECTION = "CancelSelection";
-                // APPROVE_SELECTION = "ApproveSelection";
-                SheetEvent se = new SheetEvent(chooser);
-                if (JFileChooser.APPROVE_SELECTION.equals(e.getActionCommand())) {
-                    se.setOption(0);
-                } else {
-                    se.setOption(-1);
-                }
-
+            js.setSourceDialog(dialog);
+            js.addSheetListener(se -> {
                 listener.optionSelected(se);
-                js.hideSheet();
-
+                // modal 解除
                 synchronized(lock) {
                     lock.notify();
                 }
             });
-            js.setSourceDialog(dialog);
             js.setVisible(true);
+
         });
         t.start();
         // modal 動作のための lock
@@ -401,9 +454,6 @@ public class JSheet extends JDialog implements ActionListener {
 
 
 
-
-
-    
     public static void main(String[] arg) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -94,7 +94,7 @@ public class MyJSheet extends JSheet {
     public static MyJSheet createDialog(final JOptionPane pane, Component parentComponent) {
         final MyJSheet sheet;
 
-        Window window = getWindowForComponent(parentComponent);
+        Window window = JOptionPane.getFrameForComponent(parentComponent);
 
         if (window instanceof Frame) {
             sheet = new MyJSheet((Frame) window);
@@ -137,7 +137,7 @@ public class MyJSheet extends JSheet {
      * @return
      */
     public static boolean isAlreadyShown(Component parentComponent) {
-        Window window = getWindowForComponent(parentComponent);
+        Window window = JOptionPane.getFrameForComponent(parentComponent);
         Window[] windowList = window.getOwnedWindows();
         for (Window w : windowList) {
             if (w instanceof MyJSheet && w.isVisible()) {
@@ -146,15 +146,5 @@ public class MyJSheet extends JSheet {
             }
         }
         return false;
-    }
-
-    private static Window getWindowForComponent(Component parentComponent) {
-        if (parentComponent == null) {
-            return JOptionPane.getRootFrame();
-        }
-        if (parentComponent instanceof Frame || parentComponent instanceof Dialog) {
-            return (Window) parentComponent;
-        }
-        return getWindowForComponent(parentComponent.getParent());
     }
 }
