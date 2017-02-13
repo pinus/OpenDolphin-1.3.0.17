@@ -61,7 +61,6 @@ public class JSheet extends JDialog implements ActionListener {
     private long animationStart;
 
     private SheetListener sheetListener;
-    private JFrame dummyFrame;
 
     public JSheet(Frame owner) {
         super(owner);
@@ -101,10 +100,6 @@ public class JSheet extends JDialog implements ActionListener {
      */
     private void locateSheet() {
         Point loc = owner.getLocationOnScreen();
-
-        // dummy frame の位置に owner を合わせる
-        owner.setLocation(loc.x, loc.y);
-
         Dimension ownerSize = owner.getSize();
         Dimension sourcePaneSize = sourcePane.getSize();
 
@@ -112,6 +107,7 @@ public class JSheet extends JDialog implements ActionListener {
         loc.x += (ownerSize.width - sourcePaneSize.width)/2;
         loc.y += MENU_BAR_HEIGHT;
 
+        // 右端，左端の処理
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         if (loc.x < 0) { loc.x = 0; }
         if (screenSize.width < loc.x + sourcePaneSize.width) { loc.x = screenSize.width - sourcePaneSize.width; }
@@ -460,23 +456,27 @@ public class JSheet extends JDialog implements ActionListener {
         frame.setBounds(200, 200, 640, 400);
         frame.setVisible(true);
 
-        Object lock = new Object();
-
         JOptionPane optionPane = new JOptionPane("Do you want to save?",
                 JOptionPane.QUESTION_MESSAGE,
                 JOptionPane.YES_NO_OPTION);
 
-
-        JSheet.showSheet(optionPane, frame, ee -> {
-            System.out.println("option = " + ee.getOption());
+        JSheet sheet = JSheet.createDialog(optionPane, frame);
+        sheet.addSheetListener(se -> {
+            System.out.println("option = " + se.getOption());
         });
+        sheet.setVisible(true);
+        System.out.println("--- end ---");
 
-
-        System.out.println("------------ modal ----------------");
-
-        JFileChooser chooser = new JFileChooser();
-        JSheet.showSaveSheet(chooser, frame, e -> {
-            System.out.println("option = " + e.getOption());
-        });
+//        JSheet.showSheet(optionPane, frame, ee -> {
+//            System.out.println("option = " + ee.getOption());
+//        });
+//
+//
+//        System.out.println("------------ modal ----------------");
+//
+//        JFileChooser chooser = new JFileChooser();
+//        JSheet.showSaveSheet(chooser, frame, e -> {
+//            System.out.println("option = " + e.getOption());
+//        });
     }
 }
