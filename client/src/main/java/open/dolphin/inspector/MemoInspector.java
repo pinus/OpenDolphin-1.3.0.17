@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.Date;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.border.Border;
@@ -119,17 +120,17 @@ public class MemoInspector implements IInspector {
 
                 } else {
                     // なければダイアログを出してフォルダを作ってから表示
-                    MyJSheet.showConfirmSheet(context.getFrame(), "関連文書フォルダを作りますか？", se -> {
-                        // 0=OK，1=いいえ，2=キャンセル
-                        if (se.getOption() == 0) {
-                            infoFolder.mkdir();
-                            ScriptExecutor.openPatientFolder(path);
-                            // MemoInspector 表示の update
-                            createTitle();
-                            border.setTitle(border, titleText, TitledBorder.LEFT, TitledBorder.TOP, titleFont, titleColor);
-                            memoPanel.repaint();
-                        }
-                    });
+                    int ans = MyJSheet.showConfirmDialog(context.getFrame(), "関連文書フォルダを作りますか？", "",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+                    if (ans == JOptionPane.OK_OPTION) {
+                        infoFolder.mkdir();
+                        ScriptExecutor.openPatientFolder(path);
+                        // MemoInspector 表示の update
+                        createTitle();
+                        border.setTitle(border, titleText, TitledBorder.LEFT, TitledBorder.TOP, titleFont, titleColor);
+                        memoPanel.repaint();
+                    }
                 }
             }
         });

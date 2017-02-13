@@ -165,14 +165,11 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
             "<h3>"+ ptName + " 様のカルテは他の端末で編集中です</h3>" +
             "<p><nobr>閲覧のみで、編集はできません<nobr></p></html>";
 
-        MyJSheet.showConfirmSheet(SwingUtilities.getWindowAncestor(getUI()), message,
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, sheetEvent -> {
-                    int result = sheetEvent.getOption();
-                    if (result == 0) { // OK
-                        pvtModel.setState(KarteState.READ_ONLY);
-                        getContext().openKarte(pvtModel);
-                    }
-        });
+        int ans = MyJSheet.showConfirmDialog(getUI(), message, "", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (ans == JOptionPane.OK_OPTION) {
+            pvtModel.setState(KarteState.READ_ONLY);
+            getContext().openKarte(pvtModel);
+        }
     }
 
     /**

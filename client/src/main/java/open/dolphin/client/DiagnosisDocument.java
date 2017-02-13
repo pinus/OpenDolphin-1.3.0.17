@@ -1560,7 +1560,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             parent.toFront();
             return;
         }
-        MyJSheet.showMessageSheet(parent, message, messageType);
+        MyJSheet.showMessageDialog(parent, message, "", messageType);
     }
 
     private void sendClaim(List<RegisteredDiagnosisModel> sendList) {

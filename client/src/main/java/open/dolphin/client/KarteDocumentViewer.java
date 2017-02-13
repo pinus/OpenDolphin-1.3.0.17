@@ -912,7 +912,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
             parent.toFront();
             return;
         }
-        MyJSheet.showMessageSheet(parent, message, messageType);
+        MyJSheet.showMessageDialog(parent, message, "", messageType);
     }
 
     private void sendClaim(DocumentModel model) {

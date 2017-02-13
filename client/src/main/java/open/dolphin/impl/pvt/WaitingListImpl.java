@@ -836,7 +836,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                     PvtDelegater pdl = new PvtDelegater();
                     // karte open なら キャンセルできない
                     if (KarteState.isOpen(pdl.getPvtState(pvt.getId()))) {
-                        MyJSheet.showMessageSheet(getContext().getFrame(), "編集中のカルテはキャンセルできません");
+                        MyJSheet.showMessageDialog(getContext().getFrame(), "編集中のカルテはキャンセルできません", "", JOptionPane.ERROR_MESSAGE);
                     } else {
                         pvt.setState(KarteState.CANCEL_PVT);
                         pdl.updatePvt(pvt);
