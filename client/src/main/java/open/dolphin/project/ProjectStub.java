@@ -872,6 +872,7 @@ public class ProjectStub implements java.io.Serializable {
      * @return
      */
     public String decryptPassword(String key, String pass) {
+        if (key == null || key.equals("")) { return ""; }
 
         InputStream inputStream = null;
 
