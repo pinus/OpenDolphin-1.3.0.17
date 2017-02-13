@@ -19,9 +19,13 @@ public class PNSBorder {
     protected static final Color OUTSIDE_COLOR = new Color(197,213,227);
 
     // gray selected color
-    protected static final Color INSIDE_GRAY_COLOR = new Color(240,240,240);
-    protected static final Color INSIDE_MIDDLE_GRAY_COLOR = new Color(210,210,210);
+    //protected static final Color INSIDE_GRAY_COLOR = new Color(240,240,240);
+    //protected static final Color INSIDE_MIDDLE_GRAY_COLOR = new Color(210,210,210);
+    //protected static final Color MIDDLE_GRAY_COLOR = new Color(200,200,200);
+    protected static final Color INSIDE_GRAY_COLOR = new Color(255,255,255);
+    protected static final Color INSIDE_MIDDLE_GRAY_COLOR = new Color(255,255,255);
     protected static final Color MIDDLE_GRAY_COLOR = new Color(200,200,200);
+    protected static final Color APEX_GRAY_COLOR = new Color(235,235,235);
 
     // blue selected color
     protected static final Color INSIDE_BLUE_COLOR = new Color(134,177,218);
@@ -145,6 +149,13 @@ public class PNSBorder {
         drawAngle(0, INSIDE_GRAY_COLOR,         g, x, y, width, height);
         drawAngle(1, MIDDLE_GRAY_COLOR,         g, x, y, width, height);
         drawAngle(2, INSIDE_MIDDLE_GRAY_COLOR,  g, x, y, width, height);
+
+        // 角を目立たなくする
+        g.setColor(APEX_GRAY_COLOR);
+        g.drawLine(0, 0, 0, 0);
+        g.drawLine(0, height-1, 0, height-1);
+        g.drawLine(width-1, 0, width-1, 0);
+        g.drawLine(width-1, height-1, width-1, height-1);
     }
 
     public static void clearRect(Component c, Graphics g, int x, int y, int width, int height) {
