@@ -47,13 +47,8 @@ public class SettingForMac {
         java.util.Set<String> excludes = new java.util.HashSet<>();
         excludes.add("ScrollBar");
         excludes.add("Panel");
-        //includes.add("Component");
-        //includes.add("TabbedPane");
-        //includes.add("Tree");
-        //includes.add("ColorChooser");
-        //includes.add("ComboBox");
-        //includes.add("ToggleButton");
-        //includes.add("");
+        excludes.add("TextField");
+        excludes.add("PasswordField");
         //excludes.add("Table");
         //excludes.add("Button");
         //excludes.add("ComboBox");
@@ -65,6 +60,10 @@ public class SettingForMac {
         // set the Quaqua Look and Feel in the UIManager
         try {
             UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
+
+            UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
+            UIManager.put("PasswordFieldUI", MyPasswordFieldUI.class.getName());
+
         } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException e) {
             System.out.println("Dolphin.java: " + e);
         }

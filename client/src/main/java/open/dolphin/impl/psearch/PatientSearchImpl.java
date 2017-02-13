@@ -1,6 +1,8 @@
 package open.dolphin.impl.psearch;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -83,9 +85,14 @@ public class PatientSearchImpl extends AbstractMainComponent {
         connect();
 
         // Tabbed pane にサーチフィールドを表示してしまう.
+        JPanel keywordPanel = new JPanel();
+        keywordPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
+        keywordPanel.add(view.getKeywordFld());
+        view.getKeywordFld().setPreferredSize(new Dimension(300,24));
+
         PNSBadgeTabbedPane tab = ((Dolphin)getContext()).getTabbedPane();
         JPanel panel = tab.getAccessoryPanel();
-        panel.add(view.getKeywordFld(), BorderLayout.EAST);
+        panel.add(keywordPanel, BorderLayout.EAST);
 
         // 別の MainComponent に tab が切り替わったらクリアする
         tab.addChangeListener(e -> {

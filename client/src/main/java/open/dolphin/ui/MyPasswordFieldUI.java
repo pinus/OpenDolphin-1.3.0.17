@@ -3,7 +3,6 @@ package open.dolphin.ui;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -29,8 +28,9 @@ public class MyPasswordFieldUI extends BasicPasswordFieldUI {
         super.installUI(c);
 
         selectedBorder = new CompoundBorder( PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0,3,0,3));
-        border = new CompoundBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY), new EmptyBorder(0,5,0,5));
+        border = new CompoundBorder(PNSBorderFactory.createSelectedGrayBorder(), new EmptyBorder(0,3,0,3));
 
+        c.setBackground(Color.WHITE);
         c.setBorder(border);
         c.addFocusListener(new FocusListener(){
             @Override

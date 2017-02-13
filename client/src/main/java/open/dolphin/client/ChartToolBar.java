@@ -1,12 +1,14 @@
 package open.dolphin.client;
 
 import com.sun.glass.events.KeyEvent;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.Action;
-import javax.swing.BoxLayout;
+import javax.swing.Box;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -182,12 +184,13 @@ public class ChartToolBar extends JToolBar {
 
     private JPanel createDiagnosisSearchPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setLayout(new BorderLayout());
 
-        CompletableSearchField keywordFld = new CompletableSearchField(15);
+        CompletableSearchField keywordFld = new CompletableSearchField(30);
         keywordFld.setLabel("病名検索");
         keywordFld.setPreferences(prefs);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
+        keywordFld.setPreferredSize(new Dimension(500,24));
         keywordFld.addActionListener(e -> {
             String text = keywordFld.getText();
 
@@ -214,7 +217,10 @@ public class ChartToolBar extends JToolBar {
         Object value =  map.get(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
         map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), value);
 
-        panel.add(keywordFld);
+        panel.add(keywordFld, BorderLayout.CENTER);
+        panel.add(Box.createVerticalStrut(8), BorderLayout.NORTH);
+        panel.add(Box.createVerticalStrut(8), BorderLayout.SOUTH);
+        panel.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
 
         return panel;
     }

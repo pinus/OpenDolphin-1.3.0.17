@@ -94,7 +94,11 @@ public class LoginView extends javax.swing.JDialog {
 
         jLabel2.setText("ユーザ ID：");
 
+        userIdField.setPreferredSize(new java.awt.Dimension(10, 27));
+
         jLabel3.setText("パスワード：");
+
+        passwordField.setPreferredSize(new java.awt.Dimension(10, 27));
 
         settingBtn.setText("設 定");
 
@@ -133,8 +137,8 @@ public class LoginView extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(savePasswordCbx)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(userIdField)
-                                .addComponent(passwordField)
+                                .addComponent(userIdField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
