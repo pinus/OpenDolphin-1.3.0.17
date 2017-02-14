@@ -218,9 +218,10 @@ public class ChartToolBar extends JToolBar {
         map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), value);
 
         panel.add(keywordFld, BorderLayout.CENTER);
-        panel.add(Box.createVerticalStrut(8), BorderLayout.NORTH);
-        panel.add(Box.createVerticalStrut(8), BorderLayout.SOUTH);
+        panel.add(Box.createVerticalStrut(9), BorderLayout.NORTH);
+        panel.add(Box.createVerticalStrut(9), BorderLayout.SOUTH);
         panel.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
+        panel.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
 
         return panel;
     }

@@ -1,6 +1,7 @@
 package open.dolphin.order.tablepanel;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -132,6 +133,8 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     @Override
     public JPanel createSouthPanel() {
         combinedDiagnosis = new JTextField(20);
+        combinedDiagnosis.setMaximumSize(new Dimension(10,22));
+        combinedDiagnosis.setFocusable(false);
         combinedDiagnosis.setEditable(false);
         combinedDiagnosis.setToolTipText(TOOLTIP_COMBINE);
         stateLabel = new JLabel();

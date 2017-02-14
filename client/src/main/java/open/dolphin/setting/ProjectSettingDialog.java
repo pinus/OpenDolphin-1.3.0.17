@@ -316,7 +316,10 @@ public final class ProjectSettingDialog {
      */
     private void setContainerBackground(Component component) {
         if (component instanceof Container) {
-            component.setBackground(BACKGROUND);
+            if (component instanceof JPanel || component instanceof JRootPane) {
+                component.setBackground(BACKGROUND);
+
+            }
             for (Component c : ((Container) component).getComponents()) {
                 setContainerBackground(c);
             }
