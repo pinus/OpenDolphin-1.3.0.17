@@ -60,6 +60,9 @@ public class JSheet extends JDialog implements ActionListener {
     private Timer animationTimer;
     private long animationStart;
 
+    // Modal 動作のための lock オブジェクト
+    private final Object lock = new Object();
+
     private SheetListener sheetListener;
 
     public JSheet(Frame owner) {
@@ -153,10 +156,27 @@ public class JSheet extends JDialog implements ActionListener {
         if (c instanceof JOptionPane) {
             c.addPropertyChangeListener(e -> {
                 if (e.getPropertyName().equals(JOptionPane.VALUE_PROPERTY)) {
+                    // SheetEvent の設定
                     SheetEvent se = new SheetEvent(e.getSource());
-                    se.setOption((int) e.getNewValue());
+
+                    // 戻り値
+                    Object val = e.getNewValue();
+                    Object[] options = ((JOptionPane)c).getOptions();
+
+                    if (options == null) {
+                        se.setOption((int) val);
+
+                    } else {
+                        // オプションがある場合は，何番目かを返す.
+                        for (int i=0; i<options.length; i++) {
+                            if (options[i].equals(val)) {
+                                se.setOption(i);
+                                break;
+                            }
+                        }
+                    }
                     sheetListener.optionSelected(se);
-                    hideSheet();
+                    setVisible(false);
                 }
             });
 
@@ -171,7 +191,7 @@ public class JSheet extends JDialog implements ActionListener {
                     se.setOption(JFileChooser.CANCEL_OPTION);
                 }
                 sheetListener.optionSelected(se);
-                hideSheet();
+                setVisible(false);
             });
         }
     }
@@ -184,9 +204,20 @@ public class JSheet extends JDialog implements ActionListener {
     public void setVisible(boolean visible) {
         if (visible) {
             super.setVisible(true);
-            showSheet();
+            synchronized(lock) {
+                showSheet();
+
+                // modal 動作のための lock
+                try {
+                    lock.wait();
+                } catch (InterruptedException ex) {}
+            }
 
         } else {
+            // modal lock 解除
+            synchronized(lock) {
+                lock.notify();
+            }
             // hideSheet -> animation -> super.setVisible(false) となる
             hideSheet();
         }
@@ -357,27 +388,9 @@ public class JSheet extends JDialog implements ActionListener {
      * @param listener SheetListener
      */
     public static void showSheet(JOptionPane pane, Component parentComponent, SheetListener listener) {
-        Object lock = new Object();
-
-        Thread t = new Thread(() -> {
-            JSheet js = createDialog(pane, parentComponent);
-            js.addSheetListener(se -> {
-                listener.optionSelected(se);
-                // modal 解除
-                synchronized(lock) {
-                    lock.notify();
-                }
-            });
-            js.setVisible(true);
-        });
-        t.start();
-        // modal 動作のための lock
-        synchronized(lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException ex) {
-            }
-        }
+        JSheet js = createDialog(pane, parentComponent);
+        js.addSheetListener(se -> listener.optionSelected(se));
+        js.setVisible(true);
     }
 
     /**
@@ -388,42 +401,23 @@ public class JSheet extends JDialog implements ActionListener {
      * @param listener
      */
     public static void showSheet(JFileChooser chooser, Component parentComponent, String approveButtonText, SheetListener listener) {
-        Object lock = new Object();
+        // create corresponding dialog
+        chooser.setApproveButtonText(approveButtonText);
+        chooser.setPreferredSize(FILE_CHOOSER_SIZE);
+        chooser.setMaximumSize(FILE_CHOOSER_SIZE);
+        chooser.setMinimumSize(FILE_CHOOSER_SIZE);
+        chooser.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
 
-        Thread t = new Thread(() -> {
-            // create corresponding dialog
-            chooser.setApproveButtonText(approveButtonText);
-            chooser.setPreferredSize(FILE_CHOOSER_SIZE);
-            chooser.setMaximumSize(FILE_CHOOSER_SIZE);
-            chooser.setMinimumSize(FILE_CHOOSER_SIZE);
-            chooser.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
+        JDialog dialog = new JDialog();
+        dialog.add(chooser);
+        dialog.pack();
 
-            JDialog dialog = new JDialog();
-            dialog.add(chooser);
-            dialog.pack();
-
-            // create JSheet
-            Window owner = JOptionPane.getFrameForComponent(parentComponent);
-            JSheet js = (owner instanceof Frame)? new JSheet((Frame)owner) : new JSheet((Dialog)owner);
-            js.setSourceDialog(dialog);
-            js.addSheetListener(se -> {
-                listener.optionSelected(se);
-                // modal 解除
-                synchronized(lock) {
-                    lock.notify();
-                }
-            });
-            js.setVisible(true);
-
-        });
-        t.start();
-        // modal 動作のための lock
-        synchronized(lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException ex) {
-            }
-        }
+        // create JSheet
+        Window owner = JOptionPane.getFrameForComponent(parentComponent);
+        JSheet js = (owner instanceof Frame)? new JSheet((Frame)owner) : new JSheet((Dialog)owner);
+        js.setSourceDialog(dialog);
+        js.addSheetListener(se -> listener.optionSelected(se));
+        js.setVisible(true);
     }
 
     /**
@@ -467,16 +461,16 @@ public class JSheet extends JDialog implements ActionListener {
         sheet.setVisible(true);
         System.out.println("--- end ---");
 
-//        JSheet.showSheet(optionPane, frame, ee -> {
-//            System.out.println("option = " + ee.getOption());
-//        });
-//
-//
-//        System.out.println("------------ modal ----------------");
-//
-//        JFileChooser chooser = new JFileChooser();
-//        JSheet.showSaveSheet(chooser, frame, e -> {
-//            System.out.println("option = " + e.getOption());
-//        });
+        JSheet.showSheet(optionPane, frame, ee -> {
+            System.out.println("option = " + ee.getOption());
+        });
+
+
+        System.out.println("------------ modal ----------------");
+
+        JFileChooser chooser = new JFileChooser();
+        JSheet.showSaveSheet(chooser, frame, e -> {
+            System.out.println("option = " + e.getOption());
+        });
     }
 }

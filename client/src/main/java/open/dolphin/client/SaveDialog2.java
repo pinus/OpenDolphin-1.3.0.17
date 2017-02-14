@@ -1,7 +1,5 @@
 package open.dolphin.client;
 
-import ch.randelshofer.quaqua.SheetEvent;
-import ch.randelshofer.quaqua.SheetListener;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -30,7 +28,7 @@ import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.sheet.JSheet;
 
 /**
  * SaveDialog2
@@ -38,20 +36,25 @@ import open.dolphin.ui.MyJSheet;
  * @author  pns
  */
 public class SaveDialog2 {
-
     private static final String[] PRINT_COUNT = { "0", "1",  "2",  "3",  "4", "5" };
     private static final String[] TITLE_LIST = {"経過記録", "処方", "処置", "検査", "画像", "指導"};
-    private static final String TITLE = "ドキュメント保存";
-    private static final String[] BUTTON_NAME = { "保 存", "仮保存", "破 棄", "キャンセル" };
+    private static final String DIALOG_TITLE = "ドキュメント保存";
     // result code
     public static final int SAVE = 0;
     public static final int TMP_SAVE = 1;
     public static final int DISPOSE = 2;
     public static final int CANCEL = 3;
+    private static final String[] BUTTON_NAME = new String[4];
+    static {
+        BUTTON_NAME[SAVE] = "保 存";
+        BUTTON_NAME[TMP_SAVE] = "仮保存";
+        BUTTON_NAME[DISPOSE] = "破 棄";
+        BUTTON_NAME[CANCEL] ="キャンセル";
+    }
 
     private Window parent;
     private JOptionPane pane;
-    private MyJSheet dialog;
+    private JSheet dialog;
 
     private JTextField titleField;
     private JComboBox titleCombo;
@@ -74,75 +77,6 @@ public class SaveDialog2 {
         this.parent = parent;
         initComponent();
     }
-
-    public void start () {
-        dialog.addSheetListener(new SheetListener(){
-            @Override
-            public void optionSelected(SheetEvent se) {
-                // 戻り値のSaveparamsを生成する
-                value = new SaveParams();
-
-                int result = se.getOption();
-                if (result == SAVE) doOk();
-                else if(result == TMP_SAVE) doTemp();
-                else if(result == DISPOSE) doDispose();
-                else if(result == CANCEL) doCancel();
-            }
-        });
-        dialog.setVisible(true);
-    }
-
-    public SaveParams getValue() {
-        return value;
-    }
-
-    public void setValue(SaveParams params) {
-
-        // Titleを表示する
-        String val = params.getTitle();
-        if (val != null && (!val.equals("") &&(!val.equals("経過記録")))) {
-            titleCombo.insertItemAt(val, 0);
-        }
-        titleCombo.setSelectedIndex(0);
-
-        //
-        // 診療科を表示する
-        // 受付情報からの診療科を設定する
-        val = params.getDepartment();
-        if (val != null) {
-            String[] depts = val.split("\\s*,\\s*");
-            if (depts[0] != null) {
-                departmentLabel.setText(depts[0]);
-            } else {
-                departmentLabel.setText(val);
-            }
-        }
-
-        // 印刷部数選択
-        int count = params.getPrintCount();
-        if (count != -1) {
-            printCombo.setSelectedItem(String.valueOf(count));
-
-        } else {
-            // いつのまにか preferences: open.dolphin.client.plist
-            // karte.print.count が -1 になっていてどうにも直せなくなったことがあった
-            // printCombo.setEnabled(false);
-            printCombo.setSelectedItem(0);
-        }
-
-        //
-        // CLAIM 送信をチェックする
-        //
-        if (params.isDisableSendClaim()) {
-            // シングルカルテで CLAIM 送信自体を行わない場合
-            sendClaim.setEnabled(false);
-        } else {
-            sendClaim.setSelected(params.isSendClaim());
-        }
-
-        checkTitle();
-    }
-
 
     /**
      * GUIコンポーネントを初期化する.
@@ -221,13 +155,35 @@ public class SaveDialog2 {
         tmpButton.setEnabled(false);
         tmpButton.setToolTipText("診療行為は送信しません。");
 
-        dialog = MyJSheet.createDialog(pane, parent);
+        dialog = JSheet.createDialog(pane, parent);
         dialog.setFocusTraversalPolicy(new LayoutFocusTraversalPolicy(){
             private static final long serialVersionUID = 1L;
             @Override
             public Component getInitialComponent(Window w) {
                 // System.out.println("Is sendClaim checkbox focusable? " + sendClaim.isFocusable());
                 return sendClaim;
+            }
+        });
+
+        dialog.addSheetListener(se -> {
+            // 戻り値のSaveparamsを生成する
+            value = new SaveParams();
+
+            switch (se.getOption()) {
+                case SAVE:
+                    doOk();
+                    break;
+                case TMP_SAVE:
+                    doTemp();
+                    break;
+                case DISPOSE:
+                    doDispose();
+                    break;
+                case CANCEL:
+                    doCancel();
+                    break;
+                default:
+                    break;
             }
         });
 
@@ -274,6 +230,61 @@ public class SaveDialog2 {
                 disposeButton.doClick();
             }
         });
+    }
+
+    public void start () {
+        dialog.setVisible(true);
+    }
+
+    public SaveParams getValue() {
+        return value;
+    }
+
+    public void setValue(SaveParams params) {
+
+        // Titleを表示する
+        String val = params.getTitle();
+        if (val != null && (!val.equals("") &&(!val.equals("経過記録")))) {
+            titleCombo.insertItemAt(val, 0);
+        }
+        titleCombo.setSelectedIndex(0);
+
+        //
+        // 診療科を表示する
+        // 受付情報からの診療科を設定する
+        val = params.getDepartment();
+        if (val != null) {
+            String[] depts = val.split("\\s*,\\s*");
+            if (depts[0] != null) {
+                departmentLabel.setText(depts[0]);
+            } else {
+                departmentLabel.setText(val);
+            }
+        }
+
+        // 印刷部数選択
+        int count = params.getPrintCount();
+        if (count != -1) {
+            printCombo.setSelectedItem(String.valueOf(count));
+
+        } else {
+            // いつのまにか preferences: open.dolphin.client.plist
+            // karte.print.count が -1 になっていてどうにも直せなくなったことがあった
+            // printCombo.setEnabled(false);
+            printCombo.setSelectedItem(0);
+        }
+
+        //
+        // CLAIM 送信をチェックする
+        //
+        if (params.isDisableSendClaim()) {
+            // シングルカルテで CLAIM 送信自体を行わない場合
+            sendClaim.setEnabled(false);
+        } else {
+            sendClaim.setSelected(params.isSendClaim());
+        }
+
+        checkTitle();
     }
 
     /**
@@ -397,6 +408,9 @@ public class SaveDialog2 {
         SaveParams param = new SaveParams();
         sd.setValue(param);
         sd.start();
+
+        System.out.println("----modal--- ");
+
         param = sd.getValue();
         System.out.println("----selection = " + param.getSelection());
     }
