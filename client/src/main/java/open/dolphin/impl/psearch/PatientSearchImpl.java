@@ -1,6 +1,7 @@
 package open.dolphin.impl.psearch;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.*;
@@ -86,7 +87,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         // Tabbed pane にサーチフィールドを表示してしまう.
         JPanel keywordPanel = new JPanel();
-        keywordPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        keywordPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
         keywordPanel.add(view.getKeywordFld());
         view.getKeywordFld().setPreferredSize(new Dimension(300,24));
 

@@ -146,7 +146,7 @@ public class CompletableJTextField extends JTextField
         int popY = los.y + getHeight();
         listWindow.pack();
         int h = listWindow.getHeight();
-        listWindow.setBounds(popX+5, popY-5, getWidth()-10, h);
+        listWindow.setBounds(popX+5, popY, getWidth()-10, h);
         listWindow.setVisible(true);
     }
 
