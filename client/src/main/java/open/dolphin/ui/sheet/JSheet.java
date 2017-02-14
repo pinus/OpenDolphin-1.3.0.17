@@ -25,7 +25,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import javax.swing.border.LineBorder;
 
 /**
  * JSheet.
@@ -59,9 +58,6 @@ public class JSheet extends JDialog implements ActionListener {
     private int animationDirection;
     private Timer animationTimer;
     private long animationStart;
-
-    // Modal 動作のための lock オブジェクト
-    private final Object lock = new Object();
 
     private SheetListener sheetListener;
 
@@ -198,26 +194,23 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * Sheet を表示／消去する.
+     * modal 動作のために synchronized(this) する.
      * @param visible
      */
     @Override
-    public void setVisible(boolean visible) {
+    synchronized public void setVisible(boolean visible) {
         if (visible) {
             super.setVisible(true);
-            synchronized(lock) {
-                showSheet();
+            showSheet();
 
-                // modal 動作のための lock
-                try {
-                    lock.wait();
-                } catch (InterruptedException ex) {}
-            }
+            // modal 動作のための lock
+            try {
+                wait();
+            } catch (InterruptedException ex) {}
 
         } else {
             // modal lock 解除
-            synchronized(lock) {
-                lock.notify();
-            }
+            notify();
             // hideSheet -> animation -> super.setVisible(false) となる
             hideSheet();
         }
@@ -368,7 +361,7 @@ public class JSheet extends JDialog implements ActionListener {
      */
     public static JSheet createDialog(final JOptionPane pane, Component parentComponent) {
         // create corresponding dialog
-        pane.setBorder(new LineBorder(Color.LIGHT_GRAY));
+        pane.setBorder(new SheetBorder());
         JDialog dialog = pane.createDialog(null);
         dialog.pack();
 
@@ -406,7 +399,7 @@ public class JSheet extends JDialog implements ActionListener {
         chooser.setPreferredSize(FILE_CHOOSER_SIZE);
         chooser.setMaximumSize(FILE_CHOOSER_SIZE);
         chooser.setMinimumSize(FILE_CHOOSER_SIZE);
-        chooser.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
+        chooser.setBorder(new SheetBorder());
 
         JDialog dialog = new JDialog();
         dialog.add(chooser);
