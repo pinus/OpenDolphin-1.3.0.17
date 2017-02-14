@@ -3,6 +3,7 @@ package open.dolphin.ui.sheet;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -12,6 +13,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.Transparency;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +31,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
@@ -45,7 +48,7 @@ public class JSheet extends JDialog implements ActionListener {
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
     // アニメーションする時間 msec
-    public static final float ANIMATION_DURATION = 100;
+    public static final float ANIMATION_DURATION = 1000;
     // 書き換えの周期 msec
     public static final int ANIMATION_SLEEP = 10;
 
@@ -84,11 +87,14 @@ public class JSheet extends JDialog implements ActionListener {
         setUndecorated(true);
         setBackground(new Color(0,0,0,0));
 
+        // modal にセット
+        setModal(true);
+
         content = (JPanel) getContentPane();
         content.setLayout(new BorderLayout());
         animatingSheet = new AnimatingSheet();
 
-        // これだと，mouse released のタイミングでの書き直しになる
+        // リアルタイム
         owner.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) { locateSheet(); }
@@ -149,6 +155,22 @@ public class JSheet extends JDialog implements ActionListener {
     public void setSourceDialog(JDialog dialog) {
         sourcePane = (JComponent) dialog.getContentPane();
         connectListeners(sourcePane.getComponent(0)); // JOptionPane or JFileChooser
+        setTransparent(sourcePane);
+    }
+
+    /**
+     * SourcePane の背景を透明にする.
+     * @param c
+     */
+    public void setTransparent(Component c) {
+        if (c instanceof JComponent) {
+            ((JComponent)c).setOpaque(false);
+        }
+        if (c instanceof Container) {
+            for (Component comp : ((Container)c).getComponents()) {
+                setTransparent(comp);
+            }
+        }
     }
 
     /**
@@ -207,8 +229,9 @@ public class JSheet extends JDialog implements ActionListener {
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
+            SwingUtilities.invokeLater(()->showSheet());
+            // setModal(true) なのでここで止まるが，アニメーションは EDT で表示される.
             super.setVisible(true);
-            showSheet();
 
         } else {
             // hideSheet -> animation -> super.setVisible(false) となる
@@ -329,7 +352,7 @@ public class JSheet extends JDialog implements ActionListener {
         private void makeOffscreenImage(JComponent source) {
             GraphicsConfiguration gfxConfig =
                     GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-            offscreenImage = gfxConfig.createCompatibleImage(source.getWidth(), source.getHeight());
+            offscreenImage = gfxConfig.createCompatibleImage(source.getWidth(), source.getHeight(), Transparency.TRANSLUCENT);
             Graphics2D offscreenGraphics = (Graphics2D) offscreenImage.getGraphics();
             source.paint(offscreenGraphics);
         }
