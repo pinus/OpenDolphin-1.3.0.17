@@ -18,10 +18,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -60,6 +65,8 @@ public class JSheet extends JDialog implements ActionListener {
     private long animationStart;
 
     private SheetListener sheetListener;
+
+    private final Object lock = new Object();
 
     public JSheet(Frame owner) {
         super(owner);
@@ -198,19 +205,12 @@ public class JSheet extends JDialog implements ActionListener {
      * @param visible
      */
     @Override
-    synchronized public void setVisible(boolean visible) {
+    public void setVisible(boolean visible) {
         if (visible) {
             super.setVisible(true);
             showSheet();
 
-            // modal 動作のための lock
-            try {
-                wait();
-            } catch (InterruptedException ex) {}
-
         } else {
-            // modal lock 解除
-            notify();
             // hideSheet -> animation -> super.setVisible(false) となる
             hideSheet();
         }
@@ -439,31 +439,69 @@ public class JSheet extends JDialog implements ActionListener {
 
     public static void main(String[] arg) {
         JFrame frame = new JFrame();
+        frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(200, 200, 640, 400);
+
+        JLabel label = new JLabel(new ImageIcon(JSheet.class.getResource("/schemaeditor/usagi.jpg")));
+
+        JButton b1 = new JButton("Create Dialog");
+        b1.addActionListener(e -> {
+            JOptionPane optionPane = new JOptionPane("JSheet.createDialog",
+                    JOptionPane.QUESTION_MESSAGE,
+                    JOptionPane.YES_NO_OPTION);
+
+            JSheet sheet = JSheet.createDialog(optionPane, frame);
+            sheet.addSheetListener(se -> {
+                System.out.println("option = " + se.getOption());
+            });
+            sheet.setVisible(true);
+            System.out.println("Create Dialog ended");
+        });
+
+        JButton b2 = new JButton("Show Sheet");
+        b2.addActionListener(e -> {
+            JOptionPane optionPane = new JOptionPane("JSheet.showSheet",
+                    JOptionPane.QUESTION_MESSAGE,
+                    JOptionPane.YES_NO_OPTION);
+
+            JSheet.showSheet(optionPane, frame, se -> {
+                System.out.println("option = " + se.getOption());
+            });
+            System.out.println("Show Sheet ended");
+        });
+
+        JButton b3 = new JButton("Show Save");
+        b3.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            JSheet.showSaveSheet(chooser, frame, se -> {
+                System.out.println("option = " + se.getOption());
+            });
+            System.out.println("Show Save ended");
+        });
+
+        JButton b4 = new JButton("Show Open");
+        b4.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            JSheet.showOpenSheet(chooser, frame, se -> {
+                System.out.println("option = " + se.getOption());
+            });
+            System.out.println("Show Open ended");
+        });
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(Box.createHorizontalGlue());
+        panel.add(b1);
+        panel.add(b2);
+        panel.add(b3);
+        panel.add(b4);
+        panel.add(Box.createHorizontalGlue());
+
+        frame.add(label, BorderLayout.CENTER);
+        frame.add(panel, BorderLayout.SOUTH);
+
+        frame.pack();
+        frame.setLocation(600, 200);
         frame.setVisible(true);
-
-        JOptionPane optionPane = new JOptionPane("Do you want to save?",
-                JOptionPane.QUESTION_MESSAGE,
-                JOptionPane.YES_NO_OPTION);
-
-        JSheet sheet = JSheet.createDialog(optionPane, frame);
-        sheet.addSheetListener(se -> {
-            System.out.println("option = " + se.getOption());
-        });
-        sheet.setVisible(true);
-        System.out.println("--- end ---");
-
-        JSheet.showSheet(optionPane, frame, ee -> {
-            System.out.println("option = " + ee.getOption());
-        });
-
-
-        System.out.println("------------ modal ----------------");
-
-        JFileChooser chooser = new JFileChooser();
-        JSheet.showSaveSheet(chooser, frame, e -> {
-            System.out.println("option = " + e.getOption());
-        });
     }
 }
