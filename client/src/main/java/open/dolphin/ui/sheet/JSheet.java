@@ -22,6 +22,7 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -33,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import open.dolphin.ui.MyJSheet;
 
 /**
  * JSheet.
@@ -455,6 +457,74 @@ public class JSheet extends JDialog implements ActionListener {
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         showSheet(chooser, parent, "開く", listener);
     }
+
+    /**
+     * JOptionPane.showConfirmDialog 互換.
+     * @param parentComponent
+     * @param message
+     * @param title
+     * @param optionType
+     * @param messageType
+     * @return answer int
+     */
+    public static int showConfirmDialog(Component parentComponent, Object message, String title, int optionType, int messageType) {
+        return showOptionDialog(parentComponent, message, title, optionType, messageType, null, null, null);
+    }
+
+    /**
+     * JOptionPane.showMessageDialog 互換.
+     * @param parentComponent
+     * @param message
+     * @param title
+     * @param messageType
+     */
+    public static void showMessageDialog(Component parentComponent, Object message, String title, int messageType) {
+        showOptionDialog(parentComponent, message, title, JOptionPane.DEFAULT_OPTION, messageType, null, null, null);
+    }
+
+    /**
+     * JOptionPane.showOptionDialog 互換
+     * @param parentComponent
+     * @param message
+     * @param title
+     * @param optionType
+     * @param messageType
+     * @param icon
+     * @param options
+     * @param initialValue
+     * @return answer int
+     */
+    public static int showOptionDialog(Component parentComponent, Object message, String title,
+            int optionType, int messageType, Icon icon, final Object[] options, Object initialValue) {
+
+        JOptionPane pane = new JOptionPane(message, messageType, optionType, icon, options, initialValue);
+        pane.setInitialValue(initialValue);
+        pane.selectInitialValue();
+        final int[] answer = new int[1];
+        JSheet.showSheet(pane, parentComponent, se -> {
+            answer[0] = se.getOption();
+        });
+
+        return answer[0];
+    }
+
+    /**
+     * その component に既に JSheet が表示されているかどうか
+     * @param parentComponent
+     * @return
+     */
+    public static boolean isAlreadyShown(Component parentComponent) {
+        Window window = JOptionPane.getFrameForComponent(parentComponent);
+        Window[] windowList = window.getOwnedWindows();
+        for (Window w : windowList) {
+            if (w instanceof MyJSheet && w.isVisible()) {
+                // すでに JSheet が表示されている
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
 
