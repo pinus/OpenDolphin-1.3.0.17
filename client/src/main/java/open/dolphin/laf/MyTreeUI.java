@@ -1,4 +1,4 @@
-package open.dolphin.ui;
+package open.dolphin.laf;
 
 import com.sun.java.swing.plaf.windows.WindowsTreeUI;
 import java.awt.*;

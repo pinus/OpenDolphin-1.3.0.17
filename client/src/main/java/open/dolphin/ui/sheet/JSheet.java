@@ -48,7 +48,7 @@ public class JSheet extends JDialog implements ActionListener {
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
     // アニメーションする時間 msec
-    public static final float ANIMATION_DURATION = 1000;
+    public static final float ANIMATION_DURATION = 100;
     // 書き換えの周期 msec
     public static final int ANIMATION_SLEEP = 10;
 
@@ -68,8 +68,6 @@ public class JSheet extends JDialog implements ActionListener {
     private long animationStart;
 
     private SheetListener sheetListener;
-
-    private final Object lock = new Object();
 
     public JSheet(Frame owner) {
         super(owner);
@@ -94,7 +92,7 @@ public class JSheet extends JDialog implements ActionListener {
         content.setLayout(new BorderLayout());
         animatingSheet = new AnimatingSheet();
 
-        // リアルタイム
+        // リアルタイムの書き直しにならない.
         owner.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) { locateSheet(); }
@@ -164,7 +162,7 @@ public class JSheet extends JDialog implements ActionListener {
      */
     public void setTransparent(Component c) {
         if (c instanceof JComponent) {
-            ((JComponent)c).setOpaque(false);
+                ((JComponent)c).setOpaque(false);
         }
         if (c instanceof Container) {
             for (Component comp : ((Container)c).getComponents()) {

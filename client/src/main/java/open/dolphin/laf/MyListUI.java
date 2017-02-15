@@ -1,4 +1,4 @@
-package open.dolphin.ui;
+package open.dolphin.laf;
 
 import java.awt.Color;
 import java.awt.Graphics;

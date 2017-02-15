@@ -1,5 +1,7 @@
 package open.dolphin.ui;
 
+import open.dolphin.laf.MyPasswordFieldUI;
+import open.dolphin.laf.MyTextFieldUI;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javax.swing.UIManager;

@@ -1,35 +1,37 @@
-package open.dolphin.ui;
+package open.dolphin.laf;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.JComponent;
-import javax.swing.JTextField;
+import javax.swing.JPasswordField;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ComponentUI;
-import javax.swing.plaf.basic.BasicTextFieldUI;
+import javax.swing.plaf.basic.BasicPasswordFieldUI;
+import open.dolphin.ui.PNSBorderFactory;
 
 /**
  *
  * @author pns
  */
-public class MyTextFieldUI extends BasicTextFieldUI {
+public class MyPasswordFieldUI extends BasicPasswordFieldUI {
     private static final Color LIGHTER_GRAY = new Color(228,228,228);
-    private JTextField tf;
+
+    private JPasswordField tf;
     private Border selectedBorder;
     private Border border;
 
     public static ComponentUI createUI(JComponent c) {
-        return new MyTextFieldUI();
+        return new MyPasswordFieldUI();
     }
 
     @Override
     public void installUI(JComponent c) {
         super.installUI(c);
-        tf = (JTextField) c;
+        tf = (JPasswordField) c;
 
         selectedBorder = new CompoundBorder( PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0,3,0,3));
         //border = new CompoundBorder( PNSBorderFactory.createSelectedGrayBorder(), new EmptyBorder(0,3,0,3));
@@ -62,5 +64,4 @@ public class MyTextFieldUI extends BasicTextFieldUI {
             g.drawRoundRect(1, 1, tf.getWidth()-2, tf.getHeight()-2, 5, 5);
         }
         super.paintSafely(g);
-    }
-}
+    }}
