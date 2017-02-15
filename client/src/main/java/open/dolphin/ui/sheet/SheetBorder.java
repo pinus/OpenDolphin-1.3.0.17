@@ -22,11 +22,9 @@ public class SheetBorder extends AbstractBorder {
 
     private static final int SHADOW_WIDTH = 10;
     private static final Insets BORDER_INSETS = new Insets(0,20,20,20);
-    private static final Color BACKGROUND = new Color(0.9f,0.9f,0.9f,0.9f);
-    private static final Color[] BACKGROUNDS = { BACKGROUND, BACKGROUND, new Color(0.75f,0.75f,0.75f,0.9f) };
-    private static final float[] BACKGROUND_FRACTIONS = { 0f, 0.97f, 1.0f };
+    private static final Color BACKGROUND = new Color(0.92f,0.92f,0.92f,0.95f);
 
-    private static final Color SHADOW_COLOR_D = new Color(0f,0f,0f,0.4f);
+    private static final Color SHADOW_COLOR_D = new Color(0f,0f,0f,0.2f);
     private static final Color SHADOW_COLOR_MD = new Color(0f,0f,0f,0.1f);
     private static final Color SHADOW_COLOR_ML = new Color(0f,0f,0f,0.05f);
     private static final Color SHADOW_COLOR_L = new Color(0f,0f,0f,0f);
@@ -38,10 +36,10 @@ public class SheetBorder extends AbstractBorder {
         Graphics2D g = (Graphics2D) gr.create();
 
         // Background
-        Paint bgPaint = new LinearGradientPaint(x, height-SHADOW_WIDTH, x, y, BACKGROUND_FRACTIONS, BACKGROUNDS, MultipleGradientPaint.CycleMethod.NO_CYCLE);
-
-        g.setPaint(bgPaint);
+        g.setColor(BACKGROUND);
         g.fillRect(x + SHADOW_WIDTH, y, width-SHADOW_WIDTH*2, height-SHADOW_WIDTH);
+        g.setColor(Color.LIGHT_GRAY);
+        g.drawRect(x + SHADOW_WIDTH, y, width-SHADOW_WIDTH*2, height-SHADOW_WIDTH);
 
         // Shadow
         Rectangle2D left = new Rectangle2D.Float(x, y, SHADOW_WIDTH, height-SHADOW_WIDTH);
