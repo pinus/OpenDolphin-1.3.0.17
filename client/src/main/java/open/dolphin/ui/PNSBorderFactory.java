@@ -40,10 +40,6 @@ public class PNSBorderFactory {
         return new MyClearBorder();
     }
 
-    public static Border createTextFieldBorder() {
-        return new PNSTextFieldBorder();
-    }
-
     public static Border createGroupBoxBorder(Insets borderInsets) {
         return new ImageBevelBorder(GUIConst.ICON_BORDER_GROUPBOX_18, new Insets(7,7,7,7), borderInsets);
     }

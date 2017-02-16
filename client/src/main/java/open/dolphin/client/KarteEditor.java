@@ -6,9 +6,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.io.*;
-import java.util.List;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.TooManyListenersException;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
@@ -18,6 +18,7 @@ import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.event.FinishListener;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.*;
 import open.dolphin.message.MMLHelper;
@@ -32,7 +33,6 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
-import open.dolphin.event.FinishListener;
 
 /**
  * 2号カルテクラス.
@@ -605,7 +605,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             params.setSendClaim(sendClaim);
 
             Window parent = SwingUtilities.getWindowAncestor(this.getUI());
-            SaveDialog2 sd = new SaveDialog2(parent);
+            SaveDialog sd = new SaveDialog(parent);
             params.setAllowPatientRef(false);    // 患者の参照
             params.setAllowClinicRef(false);     // 診療履歴のある医療機関
             sd.setValue(params);
@@ -613,7 +613,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             params = sd.getValue();
 
             // 印刷枚数を保存する
-            if (params.getSelection() == SaveDialog2.SAVE) {
+            if (params.getSelection() == SaveDialog.SAVE) {
                 prefs.putInt("karte.print.count", params.getPrintCount());
             }
 
@@ -649,9 +649,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
             // キャンセルの場合はリターンする
             int selection = params.getSelection();
-            if (selection == SaveDialog2.SAVE || selection == SaveDialog2.TMP_SAVE) {
+            if (selection == SaveDialog.SAVE || selection == SaveDialog.TMP_SAVE) {
                 save2(params);
-            } else if (selection == SaveDialog2.DISPOSE) {
+            } else if (selection == SaveDialog.DISPOSE) {
                 // save 前に EditorFrame に Termination を送って dispose する
                 finListener.finished();
             }
