@@ -8,8 +8,8 @@ package open.dolphin.util;
  */
 public final class StringTool {
 
-    private static final Character[] HIRAGANA = { 'あ', 'ん'};
-    private static final Character[] KATAKANA = { 'ァ', 'ヴ'}; // 'ン' の後に 'ヴ'
+    private static final Character[] HIRAGANA = { 'ぁ', 'ゟ'};
+    private static final Character[] KATAKANA = { 'ァ', 'ヾ'};
 
     private static final Character[] ZENKAKU_UPPER = {'Ａ', 'Ｚ'};
     private static final Character[] ZENKAKU_LOWER = {'ａ', 'ｚ'};
@@ -179,7 +179,7 @@ public final class StringTool {
     }
 
     /**
-     * 文字列 s の全角アルファベットを全角に変換する.
+     * 文字列 s の半角アルファベットを全角に変換する.
      * @param s
      * @return
      */
@@ -200,7 +200,7 @@ public final class StringTool {
     }
 
     /**
-     * 文字列 s のアルファベットを半角に変換する.
+     * 文字列 s の全角アルファベットを半角に変換する.
      * @param s
      * @return
      */

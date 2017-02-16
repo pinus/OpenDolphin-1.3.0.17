@@ -2,23 +2,23 @@ package open.dolphin.laf;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.Collections;
-import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTree;
+import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTreeUI;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  *
@@ -90,41 +90,44 @@ public class MyTreeUI extends BasicTreeUI {
     }
 
     private Rectangle getPathBounds(TreePath path, Insets insets, Rectangle bounds) {
-    Rectangle b = treeState.getBounds(path, bounds);
-    if(b != null) {
-      b.width = tree.getWidth();
-      b.y += insets.top;
+        Rectangle b = treeState.getBounds(path, bounds);
+        if(b != null) {
+            b.width = tree.getWidth();
+            b.y += insets.top;
+        }
+        return b;
     }
-    return b;
-  }
 
-  private class CellRenderer extends DefaultTreeCellRenderer {
+    private class CellRenderer extends DefaultTreeCellRenderer {
         private static final long serialVersionUID = 1L;
 
-  }
+        @Override
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected,
+            boolean expanded, boolean leaf, int row, boolean hasFocus) {
+            JLabel l = (JLabel) super.getTreeCellRendererComponent(tree, value, leaf, expanded, leaf, row, hasFocus);
+
+            l.setToolTipText("value = " + value);
+            return l;
+        }
+    }
 
 
-  public static void main(String[] arg) {
-      UIManager.put("TreeUI", MyTreeUI.class.getName());
+    public static void main(String[] arg) {
+        UIManager.put("TreeUI", MyTreeUI.class.getName());
 
-      JFrame f = new JFrame();
-      f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-      JTree tree = new JTree();
-      tree.setPreferredSize(new Dimension(300,400));
-      tree.setRootVisible(false);
+        JTree tree = new JTree();
+        ToolTipManager.sharedInstance().registerComponent(tree);
+        tree.setPreferredSize(new Dimension(300,400));
+        tree.setRootVisible(false);
 
-      DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
-      List<DefaultMutableTreeNode> nodes = Collections.list(root.breadthFirstEnumeration());
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-      nodes.forEach(node -> {
-          JLabel l = new JLabel(node.toString());
-          node.setUserObject(l.getText());
-      });
-
-      f.add(tree, BorderLayout.CENTER);
-      f.pack();
-      f.setLocation(300, 100);
-      f.setVisible(true);
-  }
+        f.add(tree, BorderLayout.CENTER);
+        f.pack();
+        f.setLocation(300, 100);
+        f.setVisible(true);
+    }
 }
