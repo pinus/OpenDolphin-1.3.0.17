@@ -122,14 +122,21 @@ public class BasicInfoInspector implements IInspector {
     public void update() {
         PatientModel patient = context.getPatient();
         String kanjiName = patient.getFullName();
-        String kanaName = "（" + patient.getKanaName() + "）";
 
-        // 名前が長い場合は，カナ名を圧縮する
-        if (kanjiName.length() + kanaName.length() > 15) {
-            //kanaName = StringTool.zenkakuKatakanaToHankakuKatakana(kanaName);
-            float sy = (float) (15.5 - kanjiName.length()) / kanaName.length();
-            Font font = nameLabel.getFont().deriveFont(AffineTransform.getScaleInstance(sy, 1));
-            kanaLabel.setFont(font);
+        String kanaName = "";
+
+        // kanjiName が全てカタカナの場合以外は kanaName を表示する
+        String test = kanjiName.replaceAll("[　,\\s]", ""); // スペースを除去
+
+        if (! StringTool.isAllKatakana(test)) {
+            kanaName = "（" + patient.getKanaName() + "）";
+
+            // 名前が長い場合は，カナ名を圧縮する
+            if (kanjiName.length() + kanaName.length() > 15) {
+                float sy = (float) (15.5 - kanjiName.length()) / kanaName.length();
+                Font font = nameLabel.getFont().deriveFont(AffineTransform.getScaleInstance(sy, 1));
+                kanaLabel.setFont(font);
+            }
         }
 
         nameLabel.setText(kanjiName);

@@ -4,11 +4,12 @@ package open.dolphin.util;
  * Utilities to handle String.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public final class StringTool {
 
     private static final Character[] HIRAGANA = { 'あ', 'ん'};
-    private static final Character[] KATAKANA = { 'ア', 'ン'};
+    private static final Character[] KATAKANA = { 'ァ', 'ヴ'}; // 'ン' の後に 'ヴ'
 
     private static final Character[] ZENKAKU_UPPER = {'Ａ', 'Ｚ'};
     private static final Character[] ZENKAKU_LOWER = {'ａ', 'ｚ'};
@@ -48,10 +49,19 @@ public final class StringTool {
      * @return
      */
     public static boolean isKatakana(char c) {
-        // ア 12449 12353 半角
-        // ン 12531
+        // ア 12449 (12353 半角)
+        // ン 12531　ヴ 12532
         Character test = c;
         return (test.compareTo(KATAKANA[0]) >= 0 && test.compareTo(KATAKANA[1]) <= 0);
+    }
+
+    /**
+     * 文字列 target が全てカタカナかどうか.
+     * @param target
+     * @return
+     */
+    public static boolean isAllKatakana(String target) {
+        return target.chars().allMatch(c -> isKatakana((char)c));
     }
 
     /**
@@ -90,15 +100,12 @@ public final class StringTool {
     }
 
     /**
-     * 文字列 str が全て半角数字かどうか.
-     * @param str
+     * 文字列 target が全て半角数字かどうか.
+     * @param target
      * @return
      */
-    public static boolean isAllDigit(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            if (!Character.isDigit(str.charAt(i))) { return false; }
-        }
-        return true;
+    public static boolean isAllDigit(String target) {
+        return target.chars().allMatch(Character::isDigit);
     }
 
     /**

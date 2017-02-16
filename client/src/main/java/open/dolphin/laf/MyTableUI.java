@@ -1,10 +1,8 @@
 package open.dolphin.laf;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.JComponent;
-import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTableUI;
@@ -19,7 +17,7 @@ public class MyTableUI extends BasicTableUI {
     public static ComponentUI createUI(JComponent c) {
         return new MyTableUI();
     }
-    
+
     /**
      *  ストライプなテーブルUI
      * @author masuda, Masuda Naika

@@ -1,42 +1,50 @@
 package open.dolphin.laf;
 
-import com.sun.java.swing.plaf.windows.WindowsTreeUI;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.basic.BasicTreeUI;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-import open.dolphin.client.ClientContext;
 
 /**
  *
  * @author pns
  */
-public class MyTreeUI extends WindowsTreeUI {
+public class MyTreeUI extends BasicTreeUI {
 
-    private static final Color DEFAULT_ODD_COLOR = ClientContext.getColor("color.odd");
-    private static final Color DEFAULT_EVEN_COLOR = ClientContext.getColor("color.even");
+    private static final Color DEFAULT_ODD_COLOR = Color.WHITE;
+    private static final Color DEFAULT_EVEN_COLOR = new Color(237,243,254);
     private static final Color[] ROW_COLORS = {DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR};
-    
+
     public static ComponentUI createUI(JComponent c) {
         final JTree t = (JTree) c;
         // tree が展開されたときにバックグラウンドがみだれるのの workaround
-        t.addTreeSelectionListener(new TreeSelectionListener(){
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                t.repaint();
-            }
-        });
+        //t.addTreeSelectionListener(e -> t.repaint());
+
         return new MyTreeUI();
     }
 
-    /**
-     * ストライプな TreeUI
-     * @author pns
-     */
+    @Override
+    public void installUI(JComponent c) {
+        super.installUI(c);
+        JTree t = (JTree) c;
+        t.setCellRenderer(new CellRenderer());
+    }
+
     @Override
     public void paint(Graphics g, JComponent c) {
         // get the row index at the top of the clip bounds (the first row to paint).
@@ -52,38 +60,71 @@ public class MyTreeUI extends WindowsTreeUI {
         while (topY < g.getClipBounds().y + g.getClipBounds().height) {
             int bottomY = topY + tree.getRowHeight();
             int row = tree.getRowForLocation(g.getClipBounds().width-1, topY);
-            
-            if (tree.isRowSelected(row)) g.setColor(((DefaultTreeCellRenderer)tree.getCellRenderer()).getBackgroundSelectionColor());
-            else g.setColor(ROW_COLORS[currentRow & 1]);
+
+            if (tree.isRowSelected(row)) {
+                g.setColor(((DefaultTreeCellRenderer)tree.getCellRenderer()).getBackgroundSelectionColor());
+            } else {
+                g.setColor(ROW_COLORS[currentRow & 1]);
+            }
 
             g.fillRect(g.getClipBounds().x, topY, g.getClipBounds().width, bottomY);
             topY = bottomY;
             currentRow++;
         }
-        
+
         super.paint(g, c);
     }
-    
+
     /**
-     * http://terai.xrea.jp/Swing/TreeRowSelection.html
+     * 行選択.
      * @param tree
      * @param path
-     * @return 
+     * @return
      */
-    @Override 
+    @Override
     public Rectangle getPathBounds(JTree tree, TreePath path) {
-    if(tree != null && treeState != null) {
-      return getPathBounds(path, tree.getInsets(), new Rectangle());
+        if(tree != null && treeState != null) {
+            return getPathBounds(path, tree.getInsets(), new Rectangle());
+        }
+        return null;
     }
-    return null;
+
+    private Rectangle getPathBounds(TreePath path, Insets insets, Rectangle bounds) {
+    Rectangle b = treeState.getBounds(path, bounds);
+    if(b != null) {
+      b.width = tree.getWidth();
+      b.y += insets.top;
+    }
+    return b;
   }
-    
-  private Rectangle getPathBounds(TreePath path, Insets insets, Rectangle bounds) {
-    bounds = treeState.getBounds(path, bounds);
-    if(bounds != null) {
-      bounds.width = tree.getWidth();
-      bounds.y += insets.top;
-    }
-    return bounds;
+
+  private class CellRenderer extends DefaultTreeCellRenderer {
+        private static final long serialVersionUID = 1L;
+
+  }
+
+
+  public static void main(String[] arg) {
+      UIManager.put("TreeUI", MyTreeUI.class.getName());
+
+      JFrame f = new JFrame();
+      f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+      JTree tree = new JTree();
+      tree.setPreferredSize(new Dimension(300,400));
+      tree.setRootVisible(false);
+
+      DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
+      List<DefaultMutableTreeNode> nodes = Collections.list(root.breadthFirstEnumeration());
+
+      nodes.forEach(node -> {
+          JLabel l = new JLabel(node.toString());
+          node.setUserObject(l.getText());
+      });
+
+      f.add(tree, BorderLayout.CENTER);
+      f.pack();
+      f.setLocation(300, 100);
+      f.setVisible(true);
   }
 }
