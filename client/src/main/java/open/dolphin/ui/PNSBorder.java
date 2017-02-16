@@ -22,6 +22,7 @@ public class PNSBorder {
     protected static final Color INSIDE_GRAY_COLOR = new Color(255,255,255);
     protected static final Color INSIDE_MIDDLE_GRAY_COLOR = new Color(255,255,255);
     protected static final Color MIDDLE_GRAY_COLOR = new Color(200,200,200);
+
     protected static final Color APEX_GRAY_COLOR = new Color(235,235,235);
 
     // blue selected color
@@ -55,7 +56,7 @@ public class PNSBorder {
      */
     public static void drawRect(int level, Color color, Graphics g, int x, int y, int width, int height) {
         g.setColor(color);
-        g.drawRect(x+level, y+level, width-1-level*2, height-1-level*2);
+        g.drawRect(x+level, y+level, width-level*2, height-level*2);
     }
 
     /**
@@ -72,7 +73,7 @@ public class PNSBorder {
      */
     public static void drawRoundRect(int level, Color color, Graphics g, int x, int y, int width, int height, int arcx, int arcy) {
         g.setColor(color);
-        g.drawRoundRect(x+level, y+level, width-1-level*2, height-1-level*2, arcx, arcy);
+        g.drawRoundRect(x+level, y+level, width-level*2, height-level*2, arcx, arcy);
     }
 
     /**

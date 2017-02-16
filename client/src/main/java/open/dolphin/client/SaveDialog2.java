@@ -28,7 +28,7 @@ import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.ui.sheet.JSheet;
+import open.dolphin.ui.MyJSheet;
 
 /**
  * SaveDialog2
@@ -54,7 +54,7 @@ public class SaveDialog2 {
 
     private Window parent;
     private JOptionPane pane;
-    private JSheet dialog;
+    private MyJSheet dialog;
 
     private JTextField titleField;
     private JComboBox titleCombo;
@@ -155,7 +155,7 @@ public class SaveDialog2 {
         tmpButton.setEnabled(false);
         tmpButton.setToolTipText("診療行為は送信しません。");
 
-        dialog = JSheet.createDialog(pane, parent);
+        dialog = MyJSheet.createDialog(pane, parent);
         dialog.setFocusTraversalPolicy(new LayoutFocusTraversalPolicy(){
             private static final long serialVersionUID = 1L;
             @Override

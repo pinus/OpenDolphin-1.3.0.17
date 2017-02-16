@@ -207,7 +207,7 @@ public class ChartToolBar extends JToolBar {
 
                 if (popup.getComponentCount() != 0) {
                     Point loc = keywordFld.getLocation();
-                    popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight() - 10);
+                    popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight());
                 }
             }
         });

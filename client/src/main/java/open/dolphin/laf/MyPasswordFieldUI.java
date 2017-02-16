@@ -33,9 +33,9 @@ public class MyPasswordFieldUI extends BasicPasswordFieldUI {
         super.installUI(c);
         tf = (JPasswordField) c;
 
-        selectedBorder = new CompoundBorder( PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0,3,0,3));
+        selectedBorder = new CompoundBorder( PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0,5,0,5));
         //border = new CompoundBorder( PNSBorderFactory.createSelectedGrayBorder(), new EmptyBorder(0,3,0,3));
-        border = new EmptyBorder(0,6,0,6);
+        border = new EmptyBorder(0,8,0,8);
 
         c.setBackground(Color.WHITE);
         c.setOpaque(false);

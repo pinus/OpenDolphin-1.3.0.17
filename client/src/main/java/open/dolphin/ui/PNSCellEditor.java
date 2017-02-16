@@ -27,8 +27,6 @@ public class PNSCellEditor extends DefaultCellEditor {
     public PNSCellEditor(JTextField textField) {
         super(textField);
 
-        textField.setBorder(PNSBorderFactory.createTextFieldBorder());
-
         // selectAll on FocusGain
         textField.addFocusListener(new TextFieldFocusListener());
 
