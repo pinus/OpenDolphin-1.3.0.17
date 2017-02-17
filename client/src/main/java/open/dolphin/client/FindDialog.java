@@ -53,7 +53,7 @@ public class FindDialog {
         // TextField
         searchTextField = new CompletableSearchField(20);
         searchTextField.setPreferredSize(new Dimension(10,26));
-        searchTextField.setPreferences(Preferences.userNodeForPackage(this.getClass()));
+        searchTextField.setPreferences(Preferences.userNodeForPackage(FindDialog.class).node(FindDialog.class.getName()));
         searchTextField.setLabel("カルテ検索");
 
         content.add(searchTextField);

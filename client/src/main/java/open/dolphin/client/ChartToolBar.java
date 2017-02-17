@@ -41,7 +41,7 @@ public class ChartToolBar extends JToolBar {
         super();
         window = chart.getContext();
         mediator = chart.getChartMediator();
-        prefs = Preferences.userNodeForPackage(this.getClass());
+        prefs = Preferences.userNodeForPackage(ChartToolBar.class).node(ChartToolBar.class.getName());
 
         realChart = chart instanceof ChartImpl ?
             (ChartImpl) chart : (ChartImpl) ((EditorFrame)chart).getChart();
