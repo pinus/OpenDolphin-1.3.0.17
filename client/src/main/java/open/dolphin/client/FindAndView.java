@@ -293,14 +293,14 @@ public class FindAndView {
     }
 
     private void showNotFoundDialog(String title, String message) {
-        MyJSheet.showMessageDialog(scrollerPanel,
+        MyJSheet.showMessageDialog(scrollerPanel.getParent(),
                 "「" + searchText + "」" + message,
                 title,
                 JOptionPane.ERROR_MESSAGE);
     }
 
     private int showConfirmDialog(String message) {
-        return MyJSheet.showConfirmDialog( scrollerPanel,
+        return MyJSheet.showConfirmDialog( scrollerPanel.getParent(),
                 message,
                 "",
                 JOptionPane.YES_NO_OPTION,
