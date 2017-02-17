@@ -44,7 +44,7 @@ public class SettingForMac {
         //System.setProperty("Quaqua.design","snowleopard");
         //System.setProperty("Quaqua.design","mountainlion");
         System.setProperty("Quaqua.design","elcapitan");
-
+        System.setProperty("Quaqua.requestFocusEnabled", "true");
         //java.util.Set<String> includes = new java.util.HashSet<String>();
         java.util.Set<String> excludes = new java.util.HashSet<>();
         excludes.add("ScrollBar");

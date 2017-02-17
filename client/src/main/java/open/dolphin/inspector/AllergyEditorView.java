@@ -43,12 +43,14 @@ public class AllergyEditorView extends javax.swing.JPanel {
         jLabel1.setName("jLabel1"); // NOI18N
 
         factorFld.setName("factorFld"); // NOI18N
+        factorFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setName("jLabel3"); // NOI18N
 
         memoFld.setName("memoFld"); // NOI18N
+        memoFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         reactionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "severe", "moderate", "mild", "noReaction" }));
         reactionCombo.setName("reactionCombo"); // NOI18N
@@ -56,6 +58,7 @@ public class AllergyEditorView extends javax.swing.JPanel {
         jLabel4.setName("jLabel4"); // NOI18N
 
         identifiedFld.setName("identifiedFld"); // NOI18N
+        identifiedFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

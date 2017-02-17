@@ -10,12 +10,12 @@ import java.util.prefs.Preferences;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import open.dolphin.delegater.DocumentDelegater;
-import open.dolphin.impl.pvt.PvtListener;
 import open.dolphin.helper.Task;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.impl.care.CareMapDocument;
 import open.dolphin.impl.lbtest.LaboTestBean;
 import open.dolphin.impl.pinfo.PatientInfoDocument;
+import open.dolphin.impl.pvt.PvtListener;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DiagnosisInspector;
 import open.dolphin.inspector.DocumentHistory;
@@ -577,6 +577,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         });
 
         // Frame の大きさをストレージからロードする
+        frame.pack(); // pack しないと，TextField に文字を入力してリターンを押した後にレイアウトがずれる
         int x = 5;
         int y = 20;
         int width = 900;

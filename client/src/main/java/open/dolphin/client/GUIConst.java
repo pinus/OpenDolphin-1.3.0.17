@@ -125,8 +125,8 @@ public class GUIConst {
     public static final int DEFAULT_WINDOWMENU_POSITION = 5;
 
     // JList，JTable のデフォルト row height
-    public static final int DEFAULT_LIST_ROW_HEIGHT = 16;
-    public static final int DEFAULT_TABLE_ROW_HEIGHT = 16;
+    public static final int DEFAULT_LIST_ROW_HEIGHT = 18;
+    public static final int DEFAULT_TABLE_ROW_HEIGHT = 18;
 
     // レンダラのインデント用のボーダー
     public static final Border RENDERER_BORDER_NARROW = BorderFactory.createEmptyBorder(0, 6, 0, 6);

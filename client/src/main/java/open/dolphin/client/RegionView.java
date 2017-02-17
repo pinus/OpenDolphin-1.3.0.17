@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -44,6 +43,7 @@ public class RegionView extends javax.swing.JDialog {
 
         // マッピング作成
         generateMap();
+        buttonMap.keySet().forEach(key -> buttonMap.get(key).setFocusable(false));
 
         input.addActionListener(e -> {
             cancelled = false;
@@ -680,7 +680,7 @@ public class RegionView extends javax.swing.JDialog {
 
         for (ClaimItem c : items) {
             JRadioButton b = buttonMap.get(c.getCode());
-            if (b != null) b.setSelected(true);
+            if (b != null) { b.setSelected(true); }
         }
     }
 
@@ -719,10 +719,7 @@ public class RegionView extends javax.swing.JDialog {
      * すべてのボタンをクリア
      */
     private void clearAllButtons() {
-        Set<String> set = buttonMap.keySet();
-        for (String key : set) {
-            buttonMap.get(key).setSelected(false);
-        }
+        buttonMap.keySet().forEach((key) -> buttonMap.get(key).setSelected(false));
     }
 
     /**

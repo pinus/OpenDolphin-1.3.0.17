@@ -190,7 +190,7 @@ public class ChartToolBar extends JToolBar {
         keywordFld.setLabel("病名検索");
         keywordFld.setPreferences(prefs);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
-        keywordFld.setPreferredSize(new Dimension(500,24));
+        keywordFld.setPreferredSize(new Dimension(10,26));
         keywordFld.addActionListener(e -> {
             String text = keywordFld.getText();
 

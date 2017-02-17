@@ -1,17 +1,17 @@
 package open.dolphin.client;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeSupport;
+import java.util.prefs.Preferences;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJSheet;
 
@@ -33,11 +33,9 @@ public class FindDialog {
     private static String searchText;
     private JCheckBox soaBox;
     private JCheckBox pBox;
-    private JTextField searchTextField;
+    private CompletableSearchField searchTextField;
     private JButton searchButton;
     private JButton cancelButton;
-
-    private PropertyChangeSupport boundSupport;
 
     public FindDialog(Frame parentComponent) {
         parent = parentComponent;
@@ -53,8 +51,11 @@ public class FindDialog {
 
         JPanel content = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // TextField
-        searchTextField = new JTextField(20);
-        content.add(new JLabel("検索語"));
+        searchTextField = new CompletableSearchField(20);
+        searchTextField.setPreferredSize(new Dimension(10,26));
+        searchTextField.setPreferences(Preferences.userNodeForPackage(this.getClass()));
+        searchTextField.setLabel("カルテ検索");
+
         content.add(searchTextField);
         // CheckBox
         soaBox = new JCheckBox("所見・症状欄");

@@ -39,10 +39,13 @@ public class PhysicalEditorView extends javax.swing.JPanel {
         setName("Form"); // NOI18N
 
         heightFld.setName("heightFld"); // NOI18N
+        heightFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         weightFld.setName("weightFld"); // NOI18N
+        weightFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         identifiedDateFld.setName("identifiedDateFld"); // NOI18N
+        identifiedDateFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         jLabel1.setName("jLabel1"); // NOI18N
 
