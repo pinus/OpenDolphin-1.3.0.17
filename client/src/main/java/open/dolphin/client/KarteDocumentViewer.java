@@ -100,7 +100,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         FindDialog sheet = new FindDialog(parent);
         sheet.start();
         String searchText = sheet.getSearchText();
-        if (!searchText.equals("")) {
+        if (searchText != null && ! searchText.equals("")) {
             findAndView.showFirst(searchText, sheet.isSoaBoxOn(), sheet.isPBoxOn(), scrollerPanel);
         }
     }
