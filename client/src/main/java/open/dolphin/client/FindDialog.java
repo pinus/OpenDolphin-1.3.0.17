@@ -30,7 +30,7 @@ public class FindDialog {
     private boolean isSoaBoxChecked; // soaBox がチェックされているかどうか
     private boolean isPBoxChecked; // pBox がチェックされているかどうか
 
-    private static String searchText;
+    private String searchText;
     private JCheckBox soaBox;
     private JCheckBox pBox;
     private CompletableSearchField searchTextField;

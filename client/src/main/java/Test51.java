@@ -1,3 +1,4 @@
+import java.awt.Dialog;
 import javax.swing.*;
 
 /**
@@ -6,16 +7,20 @@ import javax.swing.*;
  */
 public class Test51 {
     public static void main (String[] argv) {
-        JFrame frame = new JFrame();
-        JTextField tf = new JTextField();
-        tf.addActionListener(e -> {
-            String text = tf.getText();
-            int code = (int) text.charAt(0);
-            System.out.printf("%x%n", code);
+        JDialog d = new JDialog();
+        d.setModal(true);
+
+        JButton b = new JButton("Open Frame");
+        b.addActionListener(e -> {
+            JFrame frame = new JFrame();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(200, 200);
+            frame.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+            frame.setVisible(true);
         });
-        frame.add(tf);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+
+        d.add(b);
+        d.pack();
+        d.setVisible(true);
     }
 }

@@ -3,6 +3,7 @@ package open.dolphin.ui;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -74,6 +75,7 @@ public class CompletableJTextField extends JTextField
         completionList.setBackground(new Color(255,255,240));
 
         listWindow = new JWindow();
+        listWindow.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
         listWindow.setOpacity(0.7f);
         listWindow.getContentPane().setLayout(new BorderLayout());
         listWindow.getContentPane().add(completionList, BorderLayout.CENTER);
