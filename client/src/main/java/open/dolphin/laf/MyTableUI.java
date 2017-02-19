@@ -37,22 +37,22 @@ public class MyTableUI extends BasicTableUI {
         boolean isStriped = property != null && property.equals("striped");
 
         if (isStriped) {
-            Rectangle r = g.getClipBounds();
+            Rectangle clip = g.getClipBounds();
 
-            int[] top = getTopY(r.y);
+            int[] top = getTopY(clip.y);
             int topY = top[0];
             int currentRow = top[1]-1;
 
             // ClipBounds.y から topY まで塗る
             g.setColor(ROW_COLORS[currentRow & 1]);
-            g.fillRect(r.x, r.y, r.width, topY);
+            g.fillRect(clip.x, clip.y, clip.width, topY);
             currentRow ++;
 
             // 続きを塗る
-            while (topY < r.y + r.height) {
+            while (topY < clip.y + clip.height) {
                 int bottomY = topY + table.getRowHeight();
                 g.setColor(ROW_COLORS[currentRow & 1]);
-                g.fillRect(r.x, topY, r.width, bottomY);
+                g.fillRect(clip.x, topY, clip.width, bottomY);
                 topY = bottomY;
                 currentRow++;
             }
@@ -66,15 +66,18 @@ public class MyTableUI extends BasicTableUI {
      * @return
      */
     private int[] getTopY(int clipY) {
-        int rowHeight = table.getRowHeight();
+
         if (table.getRowCount() > 0) {
+            int rowHeight = table.getRowHeight();
             int row = 0;
             int ｙ = table.getCellRect(0, 0, true).y;
+
             while (ｙ < clipY) {
                 ｙ += rowHeight;
                 row++;
             }
             return new int[]{ ｙ, row };
+
         } else {
             return new int[]{ 0, 0 };
         }

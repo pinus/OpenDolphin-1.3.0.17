@@ -62,11 +62,13 @@ public class MyListUI extends BasicListUI {
      * @return
      */
     private int[] getTopY(int clipY) {
+
         int listSize = list.getModel().getSize();
 
         if (listSize != 0) {
             int row = 0;
             int y = list.getCellBounds(row, row).y;
+            
             while (y < clipY) {
                 y += getCellHeight(row);
                 row++;

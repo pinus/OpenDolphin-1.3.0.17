@@ -2,21 +2,16 @@ package open.dolphin.laf;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.Point;
 import java.awt.Rectangle;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTreeUI;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -29,12 +24,9 @@ public class MyTreeUI extends BasicTreeUI {
     private static final Color DEFAULT_ODD_COLOR = Color.WHITE;
     private static final Color DEFAULT_EVEN_COLOR = new Color(237,243,254);
     private static final Color[] ROW_COLORS = {DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR};
+    private static final int DEFAULT_ROW_HEIGHT = 22;
 
     public static ComponentUI createUI(JComponent c) {
-        final JTree t = (JTree) c;
-        // tree が展開されたときにバックグラウンドがみだれるのの workaround
-        //t.addTreeSelectionListener(e -> t.repaint());
-
         return new MyTreeUI();
     }
 
@@ -42,75 +34,60 @@ public class MyTreeUI extends BasicTreeUI {
     public void installUI(JComponent c) {
         super.installUI(c);
         JTree t = (JTree) c;
-        t.setCellRenderer(new CellRenderer());
+        t.putClientProperty("Quaqua.Tree.style", "striped");
+        t.setRowHeight(DEFAULT_ROW_HEIGHT);
     }
 
     @Override
     public void paint(Graphics g, JComponent c) {
-        // get the row index at the top of the clip bounds (the first row to paint).
-        Point p = g.getClipBounds().getLocation();
-        int rowAtPoint = tree.getRowForLocation(p.x, p.y);
-        // get the y coordinate of the first row to paint. if there are no rows in the table, start
-        // painting at the top of the supplied clipping bounds.
-        int topY = rowAtPoint < 0 ? g.getClipBounds().y : tree.getRowBounds(rowAtPoint).y;
+        Object property = tree.getClientProperty("Quaqua.Tree.style");
+        boolean isStriped = property != null && property.equals("striped");
 
-        // create a counter variable to hold the current row. if there are no rows in the table,
-        // start the counter at 0.
-        int currentRow = rowAtPoint < 0 ? 0 : rowAtPoint;
-        while (topY < g.getClipBounds().y + g.getClipBounds().height) {
-            int bottomY = topY + tree.getRowHeight();
-            int row = tree.getRowForLocation(g.getClipBounds().width-1, topY);
+        if (isStriped) {
+            Rectangle clip = g.getClipBounds();
+            int[] top = getTopY(clip.y);
+            int topY = top[0];
+            int currentRow = top[1]-1;
 
-            if (tree.isRowSelected(row)) {
-                g.setColor(((DefaultTreeCellRenderer)tree.getCellRenderer()).getBackgroundSelectionColor());
-            } else {
+            // ClipBounds.y から topY まで塗る
+            g.setColor(ROW_COLORS[currentRow & 1]);
+            g.fillRect(clip.x, clip.y, clip.width, topY);
+            currentRow ++;
+
+            // 続きを塗る
+            while (topY < clip.y + clip.height) {
+                int bottomY = topY + tree.getRowHeight();
                 g.setColor(ROW_COLORS[currentRow & 1]);
+                g.fillRect(clip.x, topY, clip.width, bottomY);
+                topY = bottomY;
+                currentRow++;
             }
-
-            g.fillRect(g.getClipBounds().x, topY, g.getClipBounds().width, bottomY);
-            topY = bottomY;
-            currentRow++;
         }
-
         super.paint(g, c);
     }
 
     /**
-     * 行選択.
-     * @param tree
-     * @param path
+     * ClipBound.y を越えた初めての Cell の Y 座標とその行数.
+     * @param clipY
      * @return
      */
-    @Override
-    public Rectangle getPathBounds(JTree tree, TreePath path) {
-        if(tree != null && treeState != null) {
-            return getPathBounds(path, tree.getInsets(), new Rectangle());
-        }
-        return null;
-    }
+    private int[] getTopY(int clipY) {
 
-    private Rectangle getPathBounds(TreePath path, Insets insets, Rectangle bounds) {
-        Rectangle b = treeState.getBounds(path, bounds);
-        if(b != null) {
-            b.width = tree.getWidth();
-            b.y += insets.top;
-        }
-        return b;
-    }
+        if (tree.getRowCount() > 0) {
+            int rowHeight = tree.getRowHeight();
+            int row = 0;
+            TreePath path = tree.getPathForRow(0);
+            int ｙ = tree.getPathBounds(path).y;
+            while (ｙ < clipY) {
+                ｙ += rowHeight;
+                row++;
+            }
+            return new int[]{ ｙ, row };
 
-    private class CellRenderer extends DefaultTreeCellRenderer {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected,
-            boolean expanded, boolean leaf, int row, boolean hasFocus) {
-            JLabel l = (JLabel) super.getTreeCellRendererComponent(tree, value, leaf, expanded, leaf, row, hasFocus);
-
-            l.setToolTipText("value = " + value);
-            return l;
+        } else {
+            return new int[]{ 0, 0 };
         }
     }
-
 
     public static void main(String[] arg) {
         UIManager.put("TreeUI", MyTreeUI.class.getName());
