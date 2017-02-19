@@ -2,47 +2,81 @@ package open.dolphin.laf;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import javax.swing.JComponent;
-import javax.swing.JViewport;
+import javax.swing.JTable;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTableUI;
 import open.dolphin.client.ClientContext;
 
+/**
+ * ストライプなテーブルUI.
+ * @autho pns
+ */
 public class MyTableUI extends BasicTableUI {
 
     private static final Color DEFAULT_ODD_COLOR = ClientContext.getColor("color.odd");
     private static final Color DEFAULT_EVEN_COLOR = ClientContext.getColor("color.even");
-    private static final Color[] ROW_COLORS = {DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR};
+    private static final Color[] ROW_COLORS = { DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR };
 
     public static ComponentUI createUI(JComponent c) {
         return new MyTableUI();
     }
 
-    /**
-     *  ストライプなテーブルUI
-     * @author masuda, Masuda Naika
-     * http://explodingpixels.wordpress.com/2008/10/05/making-a-jtable-fill-the-view-without-extension/
-     */
+    @Override
+    public void installUI(JComponent c) {
+        super.installUI(c);
+
+        JTable t = (JTable) c;
+        t.setFillsViewportHeight(true);
+    }
+
     @Override
     public void paint(Graphics g, JComponent c) {
-        if ( c.getParent() instanceof JViewport) {
-            // get the row index at the top of the clip bounds (the first row to paint).
-            int rowAtPoint = table.rowAtPoint(g.getClipBounds().getLocation());
-            // get the y coordinate of the first row to paint. if there are no rows in the table, start
-            // painting at the top of the supplied clipping bounds.
-            int topY = rowAtPoint < 0 ? g.getClipBounds().y : table.getCellRect(rowAtPoint, 0, true).y;
+        Object property = table.getClientProperty("Quaqua.Table.style");
+        boolean isStriped = property != null && property.equals("striped");
 
-            // create a counter variable to hold the current row. if there are no rows in the table,
-            // start the counter at 0.
-            int currentRow = rowAtPoint < 0 ? 0 : rowAtPoint;
-            while (topY < g.getClipBounds().y + g.getClipBounds().height) {
+        if (isStriped) {
+            Rectangle r = g.getClipBounds();
+
+            int[] top = getTopY(r.y);
+            int topY = top[0];
+            int currentRow = top[1]-1;
+
+            // ClipBounds.y から topY まで塗る
+            g.setColor(ROW_COLORS[currentRow & 1]);
+            g.fillRect(r.x, r.y, r.width, topY);
+            currentRow ++;
+
+            // 続きを塗る
+            while (topY < r.y + r.height) {
                 int bottomY = topY + table.getRowHeight();
                 g.setColor(ROW_COLORS[currentRow & 1]);
-                g.fillRect(g.getClipBounds().x, topY, g.getClipBounds().width, bottomY);
+                g.fillRect(r.x, topY, r.width, bottomY);
                 topY = bottomY;
                 currentRow++;
             }
         }
         super.paint(g, c);
+    }
+
+    /**
+     * ClipBound.y を越えた初めての Cell の Y 座標とその行数.
+     * @param clipY
+     * @return
+     */
+    private int[] getTopY(int clipY) {
+        int rowHeight = table.getRowHeight();
+        if (table.getRowCount() > 0) {
+            int row = 0;
+            int ｙ = table.getCellRect(0, 0, true).y;
+            while (ｙ < clipY) {
+                ｙ += rowHeight;
+                row++;
+            }
+            return new int[]{ ｙ, row };
+        } else {
+            return new int[]{ 0, 0 };
+        }
     }
 }
