@@ -2,29 +2,29 @@ package open.dolphin.order.tablepanel;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.TransferHandler;
 import javax.swing.table.TableCellRenderer;
 import open.dolphin.order.MasterItem;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.PatchedTransferHandler;
 
 /**
  * MasterItemTransferHandler.
  * @author Minagawa,Kazushi
  * @author pns
  */
-public class MasterItemTransferHandler extends PatchedTransferHandler {
+public class MasterItemTransferHandler extends TransferHandler {
     private static final long serialVersionUID = 4871088750931696219L;
 
     private final DataFlavor masterItemFlavor = MasterItemTransferable.masterItemFlavor;
@@ -33,8 +33,6 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
     private boolean shouldRemove;
     private int fromIndex;
     private int toIndex;
-
-    private JComponent draggedComp = null;
 
     @Override
     protected Transferable createTransferable(JComponent c) {
@@ -78,9 +76,6 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
 
     @Override
     protected void exportDone(JComponent c, Transferable data, int action) {
-        // doesn't work
-        // JTable table = (JTable) c;
-        // table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         shouldRemove = false;
         fromIndex = -1;
         toIndex = -1;
@@ -101,19 +96,18 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
                 }
             }
         }
-        // doesn't work
-        // dropTable.setCursor(isDropable? DragSource.DefaultMoveDrop: DragSource.DefaultMoveNoDrop);
         return isDropable;
     }
 
     /**
-     * 半透明 drag のために dragged component とマウス位置を保存する.
+     * 半透明の drag image 付き exportAsDrag.
      * @param comp
      * @param e
      * @param action
      */
     @Override
     public void exportAsDrag(JComponent comp, InputEvent e, int action) {
+        // 半透明の drag image フィードバックを作る
         JTable table = (JTable) comp;
         int row = table.getSelectedRow();
         int column = 1;
@@ -123,27 +117,8 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
         boolean isSelected = false;
         boolean hasFocus = true;
 
-        draggedComp = (JComponent) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        JLabel draggedComp = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         draggedComp.setSize(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row));
-
-        // calculate MousePosition
-        Rectangle cellBounds = table.getCellRect(row, column, true);
-        mousePosition = table.getMousePosition();
-        if (mousePosition != null) {
-            mousePosition.x -= cellBounds.x;
-            mousePosition.y -= cellBounds.y;
-        }
-        super.exportAsDrag(comp, e, action);
-    }
-
-    /**
-     * 半透明のフィードバックを返す.
-     * @param t
-     * @return
-     */
-    @Override
-    public Icon getVisualRepresentation(Transferable t) {
-        if (draggedComp == null) { return null; }
 
         int width = draggedComp.getWidth();
         int height = draggedComp.getHeight();
@@ -152,14 +127,25 @@ public class MasterItemTransferHandler extends PatchedTransferHandler {
         draggedComp.paint(g);
 
         // 文字列の長さに応じて幅を調節する
-        int stringWidth = g.getFontMetrics().stringWidth(((DefaultTableCellRenderer)draggedComp).getText());
-        if (stringWidth + 8< width) { // 8ドット余裕
-            width = stringWidth +8;
+        int stringWidth = g.getFontMetrics().stringWidth(draggedComp.getText());
+        if (stringWidth + 8 < width) { // 8ドット余裕
+            width = stringWidth + 8;
             image = image.getSubimage(0, 0, width, height);
         }
         g.setColor(Color.gray);
         g.drawRect(0, 0, width-1, height-1);
 
-        return new ImageIcon(image);
+        setDragImage(image);
+
+        // offset 計算
+        Rectangle cellRect = table.getCellRect(row, column, true);
+        Point offset = new Point(cellRect.x, cellRect.y);
+        Point mousePos = ((MouseEvent)e).getPoint();
+        offset.x -= mousePos.x;
+        offset.y -= mousePos.y;
+
+        setDragImageOffset(offset);
+
+        super.exportAsDrag(comp, e, action);
     }
 }

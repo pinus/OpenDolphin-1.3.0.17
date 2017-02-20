@@ -19,6 +19,8 @@ import javax.swing.TransferHandler;
  * drag and drop with transparent visual feed back.
  * @author http://bugs.sun.com/view_bug.do?bug_id=4816922 modified by pns.
  *
+ * MasterItemTransferHandler
+ *
  */
 public class PatchedTransferHandler extends TransferHandler implements Serializable {
     private static final long serialVersionUID = 1L;
