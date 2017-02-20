@@ -6,7 +6,6 @@ import javax.swing.*;
 import open.dolphin.delegater.RadiologyDelegater;
 import open.dolphin.infomodel.RadiologyMethodValue;
 import open.dolphin.order.IStampEditor;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSBorderFactory;
 
@@ -24,13 +23,12 @@ public class RadiologyTablePanel extends ItemTablePanel {
     @Override
     public JComponent createCenterPanel() {
         JTable table = getTable();
+        table.putClientProperty("Quaqua.Table.style", "striped");
 
         // スクローラ
         JScrollPane scroller = new JScrollPane(table);
         scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        AdditionalTableSettings.setOrderTable(table);
 
         // 放射線メソッドパネル
         RadiologyMethodPanel method = new RadiologyMethodPanel();

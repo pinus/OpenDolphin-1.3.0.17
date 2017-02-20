@@ -14,24 +14,27 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 /**
- * JOptionPane を quaqua の JSheet で置き換える.
- * Sheet の表示スピード調節：e.g. defaults write NSGlobalDomain NSWindowResizeTime 0.05 (default=0.2)
+ * JOptionPane を quaqua の JSheet で置き換える. Sheet の表示スピード調節：e.g. defaults write
+ * NSGlobalDomain NSWindowResizeTime 0.05 (default=0.2)
+ *
  * @author pns
  */
 public class MyJSheet extends JSheet {
+
     private static final long serialVersionUID = 1L;
     private static int answer;
 
     public MyJSheet(Frame frame) {
         super(frame);
     }
+
     public MyJSheet(Dialog dialog) {
         super(dialog);
     }
 
     /**
-     * SheetListener.
-     * answer にオプションをセットする. 0=OK, 1=いいえ, 2=キャンセル.
+     * SheetListener. answer にオプションをセットする. 0=OK, 1=いいえ, 2=キャンセル.
+     *
      * @param se
      */
     private static void listener(SheetEvent se) {
@@ -40,6 +43,7 @@ public class MyJSheet extends JSheet {
 
     /**
      * JOptionPane.showConfirmDialog 互換.
+     *
      * @param parentComponent
      * @param message
      * @param title
@@ -53,6 +57,7 @@ public class MyJSheet extends JSheet {
 
     /**
      * JOptionPane.showMessageDialog 互換.
+     *
      * @param parentComponent
      * @param message
      * @param title
@@ -64,6 +69,7 @@ public class MyJSheet extends JSheet {
 
     /**
      * JOptionPane.showOptionDialog 互換
+     *
      * @param parentComponent
      * @param message
      * @param title
@@ -86,7 +92,9 @@ public class MyJSheet extends JSheet {
     }
 
     /**
-     * dialog = jop.createDialog を MyJSheet.createDialog(jop, parent) と置き換えるだけで JSheet になる.
+     * dialog = jop.createDialog を MyJSheet.createDialog(jop, parent) と置き換えるだけで
+     * JSheet になる.
+     *
      * @param pane
      * @param parentComponent
      * @return MyJSheet
@@ -117,10 +125,10 @@ public class MyJSheet extends JSheet {
             // Let the defaultCloseOperation handle the closing
             // if the user closed the window without selecting a button
             // (newValue = null in that case).  Otherwise, close the sheet.
-            if (sheet.isVisible() && event.getSource() == pane &&
-                    (event.getPropertyName().equals(JOptionPane.VALUE_PROPERTY)) &&
-                    event.getNewValue() != null &&
-                    event.getNewValue() != JOptionPane.UNINITIALIZED_VALUE) {
+            if (sheet.isVisible() && event.getSource() == pane
+                    && (event.getPropertyName().equals(JOptionPane.VALUE_PROPERTY))
+                    && event.getNewValue() != null
+                    && event.getNewValue() != JOptionPane.UNINITIALIZED_VALUE) {
                 sheet.setVisible(false);
                 sheet.dispose();
                 sheet.fireOptionSelected(pane);
@@ -133,6 +141,7 @@ public class MyJSheet extends JSheet {
 
     /**
      * その component に既に JSheet が表示されているかどうか
+     *
      * @param parentComponent
      * @return
      */

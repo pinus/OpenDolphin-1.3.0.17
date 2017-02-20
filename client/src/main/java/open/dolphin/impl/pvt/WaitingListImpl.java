@@ -30,7 +30,6 @@ import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJSheet;
 import open.dolphin.ui.PNSBadgeTabbedPane;
@@ -284,9 +283,6 @@ public class WaitingListImpl extends AbstractMainComponent {
         setCheckInterval(checkInterval);
         // 来院数を設定する
         setPvtCount(0);
-
-        // 追加のテーブル設定
-        AdditionalTableSettings.setTable(pvtTable);
    }
 
     /**

@@ -306,6 +306,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // 傷病歴テーブルを生成する
         diagTable = new DiagnosisDocumentTable(tableModel);
+        diagTable.putClientProperty("Quaqua.Table.style", "striped");
         tableModel.setDiagTable(diagTable);
         // sorter を設定
         TableRowSorter<DiagnosisDocumentTableModel> sorter = new TableRowSorter<DiagnosisDocumentTableModel>(tableModel) {
@@ -441,9 +442,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             }
         });
         dt.setActive(true);
-
-        // table 以外の部分をクリックしたときの処置他
-        AdditionalTableSettings.setTable(diagTable);
 
         return p;
     }

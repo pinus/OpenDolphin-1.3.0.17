@@ -109,6 +109,7 @@ public class PatientSearchPanel extends MainComponentPanel {
         MainPanel mainPanel = getMainPanel();
 
         table = new AddressTipsTable();
+        table.putClientProperty("Quaqua.Table.style", "striped");
         MyJScrollPane scroller = new MyJScrollPane(table);
         mainPanel.add(scroller);
 

@@ -3,7 +3,6 @@ package open.dolphin.impl.care;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.client.*;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
@@ -78,6 +77,7 @@ public final class OrderHistoryPanel extends JPanel {
         };
 
         table = new JTable(tModel);
+        table.putClientProperty("Quaqua.Table.style", "striped");
         table.setDefaultRenderer(Object.class, new IndentTableCellRenderer());
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -103,7 +103,6 @@ public final class OrderHistoryPanel extends JPanel {
         cs.setPreferredSize(contentSize);
         cs.setMaximumSize(contentSize);
         add(cs, BorderLayout.EAST);
-        AdditionalTableSettings.setTable(table);
     }
 
     public void setColumnWidth(int[] columnWidth) {

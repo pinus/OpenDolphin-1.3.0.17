@@ -20,7 +20,6 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
@@ -80,7 +79,7 @@ public class PhysicalInspector implements IInspector {
         // 身長体重テーブルを生成する
         tableModel = new ObjectReflectTableModel<>(reflectList);
         view.getTable().setModel(tableModel);
-        view.getTable().setRowHeight(GUIConst.DEFAULT_TABLE_ROW_HEIGHT);
+        view.getTable().putClientProperty("Quaqua.Table.style", "striped");
         view.getTable().setDefaultRenderer(Object.class, new IndentTableCellRenderer(IndentTableCellRenderer.NARROW));
         view.getTable().getColumnModel().getColumn(2).setCellRenderer(new BMIRenderer());
         view.getTable().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -95,7 +94,7 @@ public class PhysicalInspector implements IInspector {
         }
 
         // 右クリックによる追加削除のメニューを登録する
-        MouseAdapter ma = new MouseAdapter() {
+        view.getTable().addMouseListener(new MouseAdapter() {
             private void mabeShowPopup(MouseEvent e) {
                 // isReadOnly対応
                 if (context.isReadOnly()) { return; }
@@ -120,28 +119,18 @@ public class PhysicalInspector implements IInspector {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if(e.getComponent() == view.getTable().getParent()) {
-                    view.getTable().clearSelection();
-                }
                 if (e.isPopupTrigger()) {
                     mabeShowPopup(e);
                 }
             }
 
-            //@Override
-            //public void mouseReleased(MouseEvent e) {
-            //    mabeShowPopup(e);
-            //}
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     PhysicalEditor.show(PhysicalInspector.this);
                 }
             }
-        };
-
-        view.getTable().addMouseListener(ma);
-        AdditionalTableSettings.setTable(view.getTable(), ma);
+        });
     }
 
     public Chart getContext() {

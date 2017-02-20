@@ -32,7 +32,6 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSCellEditor;
@@ -159,9 +158,6 @@ public class DocumentHistory implements IInspector {
 
         // 文書履歴テーブルのキーボード入力をブロックするリスナ
         blockKeyListener = new BlockKeyListener();
-
-        // table の関係ないところをクリックしたら，selection をクリア
-        AdditionalTableSettings.setTable(view.getTable(), null);
     }
 
     /**

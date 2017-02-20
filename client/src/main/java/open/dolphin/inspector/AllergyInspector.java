@@ -15,7 +15,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.GUIConst;
@@ -61,8 +60,10 @@ public class AllergyInspector implements IInspector {
 
         view = new AllergyView();
         view.setName(CATEGORY.name());
+        view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
 
         JTable table = view.getTable();
+        table.putClientProperty("Quaqua.Table.style", "striped");
 
         // アレルギーテーブルを設定する
         List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
@@ -87,7 +88,7 @@ public class AllergyInspector implements IInspector {
         table.getColumnModel().getColumn(2).setPreferredWidth(5);
 
         // 右クリックによる追加削除のメニューを登録する
-        MouseAdapter ma = new MouseAdapter() {
+        table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -119,26 +120,11 @@ public class AllergyInspector implements IInspector {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                // table の関係ないところをクリックしたら，selection をクリア
-                if(e.getComponent() == view.getTable().getParent()) {
-                    view.getTable().clearSelection();
-                }
                 if (e.isPopupTrigger()) {
                     mabeShowPopup(e);
                 }
             }
-            //@Override // windows
-            //public void mouseReleased(MouseEvent e) {
-            //    if (e.isPopupTrigger()){
-            //        mabeShowPopup(e);
-            //    }
-            //}
-        };
-
-        view.getTable().addMouseListener(ma);
-        AdditionalTableSettings.setTable(view.getTable(), ma);
-
-        view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
+        });
     }
 
     public Chart getContext() {

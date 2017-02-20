@@ -37,15 +37,16 @@ import javax.swing.Timer;
 import open.dolphin.ui.MyJSheet;
 
 /**
- * JSheet.
- * Based on Java Swing Hacks #42.
+ * JSheet. Based on Java Swing Hacks #42.
+ *
  * @author pns
  */
 public class JSheet extends JDialog implements ActionListener {
+
     private static final long serialVersionUID = 1L;
 
     public static final int MENU_BAR_HEIGHT = 22;
-    public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500,500);
+    public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
 
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
@@ -85,7 +86,7 @@ public class JSheet extends JDialog implements ActionListener {
         this.owner = owner;
 
         setUndecorated(true);
-        setBackground(new Color(0,0,0,0));
+        setBackground(new Color(0, 0, 0, 0));
 
         // modal にセット
         setModal(true);
@@ -97,13 +98,22 @@ public class JSheet extends JDialog implements ActionListener {
         // リアルタイムの書き直しにならない.
         owner.addComponentListener(new ComponentListener() {
             @Override
-            public void componentResized(ComponentEvent e) { locateSheet(); }
+            public void componentResized(ComponentEvent e) {
+                locateSheet();
+            }
+
             @Override
-            public void componentMoved(ComponentEvent e) { locateSheet(); }
+            public void componentMoved(ComponentEvent e) {
+                locateSheet();
+            }
+
             @Override
-            public void componentShown(ComponentEvent e) {}
+            public void componentShown(ComponentEvent e) {
+            }
+
             @Override
-            public void componentHidden(ComponentEvent e) {}
+            public void componentHidden(ComponentEvent e) {
+            }
         });
     }
 
@@ -116,20 +126,23 @@ public class JSheet extends JDialog implements ActionListener {
         Dimension sourcePaneSize = sourcePane.getSize();
 
         // Sheet をセンタリング
-        loc.x += (ownerSize.width - sourcePaneSize.width)/2;
+        loc.x += (ownerSize.width - sourcePaneSize.width) / 2;
         loc.y += MENU_BAR_HEIGHT;
 
         // 右端，左端の処理
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        if (loc.x < 0) { loc.x = 0; }
-        if (screenSize.width < loc.x + sourcePaneSize.width) { loc.x = screenSize.width - sourcePaneSize.width; }
+        if (loc.x < 0) {
+            loc.x = 0;
+        }
+        if (screenSize.width < loc.x + sourcePaneSize.width) {
+            loc.x = screenSize.width - sourcePaneSize.width;
+        }
 
         setBounds(loc.x, loc.y, sourcePaneSize.width, sourcePaneSize.height);
     }
 
     /**
-     * SheetListener を登録する.
-     * JOptionPane の場合
+     * SheetListener を登録する. JOptionPane の場合
      * <ul>
      * <li>YES_OPTION = 0
      * <li>NO_OPTION = 1
@@ -142,6 +155,7 @@ public class JSheet extends JDialog implements ActionListener {
      * <li>CANCEL_OPTION = 1
      * <li>ERROR_OPTION = -1;
      * </ul>
+     *
      * @param listener
      */
     public void addSheetListener(SheetListener listener) {
@@ -150,6 +164,7 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * ソースとなる Dialog をセットしてリスナを付ける.
+     *
      * @param dialog
      */
     public void setSourceDialog(JDialog dialog) {
@@ -160,14 +175,15 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * SourcePane の背景を透明にする.
+     *
      * @param c
      */
     public void setTransparent(Component c) {
         if (c instanceof JComponent) {
-                ((JComponent)c).setOpaque(false);
+            ((JComponent) c).setOpaque(false);
         }
         if (c instanceof Container) {
-            for (Component comp : ((Container)c).getComponents()) {
+            for (Component comp : ((Container) c).getComponents()) {
                 setTransparent(comp);
             }
         }
@@ -175,6 +191,7 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * リスナを SheetListener にブリッジする.
+     *
      * @param c
      */
     private void connectListeners(Component c) {
@@ -186,14 +203,14 @@ public class JSheet extends JDialog implements ActionListener {
 
                     // 戻り値
                     Object val = e.getNewValue();
-                    Object[] options = ((JOptionPane)c).getOptions();
+                    Object[] options = ((JOptionPane) c).getOptions();
 
                     if (options == null) {
                         se.setOption((int) val);
 
                     } else {
                         // オプションがある場合は，何番目かを返す.
-                        for (int i=0; i<options.length; i++) {
+                        for (int i = 0; i < options.length; i++) {
                             if (options[i].equals(val)) {
                                 se.setOption(i);
                                 break;
@@ -206,7 +223,7 @@ public class JSheet extends JDialog implements ActionListener {
             });
 
         } else if (c instanceof JFileChooser) {
-            ((JFileChooser)c).addActionListener(e -> {
+            ((JFileChooser) c).addActionListener(e -> {
                 // CANCEL_SELECTION = "CancelSelection";
                 // APPROVE_SELECTION = "ApproveSelection";
                 SheetEvent se = new SheetEvent(e.getSource());
@@ -222,14 +239,14 @@ public class JSheet extends JDialog implements ActionListener {
     }
 
     /**
-     * Sheet を表示／消去する.
-     * modal 動作のために synchronized(this) する.
+     * Sheet を表示／消去する. modal 動作のために synchronized(this) する.
+     *
      * @param visible
      */
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
-            SwingUtilities.invokeLater(()->showSheet());
+            SwingUtilities.invokeLater(() -> showSheet());
             // setModal(true) なのでここで止まるが，アニメーションは EDT で表示される.
             super.setVisible(true);
 
@@ -294,18 +311,19 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * Timer で呼ばれて animatingSheet を描画する.
+     *
      * @param e
      */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (animating) {
             // calculate height to show
-            float animationPercent =
-                    (System.currentTimeMillis() - animationStart) / ANIMATION_DURATION;
+            float animationPercent
+                    = (System.currentTimeMillis() - animationStart) / ANIMATION_DURATION;
             animationPercent = Math.min(1.0f, animationPercent);
-            int animatingHeight = (animationDirection == INCOMING)?
-                        (int) (animationPercent * sourcePane.getHeight()):
-                        (int) ((1.0f - animationPercent) * sourcePane.getHeight());
+            int animatingHeight = (animationDirection == INCOMING)
+                    ? (int) (animationPercent * sourcePane.getHeight())
+                    : (int) ((1.0f - animationPercent) * sourcePane.getHeight());
             // clip off that much from sheet and blit it into animatingSheet
             animatingSheet.setAnimatingHeight(animatingHeight);
 
@@ -328,6 +346,7 @@ public class JSheet extends JDialog implements ActionListener {
      * 下から描いていく JPaenl.
      */
     private class AnimatingSheet extends JPanel {
+
         private static final long serialVersionUID = 1L;
 
         private final Dimension animatingSize = new Dimension(0, 1);
@@ -350,34 +369,41 @@ public class JSheet extends JDialog implements ActionListener {
         }
 
         private void makeOffscreenImage(JComponent source) {
-            GraphicsConfiguration gfxConfig =
-                    GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+            GraphicsConfiguration gfxConfig
+                    = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
             offscreenImage = gfxConfig.createCompatibleImage(source.getWidth(), source.getHeight(), Transparency.TRANSLUCENT);
             Graphics2D offscreenGraphics = (Graphics2D) offscreenImage.getGraphics();
             source.paint(offscreenGraphics);
         }
 
         @Override
-        public Dimension getPreferredSize() { return animatingSize; }
+        public Dimension getPreferredSize() {
+            return animatingSize;
+        }
 
         @Override
-        public Dimension getMinimumSize() { return animatingSize; }
+        public Dimension getMinimumSize() {
+            return animatingSize;
+        }
 
         @Override
-        public Dimension getMaximumSize() { return animatingSize; }
+        public Dimension getMaximumSize() {
+            return animatingSize;
+        }
 
         @Override
         public void paint(Graphics g) {
             // get the bottommost n pixels of source and
             // paint them into g, where n is height
-            BufferedImage fragment =
-                    offscreenImage.getSubimage(0, offscreenImage.getHeight() - animatingSize.height, source.getWidth(), animatingSize.height);
+            BufferedImage fragment
+                    = offscreenImage.getSubimage(0, offscreenImage.getHeight() - animatingSize.height, source.getWidth(), animatingSize.height);
             g.drawImage(fragment, 0, 0, this);
         }
     }
 
     /**
      * JOptionPane を source とする JSheet を作成する.
+     *
      * @param pane
      * @param parentComponent
      * @return
@@ -390,15 +416,15 @@ public class JSheet extends JDialog implements ActionListener {
 
         // create JSheet
         Window owner = JOptionPane.getFrameForComponent(parentComponent);
-        JSheet js = (owner instanceof Frame)? new JSheet((Frame)owner) : new JSheet((Dialog)owner);
+        JSheet js = (owner instanceof Frame) ? new JSheet((Frame) owner) : new JSheet((Dialog) owner);
         js.setSourceDialog(dialog);
 
         return js;
     }
 
     /**
-     * JOptionPane を Sheet で表示する.
-     * listener に通知されるまでブロックされる.
+     * JOptionPane を Sheet で表示する. listener に通知されるまでブロックされる.
+     *
      * @param pane JOptionPane
      * @param parentComponent parent window or component
      * @param listener SheetListener
@@ -411,6 +437,7 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * JFileChooser を Sheet で表示する.
+     *
      * @param chooser
      * @param parentComponent
      * @param approveButtonText
@@ -430,7 +457,7 @@ public class JSheet extends JDialog implements ActionListener {
 
         // create JSheet
         Window owner = JOptionPane.getFrameForComponent(parentComponent);
-        JSheet js = (owner instanceof Frame)? new JSheet((Frame)owner) : new JSheet((Dialog)owner);
+        JSheet js = (owner instanceof Frame) ? new JSheet((Frame) owner) : new JSheet((Dialog) owner);
         js.setSourceDialog(dialog);
         js.addSheetListener(se -> listener.optionSelected(se));
         js.setVisible(true);
@@ -438,6 +465,7 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * 保存 JFileChooser を表示する.
+     *
      * @param chooser
      * @param parent
      * @param listener
@@ -449,6 +477,7 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * 開く JFileChooser を表示する.
+     *
      * @param chooser
      * @param parent
      * @param listener
@@ -460,6 +489,7 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * JOptionPane.showConfirmDialog 互換.
+     *
      * @param parentComponent
      * @param message
      * @param title
@@ -473,6 +503,7 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * JOptionPane.showMessageDialog 互換.
+     *
      * @param parentComponent
      * @param message
      * @param title
@@ -484,6 +515,7 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * JOptionPane.showOptionDialog 互換
+     *
      * @param parentComponent
      * @param message
      * @param title
@@ -510,6 +542,7 @@ public class JSheet extends JDialog implements ActionListener {
 
     /**
      * その component に既に JSheet が表示されているかどうか
+     *
      * @param parentComponent
      * @return
      */
@@ -524,9 +557,6 @@ public class JSheet extends JDialog implements ActionListener {
         }
         return false;
     }
-
-
-
 
     public static void main(String[] arg) {
         JFrame frame = new JFrame();

@@ -5,15 +5,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
+import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTreeUI;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import open.dolphin.ui.PNSTreeCellEditor;
 
 /**
  *
@@ -91,6 +96,7 @@ public class MyTreeUI extends BasicTreeUI {
 
     public static void main(String[] arg) {
         UIManager.put("TreeUI", MyTreeUI.class.getName());
+        UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
 
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -99,8 +105,18 @@ public class MyTreeUI extends BasicTreeUI {
         ToolTipManager.sharedInstance().registerComponent(tree);
         tree.setPreferredSize(new Dimension(300,400));
         tree.setRootVisible(false);
+        tree.setCellEditor(new PNSTreeCellEditor(tree, new DefaultTreeCellRenderer()));
+        tree.setEditable(true);
 
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+        tree.addMouseMotionListener(new MouseAdapter(){
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                tree.getCellEditor().stopCellEditing(); // drag 開始したら、cell editor を止める
+                tree.getTransferHandler().exportAsDrag((JComponent) e.getSource(), e, TransferHandler.COPY);
+            }
+        });
 
         f.add(tree, BorderLayout.CENTER);
         f.pack();

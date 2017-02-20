@@ -28,7 +28,6 @@ import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJSheet;
@@ -243,9 +242,6 @@ public class PatientSearchImpl extends AbstractMainComponent {
         view.getNarrowingSearchCb().setSelected(prefs.getBoolean(NARROWING_SEARCH, false));
         view.getNarrowingSearchCb().addActionListener(e -> setTextFieldBackground(view.getNarrowingSearchCb().isSelected()));
         setTextFieldBackground(view.getNarrowingSearchCb().isSelected());
-
-        // 追加のテーブル設定
-        AdditionalTableSettings.setTable(table);
     }
 
     /**

@@ -1,7 +1,6 @@
 package open.dolphin.order.tablepanel;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.*;
 import java.util.Arrays;
@@ -22,7 +21,6 @@ import open.dolphin.order.MMLTable;
 import open.dolphin.order.MasterItem;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.MyJSheet;
@@ -171,6 +169,7 @@ public class ItemTablePanel extends JPanel {
     private void createCommonComponents() {
 
         table = new JTable(tableModel);
+        table.putClientProperty("Quaqua.Table.style", "striped");
         table.setTransferHandler(new MasterItemTransferHandler()); // TransferHandler
         table.setDropMode(DropMode.INSERT_ROWS);
         table.setDefaultRenderer(Object.class, new TablePanelRenderer());
@@ -281,9 +280,6 @@ public class ItemTablePanel extends JPanel {
         scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //scroller.setPreferredSize(new Dimension(GUIConst.DEFAULT_EDITOR_WIDTH, GUIConst.DEFAULT_EDITOR_HEIGHT));
-
-        // table の細かい調節をする
-        AdditionalTableSettings.setOrderTable(table);
 
         return scroller;
     }

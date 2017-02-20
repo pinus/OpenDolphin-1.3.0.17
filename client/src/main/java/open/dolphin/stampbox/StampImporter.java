@@ -35,7 +35,6 @@ import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.infomodel.SubscribedTreeModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.util.PNSTriple;
 import org.apache.log4j.Logger;
@@ -183,6 +182,7 @@ public class StampImporter {
         );
 
         table = new JTable();
+        table.putClientProperty("Quaqua.Table.style", "striped");
         tableModel = new ObjectReflectTableModel<>(reflectList);
         table.setModel(tableModel);
 
@@ -230,8 +230,6 @@ public class StampImporter {
         deleteBtn.addActionListener(e -> removeImportedTree());
         // キャンセル
         cancelBtn.addActionListener(e -> stop());
-
-        AdditionalTableSettings.setTable(table);
         return browsePane;
     }
 

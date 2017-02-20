@@ -1,8 +1,11 @@
 package open.dolphin.laf;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.plaf.ComponentUI;
@@ -11,13 +14,15 @@ import open.dolphin.client.ClientContext;
 
 /**
  * ストライプなテーブルUI.
+ *
  * @autho pns
  */
 public class MyTableUI extends BasicTableUI {
 
     private static final Color DEFAULT_ODD_COLOR = ClientContext.getColor("color.odd");
     private static final Color DEFAULT_EVEN_COLOR = ClientContext.getColor("color.even");
-    private static final Color[] ROW_COLORS = { DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR };
+    private static final Color[] ROW_COLORS = {DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR};
+    private static final int DEFAULT_ROW_HEIGHT = 18;
 
     public static ComponentUI createUI(JComponent c) {
         return new MyTableUI();
@@ -28,7 +33,21 @@ public class MyTableUI extends BasicTableUI {
         super.installUI(c);
 
         JTable t = (JTable) c;
+        // データのないところもストライプで埋める
         t.setFillsViewportHeight(true);
+
+        // データのないところをクリックしたら選択を外す
+        t.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = t.rowAtPoint(e.getPoint());
+                if (row == -1) { t.clearSelection(); }
+            }
+        });
+        t.putClientProperty("JTable.autoStartsEdit", false); //キー入力によるセル編集開始を禁止する
+        t.setShowGrid(false);
+        t.setIntercellSpacing(new Dimension(0, 0));
+        t.setRowHeight(DEFAULT_ROW_HEIGHT);
     }
 
     @Override
@@ -41,12 +60,12 @@ public class MyTableUI extends BasicTableUI {
 
             int[] top = getTopY(clip.y);
             int topY = top[0];
-            int currentRow = top[1]-1;
+            int currentRow = top[1] - 1;
 
             // ClipBounds.y から topY まで塗る
             g.setColor(ROW_COLORS[currentRow & 1]);
             g.fillRect(clip.x, clip.y, clip.width, topY);
-            currentRow ++;
+            currentRow++;
 
             // 続きを塗る
             while (topY < clip.y + clip.height) {
@@ -62,6 +81,7 @@ public class MyTableUI extends BasicTableUI {
 
     /**
      * ClipBound.y を越えた初めての Cell の Y 座標とその行数.
+     *
      * @param clipY
      * @return
      */
@@ -76,10 +96,10 @@ public class MyTableUI extends BasicTableUI {
                 ｙ += rowHeight;
                 row++;
             }
-            return new int[]{ ｙ, row };
+            return new int[]{ｙ, row};
 
         } else {
-            return new int[]{ 0, 0 };
+            return new int[]{0, 0};
         }
     }
 }

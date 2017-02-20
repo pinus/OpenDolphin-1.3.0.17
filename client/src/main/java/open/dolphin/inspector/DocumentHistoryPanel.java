@@ -32,6 +32,7 @@ public class DocumentHistoryPanel extends JPanel {
         this.setLayout(new BorderLayout(0,0));
 
         table = new JTable();
+        table.putClientProperty("Quaqua.Table.style", "striped");
         MyJScrollPane scroller = new MyJScrollPane(table);
         scroller.setBorder(BorderFactory.createEmptyBorder());
         scroller.putClientProperty("JComponent.sizeVariant", "small");

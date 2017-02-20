@@ -18,7 +18,8 @@ import open.dolphin.ui.PNSBorderFactory;
  * @author pns
  */
 public class MyPasswordFieldUI extends BasicPasswordFieldUI {
-    private static final Color LIGHTER_GRAY = new Color(228,228,228);
+
+    private static final Color LIGHTER_GRAY = new Color(228, 228, 228);
 
     private JPasswordField tf;
     private Border selectedBorder;
@@ -33,14 +34,14 @@ public class MyPasswordFieldUI extends BasicPasswordFieldUI {
         super.installUI(c);
         tf = (JPasswordField) c;
 
-        selectedBorder = new CompoundBorder( PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0,5,0,5));
+        selectedBorder = new CompoundBorder(PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0, 5, 0, 5));
         //border = new CompoundBorder( PNSBorderFactory.createSelectedGrayBorder(), new EmptyBorder(0,3,0,3));
-        border = new EmptyBorder(0,8,0,8);
+        border = new EmptyBorder(0, 8, 0, 8);
 
         c.setBackground(Color.WHITE);
         c.setOpaque(false);
         c.setBorder(border);
-        c.addFocusListener(new FocusListener(){
+        c.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 c.setBorder(selectedBorder);
@@ -58,10 +59,11 @@ public class MyPasswordFieldUI extends BasicPasswordFieldUI {
     @Override
     public void paintSafely(Graphics g) {
         g.setColor(tf.getBackground());
-        g.fillRoundRect(1, 1, tf.getWidth()-2, tf.getHeight()-2, 5, 5); // retina
-        if (! tf.isFocusOwner()) {
+        g.fillRoundRect(1, 1, tf.getWidth() - 2, tf.getHeight() - 2, 5, 5); // retina
+        if (!tf.isFocusOwner()) {
             g.setColor(LIGHTER_GRAY);
-            g.drawRoundRect(1, 1, tf.getWidth()-2, tf.getHeight()-2, 5, 5);
+            g.drawRoundRect(1, 1, tf.getWidth() - 2, tf.getHeight() - 2, 5, 5);
         }
         super.paintSafely(g);
-    }}
+    }
+}

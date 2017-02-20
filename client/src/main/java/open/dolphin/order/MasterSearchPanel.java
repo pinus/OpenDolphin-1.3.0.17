@@ -22,7 +22,6 @@ import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.event.OrderListener;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
@@ -102,7 +101,6 @@ public class MasterSearchPanel extends JPanel {
         table = createTable();
         MyJScrollPane scroller = new MyJScrollPane(table);
         scroller.isPermanentScrollBar = true;
-        AdditionalTableSettings.setOrderTable(table);
 
         this.setBorder(BorderFactory.createEmptyBorder(0, 1, 0, 1));
         this.add(northPanel, BorderLayout.NORTH);
@@ -217,6 +215,7 @@ public class MasterSearchPanel extends JPanel {
         int[] width = new int[]{90, 200, 50, 60, 80, 100, 100};
 
         table = new JTable(tableModel);
+        table.putClientProperty("Quaqua.Table.style", "striped");
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowSelectionAllowed(true);
         table.addMouseListener(new MouseAdapter(){

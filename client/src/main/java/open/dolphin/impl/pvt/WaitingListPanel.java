@@ -52,6 +52,7 @@ public class WaitingListPanel extends MainComponentPanel {
 
         MainPanel mainPanel = getMainPanel();
         table = new RowTipsTable();
+        table.putClientProperty("Quaqua.Table.style", "striped");
         MyJScrollPane scroller = new MyJScrollPane(table);
         scroller.isPermanentScrollBar = true;
         mainPanel.add(scroller);

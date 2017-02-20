@@ -18,7 +18,6 @@ import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.infomodel.PVTPublicInsuranceItemModel;
 import open.dolphin.infomodel.PatientModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSCellEditor;
 
@@ -168,6 +167,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
         //
         pModel = new PatientInfoTableModel(patient, PATIENT_ATTRS, COLUMN_NAMES);
         pTable = new JTable(pModel);
+        pTable.putClientProperty("Quaqua.Table.style", "striped");
 //pns   pTable.setDefaultRenderer(Object.class, new OddEvenRowRenderer());
         TableColumn column = pTable.getColumnModel().getColumn(1);
         DefaultCellEditor de = new PNSCellEditor(new JTextField());
@@ -190,21 +190,17 @@ public class PatientInfoDocument extends AbstractChartDocument {
                 HealthInsuranceTableModel hModel = new HealthInsuranceTableModel(
                         insurance, COLUMN_NAMES);
                 JTable hTable = new JTable(hModel);
+                hTable.putClientProperty("Quaqua.Table.style", "striped");
 //pns           hTable.setDefaultRenderer(Object.class, new OddEvenRowRenderer());
 
                 // 配置する
                 panel.add(Box.createVerticalStrut(7));
                 panel.add(hTable);
 //pns
-                AdditionalTableSettings.setTable(hTable);
-
             }
         }
 
         JScrollPane scroller = new JScrollPane(panel);
-//pns
-        AdditionalTableSettings.setTable(pTable);
-
         return scroller;
     }
 

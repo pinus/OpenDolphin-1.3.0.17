@@ -9,7 +9,6 @@ import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.util.MMLDate;
@@ -42,6 +41,7 @@ public class AppointTablePanel extends JPanel {
         tableModel = new CareTableModel(COLUMN_NAMES);
 
         appointTable = new JTable(tableModel);
+        appointTable.putClientProperty("Quaqua.Table.style", "striped");
         appointTable.setDefaultRenderer(Object.class, new TodayRowRenderer());
         appointTable.setSurrendersFocusOnKeystroke(true);
         appointTable.setRowSelectionAllowed(true);
@@ -66,8 +66,6 @@ public class AppointTablePanel extends JPanel {
         updateBtn.setMargin(new Insets(2,2,2,2));
         this.add(cmd, BorderLayout.NORTH);
         this.add(scroller, BorderLayout.CENTER);
-
-        AdditionalTableSettings.setTable(appointTable);
     }
 
     /**
@@ -188,7 +186,7 @@ public class AppointTablePanel extends JPanel {
          * @param appoint
          */
         public void updateAppoint(AppointmentModel appoint) {
-            
+
             int row = findAppointEntry(appoint);
 
             if (row == -1 && appoint.getState() == AppointmentModel.TT_NEW) {

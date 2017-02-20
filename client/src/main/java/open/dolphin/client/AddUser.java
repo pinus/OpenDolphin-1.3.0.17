@@ -22,7 +22,6 @@ import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.table.*;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSTabbedPane;
 import open.dolphin.util.HashUtil;
@@ -88,8 +87,6 @@ public class AddUser extends AbstractMainTool {
         cm.putCenter();
 
         frame.setVisible(true);
-
-        AdditionalTableSettings.setTable(mp.getTable());
     }
 
     @Override
@@ -404,6 +401,7 @@ public class AddUser extends AbstractMainTool {
             tableModel = new ObjectReflectTableModel<>(reflectionList);
 
             table = new JTable(tableModel);
+            table.putClientProperty("Quaqua.Table.style", "striped");
             table.setDefaultRenderer(Object.class, new IndentTableCellRenderer());
             // Selection を設定する
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

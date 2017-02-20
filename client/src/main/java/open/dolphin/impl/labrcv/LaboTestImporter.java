@@ -25,7 +25,6 @@ import open.dolphin.infomodel.LaboImportSummary;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.AdditionalTableSettings;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
 import open.dolphin.util.PNSTriple;
@@ -117,6 +116,7 @@ public class LaboTestImporter extends AbstractMainComponent {
 
         tableModel = new ObjectReflectTableModel<>(reflectionList);
         table = new JTable(tableModel);
+        table.putClientProperty("Quaqua.Table.style", "striped");
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setDefaultRenderer(Object.class, new IndentTableCellRenderer());
 
@@ -189,7 +189,6 @@ public class LaboTestImporter extends AbstractMainComponent {
             }
         });
         dt.setActive(true);
-        AdditionalTableSettings.setTable(table);
     }
 
     /**

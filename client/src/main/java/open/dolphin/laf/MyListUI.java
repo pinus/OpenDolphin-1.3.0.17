@@ -10,6 +10,7 @@ import open.dolphin.client.ClientContext;
 
 /**
  * ストライプな ListUI.
+ *
  * @author pns
  */
 public class MyListUI extends BasicListUI {
@@ -37,12 +38,12 @@ public class MyListUI extends BasicListUI {
             Rectangle clip = g.getClipBounds();
             int[] top = getTopY(clip.y);
             int topY = top[0];
-            int currentRow = top[1]-1;
+            int currentRow = top[1] - 1;
 
             // ClipBounds.y から topY まで塗る
             g.setColor(ROW_COLORS[currentRow & 1]);
             g.fillRect(clip.x, clip.y, clip.width, topY);
-            currentRow ++;
+            currentRow++;
 
             // 続きを塗る
             while (topY < clip.y + clip.height) {
@@ -58,6 +59,7 @@ public class MyListUI extends BasicListUI {
 
     /**
      * ClipBound.y を越えた初めての Cell の Y 座標とその行数.
+     *
      * @param clipY
      * @return
      */
@@ -68,26 +70,29 @@ public class MyListUI extends BasicListUI {
         if (listSize != 0) {
             int row = 0;
             int y = list.getCellBounds(row, row).y;
-            
+
             while (y < clipY) {
                 y += getCellHeight(row);
                 row++;
             }
-            return new int[] { y, row };
+            return new int[]{y, row};
 
-        } else  {
-            return new int[] { 0, 0 };
+        } else {
+            return new int[]{0, 0};
         }
     }
 
     /**
      * row の高さを得る.
+     *
      * @param row
      * @return
      */
     private int getCellHeight(int row) {
         int fixed = list.getFixedCellHeight();
-        if (fixed > 0) { return fixed; }
+        if (fixed > 0) {
+            return fixed;
+        }
 
         int listSize = list.getModel().getSize();
         if (listSize == 0) {
@@ -95,9 +100,9 @@ public class MyListUI extends BasicListUI {
             return DEFAULT_ROW_HEIGHT;
 
         } else {
-            return (row < listSize-1)?
-                    list.getCellBounds(row, row).height:
-                    list.getCellBounds(listSize-1, listSize-1).height;
+            return (row < listSize - 1)
+                    ? list.getCellBounds(row, row).height
+                    : list.getCellBounds(listSize - 1, listSize - 1).height;
         }
     }
 }

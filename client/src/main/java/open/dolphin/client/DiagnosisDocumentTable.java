@@ -43,15 +43,15 @@ public class DiagnosisDocumentTable extends JTable {
         int row = rowAtPoint(e.getPoint());
 
         RegisteredDiagnosisModel rd = model.getObject(row);
-
-        String startDate = rd.getStartDate();
-        String endDate = rd.getEndDate();
-        String text = "開始日 " + ModelUtils.toNengo(startDate);
-        if (endDate != null) {
-            text += String.format(" (終了日 %s)", ModelUtils.toNengo(endDate));
+        String text = null;
+        if (rd != null) {
+            String startDate = rd.getStartDate();
+            String endDate = rd.getEndDate();
+            text = "開始日 " + ModelUtils.toNengo(startDate);
+            if (endDate != null) {
+                text += String.format(" (終了日 %s)", ModelUtils.toNengo(endDate));
+            }
         }
-
-        super.getToolTipText();
         return text;
     }
 }

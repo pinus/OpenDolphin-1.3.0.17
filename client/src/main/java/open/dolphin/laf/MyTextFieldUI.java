@@ -18,7 +18,8 @@ import open.dolphin.ui.PNSBorderFactory;
  * @author pns
  */
 public class MyTextFieldUI extends BasicTextFieldUI {
-    private static final Color LIGHTER_GRAY = new Color(228,228,228);
+
+    private static final Color LIGHTER_GRAY = new Color(228, 228, 228);
     private JTextField tf;
     private Border selectedBorder;
     private Border border;
@@ -32,14 +33,14 @@ public class MyTextFieldUI extends BasicTextFieldUI {
         super.installUI(c);
         tf = (JTextField) c;
 
-        selectedBorder = new CompoundBorder( PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0,5,0,5));
+        selectedBorder = new CompoundBorder(PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0, 5, 0, 5));
         //border = new CompoundBorder( PNSBorderFactory.createSelectedGrayBorder(), new EmptyBorder(0,3,0,3));
-        border = new EmptyBorder(0,8,0,8);
+        border = new EmptyBorder(0, 8, 0, 8);
 
         c.setBackground(Color.WHITE);
         c.setOpaque(false);
         c.setBorder(border);
-        c.addFocusListener(new FocusListener(){
+        c.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 c.setBorder(selectedBorder);
@@ -58,11 +59,11 @@ public class MyTextFieldUI extends BasicTextFieldUI {
     public void paintSafely(Graphics g) {
         g.setColor(tf.getBackground());
         // 背景を塗る
-        g.fillRoundRect(1, 1, tf.getWidth()-2, tf.getHeight()-2, 5, 5); // retina
-        if (! tf.isFocusOwner()) {
+        g.fillRoundRect(1, 1, tf.getWidth() - 2, tf.getHeight() - 2, 5, 5); // retina
+        if (!tf.isFocusOwner()) {
             // focus されていないときにグレーの枠線を描く
             g.setColor(LIGHTER_GRAY);
-            g.drawRoundRect(1, 1, tf.getWidth()-2, tf.getHeight()-2, 5, 5);
+            g.drawRoundRect(1, 1, tf.getWidth() - 2, tf.getHeight() - 2, 5, 5);
         }
         super.paintSafely(g);
     }
