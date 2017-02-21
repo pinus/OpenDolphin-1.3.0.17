@@ -239,9 +239,10 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
                 table = (JTable) e.getSource();
                 tableModel = (ObjectReflectTableModel<T>) table.getModel();
 
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow > 0) {
-                int row = table.convertRowIndexToModel(selectedRow);
+                int rowIndex = table.getSelectedRow();
+
+                if (rowIndex != -1) {
+                    int row = table.convertRowIndexToModel(rowIndex);
                     T value = tableModel.getObject(row);
                     if (value != null) {
                         openKarte(value);
