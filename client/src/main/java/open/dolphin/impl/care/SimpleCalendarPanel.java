@@ -22,7 +22,7 @@ import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.ui.PatchedTransferHandler;
+import open.dolphin.ui.PNSTransferHandler;
 import open.dolphin.util.*;
 
 /**
@@ -440,7 +440,7 @@ public final class SimpleCalendarPanel extends JPanel {
     /**
      * 予約の TransferHandler.
      */
-    private class CalendarTableTransferHandler extends PatchedTransferHandler {
+    private class CalendarTableTransferHandler extends PNSTransferHandler {
         private static final long serialVersionUID = 1L;
 
         private int srcRow;
@@ -452,9 +452,28 @@ public final class SimpleCalendarPanel extends JPanel {
             srcRow = table.getSelectedRow();
             srcCol = table.getSelectedColumn();
             srcDate = (SimpleDate) table.getValueAt(srcRow, srcCol);
-            mousePosition = ((MouseEvent)e).getPoint();
+
+            setDragImage(getVisualRepresentation());
 
             super.exportAsDrag(comp, e, action);
+        }
+
+        /**
+         * 半透明の visual representation を返す.
+         * table からドラッグ該当部分のイメージを切り出して使う.
+         * @return
+         */
+        private Image getVisualRepresentation() {
+            int width = table.getWidth();
+            int height = table.getHeight();
+            int x = srcCol * width/7;
+            int y = srcRow * height/6;
+
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+            table.paint(image.getGraphics());
+            image = image.getSubimage(x, y, width/7, height/6);
+
+            return image;
         }
 
         @Override
@@ -538,30 +557,6 @@ public final class SimpleCalendarPanel extends JPanel {
             srcRow = -1;
             srcCol = -1;
             srcDate = null;
-        }
-
-        /**
-         * 半透明の visual representation を返す.
-         * table からドラッグ該当部分のイメージを切り出して使う.
-         * @param t
-         * @return
-         */
-        @Override
-        public Icon getVisualRepresentation(Transferable t) {
-            int width = table.getWidth();
-            int height = table.getHeight();
-            int x = srcCol * width/7;
-            int y = srcRow * height/6;
-
-            Point loc = table.getMousePosition();
-            mousePosition.x = - x + loc.x;
-            mousePosition.y = - y + loc.y;
-
-            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-            table.paint(image.getGraphics());
-            image = image.getSubimage(x, y, width/7, height/6);
-
-            return new ImageIcon(image);
         }
     }
 }

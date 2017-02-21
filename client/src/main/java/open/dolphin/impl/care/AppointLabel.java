@@ -8,7 +8,7 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import open.dolphin.infomodel.AppointmentModel;
-import open.dolphin.ui.PatchedTransferHandler;
+import open.dolphin.ui.PNSTransferHandler;
 
 /**
  * AppointLabel.
@@ -36,10 +36,8 @@ public class AppointLabel extends JLabel {
         });
     }
 
-    private class AppointTransferHandler extends PatchedTransferHandler {
+    private class AppointTransferHandler extends PNSTransferHandler {
         private static final long serialVersionUID = 1L;
-
-        private Icon draggedComp;
 
         public AppointTransferHandler() {
             super();
@@ -58,30 +56,15 @@ public class AppointLabel extends JLabel {
             return COPY_OR_MOVE;
         }
 
-        /**
-         * 半透明 drag のために dragged component とマウス位置を保存する
-         * @param comp
-         * @param e
-         * @param action
-         */
         @Override
         public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-            JLabel label = (JLabel) comp;
+            Icon icon = ((JLabel)comp).getIcon();
+            JLabel label = new JLabel(icon);
+            label.setSize(icon.getIconWidth(), icon.getIconHeight());
 
-            draggedComp = label.getIcon();
-            mousePosition = label.getMousePosition();
+            setDragImage(label);
 
             super.exportAsDrag(comp, e, action);
-        }
-
-        /**
-         * フィードバックを返す
-         * @param t
-         * @return
-         */
-        @Override
-        public Icon getVisualRepresentation(Transferable t) {
-            return draggedComp;
         }
     }
 }

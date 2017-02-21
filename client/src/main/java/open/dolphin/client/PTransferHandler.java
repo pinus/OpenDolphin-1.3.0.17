@@ -251,7 +251,7 @@ public class PTransferHandler extends TransferHandler {
 
             // drag されたスタンプがあるとき drop した数を設定する
             // これで同じpane内でのDnDを判定している
-            if (pPane.getDraggedCount() > 0 && pPane.getDrragedStamp() != null) {
+            if (pPane.getDraggedCount() > 0 && pPane.getDraggedStamp() != null) {
                 // 同一 pane 内での DnD
                 pPane.setDroppedCount(stamps.length);
 

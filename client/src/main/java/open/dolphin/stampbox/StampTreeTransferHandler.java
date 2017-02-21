@@ -1,16 +1,13 @@
 package open.dolphin.stampbox;
 
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.InputEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -21,7 +18,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.InfoModelTransferable;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.ui.PatchedTransferHandler;
+import open.dolphin.ui.PNSTransferHandler;
 
 /**
  * StampTreeTransferHandler.<br>
@@ -31,7 +28,7 @@ import open.dolphin.ui.PatchedTransferHandler;
  * @author pns
  *
  */
-public class StampTreeTransferHandler extends PatchedTransferHandler {
+public class StampTreeTransferHandler extends PNSTransferHandler {
     private static final long serialVersionUID = 1205897976539749194L;
 
     // StampTreeNode Flavor
@@ -52,9 +49,6 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
     // target の中に入れるか，前に挿入するか，後ろに挿入するかの情報（StampTreeDropTargetListener でセットする）
     public enum Insert { AFTER, BEFORE, INTO_FOLDER };
     private Insert insertPosition;
-
-    // 半透明ドラッグのために保存する
-    private JComponent draggedComp = null;
 
     public void setTargetPath(TreePath t) {
         targetPath = t;
@@ -89,16 +83,10 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
         int row = tree.getRowForPath(path);
         boolean hasFocus = true;
 
-        draggedComp = (JComponent) r.getTreeCellRendererComponent(tree, node, selected, expanded, isLeaf, row, hasFocus);
+        JLabel draggedComp = (JLabel) r.getTreeCellRendererComponent(tree, node, selected, expanded, isLeaf, row, hasFocus);
         draggedComp.setSize(draggedComp.getPreferredSize());
-        // calculate MousePosition
-        Rectangle pathBounds = tree.getPathBounds(path);
-        mousePosition = tree.getMousePosition();
-        // mousePosition may be null
-        if (mousePosition != null) {
-            mousePosition.x -= pathBounds.x;
-            mousePosition.y -= pathBounds.y;
-        }
+        setDragImage(draggedComp);
+
         super.exportAsDrag(comp, e, action);
     }
     /**
@@ -283,21 +271,5 @@ public class StampTreeTransferHandler extends PatchedTransferHandler {
             if (infoModelFlavor.equals(flavor)) { return true; }
         }
         return false;
-    }
-
-    /**
-     * 半透明のフィードバックを返す
-     * @param t
-     * @return
-     */
-    @Override
-    public Icon getVisualRepresentation(Transferable t) {
-        if (draggedComp == null) { return null; }
-
-        int width = draggedComp.getWidth();
-        int height = draggedComp.getHeight();
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-        draggedComp.paint(image.getGraphics());
-        return new ImageIcon(image);
     }
 }

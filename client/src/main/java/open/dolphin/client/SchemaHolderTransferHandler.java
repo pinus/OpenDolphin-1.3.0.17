@@ -1,26 +1,19 @@
 package open.dolphin.client;
 
 import java.awt.datatransfer.*;
-
 import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import javax.swing.*;
-
 import open.dolphin.infomodel.SchemaModel;
-import open.dolphin.ui.PatchedTransferHandler;
-
+import open.dolphin.ui.PNSTransferHandler;
 
 /**
  * SchemaHolderTransferHandler
  *
  * @author Kazushi Minagawa
- *
+ * @author pns
  */
-public class SchemaHolderTransferHandler extends PatchedTransferHandler {
+public class SchemaHolderTransferHandler extends PNSTransferHandler {
     private static final long serialVersionUID = -1293765478832142035L;
-
-    private JComponent draggedComp = null; // drag の際に透明フィードバックをかけるために使う
 
     public SchemaHolderTransferHandler() {
     }
@@ -29,7 +22,7 @@ public class SchemaHolderTransferHandler extends PatchedTransferHandler {
     protected Transferable createTransferable(JComponent c) {
         SchemaHolder source = (SchemaHolder) c;
         KartePane context = source.getKartePane();
-        context.setDrragedStamp(new ComponentHolder[]{source});
+        context.setDraggedStamp(new ComponentHolder[]{source});
         context.setDraggedCount(1);
         SchemaModel schema = source.getSchema();
         SchemaList list = new SchemaList();
@@ -39,22 +32,27 @@ public class SchemaHolderTransferHandler extends PatchedTransferHandler {
     }
 
     @Override
-	public int getSourceActions(JComponent c) {
+    public int getSourceActions(JComponent c) {
         return COPY_OR_MOVE;
     }
 
     @Override
     protected void exportDone(JComponent c, Transferable data, int action) {
-        SchemaHolder test = (SchemaHolder) c;
-        KartePane context = test.getKartePane();
-        if (action == MOVE &&
-                context.getDrragedStamp() != null &&
-                context.getDraggedCount() == context.getDroppedCount()) {
-            context.removeSchema(test); // TODO
+        if (action == NONE) {
+            return;
         }
-        context.setDrragedStamp(null);
-        context.setDraggedCount(0);
-        context.setDroppedCount(0);
+
+        if (action == MOVE) {
+            SchemaHolder test = (SchemaHolder) c;
+            KartePane context = test.getKartePane();
+
+            if (context.getComponent().isEditable()) {
+                context.removeSchema(test);
+            }
+            context.setDraggedStamp(null);
+            context.setDraggedCount(0);
+            context.setDroppedCount(0);
+        }
     }
 
     @Override
@@ -66,10 +64,11 @@ public class SchemaHolderTransferHandler extends PatchedTransferHandler {
      * スタンプをクリップボードへ転送する.
      */
     @Override
-	public void exportToClipboard(JComponent comp, Clipboard clip, int action) {
+    public void exportToClipboard(JComponent comp, Clipboard clip, int action) {
         SchemaHolder sh = (SchemaHolder) comp;
         Transferable tr = createTransferable(comp);
         clip.setContents(tr, null);
+
         if (action == MOVE) {
             KartePane kartePane = sh.getKartePane();
             if (kartePane.getTextPane().isEditable()) {
@@ -78,32 +77,9 @@ public class SchemaHolderTransferHandler extends PatchedTransferHandler {
         }
     }
 
-    /**
-     * 半透明 drag のために dragged component とマウス位置を保存する
-     * @param comp
-     * @param e
-     * @param action
-     */
     @Override
     public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-        draggedComp = comp;
-        mousePosition = ((MouseEvent)e).getPoint();
+        setDragImage((JLabel)comp);
         super.exportAsDrag(comp, e, action);
-    }
-
-    /**
-     * 半透明のフィードバックを返す
-     * @param t
-     * @return
-     */
-    @Override
-    public Icon getVisualRepresentation(Transferable t) {
-        if (draggedComp == null) return null;
-
-        int width = draggedComp.getWidth();
-        int height = draggedComp.getHeight();
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-        draggedComp.paint(image.getGraphics());
-        return new ImageIcon(image);
     }
 }

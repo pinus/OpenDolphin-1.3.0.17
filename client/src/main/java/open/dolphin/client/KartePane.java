@@ -268,7 +268,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      * このPaneからDragされたスタンプを返す.
      * @return このPaneからDragされたスタンプ配列
      */
-    protected ComponentHolder<?>[] getDrragedStamp() {
+    protected ComponentHolder<?>[] getDraggedStamp() {
         return draggedStamp;
     }
 
@@ -276,7 +276,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      * このPaneからDragされたスタンプを設定（記録）する.
      * @param drragedStamp このPaneからDragされたスタンプ配列
      */
-    protected void setDrragedStamp(ComponentHolder<?>[] drragedStamp) {
+    protected void setDraggedStamp(ComponentHolder<?>[] drragedStamp) {
         this.draggedStamp = drragedStamp;
     }
 

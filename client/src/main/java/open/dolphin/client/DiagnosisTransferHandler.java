@@ -1,53 +1,40 @@
 package open.dolphin.client;
 
 import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.InputEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
-
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.InfoModelTransferable;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.PatchedTransferHandler;
 import open.dolphin.stampbox.StampTreeNode;
+import open.dolphin.ui.PNSTransferHandler;
 
 /**
  * DiagnosisTransferHandler
  *
  * @author Minagawa,Kazushi
- *
+ * @author pns
  */
-public class DiagnosisTransferHandler extends PatchedTransferHandler {
+public class DiagnosisTransferHandler extends PNSTransferHandler {
     private static final long serialVersionUID = 1L;
 
     private JTable sourceTable;
-
     private RegisteredDiagnosisModel dragItem;
-
     private boolean shouldRemove;
-
-    private DiagnosisDocument parent;
-
-    private JComponent draggedComp = null;
+    private final DiagnosisDocument parent;
 
     public DiagnosisTransferHandler(DiagnosisDocument parent) {
         super();
@@ -57,8 +44,9 @@ public class DiagnosisTransferHandler extends PatchedTransferHandler {
     @Override
     protected Transferable createTransferable(JComponent c) {
         sourceTable = (JTable) c;
-        ObjectReflectTableModel tableModel = (ObjectReflectTableModel) sourceTable.getModel();
-        dragItem = (RegisteredDiagnosisModel) tableModel.getObject(sourceTable.getSelectedRow());
+        ObjectReflectTableModel<RegisteredDiagnosisModel> tableModel
+                = (ObjectReflectTableModel<RegisteredDiagnosisModel>) sourceTable.getModel();
+        dragItem = tableModel.getObject(sourceTable.getSelectedRow());
         return dragItem != null ? new InfoModelTransferable(dragItem) : null;
     }
 
@@ -75,10 +63,7 @@ public class DiagnosisTransferHandler extends PatchedTransferHandler {
             // canImport で得た選択行に挿入（DiagnosisDocument#importStamp では使ってないんだけど）
             JTable dropTable = (JTable) c;
             int index = dropTable.getSelectedRow();
-            index = 0;
-            if (index < 0) {
-                index = 0;
-            }
+            index = index < 0? 0 : index;
 
             // Dropされたノードを取得する
             StampTreeNode droppedNode = (StampTreeNode) t.getTransferData(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor);
@@ -88,7 +73,7 @@ public class DiagnosisTransferHandler extends PatchedTransferHandler {
 
             // 葉の場合
             if (droppedNode.isLeaf()) {
-                ModuleInfoBean stampInfo = (ModuleInfoBean) droppedNode.getStampInfo();
+                ModuleInfoBean stampInfo = droppedNode.getStampInfo();
                 if (stampInfo.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS)) {
                     if (stampInfo.isSerialized()) {
                         importList.add(stampInfo);
@@ -109,7 +94,7 @@ public class DiagnosisTransferHandler extends PatchedTransferHandler {
                 while (e.hasMoreElements()) {
                     StampTreeNode node = (StampTreeNode) e.nextElement();
                     if (node.isLeaf()) {
-                        ModuleInfoBean stampInfo = (ModuleInfoBean) node.getStampInfo();
+                        ModuleInfoBean stampInfo = node.getStampInfo();
                         if (stampInfo.isSerialized() && (stampInfo.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS)) ) {
                             importList.add(stampInfo);
                             //System.out.println("StampId " + stampInfo.getStampId());
@@ -131,7 +116,7 @@ public class DiagnosisTransferHandler extends PatchedTransferHandler {
             System.out.println("DiagnosisTransferHandler.java: " + ex);
         } catch (IOException ioe) {
             System.out.println("DiagnosisTransferHandler.java: " + ioe);
-            ioe.printStackTrace();
+            ioe.printStackTrace(System.err);
         }
 
         return false;
@@ -140,34 +125,21 @@ public class DiagnosisTransferHandler extends PatchedTransferHandler {
     @Override
     protected void exportDone(JComponent c, Transferable data, int action) {
         if (action == MOVE && shouldRemove) {
-            ObjectReflectTableModel tableModel = (ObjectReflectTableModel) sourceTable.getModel();
+            ObjectReflectTableModel<RegisteredDiagnosisModel> tableModel
+                    = (ObjectReflectTableModel<RegisteredDiagnosisModel>) sourceTable.getModel();
             tableModel.deleteRow(dragItem);
         }
     }
 
     @Override
-    //public boolean canImport(JComponent c, DataFlavor[] flavors) {
     public boolean canImport(TransferSupport support) {
         // drop position の選択をしないようにする
         support.setShowDropLocation(false);
 
-        DataFlavor[] flavors = support.getDataFlavors();
-        for (int i = 0; i < flavors.length; i++) {
-            if (LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavors[i])) {
-//                JTable t = (JTable) c;
-//                t.getSelectionModel().setSelectionInterval(0,0);
-                return true;
-            }
-        }
-        return false;
+        return Arrays.asList(support.getDataFlavors()).stream()
+                .anyMatch(flavor -> LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavor));
     }
 
-    /**
-     * 半透明 drag のために dragged component とマウス位置を保存する
-     * @param comp
-     * @param e
-     * @param action
-     */
     @Override
     public void exportAsDrag(JComponent comp, InputEvent e, int action) {
         JTable table = (JTable) comp;
@@ -179,43 +151,12 @@ public class DiagnosisTransferHandler extends PatchedTransferHandler {
         boolean isSelected = false;
         boolean hasFocus = true;
 
-        draggedComp = (JComponent) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        JLabel draggedComp = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         draggedComp.setSize(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row));
 
-        // calculate MousePosition
-        Rectangle cellBounds = table.getCellRect(row, column, true);
-        mousePosition = table.getMousePosition();
-        if (mousePosition != null) {
-            mousePosition.x -= cellBounds.x;
-            mousePosition.y -= cellBounds.y;
-        }
+        // クリッピングありで設定
+        setDragImage(draggedComp, true);
 
         super.exportAsDrag(comp, e, action);
-    }
-
-    /**
-     * 半透明のフィードバックを返す
-     * @param t
-     * @return
-     */
-    @Override
-    public Icon getVisualRepresentation(Transferable t) {
-        if (draggedComp == null) return null;
-
-        int width = draggedComp.getWidth();
-        int height = draggedComp.getHeight();
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics g = image.getGraphics();
-        draggedComp.paint(g);
-
-        // 文字列の長さに応じて幅を調節する
-        int stringWidth = g.getFontMetrics().stringWidth(((DefaultTableCellRenderer)draggedComp).getText());
-        if (stringWidth + 16 < width) { // 16 ドット余裕を持たせる
-            width = stringWidth + 16;
-            image = image.getSubimage(0, 0, width, height);
-        }
-        g.setColor(Color.gray);
-        g.drawRect(0, 0, width-1, height-1);
-        return new ImageIcon(image);
     }
 }

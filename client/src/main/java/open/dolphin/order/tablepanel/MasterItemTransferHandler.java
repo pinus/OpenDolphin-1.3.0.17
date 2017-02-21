@@ -1,30 +1,24 @@
 package open.dolphin.order.tablepanel;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.TransferHandler;
 import javax.swing.table.TableCellRenderer;
 import open.dolphin.order.MasterItem;
 import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.PNSTransferHandler;
 
 /**
  * MasterItemTransferHandler.
  * @author Minagawa,Kazushi
  * @author pns
  */
-public class MasterItemTransferHandler extends TransferHandler {
+public class MasterItemTransferHandler extends PNSTransferHandler {
     private static final long serialVersionUID = 4871088750931696219L;
 
     private final DataFlavor masterItemFlavor = MasterItemTransferable.masterItemFlavor;
@@ -120,32 +114,9 @@ public class MasterItemTransferHandler extends TransferHandler {
         JLabel draggedComp = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         draggedComp.setSize(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row));
 
-        int width = draggedComp.getWidth();
-        int height = draggedComp.getHeight();
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics g = image.getGraphics();
-        draggedComp.paint(g);
-
-        // 文字列の長さに応じて幅を調節する
-        int stringWidth = g.getFontMetrics().stringWidth(draggedComp.getText());
-        if (stringWidth + 8 < width) { // 8ドット余裕
-            width = stringWidth + 8;
-            image = image.getSubimage(0, 0, width, height);
-        }
-        g.setColor(Color.gray);
-        g.drawRect(0, 0, width-1, height-1);
-
-        setDragImage(image);
-
-        // offset 計算
-        Rectangle cellRect = table.getCellRect(row, column, true);
-        Point offset = new Point(cellRect.x, cellRect.y);
-        Point mousePos = ((MouseEvent)e).getPoint();
-        offset.x -= mousePos.x;
-        offset.y -= mousePos.y;
-
-        setDragImageOffset(offset);
-
+        // クリッピングあり
+        setDragImage(draggedComp, true);
+        
         super.exportAsDrag(comp, e, action);
     }
 }

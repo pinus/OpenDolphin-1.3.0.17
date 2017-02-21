@@ -241,7 +241,7 @@ public class SOATransferHandler extends TransferHandler {
             for (int i = 0; i < schemas.length; i++) {
                 soaPane.stampSchema(schemas[i]);
             }
-            if (soaPane.getDraggedCount() > 0 && soaPane.getDrragedStamp() != null) {
+            if (soaPane.getDraggedCount() > 0 && soaPane.getDraggedStamp() != null) {
                 soaPane.setDroppedCount(schemas.length);
             }
             return true;

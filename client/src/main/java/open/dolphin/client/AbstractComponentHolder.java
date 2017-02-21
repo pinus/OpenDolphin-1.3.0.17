@@ -96,6 +96,7 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
     public void mouseDragged(MouseEvent e) {
         // ドラッグの際にも，スタンプを selected 状態にする
         Focuser.requestFocus(this);
+        setSelected(true);
 
         int ctrlMask = InputEvent.CTRL_DOWN_MASK;
         int optionMask = InputEvent.ALT_DOWN_MASK;

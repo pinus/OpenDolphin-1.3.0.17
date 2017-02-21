@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Window;
@@ -9,7 +8,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.swing.*;
@@ -17,20 +15,18 @@ import open.dolphin.delegater.StampDelegater;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.project.Project;
-import open.dolphin.ui.PatchedTransferHandler;
 import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
+import open.dolphin.ui.PNSTransferHandler;
 
 /**
- * StampHolderTransferHandler.<br>
- * {@code getVisualRepresentation(Transferable t)} 対応.
+ * StampHolderTransferHandler.
+ *
  * @author Kazushi Minagawa
  * @author pns
  */
-public class StampHolderTransferHandler extends PatchedTransferHandler {
+public class StampHolderTransferHandler extends PNSTransferHandler {
     private static final long serialVersionUID = -9182879162438446790L;
-
-    private JComponent draggedComp = null; // drag の際に透明フィードバックをかけるために使う
 
     public StampHolderTransferHandler() {
     }
@@ -39,7 +35,7 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
     protected Transferable createTransferable(JComponent c) {
         StampHolder source = (StampHolder) c;
         KartePane context = source.getKartePane();
-        context.setDrragedStamp(new ComponentHolder[]{source});
+        context.setDraggedStamp(new ComponentHolder[]{source});
         context.setDraggedCount(1);
         ModuleModel stamp = source.getStamp();
         OrderList list = new OrderList(new ModuleModel[]{stamp});
@@ -54,73 +50,67 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
 
     private void replaceStamp(final StampHolder target, final ModuleInfoBean stampInfo) {
 
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                StampDelegater sdl = new StampDelegater();
-                StampModel stampModel = sdl.getStamp(stampInfo.getStampId());
-                final ModuleModel module = new ModuleModel();
-                if (stampModel != null) {
-                    module.setModel(stampModel.getStamp());
-                    module.setModuleInfo(stampInfo);
-                }
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 薬の場合は操作する
-                        if (module.getModel() instanceof BundleMed) {
-                            // 内服薬同士で置き換えの場合，bundle number を保存する
-                            BundleMed bundle = (BundleMed) module.getModel();
-                            BundleMed orgBundle = (BundleMed) target.getStamp().getModel();
-                            if ((ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode()) &&
-                                    ClaimConst.RECEIPT_CODE_NAIYO.equals(orgBundle.getClassCode())) ||
-                                (ClaimConst.RECEIPT_CODE_TONYO.equals(bundle.getClassCode()) &&
-                                    ClaimConst.RECEIPT_CODE_TONYO.equals(orgBundle.getClassCode()))) {
+        Thread t = new Thread(() -> {
+            StampDelegater sdl = new StampDelegater();
+            StampModel stampModel = sdl.getStamp(stampInfo.getStampId());
+            final ModuleModel module = new ModuleModel();
+            if (stampModel != null) {
+                module.setModel(stampModel.getStamp());
+                module.setModuleInfo(stampInfo);
+            }
+            SwingUtilities.invokeLater(() -> {
+                // 薬の場合は操作する
+                if (module.getModel() instanceof BundleMed) {
+                    // 内服薬同士で置き換えの場合，bundle number を保存する
+                    BundleMed bundle = (BundleMed) module.getModel();
+                    BundleMed orgBundle = (BundleMed) target.getStamp().getModel();
+                    if ((ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode()) &&
+                            ClaimConst.RECEIPT_CODE_NAIYO.equals(orgBundle.getClassCode())) ||
+                            (ClaimConst.RECEIPT_CODE_TONYO.equals(bundle.getClassCode()) &&
+                            ClaimConst.RECEIPT_CODE_TONYO.equals(orgBundle.getClassCode()))) {
 
-                                bundle.setBundleNumber(orgBundle.getBundleNumber());
-                            }
-                            // 外用剤同士で置き換えの場合は，量とコメントを保存
-                            if (ClaimConst.RECEIPT_CODE_GAIYO.equals(bundle.getClassCode()) &&
-                                    ClaimConst.RECEIPT_CODE_GAIYO.equals(orgBundle.getClassCode())) {
-                                bundle.setBundleNumber(orgBundle.getBundleNumber());
+                        bundle.setBundleNumber(orgBundle.getBundleNumber());
+                    }
+                    // 外用剤同士で置き換えの場合は，量とコメントを保存
+                    if (ClaimConst.RECEIPT_CODE_GAIYO.equals(bundle.getClassCode()) &&
+                            ClaimConst.RECEIPT_CODE_GAIYO.equals(orgBundle.getClassCode())) {
+                        bundle.setBundleNumber(orgBundle.getBundleNumber());
 
-                                // 元の量とコメントを取り出し
-                                String dose = null;
+                        // 元の量とコメントを取り出し
+                        String dose = null;
 
-                                for (ClaimItem c : orgBundle.getClaimItem()) {
-                                    String code = c.getCode();
-                                    // 量を保存
-                                    if (dose == null && code.startsWith("6")) { dose = c.getNumber(); }
-                                    // コメントを追加
-                                    if (code.matches("^[0,8,9].*") &&
-                                            ! code.equals("001000001") && // 混合 は除外
-                                            ! code.equals("099209908")    // 一般名処方は除外
-                                            ) {
-                                        // 重複していないコードを追加する
-                                        boolean found = false;
-                                        for(ClaimItem cc : bundle.getClaimItem()) {
-                                            if (cc.getCode().equals(code)) {
-                                                found = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!found) { bundle.addClaimItem(c); }
+                        for (ClaimItem c : orgBundle.getClaimItem()) {
+                            String code = c.getCode();
+                            // 量を保存
+                            if (dose == null && code.startsWith("6")) { dose = c.getNumber(); }
+                            // コメントを追加
+                            if (code.matches("^[0,8,9].*") &&
+                                    ! code.equals("001000001") && // 混合 は除外
+                                    ! code.equals("099209908")    // 一般名処方は除外
+                                    ) {
+                                // 重複していないコードを追加する
+                                boolean found = false;
+                                for(ClaimItem cc : bundle.getClaimItem()) {
+                                    if (cc.getCode().equals(code)) {
+                                        found = true;
+                                        break;
                                     }
                                 }
-                                // 量を設定
-                                if (dose != null) {
-                                    for (ClaimItem c : bundle.getClaimItem()) {
-                                        if (c.getCode().startsWith("6")) { c.setNumber(dose); }
-                                    }
-                                }
+                                if (!found) { bundle.addClaimItem(c); }
                             }
                         }
-                        target.importStamp(module);
+                        // 量を設定
+                        if (dose != null) {
+                            for (ClaimItem c : bundle.getClaimItem()) {
+                                if (c.getCode().startsWith("6")) { c.setNumber(dose); }
+                            }
+                        }
                     }
-                });
-            }
-        };
-        new Thread(r).start();
+                }
+                target.importStamp(module);
+            });
+        });
+        t.start();
     }
 
     private void confirmReplace(StampHolder target, ModuleInfoBean stampInfo) {
@@ -178,13 +168,7 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
                 replaceStamp(target, stampInfo);
 
             } else {
-                Runnable r = new Runnable() {
-                    @Override
-                    public void run() {
-                        confirmReplace(target, stampInfo);
-                    }
-                };
-                EventQueue.invokeLater(r);
+                SwingUtilities.invokeLater(() -> confirmReplace(target, stampInfo));
             }
             return true;
         }
@@ -193,16 +177,19 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
 
     @Override
     protected void exportDone(JComponent c, Transferable tr, int action) {
-        StampHolder test = (StampHolder) c;
-        KartePane context = test.getKartePane();
-        if (action == MOVE &&
-                context.getDrragedStamp() != null &&
-                context.getDraggedCount() == context.getDroppedCount()) {
-            context.removeStamp(test); // TODO
+        if (action == NONE) { return; }
+
+        if (action == MOVE) {
+            StampHolder test = (StampHolder) c;
+            KartePane context = test.getKartePane();
+
+            if (context.getComponent().isEditable()) {
+                context.removeStamp(test);
+            }
+            context.setDraggedStamp(null);
+            context.setDraggedCount(0);
+            context.setDroppedCount(0);
         }
-        context.setDrragedStamp(null);
-        context.setDraggedCount(0);
-        context.setDroppedCount(0);
     }
 
     /**
@@ -235,6 +222,7 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
         StampHolder sh = (StampHolder) comp;
         Transferable tr = createTransferable(comp);
         clip.setContents(tr, null);
+
         if (action == MOVE) {
             KartePane kartePane = sh.getKartePane();
             if (kartePane.getTextPane().isEditable()) {
@@ -243,42 +231,10 @@ public class StampHolderTransferHandler extends PatchedTransferHandler {
         }
     }
 
-    /**
-     * 半透明 drag のために dragged component とマウス位置を保存する.
-     * @param comp
-     * @param e
-     * @param action
-     */
     @Override
     public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-        draggedComp = comp;
-        mousePosition = ((MouseEvent)e).getPoint();
-
-        // StampHolder は大きさを 2/3 に縮小して表示する
-        // mousePosition.x = mousePosition.x * 2/3;
-        // mousePosition.y = mousePosition.y * 2/3;
-
+        setDragImage((JLabel)comp);
         super.exportAsDrag(comp, e, action);
-    }
-
-    /**
-     * 半透明のフィードバックを返す.
-     * @param t
-     * @return
-     */
-    @Override
-    public Icon getVisualRepresentation(Transferable t) {
-        if (draggedComp == null) { return null; }
-
-        int width = draggedComp.getWidth();
-        int height = draggedComp.getHeight();
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-        draggedComp.paint(image.getGraphics());
-
-        // StampHolder は大きさを 2/3 に縮小して表示する
-        // return new ImageIcon(changeSize(image, width*2/3, height*2/3));
-        // 縮小すると，パタパタうざくなるのでやめた
-        return new ImageIcon(image);
     }
 
     private BufferedImage changeSize(BufferedImage image, int width, int height) {

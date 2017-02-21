@@ -35,6 +35,12 @@ public class ImageHelper {
         return image;
     }
 
+    /**
+     * inImage の幅と高さの長い方が maxDim になるように縮小する.
+     * @param inImage
+     * @param maxDim
+     * @return
+     */
     public static BufferedImage getFirstScaledInstance(BufferedImage inImage, int maxDim) {
 
         if (inImage.getWidth() <= maxDim && inImage.getHeight() <= maxDim) {

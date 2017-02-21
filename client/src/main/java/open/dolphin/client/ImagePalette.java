@@ -4,13 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
@@ -26,7 +23,8 @@ import open.dolphin.ui.*;
 /**
  * ImagePalette.
  *
- * @author Minagawa,Kazushi modified by pns
+ * @author Minagawa,Kazushi
+ * @author pns
  */
 public class ImagePalette extends JPanel {
     private static final long serialVersionUID = -6218860704261308773L;
@@ -290,10 +288,8 @@ public class ImagePalette extends JPanel {
     /**
      * TransferHandler by pns
      */
-    private class ImageTransferHandler extends PatchedTransferHandler {
+    private class ImageTransferHandler extends PNSTransferHandler {
         private static final long serialVersionUID = 1L;
-
-        private JComponent draggedComp = null;
 
         @Override
         protected Transferable createTransferable(JComponent c) {
@@ -312,12 +308,6 @@ public class ImagePalette extends JPanel {
             return COPY_OR_MOVE;
         }
 
-        /**
-         * 半透明 drag のために dragged component とマウス位置を保存する
-         * @param comp
-         * @param e
-         * @param action
-         */
         @Override
         public void exportAsDrag(JComponent comp, InputEvent e, int action) {
             JTable table = (JTable) comp;
@@ -329,36 +319,12 @@ public class ImagePalette extends JPanel {
             boolean isSelected = false;
             boolean hasFocus = true;
 
-            draggedComp = (JComponent) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            JLabel draggedComp = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             draggedComp.setSize(table.getColumnModel().getColumn(0).getWidth(), table.getRowHeight(row));
 
-            // calculate MousePosition
-            Rectangle cellBounds = table.getCellRect(row, column, true);
-            mousePosition = table.getMousePosition();
-            if (mousePosition != null) {
-                mousePosition.x -= cellBounds.x;
-                mousePosition.y -= cellBounds.y;
-            }
+            setDragImage(draggedComp);
 
             super.exportAsDrag(comp, e, action);
-        }
-
-        /**
-         * 半透明のフィードバックを返す
-         * @param t
-         * @return
-         */
-        @Override
-        public Icon getVisualRepresentation(Transferable t) {
-            if (draggedComp == null) { return null; }
-
-            int width = draggedComp.getWidth();
-            int height = draggedComp.getHeight();
-            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-            Graphics g = image.getGraphics();
-            draggedComp.paint(g);
-            PNSBorder.drawSelectedRect(draggedComp, g, 0, 0, width-1, height-1);
-            return new ImageIcon(image);
         }
     }
 }

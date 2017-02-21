@@ -20,6 +20,13 @@ import javax.swing.TransferHandler;
  * @author http://bugs.sun.com/view_bug.do?bug_id=4816922 modified by pns.
  *
  * MasterItemTransferHandler
+ * DiagnosisTransferHalder
+ * ImagePalette
+ * SchemaHolderTransferHandler (auch AbstractComponentHolder 99)
+ * StampHolderTransferHandler
+ * AppointLabel
+ * SimpleCalendarPanel
+ * StampTreeTransferHandler
  *
  */
 public class PatchedTransferHandler extends TransferHandler implements Serializable {
