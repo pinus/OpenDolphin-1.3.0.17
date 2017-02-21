@@ -8,7 +8,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.PatientDelegater;
 import open.dolphin.infomodel.KarteState;
@@ -234,17 +233,19 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public void mouseClicked(MouseEvent e) {
             // ダブルクリック
             if (e.getClickCount() == 2 && !contextMenu.isShowing() && e.getSource() instanceof JTable) {
                 table = (JTable) e.getSource();
                 tableModel = (ObjectReflectTableModel<T>) table.getModel();
 
-                int row = table.convertRowIndexToModel(table.getSelectedRow());
-                T value = tableModel.getObject(row);
-                if (value != null) {
-                    openKarte(value);
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow > 0) {
+                int row = table.convertRowIndexToModel(selectedRow);
+                    T value = tableModel.getObject(row);
+                    if (value != null) {
+                        openKarte(value);
+                    }
                 }
             }
         }
