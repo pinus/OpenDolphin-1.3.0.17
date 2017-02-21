@@ -4,7 +4,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.InputEvent;
 import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -32,16 +31,16 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
     private static final long serialVersionUID = 1205897976539749194L;
 
     // StampTreeNode Flavor
-    private DataFlavor stampTreeNodeFlavor = LocalStampTreeNodeTransferable.localStampTreeNodeFlavor;
+    private final DataFlavor stampTreeNodeFlavor = LocalStampTreeNodeTransferable.localStampTreeNodeFlavor;
 
     // KartePaneからDropされるオーダのFlavor
-    private DataFlavor orderFlavor = OrderListTransferable.orderListFlavor;
+    private final DataFlavor orderFlavor = OrderListTransferable.orderListFlavor;
 
     // KartePaneからDropされるテキストFlavor
-    private DataFlavor stringFlavor = DataFlavor.stringFlavor;
+    private final DataFlavor stringFlavor = DataFlavor.stringFlavor;
 
     // 病名エディタからDropされるRegisteredDiagnosis Flavor
-    private DataFlavor infoModelFlavor = InfoModelTransferable.infoModelFlavor;
+    private final DataFlavor infoModelFlavor = InfoModelTransferable.infoModelFlavor;
 
     // Drop する target の path
     private TreePath targetPath;
@@ -61,18 +60,22 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
     }
 
     /**
-     * 半透明 drag の為に，draggedComp と mousePosition を保存する
-     * @param comp
-     * @param e
-     * @param action
+     * 選択されたノードでDragを開始する.
+     * @return
      */
     @Override
-    public void exportAsDrag(JComponent comp, InputEvent e, int action) {
+    protected Transferable createTransferable(JComponent c) {
+        StampTree sourceTree = (StampTree) c;
+        StampTreeNode dragNode = (StampTreeNode) sourceTree.getLastSelectedPathComponent();
+        return new LocalStampTreeNodeTransferable(dragNode);
+    }
+
+    @Override
+    public int getSourceActions(JComponent c) {
         insertPosition = null;
 
-        JTree tree = (JTree)comp;
+        JTree tree = (JTree)c;
         TreePath path = tree.getSelectionPath();
-        if (path == null) { return; } // １回ヌルポがでた
 
         TreeNode node = (TreeNode) path.getLastPathComponent();
         StampTreeRenderer r = (StampTreeRenderer) tree.getCellRenderer();
@@ -87,21 +90,6 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
         draggedComp.setSize(draggedComp.getPreferredSize());
         setDragImage(draggedComp);
 
-        super.exportAsDrag(comp, e, action);
-    }
-    /**
-     * 選択されたノードでDragを開始する.
-     * @return
-     */
-    @Override
-    protected Transferable createTransferable(JComponent c) {
-        StampTree sourceTree = (StampTree) c;
-        StampTreeNode dragNode = (StampTreeNode) sourceTree.getLastSelectedPathComponent();
-        return new LocalStampTreeNodeTransferable(dragNode);
-    }
-
-    @Override
-    public int getSourceActions(JComponent c) {
         return COPY_OR_MOVE;
     }
 

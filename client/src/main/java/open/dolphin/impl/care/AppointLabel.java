@@ -1,7 +1,6 @@
 package open.dolphin.impl.care;
 
 import java.awt.datatransfer.*;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.Icon;
@@ -53,18 +52,13 @@ public class AppointLabel extends JLabel {
 
         @Override
         public int getSourceActions(JComponent c) {
-            return COPY_OR_MOVE;
-        }
-
-        @Override
-        public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-            Icon icon = ((JLabel)comp).getIcon();
+            Icon icon = ((JLabel)c).getIcon();
             JLabel label = new JLabel(icon);
             label.setSize(icon.getIconWidth(), icon.getIconHeight());
 
             setDragImage(label);
 
-            super.exportAsDrag(comp, e, action);
+            return COPY_OR_MOVE;
         }
     }
 }

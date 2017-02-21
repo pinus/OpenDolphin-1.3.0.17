@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import javax.swing.JLabel;
 import javax.swing.TransferHandler;
+import open.dolphin.client.ClientContext;
 
 /**
  * DragImage の utility 付きの TransferHandler.
@@ -15,11 +16,19 @@ import javax.swing.TransferHandler;
 public class PNSTransferHandler extends TransferHandler {
     private static final long serialVersionUID = 1L;
 
+    private final boolean isMac = ClientContext.isMac();
+    private final Point offset = new Point(0,0);
+
     /**
      * JLabel から DragImage を作る.
      * @param label
      */
     protected void setDragImage(JLabel label) {
+        Point mousePosition = label.getMousePosition();
+        if (mousePosition != null) {
+            offset.x = -label.getMousePosition().x;
+            offset.y = -label.getMousePosition().y;
+        }
         setDragImage(label, false);
     }
 
@@ -64,7 +73,13 @@ public class PNSTransferHandler extends TransferHandler {
      */
     @Override
     public void setDragImage(Image image) {
-        setDragImageOffset(new Point(-image.getWidth(null)/2, -image.getHeight(null)/2));
+        if (isMac) {
+            if (offset.x == 0 && offset.y == 0) {
+                offset.x = -image.getWidth(null)/2;
+                offset.y = -image.getHeight(null)/2;
+            }
+            setDragImageOffset(offset);
+        }
         super.setDragImage(image);
     }
 }

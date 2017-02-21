@@ -448,14 +448,14 @@ public final class SimpleCalendarPanel extends JPanel {
         private SimpleDate srcDate;
 
         @Override
-        public void exportAsDrag(JComponent comp, InputEvent e, int action) {
+        public int getSourceActions(JComponent c) {
             srcRow = table.getSelectedRow();
             srcCol = table.getSelectedColumn();
             srcDate = (SimpleDate) table.getValueAt(srcRow, srcCol);
 
             setDragImage(getVisualRepresentation());
 
-            super.exportAsDrag(comp, e, action);
+            return MOVE;
         }
 
         /**
@@ -474,11 +474,6 @@ public final class SimpleCalendarPanel extends JPanel {
             image = image.getSubimage(x, y, width/7, height/6);
 
             return image;
-        }
-
-        @Override
-        public int getSourceActions(JComponent c) {
-            return MOVE;
         }
 
         @Override
@@ -552,11 +547,12 @@ public final class SimpleCalendarPanel extends JPanel {
             if (action == MOVE) {
                 // 移動の場合ソースは消す
                 processCancel(srcRow, srcCol);
+
+                // リセット
+                srcRow = -1;
+                srcCol = -1;
+                srcDate = null;
             }
-            // リセット
-            srcRow = -1;
-            srcCol = -1;
-            srcDate = null;
         }
     }
 }

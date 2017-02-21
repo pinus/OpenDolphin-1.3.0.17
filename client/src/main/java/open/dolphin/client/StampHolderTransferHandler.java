@@ -7,7 +7,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.swing.*;
@@ -45,6 +44,7 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
 
     @Override
     public int getSourceActions(JComponent c) {
+        setDragImage((JLabel)c);
         return COPY_OR_MOVE;
     }
 
@@ -229,12 +229,6 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
                 kartePane.removeStamp(sh);
             }
         }
-    }
-
-    @Override
-    public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-        setDragImage((JLabel)comp);
-        super.exportAsDrag(comp, e, action);
     }
 
     private BufferedImage changeSize(BufferedImage image, int width, int height) {

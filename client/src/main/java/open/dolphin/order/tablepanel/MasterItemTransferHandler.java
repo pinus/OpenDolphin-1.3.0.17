@@ -3,7 +3,6 @@ package open.dolphin.order.tablepanel;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.InputEvent;
 import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -39,6 +38,22 @@ public class MasterItemTransferHandler extends PNSTransferHandler {
 
     @Override
     public int getSourceActions(JComponent c) {
+        // 半透明の drag image フィードバックを作る
+        JTable table = (JTable) c;
+        int row = table.getSelectedRow();
+        int column = 1;
+        TableCellRenderer r = table.getCellRenderer(row, column);
+
+        Object value = table.getValueAt(row, column);
+        boolean isSelected = false;
+        boolean hasFocus = true;
+
+        JLabel draggedComp = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        draggedComp.setSize(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row));
+
+        // クリッピングあり
+        setDragImage(draggedComp, true);
+
         return COPY_OR_MOVE;
     }
 
@@ -53,6 +68,7 @@ public class MasterItemTransferHandler extends PNSTransferHandler {
 
                 toIndex = dropLocation.getRow();
                 shouldRemove = (dropTable == sourceTable);
+
                 if (shouldRemove) {
                     tableModel.moveRow(fromIndex, (toIndex>fromIndex)? --toIndex : toIndex);
                 } else {
@@ -60,19 +76,13 @@ public class MasterItemTransferHandler extends PNSTransferHandler {
                 }
                 sourceTable.getSelectionModel().setSelectionInterval(toIndex, toIndex);
                 return true;
+
             } catch (IOException | UnsupportedFlavorException e) {
                 System.out.println("MasterItemTransferHandler.java: " + e);
             }
         }
 
         return false;
-    }
-
-    @Override
-    protected void exportDone(JComponent c, Transferable data, int action) {
-        shouldRemove = false;
-        fromIndex = -1;
-        toIndex = -1;
     }
 
     @Override
@@ -91,32 +101,5 @@ public class MasterItemTransferHandler extends PNSTransferHandler {
             }
         }
         return isDropable;
-    }
-
-    /**
-     * 半透明の drag image 付き exportAsDrag.
-     * @param comp
-     * @param e
-     * @param action
-     */
-    @Override
-    public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-        // 半透明の drag image フィードバックを作る
-        JTable table = (JTable) comp;
-        int row = table.getSelectedRow();
-        int column = 1;
-        TableCellRenderer r = table.getCellRenderer(row, column);
-
-        Object value = table.getValueAt(row, column);
-        boolean isSelected = false;
-        boolean hasFocus = true;
-
-        JLabel draggedComp = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        draggedComp.setSize(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row));
-
-        // クリッピングあり
-        setDragImage(draggedComp, true);
-        
-        super.exportAsDrag(comp, e, action);
     }
 }

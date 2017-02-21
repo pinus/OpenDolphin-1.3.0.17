@@ -1,10 +1,8 @@
 package open.dolphin.client;
 
-import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.InputEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +19,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.stampbox.StampTreeNode;
 import open.dolphin.ui.PNSTransferHandler;
+import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 
 /**
  * DiagnosisTransferHandler
@@ -52,6 +51,21 @@ public class DiagnosisTransferHandler extends PNSTransferHandler {
 
     @Override
     public int getSourceActions(JComponent c) {
+        JTable table = (JTable) c;
+        int row = table.getSelectedRow();
+        int column = 0;
+        TableCellRenderer r = table.getCellRenderer(row, column);
+
+        Object value = table.getValueAt(row, column);
+        boolean isSelected = false;
+        boolean hasFocus = true;
+
+        JLabel draggedComp = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        draggedComp.setSize(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row));
+
+        // クリッピングありで設定
+        setDragImage(draggedComp, true);
+
         return COPY_OR_MOVE;
     }
 
@@ -68,7 +82,7 @@ public class DiagnosisTransferHandler extends PNSTransferHandler {
             // Dropされたノードを取得する
             StampTreeNode droppedNode = (StampTreeNode) t.getTransferData(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor);
 
-            // Import するイストを生成する
+            // Import するリストを生成する
             List<ModuleInfoBean> importList = new ArrayList<>(3);
 
             // 葉の場合
@@ -138,25 +152,5 @@ public class DiagnosisTransferHandler extends PNSTransferHandler {
 
         return Arrays.asList(support.getDataFlavors()).stream()
                 .anyMatch(flavor -> LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavor));
-    }
-
-    @Override
-    public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-        JTable table = (JTable) comp;
-        int row = table.getSelectedRow();
-        int column = 0;
-        TableCellRenderer r = table.getCellRenderer(row, column);
-
-        Object value = table.getValueAt(row, column);
-        boolean isSelected = false;
-        boolean hasFocus = true;
-
-        JLabel draggedComp = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        draggedComp.setSize(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row));
-
-        // クリッピングありで設定
-        setDragImage(draggedComp, true);
-
-        super.exportAsDrag(comp, e, action);
     }
 }

@@ -1,7 +1,6 @@
 package open.dolphin.client;
 
 import java.awt.datatransfer.*;
-import java.awt.event.InputEvent;
 import javax.swing.*;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.ui.PNSTransferHandler;
@@ -33,6 +32,7 @@ public class SchemaHolderTransferHandler extends PNSTransferHandler {
 
     @Override
     public int getSourceActions(JComponent c) {
+        setDragImage((JLabel)c);
         return COPY_OR_MOVE;
     }
 
@@ -75,11 +75,5 @@ public class SchemaHolderTransferHandler extends PNSTransferHandler {
                 kartePane.removeSchema(sh);
             }
         }
-    }
-
-    @Override
-    public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-        setDragImage((JLabel)comp);
-        super.exportAsDrag(comp, e, action);
     }
 }

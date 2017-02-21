@@ -286,7 +286,7 @@ public class ImagePalette extends JPanel {
     }
 
     /**
-     * TransferHandler by pns
+     * TransferHandler by pns.
      */
     private class ImageTransferHandler extends PNSTransferHandler {
         private static final long serialVersionUID = 1L;
@@ -305,12 +305,7 @@ public class ImagePalette extends JPanel {
 
         @Override
         public int getSourceActions(JComponent c) {
-            return COPY_OR_MOVE;
-        }
-
-        @Override
-        public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-            JTable table = (JTable) comp;
+            JTable table = (JTable) c;
             int row = table.getSelectedRow();
             int column = table.getSelectedColumn();
             TableCellRenderer r = table.getCellRenderer(row, column);
@@ -324,7 +319,7 @@ public class ImagePalette extends JPanel {
 
             setDragImage(draggedComp);
 
-            super.exportAsDrag(comp, e, action);
+            return COPY_OR_MOVE;
         }
     }
 }
