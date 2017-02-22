@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -62,7 +63,13 @@ public class MyTreeUI extends BasicTreeUI {
             // 続きを塗る
             while (topY < clip.y + clip.height) {
                 int bottomY = topY + tree.getRowHeight();
-                g.setColor(ROW_COLORS[currentRow & 1]);
+
+                if (tree.isRowSelected(currentRow)) {
+                    // row selection
+                    g.setColor(((DefaultTreeCellRenderer)tree.getCellRenderer()).getBackgroundSelectionColor());
+                } else {
+                    g.setColor(ROW_COLORS[currentRow & 1]);
+                }
                 g.fillRect(clip.x, topY, clip.width, bottomY);
                 topY = bottomY;
                 currentRow++;
@@ -92,6 +99,29 @@ public class MyTreeUI extends BasicTreeUI {
         } else {
             return new int[]{ 0, 0 };
         }
+    }
+
+    /**
+     * PathBounds を行全体に広げる.
+     * @param tree
+     * @param path
+     * @return
+     */
+    @Override
+    public Rectangle getPathBounds(JTree tree, TreePath path) {
+        if(tree != null && treeState != null) {
+            return getPathBounds(path, tree.getInsets(), new Rectangle());
+        }
+        return null;
+    }
+
+    private Rectangle getPathBounds(TreePath path, Insets insets, Rectangle bounds) {
+        bounds = treeState.getBounds(path, bounds);
+        if(bounds != null) {
+            bounds.width = tree.getWidth();
+            bounds.y += insets.top;
+        }
+        return bounds;
     }
 
     public static void main(String[] arg) {
