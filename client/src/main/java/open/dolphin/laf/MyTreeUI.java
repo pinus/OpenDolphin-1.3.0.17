@@ -2,6 +2,7 @@ package open.dolphin.laf;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
@@ -10,19 +11,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTreeUI;
+import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import open.dolphin.ui.PNSTreeCellEditor;
 
 /**
- *
+ * ストライプな TreeUI.
  * @author pns
  */
 public class MyTreeUI extends BasicTreeUI {
@@ -37,11 +39,23 @@ public class MyTreeUI extends BasicTreeUI {
     }
 
     @Override
+    protected void installDefaults() {
+        UIManager.put("Tree.paintLines", Boolean.FALSE);
+        UIManager.put("Tree.rendererFillBackground", Boolean.FALSE);
+        UIManager.put("Tree.drawsFocusBorderAroundIcon", Boolean.FALSE);
+        UIManager.put("Tree.drawDashedFocusIndicator", Boolean.FALSE);
+
+        super.installDefaults();
+    }
+
+    @Override
     public void installUI(JComponent c) {
         super.installUI(c);
+
         JTree t = (JTree) c;
         t.putClientProperty("Quaqua.Tree.style", "striped");
         t.setRowHeight(DEFAULT_ROW_HEIGHT);
+        t.setShowsRootHandles(true);
     }
 
     @Override
@@ -63,8 +77,9 @@ public class MyTreeUI extends BasicTreeUI {
             // 続きを塗る
             while (topY < clip.y + clip.height) {
                 int bottomY = topY + tree.getRowHeight();
+                int row = tree.getRowForLocation(clip.width-1, topY);
 
-                if (tree.isRowSelected(currentRow)) {
+                if (tree.isRowSelected(row)) {
                     // row selection
                     g.setColor(((DefaultTreeCellRenderer)tree.getCellRenderer()).getBackgroundSelectionColor());
                 } else {
@@ -103,6 +118,7 @@ public class MyTreeUI extends BasicTreeUI {
 
     /**
      * PathBounds を行全体に広げる.
+     * 行のどこを click しても選択できるようになる.
      * @param tree
      * @param path
      * @return
@@ -115,6 +131,13 @@ public class MyTreeUI extends BasicTreeUI {
         return null;
     }
 
+    /**
+     * BasicTreeUI#getPathBounds もこのパターンで public と private が組み合わされている.
+     * @param path
+     * @param insets
+     * @param bounds
+     * @return
+     */
     private Rectangle getPathBounds(TreePath path, Insets insets, Rectangle bounds) {
         bounds = treeState.getBounds(path, bounds);
         if(bounds != null) {
@@ -123,6 +146,7 @@ public class MyTreeUI extends BasicTreeUI {
         }
         return bounds;
     }
+
 
     public static void main(String[] arg) {
         UIManager.put("TreeUI", MyTreeUI.class.getName());
@@ -135,7 +159,19 @@ public class MyTreeUI extends BasicTreeUI {
         ToolTipManager.sharedInstance().registerComponent(tree);
         tree.setPreferredSize(new Dimension(300,400));
         tree.setRootVisible(false);
-        tree.setCellEditor(new PNSTreeCellEditor(tree, new DefaultTreeCellRenderer()));
+        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value,
+                    boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                JLabel l = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+                l.setToolTipText(l.getText());
+                return l;
+            }
+        };
+        DefaultTreeCellEditor editor = new DefaultTreeCellEditor(tree, renderer);
+        tree.setCellRenderer(renderer);
+        tree.setCellEditor(editor);
         tree.setEditable(true);
 
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -147,6 +183,7 @@ public class MyTreeUI extends BasicTreeUI {
                 tree.getTransferHandler().exportAsDrag((JComponent) e.getSource(), e, TransferHandler.COPY);
             }
         });
+
 
         f.add(tree, BorderLayout.CENTER);
         f.pack();
