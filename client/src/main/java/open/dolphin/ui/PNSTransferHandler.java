@@ -16,7 +16,7 @@ import open.dolphin.client.ClientContext;
 public class PNSTransferHandler extends TransferHandler {
     private static final long serialVersionUID = 1L;
 
-    private final boolean isMac = ClientContext.isMac();
+    private final boolean isWin = ClientContext.isWin();
     private final Point offset = new Point(0,0);
 
     /**
@@ -73,13 +73,22 @@ public class PNSTransferHandler extends TransferHandler {
      */
     @Override
     public void setDragImage(Image image) {
-        if (isMac) {
-            if (offset.x == 0 && offset.y == 0) {
-                offset.x = -image.getWidth(null)/2;
-                offset.y = -image.getHeight(null)/2;
-            }
-            setDragImageOffset(offset);
+        if (offset.x == 0 && offset.y == 0) {
+            // センタリング
+            offset.x = -image.getWidth(null)/2;
+            offset.y = -image.getHeight(null)/2;
         }
+        // windows では offset の方向が逆
+        if (isWin) {
+            offset.x = -offset.x;
+            offset.y = -offset.y;
+        }
+
+        setDragImageOffset(offset);
+
+        offset.x = 0;
+        offset.y = 0;
+
         super.setDragImage(image);
     }
 }
