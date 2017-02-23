@@ -1,14 +1,13 @@
 package open.dolphin.laf;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,7 +28,7 @@ import open.dolphin.ui.PNSTreeCellEditor;
  */
 public class MyTreeUI extends BasicTreeUI {
 
-    private boolean isDragging;
+    private UIHelper helper;
 
     public static ComponentUI createUI(JComponent c) {
         return new MyTreeUI();
@@ -42,7 +41,7 @@ public class MyTreeUI extends BasicTreeUI {
         UIManager.put("Tree.drawsFocusBorderAroundIcon", Boolean.FALSE);
         UIManager.put("Tree.drawDashedFocusIndicator", Boolean.FALSE);
         UIManager.put("Tree.repaintWholeRow", Boolean.TRUE);
-        UIManager.put("Tree.font", new Font(Font.SANS_SERIF, Font.PLAIN, DolphinUI.IS_WIN? 12:13));
+        UIManager.put("Tree.font", new Font(Font.SANS_SERIF, Font.PLAIN, UIHelper.isWin()? 12:13));
 
         super.installDefaults();
     }
@@ -52,29 +51,24 @@ public class MyTreeUI extends BasicTreeUI {
         super.installUI(c);
 
         JTree t = (JTree) c;
+        helper = new UIHelper(c);
+
         t.putClientProperty("Quaqua.Tree.style", "striped");
-        t.setRowHeight(DolphinUI.DEFAULT_ROW_HEIGHT);
-
+        t.setRowHeight(UIHelper.DEFAULT_ROW_HEIGHT);
         t.setShowsRootHandles(true);
-
-        MouseAdapter ma = new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                isDragging = true;
-            }
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                isDragging = false;
-            }
-        };
-        t.addMouseListener(ma);
-        t.addMouseMotionListener(ma);
     }
 
+    /**
+     * Background を塗る.
+     * @param g
+     * @param c
+     */
     @Override
     public void paint(Graphics g, JComponent c) {
         Object property = tree.getClientProperty("Quaqua.Tree.style");
         boolean isStriped = property != null && property.equals("striped");
+        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        helper.setRendererColors(renderer);
 
         if (isStriped) {
             Rectangle clip = g.getClipBounds();
@@ -83,7 +77,7 @@ public class MyTreeUI extends BasicTreeUI {
             int currentRow = top[1]-1;
 
             // ClipBounds.y から topY まで塗る
-            g.setColor(DolphinUI.ROW_COLORS[currentRow & 1]);
+            g.setColor(UIHelper.ROW_COLORS[currentRow & 1]);
             g.fillRect(clip.x, clip.y, clip.width, topY);
             currentRow ++;
 
@@ -92,18 +86,14 @@ public class MyTreeUI extends BasicTreeUI {
                 int bottomY = topY + tree.getRowHeight();
                 int row = tree.getRowForLocation(clip.width-1, topY);
 
-                if (tree.isRowSelected(row)) {
-                    // row selection
-                    if (tree.isFocusOwner()) {
-                        g.setColor(((DefaultTreeCellRenderer)tree.getCellRenderer()).getBackgroundSelectionColor());
-                    } else {
-                        g.setColor(DolphinUI.SELECTED_OFF_FOCUS_BACKGROUND);
-                    }
+                boolean isSelected = tree.isRowSelected(row);
+                boolean isFocused = tree.isFocusOwner();
 
-                } else {
-                    g.setColor(DolphinUI.ROW_COLORS[currentRow & 1]);
-                }
+                helper.setBackgroundNonSelectionColor(UIHelper.ROW_COLORS[currentRow & 1]);
+                g.setColor(helper.getBackground(isSelected, isFocused));
+
                 g.fillRect(clip.x, topY, clip.width, bottomY);
+
                 topY = bottomY;
                 currentRow++;
             }
@@ -132,6 +122,35 @@ public class MyTreeUI extends BasicTreeUI {
         } else {
             return new int[]{ 0, 0 };
         }
+    }
+
+    /**
+     * Text の色を renderer に設定する.
+     * @param g
+     * @param clip
+     * @param insets
+     * @param bounds
+     * @param path
+     * @param row
+     * @param isExpanded
+     * @param hasBeenExpanded
+     * @param isLeaf
+     */
+    @Override
+    protected void paintRow(Graphics g, Rectangle clip,
+                            Insets insets, Rectangle bounds, TreePath path,
+                            int row, boolean isExpanded,
+                            boolean hasBeenExpanded, boolean isLeaf) {
+
+        boolean isFocused = tree.isFocusOwner();
+        Color col = helper.getForeground(true, isFocused);
+        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        Color orig = renderer.getTextSelectionColor();
+
+        // Focus に応じて foreground 色も変える
+        renderer.setTextSelectionColor(col);
+        super.paintRow(g, bounds, insets, bounds, path, row, isExpanded, hasBeenExpanded, isLeaf);
+        renderer.setTextSelectionColor(orig);
     }
 
     /**
@@ -175,7 +194,7 @@ public class MyTreeUI extends BasicTreeUI {
      */
     @Override
     public void startEditingAtPath(JTree tree, TreePath path) {
-        if (!isDragging) { super.startEditingAtPath(tree, path); }
+        if (!helper.isDragging()) { super.startEditingAtPath(tree, path); }
     }
 
 
