@@ -1,4 +1,4 @@
-package open.dolphin.stampbox;
+package open.dolphin.client;
 
 import java.awt.Color;
 

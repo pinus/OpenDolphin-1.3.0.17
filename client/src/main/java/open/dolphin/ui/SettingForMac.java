@@ -8,6 +8,7 @@ import open.dolphin.client.Dolphin;
 import open.dolphin.laf.MyPasswordFieldUI;
 import open.dolphin.laf.MyTableUI;
 import open.dolphin.laf.MyTextFieldUI;
+import open.dolphin.laf.MyTreeUI;
 
 /**
  * Mac + Quaqua 用のセッティング
@@ -53,6 +54,7 @@ public class SettingForMac {
         excludes.add("TextField");
         excludes.add("PasswordField");
         excludes.add("Table");
+        excludes.add("Tree");
         //excludes.add("Button");
         //excludes.add("ComboBox");
         //excludes.add("TabbedPane");
@@ -67,6 +69,7 @@ public class SettingForMac {
             UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
             UIManager.put("PasswordFieldUI", MyPasswordFieldUI.class.getName());
             UIManager.put("TableUI", MyTableUI.class.getName());
+            UIManager.put("TreeUI", MyTreeUI.class.getName());
 
         } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException e) {
             System.out.println("Dolphin.java: " + e);

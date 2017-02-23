@@ -19,7 +19,6 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.PreferencesUtils;
 import open.dolphin.util.StringTool;
-import open.dolphin.stampbox.StampRenderingHints;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.MethodInvocationException;

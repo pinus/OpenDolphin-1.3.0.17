@@ -1,5 +1,7 @@
 package open.dolphin.ui;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTree;
 import javax.swing.Timer;
@@ -35,14 +37,22 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
                 // restart undoing
                 undoManager.discardAllEdits();
                 // editor の cell を５文字分大きめに作る
-                setColumns(text.length() + 5);
+                //setColumns(text.length() + 5);
             }
         };
 
         undoManager = TextComponentUndoManager.getManager(textField);
 
-        textField.putClientProperty("Quaqua.TextComponent.showPopup", false); // 勝手に cut,copy,past の popup を作らせない
-        textField.setOpaque(true); // これをしないと，編集時のバックグランドが白くならない
+        // 勝手に cut,copy,past の popup を作らせない
+        textField.putClientProperty("Quaqua.TextComponent.showPopup", false);
+        // これをしないと，編集時のバックグランドが白くならない
+        textField.setOpaque(true);
+
+        // focus を失ったら編集はやめる
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) { stopCellEditing(); }
+        });
 
         DefaultCellEditor editor = new DefaultCellEditor(textField);
 

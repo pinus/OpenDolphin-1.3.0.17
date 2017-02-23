@@ -59,10 +59,8 @@ public class PNSTransferHandler extends TransferHandler {
         }
 
         // グレーの枠を付ける
-        if (label.getBorder() == null) {
-            g.setColor(Color.gray);
-            g.drawRect(0, 0, width-1, height-1);
-        }
+        g.setColor(Color.gray);
+        g.drawRect(0, 0, width-1, height-1);
 
         setDragImage(image);
     }

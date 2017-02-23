@@ -14,7 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
-import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTreeUI;
@@ -22,6 +21,7 @@ import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import open.dolphin.ui.PNSTreeCellEditor;
 
 /**
  * ストライプな TreeUI.
@@ -29,10 +29,14 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public class MyTreeUI extends BasicTreeUI {
 
+    private static final int DEFAULT_ROW_HEIGHT = 18;
+
     private static final Color DEFAULT_ODD_COLOR = Color.WHITE;
     private static final Color DEFAULT_EVEN_COLOR = new Color(237,243,254);
     private static final Color[] ROW_COLORS = {DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR};
-    private static final int DEFAULT_ROW_HEIGHT = 22;
+    private static final Color SELECTED_OFF_FOCUS_COLOR = new Color(208,208,208);
+
+    private boolean isDragging;
 
     public static ComponentUI createUI(JComponent c) {
         return new MyTreeUI();
@@ -44,6 +48,7 @@ public class MyTreeUI extends BasicTreeUI {
         UIManager.put("Tree.rendererFillBackground", Boolean.FALSE);
         UIManager.put("Tree.drawsFocusBorderAroundIcon", Boolean.FALSE);
         UIManager.put("Tree.drawDashedFocusIndicator", Boolean.FALSE);
+        UIManager.put("Tree.repaintWholeRow", Boolean.TRUE);
 
         super.installDefaults();
     }
@@ -56,6 +61,19 @@ public class MyTreeUI extends BasicTreeUI {
         t.putClientProperty("Quaqua.Tree.style", "striped");
         t.setRowHeight(DEFAULT_ROW_HEIGHT);
         t.setShowsRootHandles(true);
+
+        MouseAdapter ma = new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                isDragging = true;
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                isDragging = false;
+            }
+        };
+        t.addMouseListener(ma);
+        t.addMouseMotionListener(ma);
     }
 
     @Override
@@ -81,7 +99,12 @@ public class MyTreeUI extends BasicTreeUI {
 
                 if (tree.isRowSelected(row)) {
                     // row selection
-                    g.setColor(((DefaultTreeCellRenderer)tree.getCellRenderer()).getBackgroundSelectionColor());
+                    if (tree.isFocusOwner()) {
+                        g.setColor(((DefaultTreeCellRenderer)tree.getCellRenderer()).getBackgroundSelectionColor());
+                    } else {
+                        g.setColor(SELECTED_OFF_FOCUS_COLOR);
+                    }
+
                 } else {
                     g.setColor(ROW_COLORS[currentRow & 1]);
                 }
@@ -140,11 +163,24 @@ public class MyTreeUI extends BasicTreeUI {
      */
     private Rectangle getPathBounds(TreePath path, Insets insets, Rectangle bounds) {
         bounds = treeState.getBounds(path, bounds);
+
         if(bounds != null) {
-            bounds.width = tree.getWidth();
+            bounds.width = tree.getWidth() - bounds.x - insets.left - insets.right;
             bounds.y += insets.top;
         }
         return bounds;
+    }
+
+    /**
+     * Drag 中は CellEdit しない.
+     * 1クリック後にドラッグを開始すると，CellEditor のタイマーは止まらないので，
+     * 1200 msec 後に CellEditor がスタートしてしまうのの対策.
+     * @param tree
+     * @param path
+     */
+    @Override
+    public void startEditingAtPath(JTree tree, TreePath path) {
+        if (!isDragging) { super.startEditingAtPath(tree, path); }
     }
 
 
@@ -159,6 +195,7 @@ public class MyTreeUI extends BasicTreeUI {
         ToolTipManager.sharedInstance().registerComponent(tree);
         tree.setPreferredSize(new Dimension(300,400));
         tree.setRootVisible(false);
+
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
             private static final long serialVersionUID = 1L;
             @Override
@@ -169,21 +206,16 @@ public class MyTreeUI extends BasicTreeUI {
                 return l;
             }
         };
-        DefaultTreeCellEditor editor = new DefaultTreeCellEditor(tree, renderer);
+
+        DefaultTreeCellEditor editor = new PNSTreeCellEditor(tree, renderer);
+
         tree.setCellRenderer(renderer);
         tree.setCellEditor(editor);
         tree.setEditable(true);
 
+        tree.setDragEnabled(true);
+
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
-        tree.addMouseMotionListener(new MouseAdapter(){
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                tree.getCellEditor().stopCellEditing(); // drag 開始したら、cell editor を止める
-                tree.getTransferHandler().exportAsDrag((JComponent) e.getSource(), e, TransferHandler.COPY);
-            }
-        });
-
 
         f.add(tree, BorderLayout.CENTER);
         f.pack();
