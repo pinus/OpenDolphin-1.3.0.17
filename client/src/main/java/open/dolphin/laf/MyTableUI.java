@@ -1,6 +1,5 @@
 package open.dolphin.laf;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -10,7 +9,6 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTableUI;
-import open.dolphin.client.ClientContext;
 
 /**
  * ストライプなテーブルUI.
@@ -19,10 +17,7 @@ import open.dolphin.client.ClientContext;
  */
 public class MyTableUI extends BasicTableUI {
 
-    private static final Color DEFAULT_ODD_COLOR = ClientContext.getColor("color.odd");
-    private static final Color DEFAULT_EVEN_COLOR = ClientContext.getColor("color.even");
-    private static final Color[] ROW_COLORS = {DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR};
-    private static final int DEFAULT_ROW_HEIGHT = 18;
+    private UIHelper helper;
 
     public static ComponentUI createUI(JComponent c) {
         return new MyTableUI();
@@ -33,6 +28,8 @@ public class MyTableUI extends BasicTableUI {
         super.installUI(c);
 
         JTable t = (JTable) c;
+        helper = new UIHelper(c);
+
         // データのないところもストライプで埋める
         t.setFillsViewportHeight(true);
 
@@ -47,7 +44,7 @@ public class MyTableUI extends BasicTableUI {
         t.putClientProperty("JTable.autoStartsEdit", false); //キー入力によるセル編集開始を禁止する
         t.setShowGrid(false);
         t.setIntercellSpacing(new Dimension(0, 0));
-        t.setRowHeight(DEFAULT_ROW_HEIGHT);
+        t.setRowHeight(UIHelper.DEFAULT_ROW_HEIGHT);
     }
 
     @Override
@@ -63,14 +60,14 @@ public class MyTableUI extends BasicTableUI {
             int currentRow = top[1] - 1;
 
             // ClipBounds.y から topY まで塗る
-            g.setColor(ROW_COLORS[currentRow & 1]);
+            g.setColor(UIHelper.ROW_COLORS[currentRow & 1]);
             g.fillRect(clip.x, clip.y, clip.width, topY);
             currentRow++;
 
             // 続きを塗る
             while (topY < clip.y + clip.height) {
                 int bottomY = topY + table.getRowHeight();
-                g.setColor(ROW_COLORS[currentRow & 1]);
+                g.setColor(UIHelper.ROW_COLORS[currentRow & 1]);
                 g.fillRect(clip.x, topY, clip.width, bottomY);
                 topY = bottomY;
                 currentRow++;
