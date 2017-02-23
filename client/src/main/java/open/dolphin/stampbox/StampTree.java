@@ -8,7 +8,6 @@ import java.awt.dnd.DropTarget;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -95,17 +94,8 @@ public class StampTree extends JTree implements TreeModelListener {
 
         setRootVisible(false);
 
-        // Java 1.6 対応
-        putClientProperty("Quaqua.Tree.style", "striped"); //pns  Quaqua property
-        // this.setDragEnabled(true); // これだと，項目から外れたところをドラッグしても無視されてしまう
-        // this.setDropMode(DropMode.ON_OR_INSERT); // 何だかんだで結局自分で実装するはめに orz
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged (MouseEvent e) {
-                getCellEditor().stopCellEditing(); // drag 開始したら、cell editor を止める
-                getTransferHandler().exportAsDrag((JComponent) e.getSource(), e, TransferHandler.COPY);
-            }
-        });
+        putClientProperty("Quaqua.Tree.style", "striped");
+        setDragEnabled(true);
 
         // JTree のデフォルトの DropTarget を置き換える
         DropTarget dt = new DropTarget(this, new StampTreeDropTargetListener());

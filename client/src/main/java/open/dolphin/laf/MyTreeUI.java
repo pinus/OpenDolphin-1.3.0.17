@@ -1,9 +1,9 @@
 package open.dolphin.laf;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Rectangle;
@@ -29,13 +29,6 @@ import open.dolphin.ui.PNSTreeCellEditor;
  */
 public class MyTreeUI extends BasicTreeUI {
 
-    private static final int DEFAULT_ROW_HEIGHT = 18;
-
-    private static final Color DEFAULT_ODD_COLOR = Color.WHITE;
-    private static final Color DEFAULT_EVEN_COLOR = new Color(237,243,254);
-    private static final Color[] ROW_COLORS = {DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR};
-    private static final Color SELECTED_OFF_FOCUS_COLOR = new Color(208,208,208);
-
     private boolean isDragging;
 
     public static ComponentUI createUI(JComponent c) {
@@ -49,6 +42,7 @@ public class MyTreeUI extends BasicTreeUI {
         UIManager.put("Tree.drawsFocusBorderAroundIcon", Boolean.FALSE);
         UIManager.put("Tree.drawDashedFocusIndicator", Boolean.FALSE);
         UIManager.put("Tree.repaintWholeRow", Boolean.TRUE);
+        UIManager.put("Tree.font", new Font(Font.SANS_SERIF, Font.PLAIN, DolphinUI.IS_WIN? 12:13));
 
         super.installDefaults();
     }
@@ -59,7 +53,8 @@ public class MyTreeUI extends BasicTreeUI {
 
         JTree t = (JTree) c;
         t.putClientProperty("Quaqua.Tree.style", "striped");
-        t.setRowHeight(DEFAULT_ROW_HEIGHT);
+        t.setRowHeight(DolphinUI.DEFAULT_ROW_HEIGHT);
+
         t.setShowsRootHandles(true);
 
         MouseAdapter ma = new MouseAdapter() {
@@ -88,7 +83,7 @@ public class MyTreeUI extends BasicTreeUI {
             int currentRow = top[1]-1;
 
             // ClipBounds.y から topY まで塗る
-            g.setColor(ROW_COLORS[currentRow & 1]);
+            g.setColor(DolphinUI.ROW_COLORS[currentRow & 1]);
             g.fillRect(clip.x, clip.y, clip.width, topY);
             currentRow ++;
 
@@ -102,11 +97,11 @@ public class MyTreeUI extends BasicTreeUI {
                     if (tree.isFocusOwner()) {
                         g.setColor(((DefaultTreeCellRenderer)tree.getCellRenderer()).getBackgroundSelectionColor());
                     } else {
-                        g.setColor(SELECTED_OFF_FOCUS_COLOR);
+                        g.setColor(DolphinUI.SELECTED_OFF_FOCUS_BACKGROUND);
                     }
 
                 } else {
-                    g.setColor(ROW_COLORS[currentRow & 1]);
+                    g.setColor(DolphinUI.ROW_COLORS[currentRow & 1]);
                 }
                 g.fillRect(clip.x, topY, clip.width, bottomY);
                 topY = bottomY;

@@ -77,18 +77,20 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
         JTree tree = (JTree)c;
         TreePath path = tree.getSelectionPath();
 
-        TreeNode node = (TreeNode) path.getLastPathComponent();
-        StampTreeRenderer r = (StampTreeRenderer) tree.getCellRenderer();
+        if (path != null) {
+            TreeNode node = (TreeNode) path.getLastPathComponent();
+            StampTreeRenderer r = (StampTreeRenderer) tree.getCellRenderer();
 
-        boolean selected = false;
-        boolean expanded = tree.isExpanded(path);
-        boolean isLeaf = node.isLeaf();
-        int row = tree.getRowForPath(path);
-        boolean hasFocus = true;
+            boolean selected = false;
+            boolean expanded = tree.isExpanded(path);
+            boolean isLeaf = node.isLeaf();
+            int row = tree.getRowForPath(path);
+            boolean hasFocus = true;
 
-        JLabel draggedComp = (JLabel) r.getTreeCellRendererComponent(tree, node, selected, expanded, isLeaf, row, hasFocus);
-        draggedComp.setSize(draggedComp.getPreferredSize());
-        setDragImage(draggedComp);
+            JLabel draggedComp = (JLabel) r.getTreeCellRendererComponent(tree, node, selected, expanded, isLeaf, row, hasFocus);
+            draggedComp.setSize(draggedComp.getPreferredSize());
+            setDragImage(draggedComp);
+        }
 
         return COPY_OR_MOVE;
     }
