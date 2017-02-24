@@ -1,6 +1,5 @@
 package open.dolphin.laf;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -121,14 +120,9 @@ public class MyTableUI extends BasicTableUI {
             boolean hasFocus = table.isFocusOwner();
 
             // focus で selection 色を変える
-            Color origFore = table.getSelectionForeground();
-            Color origBack = table.getSelectionBackground();
-            Color fore = helper.getForeground(true, hasFocus);
-            Color back = helper.getBackground(true, hasFocus);
+            table.setSelectionForeground(helper.getForeground(true, hasFocus));
+            table.setSelectionBackground(helper.getBackground(true, hasFocus));
 
-            if (!origFore.equals(fore)) { table.setSelectionForeground(fore); }
-            if (!origBack.equals(back)) { table.setSelectionBackground(back); }
-            
             super.paintComponent(g, c, p, x, y, w, h, shouldValidate);
         }
     }

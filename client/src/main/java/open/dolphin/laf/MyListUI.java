@@ -1,9 +1,9 @@
 package open.dolphin.laf;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -28,14 +28,15 @@ public class MyListUI extends BasicListUI {
         super.installUI(c);
 
         helper = new UIHelper(c);
+
+        // ここで初期値を読み込んでいるので，後から変更できない
+        helper.setRendererColors((JList)c);
     }
 
     @Override
     public void paint(Graphics g, JComponent c) {
-        System.out.println("-list " + g.getClipBounds());
         Object property = list.getClientProperty("Quaqua.List.style");
         boolean isStriped = property != null && property.equals("striped");
-        helper.setRendererColors(list);
 
         if (isStriped) {
             Rectangle clip = g.getClipBounds();
@@ -70,20 +71,14 @@ public class MyListUI extends BasicListUI {
             ListModel dataModel, ListSelectionModel selModel, int leadIndex) {
 
         boolean hasFocus = list.isFocusOwner();
-        Color origFore = list.getSelectionForeground();
-        Color origBack = list.getSelectionBackground();
-        Color fore = helper.getForeground(true, hasFocus);
-        Color back = helper.getBackground(true, hasFocus);
+        boolean isSelected = selModel.isSelectedIndex(row);
 
         // Focus に応じて foreground 色も変える
-        if (! origFore.equals(fore)) { list.setSelectionForeground(helper.getForeground(true, hasFocus)); }
-        if (! origBack.equals(back)) { list.setSelectionBackground(helper.getBackground(true, hasFocus)); }
-
+        if (isSelected) {
+            list.setSelectionForeground(helper.getForeground(true, hasFocus));
+            list.setSelectionBackground(helper.getBackground(true, hasFocus));
+        }
         super.paintCell(g, row, rowBounds, renderer, dataModel, selModel, leadIndex);
-
-        // 戻す
-        if (! origFore.equals(fore)) { list.setSelectionForeground(origFore); }
-        if (! origBack.equals(back)) { list.setSelectionBackground(origBack); }
     }
 
    /**
