@@ -1,6 +1,7 @@
 package open.dolphin.laf;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -55,11 +56,6 @@ public class MyTreeUI extends BasicTreeUI {
         t.putClientProperty("Quaqua.Tree.style", "striped");
         t.setRowHeight(UIHelper.DEFAULT_ROW_HEIGHT);
         t.setShowsRootHandles(true);
-
-        // ここで初期値を読み込んでいるので，後から変更できない
-        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
-        renderer.setBorderSelectionColor(null);
-        helper.setRendererColors(renderer);
     }
 
     /**
@@ -71,6 +67,9 @@ public class MyTreeUI extends BasicTreeUI {
     public void paint(Graphics g, JComponent c) {
         Object property = tree.getClientProperty("Quaqua.Tree.style");
         boolean isStriped = property != null && property.equals("striped");
+        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        renderer.setBorderSelectionColor(null);
+        helper.setRendererColors(renderer);
 
         if (isStriped) {
             Rectangle clip = g.getClipBounds();
@@ -140,11 +139,15 @@ public class MyTreeUI extends BasicTreeUI {
                             boolean hasBeenExpanded, boolean isLeaf) {
 
         boolean isFocused = tree.isFocusOwner();
+        Color col = helper.getForeground(true, isFocused);
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        Color orig = renderer.getTextSelectionColor();
 
         // Focus に応じて foreground 色も変える
-        renderer.setTextSelectionColor(helper.getForeground(true, isFocused));
+        renderer.setTextSelectionColor(col);
         super.paintRow(g, bounds, insets, bounds, path, row, isExpanded, hasBeenExpanded, isLeaf);
+        // 戻す
+        renderer.setTextSelectionColor(orig);
     }
 
     /**
