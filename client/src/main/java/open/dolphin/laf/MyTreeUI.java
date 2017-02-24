@@ -144,9 +144,11 @@ public class MyTreeUI extends BasicTreeUI {
         Color orig = renderer.getTextSelectionColor();
 
         // Focus に応じて foreground 色も変える
-        renderer.setTextSelectionColor(col);
+        if (!col.equals(orig)) { renderer.setTextSelectionColor(col); }
+
         super.paintRow(g, bounds, insets, bounds, path, row, isExpanded, hasBeenExpanded, isLeaf);
-        renderer.setTextSelectionColor(orig);
+
+        if (!col.equals(orig)) { renderer.setTextSelectionColor(orig); }
     }
 
     /**

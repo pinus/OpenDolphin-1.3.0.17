@@ -1,10 +1,14 @@
 package open.dolphin.laf;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.plaf.ComponentUI;
@@ -30,6 +34,15 @@ public class MyTableUI extends BasicTableUI {
         JTable t = (JTable) c;
         helper = new UIHelper(c);
 
+        // hack rendererPane to control foreground/background
+        // paintCell が private なので苦肉の策
+        t.remove(rendererPane);
+        rendererPane = new PatchedCellRendererPane();
+        t.add(rendererPane);
+
+        // ここで初期値を読み込んでいるので，後から変更できない
+        helper.setRendererColors(table);
+
         // データのないところもストライプで埋める
         t.setFillsViewportHeight(true);
 
@@ -41,7 +54,9 @@ public class MyTableUI extends BasicTableUI {
                 if (row == -1) { t.clearSelection(); }
             }
         });
-        t.putClientProperty("JTable.autoStartsEdit", false); //キー入力によるセル編集開始を禁止する
+
+        //キー入力によるセル編集開始を禁止する
+        t.putClientProperty("JTable.autoStartsEdit", false);
         t.setShowGrid(false);
         t.setIntercellSpacing(new Dimension(0, 0));
         t.setRowHeight(UIHelper.DEFAULT_ROW_HEIGHT);
@@ -92,6 +107,29 @@ public class MyTableUI extends BasicTableUI {
 
         } else {
             return new int[]{0, 0};
+        }
+    }
+
+    /**
+     * 色を Focus に応じてコントロールする CellRendererPane.
+     */
+    private class PatchedCellRendererPane extends CellRendererPane {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void paintComponent(Graphics g, Component c, Container p, int x, int y, int w, int h, boolean shouldValidate) {
+            boolean hasFocus = table.isFocusOwner();
+
+            // focus で selection 色を変える
+            Color origFore = table.getSelectionForeground();
+            Color origBack = table.getSelectionBackground();
+            Color fore = helper.getForeground(true, hasFocus);
+            Color back = helper.getBackground(true, hasFocus);
+
+            if (!origFore.equals(fore)) { table.setSelectionForeground(fore); }
+            if (!origBack.equals(back)) { table.setSelectionBackground(back); }
+            
+            super.paintComponent(g, c, p, x, y, w, h, shouldValidate);
         }
     }
 }

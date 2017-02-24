@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import javax.swing.JComponent;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicListUI;
-import open.dolphin.client.ClientContext;
 
 /**
  * ストライプな ListUI.
@@ -15,10 +17,7 @@ import open.dolphin.client.ClientContext;
  */
 public class MyListUI extends BasicListUI {
 
-    private static final Color DEFAULT_ODD_COLOR = ClientContext.getColor("color.odd");
-    private static final Color DEFAULT_EVEN_COLOR = ClientContext.getColor("color.even");
-    private static final Color[] ROW_COLORS = {DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR};
-    private static final int DEFAULT_ROW_HEIGHT = 16;
+    private UIHelper helper;
 
     public static ComponentUI createUI(JComponent list) {
         return new MyListUI();
@@ -27,12 +26,16 @@ public class MyListUI extends BasicListUI {
     @Override
     public void installUI(JComponent c) {
         super.installUI(c);
+
+        helper = new UIHelper(c);
     }
 
     @Override
     public void paint(Graphics g, JComponent c) {
+        System.out.println("-list " + g.getClipBounds());
         Object property = list.getClientProperty("Quaqua.List.style");
         boolean isStriped = property != null && property.equals("striped");
+        helper.setRendererColors(list);
 
         if (isStriped) {
             Rectangle clip = g.getClipBounds();
@@ -43,7 +46,7 @@ public class MyListUI extends BasicListUI {
 
             while (topY < clip.y + clip.height) {
                 int bottomY = topY + getCellHeight(currentRow);
-                g.setColor(ROW_COLORS[currentRow & 1]);
+                g.setColor(UIHelper.ROW_COLORS[currentRow & 1]);
                 g.fillRect(clip.x, topY, clip.width, bottomY);
                 topY = bottomY;
                 currentRow++;
@@ -53,6 +56,37 @@ public class MyListUI extends BasicListUI {
     }
 
     /**
+     * Focus に応じて selction foreground / background を変える.
+     * @param g
+     * @param row
+     * @param rowBounds
+     * @param renderer
+     * @param dataModel
+     * @param selModel
+     * @param leadIndex
+     */
+    @Override
+    protected void paintCell( Graphics g, int row, Rectangle rowBounds, ListCellRenderer renderer,
+            ListModel dataModel, ListSelectionModel selModel, int leadIndex) {
+
+        boolean hasFocus = list.isFocusOwner();
+        Color origFore = list.getSelectionForeground();
+        Color origBack = list.getSelectionBackground();
+        Color fore = helper.getForeground(true, hasFocus);
+        Color back = helper.getBackground(true, hasFocus);
+
+        // Focus に応じて foreground 色も変える
+        if (! origFore.equals(fore)) { list.setSelectionForeground(helper.getForeground(true, hasFocus)); }
+        if (! origBack.equals(back)) { list.setSelectionBackground(helper.getBackground(true, hasFocus)); }
+
+        super.paintCell(g, row, rowBounds, renderer, dataModel, selModel, leadIndex);
+
+        // 戻す
+        if (! origFore.equals(fore)) { list.setSelectionForeground(origFore); }
+        if (! origBack.equals(back)) { list.setSelectionBackground(origBack); }
+    }
+
+   /**
      * ClipBound.y を越えた初めての Cell の Y 座標とその行数.
      *
      * @param clipY
@@ -92,7 +126,7 @@ public class MyListUI extends BasicListUI {
         int listSize = list.getModel().getSize();
         if (listSize == 0) {
             // 空のリスト
-            return DEFAULT_ROW_HEIGHT;
+            return UIHelper.DEFAULT_ROW_HEIGHT;
 
         } else {
             return (row < listSize - 1)

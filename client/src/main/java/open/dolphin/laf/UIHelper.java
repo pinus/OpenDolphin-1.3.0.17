@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JTable;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
@@ -37,6 +39,7 @@ public class UIHelper {
     }
 
     private void init(JComponent c) {
+        // マウスドラッグ中かどうかを記録する
         MouseAdapter ma = new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -51,12 +54,26 @@ public class UIHelper {
         c.addMouseMotionListener(ma);
     }
 
+    /**
+     * Windows かどうかを返す.
+     * @return
+     */
     public static boolean isWin() {
         return System.getProperty("os.name").toLowerCase().startsWith("windows");
     }
 
+    /**
+     * 現在マウスドラッグ中かどうかを返す.
+     * @return
+     */
     public boolean isDragging() { return isDragging; }
 
+    /**
+     * 選択状態，Focus 状態に応じてバックグランド色を返す.
+     * @param selected
+     * @param focused
+     * @return
+     */
     public Color getBackground(boolean selected, boolean focused) {
         if (selected) {
             return focused? getBackgroundSelectionFocusedColor() : getBackgroundSelectionOffFocusColor();
@@ -65,6 +82,12 @@ public class UIHelper {
         }
     }
 
+    /**
+     * 選択状態，Focus 状態に応じてフォアグランド色を返す.
+     * @param selected
+     * @param focused
+     * @return
+     */
     public Color getForeground(boolean selected, boolean focused) {
         if (selected) {
             return focused? getTextSelectionFocusedColor() : getTextSelectionOffFocusColor();
@@ -73,6 +96,10 @@ public class UIHelper {
         }
     }
 
+    /**
+     * DefaultTreeCellRenderer の色設定値を読み取ってセットする.
+     * @param renderer DefaultTreeCellRenderer
+     */
     public void setRendererColors(DefaultTreeCellRenderer renderer) {
         setBackgroundSelectionFocusedColor(renderer.getBackgroundSelectionColor());
         setBackgroundNonSelectionColor(renderer.getBackgroundNonSelectionColor());
@@ -81,6 +108,29 @@ public class UIHelper {
         setTextSelectionOffFousColor(renderer.getTextNonSelectionColor());
     }
 
+    /**
+     * JTable の色設定値を読み取ってセットする.
+     * @param table
+     */
+    public void setRendererColors(JTable table) {
+        setBackgroundSelectionFocusedColor(table.getSelectionBackground());
+        setBackgroundNonSelectionColor(table.getBackground());
+        setTextSelectionFocusedColor(table.getSelectionForeground());
+        setTextNonSelectionColor(table.getForeground());
+        setTextSelectionOffFousColor(table.getForeground());
+    }
+
+    /**
+     * JList の色設定値を読み取ってセットする.
+     * @param list
+     */
+    public void setRendererColors(JList list) {
+        setBackgroundSelectionFocusedColor(list.getSelectionBackground());
+        setBackgroundNonSelectionColor(list.getBackground());
+        setTextSelectionFocusedColor(list.getSelectionForeground());
+        setTextNonSelectionColor(list.getForeground());
+        setTextSelectionOffFousColor(list.getForeground());
+    }
     /**
      * @return the selectedOffFocusForeground
      */
