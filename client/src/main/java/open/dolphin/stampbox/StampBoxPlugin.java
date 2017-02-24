@@ -486,7 +486,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         collapseBtn.setFocusable(false);
         collapseBtn.setPreferredSize(new java.awt.Dimension(16,16));
         collapseBtn.addActionListener(e -> {
-            StampTreePanel p = (StampTreePanel) getUserStampBox().getSelectedComponent();
+            StampTreePanel p = (StampTreePanel) getCurrentBox().getSelectedComponent();
             StampTree tree = p.getTree();
             tree.collapseAll();
         });

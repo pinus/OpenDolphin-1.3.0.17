@@ -36,7 +36,6 @@ public class StampBoxExtraMenu extends MouseAdapter {
 
     private JPopupMenu popup;
     private final StampBoxPlugin context;
-    private final AbstractStampBox stampBox;
     private final BlockGlass blockGlass;
     // @MenuAction で定義された action の actionMap， key は method 名
     private ActionMap actionMap;
@@ -44,29 +43,22 @@ public class StampBoxExtraMenu extends MouseAdapter {
     public StampBoxExtraMenu(StampBoxPlugin ctx) {
         super();
         context = ctx;
-        stampBox = context.getUserStampBox();
         blockGlass = new BlockGlass();
         context.getFrame().setGlassPane(blockGlass);
         blockGlass.setSize(context.getFrame().getSize());
         buildPopupMenu();
     }
 
-//    TODO
-//    @MenuAction
-//    public void search() {
-//        System.out.println("Search Stamp");
-//    }
-
     @MenuAction
     public void collapseAll() {
-        StampTreePanel p = (StampTreePanel) stampBox.getSelectedComponent();
+        StampTreePanel p = (StampTreePanel) context.getCurrentBox().getSelectedComponent();
         StampTree tree = p.getTree();
         tree.collapseAll();
     }
 
     @MenuAction
     public void expandAll() {
-        StampTreePanel p = (StampTreePanel) stampBox.getSelectedComponent();
+        StampTreePanel p = (StampTreePanel) context.getCurrentBox().getSelectedComponent();
         StampTree tree = p.getTree();
         tree.expandAll();
     }
@@ -343,6 +335,8 @@ public class StampBoxExtraMenu extends MouseAdapter {
         // エクスポートデータ作成より前にファイル選択させる
         final JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        AbstractStampBox stampBox = context.getCurrentBox();
+
         MyJSheet.showSaveSheet(fileChooser, context.getFrame(), e -> {
             if (e.getOption() == JFileChooser.APPROVE_OPTION) {
                 final File file = fileChooser.getSelectedFile();
@@ -413,6 +407,8 @@ public class StampBoxExtraMenu extends MouseAdapter {
 
         final JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        AbstractStampBox stampBox = context.getCurrentBox();
+
         MyJSheet.showOpenSheet(fileChooser, context.getFrame(), e -> {
             if (e.getOption() == JFileChooser.APPROVE_OPTION) {
                 final File file = fileChooser.getSelectedFile();
