@@ -20,11 +20,6 @@ public class AspStampTreeTransferHandler extends StampTreeTransferHandler {
     }
 
     @Override
-    public int getSourceActions(JComponent c) {
-        return COPY_OR_MOVE;
-    }
-
-    @Override
     public boolean importData(JComponent c, Transferable tr) {
         return false;
     }

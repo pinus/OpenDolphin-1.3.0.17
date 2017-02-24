@@ -5,6 +5,7 @@ import javafx.embed.swing.JFXPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.client.Dolphin;
+import open.dolphin.laf.MyListUI;
 import open.dolphin.laf.MyPasswordFieldUI;
 import open.dolphin.laf.MyTableUI;
 import open.dolphin.laf.MyTextFieldUI;
@@ -55,6 +56,7 @@ public class SettingForMac {
         excludes.add("PasswordField");
         excludes.add("Table");
         excludes.add("Tree");
+        excludes.add("List");
         //excludes.add("Button");
         //excludes.add("ComboBox");
         //excludes.add("TabbedPane");
@@ -69,6 +71,7 @@ public class SettingForMac {
             UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
             UIManager.put("PasswordFieldUI", MyPasswordFieldUI.class.getName());
             UIManager.put("TableUI", MyTableUI.class.getName());
+            UIManager.put("ListUI", MyListUI.class.getName());
             UIManager.put("TreeUI", MyTreeUI.class.getName());
 
         } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException e) {

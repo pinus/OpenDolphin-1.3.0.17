@@ -37,15 +37,10 @@ public class MyListUI extends BasicListUI {
         if (isStriped) {
             Rectangle clip = g.getClipBounds();
             int[] top = getTopY(clip.y);
-            int topY = top[0];
-            int currentRow = top[1] - 1;
+            // １行前から開始
+            int currentRow = top[1]-1;
+            int topY = top[0]-getCellHeight(currentRow);
 
-            // ClipBounds.y から topY まで塗る
-            g.setColor(ROW_COLORS[currentRow & 1]);
-            g.fillRect(clip.x, clip.y, clip.width, topY);
-            currentRow++;
-
-            // 続きを塗る
             while (topY < clip.y + clip.height) {
                 int bottomY = topY + getCellHeight(currentRow);
                 g.setColor(ROW_COLORS[currentRow & 1]);

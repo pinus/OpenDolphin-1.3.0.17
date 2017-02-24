@@ -68,23 +68,19 @@ public class MyTreeUI extends BasicTreeUI {
         Object property = tree.getClientProperty("Quaqua.Tree.style");
         boolean isStriped = property != null && property.equals("striped");
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        renderer.setBorderSelectionColor(null);
         helper.setRendererColors(renderer);
 
         if (isStriped) {
             Rectangle clip = g.getClipBounds();
             int[] top = getTopY(clip.y);
-            int topY = top[0];
+            // １行前から開始
+            int topY = top[0]-tree.getRowHeight();
             int currentRow = top[1]-1;
 
-            // ClipBounds.y から topY まで塗る
-            g.setColor(UIHelper.ROW_COLORS[currentRow & 1]);
-            g.fillRect(clip.x, clip.y, clip.width, topY);
-            currentRow ++;
-
-            // 続きを塗る
             while (topY < clip.y + clip.height) {
                 int bottomY = topY + tree.getRowHeight();
-                int row = tree.getRowForLocation(clip.width-1, topY);
+                int row = tree.getRowForLocation(clip.x + clip.width-1, topY);
 
                 boolean isSelected = tree.isRowSelected(row);
                 boolean isFocused = tree.isFocusOwner();
