@@ -374,10 +374,18 @@ public class DiagnosisInspector implements IInspector {
                 } else if (ikou) {
                     setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR);
                 } else {
-                    setForeground(list.getSelectionForeground());
+                    if (list.isFocusOwner()) {
+                        setForeground(list.getSelectionForeground());
+                    } else {
+                        setForeground(list.getForeground());
+                    }
                 }
                 // background
-                setBackground(list.getSelectionBackground());
+                if (list.isFocusOwner()) {
+                    setBackground(list.getSelectionBackground());
+                } else {
+                    setBackground((Color)list.getClientProperty("JList.backgroundOffFocus"));
+                }
             } else {
                 // foreground
                 if (deleted) { setForeground(DiagnosisDocument.DELETED_COLOR); }

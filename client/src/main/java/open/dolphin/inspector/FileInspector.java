@@ -1,6 +1,7 @@
 package open.dolphin.inspector;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -19,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIConst;
 import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.BadgeListener;
 import open.dolphin.helper.ScriptExecutor;
@@ -34,7 +34,8 @@ import org.apache.log4j.Logger;
 public class FileInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.関連文書;
 
-    private static final String DEFAULT_DOCUMENT_FOLDER = "/Volumes/documents/";
+    private static final boolean IS_MAC = ClientContext.isMac();
+    private static final String DEFAULT_DOCUMENT_FOLDER = IS_MAC? "/Volumes/documents/" : "Z:\\";
     private static final FileFilter FF_REGULAR = file -> !file.getName().startsWith(".");
 
     private JPanel filePanel;
@@ -77,8 +78,10 @@ public class FileInspector implements IInspector {
         int index10k = (Integer.parseInt(id) - 1) / 10000; // 上位2桁
         int index1k = (Integer.parseInt(id) - 1) / 1000; // 上位3桁
 
-        String subfolder = String.format("%02d0001-%02d0000/%03d001-%03d000/",
-                index10k, (index10k+1), index1k, (index1k+1));
+        String formatStr = IS_MAC?
+                "%02d0001-%02d0000/%03d001-%03d000/" : "%02d0001-%02d0000\\%03d001-%03d000\\";
+
+        String subfolder = String.format(formatStr, index10k, (index10k+1), index1k, (index1k+1));
 
         return DEFAULT_DOCUMENT_FOLDER + subfolder + id;
     }
@@ -98,7 +101,6 @@ public class FileInspector implements IInspector {
         list = new JList<>(model);
         list.putClientProperty("Quaqua.List.style", "striped");
         list.setCellRenderer(new FileListCellRenderer());
-        list.setFixedCellHeight(GUIConst.DEFAULT_LIST_ROW_HEIGHT);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.addMouseListener(new FileSelectionListener());
 
@@ -186,15 +188,20 @@ public class FileInspector implements IInspector {
             boolean cellHasFocus)  { // does the cell have focus
 
             if (isSelected) {
-                this.setForeground(list.getSelectionForeground());
-                this.setBackground(list.getSelectionBackground());
+                if (list.isFocusOwner()) {
+                    setForeground(list.getSelectionForeground());
+                    setBackground(list.getSelectionBackground());
+                } else {
+                    setForeground(list.getForeground());
+                    setBackground((Color)list.getClientProperty("JList.backgroundOffFocus"));
+                }
             } else {
-                this.setForeground(list.getForeground());
-                this.setBackground(list.getBackground());
+                setForeground(list.getForeground());
+                setBackground(list.getBackground());
             }
 
             String fileName = ((File)value).getName();
-            this.setText(" " + fileName);
+            setText(" " + fileName);
             //this.setText(" " + fileName + " " + ModelUtils.getDateAsString(new java.util.Date(((File)value).lastModified())));
             return this;
         }

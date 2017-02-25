@@ -1,12 +1,11 @@
 package open.dolphin.laf;
 
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicListUI;
 
@@ -17,8 +16,6 @@ import javax.swing.plaf.basic.BasicListUI;
  */
 public class MyListUI extends BasicListUI {
 
-    private UIHelper helper;
-
     public static ComponentUI createUI(JComponent list) {
         return new MyListUI();
     }
@@ -27,10 +24,12 @@ public class MyListUI extends BasicListUI {
     public void installUI(JComponent c) {
         super.installUI(c);
 
-        helper = new UIHelper(c);
+        JList l = (JList) c;
+        // off focus のバックグランドを client property にセット
+        l.putClientProperty("JList.backgroundOffFocus", UIHelper.DEFAULT_BACKGROUND_SELECTION_OFF_FOCUS);
 
-        // ここで初期値を読み込んでいるので，後から変更できない
-        helper.setRendererColors((JList)c);
+        l.setFixedCellHeight(UIHelper.DEFAULT_ROW_HEIGHT);
+        //l.setCellRenderer(new Renderer());
     }
 
     @Override
@@ -54,31 +53,6 @@ public class MyListUI extends BasicListUI {
             }
         }
         super.paint(g, c);
-    }
-
-    /**
-     * Focus に応じて selction foreground / background を変える.
-     * @param g
-     * @param row
-     * @param rowBounds
-     * @param renderer
-     * @param dataModel
-     * @param selModel
-     * @param leadIndex
-     */
-    @Override
-    protected void paintCell( Graphics g, int row, Rectangle rowBounds, ListCellRenderer renderer,
-            ListModel dataModel, ListSelectionModel selModel, int leadIndex) {
-
-        boolean hasFocus = list.isFocusOwner();
-        boolean isSelected = selModel.isSelectedIndex(row);
-
-        // Focus に応じて foreground 色も変える
-        if (isSelected) {
-            list.setSelectionForeground(helper.getForeground(true, hasFocus));
-            list.setSelectionBackground(helper.getBackground(true, hasFocus));
-        }
-        super.paintCell(g, row, rowBounds, renderer, dataModel, selModel, leadIndex);
     }
 
    /**
@@ -124,9 +98,36 @@ public class MyListUI extends BasicListUI {
             return UIHelper.DEFAULT_ROW_HEIGHT;
 
         } else {
-            return (row < listSize - 1)
-                    ? list.getCellBounds(row, row).height
-                    : list.getCellBounds(listSize - 1, listSize - 1).height;
+            Rectangle bounds = row < listSize?
+                    list.getCellBounds(row, row) :
+                    list.getCellBounds(listSize -1, listSize -1);
+
+            return bounds == null? UIHelper.DEFAULT_ROW_HEIGHT : bounds.height;
+        }
+    }
+
+    /**
+     * Focus に応じてバックグランド色を調節する Renderer.
+     */
+    private class Renderer extends DefaultListCellRenderer.UIResource {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Component getListCellRendererComponent(
+            JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+
+            Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            if (isSelected) {
+                if (! c.isFocusOwner()) {
+                    c.setForeground(c.getForeground());
+                    c.setBackground(UIHelper.DEFAULT_BACKGROUND_SELECTION_OFF_FOCUS);
+                }
+            } else {
+                c.setBackground(null);
+            }
+
+            return c;
         }
     }
 }
