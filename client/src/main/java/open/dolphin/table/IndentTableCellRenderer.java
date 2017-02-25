@@ -50,16 +50,22 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
                 boolean isFocused,
                 int row, int col) {
 
-        Color textColor;
-
         if (isSelected) {
-            textColor = table.getSelectionForeground();
-            this.setForeground(textColor);
-            this.setBackground(table.getSelectionBackground());
+            Color fore;
+            Color back;
+            if (table.isFocusOwner()) {
+                fore = table.getSelectionForeground();
+                back = table.getSelectionBackground();
+            } else {
+                fore = table.getForeground();
+                back = (Color) table.getClientProperty("JTable.backgroundOffFocus");
+            }
+            setForeground(fore);
+            setBackground(back);
+
         } else {
-            textColor = table.getForeground();
-            this.setForeground(textColor);
-            this.setBackground(table.getBackground());
+            setForeground(table.getForeground());
+            setBackground(table.getBackground());
         }
 
         if (value == null) {

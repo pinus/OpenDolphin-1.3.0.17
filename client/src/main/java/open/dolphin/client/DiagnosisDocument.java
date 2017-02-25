@@ -1404,9 +1404,20 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                     comp.setForeground(new Color(rgb));
                 }
                 else if (ikou) { comp.setForeground(IKOU_BYOMEI_COLOR); }
-                else { comp.setForeground(table.getSelectionForeground()); }
+                else {
+                    if (table.isFocusOwner()) {
+                        comp.setForeground(table.getSelectionForeground());
+                    } else {
+                        comp.setForeground(table.getForeground());
+                    }
+                }
                 // background
-                comp.setBackground(table.getSelectionBackground());
+                if (table.isFocusOwner()) {
+                    comp.setBackground(table.getSelectionBackground());
+                } else {
+                    comp.setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                }
+
             } else {
                 // foreground
                 if (deleted) { comp.setForeground(DELETED_COLOR); }

@@ -333,10 +333,20 @@ public class PhysicalInspector implements IInspector {
                     isSelected,
                     isFocused, row, col);
 
+            if (isSelected) {
+                if (! table.isFocusOwner()) {
+                    c.setForeground(table.getForeground());
+                    c.setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                }
+            } else {
+                c.setBackground(null);
+            }
+
             PhysicalModel h = tableModel.getObject(row);
 
-            Color fore = (h != null && h.getBmi() != null && h.getBmi().compareTo("25") > 0)  ? Color.RED : Color.BLACK;
-            setForeground(fore);
+            if (h != null && h.getBmi() != null && h.getBmi().compareTo("25") > 0) {
+                c.setBackground(Color.RED);
+            }
 
             ((JLabel) c).setText(value == null ? "" : (String) value);
 

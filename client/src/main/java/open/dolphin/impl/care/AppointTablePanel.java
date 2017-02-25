@@ -249,23 +249,28 @@ public class AppointTablePanel extends JPanel {
         public Component getTableCellRendererComponent(JTable table, Object value,
                                    boolean isSelected, boolean hasFocus,
                                    int row, int column) {
-            //super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            //JLabel c = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             if (isSelected) {
-                setBackground(table.getSelectionBackground());
-                setForeground(table.getSelectionForeground());
+                if (table.isFocusOwner()) {
+                    setBackground(table.getSelectionBackground());
+                    setForeground(table.getSelectionForeground());
+                } else {
+                    setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                    setForeground(table.getForeground());
+                }
             } else {
                 setBackground(table.getBackground());
                 setForeground(table.getForeground());
             }
             if (value != null) {
                 if (value instanceof String) {
-                    this.setText((String) value);
+                    setText((String) value);
                 } else {
-                    this.setText(value.toString());
+                    setText(value.toString());
                 }
             } else {
-                this.setText("");
+                setText("");
             }
 
             AppointmentModel entry = tableModel.getObject(row);
@@ -281,6 +286,12 @@ public class AppointTablePanel extends JPanel {
                 if (appo.equals(today)) {
                     Color c = parent.getAppointColor(entry.getName());
                     setBackground(c);
+                    int bright = c.getBlue() + c.getRed() + c.getGreen();
+                    if (bright > 3*128) {
+                        setForeground(Color.BLACK);
+                    } else {
+                        setForeground(Color.WHITE);
+                    }
                 }
             }
             return this;

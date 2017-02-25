@@ -195,7 +195,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 new PNSTriple<>("　性別", String.class, "getPatientGenderDesc"),
                 new PNSTriple<>("　生年月日", String.class, "getPatientAgeBirthday"),
                 new PNSTriple<>("　ドクター", String.class, "getAssignedDoctorName"),
-                new PNSTriple<>("　メ モ", String.class, "getMemo"),
+                new PNSTriple<>(" メモ", String.class, "getMemo"),
                 new PNSTriple<>(" 予約", String.class, "getAppointment"),
                 new PNSTriple<>("状態", Integer.class, "getState")
         );
@@ -1074,7 +1074,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         }
 
         /**
-         * Set background color
+         * Set background color.
          * @param table
          * @param value
          * @param isSelected
@@ -1233,9 +1233,20 @@ public class WaitingListImpl extends AbstractMainComponent {
             PatientVisitModel pvt = pvtTableModel.getObject(table.convertRowIndexToModel(row));
 
             if (isSelected) {
-                this.setBackground(table.getSelectionBackground());
-                Color fore = pvt != null && pvt.getState() == KarteState.CANCEL_PVT ? CANCEL_PVT_COLOR : table.getSelectionForeground();
-                this.setForeground(fore);
+                Color fore;
+                Color back;
+                if (table.isFocusOwner()) {
+                    fore = pvt != null && pvt.getState() == KarteState.CANCEL_PVT ?
+                            CANCEL_PVT_COLOR : table.getSelectionForeground();
+                    back = table.getSelectionBackground();
+
+                } else {
+                    fore = pvt != null && pvt.getState() == KarteState.CANCEL_PVT ?
+                            CANCEL_PVT_COLOR : table.getForeground();
+                    back = (Color) table.getClientProperty("JTable.backgroundOffFocus");
+                }
+                setForeground(fore);
+                setBackground(back);
 
             } else {
                 setBackground(table, value, isSelected, isFocused, row, col);

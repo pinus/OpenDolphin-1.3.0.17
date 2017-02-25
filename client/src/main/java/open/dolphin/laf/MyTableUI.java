@@ -1,17 +1,18 @@
 package open.dolphin.laf;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTableUI;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * ストライプなテーブルUI.
@@ -20,10 +21,13 @@ import javax.swing.plaf.basic.BasicTableUI;
  */
 public class MyTableUI extends BasicTableUI {
 
-    private UIHelper helper;
-
     public static ComponentUI createUI(JComponent c) {
         return new MyTableUI();
+    }
+
+    @Override
+    protected void installDefaults() {
+        super.installDefaults();
     }
 
     @Override
@@ -31,16 +35,7 @@ public class MyTableUI extends BasicTableUI {
         super.installUI(c);
 
         JTable t = (JTable) c;
-        helper = new UIHelper(c);
-
-        // hack rendererPane to control foreground/background
-        // paintCell が private なので苦肉の策
-        t.remove(rendererPane);
-        rendererPane = new PatchedCellRendererPane();
-        t.add(rendererPane);
-
-        // ここで初期値を読み込んでいるので，後から変更できない
-        helper.setRendererColors(table);
+        t.setDefaultRenderer(Object.class, new Renderer());
 
         // データのないところもストライプで埋める
         t.setFillsViewportHeight(true);
@@ -55,10 +50,28 @@ public class MyTableUI extends BasicTableUI {
         });
 
         //キー入力によるセル編集開始を禁止する
-        t.putClientProperty("JTable.autoStartsEdit", false);
+        t.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
         t.setShowGrid(false);
         t.setIntercellSpacing(new Dimension(0, 0));
         t.setRowHeight(UIHelper.DEFAULT_ROW_HEIGHT);
+
+        // off focus のバックグランドを client property にセット
+        t.putClientProperty("JTable.backgroundOffFocus", UIHelper.DEFAULT_BACKGROUND_SELECTION_OFF_FOCUS);
+
+        // focus が変わったら selected row 全体を描き直す
+        t.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) { fireRowChanged(); }
+            @Override
+            public void focusLost(FocusEvent e) { fireRowChanged(); }
+
+            private void fireRowChanged() {
+                int row = t.getSelectedRow();
+                for (int col=0; col<t.getColumnCount(); col++) {
+                    t.repaint(t.getCellRect(row, col, true));
+                }
+            }
+        });
     }
 
     @Override
@@ -110,20 +123,27 @@ public class MyTableUI extends BasicTableUI {
     }
 
     /**
-     * 色を Focus に応じてコントロールする CellRendererPane.
+     * Focus に応じてバックグランド色を調節する Renderer.
      */
-    private class PatchedCellRendererPane extends CellRendererPane {
+    private class Renderer extends DefaultTableCellRenderer.UIResource {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void paintComponent(Graphics g, Component c, Container p, int x, int y, int w, int h, boolean shouldValidate) {
-            boolean hasFocus = table.isFocusOwner();
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                              boolean isSelected, boolean hasFocus, int row, int column) {
 
-            // focus で selection 色を変える
-            table.setSelectionForeground(helper.getForeground(true, hasFocus));
-            table.setSelectionBackground(helper.getBackground(true, hasFocus));
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-            super.paintComponent(g, c, p, x, y, w, h, shouldValidate);
+            if (isSelected) {
+                if (! table.isFocusOwner()) {
+                    c.setForeground(table.getForeground());
+                    c.setBackground(UIHelper.DEFAULT_BACKGROUND_SELECTION_OFF_FOCUS);
+                }
+            } else {
+                c.setBackground(null);
+            }
+
+            return c;
         }
     }
 }
