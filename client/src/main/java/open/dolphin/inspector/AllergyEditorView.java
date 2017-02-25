@@ -15,10 +15,6 @@ public class AllergyEditorView extends javax.swing.JPanel {
     /** Creates new form AllergyEditor */
     public AllergyEditorView() {
         initComponents();
-        jLabel1.setText("要因：");
-        jLabel2.setText("反応程度：");
-        jLabel3.setText("メモ：");
-        jLabel4.setText("同定日：");
     }
 
     /** This method is called from within the constructor to
@@ -40,25 +36,32 @@ public class AllergyEditorView extends javax.swing.JPanel {
 
         setName("Form"); // NOI18N
 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("open/dolphin/inspector/Bundle"); // NOI18N
+        jLabel1.setText(bundle.getString("AllergyEditorView.jLabel1.text_1")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         factorFld.setName("factorFld"); // NOI18N
-        factorFld.setPreferredSize(new java.awt.Dimension(10, 28));
+        factorFld.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                factorFldActionPerformed(evt);
+            }
+        });
 
+        jLabel2.setText(bundle.getString("AllergyEditorView.jLabel2.text_1")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
+        jLabel3.setText(bundle.getString("AllergyEditorView.jLabel3.text_1")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         memoFld.setName("memoFld"); // NOI18N
-        memoFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         reactionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "severe", "moderate", "mild", "noReaction" }));
         reactionCombo.setName("reactionCombo"); // NOI18N
 
+        jLabel4.setText(bundle.getString("AllergyEditorView.jLabel4.text_1")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
         identifiedFld.setName("identifiedFld"); // NOI18N
-        identifiedFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -69,7 +72,7 @@ public class AllergyEditorView extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(24, 24, 24)
+                            .addGap(0, 0, Short.MAX_VALUE)
                             .addComponent(jLabel3))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1)
@@ -77,10 +80,10 @@ public class AllergyEditorView extends javax.swing.JPanel {
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(identifiedFld, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                    .addComponent(reactionCombo, 0, 145, Short.MAX_VALUE)
-                    .addComponent(memoFld, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                    .addComponent(factorFld, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+                    .addComponent(identifiedFld, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(reactionCombo, 0, 169, Short.MAX_VALUE)
+                    .addComponent(memoFld)
+                    .addComponent(factorFld, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -88,7 +91,7 @@ public class AllergyEditorView extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(factorFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(factorFld, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -97,14 +100,18 @@ public class AllergyEditorView extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(memoFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(memoFld, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(identifiedFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(identifiedFld, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void factorFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_factorFldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_factorFldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

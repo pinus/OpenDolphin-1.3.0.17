@@ -15,10 +15,6 @@ public class PhysicalEditorView extends javax.swing.JPanel {
     /** Creates new form PhysicalEditorView */
     public PhysicalEditorView() {
         initComponents();
-
-        jLabel1.setText("体重:");
-        jLabel2.setText("身長:");
-        jLabel3.setText("測定日:");
     }
 
     /** This method is called from within the constructor to
@@ -39,18 +35,19 @@ public class PhysicalEditorView extends javax.swing.JPanel {
         setName("Form"); // NOI18N
 
         heightFld.setName("heightFld"); // NOI18N
-        heightFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         weightFld.setName("weightFld"); // NOI18N
-        weightFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
         identifiedDateFld.setName("identifiedDateFld"); // NOI18N
-        identifiedDateFld.setPreferredSize(new java.awt.Dimension(10, 28));
 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("open/dolphin/inspector/Bundle"); // NOI18N
+        jLabel1.setText(bundle.getString("PhysicalEditorView.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
+        jLabel2.setText(bundle.getString("PhysicalEditorView.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
+        jLabel3.setText(bundle.getString("PhysicalEditorView.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -70,16 +67,16 @@ public class PhysicalEditorView extends javax.swing.JPanel {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(identifiedDateFld, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(weightFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(heightFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(identifiedDateFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(weightFld, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(heightFld, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(identifiedDateFld, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
