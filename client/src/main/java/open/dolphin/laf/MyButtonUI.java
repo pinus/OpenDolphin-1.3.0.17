@@ -6,10 +6,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Window;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.ComponentUI;
 
 /**
@@ -38,10 +40,11 @@ public class MyButtonUI extends com.apple.laf.AquaButtonUI {
     protected void paintText(Graphics g, AbstractButton b, Rectangle textRect, String text) {
         ButtonModel model = b.getModel();
         FontMetrics fm = g.getFontMetrics();
+        Window parent = SwingUtilities.getWindowAncestor(b);
 
         if (model.isEnabled()) {
             /* draw text of pressed & armed, selected, and default button with white in active window */
-            if (javax.swing.SwingUtilities.getWindowAncestor(b).isActive() && (
+            if (parent != null && parent.isActive() && (
                     (model.isPressed() && model.isArmed())
                     || b.isSelected()
                     || (b instanceof JButton && ((JButton)b).isDefaultButton()))) {
