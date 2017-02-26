@@ -5,10 +5,13 @@ import javafx.embed.swing.JFXPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.client.Dolphin;
+import open.dolphin.laf.MyButtonUI;
+import open.dolphin.laf.MyComboBoxUI;
 import open.dolphin.laf.MyListUI;
 import open.dolphin.laf.MyPasswordFieldUI;
 import open.dolphin.laf.MyTableUI;
 import open.dolphin.laf.MyTextFieldUI;
+import open.dolphin.laf.MyToggleButtonUI;
 import open.dolphin.laf.MyTreeUI;
 
 /**
@@ -57,8 +60,9 @@ public class SettingForMac {
         excludes.add("Table");
         excludes.add("Tree");
         excludes.add("List");
-        //excludes.add("Button");
-        //excludes.add("ComboBox");
+        excludes.add("Button");
+        excludes.add("ToggleButton");
+        excludes.add("ComboBox");
         //excludes.add("TabbedPane");
         //excludes.add("PopupMenu");
         //ch.randelshofer.quaqua.QuaquaManager.setIncludedUIs(includes);
@@ -73,6 +77,9 @@ public class SettingForMac {
             UIManager.put("TableUI", MyTableUI.class.getName());
             UIManager.put("ListUI", MyListUI.class.getName());
             UIManager.put("TreeUI", MyTreeUI.class.getName());
+            UIManager.put("ButtonUI", MyButtonUI.class.getName());
+            UIManager.put("ToggleButtonUI", MyToggleButtonUI.class.getName());
+            UIManager.put("ComboBoxUI", MyComboBoxUI.class.getName());
 
         } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException e) {
             System.out.println("Dolphin.java: " + e);

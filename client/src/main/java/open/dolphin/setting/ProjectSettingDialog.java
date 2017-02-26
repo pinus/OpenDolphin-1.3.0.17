@@ -147,8 +147,6 @@ public final class ProjectSettingDialog {
             String id = setting.getId();
             String text = setting.getTitle();
             JToggleButton tb = new JToggleButton(text, setting.getIcon());
-            // pns が作った ElCapitanQuaquaToggleButtonUI で clientProperty で文字色を変えられるようにした
-            tb.putClientProperty("activeForeground", Color.BLACK);
             tb.setFocusable(false);
             if (ClientContext.isWin()) {
                 tb.setMargin(new Insets(0, 0, 0, 0));
