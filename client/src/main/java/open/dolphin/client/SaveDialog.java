@@ -1,16 +1,12 @@
 package open.dolphin.client;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.InputMap;
@@ -44,13 +40,6 @@ public class SaveDialog {
     public static final int TMP_SAVE = 1;
     public static final int DISPOSE = 2;
     public static final int CANCEL = 3;
-    private static final String[] BUTTON_NAME = new String[4];
-    static {
-        BUTTON_NAME[SAVE] = "保 存";
-        BUTTON_NAME[TMP_SAVE] = "仮保存";
-        BUTTON_NAME[DISPOSE] = "破 棄";
-        BUTTON_NAME[CANCEL] ="キャンセル";
-    }
 
     private final Window parent;
     private JOptionPane pane;
@@ -66,8 +55,8 @@ public class SaveDialog {
     private JButton disposeButton;
     private JButton cancelButton;
 
-    // 戻り値のSaveParams/
-    private SaveParams value;
+    // 戻り値のSaveParams
+    private final SaveParams value = new SaveParams();
 
     public SaveDialog(Window parent) {
         this.parent = parent;
@@ -84,102 +73,65 @@ public class SaveDialog {
         content.setLayout(new GridLayout(0, 1));
 
         // 文書Title
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         titleCombo = new JComboBox<>(TITLE_LIST);
         titleCombo.setPreferredSize(new Dimension(220, titleCombo.getPreferredSize().height));
         titleCombo.setMaximumSize(titleCombo.getPreferredSize());
         titleCombo.setEditable(true);
-        p.add(new JLabel("タイトル:"));
-        p.add(titleCombo);
-        content.add(p);
+        p1.add(new JLabel("タイトル:"));
+        p1.add(titleCombo);
+        content.add(p1);
 
         // ComboBox のエディタコンポーネントへリスナを設定する
         titleField = (JTextField) titleCombo.getEditor().getEditorComponent();
         titleField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkTitle());
 
         // 診療科，印刷部数を表示するラベルとパネルを生成する
-        JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel p2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         departmentLabel = new JLabel();
-        p1.add(new JLabel("診療科:"));
-        p1.add(departmentLabel);
-        p1.add(Box.createRigidArea(new Dimension(11, 0)));
+        p2.add(new JLabel("診療科:"));
+        p2.add(departmentLabel);
+        p2.add(Box.createRigidArea(new Dimension(11, 0)));
 
         // Print
         printCombo = new JComboBox<>(PRINT_COUNT);
         printCombo.setSelectedIndex(1);
-        p1.add(new JLabel("印刷部数:"));
-        p1.add(printCombo);
-        content.add(p1);
+        p2.add(new JLabel("印刷部数:"));
+        p2.add(printCombo);
+        content.add(p2);
 
         // CLAIM 送信ありなし
+        JPanel p3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         sendClaim = new JCheckBox("診療行為を送信する (仮保存の場合は送信しない)");
+        p3.add(sendClaim);
+        content.add(p3);
 
-        JPanel p5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        p5.add(sendClaim);
-        content.add(p5);
-
-        // JOptionPane
-        pane = new JOptionPane(content, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, BUTTON_NAME, BUTTON_NAME[0]);
-        pane.putClientProperty("Quaqua.OptionPane.destructiveOption", 3);
-
-        // JOptionPane から component を再帰検索して okButton と tmpButton を取り出す
-        Component[] components = pane.getComponents();
-        List<Component> cc = Arrays.asList(components);
-
-        while (!cc.isEmpty()) {
-            List<Component> stack = new ArrayList<>();
-            for (Component c: cc) {
-                if (c instanceof JButton) {
-                    JButton button = (JButton) c;
-                    String name = button.getText();
-                    if (BUTTON_NAME[SAVE].equals(name)) { okButton = button; }
-                    else if (BUTTON_NAME[TMP_SAVE].equals(name)) { tmpButton = button; }
-                    else if (BUTTON_NAME[DISPOSE].equals(name)) { disposeButton = button; }
-                    else if (BUTTON_NAME[CANCEL].equals(name)) { cancelButton = button; }
-
-                } else if (c instanceof JComponent) {
-                    components = ((Container)c).getComponents();
-                    stack.addAll(Arrays.asList(components));
-                }
-            }
-            cc = stack;
-        }
+        okButton = new JButton(new ProxyAction("保 存", this::doOk));
         okButton.setEnabled(false);
         okButton.setToolTipText("Return");
+
+        tmpButton = new JButton(new ProxyAction("仮保存", this::doTemp));
         tmpButton.setEnabled(false);
         tmpButton.setToolTipText("<html>&#8984;T</html>");
+
+        disposeButton = new JButton(new ProxyAction("破 棄", this::doDispose));
         disposeButton.setToolTipText("<html>&#8984;ESC</html>");
+
+        cancelButton = new JButton(new ProxyAction("キャンセル",this::doCancel));
         cancelButton.setToolTipText("ESC");
 
+        // JOptionPane
+        pane = new JOptionPane(content, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null,
+                new JButton[] { okButton, tmpButton, disposeButton, cancelButton }, okButton);
+
         dialog = MyJSheet.createDialog(pane, parent);
+        dialog.setModal(true);
         dialog.setFocusTraversalPolicy(new LayoutFocusTraversalPolicy(){
             private static final long serialVersionUID = 1L;
             @Override
             public Component getInitialComponent(Window w) {
                 // System.out.println("Is sendClaim checkbox focusable? " + sendClaim.isFocusable());
                 return sendClaim;
-            }
-        });
-
-        dialog.addSheetListener(se -> {
-            // 戻り値のSaveparamsを生成する
-            value = new SaveParams();
-
-            switch (se.getOption()) {
-                case SAVE:
-                    doOk();
-                    break;
-                case TMP_SAVE:
-                    doTemp();
-                    break;
-                case DISPOSE:
-                    doDispose();
-                    break;
-                case CANCEL:
-                    doCancel();
-                    break;
-                default:
-                    break;
             }
         });
 
