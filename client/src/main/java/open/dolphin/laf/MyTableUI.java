@@ -66,10 +66,11 @@ public class MyTableUI extends BasicTableUI {
             public void focusLost(FocusEvent e) { fireRowChanged(); }
 
             private void fireRowChanged() {
-                int row = t.getSelectedRow();
-                for (int col=0; col<t.getColumnCount(); col++) {
-                    t.repaint(t.getCellRect(row, col, true));
-                }
+                t.repaint();
+                //int row = t.getSelectedRow();
+                //for (int col=0; col<t.getColumnCount(); col++) {
+                //    t.repaint(t.getCellRect(row, col, true));
+                //}
             }
         });
     }

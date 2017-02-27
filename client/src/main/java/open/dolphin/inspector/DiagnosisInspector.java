@@ -367,7 +367,7 @@ public class DiagnosisInspector implements IInspector {
                 // foreground
                 if (deleted || ended) {
                     int rgb = list.getSelectionForeground().getRGB();
-                    int adjust = 0x2f2f2f;
+                    int adjust = 0x4f4f4f;
                     if ((rgb & 0x00ffffff) > adjust) { rgb -= adjust; }
                     if ((rgb & 0x00ffffff) < adjust) { rgb += adjust; }
                     setForeground(new Color(rgb));
