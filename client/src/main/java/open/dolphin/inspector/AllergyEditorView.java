@@ -41,11 +41,6 @@ public class AllergyEditorView extends javax.swing.JPanel {
         jLabel1.setName("jLabel1"); // NOI18N
 
         factorFld.setName("factorFld"); // NOI18N
-        factorFld.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                factorFldActionPerformed(evt);
-            }
-        });
 
         jLabel2.setText(bundle.getString("AllergyEditorView.jLabel2.text_1")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
@@ -70,14 +65,14 @@ public class AllergyEditorView extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(0, 0, Short.MAX_VALUE)
-                            .addComponent(jLabel3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)))
-                    .addComponent(jLabel4))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(identifiedFld, javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,10 +103,6 @@ public class AllergyEditorView extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void factorFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_factorFldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_factorFldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
