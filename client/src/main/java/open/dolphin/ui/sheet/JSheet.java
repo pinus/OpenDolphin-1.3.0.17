@@ -87,6 +87,7 @@ public class JSheet extends JDialog implements ActionListener {
 
         setUndecorated(true);
         setBackground(new Color(0, 0, 0, 0));
+        setResizable(false);
 
         // modal にセット
         setModal(true);

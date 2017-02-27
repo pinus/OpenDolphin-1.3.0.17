@@ -137,7 +137,7 @@ public class SaveDialog {
 
         // ショートカット登録
         ActionMap am = dialog.getRootPane().getActionMap();
-        InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         // SPACE で CLAIM 送信のチェックボックスの ON/OFF をする
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "toggle-claim");
