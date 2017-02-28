@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.ui.MyJSheet;
 
 /**
@@ -206,7 +207,7 @@ public class JSheet extends JDialog implements ActionListener {
                     Object val = e.getNewValue();
                     Object[] options = ((JOptionPane) c).getOptions();
 
-                    if (options == null) {
+                    if (options == null || val instanceof Integer) {
                         se.setOption((int) val);
 
                     } else {
@@ -568,14 +569,22 @@ public class JSheet extends JDialog implements ActionListener {
 
         JButton b1 = new JButton("Create Dialog");
         b1.addActionListener(e -> {
-            JOptionPane optionPane = new JOptionPane("JSheet.createDialog",
-                    JOptionPane.QUESTION_MESSAGE,
-                    JOptionPane.YES_NO_OPTION);
+            JButton ok = new JButton("OK");
+            JButton cancel = new JButton("キャンセル");
+            JButton dispose = new JButton("破棄");
 
+            JOptionPane optionPane = new JOptionPane("JSheet.createDialog", JOptionPane.INFORMATION_MESSAGE,
+                    JOptionPane.OK_CANCEL_OPTION, (Icon)null, new JButton[] { ok, cancel, dispose }, ok);
             JSheet sheet = JSheet.createDialog(optionPane, frame);
             sheet.addSheetListener(se -> {
+                // Escape を押したときだけ JOptionPane.CLOSED_OPTION (=-1) が返る
                 System.out.println("option = " + se.getOption());
             });
+
+            ok.setAction(new ProxyAction("OK", () -> sheet.setVisible(false)));
+            cancel.setAction(new ProxyAction("キャンセル", () -> sheet.setVisible(false)));
+            dispose.setAction(new ProxyAction("破棄", () -> sheet.setVisible(false)));
+
             sheet.setVisible(true);
             System.out.println("Create Dialog ended");
         });
