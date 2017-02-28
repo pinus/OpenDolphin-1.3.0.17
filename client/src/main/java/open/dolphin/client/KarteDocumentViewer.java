@@ -15,7 +15,7 @@ import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.project.Project;
 import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
 /**
@@ -93,7 +93,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     public void findFirst() {
         // すでに JSheet が出ている場合は，toFront してリターン
         Frame parent = getContext().getFrame();
-        if (MyJSheet.isAlreadyShown(parent)) {
+        if (JSheet.isAlreadyShown(parent)) {
             parent.toFront();
             return;
         }
@@ -908,11 +908,11 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
         }
 
         Frame parent = getContext().getFrame();
-        if (MyJSheet.isAlreadyShown(parent)) {
+        if (JSheet.isAlreadyShown(parent)) {
             parent.toFront();
             return;
         }
-        MyJSheet.showMessageDialog(parent, message, "", messageType);
+        JSheet.showMessageDialog(parent, message, "", messageType);
     }
 
     private void sendClaim(DocumentModel model) {

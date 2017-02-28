@@ -10,10 +10,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.sheet.JSheet;
 
 /**
  * FindDialog の JSheet バージョン
@@ -21,7 +22,7 @@ import open.dolphin.ui.MyJSheet;
  */
 public class FindDialog {
 
-    private MyJSheet sheet;
+    private JSheet sheet;
     private final Frame parent;
     private boolean isSearchReady;
     private boolean isTextReady;
@@ -77,7 +78,10 @@ public class FindDialog {
                 options,
                 searchButton);
 
-        sheet = MyJSheet.createDialog(jop, parent);
+        sheet = JSheet.createDialog(jop, parent);
+        sheet.addSheetListener(se -> {
+            if (se.getOption() == JOptionPane.CLOSED_OPTION) { cancelButton.doClick(); }
+        });
 
         // 初期値設定
         soaBox.setSelected(true);
@@ -85,7 +89,7 @@ public class FindDialog {
         searchButton.setEnabled(false);
         searchTextField.setText(searchText);
         checkState();
-    }
+    };
 
     private void connect() {
 
@@ -99,8 +103,13 @@ public class FindDialog {
                 requestFocus();
             }
             private void requestFocus() {
-                Focuser.requestFocus(searchTextField);
-                searchTextField.selectAll();
+                // JSheet が表示完了するまで 100msec 待つ
+                Timer t = new Timer(100, e -> {
+                    Focuser.requestFocus(searchTextField);
+                    searchTextField.selectAll();
+                });
+                t.setRepeats(false);
+                t.start();
             }
         });
 

@@ -72,6 +72,8 @@ public class JSheet extends JDialog implements ActionListener {
     private long animationStart;
 
     private SheetListener sheetListener;
+    // 表示位置の vertical offset
+    private int vOffset = 0;
 
     public JSheet(Frame owner) {
         super(owner);
@@ -92,6 +94,7 @@ public class JSheet extends JDialog implements ActionListener {
 
         // modal にセット
         setModal(true);
+        this.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
 
         content = (JPanel) getContentPane();
         content.setLayout(new BorderLayout());
@@ -129,7 +132,7 @@ public class JSheet extends JDialog implements ActionListener {
 
         // Sheet をセンタリング
         loc.x += (ownerSize.width - sourcePaneSize.width) / 2;
-        loc.y += MENU_BAR_HEIGHT;
+        loc.y += MENU_BAR_HEIGHT + vOffset;
 
         // 右端，左端の処理
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

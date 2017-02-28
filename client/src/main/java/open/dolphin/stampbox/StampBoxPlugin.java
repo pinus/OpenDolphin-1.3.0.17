@@ -36,6 +36,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.infomodel.StampTreeBean;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
+import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
 /**
@@ -772,7 +773,7 @@ public class StampBoxPlugin extends AbstractMainTool {
                         String sourceName = stamp.getModuleInfo().getStampName();
                         if (targetName.equals(sourceName)) {
                             // 名前が同じなら置き換えるかどうか確認
-                            int confirm = MyJSheet.showConfirmDialog(frame,
+                            int confirm = JSheet.showConfirmDialog(frame,
                                     "「" + targetName + "」を上書きしますか？", "上書き確認",
                                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE );
                             if(confirm == JOptionPane.OK_OPTION) {

@@ -23,7 +23,6 @@ import open.dolphin.project.Project;
 import open.dolphin.setting.ProjectSettingDialog;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJSheet;
 import org.apache.log4j.Logger;
 
 /**
@@ -245,7 +244,7 @@ public class LoginDialog {
     private void showMessageDialog(String msg) {
         String title = view.getTitle();
 
-        MyJSheet.showMessageDialog(view, msg, title, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(view, msg, title, JOptionPane.WARNING_MESSAGE);
         EventQueue.invokeLater(() -> {
             view.getPasswordField().requestFocusInWindow();
             view.getPasswordField().selectAll();

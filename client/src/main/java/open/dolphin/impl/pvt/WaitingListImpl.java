@@ -31,8 +31,8 @@ import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.ui.PNSBadgeTabbedPane;
+import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.PNSTriple;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
@@ -632,7 +632,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         }
         final JButton forceEditBtn = tmpForce;
 
-        MyJSheet dialog = MyJSheet.createDialog(pane, getContext().getFrame());
+        JSheet dialog = JSheet.createDialog(pane, getContext().getFrame());
         dialog.addSheetListener(se -> {
             int result = se.getOption();
             if (result == 0) { // 閲覧
@@ -816,7 +816,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         ptNames.deleteCharAt(ptNames.length()-1); // 最後の "," を取り除く
         ptNames.append(" 様の受付を取り消しますか?");
 
-        int select = MyJSheet.showOptionDialog(
+        int select = JSheet.showOptionDialog(
                 getContext().getFrame(),
                 ptNames.toString(),
                 ClientContext.getFrameTitle(getName()),
@@ -832,7 +832,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                     PvtDelegater pdl = new PvtDelegater();
                     // karte open なら キャンセルできない
                     if (KarteState.isOpen(pdl.getPvtState(pvt.getId()))) {
-                        MyJSheet.showMessageDialog(getContext().getFrame(), "編集中のカルテはキャンセルできません", "", JOptionPane.ERROR_MESSAGE);
+                        JSheet.showMessageDialog(getContext().getFrame(), "編集中のカルテはキャンセルできません", "", JOptionPane.ERROR_MESSAGE);
                     } else {
                         pvt.setState(KarteState.CANCEL_PVT);
                         pdl.updatePvt(pvt);

@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 import java.io.File;
@@ -18,6 +17,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import open.dolphin.helper.MouseHelper;
 import open.dolphin.ui.*;
 
 /**
@@ -140,29 +140,21 @@ public class ImagePalette extends JPanel {
         imageTable.addMouseListener(new MouseAdapter(){
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    // ダブルクリックしてすぐドラッグした場合はドラッグを優先する
-                    // Protection Time ms 後にマウスが動いていない場合のみダブルクリックと判定する
-                    Point p1 = imageTable.getMousePosition();
-                    try{ Thread.sleep(GUIConst.PROTECTION_TIME); } catch (Exception ex) {}
-                    Point p2 = imageTable.getMousePosition();
+                if (e.getClickCount() == 2 && ! MouseHelper.mouseMoved()) {
+                    int row = imageTable.getSelectedRow();
+                    int col = imageTable.getSelectedColumn();
+                    ImageEntry entry = (ImageEntry) imageTable.getModel().getValueAt(row, col);
 
-                    if (p1 != null && p2 != null && p1.x == p2.x && p1.y == p2.y) {
-                        int row = imageTable.getSelectedRow();
-                        int col = imageTable.getSelectedColumn();
-                        ImageEntry entry = (ImageEntry) imageTable.getModel().getValueAt(row, col);
-
-                        List<Chart> allFrames = EditorFrame.getAllEditorFrames();
-                        if (! allFrames.isEmpty()) {
-                            Chart frame = allFrames.get(0);
-                            KartePane pane = ((EditorFrame) frame).getEditor().getSOAPane();
-                            // caret を最後に送ってから import する
-                            JTextPane textPane = pane.getTextPane();
-                            KarteStyledDocument doc = pane.getDocument();
-                            textPane.setCaretPosition(doc.getLength());
-                            // import
-                            pane.imageEntryDropped(entry);
-                        }
+                    List<Chart> allFrames = EditorFrame.getAllEditorFrames();
+                    if (! allFrames.isEmpty()) {
+                        Chart frame = allFrames.get(0);
+                        KartePane pane = ((EditorFrame) frame).getEditor().getSOAPane();
+                        // caret を最後に送ってから import する
+                        JTextPane textPane = pane.getTextPane();
+                        KarteStyledDocument doc = pane.getDocument();
+                        textPane.setCaretPosition(doc.getLength());
+                        // import
+                        pane.imageEntryDropped(entry);
                     }
                 }
             }

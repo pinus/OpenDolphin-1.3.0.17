@@ -596,7 +596,7 @@ public class RegionView extends javax.swing.JDialog {
         // ClientContext を生成する
         ClientContextStub stub = new ClientContextStub();
         ClientContext.setClientContextStub(stub);
-        open.dolphin.ui.SettingForMac.setQuaqua(null);
+        open.dolphin.ui.SettingForMac.setLaf(null);
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {

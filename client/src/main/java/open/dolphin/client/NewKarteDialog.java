@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import open.dolphin.ui.MyJSheet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -9,6 +8,7 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.ui.Focuser;
+import open.dolphin.ui.sheet.JSheet;
 
 /**
  * 新規カルテ作成のダイアログ.
@@ -46,7 +46,7 @@ public final class NewKarteDialog {
     private final Frame parentFrame;
     private final String title;
     private final JPanel content;
-    private JDialog dialog;
+    private JSheet dialog;
     private Object value;
 
     /**
@@ -230,17 +230,21 @@ public final class NewKarteDialog {
                 okButton);
 
         // すでに JSheet が出ている場合は，toFront してリターン
-        if (MyJSheet.isAlreadyShown(parentFrame)) {
+        if (JSheet.isAlreadyShown(parentFrame)) {
             parentFrame.toFront();
             return;
         }
 
-        dialog = MyJSheet.createDialog(jop, parentFrame);
+        dialog = JSheet.createDialog(jop, parentFrame);
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
                 Focuser.requestFocus(insuranceList);
             }
+        });
+        dialog.addSheetListener(se -> {
+            // Escape キーを押したときだけここに入る
+            if (se.getOption() == JOptionPane.CLOSED_OPTION) { cancelButton.doClick(); }
         });
         dialog.setVisible(true);
     }

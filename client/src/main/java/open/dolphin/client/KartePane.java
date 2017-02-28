@@ -36,9 +36,9 @@ import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.codehelper.PCodeHelper;
 import open.dolphin.codehelper.SOACodeHelper;
+import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
 /**
@@ -733,7 +733,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     public void stampInfoDropped(final List<ModuleInfoBean> addList) {
         // 4 個以上一気にドロップされたら警告を出す
         if (addList.size() >= 4) {
-            int ans = MyJSheet.showConfirmDialog(parent.getContext().getFrame(),
+            int ans = JSheet.showConfirmDialog(parent.getContext().getFrame(),
                     addList.size() + "個のスタンプが同時にドロップされましたが続けますか", "スタンプ挿入確認",
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE
                     );

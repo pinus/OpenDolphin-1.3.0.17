@@ -7,8 +7,8 @@ import javax.swing.SwingUtilities;
 import open.dolphin.client.GUIConst;
 import open.dolphin.helper.MenuActionManager;
 import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.helper.MenuActionManager.MenuAction;
+import open.dolphin.ui.sheet.JSheet;
 
 /**
  * StampTree に PopupMenu を表示する.
@@ -44,7 +44,7 @@ public class StampTreePopupMenu extends JPopupMenu {
     }
     @MenuAction
     public void deleteNode() {
-        int ans = MyJSheet.showConfirmDialog(SwingUtilities.getWindowAncestor(tree),
+        int ans = JSheet.showConfirmDialog(SwingUtilities.getWindowAncestor(tree),
                 "本当に削除しますか", "スタンプ削除", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
         if (ans == JOptionPane.OK_OPTION) {
             if (isEditable()) { tree.deleteNode(); }

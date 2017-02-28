@@ -1,6 +1,5 @@
 package open.dolphin.stampbox;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -23,6 +22,7 @@ import open.dolphin.client.EditorFrame;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.KartePane;
 import open.dolphin.client.KarteStyledDocument;
+import open.dolphin.helper.MouseHelper;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
@@ -105,17 +105,7 @@ public class UserStampBox extends AbstractStampBox {
                 public void mousePressed(MouseEvent e) {
                     if (e.isPopupTrigger()) { showPopup(e); }
 
-                    else if (e.getClickCount() == 2) {
-                        // ダブルクリックしてすぐドラッグした場合はドラッグを優先する
-                        // Protection Time ms 後にマウスが動いていない場合のみダブルクリックと判定する
-                        Point p1 = stampTree.getMousePosition();
-                        try{ Thread.sleep(GUIConst.PROTECTION_TIME); } catch (Exception ex) {}
-                        Point p2 = stampTree.getMousePosition();
-
-                        if (p1 != null && p2 != null && p1.x == p2.x && p1.y == p2.y) {
-                            directInput(e);
-                        }
-                    }
+                    else if (e.getClickCount() == 2 && ! MouseHelper.mouseMoved()) { directInput(e); }
                 }
 
                 /*

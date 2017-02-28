@@ -34,12 +34,11 @@ import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import open.dolphin.ui.sheet.JSheet;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -394,11 +393,6 @@ public class CompletableJTextField extends JTextField
     }
 
     public static void main(String[] argv) {
-        try {
-            UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
-        } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException e) {
-            System.out.println("Dolphin.java: " + e);
-        }
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -450,7 +444,10 @@ public class CompletableJTextField extends JTextField
                 new String[]{"A", "B"}
 
                 );
-        MyJSheet sheet = MyJSheet.createDialog(jop, f);
+        JSheet sheet = JSheet.createDialog(jop, f);
+        sheet.addSheetListener(se -> {
+            sheet.setVisible(false);
+        });
         sheet.setVisible(true);
 
         Preferences prefs = Preferences.userNodeForPackage(CompletableJTextField.class);

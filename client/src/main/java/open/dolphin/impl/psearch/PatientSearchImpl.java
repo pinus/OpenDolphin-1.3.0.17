@@ -30,8 +30,8 @@ import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.ui.PNSBadgeTabbedPane;
+import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.PNSTriple;
 import open.dolphin.util.StringTool;
 import org.apache.log4j.Logger;
@@ -230,7 +230,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
                     + "のばしておく必要があります。<br>"
                     + "途中でキャンセルはできません。<br>"
                     + "よろしいですか？</html>";
-            int option = MyJSheet.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+            int option = JSheet.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 
             if (option == JOptionPane.YES_OPTION) {
                 PnsDelegater dl = new PnsDelegater();
@@ -522,7 +522,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
             spec.setPatientId(text);
 
         } else if (text.length() <= 1) {
-            MyJSheet.showMessageDialog(getContext().getFrame(),
+            JSheet.showMessageDialog(getContext().getFrame(),
                 "検索文字列は２文字以上入力して下さい",  "検索文字列入力エラー", JOptionPane.ERROR_MESSAGE);
             return;
 
@@ -665,7 +665,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
      */
     public void exportSearchResult() {
         final JFileChooser fileChooser = new JFileChooser();
-        MyJSheet.showSaveSheet(fileChooser, getContext().getFrame(), e -> {
+        JSheet.showSaveSheet(fileChooser, getContext().getFrame(), e -> {
             if (e.getOption() == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
 
@@ -705,7 +705,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         String message = "既存のファイル「" + file.toString() + "」\n"
                         +"を上書きしようとしています。続けますか？";
 
-        int confirm = MyJSheet.showConfirmDialog(
+        int confirm = JSheet.showConfirmDialog(
                 getContext().getFrame(), message, title,
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.WARNING_MESSAGE );

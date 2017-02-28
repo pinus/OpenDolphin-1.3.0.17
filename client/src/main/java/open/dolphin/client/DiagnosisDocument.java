@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import open.dolphin.util.PNSPair;
 import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
@@ -32,8 +31,10 @@ import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
+import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.MMLDate;
 import open.dolphin.util.PNSTriple;
+import open.dolphin.util.PNSPair;
 import org.apache.log4j.Logger;
 
 /**
@@ -726,7 +727,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     public void importStampList(final List<ModuleInfoBean> stampList, final int insertRow) {
         // 4 個以上一気にドロップされたら警告を出す
         if (stampList.size() >= 4) {
-            int ans = MyJSheet.showConfirmDialog(getContext().getFrame(),
+            int ans = JSheet.showConfirmDialog(getContext().getFrame(),
                     stampList.size() + "個のスタンプが同時にドロップされましたが続けますか", "スタンプ挿入確認",
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE
                     );
@@ -900,7 +901,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         // }
 
         // すでに JSheet が出ている場合は，toFront してリターン
-        if (MyJSheet.isAlreadyShown(getContext().getFrame())) {
+        if (JSheet.isAlreadyShown(getContext().getFrame())) {
             getContext().getFrame().toFront();
             return false;
         }
@@ -909,27 +910,27 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         String end = rd.getEndDate();
 
         if (start == null) {
-            MyJSheet.showMessageDialog(
+            JSheet.showMessageDialog(
                     getContext().getFrame(),
                     "「" + rd.getDiagnosisName() + "」の開始日がありません",
                     ClientContext.getFrameTitle("病名チェック"),
-                    JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (rd.getOutcome() != null && end == null) {
-            MyJSheet.showMessageDialog(
+            JSheet.showMessageDialog(
                     getContext().getFrame(),
                     "「" + rd.getDiagnosisName() + "」の転帰に対応する終了日がありません",
                     ClientContext.getFrameTitle("病名チェック"),
-                    JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (rd.getOutcome() == null && end != null) {
-            MyJSheet.showMessageDialog(
+            JSheet.showMessageDialog(
                     getContext().getFrame(),
                     "「" + rd.getDiagnosisName() + "」の終了日に対応する転帰がありません",
                     ClientContext.getFrameTitle("病名チェック"),
-                    JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
         Date startDate = null;
@@ -953,11 +954,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             sb.append("「yyyy-MM-dd」の形式で入力してください。");
             sb.append("\n");
             sb.append("右クリックでカレンダが使用できます。");
-            MyJSheet.showMessageDialog(
+            JSheet.showMessageDialog(
                     getContext().getFrame(),
                     sb.toString(),
                     ClientContext.getFrameTitle("病名チェック"),
-                    JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             formatOk = false;
         }
 
@@ -969,11 +970,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             StringBuilder sb = new StringBuilder();
             sb.append("「").append(rd.getDiagnosisName());
             sb.append("」の終了日が開始日以前になっています。");
-            MyJSheet.showMessageDialog(
+            JSheet.showMessageDialog(
                     getContext().getFrame(),
                     sb.toString(),
                     ClientContext.getFrameTitle("病名チェック"),
-                    JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -1565,11 +1566,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             messageType = JOptionPane.ERROR_MESSAGE;
         }
 
-        if (MyJSheet.isAlreadyShown(parent)) {
+        if (JSheet.isAlreadyShown(parent)) {
             parent.toFront();
             return;
         }
-        MyJSheet.showMessageDialog(parent, message, "", messageType);
+        JSheet.showMessageDialog(parent, message, "", messageType);
     }
 
     private void sendClaim(List<RegisteredDiagnosisModel> sendList) {

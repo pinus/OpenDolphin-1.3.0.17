@@ -1196,11 +1196,11 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         }
 
         Frame parent = getContext().getFrame();
-        if (MyJSheet.isAlreadyShown(parent)) {
+        if (JSheet.isAlreadyShown(parent)) {
             parent.toFront();
             return;
         }
-        MyJSheet.showMessageSheet(parent, message, messageType);
+        JSheet.showMessageSheet(parent, message, messageType);
         */
     }
 

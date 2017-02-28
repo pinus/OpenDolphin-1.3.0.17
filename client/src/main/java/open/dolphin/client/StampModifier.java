@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.ClaimConst;
-import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.StringTool;
 
 /**
@@ -83,7 +83,7 @@ public class StampModifier {
                     for (String item : duplicates) {
                         sb.append("\n「").append(item).append("」");
                     }
-                    MyJSheet.showMessageDialog(parent, sb.toString(), "スタンプ重複", JOptionPane.WARNING_MESSAGE);
+                    JSheet.showMessageDialog(parent, sb.toString(), "スタンプ重複", JOptionPane.WARNING_MESSAGE);
                 }
             });
         }

@@ -22,10 +22,10 @@ import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.StampModel;
 import open.dolphin.project.Project;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.util.HexBytesTool;
 import org.jdom2.Element;
 import open.dolphin.helper.MenuActionManager.MenuAction;
+import open.dolphin.ui.sheet.JSheet;
 
 /**
  * StampBox の特別(gear)メニュー.
@@ -337,7 +337,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
         fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
         AbstractStampBox stampBox = context.getCurrentBox();
 
-        MyJSheet.showSaveSheet(fileChooser, context.getFrame(), e -> {
+        JSheet.showSaveSheet(fileChooser, context.getFrame(), e -> {
             if (e.getOption() == JFileChooser.APPROVE_OPTION) {
                 final File file = fileChooser.getSelectedFile();
                 if (!file.exists() || overwriteConfirmed(file)) {
@@ -390,7 +390,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
         String message = "既存のファイル " + file.toString() + "\n"
                         +"を上書きしようとしています。続けますか？";
 
-        int confirm = MyJSheet.showConfirmDialog(
+        int confirm = JSheet.showConfirmDialog(
             context.getFrame(), message, title,
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.WARNING_MESSAGE );
@@ -409,7 +409,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
         AbstractStampBox stampBox = context.getCurrentBox();
 
-        MyJSheet.showOpenSheet(fileChooser, context.getFrame(), e -> {
+        JSheet.showOpenSheet(fileChooser, context.getFrame(), e -> {
             if (e.getOption() == JFileChooser.APPROVE_OPTION) {
                 final File file = fileChooser.getSelectedFile();
 

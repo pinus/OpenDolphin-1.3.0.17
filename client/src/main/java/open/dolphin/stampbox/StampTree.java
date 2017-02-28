@@ -20,8 +20,8 @@ import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.ui.PNSTreeCellEditor;
+import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.GUIDGenerator;
 import org.apache.log4j.Logger;
 
@@ -396,7 +396,7 @@ public class StampTree extends JTree implements TreeModelListener {
                     buf.append("スタンプは個人用の ");
                     buf.append(treeName);
                     buf.append(" に保存しました。");
-                    MyJSheet.showMessageDialog(
+                    JSheet.showMessageDialog(
                             StampTree.this,
                             buf.toString(),
                             ClientContext.getFrameTitle(STAMP_SAVE_TASK_NAME),

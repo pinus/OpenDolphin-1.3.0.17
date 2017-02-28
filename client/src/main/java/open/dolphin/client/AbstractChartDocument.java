@@ -4,7 +4,7 @@ import java.awt.Window;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
 /**
@@ -116,10 +116,10 @@ public abstract class AbstractChartDocument implements ChartDocument {
     protected void warning(String title, String message) {
         Window parent = SwingUtilities.getWindowAncestor(getUI());
         // すでに JSheet が出ている場合は，toFront してリターン
-        if (MyJSheet.isAlreadyShown(parent)) {
+        if (JSheet.isAlreadyShown(parent)) {
             parent.toFront();
             return;
         }
-        MyJSheet.showMessageDialog(parent, message, ClientContext.getFrameTitle(title), JOptionPane.WARNING_MESSAGE);
+        JSheet.showMessageDialog(parent, message, ClientContext.getFrameTitle(title), JOptionPane.WARNING_MESSAGE);
     }
 }

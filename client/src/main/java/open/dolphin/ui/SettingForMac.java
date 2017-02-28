@@ -3,7 +3,6 @@ package open.dolphin.ui;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.client.Dolphin;
 import open.dolphin.laf.MyButtonUI;
 import open.dolphin.laf.MyComboBoxUI;
@@ -15,7 +14,7 @@ import open.dolphin.laf.MyToggleButtonUI;
 import open.dolphin.laf.MyTreeUI;
 
 /**
- * Mac + Quaqua 用のセッティング
+ * Mac 用のセッティング.
  * @author pns
  */
 public class SettingForMac {
@@ -29,66 +28,7 @@ public class SettingForMac {
         new JFXPanel();
         // JavaFX thread が SchemaEditor 終了後に shutdown してしまわないようにする
         Platform.setImplicitExit(false);
-
-        // apple settings
-        System.setProperty("apple.laf.useScreenMenuBar","true"); // ClientContextStub でも設定しているが，そこだと遅いようだ
-        // quaqua のセットアップ
-        setQuaqua(context);
-        // com.apple.eawt.Application の設定
-        setMacApplication(context);
-
-        TouchpadTest.startListening();
-    }
-
-    public static void setQuaqua(Dolphin context) {
-        // quaqua settings
-        //System.setProperty("Quaqua.tabLayoutPolicy","wrap");
-        //System.setProperty("Quaqua.enforceVisualMargin","true");
-        //System.setProperty("Quaqua.sizeStyle","small");
-
-        // Lion は自動的に leopard に設定されてしまう
-        //System.setProperty("Quaqua.design","snowleopard");
-        //System.setProperty("Quaqua.design","mountainlion");
-        System.setProperty("Quaqua.design","elcapitan");
-        System.setProperty("Quaqua.requestFocusEnabled", "true");
-        //java.util.Set<String> includes = new java.util.HashSet<String>();
-        java.util.Set<String> excludes = new java.util.HashSet<>();
-        excludes.add("ScrollBar");
-        excludes.add("Panel");
-        excludes.add("TextField");
-        excludes.add("PasswordField");
-        excludes.add("Table");
-        excludes.add("Tree");
-        excludes.add("List");
-        excludes.add("Button");
-        excludes.add("ToggleButton");
-        excludes.add("ComboBox");
-        //excludes.add("TabbedPane");
-        //excludes.add("PopupMenu");
-        //ch.randelshofer.quaqua.QuaquaManager.setIncludedUIs(includes);
-        ch.randelshofer.quaqua.QuaquaManager.setExcludedUIs(excludes);
-
-        // set the Quaqua Look and Feel in the UIManager
-        try {
-            UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
-
-            UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
-            UIManager.put("PasswordFieldUI", MyPasswordFieldUI.class.getName());
-            UIManager.put("TableUI", MyTableUI.class.getName());
-            UIManager.put("ListUI", MyListUI.class.getName());
-            UIManager.put("TreeUI", MyTreeUI.class.getName());
-            UIManager.put("ButtonUI", MyButtonUI.class.getName());
-            UIManager.put("ToggleButtonUI", MyToggleButtonUI.class.getName());
-            UIManager.put("ComboBoxUI", MyComboBoxUI.class.getName());
-
-        } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException e) {
-            System.out.println("Dolphin.java: " + e);
-        }
-
-        //
-        // java 1.7.0_55 から
-        // setLookAndFeel が JFX Thread の ClassLoader を null にしてしまうようになった
-        //
+        // JavaFX ClassLoader
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         System.out.println("ClassLoader in Swing Thread = " + contextClassLoader);
 
@@ -99,6 +39,26 @@ public class SettingForMac {
                 Thread.currentThread().setContextClassLoader(contextClassLoader);
             }
         });
+
+        // apple settings
+        System.setProperty("apple.laf.useScreenMenuBar","true"); // ClientContextStub でも設定しているが，そこだと遅いようだ
+        // Look and Feel のセットアップ
+        setLaf(context);
+        // com.apple.eawt.Application の設定
+        setMacApplication(context);
+
+        TouchpadTest.startListening();
+    }
+
+    public static void setLaf(Dolphin context) {
+        UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
+        UIManager.put("PasswordFieldUI", MyPasswordFieldUI.class.getName());
+        UIManager.put("TableUI", MyTableUI.class.getName());
+        UIManager.put("ListUI", MyListUI.class.getName());
+        UIManager.put("TreeUI", MyTreeUI.class.getName());
+        UIManager.put("ButtonUI", MyButtonUI.class.getName());
+        UIManager.put("ToggleButtonUI", MyToggleButtonUI.class.getName());
+        UIManager.put("ComboBoxUI", MyComboBoxUI.class.getName());
     }
 
     private static void setMacApplication(final Dolphin context) {

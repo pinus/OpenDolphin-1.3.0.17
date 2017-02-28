@@ -23,9 +23,9 @@ import open.dolphin.project.Project;
 import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSTitledBorder;
+import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
 /**
@@ -120,7 +120,7 @@ public class MemoInspector implements IInspector {
 
                 } else {
                     // なければダイアログを出してフォルダを作ってから表示
-                    int ans = MyJSheet.showConfirmDialog(context.getFrame(), "関連文書フォルダを作りますか？", "",
+                    int ans = JSheet.showConfirmDialog(context.getFrame(), "関連文書フォルダを作りますか？", "",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
                     if (ans == JOptionPane.OK_OPTION) {

@@ -23,8 +23,8 @@ import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.MyJSheet;
 import open.dolphin.ui.PNSCellEditor;
+import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.PNSTriple;
 import open.dolphin.util.StringTool;
 
@@ -260,7 +260,7 @@ public class ItemTablePanel extends JPanel {
         clearButton = new JButton(CLEAR_BUTTON_IMAGE);
         clearButton.setEnabled(false);
         clearButton.addActionListener(e -> {
-            int ans = MyJSheet.showOptionDialog(SwingUtilities.getWindowAncestor(table), "クリアしますか？", "",
+            int ans = JSheet.showOptionDialog(SwingUtilities.getWindowAncestor(table), "クリアしますか？", "",
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null,
                     new String[] { "はい", "いいえ", "キャンセル" }, "はい");
 

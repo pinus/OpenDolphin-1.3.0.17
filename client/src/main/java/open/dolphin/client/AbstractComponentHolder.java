@@ -1,12 +1,12 @@
 package open.dolphin.client;
 
 import java.awt.Cursor;
-import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.*;
+import open.dolphin.helper.MouseHelper;
 import open.dolphin.ui.Focuser;
 
 /**
@@ -75,15 +75,7 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
         // 右クリックで popup 表示
         if (e.isPopupTrigger()) { maybeShowPopup(e); }
         // ダブルクリックでエディタ表示
-        else if (e.getClickCount() == 2) {
-            //ダブルクリックしてすぐドラッグした場合はドラッグを優先する
-            // Protection Time ms 後にマウスが動いていない場合のみダブルクリックと判定する
-            Point p1 = getMousePosition();
-            try{ Thread.sleep(GUIConst.PROTECTION_TIME); } catch (Exception ex) {}
-            Point p2 = getMousePosition();
-
-            if (p1 != null && p2 != null && p1.x == p2.x && p1.y == p2.y) { edit(); }
-        }
+        else if (e.getClickCount() == 2 && ! MouseHelper.mouseMoved()) { edit(); }
     }
 
     @Override

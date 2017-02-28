@@ -21,11 +21,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutFocusTraversalPolicy;
-import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.sheet.JSheet;
 
 /**
  * カルテ保存時の SaveDialog.
@@ -43,7 +42,7 @@ public class SaveDialog {
 
     private final Window parent;
     private JOptionPane pane;
-    private MyJSheet dialog;
+    private JSheet dialog;
 
     private JTextField titleField;
     private JComboBox<String> titleCombo;
@@ -124,7 +123,11 @@ public class SaveDialog {
         pane = new JOptionPane(content, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null,
                 new JButton[] { okButton, tmpButton, disposeButton, cancelButton }, okButton);
 
-        dialog = MyJSheet.createDialog(pane, parent);
+        dialog = JSheet.createDialog(pane, parent);
+        dialog.addSheetListener(se -> {
+            // Escape を押したときだけここに入る
+            if (se.getOption() == JOptionPane.CLOSED_OPTION) { doCancel(); }
+        });
         dialog.setModal(true);
         dialog.setFocusTraversalPolicy(new LayoutFocusTraversalPolicy(){
             private static final long serialVersionUID = 1L;
@@ -147,9 +150,9 @@ public class SaveDialog {
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.META_DOWN_MASK), "tmpSave");
         am.put("tmpSave", new ProxyAction(tmpButton::doClick));
 
-        // ESC でキャンセル
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-        am.put("cancel", new ProxyAction(cancelButton::doClick));
+        // ESC でキャンセル -> escape は JOptionPane で抜かれる
+        //im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+        //am.put("cancel", new ProxyAction(cancelButton::doClick));
 
         // Cmd-ESC で破棄
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, InputEvent.META_DOWN_MASK), "dispose");
@@ -319,11 +322,6 @@ public class SaveDialog {
     }
 
     public static void main(String[] args) throws UnsupportedLookAndFeelException {
-        try {
-            UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            System.out.println("Dolphin.java: " + e);
-        }
 
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

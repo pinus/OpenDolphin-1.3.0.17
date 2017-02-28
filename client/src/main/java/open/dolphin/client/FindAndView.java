@@ -12,7 +12,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.sheet.JSheet;
 
 /**
  *
@@ -155,7 +155,7 @@ public class FindAndView {
      */
     private void show (JPanel panel, boolean next) {
         // すでに JSheet が出ている場合は，toFront してリターン
-        if (MyJSheet.isAlreadyShown(scrollerPanel)) {
+        if (JSheet.isAlreadyShown(scrollerPanel)) {
             SwingUtilities.getWindowAncestor(scrollerPanel).toFront();
             return;
         }
@@ -293,14 +293,14 @@ public class FindAndView {
     }
 
     private void showNotFoundDialog(String title, String message) {
-        MyJSheet.showMessageDialog(scrollerPanel.getParent(),
+        JSheet.showMessageDialog(scrollerPanel.getParent(),
                 "「" + searchText + "」" + message,
                 title,
                 JOptionPane.ERROR_MESSAGE);
     }
 
     private int showConfirmDialog(String message) {
-        return MyJSheet.showConfirmDialog( scrollerPanel.getParent(),
+        return JSheet.showConfirmDialog( scrollerPanel.getParent(),
                 message,
                 "",
                 JOptionPane.YES_NO_OPTION,

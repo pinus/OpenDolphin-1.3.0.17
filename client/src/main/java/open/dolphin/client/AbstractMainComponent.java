@@ -16,7 +16,7 @@ import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.MyJSheet;
+import open.dolphin.ui.sheet.JSheet;
 
 /**
  * Main Window コンポーネントプラグインの抽象クラス.
@@ -164,7 +164,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
             "<h3>"+ ptName + " 様のカルテは他の端末で編集中です</h3>" +
             "<p><nobr>閲覧のみで、編集はできません<nobr></p></html>";
 
-        int ans = MyJSheet.showConfirmDialog(getUI(), message, "", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+        int ans = JSheet.showConfirmDialog(getUI(), message, "", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
         if (ans == JOptionPane.OK_OPTION) {
             pvtModel.setState(KarteState.READ_ONLY);
             getContext().openKarte(pvtModel);

@@ -22,6 +22,7 @@ import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.inspector.PatientInspector;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
+import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.GUIDGenerator;
 import open.dolphin.util.PreferencesUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -1340,17 +1341,17 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             }
 
             // すでに JSheet が出ている場合は，toFront してリターン
-            if (MyJSheet.isAlreadyShown(getFrame())) {
+            if (JSheet.isAlreadyShown(getFrame())) {
                 getFrame().toFront();
                 return;
             }
             // int option = JOptionPane.showOptionDialog(
-            int option = MyJSheet.showOptionDialog(
+            int option = JSheet.showOptionDialog(
                     getFrame(),
                     message,
                     ClientContext.getFrameTitle(title),
                     JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
+                    JOptionPane.WARNING_MESSAGE,
                     null,
                     new String[]{saveAll, discard, cancelText},
                     saveAll);

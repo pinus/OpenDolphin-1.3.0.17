@@ -22,8 +22,8 @@ public class SheetBorder extends AbstractBorder {
     private static final long serialVersionUID = 1L;
 
     private static final int SHADOW_WIDTH = 10;
-    private static final Insets BORDER_INSETS = new Insets(0, 20, 20, 20);
-    private static final Color BACKGROUND = new Color(0.92f, 0.92f, 0.92f, 0.95f);
+    private static final Insets BORDER_INSETS = new Insets(10, 20, 20, 20);
+    private static final Color BACKGROUND = new Color(0.95f, 0.95f, 0.95f, 0.97f);
 
     private static final Color SHADOW_COLOR_D = new Color(0f, 0f, 0f, 0.2f);
     private static final Color SHADOW_COLOR_MD = new Color(0f, 0f, 0f, 0.1f);
