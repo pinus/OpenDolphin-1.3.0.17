@@ -1,6 +1,5 @@
 package open.dolphin.inspector;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -95,10 +94,12 @@ public class BasicInfoInspector implements IInspector {
         addressPanel.setOpaque(false);
         addressPanel.add(addressLabel);
 
-        panel = new JPanel(new BorderLayout());
+        panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setName(NAME);
-        panel.add(addressPanel, BorderLayout.CENTER);
-        panel.add(namePanel, BorderLayout.NORTH);
+        panel.add(namePanel);
+        panel.add(Box.createVerticalGlue());
+        panel.add(addressPanel);
 
         // サイズ調節
         panel.setPreferredSize(new Dimension(WIDTH, 42));
