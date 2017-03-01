@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import open.dolphin.calendar.CalendarPanel;
+import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.infomodel.AllergyModel;
@@ -79,6 +80,7 @@ public class AllergyEditor {
                                            null,
                                            options, addBtn);
         dialog = pane.createDialog(inspector.getContext().getFrame(), "アレルギー登録");
+        dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         // dialog が開いたら FactorFld にフォーカスを当てる
         dialog.addWindowListener(new WindowAdapter(){
