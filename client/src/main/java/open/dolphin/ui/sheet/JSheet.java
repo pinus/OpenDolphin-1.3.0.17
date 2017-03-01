@@ -72,8 +72,7 @@ public class JSheet extends JDialog implements ActionListener {
     private long animationStart;
 
     private SheetListener sheetListener;
-    // 表示位置の vertical offset
-    private int vOffset = 0;
+    private Component parentComponent;
 
     public JSheet(Frame owner) {
         super(owner);
@@ -94,7 +93,7 @@ public class JSheet extends JDialog implements ActionListener {
 
         // modal にセット
         setModal(true);
-        this.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
+        setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
 
         content = (JPanel) getContentPane();
         content.setLayout(new BorderLayout());
@@ -132,7 +131,8 @@ public class JSheet extends JDialog implements ActionListener {
 
         // Sheet をセンタリング
         loc.x += (ownerSize.width - sourcePaneSize.width) / 2;
-        loc.y += MENU_BAR_HEIGHT + vOffset;
+        int vOffset = parentComponent.getLocationOnScreen().y - owner.getLocationOnScreen().y;
+        loc.y += vOffset == 0? MENU_BAR_HEIGHT : vOffset;
 
         // 右端，左端の処理
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -165,6 +165,14 @@ public class JSheet extends JDialog implements ActionListener {
      */
     public void addSheetListener(SheetListener listener) {
         sheetListener = listener;
+    }
+
+    /**
+     * Parent をセットする.
+     * @param c
+     */
+    public void setParentComponent(Component c) {
+        parentComponent = c;
     }
 
     /**
@@ -423,6 +431,7 @@ public class JSheet extends JDialog implements ActionListener {
         Window owner = JOptionPane.getFrameForComponent(parentComponent);
         JSheet js = (owner instanceof Frame) ? new JSheet((Frame) owner) : new JSheet((Dialog) owner);
         js.setSourceDialog(dialog);
+        js.setParentComponent(parentComponent);
 
         return js;
     }
@@ -437,6 +446,7 @@ public class JSheet extends JDialog implements ActionListener {
     public static void showSheet(JOptionPane pane, Component parentComponent, SheetListener listener) {
         JSheet js = createDialog(pane, parentComponent);
         js.addSheetListener(se -> listener.optionSelected(se));
+        js.setParentComponent(parentComponent);
         js.setVisible(true);
     }
 
@@ -465,6 +475,7 @@ public class JSheet extends JDialog implements ActionListener {
         JSheet js = (owner instanceof Frame) ? new JSheet((Frame) owner) : new JSheet((Dialog) owner);
         js.setSourceDialog(dialog);
         js.addSheetListener(se -> listener.optionSelected(se));
+        js.setParentComponent(parentComponent);
         js.setVisible(true);
     }
 

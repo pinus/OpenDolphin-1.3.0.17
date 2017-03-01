@@ -817,7 +817,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         ptNames.append(" 様の受付を取り消しますか?");
 
         int select = JSheet.showOptionDialog(
-                getContext().getFrame(),
+                pvtTable,
                 ptNames.toString(),
                 ClientContext.getFrameTitle(getName()),
                 JOptionPane.YES_NO_CANCEL_OPTION,
