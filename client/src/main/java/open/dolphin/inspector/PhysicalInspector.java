@@ -97,7 +97,7 @@ public class PhysicalInspector implements IInspector {
         view.getTable().addMouseListener(new MouseAdapter() {
             private void mabeShowPopup(MouseEvent e) {
                 // isReadOnly対応
-                if (context.isReadOnly()) { return; }
+                if (context.isReadOnly() && ! e.isPopupTrigger()) { return; }
 
                 JPopupMenu pop = new JPopupMenu();
                 JMenuItem item = new JMenuItem("追加");
@@ -119,9 +119,13 @@ public class PhysicalInspector implements IInspector {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    mabeShowPopup(e);
-                }
+                mabeShowPopup(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // Windows
+                mabeShowPopup(e);
             }
 
             @Override

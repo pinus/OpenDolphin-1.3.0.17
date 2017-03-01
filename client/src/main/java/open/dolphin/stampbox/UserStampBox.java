@@ -104,14 +104,22 @@ public class UserStampBox extends AbstractStampBox {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     if (e.isPopupTrigger()) { showPopup(e); }
-
                     else if (e.getClickCount() == 2 && ! MouseHelper.mouseMoved()) { directInput(e); }
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    // Windows
+                    if (e.isPopupTrigger()) { showPopup(e); }
                 }
 
                 /*
                  * スタンプを右クリックポップメニューからカルテに入力できるようにする
                  */
                 private void showPopup(MouseEvent e) {
+                    // ToolTipWindow を消す
+                    MouseHelper.hideToolTipWindow();
+
                     StampTreePopupMenu popup = new StampTreePopupMenu(stampTree);
 
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {

@@ -17,6 +17,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.client.ClientContext;
+import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.infomodel.IInfoModel;
@@ -81,6 +82,7 @@ public class PhysicalEditor {
                                            null,
                                            options, addBtn);
         dialog = pane.createDialog(inspector.getContext().getFrame(), ClientContext.getFrameTitle("身長体重登録"));
+        dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         // dialog が開いたら WeightFld にフォーカスを当てる
         dialog.addWindowListener(new WindowAdapter(){
@@ -147,28 +149,29 @@ public class PhysicalEditor {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                maybeShowPopup(e);
-            }
+            maybeShowPopup(e);
         }
 
-        //@Override
-        //public void mouseReleased(MouseEvent e) {
-        //    maybeShowPopup(e);
-        //}
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // Windows
+            maybeShowPopup(e);
+        }
 
         private void maybeShowPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
 
-            popup = new JPopupMenu();
-            CalendarPanel cp = new CalendarPanel();
-            cp.getTable().addCalendarListener(date -> {
-                view.getIdentifiedDateFld().setText(SimpleDate.simpleDateToMmldate(date));
-                popup.setVisible(false);
-                popup = null;
-            });
-            
-            popup.insert(cp, 0);
-            popup.show(e.getComponent(), e.getX(), e.getY());
+                popup = new JPopupMenu();
+                CalendarPanel cp = new CalendarPanel();
+                cp.getTable().addCalendarListener(date -> {
+                    view.getIdentifiedDateFld().setText(SimpleDate.simpleDateToMmldate(date));
+                    popup.setVisible(false);
+                    popup = null;
+                });
+
+                popup.insert(cp, 0);
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
         }
     }
 }

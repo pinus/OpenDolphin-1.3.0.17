@@ -2,6 +2,7 @@ package open.dolphin.inspector;
 
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import open.dolphin.client.ClientContext;
 import open.dolphin.event.BadgeListener;
 import open.dolphin.ui.PNSBorderFactory;
 
@@ -13,7 +14,8 @@ import open.dolphin.ui.PNSBorderFactory;
  */
 public interface IInspector {
 
-    public static final int DEFAULT_WIDTH = 261;
+    public static final boolean IS_WIN = ClientContext.isWin();
+    public static final int DEFAULT_WIDTH = IS_WIN? 261-14*2 : 261;
     public static final int DEFAULT_HEIGHT = 175;
 
     /**
@@ -51,4 +53,6 @@ public interface IInspector {
      * @param index Badge を付ける tab のインデックス番号
      */
     default public void addBadgeListener(BadgeListener listener, int index) {}
+
+    default public boolean isWin() { return IS_WIN; }
 }

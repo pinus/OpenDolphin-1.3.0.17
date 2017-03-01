@@ -174,8 +174,10 @@ public class DiagnosisInspector implements IInspector {
                 }
                 @Override
                 public void mouseReleased(MouseEvent e) {
+                    // windows
                     if (e.isPopupTrigger()) { maybeShowPopup(e); }
                 }
+
                 private void maybeShowPopup(MouseEvent e) {
                     if ((e.getModifiers() & InputEvent.ALT_MASK) != 0) {
                         // option キーを押していたら category：主病名，疑い病名

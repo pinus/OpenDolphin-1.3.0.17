@@ -125,8 +125,8 @@ public class GUIConst {
     public static final int DEFAULT_WINDOWMENU_POSITION = 5;
 
     // JList，JTable のデフォルト row height
-    public static final int DEFAULT_LIST_ROW_HEIGHT = 18;
-    public static final int DEFAULT_TABLE_ROW_HEIGHT = 18;
+    public static final int DEFAULT_LIST_ROW_HEIGHT = ClientContext.isWin()? 16 : 18;
+    public static final int DEFAULT_TABLE_ROW_HEIGHT = ClientContext.isWin()? 16 : 18;
 
     // レンダラのインデント用のボーダー
     public static final Border RENDERER_BORDER_NARROW = BorderFactory.createEmptyBorder(0, 6, 0, 6);
@@ -138,6 +138,8 @@ public class GUIConst {
     //
     // アイコンはここで集中管理
     //
+    public static final ImageIcon ICON_DOLPHIN = ClientContext.getImageIcon("icons/dolphin32.png");
+
     // 空のアイコン
     public static final ImageIcon ICON_EMPTY_16 = ClientContext.getImageIcon("icons/16x16/empty.png");
     public static final ImageIcon ICON_EMPTY_22 = ClientContext.getImageIcon("icons/22x22/empty.png");

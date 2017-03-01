@@ -145,29 +145,28 @@ public class AllergyEditor {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                maybeShowPopup(e);
-            }
+            maybeShowPopup(e);
         }
 
-        // windows
-        //@Override
-        //public void mouseReleased(MouseEvent e) {
-        //    maybeShowPopup(e);
-        //}
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // windows
+            maybeShowPopup(e);
+        }
 
         private void maybeShowPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                popup = new JPopupMenu();
+                CalendarPanel cp = new CalendarPanel();
+                cp.getTable().addCalendarListener(date -> {
+                    view.getIdentifiedFld().setText(SimpleDate.simpleDateToMmldate(date));
+                    popup.setVisible(false);
+                    popup = null;
+                });
 
-            popup = new JPopupMenu();
-            CalendarPanel cp = new CalendarPanel();
-            cp.getTable().addCalendarListener(date -> {
-                view.getIdentifiedFld().setText(SimpleDate.simpleDateToMmldate(date));
-                popup.setVisible(false);
-                popup = null;
-            });
-
-            popup.insert(cp, 0);
-            popup.show(e.getComponent(), e.getX(), e.getY());
+                popup.insert(cp, 0);
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
         }
     }
 }

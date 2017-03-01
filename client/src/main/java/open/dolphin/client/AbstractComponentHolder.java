@@ -81,7 +81,7 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
     @Override
     public void mouseReleased(MouseEvent e) {
         //windows
-        //if (e.isPopupTrigger() && e.getClickCount() != 2) maybeShowPopup(e);
+        if (e.isPopupTrigger() && e.getClickCount() != 2) { maybeShowPopup(e); }
     }
 
     @Override

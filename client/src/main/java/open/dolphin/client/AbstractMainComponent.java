@@ -252,42 +252,40 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public void mousePressed(MouseEvent e) {
-     // public void mouseReleased(MouseEvent e) { // windows はこちら
+            preparePopup(e);
+        }
 
-            if (e.getSource() instanceof JTable) {
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // windows はこちら
+            preparePopup(e);
+        }
+
+        private void preparePopup(MouseEvent e) {
+            if (e.getSource() instanceof JTable && e.isPopupTrigger()) {
                 table = (JTable) e.getSource();
                 tableModel = (ObjectReflectTableModel<T>) table.getModel();
 
                 int clickedRow = table.rowAtPoint(e.getPoint());
 
-                // テーブル以外の場所がクリックされていたら選択クリア（popup はのぞく）
-                if (clickedRow < 0 && !e.isPopupTrigger()) {
-                    table.clearSelection();
-                    requestFocus(e.getComponent());
-
-                // 選択のない位置で右クリックされていたら選択する（popup用）
-                } else {
-                    if (e.isPopupTrigger()) {
-                        // クリックされた場所が選択されているかどうか
-                        boolean isSelected = false;
-                        for (int row : table.getSelectedRows()) {
-                            if (row == clickedRow) {
-                                isSelected = true;
-                                break;
-                            }
-                        }
-                        // 選択されていない場所でクリックした場合は選択し直す
-                        if (!isSelected){
-                            table.getSelectionModel().setSelectionInterval(clickedRow, clickedRow);
-                            requestFocus(table);
-                        }
+                // クリックされた場所が選択されているかどうか
+                boolean isSelected = false;
+                for (int row : table.getSelectedRows()) {
+                    if (row == clickedRow) {
+                        isSelected = true;
+                        break;
                     }
+                }
+                // 選択されていない場所でクリックした場合は選択し直す
+                if (!isSelected){
+                    table.getSelectionModel().setSelectionInterval(clickedRow, clickedRow);
+                    requestFocus(table);
                 }
                 maybeShowPopup(e);
             }
         }
+
         /**
          * フォーカス要求.
          * @param c
