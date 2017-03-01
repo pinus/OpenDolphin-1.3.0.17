@@ -37,7 +37,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import open.dolphin.helper.AppForeground;
 
 /**
  * JTabbedPane 的な何か.
@@ -73,6 +72,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     private final List<ChangeListener> listeners = new ArrayList<>();
     /** 親の Window */
     private Window parent = null;
+    /** Application が foreground かどうか */
+    private boolean appForeground = true;
 
     public PNSTabbedPane() {
         initComponents();
@@ -95,6 +96,23 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                 @Override
                 public void windowDeactivated(WindowEvent e) {buttonPanel.repaint(); }
             });
+
+            // AppForegroundListener
+            com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
+            app.addAppEventListener(new com.apple.eawt.AppForegroundListener(){
+                @Override
+                public void appRaisedToForeground(com.apple.eawt.AppEvent.AppForegroundEvent afe) {
+                    appForeground = true;
+                    buttonPanel.repaint();
+                }
+
+                @Override
+                public void appMovedToBackground(com.apple.eawt.AppEvent.AppForegroundEvent afe) {
+                    appForeground = false;
+                    buttonPanel.repaint();
+                }
+            });
+
         }
     }
 
@@ -487,7 +505,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
-            if (parent.isActive() && AppForeground.isForeground()) {
+            if (parent.isActive() && appForeground) {
                 if (this.isSelected()) {
                     renderButton(g, w, h, ACTIVE_FRAME_SELECTED, ACTIVE_FILL_SELECTED);
 
@@ -510,7 +528,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
             int strWidth = fm.stringWidth(name);
 
-            if (parent.isActive() && AppForeground.isForeground()) {
+            if (parent.isActive() && appForeground) {
                 if (this.isSelected()) {
                     g.setColor(Color.WHITE);
                 } else{
