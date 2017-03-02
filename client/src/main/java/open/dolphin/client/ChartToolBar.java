@@ -11,15 +11,16 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.TransferHandler;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.stampbox.DefaultStampTreeMenuListener;
 import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
@@ -202,7 +203,14 @@ public class ChartToolBar extends JToolBar {
                 StampTree tree = stampBox.getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
 
                 StampTreeMenuBuilder builder = new StampTreeMenuBuilder(tree, pattern);
-                builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(realChart.getDiagnosisDocument().getDiagnosisTable()));
+                //builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(realChart.getDiagnosisDocument().getDiagnosisTable()));
+                builder.addStampTreeMenuListener(ev -> {
+                    JComponent c = realChart.getDiagnosisDocument().getDiagnosisTable();
+                    TransferHandler handler = c.getTransferHandler();
+                    handler.importData(c, ev.getTransferable());
+                    // transfer 後にキーワードフィールドをクリアする
+                    keywordFld.setText("");
+                });
                 builder.buildRootless(popup);
 
                 if (popup.getComponentCount() != 0) {

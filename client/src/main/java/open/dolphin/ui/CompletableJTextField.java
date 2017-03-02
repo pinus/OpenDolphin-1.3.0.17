@@ -201,11 +201,8 @@ public class CompletableJTextField extends JTextField
             completer.setUpdate(true);
             completionList.getSelectionModel().clearSelection();
             listWindow.setVisible(false);
-
-        } else {
-            // リストが選択されていないとき
-            addCompletion(getText());
         }
+        addCompletion(getText());
     }
 
     /**
@@ -310,9 +307,8 @@ public class CompletableJTextField extends JTextField
 
         public void addCompletion(String s) {
             // 新しく追加したものが最初に来る
-            if (! completions.contains(s)) {
-                completions.add(0, s);
-            }
+            completions.remove(s);
+            completions.add(0, s);
             // 50項目まで保存
             if (completions.size() > 50) {
                 completions.remove(50);
@@ -346,8 +342,13 @@ public class CompletableJTextField extends JTextField
             //pattern = Pattern.compile(getText() + ".*");
             pattern = Pattern.compile(getText() + ".+");
 
-            completions.stream().filter(completion -> pattern.matcher(completion).matches())
-                    .forEachOrdered(completion -> completionListModel.add(completionListModel.getSize(), completion));
+            for (String s : completions) {
+                if (pattern.matcher(s).matches()) {
+                    completionListModel.add(completionListModel.getSize(), s);
+                }
+            }
+            //completions.stream().filter(completion -> pattern.matcher(completion).matches())
+            //        .forEachOrdered(completion -> completionListModel.add(completionListModel.getSize(), completion));
         }
 
         private void showPopup() {
