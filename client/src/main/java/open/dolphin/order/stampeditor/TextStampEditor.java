@@ -2,6 +2,7 @@ package open.dolphin.order.stampeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.*;
 import open.dolphin.event.ProxyDocumentListener;
@@ -16,7 +17,6 @@ import open.dolphin.order.IStampEditor;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * TextStampEditor.
@@ -54,17 +54,18 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
         textPane.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkState());
         headerField = new JTextField();
         headerField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkState());
-        headerField.setBackground(STAMP_NAME_FIELD_BACKGROUND);
-        headerField.setBorder(PNSBorderFactory.createSelectedGrayBorder());
-        headerField.setOpaque(true);
+        //headerField.setBackground(STAMP_NAME_FIELD_BACKGROUND);
+        //headerField.setBorder(PNSBorderFactory.createSelectedGrayBorder());
+        headerField.setOpaque(false);
 
         // Undo
         paneUndoManager = TextComponentUndoManager.getManager(textPane);
         fieldUndoManager = TextComponentUndoManager.getManager(headerField);
 
         HorizontalPanel headerPanel = new HorizontalPanel();
+        headerPanel.setPreferredSize(new Dimension(10,30));
 
-        JLabel label = new JLabel("スタンプ名：");
+        JLabel label = new JLabel(" スタンプ名：");
 
         headerPanel.add(label);
         headerPanel.add(headerField);

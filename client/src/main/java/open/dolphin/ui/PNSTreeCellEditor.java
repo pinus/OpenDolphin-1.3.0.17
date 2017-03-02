@@ -2,6 +2,7 @@ package open.dolphin.ui;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTree;
 import javax.swing.Timer;
@@ -45,8 +46,8 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
 
         // 勝手に cut,copy,past の popup を作らせない
         textField.putClientProperty("Quaqua.TextComponent.showPopup", false);
-        // これをしないと，編集時のバックグランドが白くならない
-        textField.setOpaque(true);
+        textField.setOpaque(false);
+        textField.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
 
         // focus を失ったら編集はやめる
         textField.addFocusListener(new FocusAdapter() {
