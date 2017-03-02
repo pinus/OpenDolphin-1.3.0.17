@@ -203,7 +203,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         prefLoc = new JRadioButton("位置と大きさを記憶する");
 
         // PDF store
-        pdfStore = new JTextField(30);
+        pdfStore = GUIFactory.createTextField(30, null, null, null);
         pdfDir = new JButton("設定");
 
         // カルテ文書関係
@@ -232,10 +232,10 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         showAlert = new JRadioButton("警告する");
         stampSpace = new JCheckBox("DnD時にスタンプの間隔を空ける");
         laboFold = new JCheckBox("検体検査の項目を折りたたみ表示する");
-        defaultZyozaiNum = new JTextField(3);
-        defaultMizuyakuNum = new JTextField(3);
-        defaultSanyakuNum = new JTextField(3);
-        defaultRpNum = new JTextField(3);
+        defaultZyozaiNum = GUIFactory.createTextField(3, null, null, null);
+        defaultMizuyakuNum = GUIFactory.createTextField(3, null, null, null);
+        defaultSanyakuNum = GUIFactory.createTextField(3, null, null, null);
+        defaultRpNum = GUIFactory.createTextField(3, null, null, null);
 
         // CLAIM 送信関係
         sendAtTmp = new JRadioButton("送信する");
@@ -247,7 +247,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         sendDiagnosis = new JRadioButton("送信する");
         noSendDiagnosis = new JRadioButton("送信しない");
         useTop15AsTitle = new JCheckBox("カルテの先頭15文字を使用する");
-        defaultKarteTitle = new JTextField(10);
+        defaultKarteTitle = GUIFactory.createTextField(10, null, null, null);
 
         // 確認ダイアログ関係
         noConfirmAtNew = new JCheckBox("確認ダイアログを表示しない");

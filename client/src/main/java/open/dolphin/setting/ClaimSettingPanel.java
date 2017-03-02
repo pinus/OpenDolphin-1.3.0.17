@@ -105,9 +105,9 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         // ORCA API
         useClaim = GUIFactory.createRadioButton("CLAIM", null, bg2);
         useOrcaApi = GUIFactory.createRadioButton("ORCA API", null, bg2);
-        orcaUserIdField = new JTextField(10);
-        orcaPasswordField = new JPasswordField(10);
-        orcaStaffCodeField = new JTextField(10);
+        orcaUserIdField = GUIFactory.createTextField(10, null, null, null);
+        orcaPasswordField = GUIFactory.createPassField(10, null, null, null);
+        orcaStaffCodeField = GUIFactory.createTextField(10, null, null, null);
         orcaStaffCodeButton = new JButton("コード検索");
         orcaStaffCodeButton.addActionListener(ev -> {
             //
@@ -143,10 +143,10 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         // JMARI，ホスト名，アドレス，ポート番号
         String[] hostNames = { "日医標準レセコン(ORCA)" };
         claimHostCombo = new JComboBox<>(hostNames);
-        jmariField = new JTextField(10);
+        jmariField = GUIFactory.createTextField(10, null, null, null);
         jmariField.setToolTipText("医療機関コードの数字部分のみ12桁を入力してください。");
-        claimAddressField = new JTextField(10);
-        claimPortField = new JTextField(5);
+        claimAddressField = GUIFactory.createTextField(10, null, null, null);
+        claimPortField = GUIFactory.createTextField(5, null, null, null);
 
         // CLAIM（請求）送信情報
         GridBagBuilder gbl = new GridBagBuilder("CLAIM（請求データ）送信");

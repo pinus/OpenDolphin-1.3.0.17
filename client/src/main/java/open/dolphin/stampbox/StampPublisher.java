@@ -57,7 +57,7 @@ public class StampPublisher {
     private enum PublishedState {NONE, SAVED_NONE, LOCAL, GLOBAL};
     private enum PublishType {TT_NONE, TT_LOCAL, TT_PUBLIC}
 
-    private static final int WIDTH = 845;
+    private static final int WIDTH = 858;
     private static final int HEIGHT = 477;
 
     private final StampBoxPlugin stampBox;

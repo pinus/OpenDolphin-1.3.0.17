@@ -96,25 +96,25 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
      */
     private void initComponents() {
 
-        ctrlMask = new JRadioButton("コントロール");
-        String str = ClientContext.isMac() ? "アップル" : "メタ";
+        ctrlMask = new JRadioButton("<html>&#8963;</html>"); // ^
+        String str = ClientContext.isMac() ? "<html>&#8984;</html>" : "<html>&#8997;</html>"; // command / alt
         metaMask = new JRadioButton(str);
-        text = new JTextField(5);
-        path = new JTextField(5);
-        general = new JTextField(5);
-        other = new JTextField(5);
-        treatment = new JTextField(5);
-        surgery = new JTextField(5);
-        radiology = new JTextField(5);
-        labo = new JTextField(5);
-        physiology = new JTextField(5);
-        bacteria = new JTextField(5);
-        injection = new JTextField(5);
-        rp = new JTextField(5);
-        baseCharge = new JTextField(5);
-        instraction = new JTextField(5);
-        orca = new JTextField(5);
-        diag = new JTextField(5);
+        text = GUIFactory.createTextField(5, null, null, null);
+        path = GUIFactory.createTextField(5, null, null, null);
+        general = GUIFactory.createTextField(5, null, null, null);
+        other = GUIFactory.createTextField(5, null, null, null);
+        treatment = GUIFactory.createTextField(5, null, null, null);
+        surgery = GUIFactory.createTextField(5, null, null, null);
+        radiology = GUIFactory.createTextField(5, null, null, null);
+        labo = GUIFactory.createTextField(5, null, null, null);
+        physiology = GUIFactory.createTextField(5, null, null, null);
+        bacteria = GUIFactory.createTextField(5, null, null, null);
+        injection = GUIFactory.createTextField(5, null, null, null);
+        rp = GUIFactory.createTextField(5, null, null, null);
+        baseCharge = GUIFactory.createTextField(5, null, null, null);
+        instraction = GUIFactory.createTextField(5, null, null, null);
+        orca = GUIFactory.createTextField(5, null, null, null);
+        diag = GUIFactory.createTextField(5, null, null, null);
         //
         // 修飾キー
         //

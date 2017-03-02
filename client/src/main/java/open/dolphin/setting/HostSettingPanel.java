@@ -96,9 +96,9 @@ public class HostSettingPanel extends AbstractSettingPanel {
         String addSuperUserText = "アカウント作成";
 
         // テキストフィールドを生成する
-        hostAddressField = new JTextField(10);
-        facilityIdField = new JTextField(15);
-        userIdField = new JTextField(10);
+        hostAddressField = GUIFactory.createTextField(10, null, null, null);
+        facilityIdField = GUIFactory.createTextField(15, null, null, null);
+        userIdField = GUIFactory.createTextField(10, null, null, null);
 
         // パターン制約を加える
         // RegexConstrainedDocument hostDoc = new RegexConstrainedDocument(ipAddressPattern);

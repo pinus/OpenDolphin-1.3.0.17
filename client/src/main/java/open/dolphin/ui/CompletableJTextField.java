@@ -347,7 +347,7 @@ public class CompletableJTextField extends JTextField
             pattern = Pattern.compile(getText() + ".+");
 
             completions.stream().filter(completion -> pattern.matcher(completion).matches())
-                    .forEach(completion -> completionListModel.add(completionListModel.getSize(), completion));
+                    .forEachOrdered(completion -> completionListModel.add(completionListModel.getSize(), completion));
         }
 
         private void showPopup() {

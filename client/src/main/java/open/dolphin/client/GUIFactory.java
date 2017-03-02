@@ -22,11 +22,12 @@ public class GUIFactory {
 
     private static final int BUTTON_GAP 		= 5;
     //private static final int LABEL_ITEM_GAP 		= 7;
-    private static final int TF_MARGIN_TOP  		= 1;
-    private static final int TF_MARGIN_LEFT  		= 2;
-    private static final int TF_MARGIN_BOTTOM  		= 1;
-    private static final int TF_MARGIN_RIGHT  		= 2;
+    private static final int TF_MARGIN_TOP  		= 0;
+    private static final int TF_MARGIN_LEFT  		= 0;
+    private static final int TF_MARGIN_BOTTOM  		= 0;
+    private static final int TF_MARGIN_RIGHT  		= 0;
     private static final int TF_LENGTH          	= 30;
+    private static final int TF_HEIGHT                  = 26;
     private static final int TITLE_SPACE_TOP  		= 6;
     private static final int TITLE_SPACE_LEFT  		= 6;
     private static final int TITLE_SPACE_BOTTOM 	= 5;
@@ -66,6 +67,9 @@ public class GUIFactory {
 
     public static JTextField createTextField(int val, Insets margin, FocusListener fl, DocumentListener dl) {
         JTextField tf = new JTextField(val==0? TF_LENGTH : val);
+        Dimension d = tf.getPreferredSize();
+        tf.setPreferredSize(new Dimension(d.width, TF_HEIGHT));
+        tf.setMinimumSize(new Dimension(36,TF_HEIGHT));
         tf.setMargin(margin==null? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin);
         if (dl != null) { tf.getDocument().addDocumentListener(dl); }
         if (fl != null) { tf.addFocusListener(fl); }
@@ -74,6 +78,9 @@ public class GUIFactory {
 
     public static JPasswordField createPassField(int val, Insets margin, FocusListener fa, DocumentListener dl) {
         JPasswordField pf = new JPasswordField(val==0? TF_LENGTH : val);
+        Dimension d = pf.getPreferredSize();
+        pf.setPreferredSize(new Dimension(d.width, TF_HEIGHT));
+        pf.setMinimumSize(new Dimension(36,TF_HEIGHT));
         pf.setMargin(margin==null? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin);
         if (dl != null) { pf.getDocument().addDocumentListener(dl); }
         if (fa != null) { pf.addFocusListener(fa); }
