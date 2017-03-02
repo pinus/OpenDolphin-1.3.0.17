@@ -325,17 +325,22 @@ public class SaveDialog {
 
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JButton b = new JButton("Show Sheet");
+        b.addActionListener(e -> {
+            SaveDialog sd = new SaveDialog(f);
+            SaveParams param = new SaveParams();
+            sd.setValue(param);
+            sd.start();
+
+            System.out.println("----modal--- ");
+
+            param = sd.getValue();
+            System.out.println("selection = " + param.getSelection());
+        });
+
+        f.add(b);
         f.setSize(500, 200);
         f.setVisible(true);
-
-        SaveDialog sd = new SaveDialog(f);
-        SaveParams param = new SaveParams();
-        sd.setValue(param);
-        sd.start();
-
-        System.out.println("----modal--- ");
-
-        param = sd.getValue();
-        System.out.println("----selection = " + param.getSelection());
     }
 }
