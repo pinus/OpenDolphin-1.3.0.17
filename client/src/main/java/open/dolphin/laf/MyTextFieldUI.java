@@ -9,11 +9,9 @@ import java.awt.event.FocusListener;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTextFieldUI;
-import open.dolphin.ui.PNSBorderFactory;
 
 /**
  *
@@ -24,8 +22,6 @@ public class MyTextFieldUI extends BasicTextFieldUI {
     public static final Color LIGHT_BLUE = new Color(152,194,241);
     public static final Color LIGHTER_GRAY = new Color(228, 228, 228);
     private JTextField tf;
-    private Border selectedBorder;
-    private Border border;
 
     public static ComponentUI createUI(JComponent c) {
         return new MyTextFieldUI();
@@ -36,23 +32,20 @@ public class MyTextFieldUI extends BasicTextFieldUI {
         super.installUI(c);
         tf = (JTextField) c;
 
-        selectedBorder = new CompoundBorder(PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0, 5, 0, 5));
-        //border = new CompoundBorder( PNSBorderFactory.createSelectedGrayBorder(), new EmptyBorder(0,3,0,3));
-        border = new EmptyBorder(0, 8, 0, 8);
+        Border border = new EmptyBorder(0, 8, 0, 8);
+        c.setBorder(border);
 
         c.setBackground(Color.WHITE);
         c.setOpaque(false);
-        c.setBorder(border);
+
         c.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                //c.setBorder(selectedBorder);
                 c.repaint();
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                //c.setBorder(border);
                 c.repaint();
             }
         });

@@ -87,7 +87,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         JPanel keywordPanel = new JPanel();
         keywordPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
         keywordPanel.add(view.getKeywordFld());
-        view.getKeywordFld().setPreferredSize(new Dimension(300,24));
+        view.getKeywordFld().setPreferredSize(new Dimension(300,26));
 
         PNSBadgeTabbedPane tab = ((Dolphin)getContext()).getTabbedPane();
         JPanel panel = tab.getAccessoryPanel();

@@ -20,8 +20,6 @@ import javax.swing.plaf.basic.BasicPasswordFieldUI;
 public class MyPasswordFieldUI extends BasicPasswordFieldUI {
 
     private JPasswordField tf;
-    private Border selectedBorder;
-    private Border border;
 
     public static ComponentUI createUI(JComponent c) {
         return new MyPasswordFieldUI();
@@ -32,23 +30,20 @@ public class MyPasswordFieldUI extends BasicPasswordFieldUI {
         super.installUI(c);
         tf = (JPasswordField) c;
 
-        //selectedBorder = new CompoundBorder(PNSBorderFactory.createSelectedBorder(), new EmptyBorder(0, 5, 0, 5));
-        //border = new CompoundBorder( PNSBorderFactory.createSelectedGrayBorder(), new EmptyBorder(0,3,0,3));
-        border = new EmptyBorder(0, 8, 0, 8);
+        Border border = new EmptyBorder(0, 8, 0, 8);
+        c.setBorder(border);
 
         c.setBackground(Color.WHITE);
         c.setOpaque(false);
-        c.setBorder(border);
+
         c.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                //c.setBorder(selectedBorder);
                 c.repaint();
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                //c.setBorder(border);
                 c.repaint();
             }
         });
