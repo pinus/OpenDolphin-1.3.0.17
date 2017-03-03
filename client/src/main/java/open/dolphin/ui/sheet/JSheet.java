@@ -35,7 +35,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import open.dolphin.event.ProxyAction;
-import open.dolphin.ui.MyJSheet;
 
 /**
  * JSheet. Based on Java Swing Hacks #42.
@@ -566,7 +565,7 @@ public class JSheet extends JDialog implements ActionListener {
         Window window = JOptionPane.getFrameForComponent(parentComponent);
         Window[] windowList = window.getOwnedWindows();
         for (Window w : windowList) {
-            if (w instanceof MyJSheet && w.isVisible()) {
+            if (w instanceof JSheet && w.isVisible()) {
                 // すでに JSheet が表示されている
                 return true;
             }
