@@ -198,6 +198,9 @@ public class CompletableJTextField extends JTextField
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        // 空行は無視
+        if (getText().matches("^ *$")) { return; }
+
         // リストが選択されている時の enter の処理
         if (completionList.getSelectedIndex() != -1) {
             completer.setUpdate(true);
