@@ -313,6 +313,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         } else {
             view.getKeywordFld().setLabel("患者検索");
         }
+        view.getKeywordFld().repaint();
     }
 
     /**
