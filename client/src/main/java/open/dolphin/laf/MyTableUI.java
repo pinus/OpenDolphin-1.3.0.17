@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTableUI;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -27,6 +28,8 @@ public class MyTableUI extends BasicTableUI {
 
     @Override
     protected void installDefaults() {
+        UIManager.put("Table.selectionBackground", UIHelper.DEFAULT_BACKGROUND_SELECTION_FOCUSED);
+
         super.installDefaults();
     }
 

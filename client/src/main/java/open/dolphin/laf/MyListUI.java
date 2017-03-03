@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicListUI;
 
@@ -18,6 +19,13 @@ public class MyListUI extends BasicListUI {
 
     public static ComponentUI createUI(JComponent list) {
         return new MyListUI();
+    }
+
+    @Override
+    protected void installDefaults() {
+        UIManager.put("List.selectionBackground", UIHelper.DEFAULT_BACKGROUND_SELECTION_FOCUSED);
+
+        super.installDefaults();
     }
 
     @Override

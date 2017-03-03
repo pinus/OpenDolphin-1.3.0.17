@@ -327,13 +327,18 @@ public class MasterSearchPanel extends JPanel {
 
             // 色の決定
             if (isSelected) {
-                if (todayDate.compareTo(endDate) <= 0) {
+                if (table.isFocusOwner()) {
+                    comp.setBackground(table.getSelectionBackground());
                     comp.setForeground(table.getSelectionForeground());
-                    comp.setBackground(table.getSelectionBackground());
                 } else {
-                    comp.setForeground(Color.GRAY);
-                    comp.setBackground(table.getSelectionBackground());
+                    comp.setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                    comp.setForeground(table.getForeground());
                 }
+                // out of date
+                if (todayDate.compareTo(endDate) > 0) {
+                    comp.setForeground(Color.GRAY);
+                }
+
             } else {
                 if (todayDate.compareTo(endDate) <= 0) {
                     comp.setForeground(table.getForeground());

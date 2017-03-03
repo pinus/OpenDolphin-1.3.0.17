@@ -16,7 +16,8 @@ public class UIHelper {
     public static final int DEFAULT_ROW_HEIGHT = 18;
 
     public static final Color DEFAULT_ODD_COLOR = Color.WHITE;
-    public static final Color DEFAULT_EVEN_COLOR = new Color(237,243,254);
+    //public static final Color DEFAULT_EVEN_COLOR = new Color(237,243,254);
+    public static final Color DEFAULT_EVEN_COLOR = new Color(245,245,245);
     public static final Color[] ROW_COLORS = { DEFAULT_EVEN_COLOR, DEFAULT_ODD_COLOR };
 
     public static final Color DEFAULT_BACKGROUND_SELECTION_FOCUSED = new Color(55,106,210);

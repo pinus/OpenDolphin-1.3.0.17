@@ -105,7 +105,7 @@ public class CompletableJTextField extends JTextField
     private void savePrefs() {
         StringBuilder sb = new StringBuilder();
         List<String> items = getCompletions();
-        items.stream().forEach(s -> sb.append(s).append("\t"));
+        items.forEach(s -> sb.append(s).append("\t"));
 
         prefs.put(PREFS, StringUtils.chop(sb.toString()));
     }
@@ -115,7 +115,9 @@ public class CompletableJTextField extends JTextField
         String[] items = str.split("\t");
         // 古い方から登録
         for(int i=items.length-1; i>=0; i--) {
-            completer.addCompletion(items[i]);
+            if (! items[i].matches("^ *$")) { // 空行は除く
+                completer.addCompletion(items[i]);
+            }
         }
     }
 

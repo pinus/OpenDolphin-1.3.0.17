@@ -1,5 +1,6 @@
 package open.dolphin.order.tablepanel;
 
+import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -43,8 +44,13 @@ public class TablePanelRenderer extends DefaultTableCellRenderer {
         this.setText(" " + text);
 
         if (isSelected) {
-            comp.setBackground(table.getSelectionBackground());
-            comp.setForeground(table.getSelectionForeground());
+            if (table.isFocusOwner()) {
+                comp.setBackground(table.getSelectionBackground());
+                comp.setForeground(table.getSelectionForeground());
+            } else {
+                comp.setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                comp.setForeground(table.getForeground());
+            }
         } else {
             comp.setBackground(table.getBackground());
             comp.setForeground(table.getForeground());

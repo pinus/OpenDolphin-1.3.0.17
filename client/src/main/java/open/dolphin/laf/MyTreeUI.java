@@ -36,6 +36,7 @@ public class MyTreeUI extends BasicTreeUI {
 
     @Override
     protected void installDefaults() {
+        UIManager.put("Tree.selectionBackground", UIHelper.DEFAULT_BACKGROUND_SELECTION_FOCUSED);
         UIManager.put("Tree.paintLines", Boolean.FALSE);
         UIManager.put("Tree.rendererFillBackground", Boolean.FALSE);
         UIManager.put("Tree.drawsFocusBorderAroundIcon", Boolean.FALSE);
