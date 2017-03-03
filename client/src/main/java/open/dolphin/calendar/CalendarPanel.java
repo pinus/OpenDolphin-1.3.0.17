@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.plaf.LayerUI;
+import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.infomodel.SimpleDate;
 
@@ -55,7 +56,11 @@ public class CalendarPanel extends JPanel {
 
         // control panel 生成
         JButton expand = new JButton(GUIConst.ICON_MD_EJECT_16);
-        expand.setBorderPainted(false);
+        if (ClientContext.isWin()) {
+            expand.setContentAreaFilled(false);
+        } else {
+            expand.setBorderPainted(false);
+        }
         expand.addActionListener(e -> expand());
         expand.setPreferredSize(new Dimension(12,16));
         expand.setMinimumSize(new Dimension(12,16));
@@ -112,7 +117,11 @@ public class CalendarPanel extends JPanel {
         button.setMinimumSize(size);
         button.setMaximumSize(size);
 
-        button.setBorderPainted(false);
+        if (ClientContext.isWin()) {
+            button.setContentAreaFilled(false);
+        } else {
+            button.setBorderPainted(false);
+        }
         button.addActionListener(e -> {
             l.actionPerformed(e);
             fireCalendarChanged();
@@ -136,6 +145,7 @@ public class CalendarPanel extends JPanel {
         JDialog dialog = new JDialog();
         dialog.getRootPane().putClientProperty( "Window.style", "small" );
         dialog.getRootPane().putClientProperty( "apple.awt.brushMetalLook", Boolean.TRUE );
+        dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         dialog.setLayout(new GridLayout(4,3));
         GregorianCalendar gc = new GregorianCalendar(tableModel.getYear(), tableModel.getMonth(), 1);

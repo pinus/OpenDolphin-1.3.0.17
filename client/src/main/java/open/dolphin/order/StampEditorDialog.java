@@ -11,6 +11,7 @@ import java.util.Arrays;
 import javax.swing.*;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
+import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.ui.HorizontalPanel;
@@ -66,6 +67,8 @@ public class StampEditorDialog {
     private void initialize() {
 
         dialog = new JFrame();
+        dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
+
         dialog.setAlwaysOnTop(true);
 
         okButton = new JButton("カルテに展開");

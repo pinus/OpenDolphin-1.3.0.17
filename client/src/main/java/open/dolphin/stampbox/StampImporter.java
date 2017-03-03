@@ -135,6 +135,8 @@ public class StampImporter {
      */
     public void initComponent() {
         frame = new JFrame(ClientContext.getFrameTitle(TITLE));
+        frame.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
+
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override

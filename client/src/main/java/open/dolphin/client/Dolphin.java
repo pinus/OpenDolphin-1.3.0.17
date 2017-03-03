@@ -592,7 +592,7 @@ public class Dolphin implements MainWindow {
             return;
         }
 
-        if (saveEnv != null) {
+        if (saveEnv != null && ! ClientContext.isWin()) {
             Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
             int ans = JOptionPane.showConfirmDialog( null,
                     "本当に終了しますか", "終了確認", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);

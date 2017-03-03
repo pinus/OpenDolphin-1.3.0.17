@@ -30,8 +30,6 @@ public class SettingForMac {
 
         // Look and Feel のセットアップ
         try {
-            // true だと白で書かれてしまう
-            //UIManager.put("Tree.rendererFillBackground", false);
             UIManager.setLookAndFeel(new MyLookAndFeel());
 
         } catch (UnsupportedLookAndFeelException ex) {

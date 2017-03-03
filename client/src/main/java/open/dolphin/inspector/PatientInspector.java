@@ -1,5 +1,6 @@
 package open.dolphin.inspector;
 
+import java.awt.Font;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import open.dolphin.client.ChartImpl;
+import open.dolphin.client.ClientContext;
 import open.dolphin.project.Project;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.PNSBadgeTabbedPane;
@@ -57,6 +59,7 @@ public class PatientInspector {
 
         // タブパネル
         tabbedPane = new PNSBadgeTabbedPane();
+        if (ClientContext.isWin()) { tabbedPane.setButtonPanelFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10)); }
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
         // 全体の container

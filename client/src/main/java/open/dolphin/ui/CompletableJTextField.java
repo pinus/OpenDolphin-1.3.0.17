@@ -34,10 +34,12 @@ import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import open.dolphin.client.ClientContext;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.commons.lang.StringUtils;
 
@@ -70,12 +72,20 @@ public class CompletableJTextField extends JTextField
         completionListModel = new DefaultListModel<>();
         completionList = new JList<>(completionListModel);
         completionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        completionList.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         completionList.setBackground(new Color(255,255,240));
 
         listWindow = new JWindow();
         listWindow.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-        listWindow.setOpacity(0.7f);
+        if (ClientContext.isWin()) {
+            Border outer = BorderFactory.createLineBorder(Color.LIGHT_GRAY);
+            Border inner = BorderFactory.createEmptyBorder(0, 10, 10, 10);
+            Border compound = BorderFactory.createCompoundBorder(outer, inner);
+            completionList.setBorder(compound);
+            listWindow.setOpacity(0.9f);
+        } else {
+            completionList.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+            listWindow.setOpacity(0.7f);
+        }
         listWindow.getContentPane().setLayout(new BorderLayout());
         listWindow.getContentPane().add(completionList, BorderLayout.CENTER);
     }

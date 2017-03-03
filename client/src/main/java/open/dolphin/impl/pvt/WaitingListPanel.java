@@ -4,6 +4,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.ui.MyJScrollPane;
@@ -40,7 +41,12 @@ public class WaitingListPanel extends MainComponentPanel {
         remove(comPanel);
 
         kutuBtn = new JButton(KUTU_ICON);
-        kutuBtn.setBorderPainted(false);
+        if (ClientContext.isWin()) {
+            kutuBtn.setBorder(null);
+            kutuBtn.setContentAreaFilled(false);
+        } else {
+            kutuBtn.setBorderPainted(false);
+        }
         kutuBtn.setFocusable(false);
         legendLbl = new JLabel();
         //atokLbl = new JLabel("ATOKメモリ");
@@ -63,6 +69,7 @@ public class WaitingListPanel extends MainComponentPanel {
         dateLbl = new JLabel("2011-11-11(土)");
         intervalLbl = new JLabel("チェック間隔：30秒");
         statusPanel.add(kutuBtn);
+        if (ClientContext.isWin()) { statusPanel.addSpace(5); }
         statusPanel.add(checkedTimeLbl);
         statusPanel.addSeparator();
         statusPanel.add(intervalLbl);

@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.Border;
+import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 
 /**
@@ -25,6 +26,8 @@ public class PNSTitledBorder extends AbstractBorder {
     private static final int SPACING = 4;
     private static final Font DEFAULT_TITLE_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
     private static final int DEFAULT_FONT_HEIGHT = 13;
+
+    private boolean isWin = ClientContext.isWin();
 
     private final Border contentBorder;
     private final Insets borderInsets = new Insets(DEFAULT_INSET + DEFAULT_FONT_HEIGHT + SPACING, DEFAULT_INSET, DEFAULT_INSET, DEFAULT_INSET);
@@ -66,7 +69,7 @@ public class PNSTitledBorder extends AbstractBorder {
         // Title
         g.setFont(font);
         g.setColor(fontColor);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if (!isWin) { g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
         g.drawString(title, borderInsets.left + SPACING, fontHeight);
 
         // Content

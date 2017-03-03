@@ -5,6 +5,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import open.dolphin.client.GUIConst;
 import org.jboss.logging.Logger;
 
 /**
@@ -47,6 +48,7 @@ public class MainFrame extends JFrame {
     private void initComponents(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
         getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
         setTitle(title);
+        setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         // コマンドパネル
         if (commandPanelNeeded) { commandPanel = new CommandPanel(); }

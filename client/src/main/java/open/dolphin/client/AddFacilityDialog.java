@@ -70,6 +70,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
 
     public AddFacilityDialog() {
         super((Frame)null, null, true);
+        setIconImage(GUIConst.ICON_DOLPHIN.getImage());
         logger = ClientContext.getBootLogger();
         boundSupport = new PropertyChangeSupport(this);
     }

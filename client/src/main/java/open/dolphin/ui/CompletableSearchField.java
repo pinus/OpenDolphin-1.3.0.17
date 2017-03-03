@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
+import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.helper.ImageHelper;
 
@@ -29,6 +30,7 @@ public class CompletableSearchField extends CompletableJTextField {
     private BufferedImage clearButton;
     private String label = "検索";
     private Font font;
+    private boolean isWin = ClientContext.isWin();
 
     public CompletableSearchField(int col) {
         super(col);
@@ -85,7 +87,7 @@ public class CompletableSearchField extends CompletableJTextField {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D g = (Graphics2D) graphics.create();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if (!isWin) { g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
 
         int verticalCentering = (getHeight() - icon.getHeight())/2;

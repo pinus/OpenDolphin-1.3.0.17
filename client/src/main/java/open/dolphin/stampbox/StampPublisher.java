@@ -99,6 +99,8 @@ public class StampPublisher {
     public void start() {
 
         dialog = new JFrame(ClientContext.getFrameTitle(title));
+        dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
+
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.addWindowListener(new WindowAdapter() {
             @Override
@@ -657,6 +659,3 @@ public class StampPublisher {
         }
     }
 }
-
-
-

@@ -89,7 +89,7 @@ public class FindDialog {
         searchButton.setEnabled(false);
         searchTextField.setText(searchText);
         checkState();
-    };
+    }
 
     private void connect() {
 

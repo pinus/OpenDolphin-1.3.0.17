@@ -30,6 +30,7 @@ public class AboutDialog extends JDialog {
     }
 
     private void init() {
+        setIconImage(GUIConst.ICON_DOLPHIN.getImage());
         //ラベル作成
         final JLabel imageLabel = new JLabel();
         final Icon icon1 = GUIConst.ICON_SPLASH_DOLPHIN;

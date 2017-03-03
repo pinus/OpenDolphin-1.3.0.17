@@ -3,6 +3,7 @@ package open.dolphin.client;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
@@ -30,6 +31,7 @@ import open.dolphin.ui.MyJScrollPane;
  */
 public class KartePanelFactory {
     private static final int TIMESTAMP_PANEL_HEIGHT = 22; // 22で固定
+    private static final Font KARTE_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, ClientContext.isWin()? 12 : 13);
 
     private final KartePanel kartePanel;
     private JTextPane soaTextPane;
@@ -188,6 +190,7 @@ public class KartePanelFactory {
 
     private void initComponents() {
         soaTextPane = new JTextPane();
+        soaTextPane.setFont(KARTE_FONT);
         soaTextPane.setEditorKit(new WrapEditorKit());
         soaTextPane.setMargin(new Insets(10, 10, 10, 10));
         soaTextPane.setMinimumSize(new Dimension(340, 1));
@@ -195,6 +198,7 @@ public class KartePanelFactory {
         soaTextPane.setSize(1, 1); // なぜかこれでうまくいく。謎.
 
         pTextPane = new JTextPane();
+        pTextPane.setFont(KARTE_FONT);
         pTextPane.setEditorKit(new WrapEditorKit());
         pTextPane.setMargin(new Insets(10, 10, 10, 10));
         pTextPane.setMinimumSize(new Dimension(340, 1));
@@ -274,5 +278,5 @@ public class KartePanelFactory {
                     throw new IllegalArgumentException("Invalid axis: " + axis);
             }
         }
-
-    }}
+    }
+}

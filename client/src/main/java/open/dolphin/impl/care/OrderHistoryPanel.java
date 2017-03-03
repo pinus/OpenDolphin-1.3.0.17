@@ -98,6 +98,7 @@ public final class OrderHistoryPanel extends JPanel {
 
         // 内容表示用 TextArea
         contents = new JLabel();
+        contents.setOpaque(true);
         contents.setBackground(Color.white);
         MyJScrollPane cs = new MyJScrollPane(contents, MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         cs.setPreferredSize(contentSize);

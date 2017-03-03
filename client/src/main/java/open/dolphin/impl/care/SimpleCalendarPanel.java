@@ -87,6 +87,15 @@ public final class SimpleCalendarPanel extends JPanel {
             }
 
             @Override
+            public void mouseReleased(MouseEvent e) {
+                // Windows
+                if (e.isPopupTrigger()) {
+                    // 取り消しポップアップ
+                    doPopup(e);
+                }
+            }
+
+            @Override
             public void mouseClicked(MouseEvent e) {
                 Point p = e.getPoint();
                 int row = table.rowAtPoint(p);

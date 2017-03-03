@@ -92,6 +92,12 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         else { leftPressed(e); }
     }
 
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // Windows
+        if (e.isPopupTrigger()) { rightPressed(e); }
+    }
+
     /**
      * 右クリックの処理
      * @param e

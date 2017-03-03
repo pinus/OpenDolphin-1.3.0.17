@@ -106,8 +106,8 @@ public class MemoInspector implements IInspector {
         memoPanel.setName(CATEGORY.name());
 
         memoPanel.add(pane, BorderLayout.CENTER);
-        memoPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, 70));
-        memoPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
+        memoPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, isWin()? 120 : 70));
+        memoPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, isWin()? 120 : 100));
 
         // kick AppleScript to open target folder
         memoPanel.addMouseListener(new MouseAdapter() {
@@ -203,11 +203,12 @@ public class MemoInspector implements IInspector {
             memoTitle.append("あり");
 
             titleColor = Color.blue;
-            titleFont = new Font(Font.SANS_SERIF,Font.BOLD,12);
+            titleFont = new Font(Font.SANS_SERIF, Font.BOLD, isWin()? 10 : 12);
 
         } else {
             // フォルダがない
             memoTitle.append(InspectorCategory.メモ.title());
+            memoTitle.append("  [関連文書フォルダ作成]");
             titleColor = Color.BLACK;
             titleFont = null;
         }
@@ -311,6 +312,9 @@ public class MemoInspector implements IInspector {
                 g.setColor(ALERT_LINE_COLOR[i]);
                 g.drawRoundRect(i, i, getWidth()-1-2*i, getHeight()-1-2*i, 3-i, 3-i);
                 }
+            } else {
+                g.setColor(Color.WHITE);
+                g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 3, 3);
             }
             g.dispose();
         }
