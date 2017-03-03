@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -20,7 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
@@ -127,15 +125,6 @@ public class SaveDialog {
         dialog.addSheetListener(se -> {
             // Escape を押したときだけここに入る
             if (se.getOption() == JOptionPane.CLOSED_OPTION) { doCancel(); }
-        });
-        dialog.setModal(true);
-        dialog.setFocusTraversalPolicy(new LayoutFocusTraversalPolicy(){
-            private static final long serialVersionUID = 1L;
-            @Override
-            public Component getInitialComponent(Window w) {
-                // System.out.println("Is sendClaim checkbox focusable? " + sendClaim.isFocusable());
-                return sendClaim;
-            }
         });
 
         // ショートカット登録

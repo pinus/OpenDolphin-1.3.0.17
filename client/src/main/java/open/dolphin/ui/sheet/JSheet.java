@@ -19,6 +19,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -116,6 +118,17 @@ public class JSheet extends JDialog implements ActionListener {
 
             @Override
             public void componentHidden(ComponentEvent e) {
+            }
+        });
+
+        // キー入力で割り込み
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (animating) {
+                    stopAnimation();
+                    finishShowingSheet();
+                }
             }
         });
     }
