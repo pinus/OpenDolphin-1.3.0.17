@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -543,6 +544,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
         public void actionPerformed(ActionEvent e) {
 
             final JTextField tf = new JTextField(10);
+            tf.setPreferredSize(new Dimension(100, 26));
             String[] options = {"追加", "上書き", "キャンセル"};
             JOptionPane pane = new JOptionPane(tf,
                     JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null,

@@ -95,7 +95,6 @@ public class DocumentHistory implements IInspector {
 
         // サイズ
         view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 350));
-        view.setMinimumSize(new Dimension(DEFAULT_WIDTH, 350));
 
         // selectAll (command-A) を横取りするため削除
         view.getInputMap().remove(KeyStroke.getKeyStroke('A',java.awt.event.InputEvent.META_MASK));

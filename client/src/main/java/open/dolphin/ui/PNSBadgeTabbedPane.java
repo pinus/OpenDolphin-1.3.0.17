@@ -66,7 +66,7 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
             String num = String.valueOf(badgeNumber);
             int strWidth = fm.stringWidth(num);
 
-            g.drawString(num, center.x - strWidth/2, center.y + fm.getHeight()/2 - 2);
+            g.drawString(num, center.x - strWidth/2, center.y + fm.getHeight()/2 - fm.getDescent());
 
             g.dispose();
         }

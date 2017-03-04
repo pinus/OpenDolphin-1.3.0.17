@@ -16,7 +16,7 @@ public interface IInspector {
 
     public static final boolean IS_WIN = ClientContext.isWin();
     public static final int DEFAULT_WIDTH = IS_WIN? 261-14*2 : 261;
-    public static final int DEFAULT_HEIGHT = 175;
+    public static final int DEFAULT_HEIGHT = IS_WIN? 150 : 175;
 
     /**
      * Inspector を区別する ID としての名前.

@@ -2,7 +2,6 @@ package open.dolphin.client;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -213,11 +212,11 @@ public class KartePanelFactory {
         timeStampPanel.setMaximumSize(new Dimension(Short.MAX_VALUE, TIMESTAMP_PANEL_HEIGHT));
         timeStampPanel.setMinimumSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
         timeStampPanel.setPreferredSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
-        timeStampPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        timeStampPanel.setLayout(new BorderLayout());
         timeStampPanel.setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
 
         timeStampLabel = new JLabel();
-        timeStampPanel.add(timeStampLabel);
+        timeStampPanel.add(timeStampLabel, BorderLayout.CENTER);
 
         textPanePanel = new JPanel();
         textPanePanel.setLayout(new GridLayout(1,2,2,0));

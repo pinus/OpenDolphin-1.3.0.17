@@ -1329,7 +1329,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         if (dirtyList != null && dirtyList.size() > 0) {
             String saveAll = "保存";     // 保存;
             String discard = "破棄";  // 破棄;
-            String question = "未保存のドキュメントがあります。保存しますか ?";
+            String question = "未保存のドキュメントがあります。保存しますか？";
             String title = "未保存処理";
             String cancelText = (String) UIManager.get("OptionPane.cancelButtonText");
 
