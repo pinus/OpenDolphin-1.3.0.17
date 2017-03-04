@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.SimpleAddressModel;
 import open.dolphin.ui.PNSBorderFactory;
@@ -84,6 +85,7 @@ public class BasicInfoInspector implements IInspector {
         namePanel.add(kanaLabel);
         namePanel.add(Box.createGlue());
         namePanel.add(ageLabel);
+        namePanel.add(Box.createHorizontalStrut(INDENT));
 
         addressLabel = new JLabel("　");
         addressLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -142,8 +144,9 @@ public class BasicInfoInspector implements IInspector {
 
         nameLabel.setText(kanjiName);
         kanaLabel.setText(kanaName);
-
-        ageLabel.setText(patient.getAgeBirthday() + " ");
+        String birthday = patient.getBirthday();
+        String age = ModelUtils.getAge(birthday);
+        ageLabel.setText(String.format("%s 歳 %s", age, ModelUtils.toNengo(birthday)));
 
         SimpleAddressModel address = patient.getAddress();
         if (address != null) {

@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import open.dolphin.client.ClientContext;
 import open.dolphin.event.BadgeEvent;
 
 /**
@@ -27,7 +28,7 @@ import open.dolphin.event.BadgeEvent;
 public class PNSBadgeTabbedPane extends PNSTabbedPane {
     private static final long serialVersionUID = 1L;
 
-    private static final int BADGE_RADIUS = 8;
+    private static final int BADGE_RADIUS = ClientContext.isWin()? 6 : 8;
     private static final int BADGE_OFFSET = 4;
     private static final String BADGE_FONT = "Arial";
     private static final Color BADGE_COLOR = Color.red;
