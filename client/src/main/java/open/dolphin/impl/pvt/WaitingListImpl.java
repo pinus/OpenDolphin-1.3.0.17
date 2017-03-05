@@ -72,8 +72,8 @@ public class WaitingListImpl extends AbstractMainComponent {
     private static final int ROW_HEIGHT = 18;
     // 来院情報テーブルの年齢カラム
     private static final int AGE_COLUMN = 5;
-    // 年齢生年月日メソッド
-    private final String[] AGE_METHOD = new String[]{"getPatientAgeBirthday", "getPatientBirthday"};
+    private static final int BIRTHDAY_COLUMN = 6;
+
     // デフォルトのチェック間隔
     private static int DEFAULT_CHECK_INTERVAL = 30; // デフォルト値
 
@@ -86,7 +86,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     private Preferences preferences;
     // 性別レンダラフラグ
     private boolean sexRenderer;
-    // 年齢表示
+    // 生年月日の元号表示
     private boolean ageDisplay;
     // 運転日
     private Date operationDate;
@@ -189,21 +189,37 @@ public class WaitingListImpl extends AbstractMainComponent {
         // 来院テーブル用のパラメータ
         List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" 受付", Integer.class, "getNumber"),
-                new PNSTriple<>(" 患者 ID", String.class, "getPatientId"),
+                new PNSTriple<>("　患者 ID", String.class, "getPatientId"),
                 new PNSTriple<>("　来院時間", String.class, "getPvtDateTrimDate"),
                 new PNSTriple<>("　氏　　名", String.class, "getPatientName"),
                 new PNSTriple<>("　性別", String.class, "getPatientGenderDesc"),
-                new PNSTriple<>("　生年月日", String.class, "getPatientAgeBirthday"),
+                new PNSTriple<>("　年齢", String.class, "getPatientAge"),
+                new PNSTriple<>("　生年月日", String.class, "getPatientBirthday"),
                 new PNSTriple<>("　ドクター", String.class, "getAssignedDoctorName"),
                 new PNSTriple<>(" メモ", String.class, "getMemo"),
                 new PNSTriple<>(" 予約", String.class, "getAppointment"),
                 new PNSTriple<>("状態", Integer.class, "getState")
         );
-        int[] columnWidth = {34,80,72,140,50,150,75,50,40,30};
+        int[] columnWidth = {34,68,72,140,50,50,100,75,50,40,30};
 
         // 生成する
         pvtTable = view.getTable();
-        pvtTableModel = new ObjectReflectTableModel<>(reflectList);
+        pvtTableModel = new ObjectReflectTableModel<PatientVisitModel>(reflectList) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public Object getValueAt(int row, int col) {
+                Object obj = super.getValueAt(row, col);
+
+                switch(col) {
+                    case BIRTHDAY_COLUMN:
+                        // 元号表示切り替え
+                        return ageDisplay? ModelUtils.toNengo((String)obj) : obj;
+
+                    default:
+                        return obj;
+                }
+            }
+        };
         pvtTable.setModel(pvtTableModel);
 
         // 来院情報テーブルの属性を設定する
@@ -231,26 +247,36 @@ public class WaitingListImpl extends AbstractMainComponent {
         };
         pvtTable.setRowSorter(sorter);
 
-        // 生年月日コラムに comparator を設定「32.10 歳(S60-01-01)」というのをソートできるようにする
+        // 年齢コラム 32.10 の型式をソートできるようにする
         sorter.setComparator(AGE_COLUMN, (o1, o2) -> {
-            String birthday1;
-            String birthday2;
-            if (ageDisplay) {
-                birthday1 = ModelUtils.getMmlBirthdayFromAge((String)o1);
-                birthday2 = ModelUtils.getMmlBirthdayFromAge((String)o2);
-                return birthday2.compareTo(birthday1);
+            String[] age1 = ((String) o1).split("\\.");
+            String[] age2 = ((String) o2).split("\\.");
+
+            int y1 = Integer.valueOf(age1[0]);
+            int y2 = Integer.valueOf(age2[0]);
+
+            if (y1 == y2) {
+                int m1 = Integer.valueOf(age1[1]);
+                int m2 = Integer.valueOf(age2[1]);
+                return m1 - m2;
+
             } else {
-                birthday1 = (String)o1;
-                birthday2 = (String)o2;
-                return birthday1.compareTo(birthday2);
+                return y1 - y2;
             }
+        });
+
+        // 生年月日コラム
+        sorter.setComparator(BIRTHDAY_COLUMN, (o1, o2) -> {
+            String bd1 = ageDisplay? ModelUtils.toSeireki((String)o1) : (String)o1;
+            String bd2 = ageDisplay? ModelUtils.toSeireki((String)o2) : (String)o2;
+            return bd1.compareTo(bd2);
         });
 
         // コラム幅の設定
         for (int i = 0; i <columnWidth.length; i++) {
             TableColumn column = pvtTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(columnWidth[i]);
-            if (i != 3 && i != 5 && i != 7) { //固定幅
+            if (i != 3 && i != 7) { //固定幅
                 column.setMaxWidth(columnWidth[i]);
                 column.setMinWidth(columnWidth[i]);
             }
@@ -258,7 +284,8 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         // レンダラを生成する
         MaleFemaleRenderer sRenderer = new MaleFemaleRenderer();
-        CenterRenderer centerRenderer = new CenterRenderer();
+        MaleFemaleRenderer centerRenderer = new MaleFemaleRenderer(JLabel.CENTER);
+        MaleFemaleRenderer rightRenderer = new MaleFemaleRenderer(JLabel.RIGHT);
         KarteStateRenderer stateRenderer = new KarteStateRenderer();
 
         pvtTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer); // 0 受付
@@ -266,16 +293,12 @@ public class WaitingListImpl extends AbstractMainComponent {
         pvtTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer); // 2 来院時間
         pvtTable.getColumnModel().getColumn(3).setCellRenderer(sRenderer); // 3 氏名
         pvtTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer); // 4 性別
-        pvtTable.getColumnModel().getColumn(5).setCellRenderer(sRenderer); // 5 生年月日
-        pvtTable.getColumnModel().getColumn(6).setCellRenderer(sRenderer); // 6 ドクター
-        pvtTable.getColumnModel().getColumn(7).setCellRenderer(sRenderer); // 7 メモ
-        pvtTable.getColumnModel().getColumn(8).setCellRenderer(sRenderer); // 8 予約
-        pvtTable.getColumnModel().getColumn(9).setCellRenderer(stateRenderer);
-
-        // 年齢表示をしない場合はメソッドを変更する
-        if (!ageDisplay) {
-            pvtTableModel.setMethodName(AGE_METHOD[1], AGE_COLUMN);
-        }
+        pvtTable.getColumnModel().getColumn(5).setCellRenderer(rightRenderer); // 5 年齢
+        pvtTable.getColumnModel().getColumn(6).setCellRenderer(sRenderer); // 6 生年月日
+        pvtTable.getColumnModel().getColumn(7).setCellRenderer(sRenderer); // 7 ドクター
+        pvtTable.getColumnModel().getColumn(8).setCellRenderer(sRenderer); // 8 メモ
+        pvtTable.getColumnModel().getColumn(9).setCellRenderer(sRenderer); // 9 予約
+        pvtTable.getColumnModel().getColumn(10).setCellRenderer(stateRenderer);
 
         // 日付ラベルに値を設定する
         setOperationDate(new Date());
@@ -365,18 +388,6 @@ public class WaitingListImpl extends AbstractMainComponent {
         preferences.putBoolean("sexRenderer", sexRenderer);
         if (pvtTable != null) {
             pvtTableModel.fireTableDataChanged();
-        }
-    }
-
-    /**
-     * 年齢表示をオンオフする.
-     */
-    public void switchAgeDisplay() {
-        ageDisplay = !ageDisplay;
-        preferences.putBoolean("ageDisplay", ageDisplay);
-        if (pvtTable != null) {
-            String method = ageDisplay ? AGE_METHOD[0] : AGE_METHOD[1];
-            pvtTableModel.setMethodName(method, AGE_COLUMN);
         }
     }
 
@@ -1209,18 +1220,22 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * MaleFemaleRenderer.
-     * 男女で色を変える renderer. alignment は左詰.
+     * 男女で色を変える renderer.
      */
     private class MaleFemaleRenderer extends TableCellRendererBase {
         private static final long serialVersionUID = 1L;
 
         public MaleFemaleRenderer() {
-            holizontalGrid = true;
-            initComponent();
+            this(JLabel.LEFT);
         }
 
-        private void initComponent() {
-            setHorizontalAlignment(JLabel.LEFT);
+        public MaleFemaleRenderer(int alignment) {
+            holizontalGrid = true;
+            initComponent(alignment);
+        }
+
+        private void initComponent(int alignment) {
+            setHorizontalAlignment(alignment);
         }
 
         @Override
@@ -1258,12 +1273,20 @@ public class WaitingListImpl extends AbstractMainComponent {
                 switch (col) {
                     case 1: // ID
                     case 3: // 名前
-                    case 5: // 生年月日
+                    case 6: // 生年月日
                         this.setText(IndentTableCellRenderer.addIndent((String)value, IndentTableCellRenderer.WIDE, this.getForeground()));
                         this.setFont(NORMAL_FONT);
                         break;
-                    case 6: // 診療科→ドクターに変更
-                    case 7: // メモ
+                    case 5: // 年齢
+                        String[] age = ((String)value).split("\\.");
+                        if (age[0].equals("0")) {
+                            setText(age[1] + " ヶ月");
+                        } else {
+                            setText(age[0] + " 歳");
+                        }
+                        break;
+                    case 7: // ドクターに変更
+                    case 8: // メモ
                         this.setText(IndentTableCellRenderer.addIndent((String)value, IndentTableCellRenderer.WIDE, this.getForeground()));
                         this.setFont(SMALL_FONT);
                         break;
@@ -1276,23 +1299,6 @@ public class WaitingListImpl extends AbstractMainComponent {
                 this.setText(value == null ? "" : value.toString());
             }
             return this;
-        }
-    }
-
-    /**
-     * センタリングする MaleFemaleRenderer.
-     */
-    private class CenterRenderer extends MaleFemaleRenderer {
-        private static final long serialVersionUID = 1L;
-
-        public CenterRenderer() {
-            super();
-            holizontalGrid = true;
-            initComponent();
-        }
-
-        private void initComponent() {
-            setHorizontalAlignment(JLabel.CENTER);
         }
     }
 
@@ -1320,7 +1326,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 contextMenu.removeAll();
                 String pop3 = "偶数奇数レンダラを使用する";
                 String pop4 = "性別レンダラを使用する";
-                String pop5 = "年齢表示";
+                String pop5 = "生年月日の元号表示";
 
                 if (canOpen()) {
                     String pop1 = "カルテを開く";
@@ -1350,7 +1356,10 @@ public class WaitingListImpl extends AbstractMainComponent {
                 JCheckBoxMenuItem item = new JCheckBoxMenuItem(pop5);
                 contextMenu.add(item);
                 item.setSelected(ageDisplay);
-                item.addActionListener(ae -> WaitingListImpl.this.switchAgeDisplay());
+                item.addActionListener(ae -> {
+                    ageDisplay = item.isSelected();
+                    preferences.putBoolean("ageDisplay", ageDisplay);
+                });
                 oddEven.setIconTextGap(12);
                 sex.setIconTextGap(12);
                 item.setIconTextGap(12);

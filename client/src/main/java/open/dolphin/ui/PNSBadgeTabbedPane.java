@@ -29,6 +29,7 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
     private static final long serialVersionUID = 1L;
 
     private static final int BADGE_RADIUS = ClientContext.isWin()? 6 : 8;
+    private static final int BADGE_FONT_SIZE = ClientContext.isWin()? 10 : 11;
     private static final int BADGE_OFFSET = 4;
     private static final String BADGE_FONT = "Arial";
     private static final Color BADGE_COLOR = Color.red;
@@ -61,7 +62,7 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
             // 文字
             g.setColor(Color.WHITE);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-            g.setFont(new Font(BADGE_FONT, Font.BOLD, 11));
+            g.setFont(new Font(BADGE_FONT, Font.BOLD, BADGE_FONT_SIZE));
 
             FontMetrics fm = g.getFontMetrics();
             String num = String.valueOf(badgeNumber);
