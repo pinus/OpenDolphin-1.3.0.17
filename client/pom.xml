@@ -80,11 +80,6 @@
           <artifactId>glulogic</artifactId>
           <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>quaqua-pns</artifactId>
-            <version>9.1-pns</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -142,7 +137,6 @@
                   <property name="distdir" value="${targetdir}/dist" />
                   <fileset id="jnilibs" dir="${basedir}">
                     <include name="libGlulogicMT.jnilib"/>
-                    <include name="libquaqua64.jnilib"/>
                   </fileset>
 
                   <delete dir = "${distdir}" />
