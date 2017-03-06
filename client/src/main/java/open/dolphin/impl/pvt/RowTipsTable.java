@@ -29,17 +29,25 @@ public class RowTipsTable extends JTable {
 
         String text = null;
 
-        if (col == 5) {
-            // 生年月日
-            text = pvt.getPatientBirthday();
+        switch (col) {
+            case WaitingListImpl.BIRTHDAY_COLUMN:
+                // 生年月日
+                text = pvt.getPatientBirthday();
+                break;
+                
+            case WaitingListImpl.AGE_COLUMN:
+                // 年齢
+                String[] age = pvt.getPatientAge().split("\\.");
+                text = String.format("%s 歳 %s ヶ月", age[0], age[1]);
+                break;
 
-        } else {
-            Date pvtDate = ModelUtils.getDateTimeAsObject(pvt.getPvtDate());
-            int pvtState = pvt.getState();
-            if (pvtDate != null && (pvtState == KarteState.CLOSE_NONE || pvtState == KarteState.OPEN_NONE)) {
-                text = pvt.getPatient().getKanaName();
-                text += " - 待ち時間 " + DurationFormatUtils.formatPeriod(pvtDate.getTime(), new Date().getTime(), "HH:mm");
-            }
+            default:
+                Date pvtDate = ModelUtils.getDateTimeAsObject(pvt.getPvtDate());
+                int pvtState = pvt.getState();
+                if (pvtDate != null && (pvtState == KarteState.CLOSE_NONE || pvtState == KarteState.OPEN_NONE)) {
+                    text = pvt.getPatient().getKanaName();
+                    text += " - 待ち時間 " + DurationFormatUtils.formatPeriod(pvtDate.getTime(), new Date().getTime(), "HH:mm");
+                }
         }
 
         return text;

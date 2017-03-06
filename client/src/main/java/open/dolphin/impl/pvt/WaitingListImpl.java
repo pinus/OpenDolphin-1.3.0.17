@@ -46,6 +46,10 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     private static final String NAME = "受付リスト";
 
+    // 来院情報テーブルの年齢カラム
+    public static final int AGE_COLUMN = 5;
+    public static final int BIRTHDAY_COLUMN = 6;
+
     // アイコン
     protected static final ImageIcon DONE_ICON = GUIConst.ICON_CHECK_LIGHTBLUE_16;
     protected static final ImageIcon OPEN_ICON = GUIConst.ICON_BOOK_OPEN_16;
@@ -70,9 +74,6 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     // テーブルの row height
     private static final int ROW_HEIGHT = 18;
-    // 来院情報テーブルの年齢カラム
-    private static final int AGE_COLUMN = 5;
-    private static final int BIRTHDAY_COLUMN = 6;
 
     // デフォルトのチェック間隔
     private static int DEFAULT_CHECK_INTERVAL = 30; // デフォルト値
