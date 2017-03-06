@@ -192,7 +192,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 new PNSTriple<>("　患者 ID", String.class, "getPatientId"),
                 new PNSTriple<>("　来院時間", String.class, "getPvtDateTrimDate"),
                 new PNSTriple<>("　氏　　名", String.class, "getPatientName"),
-                new PNSTriple<>("　性別", String.class, "getPatientGenderDesc"),
+                new PNSTriple<>(" 性別", String.class, "getPatientGenderDesc"),
                 new PNSTriple<>("　年齢", String.class, "getPatientAge"),
                 new PNSTriple<>("　生年月日", String.class, "getPatientBirthday"),
                 new PNSTriple<>("　ドクター", String.class, "getAssignedDoctorName"),
@@ -200,7 +200,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 new PNSTriple<>(" 予約", String.class, "getAppointment"),
                 new PNSTriple<>("状態", Integer.class, "getState")
         );
-        int[] columnWidth = {34,68,72,140,50,50,100,75,50,40,30};
+        int[] columnWidth = {34,68,72,140,40,50,100,75,50,40,30};
 
         // 生成する
         pvtTable = view.getTable();

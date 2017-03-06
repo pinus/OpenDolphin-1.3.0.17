@@ -125,7 +125,8 @@ public class JSheet extends JDialog implements ActionListener {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (animating) {
+                if (animating &&  animationDirection == INCOMING) {
+                    enableInputMethods(false); // ATOK29 hang-up?
                     stopAnimation();
                     finishShowingSheet();
                 }
