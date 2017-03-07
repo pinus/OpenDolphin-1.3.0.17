@@ -332,6 +332,12 @@ public class JSheet extends JDialog implements ActionListener {
     private void finishShowingSheet() {
         content.removeAll();
         content.add(sourcePane, BorderLayout.CENTER);
+
+        if (! isActive()) {
+            // 素早くキー入力したときにフォーカスが取れないことがある(?)
+            System.out.println("JSheet: isActive() is false");
+            toFront();
+        }
         repaint();
     }
 
