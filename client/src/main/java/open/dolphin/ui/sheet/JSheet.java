@@ -125,7 +125,7 @@ public class JSheet extends JDialog implements ActionListener {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (animating &&  animationDirection == INCOMING) {
+                if (isActive() && animating &&  animationDirection == INCOMING) {
                     enableInputMethods(false); // ATOK29 hang-up?
                     stopAnimation();
                     finishShowingSheet();
@@ -336,7 +336,6 @@ public class JSheet extends JDialog implements ActionListener {
         if (! isActive()) {
             // 素早くキー入力したときにフォーカスが取れないことがある(?)
             System.out.println("JSheet: isActive() is false");
-            toFront();
         }
         repaint();
     }
