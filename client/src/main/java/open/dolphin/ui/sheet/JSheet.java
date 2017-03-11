@@ -11,6 +11,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Transparency;
@@ -126,7 +127,6 @@ public class JSheet extends JDialog implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (isActive() && animating &&  animationDirection == INCOMING) {
-                    enableInputMethods(false); // ATOK29 hang-up?
                     stopAnimation();
                     finishShowingSheet();
                 }
@@ -336,6 +336,10 @@ public class JSheet extends JDialog implements ActionListener {
         if (! isActive()) {
             // 素早くキー入力したときにフォーカスが取れないことがある(?)
             System.out.println("JSheet: isActive() is false");
+            System.out.println("active window-before = " + KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow());
+            toFront();
+            requestFocus();
+            System.out.println("active window-after = " + KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow());
         }
         repaint();
     }
