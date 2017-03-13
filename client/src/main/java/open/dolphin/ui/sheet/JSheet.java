@@ -11,7 +11,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
-import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Transparency;
@@ -334,12 +333,10 @@ public class JSheet extends JDialog implements ActionListener {
         content.add(sourcePane, BorderLayout.CENTER);
 
         if (! isActive()) {
-            // 素早くキー入力したときにフォーカスが取れないことがある(?)
+            // たまに owner が active になって，JSheet が inactive になることあり
             System.out.println("JSheet: isActive() is false");
-            System.out.println("active window-before = " + KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow());
-            toFront();
-            requestFocus();
-            System.out.println("active window-after = " + KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow());
+            super.setVisible(false);
+            super.setVisible(true);
         }
         repaint();
     }
