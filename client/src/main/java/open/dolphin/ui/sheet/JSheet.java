@@ -91,6 +91,7 @@ public class JSheet extends JDialog implements ActionListener {
         setUndecorated(true);
         setBackground(new Color(0, 0, 0, 0));
         setResizable(false);
+        getRootPane().putClientProperty("Window.shadow", Boolean.FALSE);
 
         // modal にセット
         setModal(true);
@@ -335,8 +336,6 @@ public class JSheet extends JDialog implements ActionListener {
         if (! isActive()) {
             // たまに owner が active になって，JSheet が inactive になることあり
             System.out.println("JSheet: isActive() is false");
-            super.setVisible(false);
-            super.setVisible(true);
         }
         repaint();
     }
