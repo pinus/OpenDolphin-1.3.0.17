@@ -245,6 +245,7 @@ public class JSheet extends JDialog implements ActionListener {
                     }
                     sheetListener.optionSelected(se);
                     setVisible(false);
+                    dispose();
                 }
             });
 
@@ -260,6 +261,7 @@ public class JSheet extends JDialog implements ActionListener {
                 }
                 sheetListener.optionSelected(se);
                 setVisible(false);
+                dispose();
             });
         }
     }
@@ -368,6 +370,7 @@ public class JSheet extends JDialog implements ActionListener {
                 } else {
                     content.removeAll();
                     super.setVisible(false);
+                    dispose();
                 }
             }
         }
