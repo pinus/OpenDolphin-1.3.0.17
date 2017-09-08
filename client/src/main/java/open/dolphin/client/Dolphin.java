@@ -21,7 +21,6 @@ import open.dolphin.impl.labrcv.LaboTestImporter;
 import open.dolphin.impl.login.LoginDialog;
 import open.dolphin.impl.psearch.PatientSearchImpl;
 import open.dolphin.impl.pvt.WaitingListImpl;
-import open.dolphin.infomodel.KarteState;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.infomodel.RoleModel;
 import open.dolphin.project.AbstractProjectFactory;
@@ -345,7 +344,8 @@ public class Dolphin implements MainWindow {
         chart.setContext(this);
         chart.setPatientVisit(pvt);                 //
         // isReadOnly対応
-        chart.setReadOnly(Project.isReadOnly() || pvt.getState() == KarteState.READ_ONLY);    // RedaOnlyProp
+        //chart.setReadOnly(Project.isReadOnly() || pvt.getState() == KarteState.READ_ONLY);    // RedaOnlyProp
+        chart.setReadOnly(Project.isReadOnly());    // RedaOnlyProp
         chart.start();
     }
 
