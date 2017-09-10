@@ -12,8 +12,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- versions -->
-        <version.org.jboss.resteasy>3.0.10.Final</version.org.jboss.resteasy>
-        <version.org.hibernate>4.3.7.Final</version.org.hibernate>
+        <version.org.jboss.resteasy>3.0.19.Final</version.org.jboss.resteasy>
+        <version.org.hibernate>5.0.10.Final</version.org.hibernate>
         <version.org.glassfish.tyrus.bundles>1.13</version.org.glassfish.tyrus.bundles>
         <version.org.postgresql>9.4-1200-jdbc41</version.org.postgresql>
 
@@ -21,6 +21,12 @@
 
     <dependencies>
         <!-- Server -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>open.dolphin.server</artifactId>

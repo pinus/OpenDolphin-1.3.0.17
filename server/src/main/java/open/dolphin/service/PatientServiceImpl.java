@@ -7,8 +7,8 @@ import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.infomodel.*;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 
@@ -214,7 +214,7 @@ public class PatientServiceImpl extends DolphinService implements PatientService
             case PatientSearchSpec.FULL_TEXT_SEARCH:
                 final FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
                 final Analyzer analyzer = fullTextEntityManager.getSearchFactory().getAnalyzer(DocumentModel.class);
-                final org.apache.lucene.util.Version ver = org.apache.lucene.util.Version.LUCENE_36;
+                //final org.apache.lucene.util.Version ver = org.apache.lucene.util.Version.LUCENE_36;
                 final String pk = "karte.patient.id:";
 
                 // preparing seach text with narrowing list
@@ -231,7 +231,7 @@ public class PatientServiceImpl extends DolphinService implements PatientService
 
                 try {
                     // create native Lucene query
-                    org.apache.lucene.queryParser.QueryParser parser = new QueryParser(ver, "modules.beanBytes", analyzer);
+                    org.apache.lucene.queryparser.classic.QueryParser parser = new QueryParser("modules.beanBytes", analyzer);
                     parser.setAutoGeneratePhraseQueries(true);  // http://lucene.jugem.jp/?eid=403
                     org.apache.lucene.search.Query luceneQuery = parser.parse(searchText);
                     // wrap Lucene query in a javax.persistence.Query

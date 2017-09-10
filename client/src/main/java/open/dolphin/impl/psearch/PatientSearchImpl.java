@@ -230,7 +230,8 @@ public class PatientSearchImpl extends AbstractMainComponent {
                     + "のばしておく必要があります。<br>"
                     + "途中でキャンセルはできません。<br>"
                     + "よろしいですか？</html>";
-            int option = JSheet.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+            //int option = JSheet.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+            int option = JOptionPane.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 
             if (option == JOptionPane.YES_OPTION) {
                 PnsDelegater dl = new PnsDelegater();

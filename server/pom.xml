@@ -14,11 +14,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- versions -->
-        <version.com.fasterxml.jackson>2.4.5</version.com.fasterxml.jackson>
-        <version.org.jboss.resteasy>3.0.10.Final</version.org.jboss.resteasy>
-        <version.org.hibernate>4.3.7.Final</version.org.hibernate>
-        <version.org.hibernate.search>4.5.1.Final</version.org.hibernate.search>
-        <version.org.apache.lucene>3.6.2</version.org.apache.lucene>
+        <version.com.fasterxml.jackson>2.7.4</version.com.fasterxml.jackson>
+        <version.org.jboss.resteasy>3.0.19.Final</version.org.jboss.resteasy>
+        <version.org.hibernate>5.0.10.Final</version.org.hibernate>
+        <version.org.hibernate.search>5.5.4.Final</version.org.hibernate.search>
+        <version.org.apache.lucene>5.3.1</version.org.apache.lucene>
         <version.org.jdom>2.0.6</version.org.jdom>
     </properties>
 
@@ -27,6 +27,7 @@
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Resteasy (provided) -->
@@ -56,32 +57,43 @@
             <version>${version.org.hibernate.search}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>${version.org.apache.lucene}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${version.com.fasterxml.jackson}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${version.com.fasterxml.jackson}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${version.com.fasterxml.jackson}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
             <version>${version.com.fasterxml.jackson}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-base</artifactId>
             <version>${version.com.fasterxml.jackson}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- also need JAXB annotation support -->
         <dependency>
