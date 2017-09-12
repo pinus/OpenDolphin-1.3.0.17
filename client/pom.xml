@@ -177,6 +177,7 @@
                       <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
                       <option value="-Dcom.apple.macos.useScreenMenuBar=true"/>
                       <option value="-Dapple.awt.application.name=${macosx.app.name}"/>
+                      <option value="-Duser.dir=$APP_ROOT/.." />
                   </bundleapp>
                   <copy todir="${distdir}/OpenDolphin.app/Contents/MacOS">
                     <fileset refid="jnilibs" />

@@ -1,7 +1,6 @@
 package open.dolphin.setting;
 
 import java.awt.GridBagConstraints;
-import java.io.FileNotFoundException;
 import java.util.prefs.Preferences;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -11,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SwingConstants;
+import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.helper.GridBagBuilder;
@@ -93,14 +93,6 @@ public class MiscSettingPanel extends AbstractSettingPanel {
 
         // コンソールのログ出力
         redirectBox = new JCheckBox ("コンソールをファイルに出力する");
-        redirectBox.addActionListener(l -> {
-            if (redirectBox.is)
-            try {
-                System.setOut(new java.io.PrintStream(new java.io.FileOutputStream("/Applications/OpenDolphin-1.3.0.10/console.log", true)));
-            } catch (FileNotFoundException ex) {
-            }
-
-        });
 
         gbb = new GridBagBuilder("コンソールのログ出力");
         gbb.add(redirectBox, 0, 1, 1, 1, GridBagConstraints.EAST);
@@ -133,5 +125,6 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         prefs.putInt(Project.SCROLL_UNIT_STAMP, (int) scrollUnitStampSpinner.getValue());
 
         prefs.putBoolean(Project.REDIRECT_CONSOLE, redirectBox.isSelected());
+        Dolphin.redirectConsole(redirectBox.isSelected());
     }
 }

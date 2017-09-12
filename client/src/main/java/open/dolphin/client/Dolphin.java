@@ -7,6 +7,9 @@ import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -112,6 +115,9 @@ public class Dolphin implements MainWindow {
 
         // ロガーを取得する
         bootLogger = ClientContext.getBootLogger();
+
+        // コンソールのリダイレクト
+        redirectConsole(Project.getPreferences().getBoolean(Project.REDIRECT_CONSOLE, false));
     }
 
     private void startup() {
@@ -1000,6 +1006,25 @@ public class Dolphin implements MainWindow {
             // private and not accessible from the subclass at the moment,
             // so we can't print more info about what's being painted.
             super.paintDirtyRegions();
+        }
+    }
+
+    /**
+     * コンソール出力をファイルにリダイレクトする
+     * @param redirect
+     */
+    public static void redirectConsole(boolean redirect) {
+        try {
+            if (redirect) {
+                String logName = System.getProperty("user.dir") + "/console.log";
+                PrintStream ps = new PrintStream(new FileOutputStream(logName));
+                System.setOut(ps);
+                System.setErr(ps);
+            } else {
+                System.setOut(System.out);
+                System.setErr(System.err);
+            }
+        } catch (FileNotFoundException ex) {
         }
     }
 
