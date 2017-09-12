@@ -336,6 +336,7 @@ public class GUIConst {
     public static final ImageIcon ICON_OPTICAL_DRIVE_32 = ClientContext.getImageIcon("tango/32x32/devices/drive-optical.png");
     // emblems
     public static final ImageIcon ICON_EMBLEM_IMPORTANT_32 = ClientContext.getImageIcon("tango/32x32/emblem/emblem-important.png");
+    public static final ImageIcon ICON_EMBLEM_SYSTEM_32 = ClientContext.getImageIcon("tango/32x32/emblem/emblem-system.png");
 
     // スプラッシュ
     public static final ImageIcon ICON_SPLASH_DOLPHIN = ClientContext.getImageIcon("splash/splash.jpg");

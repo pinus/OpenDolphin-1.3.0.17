@@ -122,11 +122,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     private KarteModel model;
     private boolean ok = true;
 
-    // スクロール速度
-    private JSpinner scrollUnitKarte;
-    private JSpinner scrollUnitTable;
-    private JSpinner scrollUnitStamp;
-
     public KarteSettingPanel() {
         init();
     }
@@ -574,48 +569,12 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         bg.add(save);
         bg.add(saveTmp);
 
-        // スクロール速度設定
-        JPanel uiPanel = new JPanel();
-        uiPanel.setLayout(new BoxLayout(uiPanel, BoxLayout.Y_AXIS));
-        row = 0;
-        gbb = new GridBagBuilder("スクロール速度");
-
-        // カルテスクロール速度
-        label = new JLabel("カルテ :", SwingConstants.RIGHT);
-        JPanel slider = GUIFactory.createSliderPanel(1,32, prefs.getInt(Project.SCROLL_UNIT_KARTE, 15));
-        scrollUnitKarte = (JSpinner) slider.getComponent(1);
-        gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-        gbb.add(slider, 1, row, 1, 1, GridBagConstraints.WEST);
-        row ++;
-
-        // テーブルのスクロール速度
-        label = new JLabel("テーブル :", SwingConstants.RIGHT);
-        slider = GUIFactory.createSliderPanel(1,32, prefs.getInt(Project.SCROLL_UNIT_TABLE, 15));
-        scrollUnitTable = (JSpinner) slider.getComponent(1);
-        gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-        gbb.add(slider, 1, row, 1, 1, GridBagConstraints.WEST);
-        row ++;
-
-        // スタンプのスクロール速度
-        label = new JLabel("スタンプ :", SwingConstants.RIGHT);
-        slider = GUIFactory.createSliderPanel(1,32, prefs.getInt(Project.SCROLL_UNIT_STAMP, 15));
-        scrollUnitStamp = (JSpinner) slider.getComponent(1);
-        gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
-        gbb.add(slider, 1, row, 1, 1, GridBagConstraints.WEST);
-        row++;
-
-        uiPanel.add(gbb.getProduct());
-        uiPanel.add(Box.createVerticalStrut(500));
-        uiPanel.add(Box.createVerticalGlue());
-
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("インスペクタ", inspectorPanel);
         tabbedPane.addTab("文 書", docPanel);
         tabbedPane.addTab("スタンプ", stampPanel);
         tabbedPane.addTab("診療行為", sendPanel);
         tabbedPane.addTab("確認ダイアログ", confirmPanel);
-        // スクロール速度設定
-        tabbedPane.addTab("UI", uiPanel);
 
         getUI().setLayout(new BorderLayout());
         getUI().add(tabbedPane);
@@ -998,14 +957,6 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         // 保存時のデフォルト動作
         int sMode = save.isSelected() ? 0 : 1;
         model.setSaveKarteMode(sMode); // 0=save, 1=saveTmp
-
-        // スクロール速度を pref に書き戻す
-        val = scrollUnitKarte.getValue().toString();
-        prefs.putInt(Project.SCROLL_UNIT_KARTE, Integer.parseInt(val));
-        val = scrollUnitTable.getValue().toString();
-        prefs.putInt(Project.SCROLL_UNIT_TABLE, Integer.parseInt(val));
-        val = scrollUnitStamp.getValue().toString();
-        prefs.putInt(Project.SCROLL_UNIT_STAMP, Integer.parseInt(val));
     }
 
     /**

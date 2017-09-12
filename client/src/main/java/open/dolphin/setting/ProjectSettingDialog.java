@@ -94,6 +94,7 @@ public final class ProjectSettingDialog {
             allSettings.add(new ClaimSettingPanel());
             allSettings.add(new KarteSettingPanel());
             allSettings.add(new CodeHelperSettingPanel());
+            allSettings.add(new MiscSettingPanel());
 
             // 設定パネル(AbstractSettingPanel)を格納する Hashtableを生成する
             // key=設定プラグインの名前 value=設定プラグイン

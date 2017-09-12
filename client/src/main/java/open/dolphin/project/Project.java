@@ -104,14 +104,16 @@ public class Project  {
     // ユーザの利用形式
     public enum UserType {ASP_MEMBER, ASP_TESTER, ASP_DEV, FACILITY_USER, UNKNOWN, EXPIRED};
 
-//pns^
     //スクロール速度設定
     public static final String SCROLL_UNIT_KARTE = "scroll.unit.karte";
     public static final String SCROLL_UNIT_TABLE = "scroll.unit.table";
     public static final String SCROLL_UNIT_STAMP = "scroll.unit.stamp";
+
     // pvt チェック間隔
     public static final String PVT_CHECK_INTERVAL = "pvt.check.interval";
-//pns$
+
+    // コンソールのログファイル出力
+    public static final String REDIRECT_CONSOLE = "redirect.console";
 
     private static ProjectStub stub;
 

@@ -1,6 +1,5 @@
 package open.dolphin.ui;
 
-import java.io.FileNotFoundException;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javax.swing.UIDefaults;
@@ -24,11 +23,6 @@ public class SettingForMac {
     private SettingForMac() {}
 
     public static void set(final Dolphin context) {
-        // console logging
-        try {
-            System.setOut(new java.io.PrintStream(new java.io.FileOutputStream("/Applications/OpenDolphin-1.3.0.10/console.log", true)));
-        } catch (FileNotFoundException ex) {
-        }
 
         // apple settings
         System.setProperty("apple.laf.useScreenMenuBar","true"); // ClientContextStub でも設定しているが，そこだと遅いようだ
