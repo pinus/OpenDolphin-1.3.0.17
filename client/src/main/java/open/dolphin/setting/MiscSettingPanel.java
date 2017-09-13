@@ -92,7 +92,7 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         //scrollUnitPanel.add(Box.createVerticalGlue());
 
         // コンソールのログ出力
-        redirectBox = new JCheckBox ("コンソールをファイルに出力する");
+        redirectBox = new JCheckBox ("コンソールをファイルに出力する [設定反映に再起動が必要]");
 
         gbb = new GridBagBuilder("コンソールのログ出力");
         gbb.add(redirectBox, 0, 1, 1, 1, GridBagConstraints.EAST);
@@ -111,7 +111,7 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         scrollUnitTableSpinner.setValue(prefs.getInt(Project.SCROLL_UNIT_TABLE, 15));
         scrollUnitStampSpinner.setValue(prefs.getInt(Project.SCROLL_UNIT_STAMP, 15));
 
-        redirectBox.setSelected(prefs.getBoolean(Project.REDIRECT_CONSOLE, false));
+        redirectBox.setSelected(Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false));
     }
 
     @Override
@@ -124,7 +124,6 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         prefs.putInt(Project.SCROLL_UNIT_TABLE, (int) scrollUnitTableSpinner.getValue());
         prefs.putInt(Project.SCROLL_UNIT_STAMP, (int) scrollUnitStampSpinner.getValue());
 
-        prefs.putBoolean(Project.REDIRECT_CONSOLE, redirectBox.isSelected());
-        Dolphin.redirectConsole(redirectBox.isSelected());
+        Preferences.userNodeForPackage(Dolphin.class).putBoolean(Project.REDIRECT_CONSOLE, redirectBox.isSelected());
     }
 }

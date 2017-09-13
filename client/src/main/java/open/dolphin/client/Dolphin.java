@@ -13,6 +13,7 @@ import java.io.PrintStream;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.prefs.Preferences;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import open.dolphin.helper.ComponentBoundsManager;
@@ -82,6 +83,18 @@ public class Dolphin implements MainWindow {
 
         SettingForMac.set(this);
 
+        // コンソールのリダイレクト
+        if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
+            try {
+                String logName = System.getProperty("user.dir") + "/console.log";
+                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
+                System.setOut(ps);
+                System.setErr(ps);
+                System.out.println("Console redirected to " + logName);
+            } catch (FileNotFoundException ex) {
+            }
+        }
+
         // ClientContext を生成する
         ClientContextStub stub = new ClientContextStub();
         ClientContext.setClientContextStub(stub);
@@ -115,9 +128,6 @@ public class Dolphin implements MainWindow {
 
         // ロガーを取得する
         bootLogger = ClientContext.getBootLogger();
-
-        // コンソールのリダイレクト
-        redirectConsole(Project.getPreferences().getBoolean(Project.REDIRECT_CONSOLE, false));
     }
 
     private void startup() {
@@ -1006,25 +1016,6 @@ public class Dolphin implements MainWindow {
             // private and not accessible from the subclass at the moment,
             // so we can't print more info about what's being painted.
             super.paintDirtyRegions();
-        }
-    }
-
-    /**
-     * コンソール出力をファイルにリダイレクトする
-     * @param redirect
-     */
-    public static void redirectConsole(boolean redirect) {
-        try {
-            if (redirect) {
-                String logName = System.getProperty("user.dir") + "/console.log";
-                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
-                System.setOut(ps);
-                System.setErr(ps);
-            } else {
-                System.setOut(System.out);
-                System.setErr(System.err);
-            }
-        } catch (FileNotFoundException ex) {
         }
     }
 
