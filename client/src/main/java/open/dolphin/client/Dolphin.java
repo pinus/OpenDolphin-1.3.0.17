@@ -1017,7 +1017,7 @@ public class Dolphin implements MainWindow {
         try {
             if (redirect) {
                 String logName = System.getProperty("user.dir") + "/console.log";
-                PrintStream ps = new PrintStream(new FileOutputStream(logName));
+                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
                 System.setOut(ps);
                 System.setErr(ps);
             } else {
