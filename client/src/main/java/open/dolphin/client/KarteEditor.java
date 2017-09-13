@@ -1386,15 +1386,26 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     }
 
     /**
-     * 文末の無駄な改行文字を削除する.
-     * by masuda-sensei
+     * 文頭・文末の無駄な改行文字を削除する.
+     * original by masuda-sensei
      * @param kd
      */
     private void removeExtraCR(KarteStyledDocument kd) {
         // これが一番速い！ 20個の改行削除に2msec!!
-        int len = kd.getLength();
         try {
+            int len = kd.getLength();
             int pos;
+            // 改行文字以外が出てくるまで文頭からスキャン
+            for (pos = 0; pos < len - 1; pos++) {
+                if (!"\n".equals(kd.getText(pos, 1))) {
+                    break;
+                }
+            }
+            if (pos > 0) {
+                kd.remove(0, pos);
+            }
+
+            len = kd.getLength();
             // 改行文字以外が出てくるまで文書末からスキャン
             for (pos = len - 1; pos >= 0; --pos) {
                 if (!"\n".equals(kd.getText(pos, 1))) {

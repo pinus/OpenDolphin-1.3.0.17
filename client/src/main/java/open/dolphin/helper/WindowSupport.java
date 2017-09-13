@@ -36,8 +36,8 @@ public class WindowSupport implements MenuListener {
     // frame を整列させるときの初期位置と移動幅
     final public static int INITIAL_X = 256;
     final public static int INITIAL_Y = 40;
-    final public static int INITIAL_DX = 192;
-    final public static int INITIAL_DY = 20;
+    final public static int INITIAL_DX = 96;
+    final public static int INITIAL_DY = 48;
 
     // Window support が提供するスタッフ
     // フレーム
