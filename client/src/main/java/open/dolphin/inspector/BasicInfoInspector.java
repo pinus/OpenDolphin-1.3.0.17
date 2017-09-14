@@ -16,6 +16,7 @@ import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.SimpleAddressModel;
 import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.util.MMLDate;
 import open.dolphin.util.StringTool;
 
 /**
@@ -112,8 +113,8 @@ public class BasicInfoInspector implements IInspector {
         panel.setName(NAME);
         panel.add(Box.createVerticalStrut(5));
         panel.add(namePanel);
-        panel.add(agePanel);
         panel.add(Box.createVerticalStrut(3));
+        panel.add(agePanel);
         panel.add(addressPanel);
         panel.add(Box.createVerticalStrut(5));
     }
@@ -156,7 +157,7 @@ public class BasicInfoInspector implements IInspector {
 
         String birthday = patient.getBirthday();
         String nengoBirthday = MMLDate.toFullNengo(birthday);
-        birthdayLabel.setText(nengoBirthday);
+        birthdayLabel.setText(nengoBirthday + "生");
 
         String age = ModelUtils.getAge(birthday);
         ageLabel.setText(String.format("%s 歳", age));
