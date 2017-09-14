@@ -1,6 +1,8 @@
 package open.dolphin.client;
 
+import com.sun.glass.events.KeyEvent;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
@@ -21,6 +23,9 @@ import open.dolphin.inspector.DiagnosisInspector;
 import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.inspector.PatientInspector;
 import open.dolphin.project.Project;
+import open.dolphin.stampbox.StampBoxPlugin;
+import open.dolphin.stampbox.StampTree;
+import open.dolphin.stampbox.StampTreeMenuBuilder;
 import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.GUIDGenerator;
@@ -517,27 +522,70 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         appMenu.setMenuSupports(getContext().getMenuSupport(), mediator);
         appMenu.build(myMenuBar);
         mediator.registerActions(appMenu.getActionMap());
-        JPanel myToolPanel = appMenu.getToolPanelProduct();
-        myToolPanel.setOpaque(false);
 
+        // ToolBar は廃止
+        //JPanel myToolPanel = appMenu.getToolPanelProduct();
+        //myToolPanel.setOpaque(false);
         // このクラス固有のToolBarを生成する
-        ChartToolBar toolBar = new ChartToolBar(this);
-        myToolPanel.add(toolBar);
+        //ChartToolBar toolBar = new ChartToolBar(this);
+        //myToolPanel.add(toolBar);
+
+        // 病名検索フィールド
+        CompletableSearchField keywordFld = new CompletableSearchField(30);
+        keywordFld.setPreferredSize(new Dimension(300,26));
+        keywordFld.setLabel("病名検索");
+        keywordFld.setPreferences(Preferences.userNodeForPackage(ChartToolBar.class).node(ChartImpl.class.getName()));
+        keywordFld.addActionListener(e -> {
+            String text = keywordFld.getText();
+
+            if (text != null && ! text.equals("")) {
+                JPopupMenu popup = new JPopupMenu();
+                String pattern = ".*" + keywordFld.getText() + ".*";
+
+                StampBoxPlugin stampBox = mediator.getStampBox();
+                StampTree tree = stampBox.getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
+
+                StampTreeMenuBuilder builder = new StampTreeMenuBuilder(tree, pattern);
+                //builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(realChart.getDiagnosisDocument().getDiagnosisTable()));
+                builder.addStampTreeMenuListener(ev -> {
+                    JComponent c = getDiagnosisDocument().getDiagnosisTable();
+                    TransferHandler handler = c.getTransferHandler();
+                    handler.importData(c, ev.getTransferable());
+                    // transfer 後にキーワードフィールドをクリアする
+                    keywordFld.setText("");
+                });
+                builder.buildRootless(popup);
+
+                if (popup.getComponentCount() != 0) {
+                    Point loc = keywordFld.getLocation();
+                    popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight());
+                }
+            }
+        });
+
+        JPanel keywordPanel = new JPanel();
+        keywordPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        keywordPanel.add(keywordFld);
+
+        // ctrl-return でもリターンキーの notify-field-accept が発生するようにする
+        InputMap map = keywordFld.getInputMap();
+        Object value =  map.get(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+        map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), value);
 
         // Document プラグインのタブを生成する
         tabbedPane = loadDocuments();
+        tabbedPane.getAccessoryPanel().add(keywordPanel, BorderLayout.EAST);
 
         // 全体をレイアウトする
-        MainFrame.CommandPanel comPanel = frame.getCommandPanel();
-        comPanel.add(Box.createHorizontalStrut(5));
-        comPanel.add(inspector.getBasicInfoInspector().getPanel());
-        comPanel.add(myToolPanel);
-        comPanel.add(Box.createHorizontalStrut(5));
+        JPanel inspectorPanel = new JPanel();
+        inspectorPanel.setLayout(new BoxLayout(inspectorPanel, BoxLayout.Y_AXIS));
+        inspectorPanel.add(inspector.getBasicInfoInspector().getPanel());
+        inspectorPanel.add(inspector.getPanel());
 
         final MainFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0,0));
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
-        mainPanel.add(inspector.getPanel(), BorderLayout.WEST);
+        mainPanel.add(inspectorPanel, BorderLayout.WEST);
 
         // StateMgr を生成する
         stateMgr = new StateMgr();

@@ -1,11 +1,9 @@
 package open.dolphin.inspector;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
-import java.awt.geom.AffineTransform;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -22,9 +20,7 @@ import open.dolphin.util.StringTool;
 
 /**
  * BasicInfoInspector.
- * 名前，年齢，生年月日と住所.
- * このインスペクタだけは ChartImpl の ToolPanel に入る.
- * @author kazm
+ * 名前，年齢，生年月日と住所. 3行バージョン.
  * @author pns
  */
 public class BasicInfoInspector implements IInspector {
@@ -34,13 +30,13 @@ public class BasicInfoInspector implements IInspector {
     private static final Border MALE_BORDER = PNSBorderFactory.createTitleBarBorderLightBlue(new Insets(0,0,0,0));
     private static final Border FEMALE_BORDER = PNSBorderFactory.createTitleBarBorderPink(new Insets(0,0,0,0));
     private static final Border UNKNOWN_BORDER = PNSBorderFactory.createTitleBarBorderGray(new Insets(0,0,0,0));
-    private static final int WIDTH = 340;
     private static final int INDENT = 8;
 
     private JPanel panel;
     private JLabel nameLabel;
     private JLabel kanaLabel;
     private JLabel ageLabel;
+    private JLabel birthdayLabel;
     private JLabel addressLabel;
 
     // Context このインスペクタの親コンテキスト
@@ -63,6 +59,7 @@ public class BasicInfoInspector implements IInspector {
         nameLabel = new JLabel("　");
         nameLabel.setHorizontalAlignment(SwingConstants.LEFT);
         nameLabel.setForeground(FONT_COLOR);
+        nameLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         nameLabel.setOpaque(false);
 
         kanaLabel = new JLabel(" ");
@@ -71,42 +68,54 @@ public class BasicInfoInspector implements IInspector {
         kanaLabel.setOpaque(false);
 
         ageLabel = new JLabel(" ");
-        ageLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        //ageLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         ageLabel.setForeground(FONT_COLOR);
-        ageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        ageLabel.setHorizontalAlignment(SwingConstants.LEFT);
         ageLabel.setOpaque(false);
+
+        birthdayLabel = new JLabel(" ");
+        birthdayLabel.setForeground(FONT_COLOR);
+        birthdayLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+        birthdayLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        birthdayLabel.setOpaque(false);
 
         JPanel namePanel = new JPanel();
         namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
-
         namePanel.setOpaque(false);
         namePanel.add(Box.createHorizontalStrut(INDENT));
         namePanel.add(nameLabel);
         namePanel.add(kanaLabel);
-        namePanel.add(Box.createGlue());
-        namePanel.add(ageLabel);
-        namePanel.add(Box.createHorizontalStrut(INDENT));
+        namePanel.add(Box.createHorizontalGlue());
+
+        JPanel agePanel = new JPanel();
+        agePanel.setOpaque(false);
+        agePanel.setLayout(new BoxLayout(agePanel, BoxLayout.X_AXIS));
+        agePanel.add(Box.createHorizontalStrut(INDENT));
+        agePanel.add(birthdayLabel);
+        agePanel.add(Box.createHorizontalGlue());
+        agePanel.add(ageLabel);
+        agePanel.add(Box.createHorizontalStrut(INDENT));
 
         addressLabel = new JLabel("　");
         addressLabel.setHorizontalAlignment(SwingConstants.LEFT);
         addressLabel.setForeground(FONT_COLOR);
         addressLabel.setOpaque(false);
         addressLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
-        JPanel addressPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, INDENT, 0));
+
+        JPanel addressPanel = new JPanel();
+        addressPanel.setLayout(new FlowLayout(FlowLayout.LEFT, INDENT, 0));
         addressPanel.setOpaque(false);
         addressPanel.add(addressLabel);
 
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setName(NAME);
+        panel.add(Box.createVerticalStrut(5));
         panel.add(namePanel);
-        panel.add(Box.createVerticalGlue());
+        panel.add(agePanel);
+        panel.add(Box.createVerticalStrut(3));
         panel.add(addressPanel);
-
-        // サイズ調節
-        panel.setPreferredSize(new Dimension(WIDTH, 42));
-        panel.setMaximumSize(new Dimension(WIDTH, 42));
-        panel.setMinimumSize(new Dimension(WIDTH, 42));
+        panel.add(Box.createVerticalStrut(5));
     }
 
     /**
@@ -135,22 +144,27 @@ public class BasicInfoInspector implements IInspector {
             kanaName = "（" + patient.getKanaName() + "）";
 
             // 名前が長い場合は，カナ名を圧縮する
-            if (kanjiName.length() + kanaName.length() > 15) {
-                float sy = (float) (15.5 - kanjiName.length()) / kanaName.length();
-                Font font = nameLabel.getFont().deriveFont(AffineTransform.getScaleInstance(sy, 1));
-                kanaLabel.setFont(font);
-            }
+            //if (kanjiName.length() + kanaName.length() > 30) {
+            //    float sy = (float) (15.5 - kanjiName.length()) / kanaName.length();
+            //    Font font = nameLabel.getFont().deriveFont(AffineTransform.getScaleInstance(sy, 1));
+            //    kanaLabel.setFont(font);
+            //}
         }
 
         nameLabel.setText(kanjiName);
         kanaLabel.setText(kanaName);
+
         String birthday = patient.getBirthday();
+        String nengoBirthday = MMLDate.toFullNengo(birthday);
+        birthdayLabel.setText(nengoBirthday);
+
         String age = ModelUtils.getAge(birthday);
-        ageLabel.setText(String.format("%s 歳 %s", age, ModelUtils.toNengo(birthday)));
+        ageLabel.setText(String.format("%s 歳", age));
 
         SimpleAddressModel address = patient.getAddress();
         if (address != null) {
-            addressLabel.setText(StringTool.toZenkakuNumber(address.getAddress()));
+            String addr = StringTool.toZenkakuNumber(address.getAddress());
+            addressLabel.setText(addr.replaceAll("北海道", "")); // 北海道は省略
         } else {
             addressLabel.setText("　");
         }
