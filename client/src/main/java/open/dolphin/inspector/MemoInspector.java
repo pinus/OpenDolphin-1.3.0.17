@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.CompositeArea;
@@ -23,8 +22,6 @@ import open.dolphin.project.Project;
 import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.ui.PNSTitledBorder;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
@@ -56,7 +53,7 @@ public class MemoInspector implements IInspector {
     private CompositeArea memoArea;
     private PatientMemoModel patientMemoModel;
 
-    private PNSTitledBorder border;
+    private InspectorBorder border;
     private String titleText;
     private Font titleFont;
     private Color titleColor;
@@ -128,7 +125,7 @@ public class MemoInspector implements IInspector {
                         ScriptExecutor.openPatientFolder(path);
                         // MemoInspector 表示の update
                         createTitle();
-                        border.setTitle(border, titleText, TitledBorder.LEFT, TitledBorder.TOP, titleFont, titleColor);
+                        border.setTitle(titleText);
                         memoPanel.repaint();
                     }
                 }
@@ -164,9 +161,7 @@ public class MemoInspector implements IInspector {
         // もし関連文書(/Volumes/documents/.../${患者id}）があれば，メモタイトルを変える
         createTitle();
 
-        border = (PNSTitledBorder) PNSBorderFactory.createTitledBorder(
-                null, titleText, TitledBorder.LEFT, TitledBorder.TOP, titleFont, titleColor);
-
+        border = new InspectorBorder(titleText);
         return border;
     }
 

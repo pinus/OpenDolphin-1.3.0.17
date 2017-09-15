@@ -1,10 +1,10 @@
 package open.dolphin.inspector;
 
+import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import open.dolphin.client.ClientContext;
 import open.dolphin.event.BadgeListener;
-import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * Inspector が持つインターフェース.
@@ -17,6 +17,8 @@ public interface IInspector {
     public static final boolean IS_WIN = ClientContext.isWin();
     public static final int DEFAULT_WIDTH = IS_WIN? 261-14*2 : 261;
     public static final int DEFAULT_HEIGHT = IS_WIN? 150 : 175;
+    public static final Color BACKGROUND = new Color(240,240,240);
+    public static final Color BORDER_COLOR = Color.LIGHT_GRAY;
 
     /**
      * Inspector を区別する ID としての名前.
@@ -40,7 +42,7 @@ public interface IInspector {
      * Border が必要な場合はここから引き出す.
      * @return
      */
-    default public Border getBorder() { return PNSBorderFactory.createTitledBorder(getTitle()); }
+    default public Border getBorder() { return new InspectorBorder(getTitle()); }
 
     /**
      * 内容を更新する.

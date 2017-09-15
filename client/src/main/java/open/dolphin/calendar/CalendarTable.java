@@ -258,7 +258,7 @@ public class CalendarTable extends JTable {
         //String year = String.valueOf(tableModel.getYear());
         String year = getNengo();
 
-        g.setColor(Color.BLUE);
+        g.setColor(Color.BLACK);
         g.setFont(TITLE_FONT);
         FontMetrics fm = g.getFontMetrics();
 

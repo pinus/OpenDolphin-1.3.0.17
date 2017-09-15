@@ -48,6 +48,9 @@ public class DocumentHistoryPanel extends JPanel {
 
         StatusPanel statusPanel = new StatusPanel();
         statusPanel.setPanelHeight(26);
+        statusPanel.setOpaque(true);
+        statusPanel.setBackground(IInspector.BACKGROUND);
+
         statusPanel.add(extractCombo);
         statusPanel.addGlue();
         statusPanel.add(cntLbl);

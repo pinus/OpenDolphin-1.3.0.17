@@ -5,14 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import open.dolphin.calendar.CalendarEvent;
 import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.calendar.CalendarTableModel;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.ui.PNSTitledBorder;
 
 /**
  * PatientVisitInspector.
@@ -26,7 +23,7 @@ public class PatientVisitInspector implements IInspector {
     private String pvtCode; // PVT
     private final ChartImpl context;
     private String titleText;
-    private PNSTitledBorder border;
+    private InspectorBorder border;
 
     /**
      * PatientVisitInspector を生成する.
@@ -63,6 +60,7 @@ public class PatientVisitInspector implements IInspector {
         pvtCode = CalendarEvent.PVT.name();
         calendarPanel = new CalendarPanel();
         calendarPanel.setName(CATEGORY.name());
+        calendarPanel.setCalendarBackground(BACKGROUND);
 
         calendarPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         calendarPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
@@ -108,10 +106,7 @@ public class PatientVisitInspector implements IInspector {
      */
     @Override
     public Border getBorder() {
-
-        border = (PNSTitledBorder) PNSBorderFactory.createTitledBorder(
-                null, titleText, TitledBorder.LEFT, TitledBorder.TOP, null, null);
-
+        border = new InspectorBorder(titleText);
         return border;
     }
 

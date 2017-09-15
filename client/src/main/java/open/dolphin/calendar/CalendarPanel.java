@@ -35,6 +35,7 @@ public class CalendarPanel extends JPanel {
     private static final int BUTTON_WIDTH = 12;
 
     private CalendarTable table;
+    private JPanel controlPanel;
     private CalendarTableModel tableModel;
     private CalendarListener listener;
 
@@ -73,7 +74,7 @@ public class CalendarPanel extends JPanel {
         JButton reset = createButton(GUIConst.ICON_MD_STOP_16, e -> tableModel.reset());
 
         // Control Panel を作る
-        JPanel controlPanel = new JPanel();
+        controlPanel = new JPanel();
         controlPanel.setOpaque(true);
         controlPanel.setBackground(table.getBackground());
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
@@ -187,6 +188,15 @@ public class CalendarPanel extends JPanel {
         dialog.pack();
         dialog.setLocation(p);
         dialog.setVisible(true);
+    }
+
+    /**
+     * バックグラウンド色を設定する.
+     * @param bg
+     */
+    public void setCalendarBackground(Color bg) {
+        table.setBackground(bg);
+        controlPanel.setBackground(bg);
     }
 
     /**

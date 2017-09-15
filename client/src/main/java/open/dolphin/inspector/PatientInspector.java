@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import open.dolphin.client.ChartImpl;
@@ -24,6 +24,7 @@ import open.dolphin.ui.PNSBadgeTabbedPane;
  */
 public class PatientInspector {
 
+    public static int TOP_STRUT = 10;
     // 個々のインスペクタ
     // 患者基本情報 (固定インスペクタ)
     private BasicInfoInspector basicInfoInspector;
@@ -60,7 +61,8 @@ public class PatientInspector {
         // タブパネル
         tabbedPane = new PNSBadgeTabbedPane();
         if (ClientContext.isWin()) { tabbedPane.setButtonPanelFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10)); }
-        tabbedPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        tabbedPane.setBorder(new InspectorBorder(null));
+        tabbedPane.setButtonPanelBackground(IInspector.BACKGROUND);
 
         // 全体の container
         container = new HorizontalPanel();
@@ -111,10 +113,12 @@ public class PatientInspector {
             // 文書履歴だけは必ず Tab に入れる.
             if (pref.getName().equals(InspectorCategory.文書履歴.name())) {
                 tabbedPane.addTab(pref.getTitle(), pref.getPanel());
+                container.add(Box.createVerticalStrut(TOP_STRUT));
                 container.add(tabbedPane);
 
             } else {
                 pref.getPanel().setBorder(pref.getBorder());
+                container.add(Box.createVerticalStrut(TOP_STRUT));
                 container.add(pref.getPanel());
             }
         }

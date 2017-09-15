@@ -49,7 +49,7 @@ public class PNSTitledBorder extends AbstractBorder {
      * @param titleFont
      * @param titleColor
      */
-    PNSTitledBorder(Border border, String text, int titleJustification, int titlePosition, Font titleFont, Color titleColor) {
+    public PNSTitledBorder(Border border, String text, int titleJustification, int titlePosition, Font titleFont, Color titleColor) {
         titleBorder = border;
         title = text == null? "" : text;
         justification = titleJustification;

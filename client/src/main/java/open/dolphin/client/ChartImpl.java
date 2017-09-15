@@ -21,6 +21,7 @@ import open.dolphin.impl.pvt.PvtListener;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DiagnosisInspector;
 import open.dolphin.inspector.DocumentHistory;
+import open.dolphin.inspector.IInspector;
 import open.dolphin.inspector.PatientInspector;
 import open.dolphin.project.Project;
 import open.dolphin.stampbox.StampBoxPlugin;
@@ -578,6 +579,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // 全体をレイアウトする
         JPanel inspectorPanel = new JPanel();
+        inspectorPanel.setOpaque(true);
+        inspectorPanel.setBackground(IInspector.BACKGROUND);
         inspectorPanel.setLayout(new BoxLayout(inspectorPanel, BoxLayout.Y_AXIS));
         inspectorPanel.add(inspector.getBasicInfoInspector().getPanel());
         inspectorPanel.add(inspector.getPanel());
