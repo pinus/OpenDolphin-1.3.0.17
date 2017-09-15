@@ -578,7 +578,16 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         tabbedPane.getAccessoryPanel().add(keywordPanel, BorderLayout.EAST);
 
         // 全体をレイアウトする
-        JPanel inspectorPanel = new JPanel();
+        JPanel inspectorPanel = new JPanel() {
+            // 右側の境界線を描く
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                g.setColor(IInspector.BORDER_COLOR);
+                g.drawLine(getWidth()-1, 0, getWidth()-1, getHeight()-1);
+            }
+        };
         inspectorPanel.setOpaque(true);
         inspectorPanel.setBackground(IInspector.BACKGROUND);
         inspectorPanel.setLayout(new BoxLayout(inspectorPanel, BoxLayout.Y_AXIS));

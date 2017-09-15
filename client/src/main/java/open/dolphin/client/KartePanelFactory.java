@@ -3,6 +3,7 @@ package open.dolphin.client;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
@@ -21,7 +22,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
-import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.inspector.IInspector;
 import open.dolphin.ui.MyJScrollPane;
 
 /**
@@ -208,12 +209,23 @@ public class KartePanelFactory {
         soaTextPane.putClientProperty("Quaqua.TextComponent.showPopup", false);
         pTextPane.putClientProperty("Quaqua.TextComponent.showPopup", false);
 
-        timeStampPanel = new JPanel();
+        timeStampPanel = new JPanel() {
+            // フラットなタイトルバー
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void paintBorder(Graphics g) {
+                g.setColor(IInspector.BACKGROUND);
+                g.fillRect(0, 0, getWidth(), getHeight());
+                g.setColor(IInspector.BORDER_COLOR);
+                g.drawLine(0, 0, getWidth()-1, 0);
+                g.drawLine(0, getHeight()-1, getWidth()-1, getHeight()-1);
+            }
+        };
         timeStampPanel.setMaximumSize(new Dimension(Short.MAX_VALUE, TIMESTAMP_PANEL_HEIGHT));
         timeStampPanel.setMinimumSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
         timeStampPanel.setPreferredSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
         timeStampPanel.setLayout(new BorderLayout());
-        timeStampPanel.setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
+        //timeStampPanel.setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
 
         timeStampLabel = new JLabel();
         timeStampPanel.add(timeStampLabel, BorderLayout.CENTER);
