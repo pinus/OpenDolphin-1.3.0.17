@@ -24,7 +24,7 @@ import open.dolphin.ui.PNSBadgeTabbedPane;
  */
 public class PatientInspector {
 
-    public static int TOP_STRUT = 10;
+    public static int TOP_STRUT = 3;
     // 個々のインスペクタ
     // 患者基本情報 (固定インスペクタ)
     private BasicInfoInspector basicInfoInspector;

@@ -585,12 +585,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             public void paint(Graphics g) {
                 super.paint(g);
                 g.setColor(IInspector.BORDER_COLOR);
-                g.drawLine(getWidth()-1, 0, getWidth()-1, getHeight()-1);
+                g.drawLine(getWidth()-1, 30, getWidth()-1, getHeight()-1);
             }
         };
         inspectorPanel.setOpaque(true);
         inspectorPanel.setBackground(IInspector.BACKGROUND);
         inspectorPanel.setLayout(new BoxLayout(inspectorPanel, BoxLayout.Y_AXIS));
+        inspectorPanel.setPreferredSize(new Dimension(IInspector.DEFAULT_WIDTH+20, 10));
+
         inspectorPanel.add(inspector.getBasicInfoInspector().getPanel());
         inspectorPanel.add(inspector.getPanel());
 

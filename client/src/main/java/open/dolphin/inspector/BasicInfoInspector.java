@@ -1,9 +1,9 @@
 package open.dolphin.inspector;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.Component;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.geom.AffineTransform;
 import javax.swing.Box;
@@ -11,13 +11,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.AbstractBorder;
 import javax.swing.border.Border;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.SimpleAddressModel;
-import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.MMLDate;
 import open.dolphin.util.StringTool;
 
@@ -30,23 +30,28 @@ public class BasicInfoInspector implements IInspector {
     public static final String NAME = "患者情報";
 
     private static final Color FONT_COLOR = new Color(20,20,140); // 濃い青
-    private static final Border MALE_BORDER = PNSBorderFactory.createTitleBarBorderLightBlue(new Insets(0,0,0,0));
-    private static final Border FEMALE_BORDER = PNSBorderFactory.createTitleBarBorderPink(new Insets(0,0,0,0));
-    private static final Border UNKNOWN_BORDER = PNSBorderFactory.createTitleBarBorderGray(new Insets(0,0,0,0));
-    private static final int INDENT = 8;
+    private static final Color MALE_COLOR = new Color(230,243,243);
+    private static final Color FEMALE_COLOR = new Color(254,221,242);
+    private static final Color INDETERMINATE_COLOR = Color.LIGHT_GRAY;
 
-    private JPanel panel;
+    private final Border MALE_BORDER = new NameBorder(MALE_COLOR);
+    private final Border FEMALE_BORDER = new NameBorder(FEMALE_COLOR);
+    private final Border UNKNOWN_BORDER = new NameBorder(INDETERMINATE_COLOR);
+
     private JLabel nameLabel;
     private JLabel kanaLabel;
     private JLabel ageLabel;
     private JLabel birthdayLabel;
     private JLabel addressLabel;
 
+    private JPanel namePanel;
+    private JPanel panel;
+
     // Context このインスペクタの親コンテキスト
     private final ChartImpl context;
 
     /**
-     * BasicInfoInspectorオブジェクトを生成する.
+     * BasicInfoInspector オブジェクトを生成する.
      * @param parent
      */
     public BasicInfoInspector(PatientInspector parent) {
@@ -71,33 +76,16 @@ public class BasicInfoInspector implements IInspector {
         kanaLabel.setOpaque(false);
 
         ageLabel = new JLabel(" ");
-        //ageLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        ageLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         ageLabel.setForeground(FONT_COLOR);
-        ageLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        ageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         ageLabel.setOpaque(false);
 
         birthdayLabel = new JLabel(" ");
         birthdayLabel.setForeground(FONT_COLOR);
-        birthdayLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
-        birthdayLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        birthdayLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        birthdayLabel.setHorizontalAlignment(SwingConstants.LEFT);
         birthdayLabel.setOpaque(false);
-
-        JPanel namePanel = new JPanel();
-        namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
-        namePanel.setOpaque(false);
-        namePanel.add(Box.createHorizontalStrut(INDENT));
-        namePanel.add(nameLabel);
-        namePanel.add(kanaLabel);
-        namePanel.add(Box.createHorizontalGlue());
-        namePanel.add(ageLabel);
-        namePanel.add(Box.createHorizontalStrut(INDENT));
-
-        JPanel agePanel = new JPanel();
-        agePanel.setOpaque(false);
-        agePanel.setLayout(new BoxLayout(agePanel, BoxLayout.X_AXIS));
-        agePanel.add(Box.createHorizontalStrut(INDENT));
-        agePanel.add(birthdayLabel);
-        agePanel.add(Box.createHorizontalGlue());
 
         addressLabel = new JLabel("　");
         addressLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -105,23 +93,72 @@ public class BasicInfoInspector implements IInspector {
         addressLabel.setOpaque(false);
         addressLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
 
-        JPanel addressPanel = new JPanel();
-        addressPanel.setLayout(new FlowLayout(FlowLayout.LEFT, INDENT, 0));
-        addressPanel.setOpaque(false);
-        addressPanel.add(addressLabel);
+        // 名前，年齢を表示するパネル
+        namePanel = new JPanel();
+        namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
+        namePanel.setOpaque(false);
+        namePanel.add(nameLabel);
+        namePanel.add(kanaLabel);
+        namePanel.add(Box.createHorizontalGlue());
+        namePanel.add(ageLabel);
 
-        panel = new JPanel();
+        JPanel birthdayPanel = new JPanel();
+        birthdayPanel.setOpaque(true);
+        birthdayPanel.setBackground(IInspector.BACKGROUND);
+        birthdayPanel.setLayout(new BoxLayout(birthdayPanel, BoxLayout.X_AXIS));
+        birthdayPanel.add(birthdayLabel);
+        birthdayPanel.add(Box.createHorizontalGlue());
+
+        JPanel addressPanel = new JPanel();
+        addressPanel.setOpaque(true);
+        addressPanel.setBackground(IInspector.BACKGROUND);
+        addressPanel.setLayout(new BoxLayout(addressPanel, BoxLayout.X_AXIS));
+        addressPanel.add(addressLabel);
+        addressPanel.add(Box.createHorizontalGlue());
+
+        // 生年月日，住所を入れたパネル
+        JPanel ptInfoPanel = new JPanel();
+        ptInfoPanel.setOpaque(true);
+        ptInfoPanel.setBackground(IInspector.BACKGROUND);
+        ptInfoPanel.setLayout(new BoxLayout(ptInfoPanel, BoxLayout.Y_AXIS));
+        ptInfoPanel.add(Box.createVerticalStrut(3));
+        ptInfoPanel.add(birthdayPanel);
+        ptInfoPanel.add(addressPanel);
+        ptInfoPanel.add(Box.createVerticalStrut(5));
+
+        // 名前パネルに頭のインデントを入れたもの
+        JPanel upperPanel = new JPanel();
+        upperPanel.setLayout(new BoxLayout(upperPanel, BoxLayout.X_AXIS));
+        upperPanel.add(Box.createHorizontalStrut(5));
+        upperPanel.add(namePanel);
+
+        // 生年月日，住所パネルにインデントを入れたもの
+        JPanel lowerPanel = new JPanel();
+        lowerPanel.setOpaque(true);
+        lowerPanel.setBackground(IInspector.BACKGROUND);
+        lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.X_AXIS));
+        lowerPanel.add(Box.createHorizontalStrut(15));
+        lowerPanel.add(ptInfoPanel);
+        lowerPanel.add(Box.createHorizontalStrut(10));
+
+        // 境界線つき
+        panel = new JPanel() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                g.setColor(IInspector.BORDER_COLOR);
+                g.drawLine(0, 30, getWidth()-1, 30);
+                g.drawLine(10, getHeight()-1, getWidth()-11, getHeight()-1);
+
+            }
+        };
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setName(NAME);
-        panel.setPreferredSize(new Dimension(IInspector.DEFAULT_WIDTH, 60));
-        panel.setMaximumSize(new Dimension(300, 60));
-        panel.setMinimumSize(new Dimension(0, 60));
+
+        panel.add(upperPanel);
         panel.add(Box.createVerticalStrut(5));
-        panel.add(namePanel);
-        panel.add(Box.createVerticalStrut(3));
-        panel.add(agePanel);
-        panel.add(addressPanel);
-        panel.add(Box.createVerticalStrut(5));
+        panel.add(lowerPanel);
     }
 
     /**
@@ -143,15 +180,25 @@ public class BasicInfoInspector implements IInspector {
 
         String kanaName = "";
 
-        // kanjiName が全てカタカナの場合以外は kanaName を表示する
+        // kanjiName が全てカタカナの場合以外は kanaName を表示する (13863, 14642, 20205, 15660, 5035)
+        int maxLength = 14;
         String test = kanjiName.replaceAll("[　,\\s]", ""); // スペースを除去
 
-        if (! StringTool.isAllKatakana(test)) {
+        if (StringTool.isAllKatakana(test)) {
+            // 全部がカナ文字の場合
+            // 13文字以上の場合圧縮
+            if (kanjiName.length() > maxLength) {
+                float sy = (float) maxLength / (float) kanjiName.length();
+                Font font = nameLabel.getFont().deriveFont(AffineTransform.getScaleInstance(sy, 1));
+                nameLabel.setFont(font);
+            }
+
+        } else {
             kanaName = "（" + patient.getKanaName() + "）";
 
             // 名前が長い場合は，カナ名を圧縮する
-            if (kanjiName.length() + kanaName.length() > 15) {
-                float sy = (float) (15.5 - kanjiName.length()) / kanaName.length();
+            if (kanjiName.length() + kanaName.length() > maxLength) {
+                float sy = (float) (maxLength - kanjiName.length() + 1) / (float) kanaName.length();
                 Font font = nameLabel.getFont().deriveFont(AffineTransform.getScaleInstance(sy, 1));
                 kanaLabel.setFont(font);
             }
@@ -177,13 +224,13 @@ public class BasicInfoInspector implements IInspector {
 
         switch (patient.getGenderDesc()) {
             case IInfoModel.MALE_DISP:
-                panel.setBorder(MALE_BORDER);
+                namePanel.setBorder(MALE_BORDER);
                 break;
             case IInfoModel.FEMALE_DISP:
-                panel.setBorder(FEMALE_BORDER);
+                namePanel.setBorder(FEMALE_BORDER);
                 break;
             default:
-                panel.setBorder(UNKNOWN_BORDER);
+                namePanel.setBorder(UNKNOWN_BORDER);
                 break;
         }
     }
@@ -196,5 +243,29 @@ public class BasicInfoInspector implements IInspector {
     @Override
     public String getTitle() {
         return NAME;
+    }
+
+    private class NameBorder extends AbstractBorder {
+        private static final long serialVersionUID = 1L;
+
+        private Insets borderInsets = new Insets(4,8,5,4);
+        private Color color;
+
+        public NameBorder(Color c) {
+            color = c;
+        }
+
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.setColor(color);
+            g.fillRoundRect(0, 0, width-1, height-1, 8, 8);
+            g.setColor(IInspector.BORDER_COLOR);
+            g.drawRoundRect(0, 0, width-1, height-1, 8, 8);
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return borderInsets;
+        }
     }
 }
