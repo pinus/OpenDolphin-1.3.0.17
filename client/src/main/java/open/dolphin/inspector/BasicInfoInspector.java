@@ -1,9 +1,11 @@
 package open.dolphin.inspector;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.geom.AffineTransform;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -87,6 +89,8 @@ public class BasicInfoInspector implements IInspector {
         namePanel.add(nameLabel);
         namePanel.add(kanaLabel);
         namePanel.add(Box.createHorizontalGlue());
+        namePanel.add(ageLabel);
+        namePanel.add(Box.createHorizontalStrut(INDENT));
 
         JPanel agePanel = new JPanel();
         agePanel.setOpaque(false);
@@ -94,8 +98,6 @@ public class BasicInfoInspector implements IInspector {
         agePanel.add(Box.createHorizontalStrut(INDENT));
         agePanel.add(birthdayLabel);
         agePanel.add(Box.createHorizontalGlue());
-        agePanel.add(ageLabel);
-        agePanel.add(Box.createHorizontalStrut(INDENT));
 
         addressLabel = new JLabel("　");
         addressLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -111,6 +113,9 @@ public class BasicInfoInspector implements IInspector {
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setName(NAME);
+        panel.setPreferredSize(new Dimension(IInspector.DEFAULT_WIDTH, 60));
+        panel.setMaximumSize(new Dimension(300, 60));
+        panel.setMinimumSize(new Dimension(0, 60));
         panel.add(Box.createVerticalStrut(5));
         panel.add(namePanel);
         panel.add(Box.createVerticalStrut(3));
@@ -145,11 +150,11 @@ public class BasicInfoInspector implements IInspector {
             kanaName = "（" + patient.getKanaName() + "）";
 
             // 名前が長い場合は，カナ名を圧縮する
-            //if (kanjiName.length() + kanaName.length() > 30) {
-            //    float sy = (float) (15.5 - kanjiName.length()) / kanaName.length();
-            //    Font font = nameLabel.getFont().deriveFont(AffineTransform.getScaleInstance(sy, 1));
-            //    kanaLabel.setFont(font);
-            //}
+            if (kanjiName.length() + kanaName.length() > 15) {
+                float sy = (float) (15.5 - kanjiName.length()) / kanaName.length();
+                Font font = nameLabel.getFont().deriveFont(AffineTransform.getScaleInstance(sy, 1));
+                kanaLabel.setFont(font);
+            }
         }
 
         nameLabel.setText(kanjiName);
