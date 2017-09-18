@@ -148,7 +148,7 @@ public class BasicInfoInspector implements IInspector {
             public void paint(Graphics g) {
                 super.paint(g);
                 g.setColor(IInspector.BORDER_COLOR);
-                g.drawLine(0, 30, getWidth()-1, 30);
+                //g.drawLine(0, 30, getWidth()-1, 30);
                 g.drawLine(10, getHeight()-1, getWidth()-11, getHeight()-1);
 
             }
