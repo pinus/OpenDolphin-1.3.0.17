@@ -525,7 +525,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         //
         // ORCA タブが選択されていて ORCA に接続がない場合を避ける
         //
-        index = index == IInfoModel.TAB_INDEX_ORCA ? 0 : index;
+        // index = index == IInfoModel.TAB_INDEX_ORCA ? 0 : index; // 不要
         userBox.setSelectedIndex(index);
 
         //

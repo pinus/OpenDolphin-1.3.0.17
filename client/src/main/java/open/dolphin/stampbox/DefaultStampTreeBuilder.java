@@ -225,7 +225,8 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
             treeInfo.setEntity(IInfoModel.ENTITY_ORCA);
             rootNode = new StampTreeNode(treeInfo);
             OrcaTree tree = new OrcaTree(new StampTreeModel(rootNode));
-            products.add(IInfoModel.TAB_INDEX_ORCA, tree);
+            // products.add(IInfoModel.TAB_INDEX_ORCA, tree);
+            products.add(tree); // UserStampBox でソートすることにしたので，どこに入れてもいい
             if (logger != null) {
                 logger.debug("ORCAセットを加えました");
             }
