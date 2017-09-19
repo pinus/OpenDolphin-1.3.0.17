@@ -37,6 +37,9 @@ public class BasicInfoInspector implements IInspector {
     private final Border MALE_BORDER = new NameBorder(MALE_COLOR);
     private final Border FEMALE_BORDER = new NameBorder(FEMALE_COLOR);
     private final Border UNKNOWN_BORDER = new NameBorder(INDETERMINATE_COLOR);
+    private final Border MALE_BORDER2 = new AgeBorder(MALE_COLOR);
+    private final Border FEMALE_BORDER2 = new AgeBorder(FEMALE_COLOR);
+    private final Border UNKNOWN_BORDER2 = new AgeBorder(INDETERMINATE_COLOR);
 
     private JLabel nameLabel;
     private JLabel kanaLabel;
@@ -45,6 +48,8 @@ public class BasicInfoInspector implements IInspector {
     private JLabel addressLabel;
 
     private JPanel namePanel;
+    private JPanel agePanel;
+    private JPanel ageLayout;
     private JPanel panel;
 
     // Context このインスペクタの親コンテキスト
@@ -100,7 +105,7 @@ public class BasicInfoInspector implements IInspector {
         namePanel.add(nameLabel);
         namePanel.add(kanaLabel);
         namePanel.add(Box.createHorizontalGlue());
-        namePanel.add(ageLabel);
+        //namePanel.add(ageLabel);
 
         JPanel birthdayPanel = new JPanel();
         birthdayPanel.setOpaque(true);
@@ -159,6 +164,19 @@ public class BasicInfoInspector implements IInspector {
         panel.add(upperPanel);
         panel.add(Box.createVerticalStrut(5));
         panel.add(lowerPanel);
+
+        // agePanel test
+        agePanel = new JPanel();
+        agePanel.setLayout(new BoxLayout(agePanel, BoxLayout.Y_AXIS));
+        agePanel.add(Box.createVerticalStrut(1));
+        agePanel.add(ageLabel);
+        agePanel.add(Box.createVerticalStrut(1));
+
+        ageLayout = new JPanel();
+        ageLayout.setLayout(new BoxLayout(ageLayout, BoxLayout.Y_AXIS));
+        //ageLayout.add(Box.createVerticalStrut(2));
+        ageLayout.add(agePanel);
+        //ageLayout.add(Box.createVerticalStrut(2));
     }
 
     /**
@@ -168,6 +186,10 @@ public class BasicInfoInspector implements IInspector {
     @Override
     public JPanel getPanel() {
         return panel;
+    }
+
+    public JPanel getAgePanel() {
+        return ageLayout;
     }
 
     /**
@@ -181,7 +203,7 @@ public class BasicInfoInspector implements IInspector {
         String kanaName = "";
 
         // kanjiName が全てカタカナの場合以外は kanaName を表示する (13863, 14642, 20205, 15660, 5035)
-        int maxLength = 14;
+        int maxLength = 20;
         String test = kanjiName.replaceAll("[　,\\s]", ""); // スペースを除去
 
         if (StringTool.isAllKatakana(test)) {
@@ -225,12 +247,15 @@ public class BasicInfoInspector implements IInspector {
         switch (patient.getGenderDesc()) {
             case IInfoModel.MALE_DISP:
                 namePanel.setBorder(MALE_BORDER);
+                agePanel.setBorder(MALE_BORDER2);
                 break;
             case IInfoModel.FEMALE_DISP:
                 namePanel.setBorder(FEMALE_BORDER);
+                agePanel.setBorder(FEMALE_BORDER2);
                 break;
             default:
                 namePanel.setBorder(UNKNOWN_BORDER);
+                agePanel.setBorder(UNKNOWN_BORDER2);
                 break;
         }
     }
@@ -249,23 +274,51 @@ public class BasicInfoInspector implements IInspector {
         private static final long serialVersionUID = 1L;
 
         private Insets borderInsets = new Insets(4,8,5,4);
+        private int r = 8;
         private Color color;
+        private int angle;
 
         public NameBorder(Color c) {
+            this(c, SwingConstants.RIGHT);
+        }
+
+        public NameBorder(Color c, int a) {
             color = c;
+            angle = a;
         }
 
         @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             g.setColor(color);
-            g.fillRoundRect(0, 0, width-1, height-1, 8, 8);
+            g.fillRoundRect(0, 0, width, height, r, r);
             g.setColor(IInspector.BORDER_COLOR);
-            g.drawRoundRect(0, 0, width-1, height-1, 8, 8);
+            g.drawRoundRect(0, 0, width, height, r, r);
+
+            if (angle == SwingConstants.RIGHT) {
+                g.setColor(color);
+                g.fillRect(width - r, 0, width - r, height);
+                g.setColor(IInspector.BORDER_COLOR);
+                g.drawLine(width-r, 0, width, 0);
+                g.drawLine(width-r, height, width, height);
+
+            } else {
+                g.setColor(color);
+                g.fillRect(0, 0, r, height);
+                g.setColor(IInspector.BORDER_COLOR);
+                g.drawLine(0, 0, r, 0);
+                g.drawLine(0, height, r, height);
+            }
         }
 
         @Override
         public Insets getBorderInsets(Component c) {
             return borderInsets;
+        }
+    }
+
+    private class AgeBorder extends NameBorder {
+        public AgeBorder(Color c) {
+            super(c, SwingConstants.LEFT);
         }
     }
 }

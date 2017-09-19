@@ -532,8 +532,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         //myToolPanel.add(toolBar);
 
         // 病名検索フィールド
-        CompletableSearchField keywordFld = new CompletableSearchField(30);
-        keywordFld.setPreferredSize(new Dimension(300,26));
+        CompletableSearchField keywordFld = new CompletableSearchField(15);
+        keywordFld.setPreferredSize(new Dimension(300,26)); // width は JTextField の columns が優先される
         keywordFld.setLabel("病名検索");
         keywordFld.setPreferences(Preferences.userNodeForPackage(ChartToolBar.class).node(ChartImpl.class.getName()));
         keywordFld.addActionListener(e -> {
@@ -575,7 +575,10 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // Document プラグインのタブを生成する
         tabbedPane = loadDocuments();
+
         tabbedPane.getAccessoryPanel().add(keywordPanel, BorderLayout.EAST);
+        JPanel agePanel = inspector.getBasicInfoInspector().getAgePanel();
+        tabbedPane.getAccessoryPanel().add(agePanel, BorderLayout.WEST);
 
         // 全体をレイアウトする
         JPanel inspectorPanel = new JPanel() {
