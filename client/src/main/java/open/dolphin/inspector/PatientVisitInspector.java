@@ -1,5 +1,6 @@
 package open.dolphin.inspector;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class PatientVisitInspector implements IInspector {
         pvtCode = CalendarEvent.PVT.name();
         calendarPanel = new CalendarPanel();
         calendarPanel.setName(CATEGORY.name());
-        calendarPanel.setCalendarBackground(BACKGROUND);
+        calendarPanel.setCalendarBackground(Color.WHITE);
 
         calendarPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         calendarPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));

@@ -14,14 +14,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 1L;
 
+    private static final Color BACKGROUND = new Color (240,240,240);
+    private static final Color BORDER = Color.LIGHT_GRAY;
+
     // バックグランドのグラデーションカラー
-    private static final int[] BG = {240,255,255,255,255,255,255,251,247,244,241,231,231,231,231,231,231,241,234};
-    private static final Color[] BGCOL = new Color[BG.length];
-    static {
-        for (int i=0; i<BG.length; i++) {
-            BGCOL[i] = new Color(BG[i], BG[i], BG[i]);
-        }
-    }
+    //private static final int[] BG = {240,255,255,255,255,255,255,251,247,244,241,231,231,231,231,231,231,241,234};
+    //private static final Color[] BGCOL = new Color[BG.length];
+    //static {
+    //    for (int i=0; i<BG.length; i++) {
+    //        BGCOL[i] = new Color(BG[i], BG[i], BG[i]);
+    //    }
+    //}
 
     public CalendarHeaderRenderer() {
         init();
@@ -57,12 +60,20 @@ public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
     // バックグランドにグラデーションをつける
     @Override
     public void paintComponent(Graphics graphics) {
-        for (int y=0; y<getHeight();y++) {
-            Graphics g = graphics.create();
-            g.setColor(BGCOL[y]);
-            g.drawLine(0, y, getWidth()-1, y);
-            g.dispose();
-        }
+        // フラットなバックグランド
+        Graphics g = graphics.create();
+        g.setColor(BACKGROUND);
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(BORDER);
+        g.drawLine(0, getHeight()-1, getWidth()-1, getHeight()-1);
+        g.dispose();
+
+//        for (int y=0; y<getHeight();y++) {
+//            Graphics g = graphics.create();
+//            g.setColor(BGCOL[y]);
+//            g.drawLine(0, y, getWidth()-1, y);
+//            g.dispose();
+//        }
         super.paintComponent(graphics);
     }
 }
