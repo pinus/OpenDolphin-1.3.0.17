@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -274,7 +276,7 @@ public class BasicInfoInspector implements IInspector {
         private static final long serialVersionUID = 1L;
 
         private Insets borderInsets = new Insets(4,8,5,4);
-        private int r = 8;
+        private int r = 10;
         private Color color;
         private int angle;
 
@@ -288,26 +290,34 @@ public class BasicInfoInspector implements IInspector {
         }
 
         @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            g.setColor(color);
-            g.fillRoundRect(0, 0, width, height, r, r);
-            g.setColor(IInspector.BORDER_COLOR);
-            g.drawRoundRect(0, 0, width, height, r, r);
+        public void paintBorder(Component c, Graphics graphics, int x, int y, int width, int height) {
+            Graphics2D g = (Graphics2D) graphics.create();
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+            g.setColor(color);
+            // 全体を囲む
+            g.fillRoundRect(0, 0, width-1, height-1, r, r);
+            g.setColor(IInspector.BORDER_COLOR);
+            g.drawRoundRect(0, 0, width-1, height-1, r, r);
+
+            // 右を角に塗り直す
             if (angle == SwingConstants.RIGHT) {
                 g.setColor(color);
                 g.fillRect(width - r, 0, width - r, height);
                 g.setColor(IInspector.BORDER_COLOR);
                 g.drawLine(width-r, 0, width, 0);
-                g.drawLine(width-r, height, width, height);
+                g.drawLine(width-r, height-1, width, height-1);
 
             } else {
+            // 左を角に塗り直す
                 g.setColor(color);
                 g.fillRect(0, 0, r, height);
                 g.setColor(IInspector.BORDER_COLOR);
                 g.drawLine(0, 0, r, 0);
-                g.drawLine(0, height, r, height);
+                g.drawLine(0, height-1, r, height-1);
             }
+
+            g.dispose();
         }
 
         @Override
