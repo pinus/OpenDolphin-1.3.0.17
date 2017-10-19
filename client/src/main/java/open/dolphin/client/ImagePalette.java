@@ -111,12 +111,12 @@ public class ImagePalette extends JPanel {
                     entry.setImageIcon(adjustImageSize(icon, imageSize));
                     entry.setUrl(url.toString());
                     imageList.add(entry);
-                    imageList.sort(Comparator.comparing(ImageEntry::getUrl));
 
                 }catch (MalformedURLException e) {
                     e.printStackTrace(System.err);
                 }
             }
+            imageList.sort(Comparator.comparing(ImageEntry::getUrl));
             imageTableModel.setImageList(imageList);
         }
     }
