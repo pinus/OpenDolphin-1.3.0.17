@@ -12,6 +12,7 @@ import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -110,6 +111,7 @@ public class ImagePalette extends JPanel {
                     entry.setImageIcon(adjustImageSize(icon, imageSize));
                     entry.setUrl(url.toString());
                     imageList.add(entry);
+                    imageList.sort(Comparator.comparing(ImageEntry::getUrl));
 
                 }catch (MalformedURLException e) {
                     e.printStackTrace(System.err);
