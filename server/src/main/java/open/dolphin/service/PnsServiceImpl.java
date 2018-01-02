@@ -67,7 +67,7 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
     }
 
     /**
-     * hibernate search のインデックスを作る
+     * hibernate search のインデックスを作る.
      * standalone.xml のトランザクション default-timeout 変更必要
      *  ex) 4 hrs = 14400 secs
      *      coordinator-environment default-timeout="14400"
@@ -78,9 +78,12 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
         MassIndexer massIndexer = fullTextEntityManager.createIndexer(DocumentModel.class);
 
+        int core = Runtime.getRuntime().availableProcessors();
+        logger.info("processor number = " + core);
+
         massIndexer.purgeAllOnStart(true)
                 .batchSizeToLoadObjects(30)
-                .threadsToLoadObjects(4);
+                .threadsToLoadObjects(core);
 
         massIndexer.start();
     }
