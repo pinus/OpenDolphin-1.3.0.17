@@ -8,7 +8,7 @@ import java.util.GregorianCalendar;
  *
  * @author Kazushi Minagawa
  */
-public class SimpleDate extends InfoModel implements Comparable {
+public class SimpleDate extends InfoModel implements Comparable<SimpleDate> {
     private static final long serialVersionUID = 2137848922359964710L;
 
     private int year;
@@ -88,10 +88,9 @@ public class SimpleDate extends InfoModel implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(SimpleDate other) {
 
-        if (o != null && o.getClass() == this.getClass()) {
-            SimpleDate other = (SimpleDate) o;
+        if (other != null) {
             int oYear = other.getYear();
             int oMonth = other.getMonth();
             int oDay = other.getDay();
@@ -114,7 +113,7 @@ public class SimpleDate extends InfoModel implements Comparable {
 
     @Override
     public boolean equals(Object other) {
-        return (other instanceof SimpleDate) && compareTo(other) == 0;
+        return (other instanceof SimpleDate) && compareTo((SimpleDate) other) == 0;
     }
 
     @Override

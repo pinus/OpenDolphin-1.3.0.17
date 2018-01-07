@@ -10,7 +10,7 @@ import javax.persistence.Transient;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 @Embeddable
-public class ModuleInfoBean extends InfoModel implements Comparable {
+public class ModuleInfoBean extends InfoModel implements Comparable<ModuleInfoBean> {
     private static final long serialVersionUID = -3011774071100921454L;
 
     /** Module 名: StampTree、 オーダ履歴当に表示する名前 */
@@ -141,9 +141,9 @@ public class ModuleInfoBean extends InfoModel implements Comparable {
      * @return 比較値
      */
     @Override
-    public int compareTo(Object other) {
-        if (other != null && getClass() == other.getClass()) {
-            int result = getStampNumber() - ((ModuleInfoBean)other).getStampNumber();
+    public int compareTo(ModuleInfoBean other) {
+        if (other != null) {
+            int result = getStampNumber() - other.getStampNumber();
             return result;
         }
         return -1;
@@ -151,7 +151,7 @@ public class ModuleInfoBean extends InfoModel implements Comparable {
 
     @Override
     public boolean equals(Object other) {
-        return (other instanceof ModuleInfoBean) && compareTo(other) == 0;
+        return (other instanceof ModuleInfoBean) && compareTo((ModuleInfoBean) other) == 0;
     }
 
     @Override

@@ -8,7 +8,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "d_appo")
-public class AppointmentModel extends KarteEntryBean {
+public class AppointmentModel extends KarteEntryBean<AppointmentModel> {
     private static final long serialVersionUID = 6166365309219504946L;
 
     public static final int TT_NONE = 0;
@@ -83,9 +83,9 @@ public class AppointmentModel extends KarteEntryBean {
      * @return
      */
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(AppointmentModel o) {
         Date s1 = this.date;
-        Date s2 = ((AppointmentModel) o).getDate();
+        Date s2 = o.getDate();
         return s1.compareTo(s2);
     }
 

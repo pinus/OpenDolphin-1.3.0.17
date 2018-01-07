@@ -12,10 +12,11 @@ import org.hibernate.search.annotations.IndexedEmbedded;
  * KarteEntry
  *
  * @author Minagawa,Kazushi
+ * @param <T>
  */
 @MappedSuperclass
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
-public class KarteEntryBean extends InfoModel implements Comparable {
+public class KarteEntryBean<T extends KarteEntryBean> extends InfoModel implements Comparable<T> {
 
     private static final long serialVersionUID = -9126237924533456842L;
 
@@ -143,12 +144,9 @@ public class KarteEntryBean extends InfoModel implements Comparable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) { return true; }
+        if (obj == null) { return false; }
+        if (getClass() != obj.getClass()) {return false; }
         final KarteEntryBean other = (KarteEntryBean) obj;
         return (id == other.getId());
     }
@@ -159,14 +157,14 @@ public class KarteEntryBean extends InfoModel implements Comparable {
      * @return Comparable の比較値
      */
     @Override
-    public int compareTo(Object other) {
-        if (other != null && getClass() == other.getClass()) {
+    public int compareTo(T other) {
+        if (other != null) {
             Date date1 = getStarted();
-            Date date2 = ((KarteEntryBean) other).getStarted();
+            Date date2 = other.getStarted();
             int result = compareDate(date1, date2);
             if (result == 0) {
                 date1 = getConfirmed();
-                date2 = ((KarteEntryBean) other).getConfirmed();
+                date2 = other.getConfirmed();
                 result = compareDate(date1, date2);
             }
             return result;

@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
  */
 @Entity
 @Table(name = "d_image")
-public class SchemaModel extends KarteEntryBean {
+public class SchemaModel extends KarteEntryBean<SchemaModel> {
     private static final long serialVersionUID = -2500342431785313368L;
 
     @Embedded
@@ -96,12 +96,12 @@ public class SchemaModel extends KarteEntryBean {
      * @return
      */
     @Override
-    public int compareTo(Object other) {
+    public int compareTo(SchemaModel other) {
         int result = super.compareTo(other);
         if (result == 0) {
-            // primittive なので比較はOK
+            // primitive なので比較はOK
             int no1 = getImageNumber();
-            int no2 = ((SchemaModel) other).getImageNumber();
+            int no2 = other.getImageNumber();
             result = no1 - no2;
         }
         return result;

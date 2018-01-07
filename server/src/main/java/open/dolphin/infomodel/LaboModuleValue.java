@@ -10,7 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "d_labo_module")
-public class LaboModuleValue extends KarteEntryBean {
+public class LaboModuleValue extends KarteEntryBean<LaboModuleValue> {
     private static final long serialVersionUID = 582445940772745523L;
 
     // MMLのUID
@@ -242,15 +242,15 @@ public class LaboModuleValue extends KarteEntryBean {
      * @return 比較値
      */
     @Override
-    public int compareTo(Object other) {
+    public int compareTo(LaboModuleValue other) {
         if (other != null && getClass() == other.getClass()) {
             String sampleTime1 = getSampleTime();
-            String sampleTime2 = ((LaboModuleValue) other).getSampleTime();
+            String sampleTime2 = other.getSampleTime();
             if (sampleTime1 != null && sampleTime2 != null) {
                 return sampleTime1.compareTo(sampleTime2);
             } else {
                 String cf1 = getConfirmDate();
-                String cf2 = ((LaboModuleValue) other).getConfirmDate();
+                String cf2 = other.getConfirmDate();
                 return cf1.compareTo(cf2);
             }
         }

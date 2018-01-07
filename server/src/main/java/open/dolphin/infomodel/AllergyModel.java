@@ -5,7 +5,7 @@ package open.dolphin.infomodel;
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
-public class AllergyModel extends InfoModel implements Comparable {
+public class AllergyModel extends InfoModel implements Comparable<AllergyModel> {
     private static final long serialVersionUID = -6327488237646390391L;
 
     private long observationId;
@@ -74,10 +74,10 @@ public class AllergyModel extends InfoModel implements Comparable {
      * @return 比較値
      */
     @Override
-    public int compareTo(Object other) {
-        if (other != null && getClass() == other.getClass()) {
+    public int compareTo(AllergyModel other) {
+        if (other != null) {
             String val1 = getIdentifiedDate();
-            String val2 = ((AllergyModel)other).getIdentifiedDate();
+            String val2 = other.getIdentifiedDate();
             return val1.compareTo(val2);
         }
         return 1;
@@ -85,7 +85,7 @@ public class AllergyModel extends InfoModel implements Comparable {
 
     @Override
     public boolean equals(Object other) {
-        return (other instanceof AllergyModel) && compareTo(other) == 0;
+        return (other instanceof AllergyModel) && compareTo((AllergyModel) other) == 0;
     }
 
     @Override

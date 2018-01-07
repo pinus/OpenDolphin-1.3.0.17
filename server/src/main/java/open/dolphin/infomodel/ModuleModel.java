@@ -16,7 +16,7 @@ import org.hibernate.search.annotations.Index;
  */
 @Entity
 @Table(name = "d_module")
-public class ModuleModel extends KarteEntryBean {
+public class ModuleModel extends KarteEntryBean<ModuleModel> {
     private static final long serialVersionUID = -8781968977231876023L;;
 
     @Embedded
@@ -74,10 +74,10 @@ public class ModuleModel extends KarteEntryBean {
     }
 
     @Override
-    public int compareTo(Object other) {
+    public int compareTo(ModuleModel other) {
         if (other != null && getClass() == other.getClass()) {
             ModuleInfoBean moduleInfo1 = getModuleInfo();
-            ModuleInfoBean moduleInfo2 = ((ModuleModel)other).getModuleInfo();
+            ModuleInfoBean moduleInfo2 = other.getModuleInfo();
             return moduleInfo1.compareTo(moduleInfo2);
         }
         return -1;

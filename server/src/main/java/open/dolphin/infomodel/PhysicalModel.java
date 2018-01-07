@@ -5,7 +5,7 @@ package open.dolphin.infomodel;
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
-public class PhysicalModel extends InfoModel implements Comparable {
+public class PhysicalModel extends InfoModel implements Comparable<PhysicalModel> {
     private static final long serialVersionUID = 5923780180643179995L;
 
     private long heightId;
@@ -118,10 +118,10 @@ public class PhysicalModel extends InfoModel implements Comparable {
     }
 
     @Override
-    public int compareTo(Object other) {
-        if (other != null && getClass() == other.getClass()) {
+    public int compareTo(PhysicalModel other) {
+        if (other != null) {
             String val1 = getIdentifiedDate();
-            String val2 = ((PhysicalModel)other).getIdentifiedDate();
+            String val2 = other.getIdentifiedDate();
             return val1.compareTo(val2);
         }
         return 1;
@@ -129,7 +129,7 @@ public class PhysicalModel extends InfoModel implements Comparable {
 
     @Override
     public boolean equals(Object other) {
-        return (other instanceof PhysicalModel) && compareTo(other) == 0;
+        return (other instanceof PhysicalModel) && compareTo((PhysicalModel) other) == 0;
     }
 
     @Override

@@ -15,7 +15,7 @@ import javax.persistence.Transient;
  *
  */
 @Embeddable
-public class DocInfoModel extends InfoModel implements Comparable {
+public class DocInfoModel extends InfoModel implements Comparable<DocInfoModel> {
     private static final long serialVersionUID = 5082783120126942636L;
 
     @Transient
@@ -412,14 +412,14 @@ public class DocInfoModel extends InfoModel implements Comparable {
     }
 
     @Override
-    public int compareTo(Object other) {
-        if (other != null && getClass() == other.getClass()) {
+    public int compareTo(DocInfoModel other) {
+        if (other != null) {
             Date val1 = getFirstConfirmDate();
-            Date val2 = ((DocInfoModel) other).getFirstConfirmDate();
+            Date val2 = other.getFirstConfirmDate();
             int result = val1.compareTo(val2);
             if (result == 0) {
                 val1 = getConfirmDate();
-                val2 = ((DocInfoModel) other).getConfirmDate();
+                val2 = other.getConfirmDate();
                 result = val1.compareTo(val2);
             }
             return result;
