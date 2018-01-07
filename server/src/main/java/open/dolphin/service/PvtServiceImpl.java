@@ -127,8 +127,9 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
         // 同じ pvtDate の pvt がすでに登録されていないかどうかチェック
         // pvtDate が違えば，同じ patient id でも新たな pvt と判断する
         List<PatientVisitModel> result = em.createQuery(
-            "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate = :date", PatientVisitModel.class)
+            "select p from PatientVisitModel p where p.facilityId = :fid and p.patient.patientId = :pid and p.pvtDate = :date", PatientVisitModel.class)
             .setParameter("fid", pvt.getFacilityId())
+            .setParameter("pid", pvt.getPatientId())
             .setParameter("date", pvt.getPvtDate())
             .getResultList();
 

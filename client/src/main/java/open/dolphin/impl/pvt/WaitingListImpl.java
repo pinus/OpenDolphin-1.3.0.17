@@ -1007,13 +1007,13 @@ public class WaitingListImpl extends AbstractMainComponent {
      */
     public void hostPvtReceiver(PatientVisitModel hostPvt) {
         // 送られてきた pvt と同じものを local で探す
-        // pvtDate で判定する → Patient ID が同じでも，pvtDate が違えば違う受付と判断する
+        // pvtDate & patientId で判定する → Patient ID が同じでも，pvtDate が違えば違う受付と判断する
         PatientVisitModel localPvt = null;
         int row = -1;
 
         for (int i=0; i<pvtTableModel.getObjectCount(); i++) {
             PatientVisitModel p = pvtTableModel.getObject(i);
-            if (p.getPvtDate().equals(hostPvt.getPvtDate())) {
+            if (p.getPvtDate().equals(hostPvt.getPvtDate()) && p.getPatientId().equals(hostPvt.getPatientId())) {
                 localPvt = p;
                 row = i;
                 break;
