@@ -44,7 +44,7 @@ public class SaveDialog {
 
     private JTextField titleField;
     private JComboBox<String> titleCombo;
-    private JComboBox<String> printCombo;
+    //private JComboBox<String> printCombo;
     private JLabel departmentLabel;
     private JCheckBox sendClaim;
     private JButton okButton;
@@ -91,11 +91,11 @@ public class SaveDialog {
         p2.add(Box.createRigidArea(new Dimension(11, 0)));
 
         // Print
-        printCombo = new JComboBox<>(PRINT_COUNT);
-        printCombo.setSelectedIndex(1);
-        p2.add(new JLabel("印刷部数:"));
-        p2.add(printCombo);
-        content.add(p2);
+        //printCombo = new JComboBox<>(PRINT_COUNT);
+        //printCombo.setSelectedIndex(1);
+        //p2.add(new JLabel("印刷部数:"));
+        //p2.add(printCombo);
+        //content.add(p2);
 
         // CLAIM 送信ありなし
         JPanel p3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -179,16 +179,16 @@ public class SaveDialog {
         }
 
         // 印刷部数選択
-        int count = params.getPrintCount();
-        if (count != -1) {
-            printCombo.setSelectedItem(String.valueOf(count));
+        //int count = params.getPrintCount();
+        //if (count != -1) {
+        //    printCombo.setSelectedItem(String.valueOf(count));
 
-        } else {
+        //} else {
             // いつのまにか preferences: open.dolphin.client.plist
             // karte.print.count が -1 になっていてどうにも直せなくなったことがあった
             // printCombo.setEnabled(false);
-            printCombo.setSelectedItem(0);
-        }
+        //    printCombo.setSelectedItem(0);
+        //}
 
         //
         // CLAIM 送信をチェックする
@@ -230,8 +230,9 @@ public class SaveDialog {
         value.setDepartment(val);
 
         // 印刷部数を取得する
-        int count = Integer.parseInt((String)printCombo.getSelectedItem());
-        value.setPrintCount(count);
+        //int count = Integer.parseInt((String)printCombo.getSelectedItem());
+        //value.setPrintCount(count);
+        value.setPrintCount(0); // 廃止
 
         //
         // CLAIM 送信
@@ -270,8 +271,8 @@ public class SaveDialog {
         // 印刷部数を取得する
         // 仮保存でも印刷するかも知れない
         //
-        int count = Integer.parseInt((String)printCombo.getSelectedItem());
-        value.setPrintCount(count);
+        //int count = Integer.parseInt((String)printCombo.getSelectedItem());
+        //value.setPrintCount(count);
 
         //
         // CLAIM 送信
