@@ -8,7 +8,7 @@ import java.util.Arrays;
  * @author pns
  */
 public enum CalendarEvent {
-    TODAY("今日", new Color(0xffdead)), BIRTHDAY("誕生日", new Color(0xadd8e6)), PVT("受診日", new Color(255,192,203)),
+    TODAY("今日", new Color(251,44,35,200)), BIRTHDAY("誕生日", new Color(0xadd8e6)), PVT("受診日", new Color(255,192,203)),
 
     EXAM_APPO("再診", new Color(255,165,0)), IMAGE_APPO("画像検査", new Color(119,200,211)),
     TEST_APPO("検体検査", new Color(255, 69, 0)), MISC_APPO("その他", new Color(251,239,128)),

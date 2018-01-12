@@ -383,6 +383,7 @@ public class CalendarTable extends JTable {
 
                 // Event "PVT", "TODAY", "BIRTHDAY"
                 eventColor = CalendarEvent.getColor(targetDate.getEventCode());
+                if ("TODAY".equals(targetDate.getEventCode())) { foregroundColor = Color.WHITE; }
 
                 // Holiday
                 if (eventColor == null && targetDate.getEventCode() != null) {
