@@ -88,6 +88,10 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private final ClaimSender claimSender = new ClaimSender();
     // EditorFrame に save 完了を知らせる
     private FinishListener finListener;
+    // KarteEditor ノードの Preferences
+    private Preferences prefs;
+    // 一時保存
+    private Autosave autosave;
 
     private final Logger logger = ClientContext.getBootLogger();
 
@@ -97,7 +101,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
     private void init() {
         setTitle(DEFAULT_TITLE);
-
+        prefs = Preferences.userNodeForPackage(KarteEditor.class);
+        autosave = new Autosave(this);
     }
 
     /**
@@ -384,14 +389,22 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         } else if (getMode() == DOUBLE_MODE) {
             start2();
         }
+        // 自動一時保存スタート
+        autosave.start();
+        logger.info("autosave start");
     }
 
+    /**
+     * KarteEditor の終了処理. EditorFrame から呼ばれる.
+     */
     @Override
     public void stop() {
-        // リソース解放した方がいい？
-        //soaPane.clear();
-        //if (getMode() == DOUBLE_MODE) pPane.clear();
-   }
+        logger.info("autosave stop");
+        autosave.stop();
+
+        soaPane.clear();
+        if (getMode() == DOUBLE_MODE) { pPane.clear(); }
+    }
 
     /**
      * シングルモードを開始する. 初期化の後コールされる.
@@ -596,7 +609,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             params.setDepartment(model.getDocInfo().getDepartmentDesc());
 
             // 印刷枚数をPreferenceから取得する
-            Preferences prefs = Preferences.userNodeForPackage(this.getClass());
             int numPrint = prefs.getInt("karte.print.count", 0);
             params.setPrintCount(numPrint);
 

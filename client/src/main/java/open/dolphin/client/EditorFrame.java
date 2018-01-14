@@ -474,6 +474,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      */
     @Override
     public void stop() {
+        editor.stop();
         mediator.dispose();
         getFrame().setVisible(false);
         getFrame().dispose();
@@ -487,8 +488,11 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     @Override
     public void close() {
         if (mode == EditorMode.EDITOR) {
-            if (editor.isDirty()) { editor.save(); }
-            else { stop(); }
+            if (editor.isDirty()) {
+                editor.save(); // save 呼ぶと完了後に FinishLitener で stop() が呼ばれる
+            } else {
+                stop();
+            }
         } else { stop(); }
     }
 
