@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import open.dolphin.JsonConverter;
+import open.dolphin.infomodel.DocumentModel;
 import org.apache.log4j.Logger;
 
 /**
@@ -34,35 +35,16 @@ public class Autosave implements Runnable {
         editor = e;
     }
 
+    private static File getTempFile(String patientId) {
+        return new File(TMP_DIR + patientId + SUFFIX);
+    }
+
     public void start() {
         String patientId = editor.getContext().getPatient().getPatientId();
-        tmpFile = new File(TMP_DIR + patientId + SUFFIX);
+        tmpFile = getTempFile(patientId);
 
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleWithFixedDelay(this, INITIAL_DELAY, INTERVAL, TimeUnit.SECONDS);
-    }
-
-    public void save(String str) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile))) {
-            bw.write(str);
-
-        } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-        }
-    }
-
-    public String load() {
-        StringBuilder str = new StringBuilder();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(tmpFile))) {
-            String s;
-            while ( (s = br.readLine()) != null) {
-                str.append(s);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-        }
-        return str.toString();
     }
 
     public void stop () {
@@ -70,15 +52,40 @@ public class Autosave implements Runnable {
         executor.shutdown();
     }
 
-    public static boolean exists(String patientId) {
-        File test = new File(TMP_DIR + patientId + SUFFIX);
-        return test.exists();
+    /**
+     * Temporary file をロードする. ファイルが存在しない等，ロードできない場合は null が返る.
+     * @param patientId
+     * @return DocumentModel or null
+     */
+    public static DocumentModel load(String patientId) {
+        File test = getTempFile(patientId);
+        if (! test.exists()) { return null; }
+
+        StringBuilder str = new StringBuilder();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(test))) {
+            String s;
+            while ( (s = br.readLine()) != null) {
+                str.append(s);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+            return null;
+        }
+        return JsonConverter.fromJson(str.toString(), DocumentModel.class);
     }
 
     @Override
     public void run() {
         System.out.println("============= TIMER ======");
+
         String json = JsonConverter.toJson(editor.getModel());
-        save(json);
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile))) {
+            bw.write(json);
+
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
     }
 }
