@@ -52,7 +52,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private static final String DEFAULT_TITLE = "経過記録";
     private static final String UPDATE_TAB_TITLE = "更新";
     // このエディタのモード
-    private int mode = 2;
+    private int mode = DOUBLE_MODE;
     // このエディタのモデル
     private DocumentModel model;
     // このエディタを構成するコンポーネント

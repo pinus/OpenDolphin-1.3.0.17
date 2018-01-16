@@ -385,32 +385,28 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             return;
         }
 
-        String docType = baseDocumentModel.getDocInfo().getDocType();
-        String dept = chart.getPatientVisit().getDepartment();
-        String deptCode = chart.getPatientVisit().getDepartmentCode();
-
-        Preferences prefs = Project.getPreferences();
-
         DocumentModel editModel = chart.getKarteModelToEdit(baseDocumentModel);
         KarteEditor editor = chart.createEditor();
         editor.setModel(editModel);
         editor.setEditable(true);
         editor.setModify(true);
+
+        String docType = baseDocumentModel.getDocInfo().getDocType();
         int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
         editor.setMode(mode);
 
         // このフラグはカルテを別ウインドウで編集するかどうか (使ってない)
-        if (prefs.getBoolean(Project.KARTE_PLACE_MODE, true)) {
+        //if (Project.getPreferences().getBoolean(Project.KARTE_PLACE_MODE, true)) {
             EditorFrame editorFrame = new EditorFrame();
             editorFrame.setChart(getContext());
             editorFrame.setKarteEditor(editor);
             editorFrame.start();
-        } else {
-            editor.setContext(chart);
-            editor.initialize();
-            editor.start();
-            chart.addChartDocument(editor, TITLE_UPDATE);
-        }
+        //} else {
+        //    editor.setContext(chart);
+        //    editor.initialize();
+        //    editor.start();
+        //    chart.addChartDocument(editor, TITLE_UPDATE);
+        //}
     }
 
     /**
