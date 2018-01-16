@@ -2,7 +2,7 @@ package open.dolphin.infomodel;
 
 /**
  * TextStampModel
- * 
+ *
  * @author Kazushi Minagawa
  */
 public class TextStampModel extends InfoModel {

@@ -5,17 +5,17 @@ import java.util.Date;
 
 /**
  * DiagnosisSearchSpec
- * 
+ *
  * @author Minagawa,Kazushi
  */
 public class DiagnosisSearchSpec implements Serializable {
     private static final long serialVersionUID = 3687480184889000203L;
-    
+
     public static final int PATIENT_SEARCH         = 0;
     public static final int CODE_SEARCH            = 1;
     public static final int DIAGNOSIS_SEARCH       = 2;
     public static final int CREATOR_SEARCH         = 3;
-    
+
     private int code;
     private long karteId;
     private String patientId;
@@ -90,7 +90,7 @@ public class DiagnosisSearchSpec implements Serializable {
     public Date getToDate() {
         return toDate;
     }
-    
+
     public void setStatus(char status) {
         this.status = status;
     }

@@ -10,11 +10,11 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class DiagnosisCategoryModel extends InfoModel {
     private static final long serialVersionUID = 7606390775489282517L;
-    
+
     private String diagnosisCategory;
     private String diagnosisCategoryDesc;
     private String diagnosisCategoryCodeSys;
-    
+
     public void setDiagnosisCategory(String category) {
         this.diagnosisCategory = category;
     }
@@ -38,7 +38,7 @@ public class DiagnosisCategoryModel extends InfoModel {
     public String getDiagnosisCategoryCodeSys() {
         return diagnosisCategoryCodeSys;
     }
-    
+
     @Override
     public String toString() {
         return getDiagnosisCategoryDesc();

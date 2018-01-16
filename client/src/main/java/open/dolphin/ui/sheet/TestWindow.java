@@ -11,7 +11,7 @@ public class TestWindow extends JWindow {
     private static final long serialVersionUID = 1L;
 
 
-  
+
 
     public static void main (String[] argv) {
         TestWindow w = new TestWindow();

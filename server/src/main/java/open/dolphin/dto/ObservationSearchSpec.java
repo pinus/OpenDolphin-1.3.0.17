@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * ObservationSearchSpec
- * 
+ *
  * @author Minagawa,kazushi
  */
 public class ObservationSearchSpec implements Serializable {

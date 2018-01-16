@@ -60,7 +60,7 @@ public class DocumentBridgeImpl extends AbstractChartDocument {
 
         // スクロールバーを常に表示しないと，スクロールバーが表示されるときにカルテがスクロールバー分伸びて尻切れになることがある
         scroller.setVerticalScrollBarPolicy(MyJScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        
+
         scroller.isPermanentScrollBar = true;
 
         // 文書履歴のプロパティ通知をリッスンする

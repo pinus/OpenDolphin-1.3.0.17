@@ -4,31 +4,31 @@ import java.io.Serializable;
 
 /**
  * LaboImportSummary
- * 
+ *
  * @author Minagawa,Kazushi
  */
 public class LaboImportSummary implements Serializable {
-    
+
     private static final long serialVersionUID = 8730078673332969884L;
-    
+
     private String patientId;
 
     private PatientModel patient;
-    
+
     private String setName;
-    
+
     private String specimenName;
-    
+
     private String sampleTime;
-    
+
     private String reportTime;
-    
+
     private String reportStatus;
-    
+
     private String laboratoryCenter;
-    
+
     private String result;
-    
+
     public PatientModel getPatient() {
         return patient;
     }
@@ -69,7 +69,7 @@ public class LaboImportSummary implements Serializable {
     public String getPatientId() {
         return patientId;
     }
-    
+
     public void setPatientId(String id) {
         patientId = id;
     }

@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * ModuleSearchSpec
- * 
+ *
  * @author Minagawa,Kazushi
  */
 public class ModuleSearchSpec implements Serializable {
@@ -19,7 +19,7 @@ public class ModuleSearchSpec implements Serializable {
     private Date[] fromDate;
     private Date[] toDate;
     private String status;
-    
+
     public void setCode(int code) {
         this.code = code;
     }
@@ -27,7 +27,7 @@ public class ModuleSearchSpec implements Serializable {
     public int getCode() {
         return code;
     }
-    
+
     public long getKarteId() {
         return karteId;
     }

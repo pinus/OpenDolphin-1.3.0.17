@@ -133,7 +133,7 @@ public class StampTreeDropTargetListener implements DropTargetListener {
         renderer.setDrawMode(StampTreeRenderer.UNDER_LINE);
         handler.setPosition(StampTreeTransferHandler.Insert.AFTER);
     }
-    
+
     private void targetWithSquare() {
         renderer.setDrawMode(StampTreeRenderer.SQUARE);
         handler.setPosition(StampTreeTransferHandler.Insert.INTO_FOLDER);

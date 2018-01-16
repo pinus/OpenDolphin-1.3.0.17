@@ -7,7 +7,7 @@ package open.dolphin.infomodel;
  */
 public class BundleMed extends BundleDolphin {
     private static final long serialVersionUID = -3898329425428401649L;
-    
+
     public String getAdminDisplayString() {
 
         String adminString = null;
@@ -32,40 +32,40 @@ public class BundleMed extends BundleDolphin {
         }
         return adminString;
     }
-    
+
     @Override
     public String toString() {
 
         StringBuilder buf = new StringBuilder();
-        
+
         buf.append("RP\n");
-        
+
         ClaimItem[] items = getClaimItem();
-        
+
         for (ClaimItem item : items) {
             String number = (item.getNumber() == null)? "" : item.getNumber();
             String unit = (item.getUnit() == null)? "" : item.getUnit();
 
             buf.append(String.format("・%s %s%s\n", item.getName(), number, unit));
         }
-        
+
         if (getAdmin() != null && (!getAdmin().equals(""))) {
             buf.append(getAdminDisplayString());
             buf.append("\n");
         }
-        
+
         // Print admMemo
         if (getAdminMemo() != null) {
             buf.append(getAdminMemo());
             buf.append("\n");
         }
-        
+
         // Print Memo
         if (getMemo() != null) {
             buf.append(getMemo());
             buf.append("\n");
         }
-        
+
         return buf.toString();
     }
 }

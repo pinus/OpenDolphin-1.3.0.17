@@ -2,7 +2,7 @@ package open.dolphin.infomodel;
 
 /**
  * AddressModel
- * 
+ *
  * @author Minagawa,kazushi
  */
 public class AddressModel extends InfoModel {

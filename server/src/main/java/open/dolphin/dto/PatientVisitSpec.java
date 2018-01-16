@@ -5,12 +5,12 @@ import open.dolphin.infomodel.PatientVisitModel;
 
 /**
  * PatientVisitSpec
- * 
+ *
  * @author Minagawa, Kazushi
  */
 public class PatientVisitSpec implements Serializable {
     private static final long serialVersionUID = 1477781855533185098L;
-    
+
     private PatientVisitModel patientVisit;
     private String date;
     private int skipCount;

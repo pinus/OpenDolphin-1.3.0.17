@@ -10,7 +10,7 @@ import open.dolphin.util.PNSTriple;
 
 /**
  * ObjectReflectTableModel.
- * 
+ *
  * @author Minagawa,Kazushi
  * @author pns
  * @param <T>

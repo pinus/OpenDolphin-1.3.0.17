@@ -2,7 +2,7 @@ package open.dolphin.infomodel;
 
 /**
  * TelephoneModel
- * 
+ *
  * @author Minagawa,Kazushi
  */
 public class TelephoneModel  extends InfoModel {
@@ -45,7 +45,7 @@ public class TelephoneModel  extends InfoModel {
     public void setTelephoneTypeCodeSys(String telephoneClassCodeSys) {
         this.telephoneTypeCodeSys = telephoneClassCodeSys;
     }
-        
+
     public String getTelephoneTypeCodeSys() {
         return telephoneTypeCodeSys;
     }
@@ -89,7 +89,7 @@ public class TelephoneModel  extends InfoModel {
     public String getExtension() {
         return extension;
     }
-        
+
     public void setMemo(String memo) {
         this.memo = memo;
     }

@@ -34,7 +34,7 @@ public class RowTipsTable extends JTable {
                 // 生年月日
                 text = pvt.getPatientBirthday();
                 break;
-                
+
             case WaitingListImpl.AGE_COLUMN:
                 // 年齢
                 String[] age = pvt.getPatientAge().split("\\.");

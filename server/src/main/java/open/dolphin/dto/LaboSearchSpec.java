@@ -4,16 +4,16 @@ import java.io.Serializable;
 
 /**
  * LaboSearchSpec
- * 
+ *
  * @author Minagawa,Kazushi
  */
 public class LaboSearchSpec implements Serializable {
     private static final long serialVersionUID = 2201738793947138141L;
-    
+
     private long karteId;
     private String fromDate;
     private String toDate;
-    
+
     public void setKarteId(long patientId) {
         this.karteId = patientId;
     }

@@ -62,7 +62,7 @@ public class OrcaTree extends StampTree {
                     StampTreeNode node = new StampTreeNode(stampInfo);
                     root.add(node);
                 });
-                
+
                 DefaultTreeModel model = (DefaultTreeModel) getModel();
                 model.reload(root);
 

@@ -6,15 +6,15 @@ import java.util.Date;
 
 /**
  * ImageSearchSpec
- * 
+ *
  * @author Minagawa,Kazushi
  */
 public class ImageSearchSpec implements Serializable {
     private static final long serialVersionUID = 1306931621795428447L;
-    
+
     public static final int ID_SEARCH          = 0;
     public static final int PATIENT_SEARCH     = 1;
-    
+
     private int code;
     private long karteId;
     private long id;
@@ -32,7 +32,7 @@ public class ImageSearchSpec implements Serializable {
     public int getCode() {
         return code;
     }
-    
+
 
     public long getKarteId() {
         return karteId;

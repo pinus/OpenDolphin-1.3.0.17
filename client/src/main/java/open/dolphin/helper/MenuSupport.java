@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * addChain するところは {@link open.dolphin.client.Dolphin#initComponents() Dolphin} のタブ切換設定の部分.
  * StampBoxPlugin, ImageBox もインスタンスを持っているが，メニュー表示だけで adChain は未実装.<br>
  * ChartDocument 層での使用は {@link open.dolphin.client.ChartMediator ChartMediator} で行う.
- * 
+ *
  * @author Minagawa, Kazushi
  * @author pns
  */
