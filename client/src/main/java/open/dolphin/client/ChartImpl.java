@@ -410,7 +410,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             @Override
             protected void succeeded(KarteBean karteBean) {
                 logger.debug("CahrtImpl start task succeeded");
-                karteBean.setPatient(null);
 
                 karteBean.setPatient(getPatientVisit().getPatient());
                 setKarte(karteBean);

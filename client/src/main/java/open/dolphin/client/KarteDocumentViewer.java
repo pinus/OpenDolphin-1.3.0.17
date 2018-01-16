@@ -391,13 +391,6 @@ public class KarteDocumentViewer extends AbstractChartDocument {
 
         Preferences prefs = Project.getPreferences();
 
-        NewKarteParams params = new NewKarteParams(Chart.NewKarteOption.BROWSER_MODIFY);
-        params.setDocType(docType);
-        params.setDepartment(dept);
-        params.setDepartmentCode(deptCode);
-        // このフラグはカルテを別ウインドウで編集するかどうか
-        params.setOpenFrame(prefs.getBoolean(Project.KARTE_PLACE_MODE, true));
-
         DocumentModel editModel = chart.getKarteModelToEdit(baseDocumentModel);
         KarteEditor editor = chart.createEditor();
         editor.setModel(editModel);
@@ -406,7 +399,8 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
         editor.setMode(mode);
 
-        if (params.isOpenFrame()) {
+        // このフラグはカルテを別ウインドウで編集するかどうか (使ってない)
+        if (prefs.getBoolean(Project.KARTE_PLACE_MODE, true)) {
             EditorFrame editorFrame = new EditorFrame();
             editorFrame.setChart(getContext());
             editorFrame.setKarteEditor(editor);

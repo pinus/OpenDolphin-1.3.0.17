@@ -390,7 +390,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             start2();
         }
         // 自動一時保存スタート
-        autosave.start();
+        //autosave.start();
         logger.info("autosave start");
     }
 
@@ -400,7 +400,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     @Override
     public void stop() {
         logger.info("autosave stop");
-        autosave.stop();
+        //autosave.stop();
 
         soaPane.clear();
         if (getMode() == DOUBLE_MODE) { pPane.clear(); }
