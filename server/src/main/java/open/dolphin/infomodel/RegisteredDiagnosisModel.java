@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "d_diagnosis")
-public class RegisteredDiagnosisModel extends KarteEntryBean {
+public class RegisteredDiagnosisModel extends KarteEntryBean<RegisteredDiagnosisModel> {
     private static final long serialVersionUID = 8449675831667704574L;
 
     // 疾患名

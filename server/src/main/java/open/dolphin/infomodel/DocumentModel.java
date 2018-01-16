@@ -17,7 +17,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @Indexed(index="document")      // hibernate search
 @Entity
 @Table(name = "d_document")
-public class DocumentModel extends KarteEntryBean {
+public class DocumentModel extends KarteEntryBean<DocumentModel> {
     private static final long serialVersionUID = 8273677751373923433L;
 
     @Embedded
