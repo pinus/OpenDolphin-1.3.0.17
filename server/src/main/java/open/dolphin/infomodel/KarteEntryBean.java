@@ -16,7 +16,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
  */
 @MappedSuperclass
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
-public class KarteEntryBean<T extends KarteEntryBean> extends InfoModel implements Comparable<T> {
+public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel implements Comparable<T> {
 
     private static final long serialVersionUID = -9126237924533456842L;
 
