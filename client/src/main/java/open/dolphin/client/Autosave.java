@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -42,37 +45,37 @@ public class Autosave implements Runnable {
     public void start() {
         String patientId = editor.getContext().getPatient().getPatientId();
         tmpFile = getTempFile(patientId);
+        logger.info("autosave : " + tmpFile);
 
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleWithFixedDelay(this, INITIAL_DELAY, INTERVAL, TimeUnit.SECONDS);
     }
 
     public void stop () {
-        tmpFile.delete();
+        //tmpFile.delete();
         executor.shutdown();
     }
 
-    /**
-     * Temporary file をロードする. ファイルが存在しない等，ロードできない場合は null が返る.
-     * @param patientId
-     * @return DocumentModel or null
-     */
-    public static DocumentModel load(String patientId) {
-        File test = getTempFile(patientId);
-        if (! test.exists()) { return null; }
+    public static List<DocumentModel> load() {
+        List<DocumentModel> ret = new ArrayList<>();
 
-        StringBuilder str = new StringBuilder();
+        File dir = new File(TMP_DIR);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(test))) {
-            String s;
-            while ( (s = br.readLine()) != null) {
-                str.append(s);
+        Arrays.asList(dir.listFiles(fn -> fn.getName().endsWith(SUFFIX))).stream().forEach(f -> {
+            StringBuilder str = new StringBuilder();
+
+            try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+                String s;
+                while ( (s = br.readLine()) != null) {
+                    str.append(s);
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace(System.err);
             }
-        } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-            return null;
-        }
-        return JsonConverter.fromJson(str.toString(), DocumentModel.class);
+            ret.add(JsonConverter.fromJson(str.toString(), DocumentModel.class));
+        });
+
+        return ret;
     }
 
     @Override
