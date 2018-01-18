@@ -396,7 +396,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             start2();
         }
         // 自動一時保存スタート
-        //autosave.start();
+        autosave.start();
         logger.info("autosave start");
     }
 
@@ -406,7 +406,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     @Override
     public void stop() {
         logger.info("autosave stop");
-        //autosave.stop();
+        autosave.stop();
 
         soaPane.clear();
         if (getMode() == DOUBLE_MODE) { pPane.clear(); }
@@ -950,7 +950,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         // Schema を追加する
         //
         SchemaModel[] schemas = dumper.getSchema();
-        model.setSchema(Arrays.asList(schemas));
+        if (schemas != null && schemas.length > 0) {
+            model.setSchema(Arrays.asList(schemas));
+        }
 
         //
         // PPane をダンプし model に追加する

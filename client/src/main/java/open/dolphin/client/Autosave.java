@@ -206,6 +206,7 @@ public class Autosave implements Runnable {
      */
     @Override
     public void run() {
+        logger.info("=== TIMER ===");
 
         if (dirty) {
             logger.info("dirty");
@@ -224,6 +225,4 @@ public class Autosave implements Runnable {
             dirty = false;
         }
     }
-
-
 }
