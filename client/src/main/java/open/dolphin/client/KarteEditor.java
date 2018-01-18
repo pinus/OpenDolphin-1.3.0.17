@@ -38,6 +38,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
  * 2号カルテクラス.
  *
  * @author Kazushi Minagawa
+ * @author pns
  */
 public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private static final long serialVersionUID = 1L;
@@ -92,6 +93,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private Preferences prefs;
     // 一時保存
     private Autosave autosave;
+    // dirty フラグ
+    private boolean dirty;
 
     private final Logger logger = ClientContext.getBootLogger();
 
@@ -272,14 +275,18 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
     }
 
+    /**
+     * KartePane から dirty の通知を受ける.
+     * @param newDirty
+     */
     @Override
-    public void setDirty(boolean dirty) {
-        if (getMode() == SINGLE_MODE) {
-            stateMgr.setDirty(soaPane.isDirty());
-        } else {
-            boolean bdirty = soaPane.isDirty() || pPane.isDirty();
-            stateMgr.setDirty(bdirty);
+    public void setDirty(boolean newDirty) {
+        if (dirty ^ newDirty) {
+            dirty = newDirty;
+            stateMgr.setDirty(newDirty);
         }
+        // autosave に dirty 情報を流す.
+        autosave.setDirty(newDirty);
     }
 
     @Override
@@ -546,7 +553,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
     /**
      * 保存ダイアログを表示し保存時のパラメータを取得する.
-     * @params sendMML MML送信フラグ 送信するとき true
+     * @param joinAreaNetwork sendMML MML送信フラグ 送信するとき true
+     * @return
      */
     private SaveParams getSaveParams(boolean joinAreaNetwork) {
 
@@ -691,7 +699,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         final DocumentModel saveModel = model;
         final Chart chart = this.getContext();
 
-        DBTask task = new DBTask<String>(chart) {
+        DBTask<String> task = new DBTask<String>(chart) {
 
             @Override
             protected String doInBackground() throws Exception {
@@ -773,7 +781,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
      * by pns
      * @param params
      */
-    private void composeModel(SaveParams params) {
+    public void composeModel(SaveParams params) {
         //
         // DocInfoに値を設定する
         //

@@ -538,10 +538,11 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     protected void setDirty(boolean newDirty) {
-        if (dirty == false && newDirty == true) {
+        if (dirty ^ newDirty) {
             dirty = newDirty;
-            getParent().setDirty(dirty);
         }
+        // 親の KarteEditor に通知
+        getParent().setDirty(dirty);
     }
 
     /**

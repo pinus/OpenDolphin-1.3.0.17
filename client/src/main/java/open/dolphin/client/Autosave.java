@@ -8,18 +8,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import open.dolphin.JsonConverter;
-import open.dolphin.event.ProxyAction;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
@@ -29,6 +25,7 @@ import org.apache.log4j.Logger;
 
 /**
  * KafrteEditor の編集中 DocumentModel を定期的に一時保存する.
+ *
  * @author pns
  */
 public class Autosave implements Runnable {
@@ -39,6 +36,7 @@ public class Autosave implements Runnable {
 
     private File tmpFile;
     private final KarteEditor editor;
+    private final SaveParams tmpParams;
     private boolean dirty = true;
 
     // 自動セーブのタイマー
@@ -48,29 +46,58 @@ public class Autosave implements Runnable {
 
     public Autosave(KarteEditor e) {
         editor = e;
+        tmpParams = new SaveParams();
+        tmpParams.setTmpSave(true);
+        tmpParams.setTitle("");
+        tmpParams.setAllowPatientRef(false);
+        tmpParams.setAllowClinicRef(false);
     }
 
-    private static File getTempFile(String patientId, String docId) {
+    /**
+     * pid と doc id から temporary file を作る.
+     * @param patientId
+     * @param docId
+     * @return
+     */
+    private static File getTemporaryFile(String patientId, String docId) {
         String path = String.format("%s%s-%s.%s", TMP_DIR, patientId, docId, SUFFIX);
         return new File(path);
     }
 
+    /**
+     * 編集中カルテの記録を開始する.
+     */
     public void start() {
         String patientId = editor.getContext().getPatient().getPatientId();
         String docId = editor.getModel().getDocInfo().getDocId();
 
-        tmpFile = getTempFile(patientId, docId);
+        tmpFile = getTemporaryFile(patientId, docId);
         logger.info(tmpFile);
 
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleWithFixedDelay(this, INITIAL_DELAY, INTERVAL, TimeUnit.SECONDS);
     }
 
+    /**
+     * 編集中カルテの記録を終了し, TemporaryFile を消去する.
+     */
     public void stop () {
         tmpFile.delete();
         executor.shutdown();
     }
 
+    /**
+     * KarteEditor から Dirty 情報を受け取る.
+     * @param newDirty
+     */
+    public void setDirty(boolean newDirty) {
+        dirty = newDirty;
+    }
+
+    /**
+     * 保存された Temporary file を読み込んで DocumentModel を生成する.
+     * @return
+     */
     private static List<DocumentModel> load() {
         List<DocumentModel> ret = new ArrayList<>();
 
@@ -93,20 +120,29 @@ public class Autosave implements Runnable {
         return ret;
     }
 
+    /**
+     * DocumentModel から PatientModel を抽出する.
+     * model.getKarte() は null を返すので，ModuleModel から PatientModel を取り出す.
+     * @param model
+     * @return
+     */
     public static PatientModel getPatientModel(DocumentModel model) {
         PatientModel pm = null;
 
-        Collection<ModuleModel> moduleModels = model.getModules();
-        Iterator iter = moduleModels.iterator();
+        Iterator<ModuleModel> iter = model.getModules().iterator();
         if (iter.hasNext()) {
-            ModuleModel m = (ModuleModel) iter.next();
+            ModuleModel m = iter.next();
             pm = m.getKarte().getPatient();
         }
 
         return pm;
     }
 
-    public static void checkForTempFile(final ChartImpl chart) {
+    /**
+     * 保存されていない編集中カルテをチェックして編集するかどうか決める.
+     * @param chart
+     */
+    public static void checkForTemporaryFile(final ChartImpl chart) {
 
         List<DocumentModel> targetModels = new ArrayList<>();
 
@@ -124,60 +160,59 @@ public class Autosave implements Runnable {
         SwingUtilities.invokeLater(() -> {
 
             String message = "保存されていない編集中カルテがみつかりました. \nエディタで開きますか?";
+            String[] selection = {"開く", "破棄"};
 
-            JButton open = new JButton("開く");
-            JButton dispose = new JButton("破棄");
+            int opt = JSheet.showOptionDialog(chart.getFrame(), message, "保存されていないカルテ",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, selection, selection[0]);
 
-            JOptionPane optionPane = new JOptionPane(message, JOptionPane.WARNING_MESSAGE,
-                    JOptionPane.OK_CANCEL_OPTION, (Icon)null, new JButton[] { open, dispose }, open);
-            JSheet sheet = JSheet.createDialog(optionPane, chart.getFrame());
-            sheet.addSheetListener(se -> {
-                // Escape を押したときだけ JOptionPane.CLOSED_OPTION (=-1) が返る
-                System.out.println("option = " + se.getOption());
+            switch(opt) {
+                case JOptionPane.YES_OPTION:
 
-                switch (se.getOption()) {
-                    case JOptionPane.OK_OPTION:
-                        System.out.println("------- OK");
+                    targetModels.forEach(editModel -> {
+                        KarteEditor editor = chart.createEditor();
+                        editor.setModel(editModel);
+                        editor.setEditable(true);
+                        editor.setModify(true);
 
-                        targetModels.forEach(editModel -> {
-                            KarteEditor editor = chart.createEditor();
-                            editor.setModel(editModel);
-                            editor.setEditable(true);
-                            editor.setModify(true);
+                        String docType = editModel.getDocInfo().getDocType();
+                        int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
+                        editor.setMode(mode);
 
-                            String docType = editModel.getDocInfo().getDocType();
-                            int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
-                            editor.setMode(mode);
+                        EditorFrame editorFrame = new EditorFrame();
+                        editorFrame.setChart(chart);
+                        editorFrame.setKarteEditor(editor);
+                        editorFrame.start();
 
-                            EditorFrame editorFrame = new EditorFrame();
-                            editorFrame.setChart(chart);
-                            editorFrame.setKarteEditor(editor);
-                            editorFrame.start();
-                        });
-                        break;
+                        editor.setDirty(true);
+                    });
+                    break;
 
-                    case JOptionPane.NO_OPTION:
-                    case JOptionPane.CLOSED_OPTION:
-                        System.out.println("------- Cancel");
-                        break;
-                }
-            });
+                case JOptionPane.NO_OPTION:
+                case JOptionPane.CLOSED_OPTION: // ESC key
 
-            open.setAction(new ProxyAction("開く", () -> sheet.setVisible(false)));
-            dispose.setAction(new ProxyAction("破棄", () -> sheet.setVisible(false)));
-
-            sheet.setVisible(true);
+                    targetModels.forEach(editModel ->{
+                        String pid = getPatientModel(editModel).getPatientId();
+                        String docId = editModel.getDocInfo().getDocId();
+                        File target = getTemporaryFile(pid, docId);
+                        target.delete();
+                    });
+                    break;
+            }
         });
     }
 
+    /**
+     * 編集中の DocumentModel を json にしてファイル保存する.
+     */
     @Override
     public void run() {
-        System.out.println("============= TIMER ======");
-
-        String json = JsonConverter.toJson(editor.getModel());
 
         if (dirty) {
             logger.info("dirty");
+
+            editor.composeModel(tmpParams);
+
+            String json = JsonConverter.toJson(editor.getModel());
 
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile))) {
                 bw.write(json);
@@ -185,6 +220,10 @@ public class Autosave implements Runnable {
             } catch (IOException ex) {
                 ex.printStackTrace(System.err);
             }
+
+            dirty = false;
         }
     }
+
+
 }

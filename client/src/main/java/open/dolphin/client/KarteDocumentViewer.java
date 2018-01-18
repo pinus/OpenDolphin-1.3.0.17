@@ -139,7 +139,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         stateMgr = new StateMgr();
 
         // 保存されていない編集中カルテチェック
-        Autosave.checkForTempFile((ChartImpl) getContext());
+        Autosave.checkForTemporaryFile((ChartImpl) getContext());
 
         enter();
     }
