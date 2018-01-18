@@ -3,15 +3,14 @@ package open.dolphin.client;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.io.*;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.TooManyListenersException;
 import java.util.prefs.Preferences;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import open.dolphin.dao.OrcaEntry;
@@ -397,7 +396,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             start2();
         }
         // 自動一時保存スタート
-        autosave.start();
+        //autosave.start();
         logger.info("autosave start");
     }
 
@@ -407,7 +406,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     @Override
     public void stop() {
         logger.info("autosave stop");
-        autosave.stop();
+        //autosave.stop();
 
         soaPane.clear();
         if (getMode() == DOUBLE_MODE) { pPane.clear(); }
@@ -677,7 +676,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             }
 
         } catch (Exception e) {
-            System.out.println("KarteEditor.java: " + e);
+            e.printStackTrace(System.err);
         }
     }
 
@@ -950,24 +949,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         //
         // Schema を追加する
         //
-        int maxImageWidth = ClientContext.getInt("image.max.width");
-        int maxImageHeight = ClientContext.getInt("image.max.height");
-        Dimension maxSImageSize = new Dimension(maxImageWidth, maxImageHeight);
         SchemaModel[] schemas = dumper.getSchema();
-        if (schemas != null && schemas.length > 0) {
-            // 保存のため Icon を JPEG に変換する
-            for (SchemaModel schema : schemas) {
-                ImageIcon icon = schema.getIcon();
-                icon = adjustImageSize(icon, maxSImageSize);
-                byte[] jpegByte = getJPEGByte(icon.getImage());
-                schema.setJpegByte(jpegByte);
-                schema.setIcon(null);
-                model.addSchema(schema);
-            }
-            logger.debug("schema dumped, number of SchemaModel = " + schemas.length);
-        } else {
-            logger.debug("zero schema dumped");
-        }
+        model.setSchema(Arrays.asList(schemas));
 
         //
         // PPane をダンプし model に追加する
@@ -1108,78 +1091,11 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 bean.setImageNumber(number);
 
                 ExtRefModel ref = bean.getExtRef();
-                StringBuilder sb = new StringBuilder();
-                sb.append(model.getDocInfo().getDocId());
-                sb.append("-");
-                sb.append(number);
-                sb.append(".jpg");
-                ref.setHref(sb.toString());
+                String href = String.format("%s-%d.jpg", model.getDocInfo().getDocId(), number);
+                ref.setHref(href);
 
-                int size = bean.getJpegByte().length / 1024;
-                logger.debug("schema size(KB) = " + size);
-                totalSize += size;
                 number++;
             }
-            logger.debug("total schema size(KB) = " + totalSize);
-        }
-    }
-
-    /**
-     * Courtesy of Junzo SATO.
-     * ImageIO by pns.
-     */
-    private byte[] getJPEGByte(Image image) {
-
-        byte[] ret = null;
-        ByteArrayOutputStream bo = new ByteArrayOutputStream();
-
-        try {
-            JPanel myPanel = getUI();
-            Dimension d = new Dimension(image.getWidth(myPanel), image.getHeight(myPanel));
-            BufferedImage bf = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_BGR);
-            Graphics g = bf.getGraphics();
-            g.setColor(Color.white);
-            g.drawImage(image, 0, 0, d.width, d.height, myPanel);
-
-            ImageIO.write(bf, "png", bo);
-
-            bo.flush();
-            ret = bo.toByteArray();
-
-            g.dispose();
-
-        } catch (IOException e) {
-            System.out.println("KarteEditor.java: "+ e);
-        } finally {
-            try {
-                bo.close();
-            } catch (IOException e2) {
-                System.out.println("KarteEditor.java: "+ e2);
-            }
-        }
-        return ret;
-    }
-
-    private ImageIcon adjustImageSize(ImageIcon icon, Dimension dim) {
-
-        if ((icon.getIconHeight() > dim.height) ||
-                (icon.getIconWidth() > dim.width)) {
-            Image img = icon.getImage();
-            float hRatio = (float) icon.getIconHeight() / dim.height;
-            float wRatio = (float) icon.getIconWidth() / dim.width;
-            int h,
-             w;
-            if (hRatio > wRatio) {
-                h = dim.height;
-                w = (int) (icon.getIconWidth() / hRatio);
-            } else {
-                w = dim.width;
-                h = (int) (icon.getIconHeight() / wRatio);
-            }
-            img = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
-        } else {
-            return icon;
         }
     }
 
@@ -1275,7 +1191,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             }
 
         } catch (IOException | ParseErrorException | MethodInvocationException | ResourceNotFoundException ex) {
-            System.out.println("KarteEditor.java: " + ex);
+            ex.printStackTrace(System.err);
         }
     }
 
@@ -1437,7 +1353,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 kd.remove(pos, len - pos);
             }
         } catch (BadLocationException ex) {
-            System.out.println("KarteEditor.java: " + ex);
+            ex.printStackTrace(System.err);
         }
     }
 
@@ -1466,7 +1382,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 pos ++;
 
             } catch (BadLocationException ex) {
-                System.out.println("KarteEditor.java: " + ex);
+                ex.printStackTrace(System.err);
             }
         }
     }

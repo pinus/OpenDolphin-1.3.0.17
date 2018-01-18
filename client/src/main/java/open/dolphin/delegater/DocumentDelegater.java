@@ -1,9 +1,16 @@
 package open.dolphin.delegater;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.*;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import open.dolphin.client.ClientContext;
 import open.dolphin.client.ImageEntry;
 import open.dolphin.dto.*;
 import open.dolphin.infomodel.*;
@@ -34,6 +41,19 @@ public class  DocumentDelegater extends BusinessDelegater {
      * @return 保存した document の primary key
      */
     public long putKarte(DocumentModel karteModel) {
+        // icon を JPEG byte に変換
+        int maxImageWidth = ClientContext.getInt("image.max.width");
+        int maxImageHeight = ClientContext.getInt("image.max.height");
+        Dimension maxSImageSize = new Dimension(maxImageWidth, maxImageHeight);
+
+        karteModel.getSchema().stream().forEach(schema -> {
+            ImageIcon icon = schema.getIcon();
+            icon = adjustImageSize(icon, maxSImageSize);
+            byte[] jpegByte = getJPEGByte(icon.getImage());
+            schema.setJpegByte(jpegByte);
+            schema.setIcon(null);
+        });
+
         // 確定日，適合開始日，記録日，ステータスを DocInfo から DocumentModel(KarteEntry) に移す
         karteModel.toPersist();
         // 保存する
@@ -181,8 +201,8 @@ public class  DocumentDelegater extends BusinessDelegater {
      */
     private ImageIcon adjustImageSize(ImageIcon icon, Dimension dim) {
 
-        if ( (icon.getIconHeight() > dim.height) ||
-                (icon.getIconWidth() > dim.width) ) {
+        if ((icon.getIconHeight() > dim.height) || (icon.getIconWidth() > dim.width) ) {
+
             Image img = icon.getImage();
             float hRatio = (float)icon.getIconHeight() / dim.height;
             float wRatio = (float)icon.getIconWidth() / dim.width;
@@ -203,6 +223,33 @@ public class  DocumentDelegater extends BusinessDelegater {
         } else {
             return icon;
         }
+    }
+
+    /**
+     * Image to JPEGByte conversion.
+     * @param image
+     * @return
+     */
+    private byte[] getJPEGByte(Image image) {
+
+        byte[] ret = null;
+
+        try (ByteArrayOutputStream bo = new ByteArrayOutputStream()) {
+            Dimension d = new Dimension(image.getWidth(null), image.getHeight(null));
+            BufferedImage bf = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_BGR);
+            Graphics g = bf.getGraphics();
+            g.setColor(Color.white);
+            g.drawImage(image, 0, 0, d.width, d.height, null);
+
+            ImageIO.write(bf, "png", bo);
+
+            ret = bo.toByteArray();
+
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
+
+        return ret;
     }
 
     /**
