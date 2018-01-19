@@ -1,9 +1,16 @@
 package open.dolphin.helper;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
@@ -76,5 +83,65 @@ public class ImageHelper {
         g2d.dispose();
 
         return outImage;
+    }
+
+    /**
+     * Convert Image to ByteArray.
+     * @param image
+     * @return
+     */
+    public static byte[] imageToByteArray(Image image) {
+
+        byte[] ret = null;
+
+        try (ByteArrayOutputStream bo = new ByteArrayOutputStream()) {
+            Dimension d = new Dimension(image.getWidth(null), image.getHeight(null));
+
+            BufferedImage bf = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_BGR);
+            Graphics g = bf.getGraphics();
+            g.setColor(Color.white);
+            g.drawImage(image, 0, 0, d.width, d.height, null);
+
+            ImageIO.write(bf, "png", bo);
+
+            ret = bo.toByteArray();
+
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
+
+        return ret;
+    }
+
+    /**
+     * ImageIcon のサイズを dim サイズ以内になるように調節する
+     * @param icon
+     * @param dim
+     * @return
+     */
+    public static ImageIcon adjustImageSize(ImageIcon icon, Dimension dim) {
+
+        if ((icon.getIconHeight() > dim.height) || (icon.getIconWidth() > dim.width) ) {
+
+            Image img = icon.getImage();
+            float hRatio = (float)icon.getIconHeight() / dim.height;
+            float wRatio = (float)icon.getIconWidth() / dim.width;
+            int h, w;
+
+            if (hRatio > wRatio) {
+                h = dim.height;
+                w = (int)(icon.getIconWidth() / hRatio);
+
+            } else {
+                w = dim.width;
+                h = (int)(icon.getIconHeight() / wRatio);
+            }
+
+            img = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+            return new ImageIcon(img);
+
+        } else {
+            return icon;
+        }
     }
 }

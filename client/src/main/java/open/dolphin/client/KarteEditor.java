@@ -780,7 +780,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
      * by pns
      * @param params
      */
-    public void composeModel(SaveParams params) {
+    private void composeModel(SaveParams params) {
         //
         // DocInfoに値を設定する
         //

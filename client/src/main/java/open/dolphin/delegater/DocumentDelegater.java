@@ -1,18 +1,12 @@
 package open.dolphin.delegater;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.*;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.ImageEntry;
 import open.dolphin.dto.*;
+import open.dolphin.helper.ImageHelper;
 import open.dolphin.infomodel.*;
 import open.dolphin.service.KarteService;
 
@@ -21,6 +15,9 @@ import open.dolphin.service.KarteService;
  * @author pns
  */
 public class  DocumentDelegater extends BusinessDelegater {
+    private static final int MAX_IMAGE_WIDTH = ClientContext.getInt("image.max.width");
+    private static final int MAX_IMAGE_HEIGHT = ClientContext.getInt("image.max.height");
+    private static final Dimension MAX_IMAGE_SIZE = new Dimension(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
 
     /**
      * 患者のカルテを取得する.
@@ -42,16 +39,12 @@ public class  DocumentDelegater extends BusinessDelegater {
      */
     public long putKarte(DocumentModel karteModel) {
 
-        // icon を JPEG byte に変換
-        int maxImageWidth = ClientContext.getInt("image.max.width");
-        int maxImageHeight = ClientContext.getInt("image.max.height");
-        Dimension maxSImageSize = new Dimension(maxImageWidth, maxImageHeight);
-
+        // icon を ByteArray に変換
         if (karteModel.getSchema() != null) {
             karteModel.getSchema().forEach(schema -> {
                 ImageIcon icon = schema.getIcon();
-                icon = adjustImageSize(icon, maxSImageSize);
-                byte[] jpegByte = getJPEGByte(icon.getImage());
+                icon = ImageHelper.adjustImageSize(icon, MAX_IMAGE_SIZE);
+                byte[] jpegByte = ImageHelper.imageToByteArray(icon.getImage());
                 schema.setJpegByte(jpegByte);
                 schema.setIcon(null);
             });
@@ -75,14 +68,14 @@ public class  DocumentDelegater extends BusinessDelegater {
         // 検索する
         List<DocumentModel> ret = getService().getDocumentList(ids);
 
-        for (DocumentModel doc : ret) {
-            // JPEG byte をアイコンへ戻す
-            Collection<SchemaModel> sc = doc.getSchema();
-            for (SchemaModel schema : sc) {
+        // ByteArray をアイコンへ戻す (getSchema() は必ず non null)
+        ret.stream().map(doc -> doc.getSchema()).forEach(sc -> {
+            sc.stream().forEach(schema -> {
                 ImageIcon icon = new ImageIcon(schema.getJpegByte());
                 schema.setIcon(icon);
-            }
-        }
+                schema.setJpegByte(null);
+            });
+        });
         return ret;
     }
 
@@ -191,68 +184,9 @@ public class  DocumentDelegater extends BusinessDelegater {
 
         // Create ImageIcon
         ImageIcon icon = new ImageIcon(bytes);
-        entry.setImageIcon(adjustImageSize(icon, iconSize));
+        entry.setImageIcon(ImageHelper.adjustImageSize(icon, iconSize));
 
         return entry;
-    }
-
-    /**
-     * ImageIcon のサイズを dim サイズ以内になるように調節する
-     * @param icon
-     * @param dim
-     * @return
-     */
-    private ImageIcon adjustImageSize(ImageIcon icon, Dimension dim) {
-
-        if ((icon.getIconHeight() > dim.height) || (icon.getIconWidth() > dim.width) ) {
-
-            Image img = icon.getImage();
-            float hRatio = (float)icon.getIconHeight() / dim.height;
-            float wRatio = (float)icon.getIconWidth() / dim.width;
-            int h, w;
-
-            if (hRatio > wRatio) {
-                h = dim.height;
-                w = (int)(icon.getIconWidth() / hRatio);
-
-            } else {
-                w = dim.width;
-                h = (int)(icon.getIconHeight() / wRatio);
-            }
-
-            img = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
-
-        } else {
-            return icon;
-        }
-    }
-
-    /**
-     * Image to JPEGByte conversion.
-     * @param image
-     * @return
-     */
-    private byte[] getJPEGByte(Image image) {
-
-        byte[] ret = null;
-
-        try (ByteArrayOutputStream bo = new ByteArrayOutputStream()) {
-            Dimension d = new Dimension(image.getWidth(null), image.getHeight(null));
-            BufferedImage bf = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_BGR);
-            Graphics g = bf.getGraphics();
-            g.setColor(Color.white);
-            g.drawImage(image, 0, 0, d.width, d.height, null);
-
-            ImageIO.write(bf, "png", bo);
-
-            ret = bo.toByteArray();
-
-        } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-        }
-
-        return ret;
     }
 
     /**
