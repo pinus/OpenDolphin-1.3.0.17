@@ -211,6 +211,10 @@ public class Autosave implements Runnable {
         if (dirty) {
             logger.info("dirty");
 
+
+            //System.out.println("--- icon  " + editor.getModel().getSchema(0).getIcon());
+            //System.out.println("--- jpg  " + editor.getModel().getSchema(0).getJpegByte());
+
             editor.composeModel(tmpParams);
 
             String json = JsonConverter.toJson(editor.getModel());

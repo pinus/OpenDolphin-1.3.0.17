@@ -41,18 +41,21 @@ public class  DocumentDelegater extends BusinessDelegater {
      * @return 保存した document の primary key
      */
     public long putKarte(DocumentModel karteModel) {
+
         // icon を JPEG byte に変換
         int maxImageWidth = ClientContext.getInt("image.max.width");
         int maxImageHeight = ClientContext.getInt("image.max.height");
         Dimension maxSImageSize = new Dimension(maxImageWidth, maxImageHeight);
 
-        karteModel.getSchema().stream().forEach(schema -> {
-            ImageIcon icon = schema.getIcon();
-            icon = adjustImageSize(icon, maxSImageSize);
-            byte[] jpegByte = getJPEGByte(icon.getImage());
-            schema.setJpegByte(jpegByte);
-            schema.setIcon(null);
-        });
+        if (karteModel.getSchema() != null) {
+            karteModel.getSchema().forEach(schema -> {
+                ImageIcon icon = schema.getIcon();
+                icon = adjustImageSize(icon, maxSImageSize);
+                byte[] jpegByte = getJPEGByte(icon.getImage());
+                schema.setJpegByte(jpegByte);
+                schema.setIcon(null);
+            });
+        }
 
         // 確定日，適合開始日，記録日，ステータスを DocInfo から DocumentModel(KarteEntry) に移す
         karteModel.toPersist();
