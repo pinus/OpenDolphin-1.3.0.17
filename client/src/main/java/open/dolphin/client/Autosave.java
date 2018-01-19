@@ -8,22 +8,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import open.dolphin.JsonConverter;
-import open.dolphin.helper.ImageHelper;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.PatientModel;
-import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
@@ -40,7 +36,6 @@ public class Autosave implements Runnable {
 
     private File tmpFile;
     private final KarteEditor editor;
-    private final SaveParams tmpParams;
     private boolean dirty = true;
 
     // 自動セーブのタイマー
@@ -50,11 +45,6 @@ public class Autosave implements Runnable {
 
     public Autosave(KarteEditor e) {
         editor = e;
-        tmpParams = new SaveParams();
-        tmpParams.setTmpSave(true);
-        tmpParams.setTitle("");
-        tmpParams.setAllowPatientRef(false);
-        tmpParams.setAllowClinicRef(false);
     }
 
     /**
@@ -173,24 +163,17 @@ public class Autosave implements Runnable {
                 case JOptionPane.YES_OPTION:
 
                     targetModels.forEach(editModel -> {
+
+
+
                         KarteEditor editor = chart.createEditor();
                         editor.setModel(editModel);
+
                         editor.setEditable(true);
                         editor.setModify(true);
-
                         String docType = editModel.getDocInfo().getDocType();
                         int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
                         editor.setMode(mode);
-
-                        // ByteArray を Icon に戻す
-                        Collection<SchemaModel> schemas = editModel.getSchema();
-                        if (schemas != null) {
-                            schemas.forEach(schema -> {
-                                ImageIcon icon = new ImageIcon(schema.getJpegByte());
-                                schema.setIcon(icon);
-                                schema.setJpegByte(null);
-                            });
-                        }
 
                         EditorFrame editorFrame = new EditorFrame();
                         editorFrame.setChart(chart);
@@ -225,19 +208,7 @@ public class Autosave implements Runnable {
         if (dirty) {
             logger.info("dirty");
 
-            //editor.composeModel(tmpParams);
-
             DocumentModel model = editor.getModel();
-            // convert Icon to ByteArray
-            Collection<SchemaModel> schemas = model.getSchema();
-            if (schemas != null) {
-                schemas.stream().forEach(schema -> {
-                    ImageIcon icon = schema.getIcon();
-                    byte[] jpegByte = ImageHelper.imageToByteArray(icon.getImage());
-                    schema.setJpegByte(jpegByte);
-                    schema.setIcon(null);
-                });
-            }
 
             String json = JsonConverter.toJson(model);
 
@@ -250,5 +221,13 @@ public class Autosave implements Runnable {
 
             dirty = false;
         }
+    }
+
+    private class AutosaveModel {
+        private DocumentModel model;
+        private String soaPane;
+        private String pPane;
+        private byte[] jpegByte;
+
     }
 }

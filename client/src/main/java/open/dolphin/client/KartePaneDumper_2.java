@@ -17,32 +17,27 @@ import open.dolphin.infomodel.SchemaModel;
 import org.apache.log4j.Logger;
 
 /**
- * KartePane の dumper
+ * KartePane の dumper.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @pns
  */
 public class KartePaneDumper_2 {
-
     private static final String[] MATCHES = new String[] { "<", ">", "&", "'","\""};
-
     private static final String[] REPLACES = new String[] { "&lt;", "&gt;", "&amp;" ,"&apos;", "&quot;"};
-
     private List<ModuleModel> moduleList;
-
     private List<SchemaModel> schemaList;
-
+    // Document の内容を XML で表したもの.
     private String spec;
 
     private Logger logger;
 
-    /** Creates a new instance of TextPaneDumpBuilder */
     public KartePaneDumper_2() {
         logger = ClientContext.getBootLogger();
     }
 
     /**
      * ダンプした Document の XML 定義を返す.
-     *
      * @return Documentの内容を XML で表したもの
      */
     public String getSpec() {
@@ -51,15 +46,14 @@ public class KartePaneDumper_2 {
     }
 
     /**
-     * ダンプした Documentに含まれている ModuleModelを返す.
-     *
+     * ダンプした Document に含まれている ModuleModel を返す.
      * @return
      */
     public ModuleModel[] getModule() {
 
         ModuleModel[] ret = null;
 
-        if ((moduleList != null) && (moduleList.size() > 0)) {
+        if ((moduleList != null) && (! moduleList.isEmpty())) {
             ret = moduleList.toArray(new ModuleModel[moduleList.size()]);
         }
         return ret;
@@ -67,15 +61,13 @@ public class KartePaneDumper_2 {
 
     /**
      * ダンプした Documentに含まれている SchemaModel を返す.
-     *
      * @return
      */
     public SchemaModel[] getSchema() {
 
         SchemaModel[] schemas = null;
 
-        if ((schemaList != null) && (schemaList.size() > 0)) {
-
+        if ((schemaList != null) && (!schemaList.isEmpty())) {
             schemas = schemaList.toArray(new SchemaModel[schemaList.size()]);
         }
         return schemas;
@@ -83,28 +75,23 @@ public class KartePaneDumper_2 {
 
     /**
      * 引数の Document をダンプする.
-     *
      * @param doc ダンプするドキュメント
      */
     public void dump(DefaultStyledDocument doc) {
 
         StringWriter sw = new StringWriter();
-        BufferedWriter writer = new BufferedWriter(sw);
 
-        try {
+        try (BufferedWriter writer = new BufferedWriter(sw)) {
             // ルート要素から再帰的にダンプする
             javax.swing.text.Element root = doc.getDefaultRootElement();
             writeElemnt(root, writer);
 
             // 出力バッファーをフラッシュしペインのXML定義を生成する
             writer.flush();
-            writer.close();
             spec = sw.toString();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (BadLocationException ex) {
-            System.out.println("KartePaneDumper_2.java: " + ex);
+        } catch (IOException | BadLocationException ex) {
+            ex.printStackTrace(System.err);
         }
     }
 
@@ -136,7 +123,7 @@ public class KartePaneDumper_2 {
             StringBuilder retBuffer = new StringBuilder();
 
             // 全ての属性を列挙する
-            Enumeration names = atts.getAttributeNames();
+            Enumeration<?> names = atts.getAttributeNames();
 
             while (names.hasMoreElements()) {
 
@@ -144,7 +131,6 @@ public class KartePaneDumper_2 {
                 Object nextName = names.nextElement();
 
                 if (nextName != StyleConstants.ResolveAttribute) {
-
                     logger.debug("attribute name = " + nextName.toString());
 
                     // $enameは除外する
@@ -177,17 +163,17 @@ public class KartePaneDumper_2 {
                         if (attObject instanceof StampHolder) {
                             // スタンプの場合
                             if (moduleList == null) {
-                                moduleList = new ArrayList<ModuleModel>();
+                                moduleList = new ArrayList<>();
                             }
                             StampHolder sh = (StampHolder) attObject;
-                            moduleList.add((ModuleModel) sh.getStamp());
+                            moduleList.add(sh.getStamp());
                             String value = String.valueOf(moduleList.size() - 1); // ペインに出現する順番をこの属性の値とする
                             retBuffer.append(addQuote(value));
 
                         } else if (attObject instanceof SchemaHolder) {
                             // シュェーマの場合
                             if (schemaList == null) {
-                                schemaList = new ArrayList<SchemaModel>();
+                                schemaList = new ArrayList<>();
                             }
                             SchemaHolder ch = (SchemaHolder) attObject;
                             schemaList.add(ch.getSchema());

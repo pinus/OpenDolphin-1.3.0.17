@@ -1,23 +1,34 @@
 package open.dolphin.client;
 
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
-import javax.swing.text.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.ProgressCourse;
 import org.apache.log4j.Logger;
-import org.jdom2.*;
+import org.jdom2.Element;
 import org.jdom2.Document;
+import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 /**
  * KarteRenderer_2.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class KarteRenderer_2 {
 
@@ -195,11 +206,11 @@ public class KarteRenderer_2 {
         debug(xml);
 
         SAXBuilder docBuilder = new SAXBuilder();
+        StringReader sr = new StringReader(xml);
 
-        try {
-            StringReader sr = new StringReader(xml);
-            Document doc = docBuilder.build(new BufferedReader(sr));
-            org.jdom2.Element root = doc.getRootElement();
+        try (BufferedReader br = new BufferedReader(sr)) {
+            Document doc = docBuilder.build(br);
+            Element root = doc.getRootElement();
 
             writeChildren(root);
         }
@@ -213,7 +224,7 @@ public class KarteRenderer_2 {
      * 子要素をパースする.
      * @param current 要素
      */
-    private void writeChildren(org.jdom2.Element current) {
+    private void writeChildren(Element current) {
 
         int eType = -1;
         String eName = current.getName();
@@ -257,11 +268,11 @@ public class KarteRenderer_2 {
         if (eType == TT_PARAGRAPH || eType == TT_PROGRESS_COURSE
                 || eType == TT_SECTION) {
 
-            java.util.List children = current.getChildren();
-            Iterator iterator = children.iterator();
+            List<Element> children = current.getChildren();
+            Iterator<Element> iterator = children.iterator();
 
             while (iterator.hasNext()) {
-                org.jdom2.Element child = (org.jdom2.Element) iterator.next();
+                Element child = iterator.next();
                 writeChildren(child);
             }
         }
@@ -409,7 +420,7 @@ public class KarteRenderer_2 {
                 int index = Integer.parseInt(number);
                 thePane.flowSchema(model.getSchema(index));
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace(System.err);
         }
     }
