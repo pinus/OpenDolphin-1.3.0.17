@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Enumeration;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Element;
 import javax.swing.text.StyleConstants;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SchemaModel;
@@ -30,7 +32,7 @@ public class KartePaneDumper_2 {
     // Document の内容を XML で表したもの.
     private String spec;
 
-    private Logger logger;
+    private final Logger logger;
 
     public KartePaneDumper_2() {
         logger = ClientContext.getBootLogger();
@@ -49,28 +51,16 @@ public class KartePaneDumper_2 {
      * ダンプした Document に含まれている ModuleModel を返す.
      * @return
      */
-    public ModuleModel[] getModule() {
-
-        ModuleModel[] ret = null;
-
-        if ((moduleList != null) && (! moduleList.isEmpty())) {
-            ret = moduleList.toArray(new ModuleModel[moduleList.size()]);
-        }
-        return ret;
+    public List<ModuleModel> getModule() {
+        return Collections.unmodifiableList(moduleList);
     }
 
     /**
      * ダンプした Documentに含まれている SchemaModel を返す.
      * @return
      */
-    public SchemaModel[] getSchema() {
-
-        SchemaModel[] schemas = null;
-
-        if ((schemaList != null) && (!schemaList.isEmpty())) {
-            schemas = schemaList.toArray(new SchemaModel[schemaList.size()]);
-        }
-        return schemas;
+    public List<SchemaModel> getSchema() {
+        return Collections.unmodifiableList(schemaList);
     }
 
     /**
@@ -79,11 +69,13 @@ public class KartePaneDumper_2 {
      */
     public void dump(DefaultStyledDocument doc) {
 
+        moduleList = new ArrayList<>();
+        schemaList = new ArrayList<>();
         StringWriter sw = new StringWriter();
 
         try (BufferedWriter writer = new BufferedWriter(sw)) {
             // ルート要素から再帰的にダンプする
-            javax.swing.text.Element root = doc.getDefaultRootElement();
+            Element root = doc.getDefaultRootElement();
             writeElemnt(root, writer);
 
             // 出力バッファーをフラッシュしペインのXML定義を生成する
@@ -102,8 +94,7 @@ public class KartePaneDumper_2 {
      * @throws IOException
      * @throws BadLocationException
      */
-    private void writeElemnt(javax.swing.text.Element element, Writer writer)
-    throws IOException, BadLocationException {
+    private void writeElemnt(Element element, Writer writer) throws IOException, BadLocationException {
 
         // 要素の開始及び終了のオフセット値を保存する
         int start = element.getStartOffset();
@@ -162,9 +153,6 @@ public class KartePaneDumper_2 {
 
                         if (attObject instanceof StampHolder) {
                             // スタンプの場合
-                            if (moduleList == null) {
-                                moduleList = new ArrayList<>();
-                            }
                             StampHolder sh = (StampHolder) attObject;
                             moduleList.add(sh.getStamp());
                             String value = String.valueOf(moduleList.size() - 1); // ペインに出現する順番をこの属性の値とする
@@ -172,9 +160,6 @@ public class KartePaneDumper_2 {
 
                         } else if (attObject instanceof SchemaHolder) {
                             // シュェーマの場合
-                            if (schemaList == null) {
-                                schemaList = new ArrayList<>();
-                            }
                             SchemaHolder ch = (SchemaHolder) attObject;
                             schemaList.add(ch.getSchema());
                             String value = String.valueOf(schemaList.size() - 1); // ペインに出現する順番をこの属性の値とする

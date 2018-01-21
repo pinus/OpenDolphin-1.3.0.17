@@ -91,7 +91,7 @@ public class ImageHelper {
      * @return
      */
     public static byte[] imageToByteArray(Image image) {
-
+        
         byte[] ret = null;
 
         try (ByteArrayOutputStream bo = new ByteArrayOutputStream()) {

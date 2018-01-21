@@ -5,7 +5,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PageFormat;
 import java.io.*;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -396,7 +395,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             start2();
         }
         // 自動一時保存スタート
-        //autosave.start();
+        autosave.start();
         logger.info("autosave start");
     }
 
@@ -406,7 +405,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     @Override
     public void stop() {
         logger.info("autosave stop");
-        //autosave.stop();
+        autosave.stop();
 
         soaPane.clear();
         if (getMode() == DOUBLE_MODE) { pPane.clear(); }
@@ -931,13 +930,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         KarteStyledDocument doc = (KarteStyledDocument) soaPane.getTextPane().getDocument();
 
         dumper.dump(doc);
-        ModuleModel[] soa = dumper.getModule();
-        if (soa != null && soa.length > 0) {
-            logger.debug("soaPane dumped, number of SOA modules = " + soa.length);
-            model.addModule(soa);
-        } else {
-            logger.debug("soaPane dumped, no module");
-        }
+        dumper.getModule().forEach(model::addModule);
+
         // ProgressCourse SOA を生成する
         ProgressCourse soaPc = new ProgressCourse();
         soaPc.setFreeText(dumper.getSpec());
@@ -949,31 +943,19 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         //
         // Schema を追加する
         //
-        SchemaModel[] schemas = dumper.getSchema();
-        if (schemas != null && schemas.length > 0) {
-            model.setSchema(Arrays.asList(schemas));
-        }
+        dumper.getSchema().forEach(model::addSchema);
 
         //
         // PPane をダンプし model に追加する
         //
         if (getMode() == DOUBLE_MODE) {
-            KartePaneDumper_2 pdumper = new KartePaneDumper_2();
             KarteStyledDocument pdoc = (KarteStyledDocument) pPane.getTextPane().getDocument();
-            pdumper.dump(pdoc);
-            ModuleModel[] plan = pdumper.getModule();
-
-            if (plan != null && plan.length > 0) {
-                model.addModule(plan);
-                logger.debug("p dumped, number of p = " + plan.length);
-            } else {
-                sendClaim = false;
-                logger.debug("p dumped, number of p = 0");
-            }
+            dumper.dump(pdoc);
+            dumper.getModule().forEach(model::addModule);
 
             // ProgressCourse P を生成する
             ProgressCourse pProgressCourse = new ProgressCourse();
-            pProgressCourse.setFreeText(pdumper.getSpec());
+            pProgressCourse.setFreeText(dumper.getSpec());
             ModuleModel pProgressModule = new ModuleModel();
             pProgressModule.setModuleInfo(pProgressInfo);
             pProgressModule.setModel(pProgressCourse);

@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,15 +15,11 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import open.dolphin.JsonConverter;
-import open.dolphin.infomodel.DocumentModel;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.infomodel.PatientModel;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
 /**
- * KafrteEditor の編集中 DocumentModel を定期的に一時保存する.
+ * 編集中の KafrteEditor を定期的に一時保存する.
  *
  * @author pns
  */
@@ -89,11 +84,11 @@ public class Autosave implements Runnable {
     }
 
     /**
-     * 保存された Temporary file を読み込んで DocumentModel を生成する.
+     * 保存された Temporary file を読み込んで AutosabeModel を生成する.
      * @return
      */
-    private static List<DocumentModel> load() {
-        List<DocumentModel> ret = new ArrayList<>();
+    private static List<AutosaveModel> load() {
+        List<AutosaveModel> ret = new ArrayList<>();
 
         File dir = new File(TMP_DIR);
 
@@ -108,28 +103,10 @@ public class Autosave implements Runnable {
             } catch (IOException ex) {
                 ex.printStackTrace(System.err);
             }
-            ret.add(JsonConverter.fromJson(str.toString(), DocumentModel.class));
+            ret.add(JsonConverter.fromJson(str.toString(), AutosaveModel.class));
         });
 
         return ret;
-    }
-
-    /**
-     * DocumentModel から PatientModel を抽出する.
-     * model.getKarte() は null を返すので，ModuleModel から PatientModel を取り出す.
-     * @param model
-     * @return
-     */
-    public static PatientModel getPatientModel(DocumentModel model) {
-        PatientModel pm = null;
-
-        Iterator<ModuleModel> iter = model.getModules().iterator();
-        if (iter.hasNext()) {
-            ModuleModel m = iter.next();
-            pm = m.getKarte().getPatient();
-        }
-
-        return pm;
     }
 
     /**
@@ -138,16 +115,12 @@ public class Autosave implements Runnable {
      */
     public static void checkForTemporaryFile(final ChartImpl chart) {
 
-        List<DocumentModel> targetModels = new ArrayList<>();
+        List<AutosaveModel> targetModels = new ArrayList<>();
+        String chartPid = chart.getKarte().getPatient().getPatientId();
 
-        load().forEach(model -> {
-            String chartPid = chart.getKarte().getPatient().getPatientId();
-            String savedPid = getPatientModel(model).getPatientId();
-
-            if (chartPid.equals(savedPid)) {
-                targetModels.add(model);
-            }
-        });
+        load().stream()
+                .filter(m -> chartPid.equals(m.getPatientId()))
+                .forEach(targetModels::add);
 
         if (targetModels.isEmpty()) { return; }
 
@@ -162,18 +135,17 @@ public class Autosave implements Runnable {
             switch(opt) {
                 case JOptionPane.YES_OPTION:
 
-                    targetModels.forEach(editModel -> {
+                    targetModels.stream().map(a -> {
+                        a.composeDocumentModel();
+                        return a.getDocumentModel();
 
-
-
+                    }).forEach(m -> {
                         KarteEditor editor = chart.createEditor();
-                        editor.setModel(editModel);
+                        editor.setModel(m);
 
                         editor.setEditable(true);
                         editor.setModify(true);
-                        String docType = editModel.getDocInfo().getDocType();
-                        int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
-                        editor.setMode(mode);
+                        editor.setMode(KarteEditor.DOUBLE_MODE);
 
                         EditorFrame editorFrame = new EditorFrame();
                         editorFrame.setChart(chart);
@@ -187,28 +159,24 @@ public class Autosave implements Runnable {
                 case JOptionPane.NO_OPTION:
                 case JOptionPane.CLOSED_OPTION: // ESC key
 
-                    targetModels.forEach(editModel ->{
-                        String pid = getPatientModel(editModel).getPatientId();
-                        String docId = editModel.getDocInfo().getDocId();
-                        File target = getTemporaryFile(pid, docId);
-                        target.delete();
-                    });
+                    targetModels.stream()
+                            .map(a -> getTemporaryFile(a.getPatientId(), a.getDocumentModel().getDocInfo().getDocId()))
+                            .forEach(f -> f.delete());
                     break;
             }
         });
     }
 
     /**
-     * 編集中の DocumentModel を json にしてファイル保存する.
+     * 編集中の KarteEditor を AutosaveModel にしてファイル保存する.
      */
     @Override
     public void run() {
-        logger.info("=== TIMER ===");
 
         if (dirty) {
-            logger.info("dirty");
 
-            DocumentModel model = editor.getModel();
+            AutosaveModel model = new AutosaveModel();
+            model.dump(editor);
 
             String json = JsonConverter.toJson(model);
 
@@ -221,13 +189,5 @@ public class Autosave implements Runnable {
 
             dirty = false;
         }
-    }
-
-    private class AutosaveModel {
-        private DocumentModel model;
-        private String soaPane;
-        private String pPane;
-        private byte[] jpegByte;
-
     }
 }
