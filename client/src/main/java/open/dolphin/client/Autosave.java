@@ -174,7 +174,7 @@ public class Autosave implements Runnable {
     public void run() {
 
         if (dirty) {
-            //long l = System.currentTimeMillis();
+            long l = System.currentTimeMillis();
 
             AutosaveModel model = new AutosaveModel();
             model.dump(editor);
@@ -189,7 +189,7 @@ public class Autosave implements Runnable {
             }
 
             dirty = false;
-            //logger.info("autosave took " + (l - System.currentTimeMillis()) + " ms");
+           logger.info("autosave took " + (l - System.currentTimeMillis()) + " ms");
         }
     }
 }

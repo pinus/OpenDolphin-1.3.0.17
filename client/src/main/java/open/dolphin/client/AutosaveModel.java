@@ -67,10 +67,6 @@ public class AutosaveModel {
         dumper.dump(p);
         pSpec = dumper.getSpec();
         dumper.getModule().forEach(moduleList::add);
-
-        // あとで list から render するので，元データは不要になる
-        documentModel.clearModules();
-        documentModel.clearSchema();
     }
 
     /**
@@ -78,6 +74,9 @@ public class AutosaveModel {
      * ここで作った DocumentModel は KarteEditor#displayModel で rendering できる.
      */
     public void composeDocumentModel() {
+        documentModel.clearModules();
+        documentModel.clearSchema();
+
         // module model
         moduleList.forEach(m -> { documentModel.addModule(m); });
 
