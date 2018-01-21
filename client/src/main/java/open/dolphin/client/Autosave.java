@@ -84,7 +84,7 @@ public class Autosave implements Runnable {
     }
 
     /**
-     * 保存された Temporary file を読み込んで AutosabeModel を生成する.
+     * 保存された Temporary file を読み込んで AutosaveModel を生成する.
      * @return
      */
     private static List<AutosaveModel> load() {
@@ -174,6 +174,7 @@ public class Autosave implements Runnable {
     public void run() {
 
         if (dirty) {
+            //long l = System.currentTimeMillis();
 
             AutosaveModel model = new AutosaveModel();
             model.dump(editor);
@@ -188,6 +189,7 @@ public class Autosave implements Runnable {
             }
 
             dirty = false;
+            //logger.info("autosave took " + (l - System.currentTimeMillis()) + " ms");
         }
     }
 }
