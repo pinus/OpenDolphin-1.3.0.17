@@ -196,10 +196,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
                 }
             });
 
-            // schema edit 開始したら dirty と設定
-            kartePane.setDirty(true);
             // 二重起動の禁止
-            //kartePane.getTextPane().setEditable(false);
             this.setEditable(false);
         }
     }
@@ -209,7 +206,6 @@ public final class SchemaHolder extends AbstractComponentHolder {
         logger.debug("SchemaHolder propertyChange");
 
         // 二重起動の解除
-        //kartePane.getTextPane().setEditable(true);
         this.setEditable(true);
 
         SchemaModel newSchema = (SchemaModel)e.getNewValue();
@@ -219,6 +215,8 @@ public final class SchemaHolder extends AbstractComponentHolder {
 
         schema = newSchema;
         setIcon(adjustImageSize(schema.getIcon(), new Dimension(fixedWidth, fixedHeight)));
+        // dirty セット
+        kartePane.setDirty(true);
     }
 
     @Override
