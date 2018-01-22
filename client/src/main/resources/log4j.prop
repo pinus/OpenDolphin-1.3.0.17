@@ -2,6 +2,7 @@
 
 # RootLogger
 log4j.rootCategory=INFO, bootAppender
+log4j.additivity.boot.logger=false
 
 # LOGGER
 log4j.logger.boot.logger=INFO, bootAppender
