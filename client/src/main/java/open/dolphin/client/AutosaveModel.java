@@ -78,7 +78,7 @@ public class AutosaveModel {
         documentModel.clearSchema();
 
         // module model
-        moduleList.forEach(m -> { documentModel.addModule(m); });
+        moduleList.forEach(documentModel::addModule);
 
         // soa ProgressCourse
         ModuleInfoBean soaInfo = new ModuleInfoBean();
