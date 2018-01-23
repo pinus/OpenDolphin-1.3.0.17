@@ -26,8 +26,8 @@ public class PNSTransferHandler extends TransferHandler {
     protected void setDragImage(JLabel label) {
         Point mousePosition = label.getMousePosition();
         if (mousePosition != null) {
-            offset.x = -label.getMousePosition().x;
-            offset.y = -label.getMousePosition().y;
+            offset.x = -mousePosition.x;
+            offset.y = -mousePosition.y;
         }
         setDragImage(label, false);
     }
