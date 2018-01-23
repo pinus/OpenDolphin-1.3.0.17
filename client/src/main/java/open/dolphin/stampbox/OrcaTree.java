@@ -36,6 +36,7 @@ public class OrcaTree extends StampTree {
     public void enter() {
 
         if (!fetched) {
+            fetched = true;
             String address = Project.getClaimAddress();
             if (address == null || address.equals("")) { return; }
             fetchOrcaInputCd();
@@ -71,24 +72,24 @@ public class OrcaTree extends StampTree {
 
             @Override
             protected void succeeded(Boolean result) {
-                fetched = true;
+                //fetched = true;
             }
 
             @Override
             protected void cancelled() {
                 System.out.println("OrcaTree: Canceled");
-                fetched = true;
+                //fetched = true;
 
             }
             @Override
             protected void failed(Throwable cause) {
                 System.out.println("OrcaTree: failed " + cause);
-                fetched = true;
+                //fetched = true;
             }
             @Override
             protected void interrupted(InterruptedException ex) {
                 System.out.println("OrcaTree: interrupted " + ex);
-                fetched = true;
+                //fetched = true;
             }
         };
         task.execute();
