@@ -22,9 +22,6 @@ public class OrcaTree extends StampTree {
     private static final String MONITOR_TITLE = "ORCAセット検索";
     private static final String MONITOR_NOTE = "ORCAに接続中";
 
-    /** ORCA 入力セットをフェッチしたかどうかのフラグ */
-    private boolean fetched;
-
     public OrcaTree(TreeModel model) {
         super(model);
     }
@@ -34,16 +31,13 @@ public class OrcaTree extends StampTree {
      */
     @Override
     public void enter() {
-
-        if (!fetched) {
-            fetched = true;
-            String address = Project.getClaimAddress();
-            if (address == null || address.equals("")) { return; }
-            fetchOrcaInputCd();
-        }
+        super.enter();
     }
 
-    private void fetchOrcaInputCd() {
+    public void fetchOrcaInputCd() {
+        String address = Project.getClaimAddress();
+        if (address == null || address.equals("")) { return; }
+
         Component c = SwingUtilities.getWindowAncestor(this);
         String message = MONITOR_TITLE;
         String updateMsg = MONITOR_NOTE;
