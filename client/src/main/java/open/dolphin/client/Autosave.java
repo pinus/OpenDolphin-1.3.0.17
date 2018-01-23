@@ -29,6 +29,7 @@ public class Autosave implements Runnable {
     private final static String SUFFIX = "open.dolphin";
     private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
+    private AutosaveModel autosaveModel;
     private File tmpFile;
     private final KarteEditor editor;
     private boolean dirty = true;
@@ -40,6 +41,7 @@ public class Autosave implements Runnable {
 
     public Autosave(KarteEditor e) {
         editor = e;
+        autosaveModel = new AutosaveModel();
     }
 
     /**
@@ -176,10 +178,9 @@ public class Autosave implements Runnable {
         if (dirty) {
             long l = System.currentTimeMillis();
 
-            AutosaveModel model = new AutosaveModel();
-            model.dump(editor);
+            autosaveModel.dump(editor);
 
-            String json = JsonConverter.toJson(model);
+            String json = JsonConverter.toJson(autosaveModel);
 
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile))) {
                 bw.write(json);

@@ -1,6 +1,9 @@
 package open.dolphin.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.awt.Image;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.text.DefaultStyledDocument;
@@ -13,6 +16,7 @@ import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.ProgressCourse;
 import open.dolphin.infomodel.SchemaModel;
+import org.apache.log4j.Logger;
 
 /**
  * Model for KarteEditor Autosave.
@@ -25,8 +29,17 @@ public class AutosaveModel {
     private List<ModuleModel> moduleList;
     private List<SchemaModel> schemaList;
     private String patientId;
+    @JsonIgnore
+    private KartePaneDumper_2 dumper;
+    @JsonIgnore
+    private HashSet<Integer> imageHash;
+    @JsonIgnore
+    private Logger logger;
 
     public AutosaveModel() {
+        dumper = new KartePaneDumper_2();
+        imageHash = new HashSet<>();
+        logger = Logger.getLogger(AutosaveModel.class);
     }
 
     public DocumentModel getDocumentModel() {
@@ -51,15 +64,20 @@ public class AutosaveModel {
         moduleList = new ArrayList<>();
         schemaList = new ArrayList<>();
 
-        KartePaneDumper_2 dumper = new KartePaneDumper_2();
-
         // soa
         dumper.dump(soa);
         soaSpec = dumper.getSpec();
         dumper.getModule().forEach(moduleList::add);
         dumper.getSchema().forEach(m -> {
-            // image を byte array に変換
-            m.setJpegByte(ImageHelper.imageToByteArray(m.getIcon().getImage()));
+            Image image = m.getIcon().getImage();
+            int hash = image.hashCode();
+
+            if (! imageHash.contains(hash)) {
+                // image を byte array に変換
+                m.setJpegByte(ImageHelper.imageToByteArray(image));
+                imageHash.add(hash);
+                logger.info("image updated");
+            }
             schemaList.add(m);
         });
 
