@@ -3,7 +3,7 @@ package open.dolphin.dto;
 import java.io.Serializable;
 
 /**
- * LaboSearchSpec
+ * LaboSearchSpec.
  *
  * @author Minagawa,Kazushi
  */

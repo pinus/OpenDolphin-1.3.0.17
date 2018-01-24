@@ -4,7 +4,7 @@ import java.io.Serializable;
 import open.dolphin.infomodel.PatientVisitModel;
 
 /**
- * PatientVisitSpec
+ * PatientVisitSpec.
  *
  * @author Minagawa, Kazushi
  */

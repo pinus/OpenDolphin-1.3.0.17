@@ -1,6 +1,7 @@
 package open.dolphin.dto;
 
 /**
+ * DocumentTitleSpec.
  *
  * @author pns
  */

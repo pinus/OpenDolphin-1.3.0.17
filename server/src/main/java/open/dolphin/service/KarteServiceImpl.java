@@ -1,6 +1,7 @@
 package open.dolphin.service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -11,7 +12,8 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 
 /**
- *
+ * KarteServiceImpl.
+ * 
  * @author pns
  */
 @Stateless
@@ -20,7 +22,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     private final Logger logger = Logger.getLogger(KarteServiceImpl.class);
 
     /**
-     * カルテの基礎的な情報をまとめて返す。
+     * カルテの基礎的な情報をまとめて返す.
      * @Param spec KarteBeanSpec
      * @return 基礎的な情報をフェッチした KarteBean
      */
@@ -72,7 +74,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * アレルギーリストを返す
+     * アレルギーリストを返す.
      * @param karteId
      * @return
      */
@@ -81,20 +83,20 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
         List<ObservationModel> observations = em.createQuery("select o from ObservationModel o where o.karte.id=:karteId and o.observation='Allergy'", ObservationModel.class)
             .setParameter("karteId", karteId).getResultList();
 
-        List<AllergyModel> allergies = new ArrayList<>();
-        for(ObservationModel observation : observations) {
+        List<AllergyModel> allergies = observations.stream().map(observation -> {
             AllergyModel allergy = new AllergyModel();
             allergy.setObservationId(observation.getId());
             allergy.setFactor(observation.getPhenomenon());
             allergy.setSeverity(observation.getCategoryValue());
             allergy.setIdentifiedDate(observation.confirmDateAsString());
-            allergies.add(allergy);
-        }
+            return allergy;
+        }).collect(Collectors.toList());
+
         return allergies;
     }
 
     /**
-     * 身長・体重（PhysicalModel）リストを返す
+     * 身長・体重（PhysicalModel）リストを返す.
      * @param karteId
      * @return
      */
@@ -107,6 +109,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
         List<PhysicalModel> listH = new ArrayList<>();
         List<PhysicalModel> listW = new ArrayList<>();
+
         for(ObservationModel observation : observations) {
             PhysicalModel physical = new PhysicalModel();
             physical.setIdentifiedDate(observation.confirmDateAsString());
@@ -123,6 +126,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
                 listH.add(physical);
             }
         }
+
         // 同じ Recorded date の身長と体重をまとめる
         List<PhysicalModel> list = new ArrayList<>();
         // 身長体重ともある場合
@@ -223,7 +227,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 文書(DocumentModel Object)を取得する。
+     * 文書(DocumentModel Object)を取得する.
      * @param ids DocumentModel の pkコレクション
      * @return DocumentModelのコレクション
      */
@@ -294,7 +298,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * ドキュメント DocumentModel オブジェクトを保存する。
+     * ドキュメント DocumentModel オブジェクトを保存する.
      * @param document 追加するDocumentModel オブジェクト
      * @return 追加した document の primary key
      */
@@ -337,7 +341,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             return;
         }
 
-        // 親文書が仮保存文書なら残す必要なし。なぜならそれは仮保存だから。by masuda-sensei
+        // 親文書が仮保存文書なら残す必要なし. なぜならそれは仮保存だから. by masuda-sensei
         if (IInfoModel.STATUS_TMP.equals(old.getStatus())) {
             // 編集元文書の情報を引き継ぐ
             DocInfoModel pInfo = old.getDocInfo();
@@ -359,7 +363,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             old.setEnded(ended);
             old.setStatus(InfoModel.STATUS_MODIFIED);
 
-            // HibernateSearchのFulTextEntityManagerを用意。修正済みのものはインデックスから削除する by masuda-sensei
+            // HibernateSearchのFulTextEntityManagerを用意. 修正済みのものはインデックスから削除する by masuda-sensei
             final FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
             fullTextEntityManager.purge(DocumentModel.class, parentPk);
 
@@ -381,7 +385,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * ドキュメントを論理削除する。
+     * ドキュメントを論理削除する.
      * @param id 論理削除するドキュメントの primary key
      * @return 削除した件数
      */
@@ -403,7 +407,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
             long delId = delete.getId();
 
-            // HibernateSearchのFulTextEntityManagerを用意。削除済みのものはインデックスから削除する
+            // HibernateSearchのFulTextEntityManagerを用意. 削除済みのものはインデックスから削除する
             final FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
             fullTextEntityManager.purge(DocumentModel.class, delId);
 
@@ -476,7 +480,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * ドキュメントのタイトルを変更する。
+     * ドキュメントのタイトルを変更する.
      * @param spec 変更するドキュメントの primary key, title
      * @return 変更した件数
      */
@@ -488,7 +492,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * ModuleModelエントリを取得する。
+     * ModuleModelエントリを取得する.
      * @param spec モジュール検索仕様
      * @return ModuleModelリストのリスト
      */
@@ -520,7 +524,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * SchemaModelエントリを取得する。
+     * SchemaModelエントリを取得する.
      * @param spec シェーマ検索仕様
      * @return SchemaModelエントリの配列
      */
@@ -545,7 +549,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 画像を取得する。
+     * 画像を取得する.
      * @param id SchemaModel Id
      * @return SchemaModel
      */
@@ -556,7 +560,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 傷病名リストを取得する。
+     * 傷病名リストを取得する.
      * @param spec 検索仕様
      * @return 傷病名のリスト
      */
@@ -579,7 +583,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 傷病名を追加する。
+     * 傷病名を追加する.
      * @param addList 追加する傷病名のリスト
      * @return idのリスト
      */
@@ -596,7 +600,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 傷病名を更新する。
+     * 傷病名を更新する.
      * @param updateList
      * @return 更新数
      */
@@ -609,7 +613,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 傷病名を削除する。
+     * 傷病名を削除する.
      * @param removeList 削除する傷病名のidリスト
      * @return 削除数
      */
@@ -623,7 +627,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * Observationを取得する。
+     * Observationを取得する.
      * @param spec 検索仕様
      * @return Observationのリスト
      */
@@ -663,7 +667,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * Observationを追加する。
+     * Observationを追加する.
      * @param observations 追加するObservationのリスト
      * @return 追加したObservationのIdリスト
      */
@@ -684,7 +688,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * Observationを更新する。
+     * Observationを更新する.
      * @param observations 更新するObservationのリスト
      * @return 更新した数
      */
@@ -701,7 +705,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * Observationを削除する。
+     * Observationを削除する.
      * @param ids 削除する Observation の primary key リスト
      * @return 削除した数
      */
@@ -718,7 +722,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 患者メモを更新する。
+     * 患者メモを更新する.
      * @param memo 更新するメモ
      * @return 更新した数 1
      */
@@ -733,7 +737,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 予約を保存、更新、削除する。
+     * 予約を保存、更新、削除する.
      * @param spec 予約情報の DTO
      */
     @Override
@@ -775,7 +779,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 予約を検索する。
+     * 予約を検索する.
      * @param spec 検索仕様
      * @return 予約の List
      */

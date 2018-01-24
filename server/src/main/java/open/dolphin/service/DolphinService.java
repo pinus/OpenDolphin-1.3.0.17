@@ -9,6 +9,7 @@ import open.dolphin.infomodel.InfoModel;
 import org.jboss.resteasy.util.Base64;
 
 /**
+ * DolphinService.
  *
  * @author pns
  */
@@ -20,7 +21,7 @@ public abstract class DolphinService {
     private HttpHeaders headers;
 
     /**
-     * Header 情報から Caller の FacilityId:username 部分を取り出す
+     * Header 情報から Caller の FacilityId:username 部分を取り出す.
      * @return
      */
     private String getCallerId() {
@@ -37,7 +38,7 @@ public abstract class DolphinService {
     }
 
     /**
-     * CallerId から FacilityId 部分を切り出す
+     * CallerId から FacilityId 部分を切り出す.
      * @return
      */
     protected String getCallersFacilityId() {
@@ -46,7 +47,7 @@ public abstract class DolphinService {
     }
 
     /**
-     * 与えられた id からFacilityId 部分を切り出す
+     * 与えられた id からFacilityId 部分を切り出す.
      * @param checkId
      * @return
      */
@@ -56,7 +57,7 @@ public abstract class DolphinService {
     }
 
     /**
-     * Caller と CheckId の FacilityId を比較して，一致していなければ SecurityException を出す
+     * Caller と CheckId の FacilityId を比較して，一致していなければ SecurityException を出す.
      * @param checkId
      * @return
      */

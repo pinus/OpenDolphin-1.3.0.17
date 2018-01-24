@@ -3,6 +3,7 @@ package open.dolphin.dto;
 import java.util.Date;
 
 /**
+ * KarteBeanSpec.
  *
  * @author pns
  */

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * DocumentSearchSpec
+ * DocumentSearchSpec.
  *
  * @author Minagawa,Kazushi
  */

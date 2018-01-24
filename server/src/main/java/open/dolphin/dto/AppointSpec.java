@@ -7,7 +7,7 @@ import java.util.Collections;
 import open.dolphin.infomodel.AppointmentModel;
 
 /**
- * AppointSpec
+ * AppointSpec.
  *
  * @author Minagawa,Kazushi
  */
@@ -22,23 +22,23 @@ public class AppointSpec implements Serializable {
         this.added = new ArrayList<>(added);
     }
 
-        public Collection<AppointmentModel> getAdded() {
+    public Collection<AppointmentModel> getAdded() {
         return Collections.unmodifiableCollection(added);
     }
 
-        public void setUpdared(Collection<AppointmentModel> updated) {
+    public void setUpdared(Collection<AppointmentModel> updated) {
         this.updared = new ArrayList<>(updated);
     }
 
-        public Collection<AppointmentModel> getUpdared() {
+    public Collection<AppointmentModel> getUpdared() {
         return Collections.unmodifiableCollection(updared);
     }
 
-        public void setRemoved(Collection<AppointmentModel> removed) {
+    public void setRemoved(Collection<AppointmentModel> removed) {
         this.removed = new ArrayList<>(removed);
     }
 
-        public Collection<AppointmentModel> getRemoved() {
+    public Collection<AppointmentModel> getRemoved() {
         return Collections.unmodifiableCollection(removed);
     }
 }

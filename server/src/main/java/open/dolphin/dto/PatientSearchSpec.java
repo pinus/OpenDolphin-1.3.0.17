@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * PatientSearchSpec
+ * PatientSearchSpec.
  *
  * @author Minagawa,Kazushi
  */

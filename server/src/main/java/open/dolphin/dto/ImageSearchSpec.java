@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * ImageSearchSpec
+ * ImageSearchSpec.
  *
  * @author Minagawa,Kazushi
  */
