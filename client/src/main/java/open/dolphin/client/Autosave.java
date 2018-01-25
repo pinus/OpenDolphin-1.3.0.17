@@ -6,12 +6,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import open.dolphin.JsonConverter;
@@ -90,11 +90,10 @@ public class Autosave implements Runnable {
      * @return
      */
     private static List<AutosaveModel> load() {
-        List<AutosaveModel> ret = new ArrayList<>();
 
         File dir = new File(TMP_DIR);
 
-        Arrays.asList(dir.listFiles(fn -> fn.getName().endsWith(SUFFIX))).stream().forEach(f -> {
+        List<AutosaveModel> ret = Arrays.asList(dir.listFiles(fn -> fn.getName().endsWith(SUFFIX))).stream().map(f -> {
             StringBuilder str = new StringBuilder();
 
             try (BufferedReader br = new BufferedReader(new FileReader(f))) {
@@ -105,8 +104,8 @@ public class Autosave implements Runnable {
             } catch (IOException ex) {
                 ex.printStackTrace(System.err);
             }
-            ret.add(JsonConverter.fromJson(str.toString(), AutosaveModel.class));
-        });
+            return JsonConverter.fromJson(str.toString(), AutosaveModel.class);
+        }).collect(Collectors.toList());
 
         return ret;
     }
@@ -117,12 +116,11 @@ public class Autosave implements Runnable {
      */
     public static void checkForTemporaryFile(final ChartImpl chart) {
 
-        List<AutosaveModel> targetModels = new ArrayList<>();
         String chartPid = chart.getKarte().getPatient().getPatientId();
 
-        load().stream()
+        List<AutosaveModel> targetModels = load().stream()
                 .filter(m -> chartPid.equals(m.getPatientId()))
-                .forEach(targetModels::add);
+                .collect(Collectors.toList());
 
         if (targetModels.isEmpty()) { return; }
 
