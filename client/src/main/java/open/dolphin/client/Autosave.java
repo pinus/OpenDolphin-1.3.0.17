@@ -73,8 +73,8 @@ public class Autosave implements Runnable {
      * 編集中カルテの記録を終了し, TemporaryFile を消去する.
      */
     public void stop () {
-        tmpFile.delete();
         executor.shutdown();
+        tmpFile.delete();
     }
 
     /**
