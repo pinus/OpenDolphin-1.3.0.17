@@ -6,9 +6,12 @@ import com.alderstone.multitouch.mac.touchpad.TouchpadObservable;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JOptionPane;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
- * GlulogicMT.jar を使って Magic Mouse のデバイス状況を調べる
+ * GlulogicMT.jar を使って Magic Trackpad のデバイス状況を調べる.
+ *
  * @author pns
  */
 public class TouchpadTest implements Observer {
@@ -21,63 +24,70 @@ public class TouchpadTest implements Observer {
     // TouchpadObservable
     private static TouchpadObservable tpo = TouchpadObservable.getInstance();
 
-    // マウスの背中に触っているかどうか
+    // Trackpad に触っているかどうか
     private static boolean pressed;
     // 指の移動スピード
     private static float xVelocity;
     private static float yVelocity;
 
-    private TouchpadTest() {}
+    private static Logger logger;
+
+    private TouchpadTest() {
+        logger = Logger.getLogger(TouchpadTest.class);
+        logger.setLevel(Level.DEBUG);
+    }
 
     /**
-     * Observe 開始
+     * Observe 開始.
      */
     public static void startListening() {
         tpo.addObserver(me);
     }
 
     /**
-     * Observe を止める
+     * Observe を止める.
      */
     public static void stopListening() {
         tpo.deleteObserver(me);
     }
 
     /**
-     * マウスの背中に触っているかどうかを返す
+     * マウスの背中に触っているかどうかを返す.
      * @return
      */
     public static boolean isPressed() {
+        logger.debug("pressed = " + pressed);
         return pressed;
     }
 
     /**
-     * X 軸方向の速度　右がプラス
+     * X 軸方向の速度　右がプラス.
      * @return
      */
     public static float getXVelocity() {
+        logger.debug("xVelocity = " + xVelocity);
         return xVelocity;
     }
 
     /**
-     * Y 軸方向の速度　上がプラス
+     * Y 軸方向の速度　上がプラス.
      * @return
      */
     public static float getYVelocity() {
+        logger.debug("yVelocity = " + yVelocity);
         return yVelocity;
     }
 
     /**
-     * TouchpadObservable からデータ（Finger）がここに送られてくる
+     * TouchpadObservable からデータ（Finger）がここに送られてくる.
      * @param o
      * @param arg
      */
     @Override
     public void update(Observable o, Object arg) {
         Finger finger = (Finger) arg;
-        //showRawData(finger);
         int id = finger.getID();
-        if (id <= MAX_FINGER_BLOBS) blobs[id-1] = finger;
+        if (id <= MAX_FINGER_BLOBS) { blobs[id-1] = finger; }
 
         // blob が１つでも press だったら pressed = true
         pressed = false;
@@ -96,6 +106,7 @@ public class TouchpadTest implements Observer {
                 }
             }
         }
+        //showRawData(finger);
     }
 
     private void showRawData(Finger f) {
