@@ -4,10 +4,10 @@ import java.awt.Font;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -78,7 +78,7 @@ public class PatientInspector {
         List<IInspector> otherInspectors = new ArrayList<>();
 
         // 浮動インスペクタを生成して分類する
-        Arrays.asList(InspectorCategory.values()).stream()
+        Stream.of(InspectorCategory.values())
                 .map(c -> c.clazz()).filter(Objects::nonNull).forEach(clazz -> {
             try {
                     // インスペクタを生成する

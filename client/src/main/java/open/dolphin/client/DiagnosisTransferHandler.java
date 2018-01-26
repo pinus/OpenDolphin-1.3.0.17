@@ -5,9 +5,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Stream;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -150,7 +150,7 @@ public class DiagnosisTransferHandler extends PNSTransferHandler {
         // drop position の選択をしないようにする
         support.setShowDropLocation(false);
 
-        return Arrays.asList(support.getDataFlavors()).stream()
+        return Stream.of(support.getDataFlavors())
                 .anyMatch(flavor -> LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavor));
     }
 }

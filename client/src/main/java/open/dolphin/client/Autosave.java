@@ -6,12 +6,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import open.dolphin.JsonConverter;
@@ -93,7 +93,7 @@ public class Autosave implements Runnable {
 
         File dir = new File(TMP_DIR);
 
-        List<AutosaveModel> ret = Arrays.asList(dir.listFiles(fn -> fn.getName().endsWith(SUFFIX))).stream().map(f -> {
+        List<AutosaveModel> ret = Stream.of(dir.listFiles(fn -> fn.getName().endsWith(SUFFIX))).map(f -> {
             StringBuilder str = new StringBuilder();
 
             try (BufferedReader br = new BufferedReader(new FileReader(f))) {

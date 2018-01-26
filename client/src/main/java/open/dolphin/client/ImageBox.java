@@ -8,8 +8,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.stream.Stream;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 import open.dolphin.helper.ComponentBoundsManager;
@@ -227,7 +227,7 @@ public class ImageBox extends AbstractMainTool {
         if (directories == null || directories.length == 0) {
             return;
         }
-        Arrays.asList(directories).stream().sorted(Comparator.comparing(File::getName)).forEach(dir -> {
+        Stream.of(directories).sorted(Comparator.comparing(File::getName)).forEach(dir -> {
             String tabName = dir.getName();
             ImagePalette imageTable = new ImagePalette(null, columnCount, imageWidth, imageHeight);
             imageTable.setImageSuffix(suffix);

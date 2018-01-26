@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.event.MenuEvent;
@@ -87,8 +88,8 @@ public class MenuSupport implements MenuListener {
 
     public void enableMenus(String[] menus, boolean enable) {
         if (actions != null && menus != null) {
-            Arrays.asList(menus).stream()
-                    .map(name -> actions.get(name))
+            Stream.of(menus)
+                    .map(actions::get)
                     .filter(Objects::nonNull)
                     .forEach(action -> action.setEnabled(enable));
         }
