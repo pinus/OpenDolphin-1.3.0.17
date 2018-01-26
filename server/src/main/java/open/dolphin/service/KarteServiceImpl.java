@@ -13,7 +13,7 @@ import org.hibernate.search.jpa.Search;
 
 /**
  * KarteServiceImpl.
- * 
+ *
  * @author pns
  */
 @Stateless
@@ -107,57 +107,64 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             em.createQuery("select o from ObservationModel o where o.karte.id=:karteId and o.observation='PhysicalExam' and (o.phenomenon='bodyHeight' or o.phenomenon='bodyWeight')", ObservationModel.class)
             .setParameter("karteId", karteId).getResultList();
 
-        List<PhysicalModel> listH = new ArrayList<>();
-        List<PhysicalModel> listW = new ArrayList<>();
+        // recorded date をキーとした PhysicalModel の Map
+/*
+        HashMap<String, PhysicalModel> map = new HashMap<>();
+        observations.stream().forEach(o -> {
+            String memo = ModelUtils.getDateAsString(o.getRecorded());
+            String identified = o.confirmDateAsString();
+            String key = (memo == null)? identified : memo;
 
-        for(ObservationModel observation : observations) {
-            PhysicalModel physical = new PhysicalModel();
-            physical.setIdentifiedDate(observation.confirmDateAsString());
-            physical.setMemo(ModelUtils.getDateAsString(observation.getRecorded()));
-            if (observation.getPhenomenon().equals("bodyWeight")) {
-                physical.setWeightId(observation.getId());
-                physical.setWeight(observation.getValue());
-                // 体重
-                listW.add(physical);
+            PhysicalModel pm = map.get(key);
+            // キーに対応する model がない場合は作る
+            if (pm == null) {
+                pm = new PhysicalModel();
+                pm.setMemo(memo);
+                pm.setIdentifiedDate(identified);
+                map.put(key, pm);
+            }
+
+            if (o.getPhenomenon().equals(IInfoModel.PHENOMENON_BODY_WEIGHT)) {
+                pm.setWeightId(o.getId());
+                pm.setWeight(o.getValue());
             } else {
-                physical.setHeightId(observation.getId());
-                physical.setHeight(observation.getValue());
-                // 身長
-                listH.add(physical);
+                pm.setHeightId(o.getId());
+                pm.setHeight(o.getValue());
             }
-        }
+        });
+*/
+        Map<String, PhysicalModel> map = observations.stream().collect(Collectors.toMap(o -> {
+            String memo = ModelUtils.getDateAsString(o.getRecorded());
+            String identified = o.confirmDateAsString();
+            String key = (memo == null)? identified : memo;
+            return key;
 
-        // 同じ Recorded date の身長と体重をまとめる
-        List<PhysicalModel> list = new ArrayList<>();
-        // 身長体重ともある場合
-        if (! listH.isEmpty() && ! listW.isEmpty()) {
-            for (PhysicalModel h : listH) {
-                String memoH = (h.getMemo() == null)? h.getIdentifiedDate() : h.getMemo();
-                // 体重のメモ(=recorded date)が一致するものを見つける
-                PhysicalModel found = null;
-                for (PhysicalModel w : listW) {
-                    String memoW = (w.getMemo() == null)? w.getIdentifiedDate() : w.getMemo();
-                    if (memoW.equals(memoH)) {
-                        found = w;
-                        // 見つかったら体重データを加える
-                        h.setWeightId(w.getWeightId());
-                        h.setWeight(w.getWeight());
-                        break;
-                    }
-                }
-                list.add(h);
-                // 一致した体重は h に加えたのでリストから除く
-                if (found != null) { listW.remove(found); }
+        }, o -> {
+            PhysicalModel pm = new PhysicalModel();
+            pm.setMemo(ModelUtils.getDateAsString(o.getRecorded()));
+            pm.setIdentifiedDate(o.confirmDateAsString());
+            if (o.getPhenomenon().equals(IInfoModel.PHENOMENON_BODY_WEIGHT)) {
+                pm.setWeightId(o.getId());
+                pm.setWeight(o.getValue());
+            } else {
+                pm.setHeightId(o.getId());
+                pm.setHeight(o.getValue());
             }
-            // 体重のリストが残っていれば加える
-            list.addAll(listW);
-        }
-        // 身長だけの場合
-        else if (! listH.isEmpty()) { list.addAll(listH); }
-        // 体重だけの場合
-        else if (! listW.isEmpty()) { list.addAll(listW); }
+            return pm;
 
-        return list;
+        }, (p1, p2) -> {
+            if (p1.getWeightId() == 0) {
+                p1.setWeightId(p2.getWeightId());
+                p1.setWeight(p2.getWeight());
+                return p1;
+            } else {
+                p2.setHeightId(p1.getHeightId());
+                p2.setHeight(p1.getHeight());
+                return p2;
+            }
+        }));
+
+        return new ArrayList<>(map.values());
     }
 
     /**
