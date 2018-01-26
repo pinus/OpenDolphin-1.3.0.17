@@ -107,42 +107,19 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             em.createQuery("select o from ObservationModel o where o.karte.id=:karteId and o.observation='PhysicalExam' and (o.phenomenon='bodyHeight' or o.phenomenon='bodyWeight')", ObservationModel.class)
             .setParameter("karteId", karteId).getResultList();
 
-        // recorded date をキーとした PhysicalModel の Map
-/*
-        HashMap<String, PhysicalModel> map = new HashMap<>();
-        observations.stream().forEach(o -> {
-            String memo = ModelUtils.getDateAsString(o.getRecorded());
-            String identified = o.confirmDateAsString();
-            String key = (memo == null)? identified : memo;
-
-            PhysicalModel pm = map.get(key);
-            // キーに対応する model がない場合は作る
-            if (pm == null) {
-                pm = new PhysicalModel();
-                pm.setMemo(memo);
-                pm.setIdentifiedDate(identified);
-                map.put(key, pm);
-            }
-
-            if (o.getPhenomenon().equals(IInfoModel.PHENOMENON_BODY_WEIGHT)) {
-                pm.setWeightId(o.getId());
-                pm.setWeight(o.getValue());
-            } else {
-                pm.setHeightId(o.getId());
-                pm.setHeight(o.getValue());
-            }
-        });
-*/
+        // confirm date をキーとした PhysicalModel の Map
         Map<String, PhysicalModel> map = observations.stream().collect(Collectors.toMap(o -> {
+            // key
             String memo = ModelUtils.getDateAsString(o.getRecorded());
             String identified = o.confirmDateAsString();
-            String key = (memo == null)? identified : memo;
-            return key;
+            return identified != null? identified : memo;
 
         }, o -> {
+            // ObservationModel から PhysicalModel を作成する
             PhysicalModel pm = new PhysicalModel();
             pm.setMemo(ModelUtils.getDateAsString(o.getRecorded()));
             pm.setIdentifiedDate(o.confirmDateAsString());
+
             if (o.getPhenomenon().equals(IInfoModel.PHENOMENON_BODY_WEIGHT)) {
                 pm.setWeightId(o.getId());
                 pm.setWeight(o.getValue());
@@ -153,13 +130,17 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             return pm;
 
         }, (p1, p2) -> {
+            // 同じ confirm date にデータが2つある場合統合する
             if (p1.getWeightId() == 0) {
+                // p1 は height だけのデータなので，weight を補う
                 p1.setWeightId(p2.getWeightId());
                 p1.setWeight(p2.getWeight());
                 return p1;
+
             } else {
-                p2.setHeightId(p1.getHeightId());
-                p2.setHeight(p1.getHeight());
+                // p2 は height だけのデータなので，weight を補う
+                p2.setWeightId(p1.getWeightId());
+                p2.setWeight(p1.getWeight());
                 return p2;
             }
         }));
