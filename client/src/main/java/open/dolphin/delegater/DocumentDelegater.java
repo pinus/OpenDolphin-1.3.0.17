@@ -3,7 +3,6 @@ package open.dolphin.delegater;
 import java.awt.Dimension;
 import java.util.*;
 import javax.swing.ImageIcon;
-import open.dolphin.client.ClientContext;
 import open.dolphin.client.ImageEntry;
 import open.dolphin.dto.*;
 import open.dolphin.helper.ImageHelper;
@@ -15,8 +14,8 @@ import open.dolphin.service.KarteService;
  * @author pns
  */
 public class  DocumentDelegater extends BusinessDelegater {
-    private static final int MAX_IMAGE_WIDTH = ClientContext.getInt("image.max.width");
-    private static final int MAX_IMAGE_HEIGHT = ClientContext.getInt("image.max.height");
+    private static final int MAX_IMAGE_WIDTH = 522; // ClientContext.getInt("image.max.width")
+    private static final int MAX_IMAGE_HEIGHT = 522; // ClientContext.getInt("image.max.height")
     private static final Dimension MAX_IMAGE_SIZE = new Dimension(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
 
     /**

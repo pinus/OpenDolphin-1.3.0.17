@@ -75,7 +75,7 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
         // 右クリックで popup 表示
         if (e.isPopupTrigger()) { maybeShowPopup(e); }
         // ダブルクリックでエディタ表示
-        else if (e.getClickCount() == 2 && ! MouseHelper.mouseMoved()) { edit(); }
+        else if (e.getClickCount() == 2 && ! MouseHelper.mouseMoved() && ! e.isAltDown()) { edit(); }
     }
 
     @Override

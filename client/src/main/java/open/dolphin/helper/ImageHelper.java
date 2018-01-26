@@ -91,7 +91,7 @@ public class ImageHelper {
      * @return
      */
     public static byte[] imageToByteArray(Image image) {
-        
+
         byte[] ret = null;
 
         try (ByteArrayOutputStream bo = new ByteArrayOutputStream()) {
@@ -114,7 +114,7 @@ public class ImageHelper {
     }
 
     /**
-     * ImageIcon のサイズを dim サイズ以内になるように調節する
+     * ImageIcon のサイズを dim サイズ以内になるように調節する.
      * @param icon
      * @param dim
      * @return
