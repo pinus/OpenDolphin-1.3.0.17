@@ -151,6 +151,6 @@ public class DiagnosisTransferHandler extends PNSTransferHandler {
         support.setShowDropLocation(false);
 
         return Stream.of(support.getDataFlavors())
-                .anyMatch(flavor -> LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavor));
+                .anyMatch(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor::equals);
     }
 }
