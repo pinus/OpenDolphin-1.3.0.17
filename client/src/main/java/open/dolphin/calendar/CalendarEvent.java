@@ -1,7 +1,7 @@
 package open.dolphin.calendar;
 
 import java.awt.Color;
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * CalendarEvent.
@@ -84,7 +84,7 @@ public enum CalendarEvent {
      * @return
      */
     public static boolean isAppoint(String code) {
-        return Arrays.asList(CalendarEvent.values()).stream()
+        return Stream.of(CalendarEvent.values())
                 .filter(event -> event.name().contains("APPO"))
                 .anyMatch(event -> event.code().equals(code));
     }
@@ -95,7 +95,7 @@ public enum CalendarEvent {
      * @return
      */
     public static boolean isModule(String code) {
-        return Arrays.asList(CalendarEvent.values()).stream()
+        return Stream.of(CalendarEvent.values())
                 .filter(event -> event.name().contains("Order"))
                 .anyMatch(event -> event.code().equals(code));
     }
