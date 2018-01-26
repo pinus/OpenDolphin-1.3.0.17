@@ -56,7 +56,6 @@ public class TouchpadTest implements Observer {
      * @return
      */
     public static boolean isPressed() {
-        logger.debug("pressed = " + pressed);
         return pressed;
     }
 
@@ -65,7 +64,6 @@ public class TouchpadTest implements Observer {
      * @return
      */
     public static float getXVelocity() {
-        logger.debug("xVelocity = " + xVelocity);
         return xVelocity;
     }
 
@@ -74,7 +72,6 @@ public class TouchpadTest implements Observer {
      * @return
      */
     public static float getYVelocity() {
-        logger.debug("yVelocity = " + yVelocity);
         return yVelocity;
     }
 
