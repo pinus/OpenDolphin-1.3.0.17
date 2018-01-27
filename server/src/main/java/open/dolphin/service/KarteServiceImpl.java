@@ -23,7 +23,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
     /**
      * カルテの基礎的な情報をまとめて返す.
-     * @Param spec KarteBeanSpec
+     * @param spec KarteBeanSpec
      * @return 基礎的な情報をフェッチした KarteBean
      */
     @Override
@@ -162,13 +162,10 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             .setParameter("patientPk", patientPk)
             .setParameter("fromDate", ModelUtils.getDateAsString(fromDate)).getResultList();
 
-        List<String> visits = new ArrayList<>();
-        for (PatientVisitModel bean : latestVisits) {
-            // キャンセルされた受付は無視する
-            if (bean.getState() != KarteState.CANCEL_PVT) {
-                visits.add(bean.getPvtDate());
-            }
-        }
+        List<String> visits = latestVisits.stream()
+                .filter(m -> m.getState() != KarteState.CANCEL_PVT)
+                .map(m -> m.getPvtDate()).collect(Collectors.toList());
+
         return visits;
     }
 
