@@ -96,7 +96,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     /**
      * 身長・体重（PhysicalModel）リストを返す.
      * @param karteId karte pk
-     * @return
+     * @return List of PhysicalModel
      */
     @Override
     public List<PhysicalModel> getPhysicalList(Long karteId) {
@@ -162,7 +162,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
         return latestVisits.stream()
                 .filter(m -> m.getState() != KarteState.CANCEL_PVT)
-                .map(m -> m.getPvtDate()).collect(Collectors.toList());
+                .map(PatientVisitModel::getPvtDate).collect(Collectors.toList());
     }
 
     /**
@@ -221,14 +221,14 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
         // とってきた ModuleModel を id 毎に分ける
         Map<Long, List<ModuleModel>> modsMap = mods.stream()
-                .map(m -> {
+                .collect(Collectors.groupingBy(m -> {
                     // beanBytes をいじるために detach する
                     em.detach(m);
                     // beanBytes をデコードする
                     m.setModel((IInfoModel) ModelUtils.xmlDecode(m.getBeanBytes()));
                     m.setBeanBytes(null);
-                    return m;
-                }).collect(Collectors.groupingBy(m -> m.getDocument().getId()));
+                    return m.getDocument().getId();
+                }));
 
         // とってきた SchemaModel を id 毎に分ける
         Map<Long, List<SchemaModel>> imgsMap = imgs.stream()
@@ -241,9 +241,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
                     DocumentModel document = em.find(DocumentModel.class, id);
                     // detach しないと org.hibernate.PersistentObjectException: detached entity passed to persist
                     em.detach(document);
-                    return document;
 
-                }).map(document -> {
                     // ModuleBean を登録
                     List<ModuleModel> modules = modsMap.get(document.getId());
                     if (modules == null) { modules = new ArrayList<>(); }
@@ -268,11 +266,13 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
      */
     @Override
     public long addDocument(DocumentModel document) {
+
         // ModuleModel の永続化 beanBytes を作成する
-        for (ModuleModel m : document.getModules()) {
+        document.getModules().forEach(m -> {
             m.setBeanBytes(ModelUtils.xmlEncode(m.getModel()));
             m.setModel(null);
-        }
+        });
+
         // 永続化する
         em.persist(document);
 
@@ -286,8 +286,8 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 後処置は asynchronous にしてクライアントを待たせない by masuda-sensei
-     * @param document
+     * 後処置は asynchronous にしてクライアントを待たせない by masuda-sensei.
+     * @param document DocumentModel
      */
     @Asynchronous
     private void processPostAddDocument(DocumentModel document) {
@@ -334,17 +334,19 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             // 関連するモジュールとイメージに同じ処理を実行する
             List<ModuleModel> oldModules = em.createQuery("select m from ModuleModel m where m.document.id = :id", ModuleModel.class)
                 .setParameter("id", parentPk).getResultList();
-            for (ModuleModel model : oldModules) {
+
+            oldModules.forEach(model -> {
                 model.setEnded(ended);
                 model.setStatus(InfoModel.STATUS_MODIFIED);
-            }
+            });
 
             List<SchemaModel> oldImages = em.createQuery("select s from SchemaModel s where s.document.id = :id", SchemaModel.class)
                 .setParameter("id", parentPk).getResultList();
-            for (SchemaModel model : oldImages) {
+
+            oldImages.forEach(model -> {
                 model.setEnded(ended);
                 model.setStatus(InfoModel.STATUS_MODIFIED);
-            }
+            });
         }
     }
 
@@ -388,27 +390,29 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
                 // 関連するモジュールに同じ処理を行う
                 List<ModuleModel> deleteModules = em.createQuery("select m from ModuleModel m where m.document.id=:id", ModuleModel.class)
                     .setParameter("id", delId).getResultList();
-                for (ModuleModel model : deleteModules) {
+
+                deleteModules.forEach(model -> {
                     model.setStatus(InfoModel.STATUS_DELETE);
                     model.setEnded(ended);
-                }
+                });
 
                 // 関連する画像に同じ処理を行う
                 List<SchemaModel> deleteImages = em.createQuery("select i from SchemaModel i where i.document.id=:id", SchemaModel.class)
                     .setParameter("id", delId).getResultList();
-                for (SchemaModel model : deleteImages) {
+
+                deleteImages.forEach(model -> {
                     model.setStatus(InfoModel.STATUS_DELETE);
                     model.setEnded(ended);
-                }
+                });
             }
         }
         return 1;
     }
 
     /**
-     * 親文書を追いかける by masuda-sensei
-     * @param dm
-     * @return
+     * 親文書を追いかける by masuda-sensei.
+     * @param dm DocumentModel
+     * @return 最親 DocumentModel
      */
     private DocumentModel getParent(DocumentModel dm) {
 
@@ -422,9 +426,9 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 子文書を再帰で探す by masuda-sensei
-     * @param parent
-     * @return
+     * 子文書を再帰で探す by masuda-sensei.
+     * @param parent 最親 DocumentModel
+     * @return 子供達
      */
     private Set<DocumentModel> getChildren(DocumentModel parent) {
 
@@ -437,9 +441,8 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             .setParameter("id", parent.getId()).getResultList();
 
         // 子供の子供をリストに追加
-        for (DocumentModel child : children) {
-            ret.addAll(getChildren(child));
-        }
+        children.forEach(child -> ret.addAll(getChildren(child)));
+
         return ret;
     }
 
@@ -456,9 +459,9 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * ModuleModelエントリを取得する.
+     * ModuleModel エントリを取得する.
      * @param spec モジュール検索仕様
-     * @return ModuleModelリストのリスト
+     * @return ModuleModel リストのリスト
      */
     @Override
     public List<List<ModuleModel>> getModuleList(ModuleSearchSpec spec) {
@@ -477,20 +480,20 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
                 .setParameter("fromDate", fromDate[i])
                 .setParameter("toDate", toDate[i]).getResultList();
             // module 一つ一つ beanBytes を detach してから decode
-            for (ModuleModel m : modules) {
+            modules.forEach(m -> {
                 em.detach(m);
                 m.setModel((IInfoModel) ModelUtils.xmlDecode(m.getBeanBytes()));
                 m.setBeanBytes(null);
-            }
+            });
             ret.add(modules);
         }
         return ret;
     }
 
     /**
-     * SchemaModelエントリを取得する.
+     * SchemaModel エントリを取得する.
      * @param spec シェーマ検索仕様
-     * @return SchemaModelエントリの配列
+     * @return SchemaModel エントリの配列
      */
     @Override
     public List<List<SchemaModel>> getImageList(ImageSearchSpec spec) {
@@ -554,25 +557,20 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     @Override
     public List<Long> addDiagnosisList(List<RegisteredDiagnosisModel> addList) {
 
-        List<Long> ret = new ArrayList<>(addList.size());
-
-        for (RegisteredDiagnosisModel bean : addList) {
-            em.persist(bean);
-            ret.add(bean.getId());
-        }
-        return ret;
+        return addList.stream().map(m -> {
+            em.persist(m);
+            return m.getId();
+        }).collect(Collectors.toList());
     }
 
     /**
      * 傷病名を更新する.
-     * @param updateList
+     * @param updateList 更新傷病名のリスト
      * @return 更新数
      */
     @Override
     public int updateDiagnosisList(List<RegisteredDiagnosisModel> updateList) {
-        for (RegisteredDiagnosisModel bean : updateList) {
-            em.merge(bean);
-        }
+        updateList.forEach(em::merge);
         return updateList.size();
     }
 
@@ -583,17 +581,14 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
      */
     @Override
     public int removeDiagnosisList(List<Long> removeList) {
-        for (Long id : removeList) {
-            RegisteredDiagnosisModel bean = em.find(RegisteredDiagnosisModel.class, id);
-            em.remove(bean);
-        }
+        removeList.stream().map(id -> em.find(RegisteredDiagnosisModel.class, id)).forEach(em::remove);
         return removeList.size();
     }
 
     /**
-     * Observationを取得する.
+     * Observation を取得する.
      * @param spec 検索仕様
-     * @return Observationのリスト
+     * @return Observation のリスト
      */
     @Override
     public List<ObservationModel> getObservationList(ObservationSearchSpec spec) {
@@ -632,54 +627,45 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
     /**
      * Observationを追加する.
-     * @param observations 追加するObservationのリスト
-     * @return 追加したObservationのIdリスト
+     * @param observations 追加する Observation のリスト
+     * @return 追加した Observation のIdリスト
      */
     @Override
     public List<Long> addObservationList(List<ObservationModel> observations) {
 
         if (observations != null && ! observations.isEmpty()) {
-
-            List<Long> ret = new ArrayList<>(observations.size());
-
-            for (ObservationModel model : observations) {
-                em.persist(model);
-                ret.add(model.getId());
-            }
-            return ret;
+            return observations.stream().map(m -> {
+                em.persist(m);
+                return m.getId();
+            }).collect(Collectors.toList());
         }
         return null;
     }
 
     /**
-     * Observationを更新する.
-     * @param observations 更新するObservationのリスト
+     * Observation を更新する.
+     * @param observations 更新する Observation のリスト
      * @return 更新した数
      */
     @Override
     public int updateObservationList(List<ObservationModel> observations) {
 
         if (observations != null && ! observations.isEmpty()) {
-            for (ObservationModel model : observations) {
-                em.merge(model);
-            }
+            observations.forEach(em::merge);
             return observations.size();
         }
         return 0;
     }
 
     /**
-     * Observationを削除する.
+     * Observation を削除する.
      * @param ids 削除する Observation の primary key リスト
      * @return 削除した数
      */
     @Override
     public int removeObservationList(List<Long> ids) {
         if (ids != null && ! ids.isEmpty()) {
-            for (Long id : ids) {
-                ObservationModel model = em.find(ObservationModel.class, id);
-                em.remove(model);
-            }
+            ids.stream().map(id -> em.find(ObservationModel.class, id)).forEach(em::remove);
             return ids.size();
         }
         return 0;
@@ -715,28 +701,20 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
         // 登録する
         if (added != null && ! added.isEmpty()) {
-            for (AppointmentModel bean : added) {
-                em.persist(bean);
-            }
+            added.forEach(em::persist);
             cnt += added.size();
         }
 
         // 更新する
         if (updated != null && ! updated.isEmpty()) {
-            for (AppointmentModel bean : updated) {
-                // av は分離オブジェクトである
-                em.merge(bean);
-            }
+            updated.forEach(em::merge);
             cnt += updated.size();
         }
 
         // 削除
         if (removed != null && ! removed.isEmpty()) {
-            for (AppointmentModel bean : removed) {
-                // 分離オブジェクトは remove に渡せないので対象を検索する
-                AppointmentModel target = em.find(AppointmentModel.class, bean.getId());
-                em.remove(target);
-            }
+            // 分離オブジェクトは remove に渡せないので対象を検索する
+            removed.stream().map(m -> em.find(AppointmentModel.class, m.getId())).forEach(em::remove);
             cnt += removed.size();
         }
         return cnt;
@@ -754,6 +732,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
         Date[] fromDate = spec.getFromDate();
         Date[] toDate = spec.getToDate();
         int len = fromDate.length;
+
         List<List<AppointmentModel>> ret = new ArrayList<>(len);
 
         // 抽出期間ごとに検索しコレクションに加える
@@ -768,25 +747,3 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
         return ret;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
