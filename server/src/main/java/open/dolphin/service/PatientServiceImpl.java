@@ -2,6 +2,7 @@ package open.dolphin.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.infomodel.*;
@@ -13,6 +14,7 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 
 /**
+ * PatientServiceImpl.
  *
  * @author pns
  */
@@ -22,7 +24,7 @@ public class PatientServiceImpl extends DolphinService implements PatientService
     private final Logger logger = Logger.getLogger(PatientService.class);
 
     /**
-     * 患者オブジェクトを取得する。
+     * 患者オブジェクトを取得する.
      * @param spec PatientSearchSpec 検索仕様
      * @return 患者オブジェクトの Collection
      */
@@ -52,9 +54,7 @@ public class PatientServiceImpl extends DolphinService implements PatientService
                         .setParameter("date", spec.getDate()+ "%")
                         .setParameter("ids", ids).getResultList();
 
-                for (PatientVisitModel pvt : pvtList) {
-                    ret.add(pvt.getPatient());
-                }
+                ret.addAll(pvtList.stream().map(PatientVisitModel::getPatient).collect(Collectors.toList()));
                 break;
 
             case PatientSearchSpec.ID_SEARCH:
@@ -281,21 +281,21 @@ public class PatientServiceImpl extends DolphinService implements PatientService
     }
 
     /**
-     * HealthInsurance の beanBytes を PVTHealthInsurance に戻して返す
-     * @param patientPk
-     * @return
+     * HealthInsurance の beanBytes を PVTHealthInsurance に戻して返す.
+     * @param patientPk PatientModel の pk
+     * @return PVTHealthInsuranceModel の List
      */
     @Override
     public List<PVTHealthInsuranceModel> getHealthInsuranceList(Long patientPk) {
         final String sql = "select h from HealthInsuranceModel h where h.patient.id = :pk";
         List<HealthInsuranceModel> insurances = em.createQuery(sql, HealthInsuranceModel.class)
             .setParameter("pk", patientPk).getResultList();
-        List<PVTHealthInsuranceModel> pvtHealthInsurances = ModelUtils.decodeHealthInsurance(insurances);
-        return pvtHealthInsurances;
+
+        return ModelUtils.decodeHealthInsurance(insurances);
     }
 
     /**
-     * 患者ID(BUSINESS KEY)を指定して患者オブジェクトを返す。
+     * 患者ID(BUSINESS KEY)を指定して患者オブジェクトを返す.
      *
      * @param patientId 施設内患者ID
      * @return 該当するPatientModel
@@ -322,7 +322,7 @@ public class PatientServiceImpl extends DolphinService implements PatientService
     }
 
     /**
-     * 患者を登録する。
+     * 患者を登録する.
      * @param patient PatientModel
      * @return PatientModel の primary key
      */
@@ -331,12 +331,11 @@ public class PatientServiceImpl extends DolphinService implements PatientService
         String facilityId = getCallersFacilityId();
         patient.setFacilityId(facilityId);
         em.persist(patient);
-        Long pk = patient.getId();
-        return pk;
+        return patient.getId();
     }
 
     /**
-     * 患者情報を更新する。
+     * 患者情報を更新する.
      * @param patient 更新する患者
      * @return 更新数 1
      */

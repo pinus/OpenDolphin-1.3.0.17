@@ -10,15 +10,16 @@ import open.dolphin.infomodel.LaboSpecimenValue;
 import open.dolphin.infomodel.PatientModel;
 
 /**
+ * LaboServiceImpl.
  *
  * @author pns
  */
 @Stateless
-public class  LaboServiceImpl extends DolphinService implements LaboService {
+public class LaboServiceImpl extends DolphinService implements LaboService {
     private static final long serialVersionUID = 3956888524428014377L;
 
     /**
-     * LaboModuleを保存する。
+     * LaboModuleを保存する.
      * @param laboModuleValue LaboModuleValue
      */
     @Override
@@ -48,9 +49,9 @@ public class  LaboServiceImpl extends DolphinService implements LaboService {
     }
 
     /**
-     * 患者の検体検査モジュールを取得する。
+     * 患者の検体検査モジュールを取得する.
      * @param spec LaboSearchSpec 検索仕様
-     * @return laboModule の List
+     * @return LaboModuleValue の List
      */
     @Override
     public List<LaboModuleValue> getLaboModuleList(LaboSearchSpec spec) {
@@ -63,41 +64,17 @@ public class  LaboServiceImpl extends DolphinService implements LaboService {
             .setParameter("sampleFrom", spec.getFromDate())
             .setParameter("sampleTo", spec.getToDate()).getResultList();
 
-        for (LaboModuleValue module : modules) {
+        modules.forEach(module -> {
             List<LaboSpecimenValue> specimens = em.createQuery("select l from LaboSpecimenValue l where l.laboModule.id = :moduleId", LaboSpecimenValue.class)
-                .setParameter("moduleId", module.getId()).getResultList();
-
-            module.setLaboSpecimens(specimens);
-
-            for (LaboSpecimenValue specimen : specimens) {
+                    .setParameter("moduleId", module.getId()).getResultList();
+            specimens.forEach(specimen -> {
                 List<LaboItemValue> items = em.createQuery("select l from LaboItemValue l where l.laboSpecimen.id = :specimenId", LaboItemValue.class)
-                    .setParameter("specimenId", specimen.getId()).getResultList();
-
+                        .setParameter("specimenId", specimen.getId()).getResultList();
                 specimen.setLaboItems(items);
-            }
-        }
+            });
+            module.setLaboSpecimens(specimens);
+        });
+
         return modules;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
