@@ -75,15 +75,15 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
     /**
      * アレルギーリストを返す.
-     * @param karteId
-     * @return
+     * @param karteId karte pk
+     * @return List of AllergyModel
      */
     @Override
     public List<AllergyModel> getAllergyList(Long karteId) {
         List<ObservationModel> observations = em.createQuery("select o from ObservationModel o where o.karte.id=:karteId and o.observation='Allergy'", ObservationModel.class)
             .setParameter("karteId", karteId).getResultList();
 
-        List<AllergyModel> allergies = observations.stream().map(observation -> {
+        return observations.stream().map(observation -> {
             AllergyModel allergy = new AllergyModel();
             allergy.setObservationId(observation.getId());
             allergy.setFactor(observation.getPhenomenon());
@@ -91,13 +91,11 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             allergy.setIdentifiedDate(observation.confirmDateAsString());
             return allergy;
         }).collect(Collectors.toList());
-
-        return allergies;
     }
 
     /**
      * 身長・体重（PhysicalModel）リストを返す.
-     * @param karteId
+     * @param karteId karte pk
      * @return
      */
     @Override
@@ -149,9 +147,9 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * Karte に関連した PatientVisitModel.pvtDate のリストを返す
-     * @param spec
-     * @return
+     * Karte に関連した PatientVisitModel.pvtDate のリストを返す.
+     * @param spec KarteBeanSpec
+     * @return List of PvtDate
      */
     @Override
     public List<String> getPvtList(KarteBeanSpec spec) {
@@ -162,17 +160,15 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             .setParameter("patientPk", patientPk)
             .setParameter("fromDate", ModelUtils.getDateAsString(fromDate)).getResultList();
 
-        List<String> visits = latestVisits.stream()
+        return latestVisits.stream()
                 .filter(m -> m.getState() != KarteState.CANCEL_PVT)
                 .map(m -> m.getPvtDate()).collect(Collectors.toList());
-
-        return visits;
     }
 
     /**
-     * KarteId の関連する PatientMemoModel を返す
-     * @param karteId
-     * @return
+     * KarteId の関連する PatientMemoModel を返す.
+     * @param karteId karte pk
+     * @return PatientMemoModel
      */
     @Override
     public PatientMemoModel getPatientMemo(Long karteId) {
@@ -182,9 +178,9 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     }
 
     /**
-     * 文書履歴エントリを取得する
-     * @param spec
-     * @return DocInfo のコレクション
+     * 文書履歴エントリを取得する.
+     * @param spec DocumentSearchSpec
+     * @return List of DocInfo
      */
     @Override
     public List<DocInfoModel> getDocInfoList(DocumentSearchSpec spec) {
@@ -201,26 +197,20 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
                 .setParameter("fromDate", spec.getFromDate()).getResultList();
         }
 
-        List<DocInfoModel> result = new ArrayList<>();
-        for (DocumentModel docBean : documents) {
-            // モデルからDocInfo へ必要なデータを移す
-            // クライアントが DocInfo だけを利用するケースがあるため
-            docBean.toDetach();
-            result.add(docBean.getDocInfo());
-        }
-        return result;
+        return documents.stream().map(d -> {
+            d.toDetach();
+            return d.getDocInfo();
+        }).collect(Collectors.toList());
     }
 
     /**
      * 文書(DocumentModel Object)を取得する.
-     * @param ids DocumentModel の pkコレクション
-     * @return DocumentModelのコレクション
+     * @param ids List of DocumentModel pk
+     * @return List of DocumentModel
      */
     @Override
     public List<DocumentModel> getDocumentList(List<Long> ids) {
         //long t = System.currentTimeMillis();
-        List<DocumentModel> ret = new ArrayList<>();
-
         // まとめて query
         List<ModuleModel> mods = em.createQuery("select m from ModuleModel m where m.document.id in (:ids)", ModuleModel.class)
                 .setParameter("ids", ids)
@@ -230,54 +220,43 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
                 .getResultList();
 
         // とってきた ModuleModel を id 毎に分ける
-        HashMap<Long, List<ModuleModel>> modsMap = new HashMap<>();
-        for (ModuleModel m : mods) {
-            // beanBytes をいじるために detach する
-            em.detach(m);
-            // beanBytes をデコードする
-            m.setModel((IInfoModel) ModelUtils.xmlDecode(m.getBeanBytes()));
-            m.setBeanBytes(null);
-            // id 毎に分類
-            Long id = m.getDocument().getId();
-            List<ModuleModel> list = modsMap.get(id);
-            if (list == null) {
-                list = new ArrayList<>();
-                modsMap.put(id, list);
-            }
-            list.add(m);
-        }
+        Map<Long, List<ModuleModel>> modsMap = mods.stream()
+                .map(m -> {
+                    // beanBytes をいじるために detach する
+                    em.detach(m);
+                    // beanBytes をデコードする
+                    m.setModel((IInfoModel) ModelUtils.xmlDecode(m.getBeanBytes()));
+                    m.setBeanBytes(null);
+                    return m;
+                }).collect(Collectors.groupingBy(m -> m.getDocument().getId()));
+
         // とってきた SchemaModel を id 毎に分ける
-        HashMap<Long, List<SchemaModel>> imgsMap = new HashMap<>();
-        for (SchemaModel m : imgs) {
-            Long id = m.getDocument().getId();
-            List<SchemaModel> list = imgsMap.get(id);
-            if (list == null) {
-                list = new ArrayList<>();
-                imgsMap.put(id, list);
-            }
-            list.add(m);
-        }
+        Map<Long, List<SchemaModel>> imgsMap = imgs.stream()
+                .collect(Collectors.groupingBy(m -> m.getDocument().getId()));
 
         // とってきた list を DocumentModel に分配
-        for (Long id : ids) {
+        List<DocumentModel> ret = ids.stream()
+                .map(id -> {
+                    // DocumentModel を取得する
+                    DocumentModel document = em.find(DocumentModel.class, id);
+                    // detach しないと org.hibernate.PersistentObjectException: detached entity passed to persist
+                    em.detach(document);
+                    return document;
 
-            // DocuentBean を取得する
-            DocumentModel document = em.find(DocumentModel.class, id);
-            // detach しないと org.hibernate.PersistentObjectException: detached entity passed to persist
-            em.detach(document);
+                }).map(document -> {
+                    // ModuleBean を登録
+                    List<ModuleModel> modules = modsMap.get(document.getId());
+                    if (modules == null) { modules = new ArrayList<>(); }
+                    document.setModules(modules);
 
-            // ModuleBean を登録
-            List<ModuleModel> modules = modsMap.get(id);
-            if (modules == null) { modules = new ArrayList<>(); }
-            document.setModules(modules);
+                    // SchemaModel を登録
+                    List<SchemaModel> images = imgsMap.get(document.getId());
+                    if (images == null) { images = new ArrayList<>(); }
+                    document.setSchema(images);
+                    return document;
 
-            // SchemaModel を登録
-            List<SchemaModel> images = imgsMap.get(id);
-            if (images == null) { images = new ArrayList<>(); }
-            document.setSchema(images);
+                }).collect(Collectors.toList());
 
-            ret.add(document);
-        }
         //System.out.println("---- lap= " + (System.currentTimeMillis() - t));
         return ret;
     }
