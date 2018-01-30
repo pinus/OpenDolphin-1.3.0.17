@@ -33,21 +33,21 @@ public final class SchemaHolder extends AbstractComponentHolder {
     private boolean selected;
     private Position start;
     private Position end;
-    private KartePane kartePane;
+    private final KartePane kartePane;
 
-    private Logger logger;
+    private final Logger logger;
 
     public SchemaHolder(KartePane kartePane, SchemaModel schema) {
         logger = Logger.getLogger(SchemaHolder.class);
         logger.setLevel(Level.INFO);
-        logger.debug("SchemaHolder constractor");
+        logger.debug("SchemaHolder constructor");
 
         this.kartePane = kartePane;
         this.schema = schema;
         this.setImageIcon(schema.getIcon());
     }
 
-    public void setImageIcon(final ImageIcon icon) {
+    private void setImageIcon(final ImageIcon icon) {
         logger.debug("SchemaHolder setImageIcon");
         // 最初から Border をセットしておく
         // 選択したときに初めて Border が作られると，微妙に schema が動いてしまう
@@ -71,8 +71,26 @@ public final class SchemaHolder extends AbstractComponentHolder {
     }
 
     /**
+     * Label の大きさを border の分補正するために override する.
+     * @param icon 登録する icon
+     */
+    @Override
+    public void setIcon(Icon icon) {
+        super.setIcon(icon);
+
+        // border の分大きくしないと icon が切れてしまう
+        if (icon != null) {
+            int w = icon.getIconWidth();
+            int h = icon.getIconHeight();
+            Dimension size = new Dimension(w + 2, h + 2 );
+            setPreferredSize(size);
+            setMinimumSize(size);
+        }
+    }
+
+    /**
      * Alt-Click で拡大，Alt-Shift-Click で縮小.
-     * @param e
+     * @param e MouseEvent
      */
     @Override
     public void mousePressed(MouseEvent e) {
