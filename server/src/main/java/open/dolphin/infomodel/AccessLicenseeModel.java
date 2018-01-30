@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * AccessLicenseeModel
+ * AccessLicenseeModel.
  *
  * @author Kazushi Minagawa
  */

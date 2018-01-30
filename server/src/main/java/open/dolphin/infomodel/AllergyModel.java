@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * AllergyModel
+ * AllergyModel.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -69,7 +69,7 @@ public class AllergyModel extends InfoModel implements Comparable<AllergyModel> 
     }
 
     /**
-     * 同定日で比較する。
+     * 同定日で比較する.
      * @param other 比較対象オブジェクト
      * @return 比較値
      */

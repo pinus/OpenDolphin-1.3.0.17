@@ -3,199 +3,178 @@ package open.dolphin.infomodel;
 import java.io.Serializable;
 
 /**
- * IInfoModel
+ * IInfoModel.
  *
- * @athor Minagawa, Kazushi
+ * @author Minagawa, Kazushi
  */
 public interface IInfoModel extends Serializable {
 
     /** default facility id */
-    public static final String DEFAULT_FACILITY_OID = "1.3.6.1.4.1.9414.10.1";
+    String DEFAULT_FACILITY_OID = "1.3.6.1.4.1.9414.10.1";
 
     /** ISO 8601 style date format */
-    public static final String ISO_8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    String ISO_8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     /** カルテの確定日表示用のフォーマット */
-    public static final String KARTE_DATE_FORMAT = "yyyy年M月d日'（'EEE'）'H時m分";
+    String KARTE_DATE_FORMAT = "yyyy年M月d日'（'EEE'）'H時m分";
 
     /** 時間部分のない Date */
-    public static final String DATE_WITHOUT_TIME = "yyyy-MM-dd";
-
-    /** Oersistence Query の LIKE 演算子 */
-    public static final String LIKE_OPERATOR = "%";
+    String DATE_WITHOUT_TIME = "yyyy-MM-dd";
 
     /** 複合キーにするための結合子 */
-    public static final String COMPOSITE_KEY_MAKER = ":";
+    String COMPOSITE_KEY_MAKER = ":";
 
     /** 複合キーとパスワードを区切るための結合子 */
-    public static final String PASSWORD_SEPARATOR = ";";
+    String PASSWORD_SEPARATOR = ";";
 
     /** 管理者ロール */
-    public static final String ADMIN_ROLE = "admin";
+    String ADMIN_ROLE = "admin";
 
     /** 利用者ロール */
-    public static final String USER_ROLE = "user";
+    String USER_ROLE = "user";
 
-    /** 婚姻状況 */
-    public static final String MARITAL_STATUS = "maritalStatus";
+    String MALE = "male";
 
-    /** 国籍 */
-    public static final String NATIONALITY = "nationality";
+    String MALE_DISP = "男";
 
-    /** メモ */
-    public static final String MEMO = "memo";
+    String FEMALE = "female";
 
-    public static final String MALE 		= "male";
+    String FEMALE_DISP = "女";
 
-    public static final String MALE_DISP 	= "男";
+    String UNKNOWN = "不明";
 
-    public static final String FEMALE 		= "female";
+    String AGE = "歳";
 
-    public static final String FEMALE_DISP 	= "女";
+    String DOCTYPE_KARTE = "karte";
 
-    public static final String UNKNOWN 		= "不明";
+    String DOCTYPE_DIAGNOSIS = "diagnosis";
 
-    public static final String AGE 		= "歳";
+    String PURPOSE_RECORD = "recode";
 
-    public static final String DOCTYPE_S_KARTE = "s_karte";
+    String PARENT_OLD_EDITION = "oldEdition";
 
-    public static final String DOCTYPE_KARTE = "karte";
+    String DEFAULT_DIAGNOSIS_TITLE = "病名登録";
 
-    public static final String DOCTYPE_LETTER = "letter";
+    String DEFAULT_DIAGNOSIS_CATEGORY = "mainDiagnosis";
 
-    public static final String DOCTYPE_DIAGNOSIS = "diagnosis";
+    String DEFAULT_DIAGNOSIS_CATEGORY_DESC = "主病名";
 
-    public static final String PURPOSE_RECORD = "recode";
+    String DEFAULT_DIAGNOSIS_CATEGORY_CODESYS = "MML0012";
 
-    public static final String PARENT_OLD_EDITION = "oldEdition";
+    String ORCA_OUTCOME_RECOVERED ="治癒";
 
-    public static final String RELATION_NEW = "newVersion";
-    public static final String RELATION_OLD = "oldVersion";
+    String ORCA_OUTCOME_DIED = "死亡";
 
-    public static final String DEFAULT_DIAGNOSIS_TITLE = "病名登録";
-    public static final String DEFAULT_DIAGNOSIS_CATEGORY = "mainDiagnosis";
-    public static final String DEFAULT_DIAGNOSIS_CATEGORY_DESC = "主病名";
-    public static final String DEFAULT_DIAGNOSIS_CATEGORY_CODESYS = "MML0012";
-    public static final String ORCA_OUTCOME_RECOVERED ="治癒";
-    public static final String ORCA_OUTCOME_DIED = "死亡";
-    public static final String ORCA_OUTCOME_END = "中止";
-    public static final String ORCA_OUTCOME_TRANSFERED = "移行";
+    String ORCA_OUTCOME_END = "中止";
+
+    String ORCA_OUTCOME_TRANSFERED = "移行";
 
     //
     // Stamp Roles
     //
-    /** ProgessCourse */
-    public static final String MODULE_PROGRESS_COURSE           = "progressCourse";
+    /** ProgressCourse */
+    String MODULE_PROGRESS_COURSE = "progressCourse";
 
     /** SOA stamp */
-    public static final String ROLE_SOA 			= "soa";
+    String ROLE_SOA = "soa";
 
     /** P stamp */
-    public static final String ROLE_P 				= "p";
+    String ROLE_P = "p";
 
     /** SOA spec */
-    public static final String ROLE_SOA_SPEC 			= "soaSpec";
+    String ROLE_SOA_SPEC = "soaSpec";
 
     /** P spec */
-    public static final String ROLE_P_SPEC 			= "pSpec";
+    String ROLE_P_SPEC = "pSpec";
 
     /** Text stamp */
-    public static final String ROLE_TEXT 			= "text";
-
-    /** 傷病名 */
-    public static final String ROLE_DIAGNOSIS 			= "diagnosis";
+    String ROLE_TEXT = "text";
 
     /** ORCA 入力セット */
-    public static final String ROLE_ORCA_SET                    = "orcaSet";
+    String ROLE_ORCA_SET = "orcaSet";
 
+    String STATUS_FINAL = "F";
+    String STATUS_MODIFIED = "M";
+    String STATUS_TMP = "T";
+    String STATUS_NONE = "N";
+    String STATUS_DELETE = "D";
 
-    public static final String STATUS_FINAL 			= "F";
-    public static final String STATUS_MODIFIED 			= "M";
-    public static final String STATUS_TMP                       = "T";
-    public static final String STATUS_NONE                      = "N";
-    public static final String STATUS_DELETE                    = "D";
+    String PERMISSION_ALL = "all";
+    String PERMISSION_READ = "read";
+    String ACCES_RIGHT_PATIENT = "patient";
+    String ACCES_RIGHT_CREATOR = "creator";
+    String ACCES_RIGHT_EXPERIENCE = "experience";
+    String ACCES_RIGHT_PATIENT_DISP = "被記載者(患者)";
+    String ACCES_RIGHT_CREATOR_DISP = "記載者施設";
+    String ACCES_RIGHT_EXPERIENCE_DISP = "診療歴のある施設";
+    String ACCES_RIGHT_PERSON_CODE = "personCode";
+    String ACCES_RIGHT_FACILITY_CODE = "facilityCode";
+    String ACCES_RIGHT_EXPERIENCE_CODE = "facilityCode";
 
-    public static final String PERMISSION_ALL = "all";
-    public static final String PERMISSION_READ = "read";
-    public static final String ACCES_RIGHT_PATIENT = "patient";
-    public static final String ACCES_RIGHT_CREATOR = "creator";
-    public static final String ACCES_RIGHT_EXPERIENCE = "experience";
-    public static final String ACCES_RIGHT_PATIENT_DISP = "被記載者(患者)";
-    public static final String ACCES_RIGHT_CREATOR_DISP = "記載者施設";
-    public static final String ACCES_RIGHT_EXPERIENCE_DISP = "診療歴のある施設";
-    public static final String ACCES_RIGHT_PERSON_CODE = "personCode";
-    public static final String ACCES_RIGHT_FACILITY_CODE = "facilityCode";
-    public static final String ACCES_RIGHT_EXPERIENCE_CODE = "facilityCode";
-
-    /** 処方コード */
-    public static final String CLAIM_210 = "210";
-
-//pns^
     /** レセ電算コード 内用 */
-    public static final String RECEIPT_CODE_NAIYO = "210";
+    String RECEIPT_CODE_NAIYO = "210";
     /** レセ電算コード 頓用 */
-    public static final String RECEIPT_CODE_TONYO = "220";
+    String RECEIPT_CODE_TONYO = "220";
     /** レセ電算コード 外用*/
-    public static final String RECEIPT_CODE_GAIYO = "230";
-//pns$
+    String RECEIPT_CODE_GAIYO = "230";
 
-    public static final String INSURANCE_SELF = "自費";
-    public static final String INSURANCE_SELF_CODE = "Z1";
-    public static final String INSURANCE_SYS = "MML031";
+    String INSURANCE_SELF = "自費";
+    String INSURANCE_SELF_CODE = "Z1";
+    String INSURANCE_SYS = "MML031";
 
     //
     // StampTreeのエンティティ（情報の実体）名
     //
     /** 傷病名 */
-    public static final String ENTITY_DIAGNOSIS = "diagnosis";
+    String ENTITY_DIAGNOSIS = "diagnosis";
 
     /** テキスト */
-    public static final String ENTITY_TEXT = "text";
+    String ENTITY_TEXT = "text";
 
     /** パ ス */
-    public static final String ENTITY_PATH = "path";
+    String ENTITY_PATH = "path";
 
     /** 汎用 */
-    public static final String ENTITY_GENERAL_ORDER = "generalOrder";
+    String ENTITY_GENERAL_ORDER = "generalOrder";
 
     /** その他 */
-    public static final String ENTITY_OTHER_ORDER = "otherOrder";
+    String ENTITY_OTHER_ORDER = "otherOrder";
 
     /** 処 置 */
-    public static final String ENTITY_TREATMENT = "treatmentOrder";
+    String ENTITY_TREATMENT = "treatmentOrder";
 
     /** 手 術 */
-    public static final String ENTITY_SURGERY_ORDER = "surgeryOrder";
+    String ENTITY_SURGERY_ORDER = "surgeryOrder";
 
     /** 放射線 */
-    public static final String ENTITY_RADIOLOGY_ORDER = "radiologyOrder";
+    String ENTITY_RADIOLOGY_ORDER = "radiologyOrder";
 
     /** ラボテスト */
-    public static final String ENTITY_LABO_TEST = "testOrder";
+    String ENTITY_LABO_TEST = "testOrder";
 
     /** 生体検査 */
-    public static final String ENTITY_PHYSIOLOGY_ORDER = "physiologyOrder";
+    String ENTITY_PHYSIOLOGY_ORDER = "physiologyOrder";
 
     /** 細菌検査 */
-    public static final String ENTITY_BACTERIA_ORDER = "bacteriaOrder";
+    String ENTITY_BACTERIA_ORDER = "bacteriaOrder";
 
     /** 注 射 */
-    public static final String ENTITY_INJECTION_ORDER = "injectionOrder";
+    String ENTITY_INJECTION_ORDER = "injectionOrder";
 
     /** 処 方 */
-    public static final String ENTITY_MED_ORDER = "medOrder";
+    String ENTITY_MED_ORDER = "medOrder";
 
     /** 診 断 */
-    public static final String ENTITY_BASE_CHARGE_ORDER = "baseChargeOrder";
+    String ENTITY_BASE_CHARGE_ORDER = "baseChargeOrder";
 
     /** 指 導 */
-    public static final String ENTITY_INSTRACTION_CHARGE_ORDER = "instractionChargeOrder";
+    String ENTITY_INSTRACTION_CHARGE_ORDER = "instractionChargeOrder";
 
     /** ORCA セット */
-    public static final String ENTITY_ORCA = "orcaSet";
+    String ENTITY_ORCA = "orcaSet";
 
     /** Entity の配列 */
-    public static final String[] STAMP_ENTITIES = new String[] {
+    String[] STAMP_ENTITIES = new String[] {
         ENTITY_DIAGNOSIS, ENTITY_TEXT, ENTITY_PATH, ENTITY_ORCA, ENTITY_GENERAL_ORDER, ENTITY_OTHER_ORDER, ENTITY_TREATMENT,
         ENTITY_SURGERY_ORDER, ENTITY_RADIOLOGY_ORDER, ENTITY_LABO_TEST, ENTITY_PHYSIOLOGY_ORDER,
         ENTITY_BACTERIA_ORDER, ENTITY_INJECTION_ORDER, ENTITY_MED_ORDER, ENTITY_BASE_CHARGE_ORDER, ENTITY_INSTRACTION_CHARGE_ORDER
@@ -205,89 +184,72 @@ public interface IInfoModel extends Serializable {
     // StampTreeのタブ名
     //
     /** 傷病名 */
-    public static final String TABNAME_DIAGNOSIS = "傷病名";
+    String TABNAME_DIAGNOSIS = "傷病名";
 
     /** テキスト */
-    public static final String TABNAME_TEXT = "テキスト";
+    String TABNAME_TEXT = "テキスト";
 
     /** パ ス */
-    public static final String TABNAME_PATH = "パ ス";
+    String TABNAME_PATH = "パ ス";
 
     /** ORCA セット */
-    public static final String TABNAME_ORCA = "ORCA";
+    String TABNAME_ORCA = "ORCA";
 
     /** 汎 用 */
-    public static final String TABNAME_GENERAL = "汎 用";
+    String TABNAME_GENERAL = "汎 用";
 
     /** その他 */
-    public static final String TABNAME_OTHER = "その他";
+    String TABNAME_OTHER = "その他";
 
     /** 処 置 */
-    public static final String TABNAME_TREATMENT = "処 置";
+    String TABNAME_TREATMENT = "処 置";
 
     /** 手 術 */
-    public static final String TABNAME_SURGERY = "手 術";
+    String TABNAME_SURGERY = "手 術";
 
     /** 放射線 */
-    public static final String TABNAME_RADIOLOGY = "放射線";
+    String TABNAME_RADIOLOGY = "放射線";
 
     /** 検体検査 */
-    public static final String TABNAME_LABO = "検体検査";
+    String TABNAME_LABO = "検体検査";
 
     /** 生体検査 */
-    public static final String TABNAME_PHYSIOLOGY = "生体検査";
+    String TABNAME_PHYSIOLOGY = "生体検査";
 
     /** 細菌検査 */
-    public static final String TABNAME_BACTERIA = "細菌検査";
+    String TABNAME_BACTERIA = "細菌検査";
 
     /** 注 射 */
-    public static final String TABNAME_INJECTION = "注 射";
+    String TABNAME_INJECTION = "注 射";
 
     /** 処 方 */
-    public static final String TABNAME_MED = "処 方";
+    String TABNAME_MED = "処 方";
 
     /** 初診・再診 */
-    public static final String TABNAME_BASE_CHARGE = "初診・再診";
+    String TABNAME_BASE_CHARGE = "初診・再診";
 
     /** 指導・在宅 */
-    public static final String TABNAME_INSTRACTION = "指導・在宅";
-
-    /** ORCA のタブ番号 */
-    public static final int TAB_INDEX_ORCA = 3;
-
+    String TABNAME_INSTRACTION = "指導・在宅";
 
     /** スタンプのタブ名配列 */
-    public static String[] STAMP_NAMES = {
+    String[] STAMP_NAMES = {
         TABNAME_DIAGNOSIS, TABNAME_TEXT, TABNAME_PATH, TABNAME_ORCA,
         TABNAME_GENERAL, TABNAME_OTHER, TABNAME_TREATMENT, TABNAME_SURGERY,
         TABNAME_RADIOLOGY, TABNAME_LABO, TABNAME_PHYSIOLOGY, TABNAME_BACTERIA,
         TABNAME_INJECTION, TABNAME_MED, TABNAME_BASE_CHARGE, TABNAME_INSTRACTION
     };
 
-    /** スタンプのCLAIM版点数集計先 */
-    public static String[] CLAIM_CLASS_CODE = {
-        "", "", "", "", "", "800-899", "400-499", "500-599", "700-799", "600-699", "600-699",
-        "600", "300-331", "210-230", "110-125", "130-140"
-    };
+    String OBSERVATION_ALLERGY = "Allergy";
+    String OBSERVATION_PHYSICAL_EXAM = "PhysicalExam";
 
-    public static final String OBSERVATION_ALLERGY = "Allergy";
-    public static final String OBSERVATION_BLOODTYPE = "Bloodtype";
-    public static final String OBSERVATION_INFECTION = "Infection";
-    public static final String OBSERVATION_LIFESTYLE = "Lifestyle";
-    public static final String OBSERVATION_PHYSICAL_EXAM = "PhysicalExam";
+    String PHENOMENON_BODY_HEIGHT = "bodyHeight";
+    String PHENOMENON_BODY_WEIGHT = "bodyWeight";
 
-    public static final String PHENOMENON_BODY_HEIGHT = "bodyHeight";
-    public static final String PHENOMENON_BODY_WEIGHT = "bodyWeight";
+    String UNIT_BODY_WEIGHT = "Kg";
+    String UNIT_BODY_HEIGHT = "cm";
 
-    public static final String PHENOMENON_TOBACCO = "tobacco";
-    public static final String PHENOMENON_ALCOHOL = "alcohol";
-    public static final String PHENOMENON_OCCUPATION = "occupation";
-
-    public static final String UNIT_BODY_WEIGHT = "Kg";
-    public static final String UNIT_BODY_HEIGHT = "cm";
-
-    public static final String PUBLISH_TREE_LOCAL = "院内";
-    public static final String PUBLISH_TREE_PUBLIC = "グローバル";
-    public static final String PUBLISHED_TYPE_GLOBAL = "global";
+    String PUBLISH_TREE_LOCAL = "院内";
+    String PUBLISH_TREE_PUBLIC = "グローバル";
+    String PUBLISHED_TYPE_GLOBAL = "global";
 
 }

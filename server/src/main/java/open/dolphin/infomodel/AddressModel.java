@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * AddressModel
+ * AddressModel.
  *
  * @author Minagawa,kazushi
  */
@@ -16,7 +16,7 @@ public class AddressModel extends InfoModel {
     private String address;
 
     /**
-     * 国コードを設定する。
+     * 国コードを設定する.
      * @param countryCode 国コード
      */
     public void setCountryCode(String countryCode) {
@@ -24,7 +24,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 国コードを返す。
+     * 国コードを返す.
      * @return 国コード
      */
     public String getCountryCode() {
@@ -32,7 +32,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 郵便番号を設定する。
+     * 郵便番号を設定する.
      * @param zipCode 郵便番号
      */
     public void setZipCode(String zipCode) {
@@ -40,7 +40,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 郵便番号を返す。
+     * 郵便番号を返す.
      * @return 郵便番号
      */
     public String getZipCode() {
@@ -48,7 +48,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 住所を設定する。
+     * 住所を設定する.
      * @param address 住所
      */
     public void setAddress(String address) {
@@ -56,7 +56,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 住所を返す。
+     * 住所を返す.
      * @return 住所
      */
     public String getAddress() {
@@ -64,7 +64,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 住所区分を設定する。
+     * 住所区分を設定する.
      * @param addressType 住所区分
      */
     public void setAddressType(String addressType) {
@@ -72,7 +72,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 住所区分を返す。
+     * 住所区分を返す.
      * @return 住所区分
      */
     public String getAddressType() {
@@ -80,7 +80,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 住所区分説明を設定する。
+     * 住所区分説明を設定する.
      * @param addressTypeDesc 住所区分説明
      */
     public void setAddressTypeDesc(String addressTypeDesc) {
@@ -88,7 +88,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 住所区分説明を返す。
+     * 住所区分説明を返す.
      * @return 住所区分説明
      */
     public String getAddressTypeDesc() {
@@ -96,7 +96,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 住所区分体系を設定する。
+     * 住所区分体系を設定する.
      * @param addressTypeCodeSys 住所区分体系
      */
     public void setAddressTypeCodeSys(String addressTypeCodeSys) {
@@ -104,7 +104,7 @@ public class AddressModel extends InfoModel {
     }
 
     /**
-     * 住所区分体系を返す。
+     * 住所区分体系を返す.
      * @return 住所区分体系
      */
     public String getAddressTypeCodeSys() {

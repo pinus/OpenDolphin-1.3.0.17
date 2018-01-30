@@ -4,6 +4,8 @@ import java.util.Date;
 import javax.persistence.*;
 
 /**
+ * AppointmentModel.
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 @Entity
@@ -16,6 +18,7 @@ public class AppointmentModel extends KarteEntryBean<AppointmentModel> {
     public static final int TT_HAS = 2;
     public static final int TT_REPLACE = 3;
 
+    /** 施設内の患者ID */
     private String patientId;
 
     @Transient
@@ -63,24 +66,25 @@ public class AppointmentModel extends KarteEntryBean<AppointmentModel> {
     }
 
     /**
-     * @param patientId
-     *            The patientId to set.
+     * The patientId to set.
+     * @param patientId 施設内の患者 ID
      */
     public void setPatientId(String patientId) {
         this.patientId = patientId;
     }
 
     /**
-     * @return Returns the patientId.
+     * Returns the patientId.
+     * @return 施設内の患者 ID
      */
     public String getPatientId() {
         return patientId;
     }
 
     /**
-     * 予約日で比較する。
-     * @param o
-     * @return
+     * 予約日で比較する.
+     * @param o AppointmentModel
+     * @return 比較値
      */
     @Override
     public int compareTo(AppointmentModel o) {

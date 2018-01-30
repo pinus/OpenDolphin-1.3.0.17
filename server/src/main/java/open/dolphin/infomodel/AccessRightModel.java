@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * AccessRightModel
+ * AccessRightModel.
  *
  * @author  Kazushi Minagawa
  */
