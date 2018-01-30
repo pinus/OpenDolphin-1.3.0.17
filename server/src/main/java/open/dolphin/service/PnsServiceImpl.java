@@ -1,6 +1,7 @@
 package open.dolphin.service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
@@ -12,7 +13,8 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 
 /**
- * いろいろやってみる service
+ * いろいろやってみる service.
+ *
  * @author pns
  */
 @Stateless
@@ -21,9 +23,9 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
     private final Logger logger = Logger.getLogger(PnsServiceImpl.class);
 
     /**
-     * patient_id から，今日のカルテ内容の module のリストを返す　カルテがなければ null
-     * @param patientId
-     * @return
+     * patient_id から，今日のカルテ内容の module のリストを返す.　カルテがなければ null
+     * @param patientId PatientModel の pk
+     * @return List of ModuleModel
      */
     @Override
     public List<ModuleModel> peekKarte(Long patientId) {
@@ -49,16 +51,13 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
                     .setParameter("id", docId).getResultList();
 
                 // beanBytes を変換して新しいモデルにして返す
-                List<ModuleModel> ret = new ArrayList<>();
-                for (ModuleModel src : modules) {
+                return modules.stream().map(src -> {
                     ModuleModel dist = new ModuleModel();
                     dist.setDocument(src.getDocument());
                     dist.setModuleInfo(src.getModuleInfo());
                     dist.setModel((IInfoModel) ModelUtils.xmlDecode(src.getBeanBytes()));
-
-                    ret.add(dist);
-                }
-                return ret;
+                    return dist;
+                }).collect(Collectors.toList());
             }
         } catch (Exception e) {
             logger.info(e.getMessage(), e.getCause());

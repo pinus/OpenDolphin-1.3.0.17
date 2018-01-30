@@ -5,7 +5,7 @@ import javax.ejb.Stateless;
 import open.dolphin.infomodel.RadiologyMethodValue;
 
 /**
- * RadiologyServiceImpl
+ * RadiologyServiceImpl.
  *
  * @author pns
  */
