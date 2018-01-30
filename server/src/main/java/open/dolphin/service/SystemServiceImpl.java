@@ -12,18 +12,19 @@ import open.dolphin.infomodel.RoleModel;
 import open.dolphin.infomodel.UserModel;
 
 /**
- * データベース初期化に使う session bean
+ * データベース初期化に使う session bean.
+ *
  * @author pns
  */
 @Stateless
 public class SystemServiceImpl extends DolphinService implements SystemService {
     /**
-     * 施設と管理者情報を登録する。
+     * 施設と管理者情報を登録する.
      * @param user 施設管理者
      */
     @Override
     public void addFacilityAdmin(UserModel user) {
-        // OIDをセットし施設レコードを生成する
+        // OID をセットし施設レコードを生成する
         FacilityModel facility = user.getFacilityModel();
         String facilityId = facility.getFacilityId();
         if (facilityId == null || facilityId.equals("")) {
@@ -49,30 +50,16 @@ public class SystemServiceImpl extends DolphinService implements SystemService {
 
         // このユーザの複合キーを生成する
         // i.e. userId = facilityId:userId(local)
-        StringBuilder sb = new StringBuilder();
-        sb.append(facilityId);
-        sb.append(InfoModel.COMPOSITE_KEY_MAKER);
-        sb.append(user.getUserId());
-        user.setUserId(sb.toString());
+        String userId = facilityId + InfoModel.COMPOSITE_KEY_MAKER + user.getUserId();
+        user.setUserId(userId);
 
         // 上記 Facility の Admin User を登録する
         // admin と user Role を設定する
-        boolean hasAdminRole = false;
-        boolean hasUserRole = false;
         Collection<RoleModel> roles = user.getRoles();
-        if (roles != null) {
-            for (RoleModel r : roles) {
-                switch (r.getRole()) {
-                    case InfoModel.ADMIN_ROLE:
-                        hasAdminRole = true;
-                        break;
-                    case InfoModel.USER_ROLE:
-                        hasUserRole = true;
-                        break;
-                }
-            }
-        }
+        boolean hasAdminRole = (roles != null) && roles.stream().map(RoleModel::getRole).anyMatch(InfoModel.ADMIN_ROLE::equals);
+        boolean hasUserRole = (roles != null) && roles.stream().map(RoleModel::getRole).anyMatch(InfoModel.USER_ROLE::equals);
 
+        // ない場合は加える
         if (!hasAdminRole) {
             RoleModel role = new RoleModel();
             role.setRole(InfoModel.ADMIN_ROLE);
@@ -81,6 +68,7 @@ public class SystemServiceImpl extends DolphinService implements SystemService {
             user.addRole(role);
         }
 
+        // ない場合は加える
         if (!hasUserRole) {
             RoleModel role = new RoleModel();
             role.setRole(InfoModel.USER_ROLE);
@@ -95,13 +83,13 @@ public class SystemServiceImpl extends DolphinService implements SystemService {
     }
 
     /**
-     * 放射線メソッドマスタを登録する。
-     * @param c
+     * 放射線メソッドマスタを登録する.
+     * @param c List of RadiologyMethodValue
      */
     @Override
     public void putRadMethodMaster(List<RadiologyMethodValue> c) {
         if (c != null) {
-            c.forEach(value -> em.persist(value));
+            c.forEach(em::persist);
         }
     }
 

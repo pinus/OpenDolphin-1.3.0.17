@@ -1,8 +1,8 @@
 package open.dolphin.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
@@ -20,6 +20,7 @@ import open.dolphin.infomodel.SubscribedTreeModel;
 import open.dolphin.infomodel.UserModel;
 
 /**
+ * UserServiceImpl.
  *
  * @author pns
  */
@@ -28,7 +29,7 @@ public class UserServiceImpl extends DolphinService implements UserService {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 施設管理者が院内Userを登録する。
+     * 施設管理者が院内 User を登録する.
      * @param add 登録する User
      * @return 登録した User 数 1
      */
@@ -45,7 +46,7 @@ public class UserServiceImpl extends DolphinService implements UserService {
     }
 
     /**
-     * Userを検索する。
+     * User を検索する.
      * @param userId 検索するユーザの複合キー
      * @return 該当する User
      */
@@ -62,7 +63,7 @@ public class UserServiceImpl extends DolphinService implements UserService {
     }
 
     /**
-     * 施設内の全Userを取得する。
+     * 施設内の全 User を取得する.
      *
      * @return 施設内ユーザリスト
      */
@@ -71,18 +72,13 @@ public class UserServiceImpl extends DolphinService implements UserService {
         List<UserModel> results = em.createQuery("select u from UserModel u where u.userId like :fid", UserModel.class)
             .setParameter("fid", getCallersFacilityId()+"%").getResultList();
 
-        List<UserModel> ret = new ArrayList<>();
-        for (UserModel user : results) {
-            if (user != null && user.getMemberType() != null && (!user.getMemberType().equals("EXPIRED"))) {
-                ret.add(user);
-            }
-        }
-        return ret;
+        return results.stream()
+                .filter(user -> (user != null && user.getMemberType() != null && (!user.getMemberType().equals("EXPIRED")))).collect(Collectors.toList());
     }
 
     /**
-     * User情報(パスワード等)を更新する。
-     * @param update 更新するUser detuched
+     * User 情報(パスワード等)を更新する.
+     * @param update 更新する UserModel
      * @return 更新したユーザの数 1
      */
     @Override
@@ -96,8 +92,8 @@ public class UserServiceImpl extends DolphinService implements UserService {
     }
 
     /**
-     * Userを削除する。
-     * @param removeId 削除するユーザのId
+     * User を削除する.
+     * @param removeId 削除するユーザの Id
      * @return 削除したユーザの数 1
      */
     @Override
@@ -127,22 +123,19 @@ public class UserServiceImpl extends DolphinService implements UserService {
             em.remove(tree);
         }
 
-        // PersonalTreeを削除する
+        // PersonalTree を削除する
         PersonalTreeModel stampTree = em.createQuery("select s from PersonalTreeModel s where s.user.id = :pk", PersonalTreeModel.class)
             .setParameter("pk", removePk).getSingleResult();
         em.remove(stampTree);
 
         // ユーザを削除する
-        if (remove.getLicenseModel().getLicense().equals("doctor")) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(new Date());
-            String note = sb.toString();
-            remove.setMemo(note);
-            remove.setPassword("c9dbeb1de83e60eb1eb3675fa7d69a02");
-            remove.setMemberType("EXPIRED");
-        } else {
-            em.remove(remove);
-        }
+        String note = String.valueOf(new Date());
+        remove.setMemo(note);
+        remove.setPassword("38afd7ae34bd5e3e6fc170d8b09178a3"); // EXPIRED
+        remove.setMemberType("EXPIRED");
+
+        // UserModel は削除しない。ユーザーを inactivate しても、カルテ記録者情報を残しておかねばならない。by masuda-sensei
+        em.merge(remove);
 
         boolean deleteDoc = false; // Document は消さない設定になってる
         if (deleteDoc) {
@@ -198,8 +191,8 @@ public class UserServiceImpl extends DolphinService implements UserService {
     }
 
     /**
-     * 施設情報を更新する。
-     * @param update 更新するUser detuched
+     * 施設情報を更新する.
+     * @param update 更新する User
      * @return 更新した User 数 1
      */
     @Override
