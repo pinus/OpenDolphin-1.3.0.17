@@ -1,7 +1,10 @@
 package open.dolphin.infomodel;
 
+import java.util.StringJoiner;
+import java.util.stream.Stream;
+
 /**
- * BundleDolphin
+ * BundleDolphin.
  *
  * @author  Minagawa,Kazushi
  */
@@ -18,72 +21,43 @@ public class BundleDolphin extends ClaimBundle {
         return orderName;
     }
 
-    public String getItemNames() {
-        ClaimItem[] claimItem = getClaimItem();
-
-        if (claimItem != null && claimItem.length > 0) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(claimItem[0].getName());
-            for (int i = 1; i < claimItem.length; i++) {
-                sb.append(",");
-                sb.append(claimItem[i].getName());
-            }
-            return sb.toString();
-        }
-        return null;
-    }
-
     @Override
     public String toString() {
 
-        StringBuilder buf = new StringBuilder();
+        StringJoiner sj = new StringJoiner("\n");
+        sj.add(orderName);
 
-        // Print order name
-        buf.append(orderName);
-        buf.append("\n");
-        ClaimItem[] items = getClaimItem();
-        int len = items.length;
-        ClaimItem item;
-        String number;
-
-        for (int i = 0; i < len; i++) {
-            item = items[i];
-
-            // Print item name
-            buf.append("・");
-            buf.append(item.getName());
-
-            // Print item number
-            number = item.getNumber();
-            if (number != null) {
-                buf.append("　");
-                buf.append(number);
-                if (item.getUnit() != null) {
-                    buf.append(item.getUnit());
-                }
-            }
-            buf.append("\n");
-        }
+        addClaimItems(sj);
 
         // Print bundleNumber
-        if (!"1".equals(getBundleNumber())) {
-            buf.append("X　");
-            buf.append(getBundleNumber());
-            buf.append("\n");
-        }
+        String num = getBundleNumber();
+        if (num != null && !"1".equals(num)) { sj.add(String.format("X %s", num)); }
 
-        // Print admMemo
-        if (getAdminMemo() != null) {
-            buf.append(getAdminMemo());
-            buf.append("\n");
+        addMemo(sj);
+
+        return sj.toString();
+    }
+
+    protected void addClaimItems(StringJoiner sj) {
+        ClaimItem[] items = getClaimItem();
+        if (items != null) {
+            Stream.of(items).forEachOrdered(item -> {
+                // Print item name, number, and unit
+                String name = item.getName() == null? "" : item.getName();
+                String num = item.getNumber() == null? "" : item.getNumber();
+                String unit = item.getUnit() == null? "" : item.getUnit();
+                sj.add(String.format("・%s %s%s", name, num, unit));
+            });
         }
+    }
+
+    protected void addMemo(StringJoiner sj) {
+        // Print admMemo
+        String adminMemo = getAdminMemo();
+        if (adminMemo != null) { sj.add(adminMemo); }
 
         // Print bundleMemo
-        if (getMemo() != null) {
-            buf.append(getMemo());
-            buf.append("\n");
-        }
-
-        return buf.toString();
+        String bundleMemo = getMemo();
+        if (bundleMemo != null) { sj.add(bundleMemo); }
     }
 }

@@ -1,14 +1,32 @@
 package open.dolphin.infomodel;
 
+import java.util.StringJoiner;
+
 /**
- * BundleMed
+ * BundleMed.
  *
  * @author pns
  */
 public class BundleMed extends BundleDolphin {
     private static final long serialVersionUID = -3898329425428401649L;
 
-    public String getAdminDisplayString() {
+    @Override
+    public String toString() {
+
+        StringJoiner sj = new StringJoiner("\n");
+        sj.add("RP");
+
+        addClaimItems(sj);
+
+        String adminString = getAdminDisplayString();
+        if (adminString != null) { sj.add(adminString); }
+
+        addMemo(sj);
+
+        return sj.toString();
+    }
+
+    private String getAdminDisplayString() {
 
         String adminString = null;
         if (getAdmin() != null && (!getAdmin().equals(""))) {
@@ -31,41 +49,5 @@ public class BundleMed extends BundleDolphin {
             }
         }
         return adminString;
-    }
-
-    @Override
-    public String toString() {
-
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("RP\n");
-
-        ClaimItem[] items = getClaimItem();
-
-        for (ClaimItem item : items) {
-            String number = (item.getNumber() == null)? "" : item.getNumber();
-            String unit = (item.getUnit() == null)? "" : item.getUnit();
-
-            buf.append(String.format("・%s %s%s\n", item.getName(), number, unit));
-        }
-
-        if (getAdmin() != null && (!getAdmin().equals(""))) {
-            buf.append(getAdminDisplayString());
-            buf.append("\n");
-        }
-
-        // Print admMemo
-        if (getAdminMemo() != null) {
-            buf.append(getAdminMemo());
-            buf.append("\n");
-        }
-
-        // Print Memo
-        if (getMemo() != null) {
-            buf.append(getMemo());
-            buf.append("\n");
-        }
-
-        return buf.toString();
     }
 }
