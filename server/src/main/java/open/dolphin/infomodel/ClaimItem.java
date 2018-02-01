@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * ClaimItem 要素クラス。
+ * ClaimItem 要素クラス.
  *
  * @author Kazushi Minagawa, Digital Globe,Inc.
  */

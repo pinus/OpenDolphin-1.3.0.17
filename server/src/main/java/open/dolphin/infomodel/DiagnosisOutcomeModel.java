@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 import javax.persistence.Embeddable;
 
 /**
- * Diagnosis のカテゴリーモデル。
+ * Diagnosis のカテゴリーモデル.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

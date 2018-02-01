@@ -9,8 +9,9 @@ import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
 /**
- * DocInfoModel
+ * DocInfoModel.
  * DocumentModel に Embed される
+ *
  * @author Minagawa,kazushi
  *
  */

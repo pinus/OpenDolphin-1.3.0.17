@@ -5,7 +5,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
 /**
- * 外部参照要素クラス。
+ * 外部参照要素クラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

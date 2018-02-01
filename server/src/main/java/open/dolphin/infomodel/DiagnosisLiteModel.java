@@ -1,7 +1,8 @@
 package open.dolphin.infomodel;
 
 /**
- * DiagnosisDocument の undo 用にデータを入れておく軽いモデル
+ * DiagnosisDocument の undo 用にデータを入れておく軽いモデル.
+ *
  * @author pns
  */
 public class DiagnosisLiteModel {
@@ -142,17 +143,12 @@ public class DiagnosisLiteModel {
     }
 
     /**
-     * 両方 null なら等しいと判定する equals
-     * @param s1
-     * @param s2
-     * @return
+     * 両方 null なら等しいと判定する equals.
+     * @param s1 文字列1
+     * @param s2 文字列2
+     * @return 判定結果
      */
     private boolean equals(String s1, String s2) {
-        if (s1 == null) {
-            if (s2 == null) return true;
-        } else {
-            if (s1.equals(s2)) return true;
-        }
-        return false;
+        return (s1 == null)? s2 == null : s1.equals(s2);
     }
 }

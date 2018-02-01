@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.*;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
- * DocumentBean
+ * DocumentModel.
  *
  * @author Minagawa,Kazushi
  *
@@ -35,6 +36,9 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
         docInfo.setDocType(DOCTYPE_KARTE);
     }
 
+    /**
+     * DocumentModel から DocInfoModel に情報をコピーする.
+     */
     public void toDetach() {
         docInfo.setDocPk(getId());
         docInfo.setParentPk(getLinkId());
@@ -43,6 +47,9 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
         docInfo.setStatus(getStatus());
     }
 
+    /**
+     * DocInfoModel から DocumentModel に情報をコピーする.
+     */
     public void toPersist() {
         setLinkId(docInfo.getParentPk());
         setLinkRelation(docInfo.getParentIdRelation());
@@ -52,40 +59,40 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
     }
 
     /**
-     * 文書情報を返す。
-     * @return 文書情報
+     * 文書情報を返す.
+     * @return 文書情報 DocInfoModel
      */
     public DocInfoModel getDocInfo() {
         return docInfo;
     }
 
     /**
-     * 文書情報を設定する。
-     * @param docInfo 文書情報
+     * 文書情報を設定する.
+     * @param docInfo 文書情報 DocInfoModel
      */
     public void setDocInfo(DocInfoModel docInfo) {
         this.docInfo = docInfo;
     }
 
     /**
-     * シェーマを返す。
-     * @return シェーマ
+     * SchemaModel の Collection を返す.
+     * @return Collection of SchemaModel
      */
     public Collection<SchemaModel> getSchema() {
         return schema;
     }
 
     /**
-     * シェーマを設定する。
-     * @param images シェーマ
+     * SchemaModel の Collection を設定する.
+     * @param images Collection of SchemaModel
      */
     public void setSchema(Collection<SchemaModel> images) {
         this.schema = images;
     }
 
     /**
-     * シェーマを追加する。
-     * @param model シェーマ
+     * SchemaModel を追加する.
+     * @param model SchemaModel
      */
     public void addSchema(SchemaModel model) {
         if (this.schema == null) {
@@ -95,17 +102,22 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
     }
 
     /**
-     * シェーマコレクションをクリアする。
+     * SchemaModel の Collection をクリアする.
      */
     public void clearSchema() {
-        if (schema != null && schema.size() > 0) {
+        if (schema != null) {
             schema.clear();
         }
     }
 
-
+    /**
+     * index 番目の SchemaModel を取り出す.
+     * Collection の実体は ArrayList
+     * @param index 取り出す index
+     * @return 取り出された SchemaModel. ない場合は null.
+     */
     public SchemaModel getSchema(int index) {
-        if (schema != null && schema.size() > 0) {
+        if (schema != null) {
             int cnt = 0;
             for (SchemaModel bean : schema) {
                 if (index == cnt) {
@@ -118,35 +130,24 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
     }
 
     /**
-     * モジュールを返す。
-     * @return モジュール
+     * ModuleModel の Collection を返す.
+     * @return Collection of ModuleModel
      */
     public Collection<ModuleModel> getModules() {
         return modules;
     }
 
     /**
-     * モジュールを設定する。
-     * @param modules モジュール
+     * ModuleModel の Collection を設定する.
+     * @param modules Collection of ModuleModel
      */
     public void setModules(Collection<ModuleModel> modules) {
         this.modules = modules;
     }
 
     /**
-     * モジュールモデルの配列を追加する。
-     * @param addArray モジュールモデルの配列
-     */
-    public void addModule(ModuleModel[] addArray) {
-        if (modules == null) {
-            modules = new ArrayList<>(addArray.length);
-        }
-        modules.addAll(Arrays.asList(addArray));
-    }
-
-    /**
-     * モジュールモデルを追加する。
-     * @param addModule モジュールモデル
+     * ModuleModel を追加する.
+     * @param addModule ModuleModel
      */
     public void addModule(ModuleModel addModule) {
         if (modules == null) {
@@ -156,57 +157,49 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
     }
 
     /**
-     * モジュールをクリアする。
+     * ModuleModel の Collection をクリアする.
      */
     public void clearModules() {
-        if (modules != null && modules.size() > 0) {
+        if (modules != null) {
             modules.clear();
         }
     }
 
     /**
-     * 引数のエンティティを持つモジュールモデルを返す。
+     * 引数のエンティティを持つ ModuleModel を返す.
      * @param entityName エンティティの名前
-     * @return 該当するモジュールモデル
+     * @return 該当するモジュールモデル. ない場合は null.
      */
     public ModuleModel getModule(String entityName) {
 
         if (modules != null) {
-
-            ModuleModel ret = null;
-
             for (ModuleModel model : modules) {
                 if (model.getModuleInfo().getEntity().equals(entityName)) {
-                    ret = model;
-                    break;
+                    return model;
                 }
             }
-            return ret;
         }
-
         return null;
     }
 
     /**
-     * 引数のエンティティ名を持つモジュール情報を返す。
+     * 引数のエンティティ名を持つ ModuleInfoBean を返す.
      * @param entityName エンティティの名前
-     * @return モジュール情報
+     * @return モジュール情報 ModuleInfoBean. なければ null.
      */
     public ModuleInfoBean[] getModuleInfo(String entityName) {
 
         if (modules != null) {
 
-            List<ModuleInfoBean> list = new ArrayList<>(2);
-
-            modules.stream()
-                    .filter(model -> model.getModuleInfo().getEntity().equals(entityName))
-                    .forEach(model -> list.add(model.getModuleInfo()));
+            List<ModuleInfoBean> list = modules.stream()
+                    .map(ModuleModel::getModuleInfo)
+                    .filter(moduleInfo -> moduleInfo.getEntity().equals(entityName))
+                    .collect(Collectors.toList());
 
             if (! list.isEmpty()) {
                 return list.toArray(new ModuleInfoBean[list.size()]);
             }
         }
-
         return null;
     }
 }

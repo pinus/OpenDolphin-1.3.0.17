@@ -504,7 +504,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         } else if (isOrcaDate(text)) {
             spec.setCode(PatientSearchSpec.BIRTHDAY_SEARCH);
-            spec.setBirthday(ModelUtils.toSeireki(ModelUtils.OrcaDateToNengo(text)));
+            spec.setBirthday(ModelUtils.toSeireki(ModelUtils.orcaDateToNengo(text)));
 
         } else if (isDate(text)) {
             //System.out.println("Date search");

@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * InfoModel
+ * InfoModel.
  *
  * @author Minagawa,Kazushi
  */

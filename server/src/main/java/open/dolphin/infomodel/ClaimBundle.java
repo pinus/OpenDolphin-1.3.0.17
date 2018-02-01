@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * ClaimBundle 要素クラス。
+ * ClaimBundle 要素クラス.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 import javax.persistence.*;
 
 /**
- * HealthInsuranceModel
+ * HealthInsuranceModel.
  *
  * @author Minagawa,kazushi
  */

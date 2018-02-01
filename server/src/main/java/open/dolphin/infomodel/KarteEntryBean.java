@@ -9,10 +9,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
- * KarteEntry
+ * KarteEntryBean.
  *
  * @author Minagawa,Kazushi
- * @param <T>
+ * @param <T> type of objects compared to
  */
 @MappedSuperclass
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
@@ -153,7 +153,7 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
 
     /**
      * 適合開始日と確定日で比較する。
-     * @param other
+     * @param other 比較対象
      * @return Comparable の比較値
      */
     @Override
@@ -188,7 +188,6 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
-
 
     //
     // 互換性用のプロキシコード

@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * ID
+ * ID.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

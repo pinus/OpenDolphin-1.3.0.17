@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 import java.io.Serializable;
 
 /**
- * LaboImportSummary
+ * LaboImportSummary.
  *
  * @author Minagawa,Kazushi
  */

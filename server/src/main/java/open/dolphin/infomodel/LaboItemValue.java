@@ -5,10 +5,9 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.persistence.*;
 
 /**
- * LaboItemValue
+ * LaboItemValue.
  *
  * @author Minagawa,Kazushi
- *
  */
 @Entity
 @Table(name = "d_labo_item")

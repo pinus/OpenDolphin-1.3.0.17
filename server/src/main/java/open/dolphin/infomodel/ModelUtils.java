@@ -15,9 +15,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 /**
- * InfoModel
+ * ModelUtils.
  *
  * @author Minagawa,Kazushi
  */
@@ -25,35 +26,45 @@ public class ModelUtils implements IInfoModel {
     private static final long serialVersionUID = 1L;
 
     /**
-     * MML 形式から時間を取り除いて日付だけ取り出す
-     * @param mmlDate
-     * @return
+     * MML 形式から日付だけ取り出す.
+     * @param mmlDate MML 型式の日付 (2008-02-01T12:23:34)
+     * @return 日付 (2008-02-01)
      */
     public static String trimTime(String mmlDate) {
-        if (mmlDate == null) return null;
+        if (mmlDate == null) {
+            return null;
+        }
 
         int index = mmlDate.indexOf('T');
-        if (index > -1) return mmlDate.substring(0, index);
-        else return mmlDate;
+        if (index > -1) {
+            return mmlDate.substring(0, index);
+        } else {
+            return mmlDate;
+        }
     }
 
     /**
-     * MML 形式から日付を取り除いて時間だけ取り出す
-     * @param mmlDate
-     * @return
+     * MML 形式から時：分だけ取り出す.
+     * @param mmlDate MML 型式の日付 (2008-02-01T12:23:34)
+     * @return 時：分 (12:23)
      */
     public static String trimDate(String mmlDate) {
-        if (mmlDate == null) return null;
+        if (mmlDate == null) {
+            return null;
+        }
 
         int index = mmlDate.indexOf('T');
-        if (index > -1) return mmlDate.substring(index + 1, index + 6);// THH:mm:ss -> HH:mm
-        else return mmlDate;
+        if (index > -1) {
+            return mmlDate.substring(index + 1, index + 6); // THH:mm:ss -> HH:mm
+        } else {
+            return mmlDate;
+        }
     }
 
     /**
-     * mml 形式の生年月日から年齢付きの形式を作る
-     * @param mmlBirthday
-     * @return
+     * mml 形式の生年月日から年齢付きの形式を作る.
+     * @param mmlBirthday 1975-01-01
+     * @return 32.10 歳 (S50-01-01)
      */
     public static String getAgeBirthday(String mmlBirthday) {
         String age = getAge(mmlBirthday);
@@ -62,9 +73,9 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * 年齢付きの生年月日「32.10 歳 (S50-01-01)」形式から mmlBirthday を返す
-     * @param birthdayWithAge
-     * @return
+     * 年齢付きの生年月日「32.10 歳 (S50-01-01)」形式から mmlBirthday を返す.
+     * @param birthdayWithAge 32.10 歳 (S50-01-01)
+     * @return 1975-01-01
      */
     public static String getMmlBirthdayFromAge(String birthdayWithAge) {
         String[] s = birthdayWithAge.split("[()]");
@@ -72,9 +83,9 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * 西暦=>年号変換
-     * @param mmlBirthday
-     * @return nengoBirthday
+     * 西暦 -> 年号変換.
+     * @param mmlBirthday 1975-01-01
+     * @return nengoBirthday S50-01-01
      */
     public static String toNengo(String mmlBirthday) {
         int year;
@@ -140,9 +151,9 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * 年号=>西暦変換 H22-7-26 => 2010-07-26
-     * @param nengoBirthday
-     * @return mmlBirthday
+     * 年号 -> 西暦変換.
+     * @param nengoBirthday H22-7-26
+     * @return mmlBirthday 2010-07-26
      */
     public static String toSeireki(String nengoBirthday) {
 
@@ -164,22 +175,31 @@ public class ModelUtils implements IInfoModel {
                 default: year = Integer.valueOf(yearStr);
             }
 
-            if (monthStr.length() == 1) monthStr = "0" + monthStr;
-            if (dateStr.length() == 1) dateStr = "0" + dateStr;
+            if (monthStr.length() == 1) { monthStr = "0" + monthStr; }
+            if (dateStr.length() == 1) { dateStr = "0" + dateStr; }
 
             return String.format("%d-%s-%s", year, monthStr, dateStr);
 
         } catch (Exception ex) {
-            System.out.println("ModelUtils.java: " + ex);
+            ex.printStackTrace(System.err);
             return null;
         }
     }
-    /**
-     * ORCA 形式を年号形式に 4220726 => h22-07-26
-     * @param orcaBirthday
-     * @return
+
+    /*
+     * against the naming conventions
+     * REMOVE ME SOMEDAY
      */
     public static String OrcaDateToNengo(String orcaBirthday) {
+        return orcaDateToNengo(orcaBirthday);
+    }
+
+    /**
+     * ORCA 形式を年号形式に.
+     * @param orcaBirthday 4220726
+     * @return h22-07-26
+     */
+    public static String orcaDateToNengo(String orcaBirthday) {
         //元号
         String nengo = "";
         switch(orcaBirthday.substring(0, 1)) {
@@ -197,9 +217,9 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * 年齢を作る
-     * @param mmlBirthday
-     * @return
+     * 年齢を作る.
+     * @param mmlBirthday 1975-01-01
+     * @return 32.10
      */
     public static String getAge(String mmlBirthday) {
 
@@ -240,17 +260,17 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * mmlDate 形式から GregorianCalendar を作る
-     * @param mmlDate
-     * @return
+     * mmlDate 形式から GregorianCalendar を作る.
+     * @param mmlDate 1975-01-01
+     * @return GregorianCalendar
      */
     public static GregorianCalendar getCalendar(String mmlDate) {
 
         Date date;
-        if (mmlDate.contains("T")) date = getDateTimeAsObject(mmlDate);
-        else date = getDateAsObject(mmlDate);
+        if (mmlDate.contains("T")) { date = getDateTimeAsObject(mmlDate); }
+        else { date = getDateAsObject(mmlDate); }
 
-        if (date == null) return null;
+        if (date == null) { return null; }
 
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTimeInMillis(date.getTime());
@@ -258,27 +278,27 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * 時間なしの mmlDate 形式から Date を作る
-     * @param mmlDate
-     * @return
+     * 時間なしの mmlDate 形式から Date を作る.
+     * @param mmlDate 1975-01-01
+     * @return parsed Date
      */
     public static Date getDateAsObject(String mmlDate) {
         if (mmlDate != null) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat(DATE_WITHOUT_TIME);
                 return sdf.parse(mmlDate);
+
             } catch (ParseException e) {
-                System.out.println("ModelUtils.java: " + e);
-                //e.printStackTrace();
+                e.printStackTrace(System.err);
             }
         }
         return null;
     }
 
     /**
-     * 時間付きの mmlDate 形式から Date を作る
-     * @param mmlDate
-     * @return
+     * 時間付きの mmlDate 形式から Date を作る.
+     * @param mmlDate 1975-01-01T12:23:34
+     * @return parsed Date
      */
     public static Date getDateTimeAsObject(String mmlDate) {
         if (mmlDate != null) {
@@ -287,36 +307,35 @@ public class ModelUtils implements IInfoModel {
                 return sdf.parse(mmlDate);
 
             } catch (ParseException e) {
-                System.out.println("ModelUtils.java: " + e);
-                //e.printStackTrace();
+                e.printStackTrace(System.err);
             }
         }
         return null;
     }
 
     /**
-     * Date から時間なしの mmlDate 形式を作る
-     * @param date
-     * @return
+     * Date から時間なしの mmlDate 形式を作る.
+     * @param date Date
+     * @return 1975-01-01
      */
     public static String getDateAsString(Date date) {
         return getDateAsFormatString(date, DATE_WITHOUT_TIME);
     }
 
     /**
-     * Date から時間付きの mmlDate 形式を作る
-     * @param date
-     * @return
+     * Date から時間付きの mmlDate 形式を作る.
+     * @param date Date
+     * @return 1975-01-01T12:23:34
      */
     public static String getDateTimeAsString(Date date) {
         return getDateAsFormatString(date, ISO_8601_DATE_FORMAT);
     }
 
     /**
-     * Date から format で指定した形式の日付文字列を作る
-     * @param date
-     * @param format
-     * @return
+     * Date から format で指定した形式の日付文字列を作る.
+     * @param date Date
+     * @param format SimpleDateFormat string
+     * @return formatted string
      */
     public static String getDateAsFormatString(Date date, String format) {
         if (date == null) return null;
@@ -325,9 +344,9 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * male => 男　変換
-     * @param gender
-     * @return
+     * male -> 男　変換.
+     * @param gender male/female
+     * @return 男/女
      */
     public static String getGenderDesc(String gender) {
         if (gender != null) {
@@ -339,29 +358,40 @@ public class ModelUtils implements IInfoModel {
         return UNKNOWN;
     }
 
-    public boolean isValidModel() {
-        return true;
-    }
-
+    /**
+     * エリアス付きの病名文字列を "," で分離する.
+     * @param diagnosis 病名, エリアス
+     * @return [0] 病名, [1] エリアス
+     */
     public static String[] splitDiagnosis(String diagnosis) {
         return (diagnosis == null)? null : diagnosis.split("\\s*,\\s*");
     }
 
+    /**
+     * エリアス付きの病名から病名を取り出す.
+     * @param hasAlias エリアス付き病名
+     * @return 病名. エリアスがない場合はそのまま返す.
+     */
     public static String getDiagnosisName(String hasAlias) {
         String[] splits = splitDiagnosis(hasAlias);
         return (splits != null && splits.length == 2 && splits[0] != null) ? splits[0] : hasAlias;
     }
 
+    /**
+     * エリアス付き病名からエリアスを取り出す.
+     * @param hasAlias エリアス付き病名
+     * @return エリアス. ない場合は null を返す.
+     */
     public static String getDiagnosisAlias(String hasAlias) {
         String[] splits = splitDiagnosis(hasAlias);
         return (splits != null && splits.length == 2 && splits[1] != null) ? splits[1] : null;
     }
 
     /**
-     * PVTDelegater で使う date を作成する（WaitingListImpl から移動
+     * PVTDelegater で使う date を作成する（WaitingListImpl から移動).
      * date[0] = today, date[1] = AppodateFrom, date[2] = AppodateTo
-     * @param date
-     * @return
+     * @param date Date
+     * @return [0] 今日, [1] 2ヶ月前, [2] あれっ??
      */
     public static String[] getSearchDateAsString(Date date) {
 
@@ -382,9 +412,9 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * Object を beanBytes にエンコードする
-     * @param bean
-     * @return
+     * Object を beanBytes にエンコードする.
+     * @param bean エンコード対象の Object
+     * @return エンコードされた byte array
      */
     public static byte[] xmlEncode(Object bean)  {
         ByteArrayOutputStream bo = new ByteArrayOutputStream();
@@ -395,9 +425,9 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * beanBytes をデコードする
-     * @param bytes
-     * @return
+     * beanBytes をデコードする.
+     * @param bytes byte array
+     * @return デコードされた Object
      */
     public static Object xmlDecode(byte[] bytes) {
 
@@ -412,8 +442,8 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * xml からテキストを取り出す
-     * @param xml
+     * xml から&lt;text&gt;テキスト&lt;/text&gt;のテキストを取り出す.
+     * @param xml xmlテキスト
      * @return
      */
     public static String extractText(String xml) {
@@ -428,31 +458,23 @@ public class ModelUtils implements IInfoModel {
 
     /**
      * バイナリの健康保険データをオブジェクトにデコードする.
-     * @param insurances
-     * @return
+     * @param insurances List of HealthInsuranceModel with BeanBytes
+     * @return List of PVTHealthInsuranceModel decoded from BeanBytes
      */
     public static List<PVTHealthInsuranceModel> decodeHealthInsurance(List<HealthInsuranceModel> insurances) {
 
-        List<PVTHealthInsuranceModel> ret = new ArrayList<>();
-
         if (insurances != null) {
-            insurances.forEach(model -> {
-                try {
-                    // byte[] を XMLDecord
-                    PVTHealthInsuranceModel hModel = (PVTHealthInsuranceModel)xmlDecode(model.getBeanBytes());
-                    ret.add(hModel);
-                } catch (RuntimeException e) {
-                    e.printStackTrace(System.err);
-                }
-            });
+            return insurances.stream().map(ins ->
+                    (PVTHealthInsuranceModel)xmlDecode(ins.getBeanBytes())).collect(Collectors.toList());
+        } else {
+            return new ArrayList<PVTHealthInsuranceModel>();
         }
-        return ret;
-    }
+   }
 
     /**
      * treeBytes を treeXml に変換して返す.
-     * @param treeBytes
-     * @return
+     * @param treeBytes byte array
+     * @return tree XML
      */
     public static String toTreeXml(byte[] treeBytes) {
         try {
@@ -466,8 +488,8 @@ public class ModelUtils implements IInfoModel {
 
     /**
      * treeXml を treeBytes に変換して返す.
-     * @param treeXml
-     * @return
+     * @param treeXml treeXml
+     * @return byte array
      */
     public static byte[] toTreeBytes(String treeXml) {
         try {

@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.swing.ImageIcon;
 
 /**
+ * CompositeImageModel.
  *
  * @author kazm
  */

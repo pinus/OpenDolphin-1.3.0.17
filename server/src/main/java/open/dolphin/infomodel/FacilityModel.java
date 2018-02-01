@@ -4,7 +4,7 @@ import java.util.Date;
 import javax.persistence.*;
 
 /**
- * FacilityModel
+ * FacilityModel.
  *
  * @author Minagawa,Kazushi
  */

@@ -1,8 +1,9 @@
 package open.dolphin.infomodel;
 
 /**
- * PatientVisitModel の status
- * ChartImpl の status が複雑になりすぎたので独立させた
+ * PatientVisitModel の status.
+ * ChartImpl の status が複雑になりすぎたので独立させた.
+ *
  * @author pns
  */
 public class KarteState {
@@ -30,35 +31,38 @@ public class KarteState {
     public static final int READ_ONLY           = -2;
 
     /**
-     * OPEN かどうかを判定
-     * @param state
-     * @return
+     * OPEN かどうかを判定.
+     * @param state 判定される state
+     * @return 判定結果
      */
     public static boolean isOpen(int state) {
         return (state == OPEN_NONE || state == OPEN_SAVE ||
                 state == OPEN_UNFINISHED || state == OPEN_TEMP);
     }
+
     /**
-     * CLOSE かどうかを判定
-     * @param state
-     * @return
+     * CLOSE かどうかを判定.
+     * @param state 判定される state
+     * @return 判定結果
      */
     public static boolean isClosed(int state) {
         return (state == CLOSE_NONE || state == CLOSE_SAVE ||
                 state == CLOSE_UNFINISHED || state == CLOSE_TEMP);
     }
+
     /**
-     * NONE かどうかを判定
-     * @param state
-     * @return
+     * NONE かどうかを判定.
+     * @param state 判定される state
+     * @return 判定結果
      */
     public static boolean isNone(int state) {
         return (state == OPEN_NONE || state == CLOSE_NONE);
     }
+
     /**
-     * CLOSE を OPEN に変換
-     * @param state
-     * @return
+     * CLOSE を OPEN に変換.
+     * @param state 判定される state
+     * @return 判定結果
      */
     public static int toOpenState(int state) {
         if (state == CLOSE_NONE) return OPEN_NONE;
@@ -68,10 +72,11 @@ public class KarteState {
 
         return state;
     }
+
     /**
-     * OPEN を CLOSE に変換 〜単純バージョン
-     * @param state
-     * @return
+     * OPEN を CLOSE に変換 〜単純バージョン.
+     * @param state 変換する state
+     * @return 変換された state
      */
     public static int toClosedState(int state) {
         if (state == OPEN_NONE) return CLOSE_NONE;
@@ -81,11 +86,13 @@ public class KarteState {
 
         return state;
     }
+
     /**
-     * OPEN を CLOSE に変換 〜SAVE/UNFINISHED 判定バージョン
-     * @param state
-     * @param isEmpty
-     * @return
+     * OPEN を CLOSE に変換 〜SAVE/UNFINISHED 判定バージョン.
+     * カルテが未記載の場合は CLOSE_UNFINISHED にする.
+     * @param state 変換する state
+     * @param isEmpty カルテが未記載かどうかのフラグ
+     * @return 変換された state
      */
     public static int toClosedState(int state, boolean isEmpty) {
         if (state == OPEN_NONE) return CLOSE_NONE;

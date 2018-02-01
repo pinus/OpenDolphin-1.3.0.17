@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 import javax.persistence.Embeddable;
 
 /**
- * DepartmentModel
+ * DepartmentModel.
  * department (番号), departmentDesc（漢字名）
  * 01 内科, 02 精神科, 03 神経科, 04 神経内科, 05 呼吸器科, 06 消化器科, 07 胃腸科, 08 循環器科, 09 小児科, 10 外科,
  * 11 整形外科, 12 形成外科, 13 美容外科, 14 脳神経外科, 15 呼吸器外科, 16 心臓血管外科, 17 小児外科, 18 皮膚ひ尿器科, 19 皮膚科, 20 ひ尿器科,

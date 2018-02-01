@@ -7,7 +7,7 @@ import java.util.Collection;
 import javax.persistence.*;
 
 /**
- * LaboSpecimenValue
+ * LaboSpecimenValue.
  *
  * @author Minagawa,Kazushi
  */

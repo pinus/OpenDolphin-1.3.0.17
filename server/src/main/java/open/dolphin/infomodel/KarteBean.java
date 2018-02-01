@@ -8,7 +8,7 @@ import javax.persistence.*;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
- * KarteBean
+ * KarteBean.
  *
  * @author Minagawa,Kazushi
  */
@@ -30,7 +30,8 @@ public class KarteBean extends InfoModel {
     @Temporal(value = TemporalType.DATE)
     private Date created;
 
-    // Entry fields -　KarteService.getKarte で付加する field: オリジナルは Map<String,List> entries になってたのを分けた
+    // Entry fields -　KarteService.getKarte で付加する field:
+    // オリジナルは Map<String,List> entries になってたのを分けた
     // allergy
     @Transient
     private List<AllergyModel> allergyEntry;
