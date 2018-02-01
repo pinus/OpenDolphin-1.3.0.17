@@ -7,7 +7,7 @@ import javax.persistence.*;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * PatientModel
+ * PatientModel.
  *
  * @author Minagawa,kazushi
  */
@@ -448,13 +448,10 @@ public class PatientModel extends InfoModel {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final PatientModel other = (PatientModel) obj;
+        if (this == obj) { return true; }
+        if (obj == null) { return false; }
+        if (getClass() != obj.getClass()) { return false; }
+        PatientModel other = (PatientModel) obj;
         return (id == other.getId());
     }
 }

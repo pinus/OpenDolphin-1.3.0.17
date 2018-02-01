@@ -9,7 +9,7 @@ import open.dolphin.orca.PatientVisitModelListener;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * PatientVisitModel
+ * PatientVisitModel.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

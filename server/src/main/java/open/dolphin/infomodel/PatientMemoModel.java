@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * MemoModel
+ * PatientMemoModel.
  *
  * @author Minagawa, Kazushi
  */

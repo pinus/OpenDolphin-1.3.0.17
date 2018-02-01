@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * PatientLiteModel
+ * PatientLiteModel.
  *
  * @author Minagawa, kazushi
  */

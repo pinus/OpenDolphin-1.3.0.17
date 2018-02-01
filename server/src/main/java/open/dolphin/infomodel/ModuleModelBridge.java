@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 import org.hibernate.search.bridge.StringBridge;
 
 /**
- * ModuleModelのbeanBytesからテキストを取り出すブリッジ
+ * ModuleModel の beanBytes からテキストを取り出すブリッジ.
  *
  * @author masuda, Masuda Naika
  */

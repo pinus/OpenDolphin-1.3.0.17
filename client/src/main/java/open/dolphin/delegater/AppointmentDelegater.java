@@ -43,7 +43,7 @@ public class AppointmentDelegater extends BusinessDelegater {
         int retCode = 0;
         AppointSpec spec = new AppointSpec();
         spec.setAdded(added);
-        spec.setUpdared(updated);
+        spec.setUpdated(updated);
         spec.setRemoved(removed);
 
         getService().putAppointment(spec);

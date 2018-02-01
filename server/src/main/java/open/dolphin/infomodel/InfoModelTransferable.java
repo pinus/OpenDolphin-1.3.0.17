@@ -1,7 +1,6 @@
 package open.dolphin.infomodel;
 
 import java.awt.datatransfer.*;
-import java.io.IOException;
 
 /**
  * Transferable class of the IInfoModel.
@@ -13,7 +12,7 @@ public final class InfoModelTransferable implements Transferable, ClipboardOwner
     /** Data Flavor of this class */
     public static final DataFlavor infoModelFlavor = new DataFlavor(open.dolphin.infomodel.IInfoModel.class, "Info Model");
 
-    public static final DataFlavor[] flavors = { InfoModelTransferable.infoModelFlavor };
+    private static final DataFlavor[] flavors = { InfoModelTransferable.infoModelFlavor };
 
     private final IInfoModel model;
 

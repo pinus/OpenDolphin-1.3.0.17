@@ -31,7 +31,7 @@ public class WebSocket {
 
     /**
      * 保持中の session の List を返す
-     * @return
+     * @return List of Session
      */
     public static List<Session> getSessions() {
         return Collections.unmodifiableList(sessions);
@@ -39,7 +39,7 @@ public class WebSocket {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("uid") String userId, @PathParam("password") String password) {
-        logger.info("WebSocket opend: id = " + session.getId());
+        logger.info("WebSocket opened: id = " + session.getId());
 
         if (securityFilter.getValidUserModel(userId, password) == null) {
             closeSession(session, CloseReason.CloseCodes.CANNOT_ACCEPT, "Authentication error.");

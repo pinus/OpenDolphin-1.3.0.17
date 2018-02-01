@@ -38,7 +38,8 @@ public class BundleDolphin extends ClaimBundle {
         return sj.toString();
     }
 
-    protected void addClaimItems(StringJoiner sj) {
+    // package-private
+    void addClaimItems(StringJoiner sj) {
         ClaimItem[] items = getClaimItem();
         if (items != null) {
             Stream.of(items).forEachOrdered(item -> {
@@ -51,7 +52,8 @@ public class BundleDolphin extends ClaimBundle {
         }
     }
 
-    protected void addMemo(StringJoiner sj) {
+    // package-private
+    void addMemo(StringJoiner sj) {
         // Print admMemo
         String adminMemo = getAdminMemo();
         if (adminMemo != null) { sj.add(adminMemo); }

@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * Onservation
+ * ObservationModel.
  *
  * @author Minagawa, Kazushi
  */

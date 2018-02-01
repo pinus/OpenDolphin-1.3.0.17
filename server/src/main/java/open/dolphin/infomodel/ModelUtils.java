@@ -111,7 +111,7 @@ public class ModelUtils implements IInfoModel {
             }
         }
         // 1927年から1988年は昭和
-        else if (year >= 1927 && year <= 1988) {
+        else if (year >= 1927) {
             nengo = "S"; year -= 1925;
         }
         // 1926年だったら，12月25日以降は昭和
@@ -124,7 +124,7 @@ public class ModelUtils implements IInfoModel {
             }
         }
         // 1913年から1925年は大正
-        else if (year >= 1913 && year <= 1925) {
+        else if (year >= 1913) {
             nengo = "T"; year -= 1911;
         }
         // 1912 年だったら，7/30 以降は大正
@@ -223,40 +223,36 @@ public class ModelUtils implements IInfoModel {
      */
     public static String getAge(String mmlBirthday) {
 
-        try {
-            GregorianCalendar gc1 = getCalendar(mmlBirthday);
-            GregorianCalendar gc2 = new GregorianCalendar(); // Today
-            int years = 0;
+        GregorianCalendar gc1 = getCalendar(mmlBirthday);
+        if (gc1 == null) { return null; }
 
-            gc1.clear(Calendar.MILLISECOND);
-            gc1.clear(Calendar.SECOND);
-            gc1.clear(Calendar.MINUTE);
-            gc1.clear(Calendar.HOUR_OF_DAY);
+        GregorianCalendar gc2 = new GregorianCalendar(); // Today
+        int years = 0;
 
-            gc2.clear(Calendar.MILLISECOND);
-            gc2.clear(Calendar.SECOND);
-            gc2.clear(Calendar.MINUTE);
-            gc2.clear(Calendar.HOUR_OF_DAY);
+        gc1.clear(Calendar.MILLISECOND);
+        gc1.clear(Calendar.SECOND);
+        gc1.clear(Calendar.MINUTE);
+        gc1.clear(Calendar.HOUR_OF_DAY);
 
-            while (gc1.before(gc2)) {
-                gc1.add(Calendar.YEAR, 1);
-                years++;
-            }
-            years--;
+        gc2.clear(Calendar.MILLISECOND);
+        gc2.clear(Calendar.SECOND);
+        gc2.clear(Calendar.MINUTE);
+        gc2.clear(Calendar.HOUR_OF_DAY);
 
-            int month = 12;
-
-            while (gc1.after(gc2)) {
-                gc1.add(Calendar.MONTH, -1);
-                month--;
-            }
-
-            return String.format("%d.%d", years, month);
-
-        } catch (Exception ex) {
-            System.out.println("ModelUtils.java: " + ex);
-            return null;
+        while (gc1.before(gc2)) {
+            gc1.add(Calendar.YEAR, 1);
+            years++;
         }
+        years--;
+
+        int month = 12;
+
+        while (gc1.after(gc2)) {
+            gc1.add(Calendar.MONTH, -1);
+            month--;
+        }
+
+        return String.format("%d.%d", years, month);
     }
 
     /**
@@ -444,7 +440,7 @@ public class ModelUtils implements IInfoModel {
     /**
      * xml から&lt;text&gt;テキスト&lt;/text&gt;のテキストを取り出す.
      * @param xml xmlテキスト
-     * @return
+     * @return 取り出したテキスト
      */
     public static String extractText(String xml) {
         StringBuilder buf = new StringBuilder();
@@ -467,7 +463,7 @@ public class ModelUtils implements IInfoModel {
             return insurances.stream().map(ins ->
                     (PVTHealthInsuranceModel)xmlDecode(ins.getBeanBytes())).collect(Collectors.toList());
         } else {
-            return new ArrayList<PVTHealthInsuranceModel>();
+            return new ArrayList<>();
         }
    }
 

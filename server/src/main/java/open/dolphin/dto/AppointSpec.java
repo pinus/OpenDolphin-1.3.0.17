@@ -26,7 +26,14 @@ public class AppointSpec implements Serializable {
         return Collections.unmodifiableCollection(added);
     }
 
+    /*
+     * REMOVE ME SOMEDAY (typo)
+     */
     public void setUpdared(Collection<AppointmentModel> updated) {
+        setUpdated(updated);
+    }
+
+    public void setUpdated(Collection<AppointmentModel> updated) {
         this.updared = new ArrayList<>(updated);
     }
 

@@ -5,7 +5,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
 /**
- * Stamp 及び Module の属性を保持するクラス。
+ * Stamp 及び Module の属性を保持するクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -136,16 +136,16 @@ public class ModuleInfoBean extends InfoModel implements Comparable<ModuleInfoBe
     }
 
     /**
-     * スタンプ番号で比較する。
-     * @param other
+     * スタンプ番号で比較する.
+     * @param other 比較対象の ModuleInfoBean
      * @return 比較値
      */
     @Override
     public int compareTo(ModuleInfoBean other) {
         if (other != null) {
-            int result = getStampNumber() - other.getStampNumber();
-            return result;
+            return getStampNumber() - other.getStampNumber();
         }
+        // null は最上位
         return -1;
     }
 

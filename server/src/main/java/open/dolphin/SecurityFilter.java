@@ -68,7 +68,7 @@ public class SecurityFilter implements ContainerRequestFilter {
                 RolesAllowed rolesAnnotation = target.getAnnotation(RolesAllowed.class);
                 Set<String> roles = new HashSet<>(Arrays.asList(rolesAnnotation.value()));
 
-                // Get request heders
+                // Get request headers
                 final MultivaluedMap<String,String> headers = requestContext.getHeaders();
 
                 // Fetch authorization header

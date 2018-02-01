@@ -94,7 +94,7 @@ public class PatientSearchSpec implements Serializable {
         if (name != null) {
             this.name = name.replace('　', ' ');
         } else {
-            this.name = name;
+            this.name = null;
         }
     }
 

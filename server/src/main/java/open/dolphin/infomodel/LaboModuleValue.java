@@ -151,7 +151,7 @@ public class LaboModuleValue extends KarteEntryBean<LaboModuleValue> {
 
     public void addLaboSpecimen(LaboSpecimenValue specimen) {
         if (laboSpecimens == null) {
-            laboSpecimens = new ArrayList<LaboSpecimenValue>();
+            laboSpecimens = new ArrayList<>();
         }
         laboSpecimens.add(specimen);
     }
@@ -238,7 +238,7 @@ public class LaboModuleValue extends KarteEntryBean<LaboModuleValue> {
 
     /**
      * サンプルタイムで比較する。
-     * @param other
+     * @param other 比較対象
      * @return 比較値
      */
     @Override

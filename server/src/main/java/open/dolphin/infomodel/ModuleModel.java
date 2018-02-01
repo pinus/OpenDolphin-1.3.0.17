@@ -10,14 +10,14 @@ import org.hibernate.search.annotations.Index;
 
 /**
  * ModuleModel.
- * Field 'model' contains either BundleMed, BundleDolphin, or ProgressCourse
+ * Field 'model' contains any of BundleMed, BundleDolphin, or ProgressCourse
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 @Entity
 @Table(name = "d_module")
 public class ModuleModel extends KarteEntryBean<ModuleModel> {
-    private static final long serialVersionUID = -8781968977231876023L;;
+    private static final long serialVersionUID = -8781968977231876023L;
 
     @Embedded
     private ModuleInfoBean moduleInfo;

@@ -173,14 +173,16 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
     }
 
     private int compareDate(Date date1, Date date2) {
-        if (date1 != null && date2 == null) {
-            return -1;
-        } else if (date1 == null && date2 != null) {
-            return 1;
-        } else if (date1 == null && date2 == null) {
-            return 0;
+        if (date1 == null) {
+            // 両方 null なら等しい
+            if (date2 == null) { return 0; }
+            // null は最上位
+            else { return 1; }
         } else {
-            return date1.compareTo(date2);
+            // null は最上位
+            if (date2 == null) { return -1; }
+            // date1 != null && date2 != null の場合
+            else { return date1.compareTo(date2); }
         }
     }
 

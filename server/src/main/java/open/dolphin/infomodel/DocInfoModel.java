@@ -406,10 +406,7 @@ public class DocInfoModel extends InfoModel implements Comparable<DocInfoModel> 
 
     @Override
     public boolean equals(Object other) {
-        if (other != null && getClass() == other.getClass()) {
-            return getDocId().equals(((DocInfoModel) other).getDocId());
-        }
-        return false;
+        return other != null && getClass() == other.getClass() && getDocId().equals(((DocInfoModel) other).getDocId());
     }
 
     @Override
