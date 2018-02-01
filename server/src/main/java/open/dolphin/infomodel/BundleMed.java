@@ -26,7 +26,11 @@ public class BundleMed extends BundleDolphin {
         return sj.toString();
     }
 
-    private String getAdminDisplayString() {
+    /**
+     * スタンプに表示される文字列を返す. Velocity で使うので public でないとだめ.
+     * @return スタンプの用法に表示される文字列
+     */
+    public String getAdminDisplayString() {
 
         String adminString = null;
         if (getAdmin() != null && (!getAdmin().equals(""))) {
