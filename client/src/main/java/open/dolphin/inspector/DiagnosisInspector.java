@@ -321,13 +321,13 @@ public class DiagnosisInspector implements IInspector {
             else { ended.add(rd); }
         });
         // 選択を保存　hashCode を保存しておく
-        List<Integer> selected = Arrays.stream(diagList.getSelectedIndices())
-                .map(index -> System.identityHashCode(listModel.get(index))).boxed().collect(Collectors.toList());
+        List<Integer> selected = Arrays.stream(diagList.getSelectedIndices()).boxed()
+                .map(listModel::get).map(System::identityHashCode).collect(Collectors.toList());
 
         // listModel にセット
         listModel.clear();
-        active.forEach(rdm -> listModel.addElement(rdm));
-        ended.forEach(rdm -> listModel.addElement(rdm));
+        active.forEach(listModel::addElement);
+        ended.forEach(listModel::addElement);
 
         // 選択を復元　hashCode で同じオブジェクトを判定
         selected.forEach(h -> {
