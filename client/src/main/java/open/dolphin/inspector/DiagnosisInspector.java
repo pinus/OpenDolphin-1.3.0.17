@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TooManyListenersException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.*;
 import open.dolphin.client.*;
 import open.dolphin.helper.MenuActionManager;
@@ -24,10 +26,10 @@ import open.dolphin.infomodel.ModelUtils;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSBorder;
-import org.apache.log4j.Logger;
 
 /**
  * インスペクタに病名を表示するクラス.
+ *
  * @author pns
  */
 public class DiagnosisInspector implements IInspector {
@@ -47,7 +49,6 @@ public class DiagnosisInspector implements IInspector {
     private boolean locked = false;
 
     private static final String SUSPECT = " 疑い";
-    private final Logger logger;
 
     /**
      * ショートカットキー定義.
@@ -72,19 +73,19 @@ public class DiagnosisInspector implements IInspector {
         infection (KeyEvent.VK_I, 0),
         ;
         private final int key, mask;
-        private Shortcut(int k, int m) { key = k; mask = m; }
+
+        Shortcut(int k, int m) { key = k; mask = m; }
         public int key() { return key; }
         public int mask() { return mask; }
     }
 
     /**
      * DiagnosisInspectorオブジェクトを生成する.
-     * @param parent
+     * @param parent PatientInspector
      */
     public DiagnosisInspector(PatientInspector parent) {
 
         context = parent.getContext();
-        logger = ClientContext.getBootLogger();
         initComponents();
     }
 
@@ -201,7 +202,7 @@ public class DiagnosisInspector implements IInspector {
         InputMap im = diagList.getInputMap();
         ActionMap am = diagList.getActionMap();
 
-        Arrays.asList(Shortcut.values()).forEach(shortcut -> {
+        Stream.of(Shortcut.values()).forEach(shortcut -> {
             im.put(KeyStroke.getKeyStroke(shortcut.key(), shortcut.mask()), shortcut.name());
             am.put(shortcut.name(), map.get(shortcut.name()));
         });
@@ -230,52 +231,49 @@ public class DiagnosisInspector implements IInspector {
         // null が返ってきてしまう. そこで，ChartImpl#getDiagnosisDocument() に loadDocuments() が終了するまで待ってもらうように
         // ロックをかけるようにして，こちらの呼び出しもスレッドにして止まって待てるようにしている.
 
-        Thread t = new Thread(){
-            @Override
-            public void run() {
-                // ここで初めて DiagnosisDocument の実体が現れる
-                doc = context.getDiagnosisDocument();
+        Thread t = new Thread(() -> {
+            // ここで初めて DiagnosisDocument の実体が現れる
+            doc = context.getDiagnosisDocument();
 
-                // DiagnosisInspector の list と DiagnosisDocument の table の選択範囲を一致させる
-                DiagnosisDocumentTable table = doc.getDiagnosisTable();
-                DiagnosisDocumentTableModel model = (DiagnosisDocumentTableModel) table.getModel();
-                ListSelectionModel selectionModel = table.getSelectionModel();
+            // DiagnosisInspector の list と DiagnosisDocument の table の選択範囲を一致させる
+            DiagnosisDocumentTable table = doc.getDiagnosisTable();
+            DiagnosisDocumentTableModel model = (DiagnosisDocumentTableModel) table.getModel();
+            ListSelectionModel selectionModel = table.getSelectionModel();
 
-                diagList.addListSelectionListener(e -> {
-                    if (locked) { return; }
-                    locked = true;
+            diagList.addListSelectionListener(e -> {
+                if (locked) { return; }
+                locked = true;
 
-                    selectionModel.clearSelection();
+                selectionModel.clearSelection();
 
-                    diagList.getSelectedValuesList().forEach(o -> {
-                        for(int i=0; i<model.getObjectCount(); i++) {
-                            if (model.getObject(i).equals(o)) {
-                                int row = table.convertRowIndexToView(i);
-                                selectionModel.addSelectionInterval(row,row);
-                            }
-                        }
-                    });
-                    locked = false;
-                });
-                selectionModel.addListSelectionListener(e -> {
-                    if (locked) { return; }
-                    locked = true;
-
-                    diagList.clearSelection();
-
-                    int[] rows = table.getSelectedRows();
-                    for (int view : rows) {
-                        int row = table.convertRowIndexToModel(view);
-                        for (int i=0; i<diagList.getModel().getSize(); i++) {
-                            if (diagList.getModel().getElementAt(i).equals(model.getObject(row))) {
-                                diagList.addSelectionInterval(i, i);
-                            }
+                diagList.getSelectedValuesList().forEach(o -> {
+                    for(int i=0; i<model.getObjectCount(); i++) {
+                        if (model.getObject(i).equals(o)) {
+                            int row = table.convertRowIndexToView(i);
+                            selectionModel.addSelectionInterval(row,row);
                         }
                     }
-                    locked = false;
                 });
-            }
-        };
+                locked = false;
+            });
+            selectionModel.addListSelectionListener(e -> {
+                if (locked) { return; }
+                locked = true;
+
+                diagList.clearSelection();
+
+                int[] rows = table.getSelectedRows();
+                for (int view : rows) {
+                    int row = table.convertRowIndexToModel(view);
+                    for (int i=0; i<diagList.getModel().getSize(); i++) {
+                        if (diagList.getModel().getElementAt(i).equals(model.getObject(row))) {
+                            diagList.addSelectionInterval(i, i);
+                        }
+                    }
+                }
+                locked = false;
+            });
+        });
         t.start();
     }
 
@@ -311,27 +309,25 @@ public class DiagnosisInspector implements IInspector {
     /**
      * データのアップデート.
      * DiagnosisDocument から呼ばれる.
-     * @param model
+     * @param model DiagnosisDocumentTableModel
      */
     public void update(DiagnosisDocumentTableModel model) {
         // model から，endDate の有無でリストを分ける
         List<RegisteredDiagnosisModel> active = new ArrayList<>();
         List<RegisteredDiagnosisModel> ended = new ArrayList<>();
 
-        model.getObjectList().forEach(o -> {
-            RegisteredDiagnosisModel rd = o;
+        model.getObjectList().forEach(rd -> {
             if (rd.getEndDate() == null) { active.add(rd); }
             else { ended.add(rd); }
         });
         // 選択を保存　hashCode を保存しておく
-        List<Integer> selected = new ArrayList<>();
-        for (int r : diagList.getSelectedIndices()) {
-            selected.add(System.identityHashCode(listModel.get(r)));
-        }
+        List<Integer> selected = Arrays.stream(diagList.getSelectedIndices())
+                .map(index -> System.identityHashCode(listModel.get(index))).boxed().collect(Collectors.toList());
+
         // listModel にセット
         listModel.clear();
-        for (int i=0; i < active.size(); i++) { listModel.addElement(active.get(i)); }
-        for (int i=0; i < ended.size(); i++) { listModel.addElement(ended.get(i)); }
+        active.forEach(rdm -> listModel.addElement(rdm));
+        ended.forEach(rdm -> listModel.addElement(rdm));
 
         // 選択を復元　hashCode で同じオブジェクトを判定
         selected.forEach(h -> {
@@ -470,13 +466,15 @@ public class DiagnosisInspector implements IInspector {
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 // cut and try
-                int x = 4;
-                int y = 16;
-                int width = getWidth() - 2*x;
-                int height = getHeight() - y - 3;
+                int x = 7;
+                int y = 12;
+                int width = getWidth() - 2*x - 1;
+                int height = getHeight() - y;
                 PNSBorder.drawSelectedBlueRoundRect(this, g, x, y, width, height,10,10);
                 g.dispose();
             }
+            graphics.setColor(IInspector.BORDER_COLOR);
+            graphics.drawLine(getWidth()-1, 0, getWidth()-1, getHeight()-1);
         }
     }
 
