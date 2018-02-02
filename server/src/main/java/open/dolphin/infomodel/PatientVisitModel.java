@@ -2,7 +2,6 @@ package open.dolphin.infomodel;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.util.StringTokenizer;
 import javax.persistence.*;
 import open.dolphin.orca.PatientVisitModelListener;
@@ -270,7 +269,7 @@ public class PatientVisitModel extends InfoModel  {
         return df.equals(PVT_FLAVOR);
     }
 
-    public Object getTransferData(DataFlavor df) throws UnsupportedFlavorException, IOException {
+    public Object getTransferData(DataFlavor df) throws UnsupportedFlavorException {
         if (df.equals(PVT_FLAVOR)) {
             return this;
         } else throw new UnsupportedFlavorException(df);

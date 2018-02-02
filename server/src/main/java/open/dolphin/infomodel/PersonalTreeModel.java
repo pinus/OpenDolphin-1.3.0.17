@@ -3,8 +3,8 @@ package open.dolphin.infomodel;
 import javax.persistence.*;
 
 /**
- * PersonalTreeModel
- * Userのパーソナルツリークラス。
+ * PersonalTreeModel.
+ * User のパーソナルツリークラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

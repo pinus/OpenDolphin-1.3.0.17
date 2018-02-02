@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * VersionModel
+ * VersionModel.
  *
  * @author Kazushi Minagawa
  */
@@ -19,11 +19,7 @@ public class VersionModel extends InfoModel {
     }
 
     public String getVersionNumber() {
-        StringBuilder buf = new StringBuilder();
-        buf.append(String.valueOf(number));
-        buf.append(".");
-        buf.append(String.valueOf(revision));
-        return buf.toString();
+        return String.format("%d.%d", number, revision);
     }
 
     public void setVersionNumber(String vn) {
@@ -38,7 +34,7 @@ public class VersionModel extends InfoModel {
                 number = Integer.parseInt(vn);
             }
         } catch (NumberFormatException e) {
-            System.out.println("VersionModel.java:" + e);
+            e.printStackTrace(System.err);
         }
     }
 

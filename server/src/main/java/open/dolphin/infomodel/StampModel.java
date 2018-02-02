@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import javax.persistence.*;
 
 /**
- * StampModel
+ * StampModel.
  *
  * @author Minagawa,Kazushi
  */

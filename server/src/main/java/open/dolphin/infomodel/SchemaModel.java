@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.swing.ImageIcon;
 
 /**
- * SchemaModel
+ * SchemaModel.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
@@ -24,7 +24,7 @@ public class SchemaModel extends KarteEntryBean<SchemaModel> {
     @JoinColumn(name="doc_id", nullable=false)
     private DocumentModel document;
 
-    // Comaptible props
+    // Compatible props
     @Transient
     private String fileName;
 
@@ -34,9 +34,7 @@ public class SchemaModel extends KarteEntryBean<SchemaModel> {
     @Transient
     private int imageNumber;
 
-    public ExtRefModel getExtRef() {
-        return extRef;
-    }
+    public ExtRefModel getExtRef() { return extRef; }
 
     public void setExtRef(ExtRefModel val) {
         extRef = val;
@@ -82,18 +80,16 @@ public class SchemaModel extends KarteEntryBean<SchemaModel> {
         fileName = val;
     }
 
-    public IInfoModel getModel() {
-        return (IInfoModel)getExtRef();
-    }
+    public IInfoModel getModel() { return getExtRef(); }
 
     public void setModel(IInfoModel val) {
         setExtRef((ExtRefModel)val);
     }
 
     /**
-     * 確定日及びイメージ番号で比較する。
-     * @param other
-     * @return
+     * 確定日及びイメージ番号で比較する.
+     * @param other 比較対象
+     * @return 比較結果
      */
     @Override
     public int compareTo(SchemaModel other) {

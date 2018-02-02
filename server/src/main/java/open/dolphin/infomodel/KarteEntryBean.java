@@ -152,7 +152,7 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
     }
 
     /**
-     * 適合開始日と確定日で比較する。
+     * 適合開始日と確定日で比較する.
      * @param other 比較対象
      * @return Comparable の比較値
      */

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.persistence.*;
 
 /**
- * RoleModel
+ * RoleModel.
  *
  * @author Minagawa,Kazushi
  */

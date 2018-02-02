@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * TextStampModel
+ * TextStampModel.
  *
  * @author Kazushi Minagawa
  */

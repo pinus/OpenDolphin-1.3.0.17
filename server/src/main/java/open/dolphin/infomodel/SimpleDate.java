@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * SimpleDate
+ * SimpleDate.
  *
  * @author Kazushi Minagawa
  */

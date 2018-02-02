@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 import javax.persistence.*;
 
 /**
- * 診断履歴クラス。
+ * 診断履歴クラス.
  *
  * @author Kazushi Minagawa, Digital Globe,Inc.
  */
@@ -243,9 +243,9 @@ public class RegisteredDiagnosisModel extends KarteEntryBean<RegisteredDiagnosis
     }
 
     /**
-     * RegisteredDiagnosisModel の equal 判定
-     * @param obj
-     * @return
+     * RegisteredDiagnosisModel の equal 判定.
+     * @param obj 比較対象
+     * @return 判定結果
      */
     @Override
     public boolean equals(Object obj) {

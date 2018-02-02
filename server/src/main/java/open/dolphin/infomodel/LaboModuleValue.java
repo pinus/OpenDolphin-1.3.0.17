@@ -237,7 +237,7 @@ public class LaboModuleValue extends KarteEntryBean<LaboModuleValue> {
     }
 
     /**
-     * サンプルタイムで比較する。
+     * サンプルタイムで比較する.
      * @param other 比較対象
      * @return 比較値
      */

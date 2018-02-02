@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 import javax.persistence.*;
 
 /**
- * PublishedTreeModel
+ * PublishedTreeModel.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

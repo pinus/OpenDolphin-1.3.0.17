@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * TelephoneModel
+ * TelephoneModel.
  *
  * @author Minagawa,Kazushi
  */

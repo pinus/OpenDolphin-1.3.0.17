@@ -3,8 +3,8 @@ package open.dolphin.infomodel;
 import javax.persistence.*;
 
 /**
- * StampTreeXML のホルダクラス。
- * ユーザがインポートしているTreeクラス。
+ * StampTreeXML のホルダクラス.
+ * ユーザがインポートしているTreeクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * UserLiteModel
+ * UserLiteModel.
  *
  * @author Minagawa,Kazushi
  */

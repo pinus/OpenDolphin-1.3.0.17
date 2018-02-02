@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 
 /**
  * PersonalTreeModel と PublishedStampTreeModel の共通親.
+ *
  * @author pns
  */
 @MappedSuperclass

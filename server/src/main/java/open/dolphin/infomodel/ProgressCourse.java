@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * ProgressCourse
+ * ProgressCourse.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

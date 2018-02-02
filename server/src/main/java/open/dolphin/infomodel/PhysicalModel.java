@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 /**
- * PhysicalModel
+ * PhysicalModel.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
  */

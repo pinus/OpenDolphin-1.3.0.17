@@ -8,7 +8,7 @@ import java.util.Date;
 import javax.persistence.*;
 
 /**
- * UserModel
+ * UserModel.
  *
  * @author Minagawa,Kazushi
  */

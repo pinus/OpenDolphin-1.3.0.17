@@ -7,7 +7,6 @@ import java.util.List;
  * Simple Claim　Class used for PVT.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
- *
  * Modified by Mirror-I corp for adding 'claimDeptName' and related function to store/get Department name
  */
 public class PVTClaim extends InfoModel {
@@ -134,10 +133,9 @@ public class PVTClaim extends InfoModel {
         // Mirror-I end
 
         if (claimAppName != null) {
-            int len = claimAppName.size();
-            for (int i = 0; i < len; i++) {
+            for (String aClaimAppName : claimAppName) {
                 buf.append("ClaimAppName: ");
-                buf.append(claimAppName.get(i));
+                buf.append(aClaimAppName);
                 buf.append("\n");
             }
         }

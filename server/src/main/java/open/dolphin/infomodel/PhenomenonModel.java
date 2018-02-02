@@ -4,7 +4,7 @@ import java.util.Date;
 import javax.persistence.*;
 
 /**
- * Onservation
+ * PhenomenonModel.
  *
  * @author Minagawa, Kazushi
  */

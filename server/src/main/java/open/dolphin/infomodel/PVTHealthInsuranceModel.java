@@ -4,7 +4,6 @@ package open.dolphin.infomodel;
  * Health-Insurance class to be parsed.
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
- *
  * Modified by Mirror-I corp for adding 'PvtPublicInsuranceItem' and related function to store/get PvtPublicInsuranceItem name
  */
 public class PVTHealthInsuranceModel extends InfoModel  {
