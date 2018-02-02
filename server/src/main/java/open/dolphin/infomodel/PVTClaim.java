@@ -2,6 +2,7 @@ package open.dolphin.infomodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Simple Claim　Class used for PVT.
@@ -104,61 +105,20 @@ public class PVTClaim extends InfoModel {
     @Override
     public String toString() {
 
-        StringBuilder buf = new StringBuilder();
+        StringJoiner sj = new StringJoiner("\n");
 
-        if (claimStatus != null) {
-            buf.append("ClaimStatus: ");
-            buf.append(claimStatus);
-            buf.append("\n");
-        }
-
-        if (claimRegistTime != null) {
-            buf.append("ClaimRegistTime: ");
-            buf.append(claimRegistTime);
-            buf.append("\n");
-        }
-
-        if (claimAdmitFlag != null) {
-            buf.append("ClaimAdmitFlag: ");
-            buf.append(claimAdmitFlag);
-            buf.append("\n");
-        }
-
+        if (claimStatus != null) { sj.add("ClaimStatus: " + claimStatus); }
+        if (claimRegistTime != null) { sj.add("ClaimRegistTime: " + claimRegistTime); }
+        if (claimAdmitFlag != null) { sj.add("ClaimAdmitFlag: " + claimAdmitFlag); }
         // Mirror-I start
-        if (claimDeptName != null) {
-            buf.append("claimDeptName: ");
-            buf.append(claimDeptName);
-            buf.append("\n");
-        }
+        if (claimDeptName != null) { sj.add("ClaimDeptName: " + claimDeptName); }
         // Mirror-I end
+        if (claimAppName != null) { claimAppName.forEach(n -> sj.add("ClaimAppName: " + n)); }
+        if (claimAppMemo != null) { sj.add("ClaimAppointMemo: " + claimAppMemo); }
+        if (claimItemCode != null) { sj.add("ClaimItemCode: " + claimItemCode); }
+        if (claimItemName != null) { sj.add("ClaimItemName: " + claimItemName); }
 
-        if (claimAppName != null) {
-            for (String aClaimAppName : claimAppName) {
-                buf.append("ClaimAppName: ");
-                buf.append(aClaimAppName);
-                buf.append("\n");
-            }
-        }
-
-        if (claimAppMemo != null) {
-            buf.append("ClaimAppointMemo: ");
-            buf.append(claimAppMemo);
-            buf.append("\n");
-        }
-
-        if (claimItemCode != null) {
-            buf.append("ClaimItemCode: ");
-            buf.append(claimItemCode);
-            buf.append("\n");
-        }
-
-        if (claimItemName != null) {
-            buf.append("ClaimItemName: ");
-            buf.append(claimItemName);
-            buf.append("\n");
-        }
-
-        return buf.toString();
+        return sj.toString();
     }
 
     public void setInsuranceUid(String insuranceUid) {
