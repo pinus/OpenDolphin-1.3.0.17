@@ -1,6 +1,7 @@
 package open.dolphin.infomodel;
 
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -19,6 +20,12 @@ public class BundleDolphin extends ClaimBundle {
 
     public String getOrderName() {
         return orderName;
+    }
+
+    // Velocity で使っているので消したらだめ!
+    public String getItemNames() {
+        return getClaimItem() == null? null :
+                Stream.of(getClaimItem()).map(ClaimItem::getName).collect(Collectors.joining(","));
     }
 
     @Override
