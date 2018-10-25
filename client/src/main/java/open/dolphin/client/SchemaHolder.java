@@ -82,7 +82,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
         if (icon != null) {
             int w = icon.getIconWidth();
             int h = icon.getIconHeight();
-            Dimension size = new Dimension(w + 2, h + 2 );
+            Dimension size = new Dimension(w + 6, h + 6); // PNSBorder.DEFAULT_MARGIN * 2
             setPreferredSize(size);
             setMinimumSize(size);
         }
