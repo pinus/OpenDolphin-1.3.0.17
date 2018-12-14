@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,10 +75,16 @@ public class ScriptExecutor {
      */
     public static void openPatientFolder(final String path) {
         // スクリプトに path を設定
-        OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to \""+ path + "\" as POSIX file";
-        new AppleScriptExecutor(getCodeString(OPEN_PATIENT_FOLDER_SCRIPT)).start();
-    }
+        //OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to \""+ path + "\" as POSIX file";
+        //new AppleScriptExecutor(getCodeString(OPEN_PATIENT_FOLDER_SCRIPT)).start();
 
+        String[] folders = path.replace("/Volumes/", "").split("\\/");
+        // folder "folder1" of folder "folder2" of ...
+        StringBuilder sb = new StringBuilder();
+        int counter = folders.length - 1;
+        sb.append("folder " + "\"" + folders[counter] + "\"");
+
+    }
     /**
      * かなキー（keycode 104）を System Event に送る.
      */
@@ -219,11 +226,11 @@ public class ScriptExecutor {
         // 7088 /Library/Input Methods/ATOK25.app/Contents/MacOS/ATOK25 -psn_0_512125
         // 1124 /usr/bin/codesign --display --entitlements - /Library/Input Methods/ATOK25.app
 
-        //ExecuteScript.openPatientFolder("/Volumes/Documents/000001/");
+        ScriptExecutor.openPatientFolder("/Volumes/Documents/000001/");
         //ExecuteScript.quickLook("/Volumes/documents/008113/お返事2011-01-11.pdf");
         //ExecuteScript.restartAtok24();
         //System.out.println(ScriptExecutor.getAtok24MemSize());
         //ExecuteScript.setImeOff();
-        ScriptExecutor.displayNotification("message", "title", "subtitle");
+        //ScriptExecutor.displayNotification("message", "title", "subtitle");
     }
 }
