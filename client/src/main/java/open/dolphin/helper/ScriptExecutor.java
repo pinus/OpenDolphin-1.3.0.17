@@ -17,6 +17,7 @@ import java.util.Locale;
 public class ScriptExecutor {
 
     private static final String CR = "\n";
+    private static final String QUOTE = "\"";
 
     private static final String[] OPEN_PATIENT_FOLDER_SCRIPT = {
         "tell application \"Finder\"",
@@ -59,9 +60,9 @@ public class ScriptExecutor {
 
     /**
      * 通知センターに通知を表示する.
-     * @param message
-     * @param title
-     * @param subtitle
+     * @param message Message
+     * @param title Title
+     * @param subtitle Subtitle
      */
     public static void displayNotification(String message, String title, String subtitle) {
         String script = String.format(DISPLAY_NOTIFICATION_SCRIPT, message, title, subtitle);
@@ -71,27 +72,27 @@ public class ScriptExecutor {
 
     /**
      * 情報フォルダを開く.
-     * @param path
+     * @param path POSIX path
      */
     public static void openPatientFolder(final String path) {
-        // スクリプトに path を設定
+        // スクリプトに path を設定 → POSIX file がエラーを出すようになった 2018-12-14
         //OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to \""+ path + "\" as POSIX file";
         //new AppleScriptExecutor(getCodeString(OPEN_PATIENT_FOLDER_SCRIPT)).start();
 
-        // convert POSIX path to folder "folder1" of folder "folder2" ... of drive "drive"
-        String[] folders = path.replace("/Volumes/", "").split("\\/");
+        // convert POSIX path to folder "folder1" of folder "folder2" ... of disk "disk"
+        String[] folders = path.replace("/Volumes/", "").split("/");
         StringBuilder sb = new StringBuilder();
         int len = folders.length - 1;
-        sb.append("folder " + "\"" + folders[len] + "\"");
+        sb.append("folder ").append(QUOTE).append(folders[len]).append(QUOTE);
         for (int i=len-1; i>=1; i--) {
-            sb.append(" of folder " + "\"" + folders[i] + "\"");
+            sb.append(" of folder ").append(QUOTE).append(folders[i]).append(QUOTE);
         }
-        sb.append(" of drive " + "\"" + folders[0] + "\"");
+        sb.append(" of disk ").append(QUOTE).append(folders[0]).append(QUOTE);
 
-        OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to \""+ sb.toString() + "\"";
-        System.out.println(OPEN_PATIENT_FOLDER_SCRIPT[1]);
+        OPEN_PATIENT_FOLDER_SCRIPT[1] = "";
+        OPEN_PATIENT_FOLDER_SCRIPT[2] = "open " + sb.toString();
 
-        //new AppleScriptExecutor(getCodeString(OPEN_PATIENT_FOLDER_SCRIPT)).start();
+        new AppleScriptExecutor(getCodeString(OPEN_PATIENT_FOLDER_SCRIPT)).start();
     }
 
     /**
@@ -110,7 +111,7 @@ public class ScriptExecutor {
 
     /**
      * window の InputMethodContext で U.S. になるまで待つ ImeOff.
-     * @param w
+     * @param w Window
      */
     public static void setImeOff(Window w) {
 
@@ -137,7 +138,7 @@ public class ScriptExecutor {
     /**
      * 現在の ime モードが U.S. かどうかを返す.
      * @param w InputContext を調べる JFrame or JDialog
-     * @return
+     * @return true if Locale.US
      */
     public static boolean isImeUs(Window w) {
         //sun.awt.im.InputContext ic = (sun.awt.im.InputContext) w.getInputContext();
@@ -168,7 +169,7 @@ public class ScriptExecutor {
 
     /**
      * 選択ファイルを QuickLook する.
-     * @param path
+     * @param path POSIX Path to target
      */
     public static void quickLook(String path) {
         final String[] command = {"qlmanage", "-p", path};
@@ -177,8 +178,7 @@ public class ScriptExecutor {
 
     /**
      * shell command を実行する.
-     * @param command
-     * @return
+     * @param command Shell commands in a string array
      */
     private static void executeShellScript(String[] command) {
         Thread t = new Thread(()-> {
@@ -193,8 +193,8 @@ public class ScriptExecutor {
 
     /**
      * shell command を実行して，標準出力を返す.
-     * @param command
-     * @return
+     * @param command Commands in a string array
+     * @return outPut Result strings in List
      */
     private static List<String> executeShellScriptWithResponce(String[] command) {
         List<String> output = new ArrayList<>();
@@ -219,8 +219,8 @@ public class ScriptExecutor {
 
     /**
      * 複数ストリング配列に入ったスクリプトを１行スクリプトに変換.
-     * @param code
-     * @return
+     * @param code Code lines in a string array
+     * @return Joined string
      */
     private static String getCodeString(String[] code) {
         StringBuilder cmd = new StringBuilder();
