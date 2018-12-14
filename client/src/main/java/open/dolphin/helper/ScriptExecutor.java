@@ -78,13 +78,22 @@ public class ScriptExecutor {
         //OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to \""+ path + "\" as POSIX file";
         //new AppleScriptExecutor(getCodeString(OPEN_PATIENT_FOLDER_SCRIPT)).start();
 
+        // convert POSIX path to folder "folder1" of folder "folder2" ... of drive "drive"
         String[] folders = path.replace("/Volumes/", "").split("\\/");
-        // folder "folder1" of folder "folder2" of ...
         StringBuilder sb = new StringBuilder();
-        int counter = folders.length - 1;
-        sb.append("folder " + "\"" + folders[counter] + "\"");
+        int len = folders.length - 1;
+        sb.append("folder " + "\"" + folders[len] + "\"");
+        for (int i=len-1; i>=1; i--) {
+            sb.append(" of folder " + "\"" + folders[i] + "\"");
+        }
+        sb.append(" of drive " + "\"" + folders[0] + "\"");
 
+        OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to \""+ sb.toString() + "\"";
+        System.out.println(OPEN_PATIENT_FOLDER_SCRIPT[1]);
+
+        //new AppleScriptExecutor(getCodeString(OPEN_PATIENT_FOLDER_SCRIPT)).start();
     }
+
     /**
      * かなキー（keycode 104）を System Event に送る.
      */
