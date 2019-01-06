@@ -7,6 +7,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -97,8 +98,22 @@ public class ModelUtils implements IInfoModel {
         month = Integer.valueOf(mmlBirthday.substring(5,7));
         day = Integer.valueOf(mmlBirthday.substring(8,10));
 
+        String newNengo = "A";
+
+        // 2020年より先は新元号
+        if (year >= 2020) {
+            nengo = newNengo; year -= 2018;
+        }
+        // 2019年だったら，4月30日以前は平成
+        else if (year == 2019) {
+            if (month <= 4) {
+                nengo = "H"; year -= 1988;
+            } else {
+                nengo = newNengo; year -= 2018;
+            }
+        }
         // 1990年より先は平成
-        if (year >= 1990) {
+        else if (year >= 1990) {
             nengo = "H"; year -= 1988;
         }
         // 1989年だったら，1月7日以前は昭和
@@ -444,9 +459,9 @@ public class ModelUtils implements IInfoModel {
      */
     public static String extractText(String xml) {
         StringBuilder buf = new StringBuilder();
-        String head[] = xml.split("<text>");
+        String[] head = xml.split("<text>");
         for (String str : head) {
-            String tail[] = str.split("</text>");
+            String[] tail = str.split("</text>");
             if (tail.length == 2) { buf.append(tail[0].trim()); }
         }
         return buf.toString();
@@ -473,13 +488,7 @@ public class ModelUtils implements IInfoModel {
      * @return tree XML
      */
     public static String toTreeXml(byte[] treeBytes) {
-        try {
-            return new String(treeBytes, "UTF-8");
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace(System.err);
-            return null;
-        }
+        return new String(treeBytes, StandardCharsets.UTF_8);
     }
 
     /**
@@ -488,12 +497,11 @@ public class ModelUtils implements IInfoModel {
      * @return byte array
      */
     public static byte[] toTreeBytes(String treeXml) {
-        try {
-            return treeXml.getBytes("UTF-8");
+        return treeXml.getBytes(StandardCharsets.UTF_8);
+    }
 
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace(System.err);
-            return null;
-        }
+    public static void main(String[] argv) {
+        System.out.println(toNengo("2019-04-30"));
+        System.out.println(toNengo("2019-05-01"));
     }
 }
