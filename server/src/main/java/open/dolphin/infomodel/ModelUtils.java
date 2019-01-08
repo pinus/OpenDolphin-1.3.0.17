@@ -89,80 +89,7 @@ public class ModelUtils implements IInfoModel {
      * @return nengoBirthday S50-01-01
      */
     public static String toNengo(String mmlBirthday) {
-        int year;
-        int month;
-        int day;
-        String nengo;
-
-        year = Integer.valueOf(mmlBirthday.substring(0,4));
-        month = Integer.valueOf(mmlBirthday.substring(5,7));
-        day = Integer.valueOf(mmlBirthday.substring(8,10));
-
-        String newNengo = "A";
-
-        // 2020年より先は新元号
-        if (year >= 2020) {
-            nengo = newNengo; year -= 2018;
-        }
-        // 2019年だったら，4月30日以前は平成
-        else if (year == 2019) {
-            if (month <= 4) {
-                nengo = "H"; year -= 1988;
-            } else {
-                nengo = newNengo; year -= 2018;
-            }
-        }
-        // 1990年より先は平成
-        else if (year >= 1990) {
-            nengo = "H"; year -= 1988;
-        }
-        // 1989年だったら，1月7日以前は昭和
-        else if (year == 1989) {
-            if (month == 1 && day <= 7) {
-                nengo = "S"; year = 64;
-            }
-            else {
-                nengo = "H"; year = 1;
-            }
-        }
-        // 1927年から1988年は昭和
-        else if (year >= 1927) {
-            nengo = "S"; year -= 1925;
-        }
-        // 1926年だったら，12月25日以降は昭和
-        else if (year == 1926) {
-            if (month == 12 && day >= 25) {
-                nengo = "S"; year = 1;
-            }
-            else {
-                nengo = "T"; year = 15;
-            }
-        }
-        // 1913年から1925年は大正
-        else if (year >= 1913) {
-            nengo = "T"; year -= 1911;
-        }
-        // 1912 年だったら，7/30 以降は大正
-        else if (year == 1912) {
-            if (month >= 8) {
-                nengo = "T"; year = 1;
-            }
-            else if (month <= 6) {
-                nengo = "M"; year = 45;
-            }
-            else if (day >= 30) {
-                nengo = "T"; year = 1;
-            }
-            else {
-                nengo = "M"; year = 45;
-            }
-        }
-        // 1911年以前は明治
-        else {
-            nengo = "M"; year -= 1867;
-        }
-
-        return String.format("%s%02d-%02d-%02d", nengo, year, month, day);
+        return GengoUtil.toGengo(mmlBirthday);
     }
 
     /**
@@ -171,34 +98,7 @@ public class ModelUtils implements IInfoModel {
      * @return mmlBirthday 2010-07-26
      */
     public static String toSeireki(String nengoBirthday) {
-
-        try {
-            StringTokenizer st = new StringTokenizer(nengoBirthday, "-");
-            String yearStr = st.nextToken();
-            String monthStr = st.nextToken();
-            String dateStr = st.nextToken();
-
-            String nengo = yearStr.substring(0,1);
-            int year = Integer.valueOf(yearStr.substring(1));
-
-            switch(nengo) {
-                case "M": case "m": year += 1867; break;
-                case "T": case "t": year += 1911; break;
-                case "S": case "s": year += 1925; break;
-                case "H": case "h": year += 1988; break;
-                // 西暦で入ってきた場合
-                default: year = Integer.valueOf(yearStr);
-            }
-
-            if (monthStr.length() == 1) { monthStr = "0" + monthStr; }
-            if (dateStr.length() == 1) { dateStr = "0" + dateStr; }
-
-            return String.format("%d-%s-%s", year, monthStr, dateStr);
-
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
-            return null;
-        }
+        return GengoUtil.toSeireki(nengoBirthday);
     }
 
     /*
@@ -216,19 +116,13 @@ public class ModelUtils implements IInfoModel {
      */
     public static String orcaDateToNengo(String orcaBirthday) {
         //元号
-        String nengo = "";
-        switch(orcaBirthday.substring(0, 1)) {
-            case "1": nengo = "m"; break;
-            case "2": nengo = "t"; break;
-            case "3": nengo = "s"; break;
-            case "4": nengo = "h"; break;
-        }
+        String nengo = GengoUtil.numberToString(orcaBirthday.substring(0, 1));
         //年
         String y = orcaBirthday.substring(1, 3);
         String m = orcaBirthday.substring(3, 5);
         String d = orcaBirthday.substring(5, 7);
 
-        return nengo + y + "-" + m + "-" + d;
+        return nengo.toLowerCase() + y + "-" + m + "-" + d;
     }
 
     /**
@@ -500,8 +394,163 @@ public class ModelUtils implements IInfoModel {
         return treeXml.getBytes(StandardCharsets.UTF_8);
     }
 
+    /**
+     * GengoUtil 元号パッケージ.
+     */
+    private static class GengoUtil {
+        private static final String MEIJI = "M";
+        private static final String TAISHO = "T";
+        private static final String SHOWA = "S";
+        private static final String HEISEI = "H";
+        private static final String ANCHO = "A";
+
+        /**
+         * 西暦 -> 元号変換.
+         * @param mmlBirthday 1975-01-01
+         * @return gengoBirthday S50-01-01
+         */
+        public static String toGengo(String mmlBirthday) {
+            int year;
+            int month;
+            int day;
+            String gengo;
+
+            year = Integer.valueOf(mmlBirthday.substring(0,4));
+            month = Integer.valueOf(mmlBirthday.substring(5,7));
+            day = Integer.valueOf(mmlBirthday.substring(8,10));
+
+            // 2020年より先は新元号
+            if (year >= 2020) {
+                gengo = ANCHO; year -= 2018;
+            }
+            // 2019年だったら，4月30日以前は平成
+            else if (year == 2019) {
+                if (month <= 4) {
+                    gengo = HEISEI; year -= 1988;
+                } else {
+                    gengo = ANCHO; year -= 2018;
+                }
+            }
+            // 1990年より先は平成
+            else if (year >= 1990) {
+                gengo = HEISEI; year -= 1988;
+            }
+            // 1989年だったら，1月7日以前は昭和
+            else if (year == 1989) {
+                if (month == 1 && day <= 7) {
+                    gengo = SHOWA; year = 64;
+                }
+                else {
+                    gengo = HEISEI; year = 1;
+                }
+            }
+            // 1927年から1988年は昭和
+            else if (year >= 1927) {
+                gengo = SHOWA; year -= 1925;
+            }
+            // 1926年だったら，12月25日以降は昭和
+            else if (year == 1926) {
+                if (month == 12 && day >= 25) {
+                    gengo = SHOWA; year = 1;
+                }
+                else {
+                    gengo = TAISHO; year = 15;
+                }
+            }
+            // 1913年から1925年は大正
+            else if (year >= 1913) {
+                gengo = TAISHO; year -= 1911;
+            }
+            // 1912 年だったら，7/30 以降は大正
+            else if (year == 1912) {
+                if (month >= 8) {
+                    gengo = TAISHO; year = 1;
+                }
+                else if (month <= 6) {
+                    gengo = MEIJI; year = 45;
+                }
+                else if (day >= 30) {
+                    gengo = TAISHO; year = 1;
+                }
+                else {
+                    gengo = MEIJI; year = 45;
+                }
+            }
+            // 1911年以前は明治
+            else {
+                gengo = MEIJI; year -= 1867;
+            }
+
+            return String.format("%s%02d-%02d-%02d", gengo, year, month, day);
+        }
+
+        /**
+         * 年号 -> 西暦変換.
+         * @param gengoBirthday H22-7-26
+         * @return mmlBirthday 2010-07-26
+         */
+        public static String toSeireki(String gengoBirthday) {
+
+            try {
+                StringTokenizer st = new StringTokenizer(gengoBirthday, "-");
+                String yearStr = st.nextToken();
+                String gengo = yearStr.substring(0, 1).toUpperCase();
+                int year = Integer.valueOf(yearStr.substring(1));
+                int month = Integer.valueOf(st.nextToken());
+                int date = Integer.valueOf(st.nextToken());
+
+                switch (gengo) {
+                    case MEIJI:
+                        year += 1867;
+                        break;
+                    case TAISHO:
+                        year += 1911;
+                        break;
+                    case SHOWA:
+                        year += 1925;
+                        break;
+                    case HEISEI:
+                        year += 1988;
+                        break;
+                    case ANCHO:
+                        year += 2018;
+                        break;
+                    // 西暦で入ってきた場合
+                    default:
+                        year = Integer.valueOf(yearStr);
+                }
+
+                return String.format("%d-%02d-%02d", year, month, date);
+
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace(System.err);
+                return null;
+            }
+        }
+
+        /**
+         * Orca 型式の数字→元号変換.
+         * @param number Orca で元号を表す数字
+         * @return 元号を表すアルファベット
+         */
+        public static String numberToString(String number) {
+            switch (number) {
+                case "1": return MEIJI;
+                case "2": return TAISHO;
+                case "3": return SHOWA;
+                case "4": return HEISEI;
+                case "5": return ANCHO;
+                default: return "U";
+            }
+        }
+    }
+
     public static void main(String[] argv) {
         System.out.println(toNengo("2019-04-30"));
         System.out.println(toNengo("2019-05-01"));
+        System.out.println(toSeireki("h01-04-30"));
+        System.out.println(toSeireki("a01-05-01"));
+        System.out.println(orcaDateToNengo("4300430"));
+        System.out.println(orcaDateToNengo("5010501"));
     }
 }
