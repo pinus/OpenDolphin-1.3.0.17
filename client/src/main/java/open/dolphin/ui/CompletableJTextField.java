@@ -1,12 +1,8 @@
 package open.dolphin.ui;
 
-import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,13 +18,9 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
@@ -39,8 +31,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import open.dolphin.client.ClientContext;
-import open.dolphin.ui.sheet.JSheet;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -60,6 +50,7 @@ public class CompletableJTextField extends JTextField
     private Window parentFrame;
     private int keyCode;
     private Preferences prefs;
+    private boolean isWin = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
     public CompletableJTextField(int col) {
         super(col);
@@ -76,7 +67,7 @@ public class CompletableJTextField extends JTextField
 
         listWindow = new JWindow();
         listWindow.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-        if (ClientContext.isWin()) {
+        if (isWin) {
             Border outer = BorderFactory.createLineBorder(Color.LIGHT_GRAY);
             Border inner = BorderFactory.createEmptyBorder(0, 10, 10, 10);
             Border compound = BorderFactory.createCompoundBorder(outer, inner);
@@ -409,64 +400,23 @@ public class CompletableJTextField extends JTextField
     }
 
     public static void main(String[] argv) {
+        CompletableJTextField completableField = new CompletableJTextField(30);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        final CompletableJTextField completableField = new CompletableJTextField(75) {
-            private static final long serialVersionUID = 1L;
-            @Override
-            protected void paintBorder(Graphics g) {
-                super.paintBorder(g);
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f));
-                g2d.setColor(getBackground());
-                g2d.fillRect(5, 5, getWidth()-11, getHeight()-11);
-            }
-        };
-
-        // quaqua doesn't support textfield background color
-        completableField.setBackground(new Color(255,255,0));
-
-        panel.add(completableField);
-        JPanel bottom = new JPanel();
-        bottom.add(new JLabel("Completion:"));
-        final JTextField completionField = new JTextField(40);
-        completionField.addActionListener(e -> {
-            completableField.addCompletion(completionField.getText());
-            completionField.setText("");
-        });
-        bottom.add(completionField);
-        JButton addButton = new JButton("Add");
-        addButton.addActionListener(e -> {
-            completableField.addCompletion(completionField.getText());
-            completionField.setText("");
-        });
-        bottom.add(addButton);
-        panel.add(bottom);
-
-        JFrame f = new JFrame("HACK #47: Completions...");
-        //f.getContentPane().add(panel);
-        //f.pack();
-        f.setSize(800, 100);
-        f.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        f.setVisible(true);
-
-        JOptionPane jop = new JOptionPane(
-                panel,
-                JOptionPane.PLAIN_MESSAGE,
-                JOptionPane.DEFAULT_OPTION,
-                null,
-                new String[]{"A", "B"}
-
-                );
-        JSheet sheet = JSheet.createDialog(jop, f);
-        sheet.addSheetListener(se -> {
-            sheet.setVisible(false);
-        });
-        sheet.setVisible(true);
-
-        Preferences prefs = Preferences.userNodeForPackage(CompletableJTextField.class);
+        // 履歴を保存するための pref を作る
+        String prefKey = CompletableJTextField.class.getName() + ".pref";
+        System.out.println("pref key = " + prefKey);
+        Preferences userRoot = Preferences.userRoot();
+        Preferences prefs = userRoot.node(prefKey);
         completableField.setPreferences(prefs);
+
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setBounds(300,300,300,300);
+        JPanel p = new JPanel();
+        frame.add(p);
+        p.add(completableField);
+        frame.pack();
+
+        frame.setVisible(true);
     }
 }
