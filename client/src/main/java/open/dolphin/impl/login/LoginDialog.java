@@ -37,7 +37,7 @@ public class LoginDialog {
     private BlockGlass blockGlass;
 
     // 認証制御用
-    private Logger part11Logger;
+    private Logger logger;
     private int tryCount;
     private int maxTryCount;
 
@@ -61,7 +61,7 @@ public class LoginDialog {
 
     /**
      * ログイン状態リスナーを登録する.
-     * @param listener
+     * @param listener LoginListener
      */
     public void addLoginListener(LoginListener listener) {
         loginListener = listener;
@@ -72,24 +72,18 @@ public class LoginDialog {
      */
     public void start() {
 
-        //
         // ダイアログモデルを生成し値を初期化する
-        //
         principal = new DolphinPrincipal();
         if (Project.isValid()) {
             principal.setFacilityId(Project.getFacilityId());
             principal.setUserId(Project.getUserId());
         }
 
-        //
         // GUI を構築しモデルを表示する
-        //
         initComponents();
         bindModelToView();
 
-        //
-        // EDT からコールされている
-        //
+        // LoginView をセンタリングして表示
         int width = view.getWidth();
         int height = view.getHeight();
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -114,9 +108,9 @@ public class LoginDialog {
      */
     public void tryLogin() {
 
-        // Part11 ロガーを取得する
-        if (part11Logger == null) {
-            part11Logger = ClientContext.getPart11Logger();
+        // ロガーを取得する
+        if (logger == null) {
+            logger = Logger.getLogger(getClass());
         }
 
         // トライ出来る最大回数を得る
@@ -124,7 +118,7 @@ public class LoginDialog {
             maxTryCount = ClientContext.getInt("loginDialog.maxTryCount");
         }
 
-        part11Logger.info("認証を開始します");
+        logger.info("認証を開始します");
 
         // 試行回数 += 1
         tryCount++;
@@ -145,7 +139,7 @@ public class LoginDialog {
             private UserDelegater userDlg;
 
             @Override
-            protected UserModel doInBackground() throws Exception {
+            protected UserModel doInBackground() {
 
                 // ログイン手順開始
                 String hostAddress = String.format("%s:%d", Project.getHostAddress(), Project.getHostPort());
@@ -160,15 +154,15 @@ public class LoginDialog {
 
             @Override
             protected void succeeded(UserModel userModel) {
-                part11Logger.debug("Task succeeded");
+                logger.debug("Task succeeded");
                 if (userModel != null) {
 
                     Project.UserType userType = Project.UserType.valueOf(userModel.getMemberType());
-                    part11Logger.info("User Type = " + userType.toString());
+                    logger.info("User Type = " + userType.toString());
 
                     // 認証成功
                     String time = ModelUtils.getDateTimeAsString(new Date());
-                    part11Logger.info(time + ": " + userModel.getUserId() + " がログインしました");
+                    logger.info(time + ": " + userModel.getUserId() + " がログインしました");
 
                     // ユーザID，施設ID，ユーザモデルを rojectStub へ保存する
                     Project.getProjectStub().setUserId(principal.getUserId());
@@ -180,15 +174,15 @@ public class LoginDialog {
                     notifyClose(result);
 
                 } else {
-                    part11Logger.warn("User == null, this never ocuured");
+                    logger.warn("User == null, this never ocuured");
                 }
             }
 
             @Override
             protected void failed(java.lang.Throwable cause) {
-                part11Logger.warn("Task failed");
-                part11Logger.warn(cause.getCause());
-                part11Logger.warn(cause.getMessage());
+                logger.warn("Task failed");
+                logger.warn(cause.getCause());
+                logger.warn(cause.getMessage());
                 if (tryCount <= maxTryCount && cause instanceof Exception) {
                     userDlg.processError((Exception) cause);
                     String errMsg = userDlg.getErrorMessage();
@@ -253,7 +247,7 @@ public class LoginDialog {
 
     /**
      * ログインダイアログを終了する.
-     * @param result
+     * @param result LoginState
      */
     private void notifyClose(LoginState result) {
         view.setVisible(false);
@@ -266,16 +260,14 @@ public class LoginDialog {
      */
     private void initComponents() {
 
-        view = new LoginView(null, false);
+        view = new LoginView();
         view.getRootPane().setDefaultButton(view.getLoginBtn());
         blockGlass = new BlockGlass();
         view.setGlassPane(blockGlass);
 
         setWindowTitle();
 
-        //
         // イベント接続を行う
-        //
         connect();
     }
 
@@ -341,7 +333,10 @@ public class LoginDialog {
      * モデルを表示する.
      */
     private void bindModelToView() {
+        // host
+        view.getHostField().setText(Project.getProjectStub().getHostAddress());
 
+        // user id, password
         if (principal.getUserId() != null && (!principal.getUserId().equals(""))) {
             view.getUserIdField().setText(principal.getUserId());
             view.getSavePasswordCbx().setSelected(Project.getProjectStub().isSavePassword());
@@ -357,13 +352,15 @@ public class LoginDialog {
      * モデル値を取得する.
      */
     private void bindViewToModel() {
+        // host
+        Project.getProjectStub().setHostAddress(view.getHostField().getText());
 
+        // user id
         String id = view.getUserIdField().getText().trim();
-
         if (!id.equals("")) {
             principal.setUserId(id);
         }
-
+        // save password
         Project.getProjectStub().setSavePassword(view.getSavePasswordCbx().isSelected());
     }
 
@@ -384,7 +381,7 @@ public class LoginDialog {
     /**
      * 設定ダイアログから通知を受ける.
      * 有効なプロジェクトでればユーザIDをフィールドに設定しパスワードフィールドにフォーカスする.
-     * @param valid
+     * @param valid Validity
      **/
     public void setNewParams(Boolean valid) {
         blockGlass.unblock();

@@ -75,7 +75,7 @@ public final class ProjectSettingDialog {
 
     /**
      * オープン時に表示する設定画面をセットする.
-     * @param startSettingName
+     * @param startSettingName 表示する設定画面の名前
      */
     public void setProject(String startSettingName) {
         this.startSettingName = startSettingName;
@@ -90,7 +90,7 @@ public final class ProjectSettingDialog {
             // モデルを得る
             allSettings = new ArrayList<>();
 
-            allSettings.add(new HostSettingPanel());
+            //allSettings.add(new HostSettingPanel());
             allSettings.add(new ClaimSettingPanel());
             allSettings.add(new KarteSettingPanel());
             allSettings.add(new CodeHelperSettingPanel());
@@ -311,7 +311,7 @@ public final class ProjectSettingDialog {
 
     /**
      * "apple.awt.brushMetalLook" の Container のバックグランドが黒くなるのを直す.
-     * @param component
+     * @param component 修正する Component
      */
     private void setContainerBackground(Component component) {
         if (component instanceof Container) {
@@ -327,7 +327,7 @@ public final class ProjectSettingDialog {
 
     /**
      * 一つの SettingPanel から state 情報が送られてきたら，全ての state を調べ直す.
-     * @param state
+     * @param state SettingPanelState
      */
     public void controlButtons(SettingPanelState state) {
         // 全てのカードをスキャンして OK ボタンをコントロールする
@@ -344,14 +344,7 @@ public final class ProjectSettingDialog {
     }
 
     public void doOk() {
-
-        Iterator<AbstractSettingPanel> iter = settingMap.values().iterator();
-        while (iter.hasNext()) {
-            AbstractSettingPanel p = iter.next();
-            logger.debug(p.getTitle());
-            p.save();
-        }
-
+        settingMap.values().forEach(AbstractSettingPanel::save);
         dialog.setVisible(false);
         dialog.dispose();
         notifyResult();

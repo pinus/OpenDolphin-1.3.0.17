@@ -96,7 +96,7 @@ public class CompletableJTextField extends JTextField
 
     /**
      * 補完した内容を保存する preferences をセットする.
-     * @param prefs
+     * @param prefs Preferences
      */
     public void setPreferences(Preferences prefs) {
         this.prefs = prefs;
@@ -156,7 +156,7 @@ public class CompletableJTextField extends JTextField
 
     /**
      * リストが選択されたときの処理.
-     * @param e
+     * @param e ListSelectionEvent
      */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
@@ -176,7 +176,7 @@ public class CompletableJTextField extends JTextField
 
     /**
      * フォーカスを取ったら補完ウインドウを出す.
-     * @param e
+     * @param e FocusEvent
      */
     @Override
     public void focusGained(FocusEvent e) {
@@ -185,7 +185,7 @@ public class CompletableJTextField extends JTextField
 
     /**
      * フォーカスを失ったら補完ウインドウは消す.
-     * @param e
+     * @param e FocusEvent
      */
     @Override
     public void focusLost(FocusEvent e) {
@@ -195,7 +195,7 @@ public class CompletableJTextField extends JTextField
     /**
      * Enter キー入力の動作.
      * リストが選択された状態でリターン＝リストの文字をフィールドにセット.
-     * @param e
+     * @param e ActionEvent
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -214,7 +214,7 @@ public class CompletableJTextField extends JTextField
     /**
      * キー入力を監視.
      * 上キー：選択を上へ，下キー：選択を下へ
-     * @param e
+     * @param e KeyEvent
      */
     @Override
     public void keyPressed(KeyEvent e) {
@@ -358,11 +358,11 @@ public class CompletableJTextField extends JTextField
         }
 
         private void showPopup() {
-            if (completionListModel.getSize() == 0) {
+            if (completionListModel.isEmpty()) {
                 listWindow.setVisible(false);
-                return;
+            } else if (isShowing()) {
+                showListWindow();
             }
-            showListWindow();
         }
 
         private void buildAndShowPopup() {
