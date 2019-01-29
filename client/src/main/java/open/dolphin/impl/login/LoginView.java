@@ -10,6 +10,7 @@ import java.util.prefs.Preferences;
 
 /**
  * LoginView.
+ * @author pns
  */
 public class LoginView extends JFrame {
     private static final int TEXT_LENGTH = 15; // letters
