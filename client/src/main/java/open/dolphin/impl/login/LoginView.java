@@ -106,9 +106,10 @@ public class LoginView extends JFrame {
         comp.setMaximumSize(new Dimension(500,TEXT_HEIGHT));
         comp.setMinimumSize(new Dimension(0,TEXT_HEIGHT));
 
-        Label label = new Label(labelText);
-        label.setAlignment(Label.RIGHT);
-        label.setBackground(new Color(0,0,0,0));
+        JLabel label = new JLabel(labelText);
+        label.setHorizontalAlignment(JLabel.RIGHT);
+        label.setPreferredSize(new Dimension(100, TEXT_HEIGHT+10));
+        label.setOpaque(false);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
