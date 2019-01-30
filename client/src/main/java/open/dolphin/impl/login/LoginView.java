@@ -89,6 +89,7 @@ public class LoginView extends JFrame {
         rightPanel.add(hostPanel);
         rightPanel.add(userPanel);
         rightPanel.add(passwordPanel);
+        rightPanel.add(Box.createVerticalStrut(13));
         rightPanel.add(savePasswordCbx);
         rightPanel.add(progressBar);
         rightPanel.add(buttonPanel);
