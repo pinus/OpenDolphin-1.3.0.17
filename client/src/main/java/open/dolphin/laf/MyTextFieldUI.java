@@ -1,9 +1,6 @@
 package open.dolphin.laf;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.JComponent;
@@ -21,6 +18,8 @@ public class MyTextFieldUI extends BasicTextFieldUI {
 
     public static final Color LIGHT_BLUE = new Color(152,194,241);
     public static final Color LIGHTER_GRAY = new Color(228, 228, 228);
+    private static final int DEFAULT_TEXT_HEIGHT = 28;
+
     private JTextField tf;
 
     public static ComponentUI createUI(JComponent c) {
@@ -31,6 +30,10 @@ public class MyTextFieldUI extends BasicTextFieldUI {
     public void installUI(JComponent c) {
         super.installUI(c);
         tf = (JTextField) c;
+
+        Dimension d = c.getPreferredSize();
+        c.setPreferredSize(new Dimension(d.width, DEFAULT_TEXT_HEIGHT));
+        c.setMinimumSize(new Dimension(0, DEFAULT_TEXT_HEIGHT));
 
         Border border = new EmptyBorder(0, 8, 0, 8);
         c.setBorder(border);

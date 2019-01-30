@@ -1,9 +1,6 @@
 package open.dolphin.laf;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.JComponent;
@@ -19,6 +16,7 @@ import javax.swing.plaf.basic.BasicPasswordFieldUI;
  */
 public class MyPasswordFieldUI extends BasicPasswordFieldUI {
 
+    private static final int DEFAULT_TEXT_HEIGHT = 28;
     private JPasswordField tf;
 
     public static ComponentUI createUI(JComponent c) {
@@ -29,6 +27,10 @@ public class MyPasswordFieldUI extends BasicPasswordFieldUI {
     public void installUI(JComponent c) {
         super.installUI(c);
         tf = (JPasswordField) c;
+
+        Dimension d = c.getPreferredSize();
+        c.setPreferredSize(new Dimension(d.width, DEFAULT_TEXT_HEIGHT));
+        c.setMinimumSize(new Dimension(0, DEFAULT_TEXT_HEIGHT));
 
         Border border = new EmptyBorder(0, 8, 0, 8);
         c.setBorder(border);
