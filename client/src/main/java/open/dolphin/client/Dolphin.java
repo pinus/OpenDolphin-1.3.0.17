@@ -14,12 +14,12 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
-import open.dolphin.helper.ComponentBoundsManager;
-import open.dolphin.helper.MenuSupport;
-import open.dolphin.helper.Task;
-import open.dolphin.helper.WindowSupport;
+
+import open.dolphin.helper.*;
 import open.dolphin.impl.claim.SendClaimImpl;
 import open.dolphin.impl.labrcv.LaboTestImporter;
 import open.dolphin.impl.login.LoginDialog;
@@ -285,8 +285,7 @@ public class Dolphin implements MainWindow {
             @Override
             protected Boolean doInBackground() throws Exception {
                 bootLogger.debug("stampTask doInBackground");
-                Boolean result = task.call();
-                return result;
+                return task.call();
             }
 
             @Override
@@ -324,7 +323,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * MainComponent を入れる TabbedPane を返す.
-     * @return
+     * @return PNSBadgeTabbedPane
      */
     public PNSBadgeTabbedPane getTabbedPane() {
         return tabbedPane;
@@ -490,7 +489,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * 環境設定の値によりサービスを制御する.
-     * @param valid
+     * @param valid ValidListener validity
      */
     private void controlService(boolean valid) {
         if (! valid) { return; }
@@ -532,14 +531,13 @@ public class Dolphin implements MainWindow {
         }
 
         if (messages.size() > 0) {
-            String[] msgArray = messages.toArray(new String[messages.size()]);
-            Object msg = msgArray;
+            String[] msgArray = messages.toArray(new String[0]);
             Component cmp = null;
             String title = ClientContext.getString("settingDialog.title");
 
             JOptionPane.showMessageDialog(
                     cmp,
-                    msg,
+                    msgArray,
                     ClientContext.getFrameTitle(title),
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -553,13 +551,11 @@ public class Dolphin implements MainWindow {
 
         // Chart を調べる
         List<ChartImpl> allChart = ChartImpl.getAllChart();
-        if (allChart != null && allChart.size() > 0) {
-            for (ChartImpl chart : allChart) {
-                if (chart.isDirty()) {
-                    dirty = true;
-                    dirtyChart = chart;
-                    break;
-                }
+        for (ChartImpl chart : allChart) {
+            if (chart.isDirty()) {
+                dirty = true;
+                dirtyChart = chart;
+                break;
             }
         }
         // 保存してないものがあればリターンする
@@ -568,14 +564,12 @@ public class Dolphin implements MainWindow {
         }
 
         // EditorFrameのチェックを行う
-        java.util.List<Chart> allEditorFrames = EditorFrame.getAllEditorFrames();
-        if (allEditorFrames != null && allEditorFrames.size() > 0) {
-            for (Chart chart : allEditorFrames) {
-                if (chart.isDirty()) {
-                    dirty = true;
-                    dirtyChart = chart;
-                    break;
-                }
+        List<Chart> allEditorFrames = EditorFrame.getAllEditorFrames();
+        for (Chart chart : allEditorFrames) {
+            if (chart.isDirty()) {
+                dirty = true;
+                dirtyChart = chart;
+                break;
             }
         }
 
@@ -669,8 +663,6 @@ public class Dolphin implements MainWindow {
 
     /**
      * 終了処理中にエラーが生じた場合の警告をダイアログを表示する.
-     * @param errorTask エラーが生じたタスク
-     * @return ユーザの選択値
      */
     private void doStoppingAlert() {
 
@@ -707,7 +699,7 @@ public class Dolphin implements MainWindow {
     private void exit() {
 
         if (providers != null) {
-            providers.values().forEach(service -> service.stop());
+            providers.values().forEach(MainService::stop);
         }
 
         if (windowSupport != null) {
@@ -991,7 +983,27 @@ public class Dolphin implements MainWindow {
         }
     }
 
+    /**
+     * AppleScriptEngine が使えるかどうかチェック.
+     * 特定のマシンでたまに AppleScript が使えなくて再起動が必要なことがある.
+     */
+    private static void checkAppleScript() {
+        String[] testCode = {
+                "tell Application \"Finder\"",
+                "open folder \"::\"",
+                "close folder \"::\"",
+                "end tell"
+        };
+        try {
+            new ScriptEngineManager().getEngineByName("AppleScriptEngine")
+                    .eval(String.join("\n", testCode));
+        } catch (ScriptException e) {
+            JOptionPane.showMessageDialog(null, "AppleScriptEngine error: " + e.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
+        checkAppleScript();
         Dolphin d = new Dolphin();
         d.initialize();
         d.startup();

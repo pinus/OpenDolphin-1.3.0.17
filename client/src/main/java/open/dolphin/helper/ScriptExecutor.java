@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -92,7 +91,7 @@ public class ScriptExecutor {
         OPEN_PATIENT_FOLDER_SCRIPT[1] = "";
         OPEN_PATIENT_FOLDER_SCRIPT[2] = "open " + sb.toString();
 
-        new AppleScriptExecutor(getCodeString(OPEN_PATIENT_FOLDER_SCRIPT)).start();
+        new AppleScriptExecutor(String.join("\n", OPEN_PATIENT_FOLDER_SCRIPT)).start();
     }
 
     /**
@@ -217,25 +216,11 @@ public class ScriptExecutor {
         return output;
     }
 
-    /**
-     * 複数ストリング配列に入ったスクリプトを１行スクリプトに変換.
-     * @param code Code lines in a string array
-     * @return Joined string
-     */
-    private static String getCodeString(String[] code) {
-        StringBuilder cmd = new StringBuilder();
-        for (String line : code) {
-            cmd.append(line);
-            cmd.append(CR);
-        }
-        return cmd.toString();
-    }
-
     public static void main (String[] arg) {
         // 7088 /Library/Input Methods/ATOK25.app/Contents/MacOS/ATOK25 -psn_0_512125
         // 1124 /usr/bin/codesign --display --entitlements - /Library/Input Methods/ATOK25.app
 
-        ScriptExecutor.openPatientFolder("/Volumes/Documents/000001/");
+        ScriptExecutor.openPatientFolder("/Volumes/Documents/000001-010000/000001-001000/000001");
         //ExecuteScript.quickLook("/Volumes/documents/008113/お返事2011-01-11.pdf");
         //ExecuteScript.restartAtok24();
         //System.out.println(ScriptExecutor.getAtok24MemSize());
