@@ -35,6 +35,7 @@ import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.SettingForMac;
+import open.dolphin.util.GUIDGenerator;
 import org.apache.log4j.Logger;
 
 /**
@@ -988,10 +989,15 @@ public class Dolphin implements MainWindow {
      * 特定のマシンでたまに AppleScript が使えなくて再起動が必要なことがある.
      */
     private static void checkAppleScript() {
+        String guid = GUIDGenerator.generate(Dolphin.class);
         String[] testCode = {
                 "tell Application \"Finder\"",
-                "open folder \"::\"",
-                "close folder \"::\"",
+                "set uid to \"" + guid + "\"",
+                "set homeFolder to path to home folder",
+                "if not exists folder uid in homeFolder then",
+                "make new folder at homeFolder with properties {name:uid}",
+                "end if",
+                "delete folder uid in folder homeFolder",
                 "end tell"
         };
         try {
