@@ -992,12 +992,12 @@ public class Dolphin implements MainWindow {
         String guid = GUIDGenerator.generate(Dolphin.class);
         String[] testCode = {
                 "tell Application \"Finder\"",
-                "set uid to \"" + guid + "\"",
-                "set homeFolder to path to home folder",
-                "if not exists folder uid in homeFolder then",
-                "make new folder at homeFolder with properties {name:uid}",
-                "end if",
-                "delete folder uid in folder homeFolder",
+                    "set uid to \"" + guid + "\"",
+                    "set homeFolder to a reference to folder \"::Library\"",
+                    "if not exists folder uid in homeFolder then",
+                        "make new folder at homeFolder with properties {name:uid}",
+                    "end if",
+                    "do shell script \"rmdir ~/Library/\" & uid",
                 "end tell"
         };
         try {
