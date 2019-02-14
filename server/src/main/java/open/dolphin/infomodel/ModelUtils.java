@@ -6,16 +6,10 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -89,7 +83,7 @@ public class ModelUtils implements IInfoModel {
      * @return nengoBirthday S50-01-01
      */
     public static String toNengo(String mmlBirthday) {
-        return GengoUtil.toGengo(mmlBirthday);
+        return Gengo.toGengo(mmlBirthday);
     }
 
     /**
@@ -98,15 +92,7 @@ public class ModelUtils implements IInfoModel {
      * @return mmlBirthday 2010-07-26
      */
     public static String toSeireki(String nengoBirthday) {
-        return GengoUtil.toSeireki(nengoBirthday);
-    }
-
-    /*
-     * against the naming conventions
-     * REMOVE ME SOMEDAY
-     */
-    public static String OrcaDateToNengo(String orcaBirthday) {
-        return orcaDateToNengo(orcaBirthday);
+        return Gengo.toSeireki(nengoBirthday);
     }
 
     /**
@@ -116,7 +102,7 @@ public class ModelUtils implements IInfoModel {
      */
     public static String orcaDateToNengo(String orcaBirthday) {
         //元号
-        String nengo = GengoUtil.numberToString(orcaBirthday.substring(0, 1));
+        String nengo = Gengo.numberToString(orcaBirthday.substring(0, 1));
         //年
         String y = orcaBirthday.substring(1, 3);
         String m = orcaBirthday.substring(3, 5);
@@ -124,6 +110,13 @@ public class ModelUtils implements IInfoModel {
 
         return nengo.toLowerCase() + y + "-" + m + "-" + d;
     }
+
+    /**
+     * 年号アルファベットを漢字に変換.
+     * @param alphabet [M,T,S,H,...]
+     * @return 元号漢字 [㍾,㍽,㍼,㍻,...]
+     */
+    public static String nengoAlphabetToKanji(String alphabet) { return Gengo.toKanji(alphabet); }
 
     /**
      * 年齢を作る.
@@ -395,14 +388,23 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
-     * GengoUtil 元号パッケージ.
+     * Gengo 元号Enum.
      */
-    private static class GengoUtil {
-        private static final String MEIJI = "M";
-        private static final String TAISHO = "T";
-        private static final String SHOWA = "S";
-        private static final String HEISEI = "H";
-        private static final String ANCHO = "A";
+    private enum Gengo {
+        MEIJI("M", "㍾"),
+        TAISHO("T", "㍽"),
+        SHOWA("S", "㍼"),
+        HEISEI("H", String.valueOf('\u337b')), // ㍻
+        ANCHO("A", String.valueOf('\u32ff'));
+
+        String alphabet, kanji;
+
+        Gengo(String alphabet, String kanji) {
+            this.alphabet = alphabet;
+            this.kanji = kanji;
+        }
+        public String alphabet() { return alphabet; }
+        public String kanji() { return kanji; }
 
         /**
          * 西暦 -> 元号変換.
@@ -413,7 +415,7 @@ public class ModelUtils implements IInfoModel {
             int year;
             int month;
             int day;
-            String gengo;
+            Gengo gengo;
 
             year = Integer.valueOf(mmlBirthday.substring(0,4));
             month = Integer.valueOf(mmlBirthday.substring(5,7));
@@ -481,7 +483,7 @@ public class ModelUtils implements IInfoModel {
                 gengo = MEIJI; year -= 1867;
             }
 
-            return String.format("%s%02d-%02d-%02d", gengo, year, month, day);
+            return String.format("%s%02d-%02d-%02d", gengo.alphabet(), year, month, day);
         }
 
         /**
@@ -499,25 +501,16 @@ public class ModelUtils implements IInfoModel {
                 int month = Integer.valueOf(st.nextToken());
                 int date = Integer.valueOf(st.nextToken());
 
-                switch (gengo) {
-                    case MEIJI:
-                        year += 1867;
-                        break;
-                    case TAISHO:
-                        year += 1911;
-                        break;
-                    case SHOWA:
-                        year += 1925;
-                        break;
-                    case HEISEI:
-                        year += 1988;
-                        break;
-                    case ANCHO:
-                        year += 2018;
-                        break;
-                    // 西暦で入ってきた場合
-                    default:
-                        year = Integer.valueOf(yearStr);
+                if (gengo.equals(MEIJI.alphabet())) {
+                    year += 1867;
+                } else if (gengo.equals(TAISHO.alphabet())) {
+                    year += 1911;
+                } else if (gengo.equals(SHOWA.alphabet())) {
+                    year += 1925;
+                } else if (gengo.equals(HEISEI.alphabet())) {
+                    year += 1988;
+                } else {
+                    year += 2018;
                 }
 
                 return String.format("%d-%02d-%02d", year, month, date);
@@ -530,18 +523,22 @@ public class ModelUtils implements IInfoModel {
 
         /**
          * Orca 型式の数字→元号変換.
-         * @param number Orca で元号を表す数字
-         * @return 元号を表すアルファベット
+         * @param number Orca で元号を表す数字 [1,2,3,4,...]
+         * @return 元号を表すアルファベット [M,T,S,H,...]
          */
         public static String numberToString(String number) {
-            switch (number) {
-                case "1": return MEIJI;
-                case "2": return TAISHO;
-                case "3": return SHOWA;
-                case "4": return HEISEI;
-                case "5": return ANCHO;
-                default: return "U";
-            }
+            int num = Integer.valueOf(number) - 1;
+            if (num >= values().length) { return "U"; }
+            else return (values()[num].alphabet());
+        }
+
+        /**
+         * 年号アルファベットを漢字に変換.
+         * @param alphabet [M,T,S,H,...]
+         * @return 元号漢字 [㍾,㍽,㍼,㍻,...]
+         */
+        public static String toKanji(String alphabet) {
+            return Arrays.stream(values()).filter(value -> value.alphabet().equals(alphabet)).findAny().get().kanji();
         }
     }
 
@@ -552,5 +549,7 @@ public class ModelUtils implements IInfoModel {
         System.out.println(toSeireki("a01-05-01"));
         System.out.println(orcaDateToNengo("4300430"));
         System.out.println(orcaDateToNengo("5010501"));
+        System.out.println(nengoAlphabetToKanji("H"));
+        System.out.println(nengoAlphabetToKanji("A"));
     }
 }

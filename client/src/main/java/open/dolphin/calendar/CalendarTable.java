@@ -291,8 +291,7 @@ public class CalendarTable extends JTable {
 
         String nengoAlphabet = String.valueOf(split[0].charAt(0));
         int year = Integer.valueOf(split[0].substring(1));
-
-        String nengo = nengoAlphabet.replace('H', '㍻').replace('S', '㍼').replace('T', '㍽').replace('M', '㍾');
+        String nengo = ModelUtils.nengoAlphabetToKanji(nengoAlphabet);
 
         return String.format("%s%2d", nengo, year);
     }
