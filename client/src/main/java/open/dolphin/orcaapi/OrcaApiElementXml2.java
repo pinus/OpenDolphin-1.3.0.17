@@ -86,7 +86,7 @@ public class OrcaApiElementXml2 {
                 addContent(new Element("HealthInsuredPerson_Symbol").setAttribute("type", "string").addContent(personSymbol));
                 addContent(new Element("HealthInsuredPerson_Number").setAttribute("type", "string").addContent(personNumber));
                 addContent(new Element("RelationToInsuredPerson").setAttribute("type", "string").addContent("true".equals(model.getFamilyClass())? "1" : "2"));
-                addContent(new Element("Certificate_IssuedDate").setAttribute("type", "string").addContent(model.getStartDate()));
+                addContent(new Element("Certificate_StartDate").setAttribute("type", "string").addContent(model.getStartDate()));
                 addContent(new Element("Certificate_ExpiredDate").setAttribute("type", "string").addContent(model.getExpiredDate()));
             }
 

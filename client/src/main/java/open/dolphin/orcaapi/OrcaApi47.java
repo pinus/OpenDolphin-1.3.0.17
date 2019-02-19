@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
+
+import open.dolphin.JsonConverter;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ClientContext;
 import open.dolphin.infomodel.DocumentModel;
