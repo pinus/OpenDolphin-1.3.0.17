@@ -11,6 +11,7 @@ import java.util.Locale;
 
 /**
  * Script でいろいろする.
+ *
  * @author pns
  */
 public class ScriptExecutor {
@@ -19,28 +20,28 @@ public class ScriptExecutor {
     private static final String QUOTE = "\"";
 
     private static final String[] OPEN_PATIENT_FOLDER_SCRIPT = {
-        "tell application \"Finder\"",
-        "   set targetFolder to argv as POSIX file",                    // Folder の時は POSIX から Mac 形式に変換が必要 (ファイルは無変換でもOK）
-        "   open targetFolder",
-        "   set displayBounds to bounds of window of desktop",          // 画面全体の大きさ x1, y1, x2, y2 の順番
-        "   set win to Finder window 1",
-        "   set winBounds to bounds of win",
-        "   set item 1 of winBounds to (item 3 of displayBounds)/3*2",  // x1 = 全体の 2/3
-        "   set item 2 of winBounds to 20",                             // y1 = 一番上から20ドット下
-        "   set item 3 of winBounds to (item 3 of displayBounds)-50",   // x2 = 右端から 50ドット左
-        "   set item 4 of winBounds to (item 4 of displayBounds)/2",    // y2 = 全体の半分
-        "   set bounds of win to winBounds",
-        "end tell",
+            "tell application \"Finder\"",
+            "   set targetFolder to argv as POSIX file",                    // Folder の時は POSIX から Mac 形式に変換が必要 (ファイルは無変換でもOK）
+            "   open targetFolder",
+            "   set displayBounds to bounds of window of desktop",          // 画面全体の大きさ x1, y1, x2, y2 の順番
+            "   set win to Finder window 1",
+            "   set winBounds to bounds of win",
+            "   set item 1 of winBounds to (item 3 of displayBounds)/3*2",  // x1 = 全体の 2/3
+            "   set item 2 of winBounds to 20",                             // y1 = 一番上から20ドット下
+            "   set item 3 of winBounds to (item 3 of displayBounds)-50",   // x2 = 右端から 50ドット左
+            "   set item 4 of winBounds to (item 4 of displayBounds)/2",    // y2 = 全体の半分
+            "   set bounds of win to winBounds",
+            "end tell",
     };
 
     private static final String DISPLAY_NOTIFICATION_SCRIPT =
-        "display notification \"%s\" with title \"%s\" subtitle \"%s\"";
+            "display notification \"%s\" with title \"%s\" subtitle \"%s\"";
 
     private static final String IME_ON_SCRIPT =
-        "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 104";
+            "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 104";
 
     private static final String IME_OFF_SCRIPT =
-        "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 102";
+            "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 102";
 
     //private static final String[] GET_ATOK_MEM_SIZE_SCRIPT = {"/bin/sh", "-c",
     //    //"ps -A -o rss,command | grep ATOK24.app | grep -v grep | sed -e \'s/\\/.*$//\' -e \'s/ //g\'"
@@ -59,39 +60,26 @@ public class ScriptExecutor {
 
     /**
      * 通知センターに通知を表示する.
-     * @param message Message
-     * @param title Title
+     *
+     * @param message  Message
+     * @param title    Title
      * @param subtitle Subtitle
      */
     public static void displayNotification(String message, String title, String subtitle) {
         String script = String.format(DISPLAY_NOTIFICATION_SCRIPT, message, title, subtitle);
         //new AppleScriptExecutor(script).start(); // これだとダメ
-        executeShellScript( new String[] {"osascript", "-e", script});
+        executeShellScript(new String[]{"osascript", "-e", script});
     }
 
     /**
      * 情報フォルダを開く.
+     *
      * @param path POSIX path
      */
     public static void openPatientFolder(final String path) {
-        // スクリプトに path を設定 → POSIX file がエラーを出すようになった 2018-12-14
-        //OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to \""+ path + "\" as POSIX file";
-        //new AppleScriptExecutor(getCodeString(OPEN_PATIENT_FOLDER_SCRIPT)).start();
-
-        // convert POSIX path to folder "folder1" of folder "folder2" ... of disk "disk"
-        String[] folders = path.replace("/Volumes/", "").split("/");
-        StringBuilder sb = new StringBuilder();
-        int len = folders.length - 1;
-        sb.append("folder ").append(QUOTE).append(folders[len]).append(QUOTE);
-        for (int i=len-1; i>=1; i--) {
-            sb.append(" of folder ").append(QUOTE).append(folders[i]).append(QUOTE);
-        }
-        sb.append(" of disk ").append(QUOTE).append(folders[0]).append(QUOTE);
-
-        OPEN_PATIENT_FOLDER_SCRIPT[1] = "";
-        OPEN_PATIENT_FOLDER_SCRIPT[2] = "open " + sb.toString();
-
-        new AppleScriptExecutor(String.join("\n", OPEN_PATIENT_FOLDER_SCRIPT)).start();
+        // スクリプトに path を設定
+        OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to " + QUOTE + path + QUOTE + " as POSIX file";
+        new AppleScriptExecutor(String.join(CR, OPEN_PATIENT_FOLDER_SCRIPT)).start();
     }
 
     /**
@@ -110,6 +98,7 @@ public class ScriptExecutor {
 
     /**
      * window の InputMethodContext で U.S. になるまで待つ ImeOff.
+     *
      * @param w Window
      */
     public static void setImeOff(Window w) {
@@ -136,6 +125,7 @@ public class ScriptExecutor {
 
     /**
      * 現在の ime モードが U.S. かどうかを返す.
+     *
      * @param w InputContext を調べる JFrame or JDialog
      * @return true if Locale.US
      */
@@ -168,6 +158,7 @@ public class ScriptExecutor {
 
     /**
      * 選択ファイルを QuickLook する.
+     *
      * @param path POSIX Path to target
      */
     public static void quickLook(String path) {
@@ -177,10 +168,11 @@ public class ScriptExecutor {
 
     /**
      * shell command を実行する.
+     *
      * @param command Shell commands in a string array
      */
     private static void executeShellScript(String[] command) {
-        Thread t = new Thread(()-> {
+        Thread t = new Thread(() -> {
             try {
                 Runtime.getRuntime().exec(command).waitFor();
             } catch (IOException | InterruptedException ex) {
@@ -192,6 +184,7 @@ public class ScriptExecutor {
 
     /**
      * shell command を実行して，標準出力を返す.
+     *
      * @param command Commands in a string array
      * @return outPut Result strings in List
      */
@@ -216,7 +209,7 @@ public class ScriptExecutor {
         return output;
     }
 
-    public static void main (String[] arg) {
+    public static void main(String[] arg) {
         // 7088 /Library/Input Methods/ATOK25.app/Contents/MacOS/ATOK25 -psn_0_512125
         // 1124 /usr/bin/codesign --display --entitlements - /Library/Input Methods/ATOK25.app
 

@@ -9,11 +9,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.*;
@@ -35,7 +40,6 @@ import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.SettingForMac;
-import open.dolphin.util.GUIDGenerator;
 import org.apache.log4j.Logger;
 
 /**
@@ -83,18 +87,6 @@ public class Dolphin implements MainWindow {
     private void initialize() {
 
         SettingForMac.set(this);
-
-        // コンソールのリダイレクト
-        if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
-            try {
-                String logName = System.getProperty("user.dir") + "/console.log";
-                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
-                System.setOut(ps);
-                System.setErr(ps);
-                System.out.println("Console redirected to " + logName);
-            } catch (FileNotFoundException ex) {
-            }
-        }
 
         // ClientContext を生成する
         ClientContextStub stub = new ClientContextStub();
@@ -985,31 +977,48 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * AppleScriptEngine が使えるかどうかチェック.
-     * 特定のマシンでたまに AppleScript が使えなくて再起動が必要なことがある.
+     * AppleScript で startup.script を起動する.
      */
-    private static void checkAppleScript() {
-        String guid = GUIDGenerator.generate(Dolphin.class);
-        String[] testCode = {
-                "tell Application \"Finder\"",
-                    "set uid to \"" + guid + "\"",
-                    "set homeFolder to a reference to folder \"::Library\"",
-                    "if not exists folder uid in homeFolder then",
-                        "make new folder at homeFolder with properties {name:uid}",
-                    "end if",
-                    "do shell script \"rmdir ~/Library/\" & uid",
-                "end tell"
-        };
-        try {
-            new ScriptEngineManager().getEngineByName("AppleScriptEngine")
-                    .eval(String.join("\n", testCode));
-        } catch (ScriptException e) {
-            JOptionPane.showMessageDialog(null, "AppleScriptEngine error: " + e.getMessage());
+    private static void runStartupScript() {
+        Path path = Paths.get("startup.script");
+
+        if (Files.exists(path)) {
+            try {
+                String testCode = Files.readAllLines(path).stream().collect(Collectors.joining("\n"));
+                System.out.println(testCode);
+
+                new ScriptEngineManager().getEngineByName("AppleScriptEngine").eval(testCode);
+
+            } catch (IOException | ScriptException e) {
+                JOptionPane.showMessageDialog(null, "startup script error: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * システムの出力を console.log にリダイレクトする.
+     */
+    private static void redirectConsole() {
+        if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
+            try {
+                String logName = System.getProperty("user.dir") + "/console.log";
+                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
+                System.setOut(ps);
+                System.setErr(ps);
+                System.out.println("Console redirected to " + logName);
+            } catch (FileNotFoundException ex) {
+            }
         }
     }
 
     public static void main(String[] args) {
-        checkAppleScript();
+        // コンソールのリダイレクト
+        redirectConsole();
+
+        // startup script の実行
+        runStartupScript();
+
+        // Dolphin 本体の実行
         Dolphin d = new Dolphin();
         d.initialize();
         d.startup();
