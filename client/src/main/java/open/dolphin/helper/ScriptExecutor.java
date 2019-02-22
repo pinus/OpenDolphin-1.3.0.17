@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -16,7 +17,6 @@ import java.util.Locale;
  */
 public class ScriptExecutor {
 
-    private static final String CR = "\n";
     private static final String QUOTE = "\"";
 
     private static final String[] OPEN_PATIENT_FOLDER_SCRIPT = {
@@ -37,11 +37,11 @@ public class ScriptExecutor {
     private static final String DISPLAY_NOTIFICATION_SCRIPT =
             "display notification \"%s\" with title \"%s\" subtitle \"%s\"";
 
-    private static final String IME_ON_SCRIPT =
-            "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 104";
+    private static final String[] IME_ON_SCRIPT = {
+            "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 104" };
 
-    private static final String IME_OFF_SCRIPT =
-            "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 102";
+    private static final String[] IME_OFF_SCRIPT = {
+            "tell application \"System Events\" to tell process \"WhateverItIs\" to key code 102" };
 
     //private static final String[] GET_ATOK_MEM_SIZE_SCRIPT = {"/bin/sh", "-c",
     //    //"ps -A -o rss,command | grep ATOK24.app | grep -v grep | sed -e \'s/\\/.*$//\' -e \'s/ //g\'"
@@ -67,7 +67,6 @@ public class ScriptExecutor {
      */
     public static void displayNotification(String message, String title, String subtitle) {
         String script = String.format(DISPLAY_NOTIFICATION_SCRIPT, message, title, subtitle);
-        //new AppleScriptExecutor(script).start(); // これだとダメ
         executeShellScript(new String[]{"osascript", "-e", script});
     }
 
@@ -79,21 +78,21 @@ public class ScriptExecutor {
     public static void openPatientFolder(final String path) {
         // スクリプトに path を設定
         OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to " + QUOTE + path + QUOTE + " as POSIX file";
-        new AppleScriptExecutor(String.join(CR, OPEN_PATIENT_FOLDER_SCRIPT)).start();
+        executeAppleScript(OPEN_PATIENT_FOLDER_SCRIPT);
     }
 
     /**
      * かなキー（keycode 104）を System Event に送る.
      */
     public static void setImeOn() {
-        new AppleScriptExecutor(IME_ON_SCRIPT).start();
+        executeAppleScript(IME_ON_SCRIPT);
     }
 
     /**
      * 英数キー（keycode 102）を System Event に送る.
      */
     public static void setImeOff() {
-        new AppleScriptExecutor(IME_OFF_SCRIPT).start();
+        executeAppleScript(IME_OFF_SCRIPT);
     }
 
     /**
@@ -209,15 +208,30 @@ public class ScriptExecutor {
         return output;
     }
 
+    /**
+     * AppleScript を osascript で実行する.
+     *
+     * @param script Arrays of script
+     */
+    public static void executeAppleScript(String[] script) {
+        List<String> codes = new ArrayList<>();
+        codes.add("osascript");
+        Arrays.stream(script).forEach(line -> {
+            codes.add("-e");
+            codes.add(line);
+        });
+        executeShellScript(codes.toArray(new String[0]));
+    }
+
     public static void main(String[] arg) {
         // 7088 /Library/Input Methods/ATOK25.app/Contents/MacOS/ATOK25 -psn_0_512125
         // 1124 /usr/bin/codesign --display --entitlements - /Library/Input Methods/ATOK25.app
 
-        ScriptExecutor.openPatientFolder("/Volumes/Documents/000001-010000/000001-001000/000001");
-        //ExecuteScript.quickLook("/Volumes/documents/008113/お返事2011-01-11.pdf");
+        //ScriptExecutor.openPatientFolder("/Volumes/Documents/000001-010000/000001-001000/000001");
+        //ScriptExecutor.quickLook("/Volumes/documents/000001-010000/000001-001000/000001/2007年12月16日14時05分33秒.pdf");
         //ExecuteScript.restartAtok24();
         //System.out.println(ScriptExecutor.getAtok24MemSize());
-        //ExecuteScript.setImeOff();
-        //ScriptExecutor.displayNotification("message", "title", "subtitle");
+        //ScriptExecutor.setImeOff();
+        ScriptExecutor.displayNotification("message", "title", "subtitle");
     }
 }

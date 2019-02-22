@@ -984,12 +984,10 @@ public class Dolphin implements MainWindow {
 
         if (Files.exists(path)) {
             try {
-                String testCode = Files.readAllLines(path).stream().collect(Collectors.joining("\n"));
-                System.out.println(testCode);
+                List<String> script = Files.readAllLines(path);
+                ScriptExecutor.executeAppleScript(script.toArray(new String[0]));
 
-                new ScriptEngineManager().getEngineByName("AppleScriptEngine").eval(testCode);
-
-            } catch (IOException | ScriptException e) {
+            } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "startup script error: " + e.getMessage());
             }
         }
