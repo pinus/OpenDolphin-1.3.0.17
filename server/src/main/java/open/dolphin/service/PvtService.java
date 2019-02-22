@@ -39,7 +39,6 @@ public interface PvtService {
      * @param facilityId
      * @return
      */
-    @PermitAll
     @POST
     public int addPvt(PatientVisitModel pvt, String facilityId);
 

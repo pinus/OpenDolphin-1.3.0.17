@@ -14,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
  */
 @Singleton
 @Startup
-
+@RunAs("user")
 public class PvtServer {
 
     private static final int DEFAULT_PORT = 5002;
