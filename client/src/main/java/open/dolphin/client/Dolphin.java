@@ -18,9 +18,6 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 
@@ -121,6 +118,9 @@ public class Dolphin implements MainWindow {
 
         // ロガーを取得する
         bootLogger = ClientContext.getBootLogger();
+
+        // ドキュメントフォルダの有無をチェック
+        checkDocumentFolder();
     }
 
     private void startup() {
@@ -977,20 +977,19 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * AppleScript で startup.script を起動する.
+     * DocumentFolder をチェック.
      */
-    private static void runStartupScript() {
-        Path path = Paths.get("startup.script");
+    private void checkDocumentFolder() {
+        Path path = Paths.get(ClientContext.getDocumentDirectory());
+        bootLogger.info("document folder = " + path);
 
-        if (Files.exists(path)) {
-            try {
-                List<String> script = Files.readAllLines(path);
-                ScriptExecutor.executeAppleScript(script.toArray(new String[0]));
-
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "startup script error: " + e.getMessage());
+        try {
+            if (Files.list(path).count() != 0) {
+                return;
             }
+        } catch (IOException e) {
         }
+        JOptionPane.showMessageDialog(null, "文書フォルダが見つかりません", "", JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -1012,9 +1011,6 @@ public class Dolphin implements MainWindow {
     public static void main(String[] args) {
         // コンソールのリダイレクト
         redirectConsole();
-
-        // startup script の実行
-        runStartupScript();
 
         // Dolphin 本体の実行
         Dolphin d = new Dolphin();

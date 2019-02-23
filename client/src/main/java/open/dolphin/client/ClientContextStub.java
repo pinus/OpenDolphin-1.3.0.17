@@ -51,6 +51,8 @@ public final class ClientContextStub {
     private Logger mmlLogger;
     private HashMap<String, Color> eventColorTable;
 
+    private final String DOCUMENT_LOCATION = isMac()? "/Volumes/documents/" : "Z:\\";
+
     /**
      * ClientContextStub オブジェクトを生成する.
      */
@@ -117,6 +119,8 @@ public final class ClientContextStub {
         Velocity.init();
         bootLogger.info("Velocity を初期化しました");
     }
+
+    public String getDocumentDirectory() { return DOCUMENT_LOCATION; }
 
     public ClassLoader getPluginClassLoader() {
         return pluginClassLoader;
