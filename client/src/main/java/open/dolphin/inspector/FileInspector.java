@@ -18,6 +18,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
 import open.dolphin.event.BadgeEvent;
@@ -29,13 +30,14 @@ import org.apache.log4j.Logger;
 
 /**
  * 関連文書ファイルを表示するクラス.
+ *
  * @author pns
  */
 public class FileInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.関連文書;
 
     private static final boolean IS_MAC = ClientContext.isMac();
-    private static final String DEFAULT_DOCUMENT_FOLDER = IS_MAC? "/Volumes/documents/" : "Z:\\";
+    private static final String DEFAULT_DOCUMENT_FOLDER = IS_MAC ? "/Volumes/documents/" : "Z:\\";
     private static final FileFilter FF_REGULAR = file -> !file.getName().startsWith(".");
 
     private JPanel filePanel;
@@ -49,11 +51,11 @@ public class FileInspector implements IInspector {
     private final Logger logger;
 
     /**
-     * MemoInspectorオブジェクトを生成する.
-     * @param parent
+     * FileInspectorオブジェクトを生成する.
+     *
+     * @param parent PatientInspector
      */
     public FileInspector(PatientInspector parent) {
-
         context = parent.getContext();
         logger = ClientContext.getBootLogger();
         initComponents();
@@ -70,18 +72,19 @@ public class FileInspector implements IInspector {
      *   010001-020000/010001-011000/${id}
      *         :
      * </pre>
-     * @param id
-     * @return
+     *
+     * @param id PatientId "000001"
+     * @return DocumentPath
      */
     public static String getDocumentPath(String id) {
         // id の範囲によって subfolder を決める
         int index10k = (Integer.parseInt(id) - 1) / 10000; // 上位2桁
         int index1k = (Integer.parseInt(id) - 1) / 1000; // 上位3桁
 
-        String formatStr = IS_MAC?
+        String formatStr = IS_MAC ?
                 "%02d0001-%02d0000/%03d001-%03d000/" : "%02d0001-%02d0000\\%03d001-%03d000\\";
 
-        String subfolder = String.format(formatStr, index10k, (index10k+1), index1k, (index1k+1));
+        String subfolder = String.format(formatStr, index10k, (index10k + 1), index1k, (index1k + 1));
 
         return DEFAULT_DOCUMENT_FOLDER + subfolder + id;
     }
@@ -116,6 +119,7 @@ public class FileInspector implements IInspector {
 
     /**
      * PaientInspector にレイアウト用のパネルを返す.
+     *
      * @return レイアウトパネル
      */
     @Override
@@ -138,9 +142,11 @@ public class FileInspector implements IInspector {
      */
     @Override
     public void update() {
-        File infoFolder = new File (getDocumentPath(context.getKarte().getPatient().getPatientId()));
+        File infoFolder = new File(getDocumentPath(context.getKarte().getPatient().getPatientId()));
         File[] files = infoFolder.listFiles(FF_REGULAR);
-        if (files == null) { return; }
+        if (files == null) {
+            return;
+        }
 
         Arrays.sort(files, new FileNameComparator());
         Arrays.asList(files).forEach(file -> model.addElement(file));
@@ -163,11 +169,13 @@ public class FileInspector implements IInspector {
         public void mouseClicked(MouseEvent e) {
             Point mousePoint = e.getPoint();
             int index = list.locationToIndex(mousePoint);
-            if (index == -1) { return; }
+            if (index == -1) {
+                return;
+            }
 
             Point indexPoint = list.indexToLocation(index);
             // あまりマウスが離れたところをクリックしてたらクリアする
-            if (indexPoint != null && Math.abs((indexPoint.y+6) - mousePoint.y) > 12) {
+            if (indexPoint != null && Math.abs((indexPoint.y + 6) - mousePoint.y) > 12) {
                 list.clearSelection();
             } else {
                 String path = model.getElementAt(index).getPath();
@@ -181,11 +189,11 @@ public class FileInspector implements IInspector {
 
         @Override
         public Component getListCellRendererComponent(
-            JList list,              // the list
-            Object value,            // value to display
-            int index,               // cell index
-            boolean isSelected,      // is the cell selected
-            boolean cellHasFocus)  { // does the cell have focus
+                JList list,              // the list
+                Object value,            // value to display
+                int index,               // cell index
+                boolean isSelected,      // is the cell selected
+                boolean cellHasFocus) { // does the cell have focus
 
             if (isSelected) {
                 if (list.isFocusOwner()) {
@@ -193,14 +201,14 @@ public class FileInspector implements IInspector {
                     setBackground(list.getSelectionBackground());
                 } else {
                     setForeground(list.getForeground());
-                    setBackground((Color)list.getClientProperty("JList.backgroundOffFocus"));
+                    setBackground((Color) list.getClientProperty("JList.backgroundOffFocus"));
                 }
             } else {
                 setForeground(list.getForeground());
                 setBackground(list.getBackground());
             }
 
-            String fileName = ((File)value).getName();
+            String fileName = ((File) value).getName();
             setText(" " + fileName);
             //this.setText(" " + fileName + " " + ModelUtils.getDateAsString(new java.util.Date(((File)value).lastModified())));
             return this;
@@ -243,20 +251,23 @@ public class FileInspector implements IInspector {
         }
 
         /**
-         * 先頭に 0 をつけて，桁数を n 桁にする
-         * @param str
-         * @param n
-         * @return
+         * 先頭に 0 をつけて，桁数を n 桁にする.
+         *
+         * @param str target
+         * @param n   digit count
+         * @return product
          */
         private String adjustDigit(String str, int n) {
             StringBuilder sb = new StringBuilder();
-            for(int i=n; i> str.length(); i--) { sb.append('0'); }
+            for (int i = n; i > str.length(); i--) {
+                sb.append('0');
+            }
             sb.append(str);
             return sb.toString();
         }
     }
 
-    public static void main (String[] arg) {
+    public static void main(String[] arg) {
         System.out.println(getDocumentPath("000125"));
     }
 }
