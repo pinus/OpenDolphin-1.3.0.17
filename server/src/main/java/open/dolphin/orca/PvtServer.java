@@ -29,9 +29,9 @@ import org.apache.log4j.Logger;
  * transferred from version 2.2
  * @author pns
  */
-@Singleton
-@Startup
-@RunAs("user")
+//@Singleton
+//@Startup
+//@RunAs("user")
 public class PvtServer {
 
     private static final int DEFAULT_PORT = 5002;

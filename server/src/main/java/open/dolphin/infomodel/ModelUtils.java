@@ -1,5 +1,7 @@
 package open.dolphin.infomodel;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
  * ModelUtils.
  *
  * @author Minagawa,Kazushi
+ * @author pns
  */
 public class ModelUtils implements IInfoModel {
     private static final long serialVersionUID = 1L;
@@ -242,6 +245,16 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
+     * ORCA日付（20120401）を MMLフォーマット（2012-04-01）に変換.
+     * @param orcaDateString ORCA日付
+     * @return MML日付
+     */
+    public static String toDolphinDateString(String orcaDateString) {
+        if (orcaDateString == null || ! orcaDateString.matches("[0-9]+")) { return null; }
+        return String.join("-", orcaDateString.substring(0,4), orcaDateString.substring(4,6), orcaDateString.substring(6,8));
+    }
+
+    /**
      * male -> 男　変換.
      * @param gender male/female
      * @return 男/女
@@ -307,6 +320,49 @@ public class ModelUtils implements IInfoModel {
         ret[2] = sdf.format(gc.getTime());
 
         return ret;
+    }
+
+    /**
+     * ORCA転帰を Dolphin転帰に変換.
+     * @param orcaOutcome ORCA転帰 (DAO=1,2,3,8 or API=F,D,C,S)
+     * @return Dolphin転帰
+     */
+    public static DiagnosisOutcomeModel toDolphinOutcome(String orcaOutcome) {
+        if (Objects.nonNull(orcaOutcome)) {
+            switch (orcaOutcome) {
+                // 数字=DAO, 文字=API
+                case "1":
+                case "F":
+                    return DiagnosisOutcome.fullyRecovered.model(); // 治癒
+                case "2":
+                case "D":
+                    return DiagnosisOutcome.end.model(); // 死亡→終了に変換
+                case "3":
+                case "C":
+                    return DiagnosisOutcome.pause.model(); // 中止
+                case "8":
+                case "S":
+                    return DiagnosisOutcome.pause.model(); // 移行→中止に変換
+            }
+        }
+        return DiagnosisOutcome.none.model();
+    }
+
+    /**
+     * Dolphin転帰を ORCA転帰に変換.
+     * @param outcome DiagnosisOutcomeModel
+     * @return ORCA転帰
+     */
+    public static String toOrcaOutcome(DiagnosisOutcomeModel outcome) {
+        if (Objects.nonNull(outcome)) {
+            if (outcome.getOutcome().equals(DiagnosisOutcome.pause.name())) {
+                return "C";
+            } else if (outcome.getOutcome().equals(DiagnosisOutcome.fullyRecovered.name())
+                || outcome.getOutcome().equals(DiagnosisOutcome.end.name())) {
+                return "F";
+            }
+        }
+        return "";
     }
 
     /**
@@ -388,9 +444,68 @@ public class ModelUtils implements IInfoModel {
     }
 
     /**
+     * Convert claim insurance code to orca insurance code.
+     * https://www.orca.med.or.jp/receipt/tec/claim.html
+     * <table>
+     * <tr><th>保険の種類</th><th>労災</th><th>自費</th><th>治験</th><th>治験</th><th>公害</th><th>国保</th><th>後期高齢者</th><th>後期特療費</th><th>協会けんぽ</th><th>公費単独</th></tr>
+     * <tr><th>Claim</th><td>Rx</td><td>Zx</td><td>Ax</td><td>Bx</td><td>K5</td><td>00</td><td>39</td><td>40</td><td>09</td><td>XX</td></tr>
+     * <tr><th>API</th><td>97x</td><td>980</td><td>90x</td><td>91x</td><td>975</td><td>060</td><td>039</td><td>040</td><td>009</td><td>980</td></tr>
+     * </table>
+     * xは該当の保険番号マスタの保険番号の３桁目
+     * @param code Claim Insurance Code R1,R3,Zx,...
+     * @return Orca Insurance Code 971,973,901,...
+     */
+    public static String claimInsuranceCodeToOrcaInsuranceCode(String code) {
+
+        if (Objects.nonNull(code) && code.length() == 2) {
+            if (code.startsWith("R")) {
+                // 労災
+                code = code.replace("R", "97");
+            } else if (code.startsWith("Z")) {
+                // 自費
+                code = "980";
+            } else if (code.startsWith("A")) {
+                // 治験
+                code = code.replace("A", "90");
+            } else if (code.startsWith("B")) {
+                // 治験
+                code = code.replace("B", "91");
+            } else if (code.equals("K5")) {
+                // 公害
+                code = "975";
+            } else if (code.equals("00")) {
+                // 国保
+                code = "060";
+            } else if (code.equals("XX")) {
+                // 公費単独
+                code = "980";
+            } else if (code.matches("[0-9][0-9]")) {
+                // 数字２桁は頭に 0 を補う
+                code = "0" + code;
+            }
+        }
+        return code;
+    }
+
+    /**
+     * RegisteredDiagnosisModel の病名コードを，Orca Api 用に変換する.
+     *  eg) "1013.7061017" → { "ZZZ1013", "7061017" }
+     * @param claimByomei Dolphin 型式の病名
+     * @return ORCA single 型式病名
+     */
+    public static String[] toOrcaDiseaseSingle(String claimByomei) {
+        String[] singles = claimByomei.split("\\.");
+        for (int i=0; i<singles.length; i++) {
+            if (singles[i].length() == 4) { singles[i] = "ZZZ" + singles[i]; }
+        }
+        return singles;
+    }
+
+    /**
      * Gengo 元号Enum.
      */
     private enum Gengo {
+        DEFAULT("H", "㍻"),
         MEIJI("M", "㍾"),
         TAISHO("T", "㍽"),
         SHOWA("S", "㍼"),
@@ -538,7 +653,7 @@ public class ModelUtils implements IInfoModel {
          * @return 元号漢字 [㍾,㍽,㍼,㍻,...]
          */
         public static String toKanji(String alphabet) {
-            return Arrays.stream(values()).filter(value -> value.alphabet().equals(alphabet)).findAny().get().kanji();
+            return Arrays.stream(values()).filter(value -> value.alphabet().equals(alphabet)).findAny().orElse(Gengo.DEFAULT).kanji();
         }
     }
 
@@ -551,5 +666,11 @@ public class ModelUtils implements IInfoModel {
         System.out.println(orcaDateToNengo("5010501"));
         System.out.println(nengoAlphabetToKanji("H"));
         System.out.println(nengoAlphabetToKanji("A"));
+        System.out.println(claimInsuranceCodeToOrcaInsuranceCode("00"));
+        System.out.println(claimInsuranceCodeToOrcaInsuranceCode("09"));
+        System.out.println(claimInsuranceCodeToOrcaInsuranceCode("39"));
+        System.out.println(claimInsuranceCodeToOrcaInsuranceCode("XX"));
+        System.out.println(claimInsuranceCodeToOrcaInsuranceCode("Z0"));
+        System.out.println(claimInsuranceCodeToOrcaInsuranceCode("060"));
     }
 }

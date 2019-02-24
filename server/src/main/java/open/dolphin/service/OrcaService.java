@@ -1,83 +1,116 @@
 package open.dolphin.service;
 
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+
+import open.dolphin.dto.ApiResult;
+import open.dolphin.dto.DiagnosisSearchSpec;
+import open.dolphin.dto.OrcaEntry;
+import open.dolphin.dto.PatientVisitSpec;
+import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.orca.OrcaEntry;
+import open.dolphin.orca.orcadao.bean.Syskanri;
+import open.dolphin.orca.orcadao.bean.Wksryact;
 
 /**
+ * OrcaService.
  *
  * @author pns
  */
-@Path("orca")
-@RolesAllowed("user")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 public interface OrcaService {
 
     /**
-     * TBL_WKSRYACT ワーク診療行為（中途終了データ）から UUID と画面展開フラグ（1=画面展開されている）を返す
-     * OrcaEntry の UUID = Code，フラグ = Comment に格納
-     * @param ptId
-     * @return
+     * 中途終了患者情報.
+     *
+     * @param spec PatientVisitSpec (patientId と date を使用)
+     * @return Wksryact
      */
-    public List<OrcaEntry> getWksryactEntries(String ptId);
+    public Wksryact getWksryact(PatientVisitSpec spec);
 
     /**
-     * TBL_SYSKANRI から検索
-     * kanricd = Inputcd, kbncd = Code, kanritbl = Comment に格納
-     * @param kanricd
-     * @return
+     * 中途終了患者情報が存在するかどうか.
+     *
+     * @param ptId "000001"
+     * @return 中途終了情報あり=true
      */
-    public List<OrcaEntry> getSyskanriEntries(String kanricd);
+    public boolean existsOrcaWorkingData(String ptId);
 
     /**
-     * TBL_TENSU からキーワードを検索
-     * @param keyword
-     * @return
+     * 職員情報.
+     *
+     * @return Syskanri のリスト
      */
-    public List<OrcaEntry> getTensuEntries(String keyword);
+    public List<Syskanri> getSyskanri();
 
     /**
-     * TBL_BYOMEI からキーワードを検索
-     * @param keyword
-     * @return
+     * TBL_TENSU からキーワードを検索.
+     *
+     * @param keyword キーワード
+     * @return OrcaEntry の List
      */
-    public List<OrcaEntry> getByomeiEntriesFromKeyword(String keyword);
+    public List<OrcaEntry> findTensu(String keyword);
 
     /**
-     * 病名コードのリストに対応する OrcaEntry を返す
-     * @param codes 病名コードのセット
-     * @return DiseaseEntry のリスト
+     * TBL_BYOMEI からキーワードを検索.
+     *
+     * @param keyword キーワード
+     * @return OrcaEntry の List
      */
-    public List<OrcaEntry> getByomeiEntriesFromCodes(List<String> codes);
+    public List<OrcaEntry> findDiagnosis(String keyword);
 
     /**
-     * TBL_INPUTCD を検索して入力セット（約束処方、診療セット）のリストを返す
-     * @return 入力セットコード(inputcd)の昇順リスト
+     * TBL_BYOMEI から病名コードのリストに対応する病名を検索.
+     *
+     * @param srycds 病名コードのセット
+     * @return OrcaEntry の List
      */
-    public List<OrcaEntry> getOrcaInputCdList();
+    public List<OrcaEntry> findDiagnosis(List<String> srycds);
+
+    /**
+     * 移行病名を調べる.
+     *
+     * @param srycds 病名コードのリスト
+     * @return そのうち移行病名になっているののリスト
+     */
+    public List<String> findIkouByomei(List<String> srycds);
+
+    /**
+     * TBL_INPUTCD を検索して入力セット（約束処方、診療セット）のリストを返す.
+     *
+     * @return ModuleInfoBean
+     */
+    public List<ModuleInfoBean> getOrcaInputCdList();
 
     /**
      * StampInfo を元に TBL_INPUTSET，TBL_TENSU を検索してスタンプの実体を作る
-     * @param stampInfo
-     * @return
+     *
+     * @param stampInfo ModuleInfoBean
+     * @return ModuleModel の List
      */
     public List<ModuleModel> getStamp(ModuleInfoBean stampInfo);
 
     /**
      * TBL_PTBYOMEI を検索して RegisteredDiagnosisModel を作る
-     * @param patientId
-     * @param from
-     * @param to
-     * @param ascend
-     * @return
+     *
+     * @param spec DiagnosisSearchSpec (patientId, fromDate を使用)
+     * @return List of RegisteredDiagnosisModel
      */
-    public List<RegisteredDiagnosisModel> getOrcaDisease(String patientId, String from, String to, Boolean ascend);
+    public List<RegisteredDiagnosisModel> getOrcaDisease(DiagnosisSearchSpec spec);
+
+    /**
+     * DocumentModel から中途終了データ作成 (medicalmodv2).
+     *
+     * @param document DocumentModel
+     * @return ApiResult
+     */
+    public ApiResult send(DocumentModel document);
+
+    /**
+     * medicalmodv2 で ORCA に病名を送る.
+     *
+     * @param diagnoses List of RegisteredDiagnosisModel
+     * @return ApiResult
+     */
+    public ApiResult send(List<RegisteredDiagnosisModel> diagnoses);
 }
