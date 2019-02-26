@@ -607,14 +607,23 @@ public class ModelUtils implements IInfoModel {
          * @return mmlBirthday 2010-07-26
          */
         public static String toSeireki(String gengoBirthday) {
+            String[] date = gengoBirthday.split("-");
+            int year;
+            int month;
+            int day;
 
-            try {
-                StringTokenizer st = new StringTokenizer(gengoBirthday, "-");
-                String yearStr = st.nextToken();
-                String gengo = yearStr.substring(0, 1).toUpperCase();
-                int year = Integer.valueOf(yearStr.substring(1));
-                int month = Integer.valueOf(st.nextToken());
-                int date = Integer.valueOf(st.nextToken());
+            if (date[0].length() == 4) {
+                // 西暦で入ってきた場合
+                year = Integer.valueOf(date[0]);
+                month = Integer.valueOf(date[1]);
+                day = Integer.valueOf(date[2]);
+
+            } else {
+                // 元号処理
+                String gengo = date[0].substring(0, 1).toUpperCase();
+                year = Integer.valueOf(date[0].substring(1));
+                month = Integer.valueOf(date[1]);
+                day = Integer.valueOf(date[2]);
 
                 if (gengo.equals(MEIJI.alphabet())) {
                     year += 1867;
@@ -627,13 +636,9 @@ public class ModelUtils implements IInfoModel {
                 } else {
                     year += 2018;
                 }
-
-                return String.format("%d-%02d-%02d", year, month, date);
-
-            } catch (NumberFormatException ex) {
-                ex.printStackTrace(System.err);
-                return null;
             }
+
+            return String.format("%d-%02d-%02d", year, month, day);
         }
 
         /**
@@ -662,6 +667,7 @@ public class ModelUtils implements IInfoModel {
         System.out.println(toNengo("2019-05-01"));
         System.out.println(toSeireki("h01-04-30"));
         System.out.println(toSeireki("a01-05-01"));
+        System.out.println(toSeireki("2019-2-25"));
         System.out.println(orcaDateToNengo("4300430"));
         System.out.println(orcaDateToNengo("5010501"));
         System.out.println(nengoAlphabetToKanji("H"));
