@@ -647,8 +647,8 @@ public class ModelUtils implements IInfoModel {
          * @return 元号を表すアルファベット [M,T,S,H,...]
          */
         public static String numberToString(String number) {
-            int num = Integer.valueOf(number) - 1;
-            if (num >= values().length) { return "U"; }
+            int num = Integer.valueOf(number);
+            if (num > values().length || num < 1) { return "U"; }
             else return (values()[num].alphabet());
         }
 
@@ -668,6 +668,7 @@ public class ModelUtils implements IInfoModel {
         System.out.println(toSeireki("h01-04-30"));
         System.out.println(toSeireki("a01-05-01"));
         System.out.println(toSeireki("2019-2-25"));
+        System.out.println(orcaDateToNengo("3300101"));
         System.out.println(orcaDateToNengo("4300430"));
         System.out.println(orcaDateToNengo("5010501"));
         System.out.println(nengoAlphabetToKanji("H"));
