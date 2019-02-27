@@ -36,15 +36,6 @@ public interface PvtService {
     public int addPvt(PatientVisitModel pvt);
 
     /**
-     * 内部から呼ぶとき用.
-     *
-     * @param pvt PatientVisitModel
-     * @param facilityId 施設ID
-     * @return 登録個数 1
-     */
-    public int addPvt(PatientVisitModel pvt, String facilityId);
-
-    /**
      * 既存の pvt を update する.
      *
      * @param pvt PatientVisitModel

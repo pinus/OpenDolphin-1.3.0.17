@@ -46,7 +46,7 @@ public class OrcaHostInfo {
             hostData = JsonConverter.fromJson(json, HostData.class);
             logger.info("orca.host.info=" + json);
 
-        } catch (IOException | NoSuchElementException e) {
+        } catch (IOException e) {
             // ファイルがない場合
             hostData = new HostData();
             logger.info("Set default OrcaHostInfo.");

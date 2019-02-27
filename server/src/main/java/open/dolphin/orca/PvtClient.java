@@ -4,6 +4,7 @@ import open.dolphin.JsonConverter;
 import open.dolphin.dto.PatientVisitSpec;
 import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.InfoModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.orca.pushapi.PushApi;
 import open.dolphin.orca.pushapi.SubscriptionEvent;
@@ -12,6 +13,8 @@ import open.dolphin.orca.pushapi.bean.Data;
 import open.dolphin.orca.pushapi.bean.Response;
 import open.dolphin.service.PvtService;
 import org.apache.log4j.Logger;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.resteasy.util.Base64;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -20,6 +23,14 @@ import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * PvtClient.
@@ -68,22 +79,68 @@ public class PvtClient {
 
             case "event":
                 Data data = res.getData();
+                Body body = data.getBody();
                 String event = data.getEvent();
-                logger.info("event = " + event + ", mode = " + data.getBody().getPatient_Mode());
+                logger.info("event = " + event + ", mode = " + body.getPatient_Mode());
 
-                // 受付通知
+                // 受付通知: mode = add / modify / delete
                 if (event.equals(SubscriptionEvent.ACCEPT.eventName())) {
-                    if ("delete".equals(data.getBody().getPatient_Mode())) {
-                        logger.info(("PvtClient: pvt canceled [" + data.getBody().getPatient_ID() + "]"));
+                    DummyHeader.set();
+                    switch(body.getPatient_Mode()) {
+                        case "delete":
 
-                    } else {
-                        pvtBuilder.build(data.getBody());
-                        PatientVisitModel model = pvtBuilder.getProduct();
-                        pvtService.addPvt(model, IInfoModel.DEFAULT_FACILITY_OID);
-                        logger.info("PvtClient: addPvt [" + model.getPatient().getPatientId() + "]");
+                            logger.info(("PvtClient: pvt canceled [" + data.getBody().getPatient_ID() + "]"));
+                            break;
+
+                        case "add":
+                        case "modify":
+                            pvtBuilder.build(body);
+                            PatientVisitModel model = pvtBuilder.getProduct();
+                            pvtService.addPvt(model);
+                            logger.info("PvtClient: addPvt [" + model.getPatient().getPatientId() + "]");
+                            break;
                     }
                 }
                 break;
         }
+    }
+
+    /**
+     * 内部から PvtService を呼ぶためのダミーヘッダ
+     */
+    private static class DummyHeader implements HttpHeaders {
+        private static DummyHeader dummyHeader = new DummyHeader();
+        private static String header;
+
+        private DummyHeader() { }
+
+        public static void set() {
+            String str = IInfoModel.DEFAULT_FACILITY_OID + InfoModel.COMPOSITE_KEY_MAKER
+                    + "dummyUser" + InfoModel.PASSWORD_SEPARATOR + "dummyPass";
+            header = Base64.encodeBytes(str.getBytes());
+            Map<Class<?>, Object> contextDataMap = ResteasyProviderFactory.getContextDataMap();
+            contextDataMap.put(HttpHeaders.class, dummyHeader);
+        }
+
+        @Override
+        public List<String> getRequestHeader(String s) { return null; }
+        @Override
+        public String getHeaderString(String s) { return header; }
+        @Override
+        public MultivaluedMap<String, String> getRequestHeaders() { return null; }
+        @Override
+        public List<MediaType> getAcceptableMediaTypes() { return null; }
+        @Override
+        public List<Locale> getAcceptableLanguages() { return null; }
+        @Override
+        public MediaType getMediaType() { return null; }
+        @Override
+        public Locale getLanguage() { return null; }
+        @Override
+        public Map<String, Cookie> getCookies() { return null; }
+        @Override
+        public Date getDate() { return null; }
+        @Override
+        public int getLength() { return 0; }
     }
 }

@@ -27,19 +27,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
      */
     @Override
     public int addPvt(PatientVisitModel pvt) {
-        return addPvt(pvt, getCallersFacilityId());
-    }
-
-    /**
-     * 患者来院情報を登録する. 内部から呼ぶとき用
-     * @param pvt PatientVisitModel
-     * @param facilityId Facility ID
-     * @return 登録個数 1
-     */
-    @Override
-    public int addPvt(PatientVisitModel pvt, String facilityId) {
-        //logger.info("PvtServiceImpl.addPvt called: patient id = " + pvt.getPatientId());
-
+        String facilityId = getCallersFacilityId();
         pvt.setFacilityId(facilityId);
 
         PatientModel pvtPatient = pvt.getPatient();
