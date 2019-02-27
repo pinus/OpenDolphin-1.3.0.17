@@ -20,9 +20,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.security.RunAs;
 import javax.ejb.DependsOn;
-import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.inject.Inject;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -48,7 +48,7 @@ public class PvtClient {
     private PvtBuilderApi pvtBuilder;
     private final Logger logger = Logger.getLogger(PvtClient.class);
 
-    @EJB
+    @Inject
     private PvtService pvtService;
 
     public PvtClient() {
