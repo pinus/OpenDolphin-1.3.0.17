@@ -39,15 +39,9 @@ public class OrcaHostInfo {
      * ORCA の接続情報を ORCA_HOST_INFO_FILE (JSON) から読み取ってインスタンスを作る.
      */
     private OrcaHostInfo() {
-        String jBossBaseDir = System.getProperty("jboss.server.base.dir");
-        String jBossDeploymentDir = jBossBaseDir + "/deployments";
-
-        Path root = Paths.get(jBossDeploymentDir);
-
-        try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(root)) {
-            Path pref = StreamSupport.stream(dirStream.spliterator(), false)
-                    .filter(path -> path.endsWith(ORCA_HOST_INFO_FILE)).findFirst().get();
-
+        try {
+            String jBossBaseDir = System.getProperty("jboss.server.base.dir");
+            Path pref = Paths.get(jBossBaseDir + "/deployments/" + ORCA_HOST_INFO_FILE);
             String json = String.join("", Files.readAllLines(pref));
             hostData = JsonConverter.fromJson(json, HostData.class);
             logger.info("orca.host.info=" + json);
