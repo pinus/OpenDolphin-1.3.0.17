@@ -3,22 +3,30 @@ package open.dolphin.orca;
 import open.dolphin.JsonConverter;
 import org.apache.log4j.Logger;
 
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import java.util.Properties;
+import java.util.stream.StreamSupport;
 
 /**
  * OrcaHostInfo. ORCA の接続情報を何らかの方法で取得するクラス.
+ *
  * @author pns
  */
+@Startup
+@Singleton
 public class OrcaHostInfo {
-
     private static final OrcaHostInfo ORCA_HOST_INFO = new OrcaHostInfo();
     private static final String ORCA_HOST_INFO_FILE = "orca.host.info";
+
     private Logger logger = Logger.getLogger(OrcaHostInfo.class);
 
     /**
@@ -31,14 +39,20 @@ public class OrcaHostInfo {
      * ORCA の接続情報を ORCA_HOST_INFO_FILE (JSON) から読み取ってインスタンスを作る.
      */
     private OrcaHostInfo() {
+        String jBossBaseDir = System.getProperty("jboss.server.base.dir");
+        String jBossDeploymentDir = jBossBaseDir + "/deployments";
 
-        try {
-            Path pref = Paths.get(ORCA_HOST_INFO_FILE);
+        Path root = Paths.get(jBossDeploymentDir);
+
+        try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(root)) {
+            Path pref = StreamSupport.stream(dirStream.spliterator(), false)
+                    .filter(path -> path.endsWith(ORCA_HOST_INFO_FILE)).findFirst().get();
+
             String json = String.join("", Files.readAllLines(pref));
             hostData = JsonConverter.fromJson(json, HostData.class);
             logger.info("orca.host.info=" + json);
 
-        } catch (IOException e) {
+        } catch (IOException | NoSuchElementException e) {
             // ファイルがない場合
             hostData = new HostData();
             logger.info("Set default OrcaHostInfo.");
@@ -84,6 +98,7 @@ public class OrcaHostInfo {
 
     /**
      * OrcaHostInfo のインスタンス.
+     *
      * @return OrcaHostInfo
      */
     public static OrcaHostInfo getInstance() {
@@ -92,6 +107,7 @@ public class OrcaHostInfo {
 
     /**
      * ORCA のアドレス. ポート番号は含まない.
+     *
      * @return the host
      */
     public String getHost() {
@@ -100,6 +116,7 @@ public class OrcaHostInfo {
 
     /**
      * ORCA 用の userId.
+     *
      * @return the userId
      */
     public String getUserId() {
@@ -108,6 +125,7 @@ public class OrcaHostInfo {
 
     /**
      * ORCA 用の userId の password.
+     *
      * @return the password
      */
     public String getPassword() {
@@ -116,12 +134,16 @@ public class OrcaHostInfo {
 
     /**
      * JMARI コード.
+     *
      * @return the password
      */
-    public String getJmariCode() { return hostData.getJmari(); }
+    public String getJmariCode() {
+        return hostData.getJmari();
+    }
 
     /**
      * Orca Api の URL にホスト名などを加えて URI を作る.
+     *
      * @param url OrcaApi URL
      * @return URI
      */
@@ -138,6 +160,7 @@ public class OrcaHostInfo {
 
     /**
      * PushAPI の URI を作る.
+     *
      * @return URI
      */
     public URI getPushApiUri() {
@@ -147,6 +170,7 @@ public class OrcaHostInfo {
 
     /**
      * OrcaDao でデータベースに接続するための URL を返す.
+     *
      * @return JDBC URL
      */
     public String getJdbcUrl() {
@@ -155,6 +179,7 @@ public class OrcaHostInfo {
 
     /**
      * OrcaDao でデータベースに接続するための Properties を返す.
+     *
      * @return JDBC Properties
      */
     public Properties getJdbcProperties() {

@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi;
 /**
  * Orca Api url 一覧.
  * https://www.orca.med.or.jp/receipt/tec/api/overview.html#ver480
+ *
  * @author pns
  */
 public class OrcaApiUrl {

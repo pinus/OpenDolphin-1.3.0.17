@@ -15,6 +15,7 @@ import java.net.URLConnection;
 
 /**
  * Low level orca api handler. Authentication and GET/POST.
+ *
  * @author pns
  */
 public class OrcaApiHandler {
@@ -22,7 +23,8 @@ public class OrcaApiHandler {
     private static final OrcaApiHandler ORCA_API_HANDLER = new OrcaApiHandler();
     private final OrcaHostInfo hostInfo = OrcaHostInfo.getInstance();
 
-    private OrcaApiHandler() { }
+    private OrcaApiHandler() {
+    }
 
     public static OrcaApiHandler getInstance() {
         return ORCA_API_HANDLER;
@@ -44,6 +46,7 @@ public class OrcaApiHandler {
 
     /**
      * GET.
+     *
      * @param uri URI
      * @return response
      */
@@ -74,6 +77,7 @@ public class OrcaApiHandler {
 
     /**
      * POST.
+     *
      * @param uri URI
      * @param doc Document
      * @return response
@@ -89,7 +93,7 @@ public class OrcaApiHandler {
             con.setDoOutput(true);
 
             try (OutputStream out = con.getOutputStream();
-                    PrintWriter writer = new PrintWriter(out)) {
+                 PrintWriter writer = new PrintWriter(out)) {
                 writer.print(doc);
             }
 

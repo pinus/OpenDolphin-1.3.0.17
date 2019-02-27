@@ -5,9 +5,8 @@ package open.dolphin.orca.orcadao;
  * @author pns
  */
 public class OrcaDao {
-
-    private static OrcaDao dao = new OrcaDao();
-    private static OrcaExtraInfo extraInfo = new OrcaExtraInfo();
+    private static final OrcaDao DAO = new OrcaDao();
+    private static final OrcaExtraInfo EXTRA_INFO = new OrcaExtraInfo();
 
     private OrcaDao() {
     }
@@ -17,7 +16,7 @@ public class OrcaDao {
      * @return OrcaDao のインスタンス
      */
     public static OrcaDao getInstance() {
-        return dao;
+        return DAO;
     }
 
     /**
@@ -34,7 +33,7 @@ public class OrcaDao {
      * @return hospNum
      */
     public int getHospNum() {
-        return extraInfo.getHospNum();
+        return EXTRA_INFO.getHospNum();
     }
 
     /**
@@ -42,7 +41,7 @@ public class OrcaDao {
      * @return OrcaExtraInfo
      */
     public OrcaExtraInfo getExtraInfo() {
-        return extraInfo;
+        return EXTRA_INFO;
     }
 
     /**

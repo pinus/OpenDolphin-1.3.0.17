@@ -23,25 +23,29 @@ import org.apache.log4j.Logger;
  * <li>WebSocket接続先は、 ws://localhost:9400/ws
  * <li>Header に "X-GINBEE-TENANT-ID: 1" を設定する
  * </ol>
+ *
  * @author pns
  */
 public class PushApi {
-
-    private enum ProcessResult { RETRY, ABORT, DONE };
-    private static final int MAX_CONNECTION_RETRY = 10;
-    private int retryCounter =0;
-
     private static final PushApi PUSH_API = new PushApi();
+
+    private enum ProcessResult {RETRY, ABORT, DONE}
+
+    private static final int MAX_CONNECTION_RETRY = 10;
+    private int retryCounter = 0;
+
     private final OrcaHostInfo hostInfo = OrcaHostInfo.getInstance();
     private final PushApiEndpoint endpoint = new PushApiEndpoint();
     private Session session;
 
     private Logger logger = Logger.getLogger(PushApi.class);
 
-    private PushApi() { }
+    private PushApi() {
+    }
 
     /**
      * PushApi のインスタンス.
+     *
      * @return PushApi
      */
     public static PushApi getInstance() {
@@ -50,6 +54,7 @@ public class PushApi {
 
     /**
      * Event を購読.
+     *
      * @param event 購読する Event
      */
     public void subscribe(SubscriptionEvent event) {
@@ -78,6 +83,7 @@ public class PushApi {
 
     /**
      * 購読を停止する.
+     *
      * @param res 購読の時に返ってきた response
      */
     public void unsubscribe(Response res) {
@@ -91,6 +97,7 @@ public class PushApi {
 
     /**
      * WebSocket に command を送る.
+     *
      * @param command コマンド
      */
     private void send(Command command) {
@@ -105,6 +112,7 @@ public class PushApi {
 
     /**
      * ResponseListener を登録する.
+     *
      * @param l ResponseListener
      */
     public void addResponseListener(ResponseListener l) {
@@ -113,6 +121,7 @@ public class PushApi {
 
     /**
      * エラー処理.
+     *
      * @param e Exception
      */
     private ProcessResult processError(Exception e) {

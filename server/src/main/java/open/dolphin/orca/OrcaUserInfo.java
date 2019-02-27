@@ -6,6 +6,7 @@ import open.dolphin.orca.orcaapi.bean.System01Managereq;
 import open.dolphin.orca.orcaapi.bean.System01Manageres;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.DependsOn;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import java.util.*;
@@ -17,6 +18,7 @@ import java.util.*;
  */
 @Singleton
 @Startup
+@DependsOn("OrcaHostInfo")
 public class OrcaUserInfo {
 
     /**
@@ -44,7 +46,7 @@ public class OrcaUserInfo {
         infos.stream().filter(info -> Objects.nonNull(info.getCode())).forEach(info -> {
             String name = replaceSpace(info.getWholeName());
             map.put(name, info.getCode());
-            System.out.println("OrcaUserInfo: " + name);
+            //System.out.println("OrcaUserInfo: " + name);
         });
     }
 

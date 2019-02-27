@@ -2,6 +2,7 @@ package open.dolphin.orca.pushapi;
 
 /**
  * PushAPI subscription events.
+ *
  * @author pns
  */
 public enum SubscriptionEvent {

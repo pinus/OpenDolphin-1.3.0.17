@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 /**
  * WebSocket の Endpoint (Tyrus).
+ *
  * @author pns
  */
 @ClientEndpoint(configurator = PushApiEndopointConfigurator.class)
@@ -55,6 +56,7 @@ public class PushApiEndpoint {
 
     /**
      * ResponseListener を登録する.
+     *
      * @param l ResponseListener
      */
     public void addResponseListener(ResponseListener l) {
@@ -63,6 +65,7 @@ public class PushApiEndpoint {
 
     /**
      * ResponseListener を削除する.
+     *
      * @param l ResponseListener
      */
     public void removeResponseListener(ResponseListener l) {

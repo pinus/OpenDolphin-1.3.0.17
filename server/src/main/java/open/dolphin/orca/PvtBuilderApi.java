@@ -12,6 +12,8 @@ import java.util.*;
 
 /**
  * ORCA PushAPI & ORCA API version PvtBuilder.
+ *
+ * @author pns
  */
 public class PvtBuilderApi {
 
@@ -20,6 +22,7 @@ public class PvtBuilderApi {
 
     /**
      * できあがった PatientVisitModel を返す.
+     *
      * @return PatientVisitModel
      */
     public PatientVisitModel getProduct() {
@@ -28,6 +31,7 @@ public class PvtBuilderApi {
 
     /**
      * Body から PatientVisitModel を構築する.
+     *
      * @param body PushApi で返ってきた Body
      */
     public void build(Body body) {
@@ -38,7 +42,7 @@ public class PvtBuilderApi {
         List<PVTHealthInsuranceModel> pvtInsurances = new ArrayList<>();
         AddressModel addressModel = new AddressModel();
         SimpleAddressModel simpleAddressModel = new SimpleAddressModel(); // Embedded in PatientModel
-        TelephoneModel[] telephoneModel = { new TelephoneModel(), new TelephoneModel() };
+        TelephoneModel[] telephoneModel = {new TelephoneModel(), new TelephoneModel()};
 
         // body にのってるデータを Dolphin Models に格納する分
         String ptId = body.getPatient_ID(); // 患者番号 002906
@@ -96,72 +100,77 @@ public class PvtBuilderApi {
         String birthday = patInfo.getBirthDate();
         patientModel.setBirthday(birthday);
         // 性別 1/2 → male/female
-        String sex = "1".equals(patInfo.getSex())? "male" : "female";
+        String sex = "1".equals(patInfo.getSex()) ? "male" : "female";
         patientModel.setGender(sex);
 
         //
         // Home Address Information
         //
         HomeAddressInformation addrInfo = patInfo.getHome_Address_Information();
-        String zip = addrInfo.getAddress_ZipCode();
-        addressModel.setZipCode(zip);
-        String address1 = processString(addrInfo.getWholeAddress1());
-        String address2 = processString(addrInfo.getWholeAddress2());
-        addressModel.setAddress(address1 + address2);
-        String telephone1 = addrInfo.getPhoneNumber1();
-        String telephone2 = addrInfo.getPhoneNumber2();
-        patientModel.setTelephone(telephone1);
-        telephoneModel[0].setMemo(telephone1); // 電話番号は memo に入れることになっている.
-        telephoneModel[1].setMemo(telephone2);
+        if (Objects.nonNull(addrInfo)) {
+            String zip = addrInfo.getAddress_ZipCode();
+            addressModel.setZipCode(zip);
+            String address1 = processString(addrInfo.getWholeAddress1());
+            String address2 = processString(addrInfo.getWholeAddress2());
+            addressModel.setAddress(address1 + address2);
+            String telephone1 = addrInfo.getPhoneNumber1();
+            String telephone2 = addrInfo.getPhoneNumber2();
+            patientModel.setTelephone(telephone1);
+            telephoneModel[0].setMemo(telephone1); // 電話番号は memo に入れることになっている.
+            telephoneModel[1].setMemo(telephone2);
 
-        // 住所を Embedded に変換する
-        String addr = addressModel.getAddress().replace("　", " ") // 全角スペース→半角
-                .replace('ー', '-'); // 全角マイナス→半角
-        simpleAddressModel.setAddress(addr);
-        simpleAddressModel.setZipCode(zip);
+            // 住所を Embedded に変換する
+            String addr = addressModel.getAddress().replace("　", " ") // 全角スペース→半角
+                    .replace('ー', '-'); // 全角マイナス→半角
+            simpleAddressModel.setAddress(addr);
+            simpleAddressModel.setZipCode(zip);
+        }
 
         //
         // HealthInsurance Information
         //
-        Arrays.stream(patInfo.getHealthInsurance_Information())
-                .filter(hInfo -> hInfo.getInsurance_Combination_Number() != null)
-                .forEach(hInfo -> {
-                    PVTHealthInsuranceModel phModel = new PVTHealthInsuranceModel();
-                    phModel.setGUID(hInfo.getInsurance_Combination_Number()); // 0001,0002
-                    phModel.setInsuranceClassCode(hInfo.getInsuranceProvider_Class()); // 009, 060, etc
-                    phModel.setInsuranceClass(hInfo.getInsuranceProvider_WholeName()); // 協会, 国保, etc
-                    phModel.setInsuranceNumber(hInfo.getInsuranceProvider_Number()); // 保険者番号 01010016
-                    phModel.setClientNumber(hInfo.getHealthInsuredPerson_Number()); // 番号
-                    phModel.setClientGroup(hInfo.getHealthInsuredPerson_Symbol()); // 記号
-                    String family = hInfo.getRelationToInsuredPerson(); // 本人=1, 家族=2
-                    phModel.setFamilyClass(family == null? null : family.equals("1")? "true" : "false"); // 本人=true, 家族=false
-                    phModel.setStartDate(hInfo.getCertificate_StartDate()); // 開始日
-                    phModel.setExpiredDate(hInfo.getCertificate_ExpiredDate()); // 終了日
-                    phModel.setPayOutRatio(hInfo.getInsurance_Combination_Rate_Outpatient()); // 外来負担割合
-                    phModel.setPayInRatio(hInfo.getInsuranceCombination_Rate_Admission()); // 入院負担割合
-                    // 公費
-                    List<PVTPublicInsuranceItemModel> pModels = new ArrayList<>();
-                    PublicinsuranceInformation[] pInfos = hInfo.getPublicInsurance_Information();
-                    if (pInfos != null) {
-                        Arrays.stream(pInfos).filter(pInfo -> pInfo.getPublicInsurance_Class() != null)
-                                .forEach(pInfo -> {
-                                    PVTPublicInsuranceItemModel pModel = new PVTPublicInsuranceItemModel();
-                                    pModel.setPriority("1");
-                                    pModel.setProviderName(pInfo.getPublicInsurance_Name()); // 独自乳有
-                                    pModel.setProvider(pInfo.getPublicInsurer_Number()); // 92014000
-                                    pModel.setRecipient(pInfo.getPublicInsuredPerson_Number()); // 保険番号
-                                    pModel.setStartDate(pInfo.getCertificate_IssuedDate()); // 開始日
-                                    pModel.setExpiredDate(pInfo.getCertificate_ExpiredDate()); // 終了日
-                                    pModel.setPaymentRatio(pInfo.getMoney_Outpatient().trim()); // 580, 0, etc
-                                    String rate = pInfo.getRate_Outpatient().trim();
-                                    pModel.setPaymentRatioType(rate.equals("0.00")? "fix" : "ratio"); // fix or ratio
-                                    pModels.add(pModel);
-                                });
-                    }
-                    phModel.setPVTPublicInsuranceItem(pModels.toArray(new PVTPublicInsuranceItemModel[0]));
-                    pvtInsurances.add(phModel);
-                });
+        HealthInsuranceInformation[] healthInfo = patInfo.getHealthInsurance_Information();
+        if (Objects.nonNull(healthInfo)) {
+            Arrays.stream(patInfo.getHealthInsurance_Information())
+                    .filter(hInfo -> hInfo.getInsurance_Combination_Number() != null)
+                    .forEach(hInfo -> {
+                        PVTHealthInsuranceModel phModel = new PVTHealthInsuranceModel();
+                        phModel.setGUID(hInfo.getInsurance_Combination_Number()); // 0001,0002
+                        phModel.setInsuranceClassCode(hInfo.getInsuranceProvider_Class()); // 009, 060, etc
+                        phModel.setInsuranceClass(hInfo.getInsuranceProvider_WholeName()); // 協会, 国保, etc
+                        phModel.setInsuranceNumber(hInfo.getInsuranceProvider_Number()); // 保険者番号 01010016
+                        phModel.setClientNumber(hInfo.getHealthInsuredPerson_Number()); // 番号
+                        phModel.setClientGroup(hInfo.getHealthInsuredPerson_Symbol()); // 記号
+                        String family = hInfo.getRelationToInsuredPerson(); // 本人=1, 家族=2
+                        phModel.setFamilyClass(family == null ? null : family.equals("1") ? "true" : "false"); // 本人=true, 家族=false
+                        phModel.setStartDate(hInfo.getCertificate_StartDate()); // 開始日
+                        phModel.setExpiredDate(hInfo.getCertificate_ExpiredDate()); // 終了日
+                        phModel.setPayOutRatio(hInfo.getInsurance_Combination_Rate_Outpatient()); // 外来負担割合
+                        phModel.setPayInRatio(hInfo.getInsuranceCombination_Rate_Admission()); // 入院負担割合
+                        // 公費
+                        List<PVTPublicInsuranceItemModel> pModels = new ArrayList<>();
+                        PublicinsuranceInformation[] pInfos = hInfo.getPublicInsurance_Information();
+                        if (pInfos != null) {
+                            Arrays.stream(pInfos).filter(pInfo -> pInfo.getPublicInsurance_Class() != null)
+                                    .forEach(pInfo -> {
+                                        PVTPublicInsuranceItemModel pModel = new PVTPublicInsuranceItemModel();
+                                        pModel.setPriority("1");
+                                        pModel.setProviderName(pInfo.getPublicInsurance_Name()); // 独自乳有
+                                        pModel.setProvider(pInfo.getPublicInsurer_Number()); // 92014000
+                                        pModel.setRecipient(pInfo.getPublicInsuredPerson_Number()); // 保険番号
+                                        pModel.setStartDate(pInfo.getCertificate_IssuedDate()); // 開始日
+                                        pModel.setExpiredDate(pInfo.getCertificate_ExpiredDate()); // 終了日
+                                        pModel.setPaymentRatio(pInfo.getMoney_Outpatient().trim()); // 580, 0, etc
+                                        String rate = pInfo.getRate_Outpatient().trim();
+                                        pModel.setPaymentRatioType(rate.equals("0.00") ? "fix" : "ratio"); // fix or ratio
+                                        pModels.add(pModel);
+                                    });
+                        }
+                        phModel.setPVTPublicInsuranceItem(pModels.toArray(new PVTPublicInsuranceItemModel[0]));
+                        pvtInsurances.add(phModel);
+                    });
 
+        }
         // PVTHealthInsuranceModel の beanBytes を HealthInsuranceModel にセットして PatientModel に加える
         pvtInsurances.forEach(p -> {
             HealthInsuranceModel healthInsuranceModel = new HealthInsuranceModel();
@@ -190,11 +199,12 @@ public class PvtBuilderApi {
      * null を "" に変換.
      * 全角スペースを半角スペースに変換.
      * 全角 "ー" を半角 "-" に変換.
+     *
      * @param src ソース文字列
      * @return processed String
      */
     private String processString(String src) {
-        return src == null? "" : src.trim()
+        return src == null ? "" : src.trim()
                 .replace('　', ' ')
                 .replace("ー", "-");
     }

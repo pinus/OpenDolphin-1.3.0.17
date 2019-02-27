@@ -10,8 +10,8 @@ import open.dolphin.JsonConverter;
  * @author pns
  */
 public class OrcaApi {
-
     private static final OrcaApi ORCA_API = new OrcaApi();
+
     private final OrcaHostInfo hostInfo = OrcaHostInfo.getInstance();
     private final OrcaApiHandler handler = OrcaApiHandler.getInstance();
 

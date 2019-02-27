@@ -6,6 +6,7 @@ import java.sql.SQLException;
 /**
  * ResultSetProcessor.
  * ResultSet に対して行う手続きを記載する.
+ *
  * @author pns
  */
 public interface ResultSetProcessor {

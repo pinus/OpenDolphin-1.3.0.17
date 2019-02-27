@@ -1,21 +1,25 @@
 package open.dolphin.orca;
 
 import open.dolphin.WebSocket;
+
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
+
 import open.dolphin.JsonConverter;
 import open.dolphin.infomodel.PatientVisitModel;
 
 /**
  * PatientVisitModel が変化したら通知を受ける Listener.
  * see PatientVisitModel @EntityListeners
+ *
  * @author pns
  */
 public class PatientVisitModelListener {
 
     /**
      * Inform pvt update to WebSocket clients.
-     * @param pvt
+     *
+     * @param pvt PatientVisitModel
      */
     @PostPersist
     @PostUpdate

@@ -31,8 +31,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
     }
 
     /**
-     * 患者来院情報を登録する.
-     * PvtServer から呼ぶとき用
+     * 患者来院情報を登録する. 内部から呼ぶとき用
      * @param pvt PatientVisitModel
      * @param facilityId Facility ID
      * @return 登録個数 1

@@ -26,6 +26,7 @@ public class OrcaDbConnection {
 
     /**
      * PreparedStatement で query を実行する.
+     *
      * @param sql Query
      */
     public void executeQuery(String sql) {
@@ -42,6 +43,7 @@ public class OrcaDbConnection {
 
     /**
      * PreparedStatement に対して parameter をセットする.
+     *
      * @param st PreparedStatement
      * @throws SQLException SQLException
      */
@@ -51,11 +53,11 @@ public class OrcaDbConnection {
 
             switch (value.getClass().getName()) {
                 case "java.lang.String":
-                    st.setString(index, (String)value);
+                    st.setString(index, (String) value);
                     break;
 
                 case "java.lang.Integer":
-                    st.setInt(index, (Integer)value);
+                    st.setInt(index, (Integer) value);
                     break;
             }
         }
@@ -63,8 +65,9 @@ public class OrcaDbConnection {
 
     /**
      * PreparedStatement のための parameter をセットする.
+     *
      * @param paramIndex index of the parameter
-     * @param object parameter
+     * @param object     parameter
      */
     public void setParam(int paramIndex, Object object) {
         paramMap.put(paramIndex, object);
