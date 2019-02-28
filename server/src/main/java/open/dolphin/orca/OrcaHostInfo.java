@@ -1,13 +1,16 @@
 package open.dolphin.orca;
 
 import open.dolphin.JsonConverter;
+import open.dolphin.orca.orcaapi.OrcaApiUrl;
 import org.apache.log4j.Logger;
 
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,6 +40,7 @@ public class OrcaHostInfo {
     /**
      * OrcaHostInfo.
      * ORCA の接続情報を ORCA_HOST_INFO_FILE (JSON) から読み取ってインスタンスを作る.
+     * ORCA への接続を試みて，接続が成功するまで待つ.
      */
     private OrcaHostInfo() {
         try {
@@ -50,6 +54,30 @@ public class OrcaHostInfo {
             // ファイルがない場合
             hostData = new HostData();
             logger.info("Set default OrcaHostInfo.");
+        }
+
+        // ORCA が立ち上がるまで待つ
+        int retry = 0;
+        URI uri = getOrcaApiUri(OrcaApiUrl.PATIENTGETV2);
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(
+                        getUserId(),
+                        getPassword().toCharArray());
+            }
+        });
+        while (true) {
+            try {
+                URLConnection con = uri.toURL().openConnection();
+                try(InputStream in = con.getInputStream()) {}
+                logger.info("ORCA server responded.");
+                break;
+
+            } catch (IOException ex) {
+                logger.info(ex.getMessage() + ", retrying: " + ++retry);
+                try { Thread.sleep(5000); } catch (InterruptedException e) {}
+            }
         }
     }
 

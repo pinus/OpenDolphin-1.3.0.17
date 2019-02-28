@@ -29,11 +29,6 @@ import org.apache.log4j.Logger;
 public class PushApi {
     private static final PushApi PUSH_API = new PushApi();
 
-    private enum ProcessResult {RETRY, ABORT, DONE}
-
-    private static final int MAX_CONNECTION_RETRY = 10;
-    private int retryCounter = 0;
-
     private final OrcaHostInfo hostInfo = OrcaHostInfo.getInstance();
     private final PushApiEndpoint endpoint = new PushApiEndpoint();
     private Session session;
@@ -68,16 +63,12 @@ public class PushApi {
 
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 
-        ProcessResult result = ProcessResult.RETRY;
-        while (result.equals(ProcessResult.RETRY)) {
-            try {
-                session = container.connectToServer(endpoint, uri);
-                send(command);
-                result = ProcessResult.DONE;
+        try {
+            session = container.connectToServer(endpoint, uri);
+            send(command);
 
-            } catch (DeploymentException | IOException ex) {
-                result = processError(ex);
-            }
+        } catch (DeploymentException | IOException ex) {
+            logger.info(ex.getMessage());
         }
     }
 
@@ -106,7 +97,7 @@ public class PushApi {
             session.getBasicRemote().sendText(text);
 
         } catch (IOException ex) {
-            processError(ex);
+            logger.info(ex.getMessage());
         }
     }
 
@@ -117,38 +108,5 @@ public class PushApi {
      */
     public void addResponseListener(ResponseListener l) {
         endpoint.addResponseListener(l);
-    }
-
-    /**
-     * エラー処理.
-     *
-     * @param e Exception
-     */
-    private ProcessResult processError(Exception e) {
-        logger.info(e.getCause());
-        logger.info("retry counter = " + retryCounter);
-
-        switch (e.getCause().getMessage()) {
-
-            case "Operation timed out":
-                if (retryCounter < MAX_CONNECTION_RETRY) {
-                    retryCounter++;
-                    return ProcessResult.RETRY;
-                }
-                break;
-
-            case "Connection refused":
-                if (retryCounter < MAX_CONNECTION_RETRY) {
-                    retryCounter++;
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException iex) {
-                    }
-                    return ProcessResult.RETRY;
-                }
-                break;
-        }
-        retryCounter = 0;
-        return ProcessResult.ABORT;
     }
 }

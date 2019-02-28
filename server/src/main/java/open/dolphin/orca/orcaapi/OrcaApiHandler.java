@@ -1,6 +1,7 @@
 package open.dolphin.orca.orcaapi;
 
 import open.dolphin.orca.OrcaHostInfo;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class OrcaApiHandler {
 
     private static final OrcaApiHandler ORCA_API_HANDLER = new OrcaApiHandler();
     private final OrcaHostInfo hostInfo = OrcaHostInfo.getInstance();
+    private Logger logger = Logger.getLogger(OrcaApiHandler.class);
 
     private OrcaApiHandler() {
     }
