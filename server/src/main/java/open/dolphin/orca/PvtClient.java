@@ -1,8 +1,5 @@
 package open.dolphin.orca;
 
-import open.dolphin.JsonConverter;
-import open.dolphin.dto.PatientVisitSpec;
-import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.InfoModel;
 import open.dolphin.infomodel.PatientVisitModel;
@@ -45,14 +42,14 @@ import java.util.Map;
 public class PvtClient {
     private PushApi pushApi;
     private Response subscriptionRes;
-    private PvtBuilderApi pvtBuilder;
+    private PvtBuilder pvtBuilder;
     private final Logger logger = Logger.getLogger(PvtClient.class);
 
     @Inject
     private PvtService pvtService;
 
     public PvtClient() {
-        pvtBuilder = new PvtBuilderApi();
+        pvtBuilder = new PvtBuilder();
         pushApi = PushApi.getInstance();
         pushApi.addResponseListener(this::onResponse);
     }

@@ -1,6 +1,5 @@
 package open.dolphin.orca;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.infomodel.*;
 import open.dolphin.orca.orcaapi.OrcaApi;
 import open.dolphin.orca.orcaapi.bean.*;
@@ -15,10 +14,10 @@ import java.util.*;
  *
  * @author pns
  */
-public class PvtBuilderApi {
+public class PvtBuilder {
 
     private PatientVisitModel pvtModel;
-    private final Logger logger = Logger.getLogger(PvtBuilderApi.class);
+    private final Logger logger = Logger.getLogger(PvtBuilder.class);
 
     /**
      * できあがった PatientVisitModel を返す.
