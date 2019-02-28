@@ -92,11 +92,9 @@ public class PvtClient {
                     switch(body.getPatient_Mode()) {
                         case "delete":
                             String ptId = body.getPatient_ID(); // 患者番号 002906
-                            PatientSearchSpec spec = new PatientSearchSpec();
                             PatientModel patientModel = patientService.getPatient(ptId);
                             PatientVisitModel pvt = pvtService.getPvtOf(patientModel);
                             pvtService.removePvt(pvt.getId());
-
                             logger.info(("PvtClient: pvt removed [" + data.getBody().getPatient_ID() + "]"));
                             break;
 
