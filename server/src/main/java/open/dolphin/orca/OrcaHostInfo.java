@@ -143,7 +143,7 @@ public class OrcaHostInfo {
      */
     public URI getOrcaApiUri(String url) {
         try {
-            return new URI(String.format("http://%s:8000%s", hostData.getHost(), url));
+            return new URI(String.format("http://%s:8000%s", getHost(), url));
 
         } catch (URISyntaxException ex) {
             ex.printStackTrace(System.err);
@@ -158,7 +158,7 @@ public class OrcaHostInfo {
      * @return URI
      */
     public URI getPushApiUri() {
-        String url = String.format("ws://%s:9400/ws", hostData.getHost());
+        String url = String.format("ws://%s:9400/ws", getHost());
         return URI.create(url);
     }
 

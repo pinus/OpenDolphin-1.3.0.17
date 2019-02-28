@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+
 import open.dolphin.infomodel.InfoModel;
 import org.jboss.resteasy.util.Base64;
 
@@ -21,8 +22,9 @@ public abstract class DolphinService {
     private HttpHeaders headers;
 
     /**
-     * Header 情報から Caller の FacilityId:username 部分を取り出す.
-     * @return
+     * Header 情報から CallerId (FacilityId:username) 部分を取り出す.
+     *
+     * @return FacilityId:username
      */
     private String getCallerId() {
         try {
@@ -38,33 +40,36 @@ public abstract class DolphinService {
     }
 
     /**
-     * CallerId から FacilityId 部分を切り出す.
-     * @return
+     * CallerId (FacilityId:username) からFacilityId 部分を切り出す.
+     *
+     * @param checkId CallerId for check
+     * @return FacilityId
      */
-    protected String getCallersFacilityId() {
-        String[] split = getCallerId().split(InfoModel.COMPOSITE_KEY_MAKER);
-        return split[0];
-    }
-
-    /**
-     * 与えられた id からFacilityId 部分を切り出す.
-     * @param checkId
-     * @return
-     */
-    protected String getRequestsFacilityId(String checkId) {
+    private String getFacilityId(String checkId) {
         String[] split = checkId.split(InfoModel.COMPOSITE_KEY_MAKER);
         return split[0];
     }
 
     /**
+     * Caller の FacilityId 部分を切り出す.
+     *
+     * @return FacilityId
+     */
+    protected String getCallersFacilityId() {
+        return getFacilityId(getCallerId());
+    }
+
+
+    /**
      * Caller と CheckId の FacilityId を比較して，一致していなければ SecurityException を出す.
-     * @param checkId
-     * @return
+     *
+     * @param checkId CallerId for check
+     * @return checkId or SecurityException
      */
     protected String checkFacility(String checkId) {
         String callerKey = getCallersFacilityId();
-        String requestKey = getRequestsFacilityId(checkId);
-        if (! callerKey.equals(requestKey)) {
+        String requestKey = getFacilityId(checkId);
+        if (!callerKey.equals(requestKey)) {
             throw new SecurityException(requestKey);
         }
         return checkId;

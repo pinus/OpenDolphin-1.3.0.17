@@ -2,6 +2,7 @@ package open.dolphin.orca.orcadao;
 
 /**
  * ORCA Database にアクセスするための DAO.
+ *
  * @author pns
  */
 public class OrcaDao {
@@ -13,6 +14,7 @@ public class OrcaDao {
 
     /**
      * OrcaDao のインスタンスを返す.
+     *
      * @return OrcaDao のインスタンス
      */
     public static OrcaDao getInstance() {
@@ -21,6 +23,7 @@ public class OrcaDao {
 
     /**
      * OrcaDbConnection を返す.
+     *
      * @param rsp ResultSetProcessor
      * @return OrcaDbConnection
      */
@@ -30,6 +33,7 @@ public class OrcaDao {
 
     /**
      * HospNum を返す.
+     *
      * @return hospNum
      */
     public int getHospNum() {
@@ -38,6 +42,7 @@ public class OrcaDao {
 
     /**
      * OrcaExtraInfo を返す.
+     *
      * @return OrcaExtraInfo
      */
     public OrcaExtraInfo getExtraInfo() {
@@ -46,12 +51,10 @@ public class OrcaDao {
 
     /**
      * Process error.
+     *
      * @param e Exception
      */
     public void processError(Exception e) {
         e.printStackTrace(System.err);
-    }
-
-    public static void main(String[] argv) {
     }
 }

@@ -23,7 +23,7 @@ import open.dolphin.infomodel.PatientModel;
 public interface PatientService {
 
     /**
-     * 患者オブジェクトを取得する。
+     * 患者オブジェクトを取得する.
      * @param spec PatientSearchSpec 検索仕様
      * @return 患者オブジェクトの Collection
      */
@@ -32,16 +32,16 @@ public interface PatientService {
     public List<PatientModel> getPatientList(PatientSearchSpec spec);
 
     /**
-     * 健康保険情報を取得する
-     * @param patientPk
-     * @return
+     * 健康保険情報を取得する.
+     * @param patientPk PatientModel's primary key
+     * @return List of PVTHealthInsuranceModel
      */
     @Path("getHealthInsuranceList")
     @POST
     public List<PVTHealthInsuranceModel> getHealthInsuranceList(Long patientPk);
 
     /**
-     * 患者ID(BUSINESS KEY)を指定して患者オブジェクトを返す。
+     * 患者ID("000001")を指定して患者オブジェクトを返す.
      *
      * @param patientId 施設内患者ID
      * @return 該当するPatientModel
@@ -51,7 +51,7 @@ public interface PatientService {
     public PatientModel getPatient(String patientId);
 
     /**
-     * 患者を登録する。
+     * 患者を登録する.
      * @param patient PatientModel
      * @return データベース Primary Key
      */
@@ -60,7 +60,7 @@ public interface PatientService {
     public Long addPatient(PatientModel patient);
 
     /**
-     * 患者情報を更新する。
+     * 患者情報を更新する.
      * @param patient 更新する「患者オブジェクト
      * @return 更新数
      */

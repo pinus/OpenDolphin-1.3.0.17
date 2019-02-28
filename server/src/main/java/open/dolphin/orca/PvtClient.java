@@ -1,13 +1,16 @@
 package open.dolphin.orca;
 
+import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.InfoModel;
+import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.orca.pushapi.PushApi;
 import open.dolphin.orca.pushapi.SubscriptionEvent;
 import open.dolphin.orca.pushapi.bean.Body;
 import open.dolphin.orca.pushapi.bean.Data;
 import open.dolphin.orca.pushapi.bean.Response;
+import open.dolphin.service.PatientService;
 import open.dolphin.service.PvtService;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
@@ -48,6 +51,9 @@ public class PvtClient {
     @Inject
     private PvtService pvtService;
 
+    @Inject
+    private PatientService patientService;
+
     public PvtClient() {
         pvtBuilder = new PvtBuilder();
         pushApi = PushApi.getInstance();
@@ -85,8 +91,13 @@ public class PvtClient {
                     DummyHeader.set();
                     switch(body.getPatient_Mode()) {
                         case "delete":
+                            String ptId = body.getPatient_ID(); // 患者番号 002906
+                            PatientSearchSpec spec = new PatientSearchSpec();
+                            PatientModel patientModel = patientService.getPatient(ptId);
+                            PatientVisitModel pvt = pvtService.getPvtOf(patientModel);
+                            pvtService.removePvt(pvt.getId());
 
-                            logger.info(("PvtClient: pvt canceled [" + data.getBody().getPatient_ID() + "]"));
+                            logger.info(("PvtClient: pvt removed [" + data.getBody().getPatient_ID() + "]"));
                             break;
 
                         case "add":

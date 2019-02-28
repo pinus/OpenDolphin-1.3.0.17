@@ -26,7 +26,7 @@ import open.dolphin.infomodel.PatientVisitModel;
 public interface PvtService {
 
     /**
-     * 患者来院情報を保存する.
+     * 患者来院情報 pvt を保存する.
      *
      * @param pvt PatientVisitModel
      * @return 登録個数 1
@@ -46,7 +46,7 @@ public interface PvtService {
     public int updatePvt(PatientVisitModel pvt);
 
     /**
-     * 施設の患者来院情報を取得する.
+     * 患者来院情報 pvt のリストを取得する.
      *
      * @param spec 検索仕様オブジェクト
      * @return List of PatientVisitModel

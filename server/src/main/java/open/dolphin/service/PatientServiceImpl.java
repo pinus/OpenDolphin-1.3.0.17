@@ -222,9 +222,9 @@ public class PatientServiceImpl extends DolphinService implements PatientService
 
                 if (! ids.isEmpty()) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(pk).append(String.valueOf(ids.get(0)));
+                    sb.append(pk).append(ids.get(0));
                     for (int i=1; i<ids.size(); i++) {
-                        sb.append(" OR ").append(pk).append(String.valueOf(ids.get(i)));
+                        sb.append(" OR ").append(pk).append(ids.get(i));
                     }
                     searchText = String.format("(%s) AND (%s)", spec.getSearchText(), sb.toString());
                 }
@@ -295,7 +295,7 @@ public class PatientServiceImpl extends DolphinService implements PatientService
     }
 
     /**
-     * 患者ID(BUSINESS KEY)を指定して患者オブジェクトを返す.
+     * 患者ID("000001")を指定して患者オブジェクトを返す.
      *
      * @param patientId 施設内患者ID
      * @return 該当するPatientModel

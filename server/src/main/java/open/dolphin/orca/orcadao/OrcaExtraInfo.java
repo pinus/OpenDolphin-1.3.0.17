@@ -8,6 +8,8 @@ import java.util.Map;
 
 /**
  * API で取れない ORCA の情報を保持.
+ *
+ * @author pns
  */
 public class OrcaExtraInfo {
 
