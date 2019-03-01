@@ -1,4 +1,4 @@
-package open.dolphin.orca;
+package open.dolphin.infomodel;
 
 import open.dolphin.WebSocket;
 
@@ -7,8 +7,6 @@ import javax.persistence.PostRemove;
 import javax.persistence.PostUpdate;
 
 import open.dolphin.JsonConverter;
-import open.dolphin.infomodel.KarteState;
-import open.dolphin.infomodel.PatientVisitModel;
 
 /**
  * PatientVisitModel が変化したら通知を受ける Listener.
@@ -32,6 +30,6 @@ public class PatientVisitModelListener {
     @PostRemove
     public void pvtRemoved(final PatientVisitModel pvt) {
         pvt.setState(KarteState.CANCEL_PVT);
-        WebSocket.getSessions().forEach(session -> session.getAsyncRemote().sendText(JsonConverter.toJson(pvt)));
+        pvtUpdated(pvt);
     }
 }

@@ -4,7 +4,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.util.StringTokenizer;
 import javax.persistence.*;
-import open.dolphin.orca.PatientVisitModelListener;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
@@ -21,7 +21,7 @@ public class PatientVisitModel extends InfoModel  {
     public static final DataFlavor PVT_FLAVOR =
             new DataFlavor(open.dolphin.infomodel.PatientVisitModel.class, "Patient Visit");
 
-    public static final DataFlavor flavors[] = {PVT_FLAVOR};
+    public static final DataFlavor[] flavors = {PVT_FLAVOR};
 
     @Id @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
