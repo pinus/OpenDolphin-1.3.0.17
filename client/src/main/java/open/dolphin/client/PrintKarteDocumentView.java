@@ -1,122 +1,114 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package open.dolphin.client;
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.awt.print.*;
 
 /**
  * カルテをまとめて印刷する
  * いつかやってくるであろう指導のために…　（´・ω・｀）
+ * Mac で文字化けするので image にしてからプリントする by pns
  *
  * Masuda Naika Clinic, VIVA! Wakayama-City!!
  * @author masuda
+ * @author pns
  */
-
-import java.awt.*;
-import javax.swing.*;
-import java.awt.print.*;
-
 public class PrintKarteDocumentView implements Printable {
+    private static int HEADER_HEIGHT = 24;
 
-    private Component toBePrint;
-    private static String patientName;
-    private static String patientId;
+    private Component targetComponent;
+    private int totalPageNumber;
+    private BufferedImage printImage;
+    private int imageViewWidth;
+    private int imageViewHeight;
 
-    public static void printComponent(Component c, String name, String id) {
-        patientName = name;
-        patientId = id;
-        new PrintKarteDocumentView(c).print();
+    private static String ptName;
+    private static String ptId;
+
+    public static void printComponent(Component scrollPanel, String name, String id) {
+        ptName = name;
+        ptId = id;
+        new PrintKarteDocumentView(scrollPanel).print();
     }
 
-    public PrintKarteDocumentView(Component toBePrint) {
-        this.toBePrint = toBePrint;
+    public PrintKarteDocumentView(Component c) {
+        this.targetComponent = c;
     }
 
     public void print() {
         PrinterJob printJob = PrinterJob.getPrinterJob();
         printJob.setPrintable(this);
-        printJob.setJobName(patientId + " by Dolphin");
+        printJob.setJobName(ptId + " by Dolphin");
+
+        printImage = new BufferedImage(targetComponent.getWidth(), targetComponent.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = printImage.createGraphics();
+        targetComponent.paint(g2d);
+        g2d.dispose();
+
+        PageFormat pf = printJob.getPageFormat(null);
+        double heightPerWidth = (pf.getImageableHeight() - HEADER_HEIGHT) /pf.getImageableWidth();
+
+        imageViewWidth = printImage.getWidth();
+        imageViewHeight = (int)((double)imageViewWidth * heightPerWidth);
+        totalPageNumber = (int)Math.ceil((double)printImage.getHeight() / (double)imageViewHeight);
 
         if (printJob.printDialog()) {
             try {
                 printJob.print();
-            } catch (PrinterException pe) {
-                System.out.println("Error printing: " + pe);
+            } catch (PrinterException e) {
+                e.printStackTrace(System.err);
             }
         }
     }
 
+    @Override
     public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
 
+        if (pageIndex >= totalPageNumber) { return Printable.NO_SUCH_PAGE; }
+
         Graphics2D g2d = (Graphics2D) g;
-        Font f = new Font("Courier", Font.ITALIC, 9);
+        Font f = new Font("MS-PGothic", Font.ITALIC, 9);
         g2d.setFont(f);
         g2d.setPaint(Color.black);
         g2d.setColor(Color.black);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int fontHeight = g2d.getFontMetrics().getHeight();
-        int fontDescent = g2d.getFontMetrics().getDescent();
-        double footerHeight = fontHeight;
-        double pageHeight = pageFormat.getImageableHeight() - footerHeight;
+        // Header
+        String headerStr = String.format("[%s] %s (%d/%s)", ptId, ptName, (pageIndex+1), totalPageNumber);
+        int strW = SwingUtilities.computeStringWidth(g2d.getFontMetrics(), headerStr);
+        int strX = (int)pageFormat.getImageableX() + (int)pageFormat.getImageableWidth() - strW;
+        int strY = (int)pageFormat.getImageableY() + g2d.getFontMetrics().getHeight();
+        g2d.drawString(headerStr, strX, strY);
+
+        // image ソースの四隅
+        int sx1 = 0;
+        int sx2 = imageViewWidth;
+        int sy1 = imageViewHeight * pageIndex;
+        int sy2 = sy1 + imageViewHeight;
+
+        // 出力先の四隅
         double pageWidth = pageFormat.getImageableWidth();
-        double componentHeight = toBePrint.getHeight();
-        double componentWidth = toBePrint.getWidth();
 
-        // 大きかったら縮小
-        double scale = 1;
-        if (componentWidth >= pageWidth) {
-            scale = pageWidth / componentWidth;// shrink
-        }
+        int dx1 = (int) pageFormat.getImageableX();
+        int dx2 = dx1 + (int) pageFormat.getImageableWidth();
+        int dy1 = (int)pageFormat.getImageableY() + HEADER_HEIGHT;
 
-        //
-        double scaledComponentHeight = componentHeight * scale;
-        int totalNumPages = (int) Math.ceil(scaledComponentHeight / pageHeight);
+        int dy2;
+        if (pageIndex < totalPageNumber - 1) {
+            dy2 = (int)pageFormat.getImageableY() + (int) pageFormat.getImageableHeight();
 
-        if (pageIndex >= totalNumPages) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
-        // footer
-        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-        String footerString = patientId + " " + patientName + "  Page: " + (pageIndex + 1) + " of " + totalNumPages;
-        int strW = SwingUtilities.computeStringWidth(g2d.getFontMetrics(), footerString);
-        g2d.drawString(
-                footerString,
-                (int) pageWidth / 2 - strW / 2,
-                (int) (pageHeight + fontHeight - fontDescent));
-
-        // page
-        g2d.translate(0f, 0f);
-        g2d.translate(0f, -pageIndex * pageHeight);
-
-        if (pageIndex == totalNumPages - 1) {
-            g2d.setClip(
-                    0, (int) (pageHeight * pageIndex),
-                    (int) Math.ceil(pageWidth),
-                    (int) (scaledComponentHeight - pageHeight * (totalNumPages - 1)));
         } else {
-            g2d.setClip(
-                    0, (int) (pageHeight * pageIndex),
-                    (int) Math.ceil(pageWidth),
-                    (int) Math.ceil(pageHeight));
+            // 最終ページ
+            int residue = printImage.getHeight() % imageViewHeight;
+            double heightPerWidth = (double)residue / (double)imageViewWidth;
+            double pageHeight = pageWidth * heightPerWidth;
+            dy2 = (int)pageFormat.getImageableY() + (int) pageHeight;
         }
 
-        g2d.scale(scale, scale);
+        // イメージ描画
+        g2d.drawImage(printImage, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
 
-        disableDoubleBuffering(toBePrint);
-        toBePrint.print(g2d);
-        enableDoubleBuffering(toBePrint);
-        return (PAGE_EXISTS);
-
-    }
-
-    public static void disableDoubleBuffering(Component c) {
-        RepaintManager currentManager = RepaintManager.currentManager(c);
-        currentManager.setDoubleBufferingEnabled(false);
-    }
-
-    public static void enableDoubleBuffering(Component c) {
-        RepaintManager currentManager = RepaintManager.currentManager(c);
-        currentManager.setDoubleBufferingEnabled(true);
+        return PAGE_EXISTS;
     }
 }

@@ -122,12 +122,20 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
 
         // Model を表示する
         if (this.getModel() != null) {
-            //
-            // 確定日を分かりやすい表現に変える
-            //
+            // time stamp
+            String firstConfirmDate = ModelUtils.getDateAsFormatString(
+                    model.getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
+            String modifyDate = ModelUtils.getDateAsFormatString(
+                    model.getDocInfo().getConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
+
             StringBuilder timeStamp = new StringBuilder();
-            timeStamp.append(ModelUtils.getDateAsFormatString(
-                    model.getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT));
+            timeStamp.append(firstConfirmDate);
+            if (! firstConfirmDate.equals(modifyDate)) {
+                timeStamp.append(" (");
+                timeStamp.append("修正:");
+                timeStamp.append(modifyDate);
+                timeStamp.append(")");
+            }
 
             if (model.getDocInfo().getStatus().equals(IInfoModel.STATUS_TMP)) {
                 timeStamp.append(UNDER_TMP_SAVE);
