@@ -1,7 +1,9 @@
 package open.dolphin.client;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.print.*;
 
@@ -15,17 +17,23 @@ import java.awt.print.*;
  * @author pns
  */
 public class PrintKarteDocumentView implements Printable {
-    private static int HEADER_HEIGHT = 24;
+    private static int FOOTER_HEIGHT = 24;
 
     private Component targetComponent;
+    private List<Integer> yPosition;
     private int totalPageNumber;
     private BufferedImage printImage;
-    private int imageViewWidth;
-    private int imageViewHeight;
 
     private static String ptName;
     private static String ptId;
 
+    /**
+     * KarteDocmentViewer.printComponent(scrollPane, name, id) で呼べる static method.
+     *
+     * @param scrollPanel KarteDocumentViewer の scrollPanel
+     * @param name 患者名
+     * @param id 患者ID
+     */
     public static void printComponent(Component scrollPanel, String name, String id) {
         ptName = name;
         ptId = id;
@@ -40,18 +48,45 @@ public class PrintKarteDocumentView implements Printable {
         PrinterJob printJob = PrinterJob.getPrinterJob();
         printJob.setPrintable(this);
         printJob.setJobName(ptId + " by Dolphin");
+        PageFormat pf = printJob.getPageFormat(null);
 
-        printImage = new BufferedImage(targetComponent.getWidth(), targetComponent.getHeight(), BufferedImage.TYPE_INT_RGB);
+        JPanel scrollPanel = (JPanel) targetComponent; // KartePanel が component として入っている
+
+        // イメージ作成
+        printImage = new BufferedImage(scrollPanel.getWidth(), scrollPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = printImage.createGraphics();
-        targetComponent.paint(g2d);
+        scrollPanel.paint(g2d);
         g2d.dispose();
 
-        PageFormat pf = printJob.getPageFormat(null);
-        double heightPerWidth = (pf.getImageableHeight() - HEADER_HEIGHT) /pf.getImageableWidth();
+        // １ページの imageable area の height/width の計算
+        double imageableWidth = pf.getImageableWidth();
+        double imageableHeight = pf.getImageableHeight() - FOOTER_HEIGHT;
+        double heightPerWidth = imageableHeight/imageableWidth;
 
-        imageViewWidth = printImage.getWidth();
-        imageViewHeight = (int)((double)imageViewWidth * heightPerWidth);
-        totalPageNumber = (int)Math.ceil((double)printImage.getHeight() / (double)imageViewHeight);
+        // printImage の幅に換算したページの高さを求める
+        int printWidth = scrollPanel.getWidth();
+        int printHeight = (int)((double)printWidth * heightPerWidth);
+
+        // KartePanel を取り出して, ページ位置のインデックスを作る
+        yPosition = new ArrayList<>();
+        yPosition.add(0); // ページ頭のインデックス
+
+        int sumTmp = 0;
+        int sumTotal = 0;
+
+        for (Component c : scrollPanel.getComponents()) {
+            // page が一杯になるまで足していく
+            sumTmp += c.getHeight();
+            if (sumTmp > printHeight) {
+                // page 境界を越えたらそこで改ページ
+                yPosition.add(sumTotal);
+                sumTmp = c.getHeight();
+            }
+            sumTotal += c.getHeight();
+        }
+        yPosition.add(sumTotal);
+
+        totalPageNumber = yPosition.size() - 1;
 
         if (printJob.printDialog()) {
             try {
@@ -74,37 +109,27 @@ public class PrintKarteDocumentView implements Printable {
         g2d.setColor(Color.black);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Header
+        // Footer
         String headerStr = String.format("[%s] %s (%d/%s)", ptId, ptName, (pageIndex+1), totalPageNumber);
         int strW = SwingUtilities.computeStringWidth(g2d.getFontMetrics(), headerStr);
-        int strX = (int)pageFormat.getImageableX() + (int)pageFormat.getImageableWidth() - strW;
-        int strY = (int)pageFormat.getImageableY() + g2d.getFontMetrics().getHeight();
+        int strX = (int)(pageFormat.getImageableX() + pageFormat.getImageableWidth())/2 - strW/2;
+        int strY = (int)(pageFormat.getImageableY() + pageFormat.getImageableHeight()) - g2d.getFontMetrics().getMaxDescent();
         g2d.drawString(headerStr, strX, strY);
 
         // image ソースの四隅
         int sx1 = 0;
-        int sx2 = imageViewWidth;
-        int sy1 = imageViewHeight * pageIndex;
-        int sy2 = sy1 + imageViewHeight;
+        int sx2 = printImage.getWidth();
+        int sy1 = yPosition.get(pageIndex);
+        int sy2 = yPosition.get(pageIndex+1) - 1;
 
         // 出力先の四隅
         double pageWidth = pageFormat.getImageableWidth();
+        double imageHeightPerWidth = (double)(sy2-sy1+1) / (double)sx2;
 
         int dx1 = (int) pageFormat.getImageableX();
         int dx2 = dx1 + (int) pageFormat.getImageableWidth();
-        int dy1 = (int)pageFormat.getImageableY() + HEADER_HEIGHT;
-
-        int dy2;
-        if (pageIndex < totalPageNumber - 1) {
-            dy2 = (int)pageFormat.getImageableY() + (int) pageFormat.getImageableHeight();
-
-        } else {
-            // 最終ページ
-            int residue = printImage.getHeight() % imageViewHeight;
-            double heightPerWidth = (double)residue / (double)imageViewWidth;
-            double pageHeight = pageWidth * heightPerWidth;
-            dy2 = (int)pageFormat.getImageableY() + (int) pageHeight;
-        }
+        int dy1 = (int)pageFormat.getImageableY();
+        int dy2 = dy1 + (int) (pageFormat.getImageableWidth() * imageHeightPerWidth);
 
         // イメージ描画
         g2d.drawImage(printImage, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
