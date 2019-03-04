@@ -4,18 +4,22 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseListener;
 import java.awt.print.PageFormat;
+import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.project.Project;
 
 /**
  * 2号カルテを View する ChartDocument.
  * KartePanel はタイムスタンプ, SoaTextPane, PTextPane を含んだ JPanel. これを KarteDocumentViewer で見る.
  * KartePane は KartePanel の SoaTextPane または PTextPane を含んだ KarteComposite. いろいろな機能を持つ.
  * Viewer で KartePane も生成される.
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
@@ -48,10 +52,12 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     private boolean selected;
 
 
-    public KarteViewer2() {}
+    public KarteViewer2() {
+    }
 
     /**
      * SOA Pane を返す.
+     *
      * @return soaPane
      */
     public KartePane getSOAPane() {
@@ -60,6 +66,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
 
     /**
      * P Pane を返す.
+     *
      * @return pPane
      */
     public KartePane getPPane() {
@@ -68,7 +75,8 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
 
     /**
      * KartePanel を返す.
-     * @return
+     *
+     * @return KartePanel
      */
     public KartePanel getKartePanel() {
         return kartePanel;
@@ -121,20 +129,24 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
         this.initialize();
 
         // Model を表示する
-        if (this.getModel() != null) {
+        if (model != null) {
             // time stamp
             String firstConfirmDate = ModelUtils.getDateAsFormatString(
                     model.getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
+            // modified time stamp
             String modifyDate = ModelUtils.getDateAsFormatString(
                     model.getDocInfo().getConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
 
             StringBuilder timeStamp = new StringBuilder();
             timeStamp.append(firstConfirmDate);
-            if (! firstConfirmDate.equals(modifyDate)) {
-                timeStamp.append(" (");
-                timeStamp.append("修正:");
+
+            // 修正日表示
+            boolean showModified = getContext().getDocumentHistory().isShowModified(); // 修正履歴表示モードかどうか
+            String parent = model.getDocInfo().getParentId(); // 親があるかどうか
+            if (showModified && Objects.nonNull(parent)) {
+                timeStamp.append(" [Ⓤ"); // update マーク
                 timeStamp.append(modifyDate);
-                timeStamp.append(")");
+                timeStamp.append("]");
             }
 
             if (model.getDocInfo().getStatus().equals(IInfoModel.STATUS_TMP)) {
@@ -142,7 +154,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
             }
             // timeStamp にカルテ作成者を入れる
             String drName = model.getCreator().getCommonName();
-            timeStamp.append("　記載医師: ");
+            timeStamp.append(" 記載医師: ");
             timeStamp.append(drName);
 
             timeStampLabel.setText(timeStamp.toString());
@@ -167,17 +179,18 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
         soaPane.getTextPane().addMouseListener(ml);
         pPane.getTextPane().addMouseListener(ml);
     }
+
     public String getDocType() {
         if (model != null) {
-            String docType = model.getDocInfo().getDocType();
-            return docType;
+            return model.getDocInfo().getDocType();
         }
         return null;
     }
 
     /**
      * KarteDocumentViewer#addKarteViewer 中に enter() をブロックする.
-     * @param b
+     *
+     * @param b block or not
      */
     public void setAvoidEnter(boolean b) {
         avoidEnter = b;
@@ -199,7 +212,9 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
      */
     @Override
     public void enter() {
-        if (avoidEnter) { return; }
+        if (avoidEnter) {
+            return;
+        }
         super.enter();
 
         // ReadOnly 属性
@@ -219,6 +234,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
 
     /**
      * 表示するモデルを設定する.
+     *
      * @param model 表示するDocumentModel
      */
     public void setModel(DocumentModel model) {
@@ -227,6 +243,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
 
     /**
      * 表示するモデルを返す.
+     *
      * @return 表示するDocumentModel
      */
     public DocumentModel getModel() {
@@ -236,6 +253,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     /**
      * 選択状態を設定する.
      * 選択状態により Viewer のタイムスタンプ部分のフォントを変える (BOLD にする).
+     *
      * @param selected 選択された時 true
      */
     public void setSelected(boolean selected) {
@@ -249,6 +267,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
 
     /**
      * 選択されているかどうかを返す.
+     *
      * @return 選択されている時 true
      */
     public boolean isSelected() {
@@ -264,7 +283,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     public boolean equals(Object other) {
         if (other != null && other.getClass() == this.getClass()) {
             DocInfoModel otheInfo = ((KarteViewer2) other).getModel()
-            .getDocInfo();
+                    .getDocInfo();
             return getModel().getDocInfo().equals(otheInfo);
         }
         return false;
