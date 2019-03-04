@@ -282,8 +282,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     @Override
     public boolean equals(Object other) {
         if (other != null && other.getClass() == this.getClass()) {
-            DocInfoModel otheInfo = ((KarteViewer2) other).getModel()
-                    .getDocInfo();
+            DocInfoModel otheInfo = ((KarteViewer2) other).getModel().getDocInfo();
             return getModel().getDocInfo().equals(otheInfo);
         }
         return false;
@@ -293,7 +292,6 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     public int compareTo(KarteViewer2 other) {
         if (other != null && other.getClass() == this.getClass()) {
             DocInfoModel otheInfo = other.getModel().getDocInfo();
-
             return getModel().getDocInfo().compareTo(otheInfo);
         }
         return -1;
