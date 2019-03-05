@@ -16,7 +16,8 @@ public interface IInfoModel extends Serializable {
     String ISO_8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     /** カルテの確定日表示用のフォーマット */
-    String KARTE_DATE_FORMAT = "yyyy年M月d日'（'EEE'）'H時m分";
+    //String KARTE_DATE_FORMAT = "yyyy年M月d日'（'EEE'）'H時m分";
+    String KARTE_DATE_FORMAT = "yyyy年M月d日(E) HH:mm";
 
     /** 時間部分のない Date */
     String DATE_WITHOUT_TIME = "yyyy-MM-dd";

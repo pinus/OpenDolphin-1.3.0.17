@@ -85,6 +85,9 @@ public class Dolphin implements MainWindow {
 
         SettingForMac.set(this);
 
+        // default locale を設定する
+        Locale.setDefault(new Locale("ja", "JP"));
+
         // ClientContext を生成する
         ClientContextStub stub = new ClientContextStub();
         ClientContext.setClientContextStub(stub);

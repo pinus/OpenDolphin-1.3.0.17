@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseListener;
 import java.awt.print.PageFormat;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -130,28 +131,30 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
 
         // Model を表示する
         if (model != null) {
-            // time stamp
-            String firstConfirmDate = ModelUtils.getDateAsFormatString(
-                    model.getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
-            // modified time stamp
-            String modifyDate = ModelUtils.getDateAsFormatString(
-                    model.getDocInfo().getConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
 
             StringBuilder timeStamp = new StringBuilder();
+            String dateFormat = IInfoModel.KARTE_DATE_FORMAT;
+
+            // time stamp
+            String firstConfirmDate = ModelUtils.getDateAsFormatString(model.getDocInfo().getFirstConfirmDate(), dateFormat);
             timeStamp.append(firstConfirmDate);
 
             // 修正日表示
+            String modifyDate = ModelUtils.getDateAsFormatString(model.getDocInfo().getConfirmDate(), dateFormat);
             boolean showModified = getContext().getDocumentHistory().isShowModified(); // 修正履歴表示モードかどうか
             String parent = model.getDocInfo().getParentId(); // 親があるかどうか
+
             if (showModified && Objects.nonNull(parent)) {
-                timeStamp.append(" [Ⓤ"); // update マーク
+                timeStamp.append(" [");
+                timeStamp.append(UPDATE_MARK); // update マーク
                 timeStamp.append(modifyDate);
                 timeStamp.append("]");
             }
 
             if (model.getDocInfo().getStatus().equals(IInfoModel.STATUS_TMP)) {
-                timeStamp.append(UNDER_TMP_SAVE);
+                timeStamp.append(UNDER_TMP_SAVE); // - 仮保存中
             }
+
             // timeStamp にカルテ作成者を入れる
             String drName = model.getCreator().getCommonName();
             timeStamp.append(" 記載医師: ");

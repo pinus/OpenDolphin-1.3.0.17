@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
  */
 public abstract class AbstractChartDocument implements ChartDocument {
 
+    public static String UPDATE_MARK = "Ⓤ";
+
     private static final String[] CHART_MENUS = {
         GUIConst.ACTION_OPEN_KARTE, GUIConst.ACTION_SAVE, GUIConst.ACTION_DELETE, GUIConst.ACTION_PRINT, GUIConst.ACTION_MODIFY_KARTE,
         GUIConst.ACTION_ASCENDING, GUIConst.ACTION_DESCENDING, GUIConst.ACTION_SHOW_MODIFIED,
@@ -110,8 +112,8 @@ public abstract class AbstractChartDocument implements ChartDocument {
 
     /**
      * 共通の警告表示を行う.
-     * @param title
-     * @param message
+     * @param title タイトル
+     * @param message メッセージ
      */
     protected void warning(String title, String message) {
         Window parent = SwingUtilities.getWindowAncestor(getUI());

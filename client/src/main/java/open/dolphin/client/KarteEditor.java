@@ -5,10 +5,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PageFormat;
 import java.io.*;
-import java.util.Collection;
-import java.util.Date;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
-import java.util.TooManyListenersException;
 import java.util.prefs.Preferences;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -49,7 +50,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private static final int TIMESTAMP_FONT_SIZE = 12;
     private static final Font TIMESTAMP_FONT = new Font("Dialog", Font.PLAIN, TIMESTAMP_FONT_SIZE);
     private static final String DEFAULT_TITLE = "経過記録";
-    private static final String UPDATE_TAB_TITLE = "更新";
+
     // このエディタのモード
     private int mode = DOUBLE_MODE;
     // このエディタのモデル
@@ -109,7 +110,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * エディタ終了を知らせるリスナを登録.
      * EditorFrame に知らせる.
-     * @param listener
+     * @param listener FinishListener
      */
     public void addFinishListener(FinishListener listener) {
         finListener = listener;
@@ -221,7 +222,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * MMLリスナを追加する.
      * @param listener MMLリスナリスナ
-     * @throws java.util.TooManyListenersException
+     * @throws TooManyListenersException Exception
      */
     public void addMMLListner(MmlMessageListener listener) throws TooManyListenersException {
         if (mmlListener != null) {
@@ -243,7 +244,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * CLAIMリスナを追加する.
      * @param listener CLAIMリスナ
-     * @throws TooManyListenersException
+     * @throws TooManyListenersException Exception
      */
     public void addCLAIMListner(ClaimMessageListener listener) throws TooManyListenersException {
         claimSender.addCLAIMListener(listener);
@@ -275,7 +276,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
     /**
      * KartePane から dirty の通知を受ける.
-     * @param newDirty
+     * @param newDirty セットする dirty
      */
     @Override
     public void setDirty(boolean newDirty) {
@@ -444,20 +445,15 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private void displayModel() {
 
         // Timestamp を表示する
-        Date now = new Date();
-        timeStamp = ModelUtils.getDateAsFormatString(now, IInfoModel.KARTE_DATE_FORMAT);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern(IInfoModel.KARTE_DATE_FORMAT);
+        String now = ModelUtils.getDateTimeAsFormatString(LocalDateTime.now(), format);
 
-        // 修正の場合
         if (modify) {
-            // 更新: YYYY-MM-DDTHH:MM:SS (firstConfirmDate)
-            StringBuilder buf = new StringBuilder();
-            buf.append(UPDATE_TAB_TITLE);
-            buf.append(": ");
-            buf.append(timeStamp);
-            buf.append(" [");
-            buf.append(ModelUtils.getDateAsFormatString(model.getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT));
-            buf.append("]");
-            timeStamp = buf.toString();
+            LocalDateTime dateTime = ModelUtils.toLocalDateTime(model.getDocInfo().getFirstConfirmDate());
+            String firstConfirm = ModelUtils.getDateTimeAsFormatString(dateTime, format);
+            timeStamp = String.format("%s%s [%s]", UPDATE_MARK, now, firstConfirm);
+        } else {
+            timeStamp = now;
         }
 
         // 内容を表示する
@@ -481,17 +477,10 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         }
 
         // Model に設定してある健康保険を選択する
-        String selecteIns = null;
-        String insGUID = getModel().getDocInfo().getHealthInsuranceGUID();
-        if (insGUID != null) {
-            for (PVTHealthInsuranceModel in : ins) {
-                String GUID = in.getGUID();
-                if (GUID != null && GUID.equals(insGUID)) {
-                    selecteIns = in.toString();
-                    break;
-                }
-            }
-        }
+        String selecteIns = Arrays.stream(ins)
+                .filter(i -> Objects.nonNull(i.getGUID()))
+                .filter(i -> i.getGUID().equals(getModel().getDocInfo().getHealthInsuranceGUID()))
+                .findAny().map(PVTHealthInsuranceModel::toString).orElse(null);
 
         StringBuilder sb = new StringBuilder();
         sb.append(timeStamp);
@@ -552,7 +541,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * 保存ダイアログを表示し保存時のパラメータを取得する.
      * @param joinAreaNetwork sendMML MML送信フラグ 送信するとき true
-     * @return
+     * @return SaveParams
      */
     private SaveParams getSaveParams(boolean joinAreaNetwork) {
 
@@ -682,7 +671,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * 保存処理の主な部分を実行する.
      */
-    private void save2(final SaveParams params) throws Exception {
+    private void save2(final SaveParams params) {
 
         // 文書末の余分な改行文字を削除する masuda
         KarteStyledDocument doc = (KarteStyledDocument) soaPane.getTextPane().getDocument();
@@ -700,7 +689,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         DBTask<String> task = new DBTask<String>(chart) {
 
             @Override
-            protected String doInBackground() throws Exception {
+            protected String doInBackground() {
                 logger.debug("KarteSaveTask doInBackground");
                 String ret = null;
 
@@ -777,7 +766,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * save および claim 送信のために DocumentModel を compose する
      * by pns
-     * @param params
+     * @param params SaveParams
      */
     private void composeModel(SaveParams params) {
         //
@@ -1057,7 +1046,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             totalSize += size;
         }
         logger.debug("stamp total size(KB) = " + totalSize);
-        totalSize = 0;
 
         // 画像との関係を設定する
         number = 0;
@@ -1150,7 +1138,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             BufferedReader reader;
             try (BufferedWriter bw = new BufferedWriter(sw)) {
                 InputStream instream = ClientContext.getTemplateAsStream(templateFile);
-                reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
+                reader = new BufferedReader(new InputStreamReader(instream, StandardCharsets.UTF_8));
                 Velocity.evaluate(context, bw, "mml", reader);
                 bw.flush();
             }
@@ -1308,7 +1296,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * 文頭・文末の無駄な改行文字を削除する.
      * original by masuda-sensei
-     * @param kd
+     * @param kd KarteStyledDocument
      */
     private void removeExtraCR(KarteStyledDocument kd) {
         // これが一番速い！ 20個の改行削除に2msec!!
@@ -1344,7 +1332,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * 3個以上連続する改行を2個にする.
      * つまり，２つ以上連続する空行を１つにする.
-     * @param kd
+     * @param kd KarteStyledDocument
      */
     private void removeRepeatedCR(KarteStyledDocument kd) {
         int pos = 0;
