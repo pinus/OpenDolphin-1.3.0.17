@@ -16,7 +16,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.helper.PNSTriple;
 
 /**
  * ItemTablePanel を extend して作った DiagnosisTablePanel.
@@ -345,11 +345,10 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
         Task<List<OrcaEntry>> task = new Task<List<OrcaEntry>>(c, message, note, 30*1000) {
             @Override
-            protected List<OrcaEntry> doInBackground() throws Exception {
+            protected List<OrcaEntry> doInBackground() {
                 // 傷病名コードからDiseaseEntryを取得
                 OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
-                List<OrcaEntry> result = dao.getByomeiEntries(codes);
-                return result;
+                return dao.getByomeiEntries(codes);
             }
             @Override
             protected void succeeded(List<OrcaEntry> result) {

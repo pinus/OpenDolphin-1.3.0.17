@@ -24,8 +24,8 @@ import open.dolphin.project.Project;
 import open.dolphin.table.*;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSTabbedPane;
-import open.dolphin.util.HashUtil;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.helper.HashUtil;
+import open.dolphin.helper.PNSTriple;
 import org.apache.log4j.Logger;
 
 /**
@@ -344,7 +344,7 @@ public class AddUser extends AbstractMainTool {
             Task task = new Task<Boolean>(frame, message, updateMsg, maxEstimation) {
 
                 @Override
-                protected Boolean doInBackground() throws Exception {
+                protected Boolean doInBackground() {
                     logger.debug("updateUser doInBackground");
                     int cnt = udl.updateFacility(user);
                     return (cnt > 0);
@@ -409,7 +409,7 @@ public class AddUser extends AbstractMainTool {
             table.setToolTipText(DELETE_OK_USER);
 
             table.getSelectionModel().addListSelectionListener(e -> {
-                if (e.getValueIsAdjusting() == false) {
+                if (! e.getValueIsAdjusting()) {
                     // 削除ボタンをコントロールする
                     // 医療資格が other 以外は削除できない
                     int index = table.getSelectedRow();
@@ -474,10 +474,9 @@ public class AddUser extends AbstractMainTool {
             Task task = new Task<List<UserModel>>(frame, message, note, maxEstimation) {
 
                 @Override
-                protected List<UserModel> doInBackground() throws Exception {
+                protected List<UserModel> doInBackground() {
                     logger.debug("getUsers doInBackground");
-                    List<UserModel> result = udl.getAllUser();
-                    return result;
+                    return udl.getAllUser();
                 }
 
                 @Override
@@ -529,7 +528,7 @@ public class AddUser extends AbstractMainTool {
             Task task = new Task<List<UserModel>>(frame, message, note, maxEstimation) {
 
                 @Override
-                protected List<UserModel> doInBackground() throws Exception {
+                protected List<UserModel> doInBackground() {
                     logger.debug("deleteUser doInBackground");
                     List<UserModel> result = null;
                     if (udl.removeUser(deleteId) > 0) {
@@ -738,10 +737,8 @@ public class AddUser extends AbstractMainTool {
             //pass = null;
 
             final UserModel user = new UserModel();
-            StringBuilder sb = new StringBuilder(facilityId);
-            sb.append(IInfoModel.COMPOSITE_KEY_MAKER);
-            sb.append(userId);
-            user.setUserId(sb.toString());
+            String sb = facilityId + IInfoModel.COMPOSITE_KEY_MAKER + userId;
+            user.setUserId(sb);
             user.setPassword(hashPass);
             user.setSirName(surName.getText().trim());
             user.setGivenName(givenName.getText().trim());
@@ -791,7 +788,7 @@ public class AddUser extends AbstractMainTool {
             Task task = new Task<Boolean>(frame, message, addMsg, maxEstimation) {
 
                 @Override
-                protected Boolean doInBackground() throws Exception {
+                protected Boolean doInBackground() {
                     logger.debug("addUserEntry doInBackground");
                     int cnt = udl.putUser(user);
                     return (cnt > 0);

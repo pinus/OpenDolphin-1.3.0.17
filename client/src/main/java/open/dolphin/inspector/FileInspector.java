@@ -25,7 +25,7 @@ import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.BadgeListener;
 import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.StringTool;
 import org.apache.log4j.Logger;
 
 /**

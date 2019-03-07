@@ -40,11 +40,11 @@ import open.dolphin.helper.Task;
 import open.dolphin.infomodel.FacilityModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.StampTreeBean;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PersonalTreeModel;
 import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.project.Project;
-import open.dolphin.util.StampTreeUtils;
+import open.dolphin.helper.StampTreeUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -54,7 +54,7 @@ import org.apache.log4j.Logger;
  */
 public class StampPublisher {
 
-    private enum PublishedState {NONE, SAVED_NONE, LOCAL, GLOBAL};
+    private enum PublishedState {NONE, SAVED_NONE, LOCAL, GLOBAL}
     private enum PublishType {TT_NONE, TT_LOCAL, TT_PUBLIC}
 
     private static final int WIDTH = 858;
@@ -478,7 +478,7 @@ public class StampPublisher {
         Task task = new Task<Boolean>(c, message, note, maxEstimation) {
 
             @Override
-            protected Boolean doInBackground() throws Exception {
+            protected Boolean doInBackground() {
 
                 // 現時点の personal tree を永続化
                 sdl.putTree(personalTree);
@@ -570,7 +570,7 @@ public class StampPublisher {
         Task task = new Task<Boolean>(c, message, note, maxEstimation) {
 
             @Override
-            protected Boolean doInBackground() throws Exception {
+            protected Boolean doInBackground() {
                 sdl.cancelPublishedTree(stmpTree);
                 return sdl.isNoError();
             }

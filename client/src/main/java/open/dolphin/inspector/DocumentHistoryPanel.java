@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
-import open.dolphin.util.PNSPair;
+import open.dolphin.helper.PNSPair;
 
 /**
  *

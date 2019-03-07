@@ -16,7 +16,7 @@ import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.ui.Focuser;
-import open.dolphin.util.DailyDoseStringTool;
+import open.dolphin.helper.DailyDoseStringTool;
 
 /**
  * StampHolder を右クリックでいろいろいじる.
@@ -252,7 +252,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
         List<ClaimItem> dist = new ArrayList<>();
         for(ClaimItem c : src) { dist.add(createClaimItem(c)); }
 
-        return dist.toArray(new ClaimItem[dist.size()]);
+        return dist.toArray(new ClaimItem[0]);
     }
 
     /**
@@ -277,7 +277,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
             this.value = value;
             BundleMed bundle = (BundleMed) ctx.getStamp().getModel();
             String label = ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode())? " 日分" : " 回分";
-            putValue(AbstractAction.NAME, String.valueOf(value) + label);
+            putValue(AbstractAction.NAME, value + label);
         }
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -339,7 +339,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
                 list.add(dist);
             }
             // できた list を srcBundle に登録
-            bundle.setClaimItem(list.toArray(new ClaimItem[list.size()]));
+            bundle.setClaimItem(list.toArray(new ClaimItem[0]));
 
             propertyChanged(stamp);
         }
@@ -411,7 +411,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
             if (changed) {
                 // できた list を srcBundle に登録
-                bundle.setClaimItem(list.toArray(new ClaimItem[list.size()]));
+                bundle.setClaimItem(list.toArray(new ClaimItem[0]));
                 propertyChanged(stamp);
             }
         }
@@ -470,7 +470,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
             list.addAll(dialog.getValue());
 
             // できた list を srcBundle に登録
-            bundle.setClaimItem(list.toArray(new ClaimItem[list.size()]));
+            bundle.setClaimItem(list.toArray(new ClaimItem[0]));
 
             dialog.dispose();
             propertyChanged(stamp);
@@ -525,7 +525,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
                 list.add(dist);
             }
             // できた list を srcBundle に登録
-            bundle.setClaimItem(list.toArray(new ClaimItem[list.size()]));
+            bundle.setClaimItem(list.toArray(new ClaimItem[0]));
 
             propertyChanged(stamp);
         }
@@ -603,7 +603,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
             }
 
             // できた list を srcBundle に登録
-            bundle.setClaimItem(list.toArray(new ClaimItem[list.size()]));
+            bundle.setClaimItem(list.toArray(new ClaimItem[0]));
 
             dialog.dispose();
             propertyChanged(stamp);
@@ -650,7 +650,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
             }
 
             // できた list を srcBundle に登録
-            bundle.setClaimItem(list.toArray(new ClaimItem[list.size()]));
+            bundle.setClaimItem(list.toArray(new ClaimItem[0]));
             propertyChanged(stamp);        }
     }
 }

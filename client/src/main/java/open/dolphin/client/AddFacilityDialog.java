@@ -28,7 +28,7 @@ import open.dolphin.helper.Task;
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.project.Project;
 import open.dolphin.service.SystemService;
-import open.dolphin.util.HashUtil;
+import open.dolphin.helper.HashUtil;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -37,14 +37,14 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 /**
  * 医療機関と管理責任者を登録するクラス.
  *
- * @Author Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class AddFacilityDialog extends JDialog implements ComponentListener, Runnable {
     private static final long serialVersionUID = 1L;
 
     public static final String ACCOUNT_INFO = "accountInfo";
 
-    private enum AccountState {COM_TEST, AGREEMENT, ACCOUNT_INFO};
+    private enum AccountState {COM_TEST, AGREEMENT, ACCOUNT_INFO}
 
     private JPanel cardPanel;
     private CardLayout cardLayout;
@@ -123,7 +123,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
         try {
             InputStreamReader ir = new InputStreamReader(ClientContext.getResourceAsStream(agreementRes), agreementEnc);
             BufferedReader reader = new BufferedReader(ir);
-            String line = null;
+            String line;
             StringBuilder sb = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
@@ -172,7 +172,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
         cancelBtn = new JButton(cancelBtnText);
 
         // ボタンパネルを生成する
-        JPanel btnPanel = null;
+        JPanel btnPanel;
         if (ClientContext.isMac()) {
             btnPanel = GUIFactory.createCommandButtonPanel(
                     new JButton[]{backBtn, nextBtn, cancelBtn, okBtn});
@@ -214,45 +214,29 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
             controlButton();
         });
 
-        backBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (state == AccountState.AGREEMENT) {
-                    setState(AccountState.COM_TEST);
-                    cardLayout.show(cardPanel, "comTest");
-                } else if (state == AccountState.ACCOUNT_INFO) {
-                    setState(AccountState.AGREEMENT);
-                    cardLayout.show(cardPanel, "agreement");
-                }
+        backBtn.addActionListener(e -> {
+            if (state == AccountState.AGREEMENT) {
+                setState(AccountState.COM_TEST);
+                cardLayout.show(cardPanel, "comTest");
+            } else if (state == AccountState.ACCOUNT_INFO) {
+                setState(AccountState.AGREEMENT);
+                cardLayout.show(cardPanel, "agreement");
             }
         });
 
-        nextBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (state == AccountState.COM_TEST) {
-                    setState(AccountState.AGREEMENT);
-                    cardLayout.show(cardPanel, "agreement");
-                } else if (state == AccountState.AGREEMENT) {
-                    setState(AccountState.ACCOUNT_INFO);
-                    cardLayout.show(cardPanel, "accountInfo");
-                }
+        nextBtn.addActionListener(e -> {
+            if (state == AccountState.COM_TEST) {
+                setState(AccountState.AGREEMENT);
+                cardLayout.show(cardPanel, "agreement");
+            } else if (state == AccountState.AGREEMENT) {
+                setState(AccountState.ACCOUNT_INFO);
+                cardLayout.show(cardPanel, "accountInfo");
             }
         });
 
-        okBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addFacilityAdmin();
-            }
-        });
+        okBtn.addActionListener(e -> addFacilityAdmin());
 
-        cancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                close();
-            }
-        });
+        cancelBtn.addActionListener(e -> close());
 
         this.addComponentListener(this);
     }
@@ -261,7 +245,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
         @Override
         public void propertyChange(PropertyChangeEvent e) {
             String oid = (String)e.getNewValue();
-            comTestOk = (oid != null && (!oid.equals("")) ) ? true : false;
+            comTestOk = oid != null && (!oid.equals(""));
             controlButton();
         }
     }
@@ -269,7 +253,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
     private class AgreementListener implements PropertyChangeListener {
         @Override
         public void propertyChange(PropertyChangeEvent e) {
-            boolean agree = ((Boolean)e.getNewValue()).booleanValue();
+            boolean agree = (boolean)e.getNewValue();
             agreementOk = agree;
             controlButton();
         }

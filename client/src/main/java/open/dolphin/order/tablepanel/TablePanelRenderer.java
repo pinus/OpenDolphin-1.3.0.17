@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import open.dolphin.client.GUIConst;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.StringTool;
 
 /**
  *

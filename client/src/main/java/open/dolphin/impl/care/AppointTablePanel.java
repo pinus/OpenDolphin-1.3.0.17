@@ -6,7 +6,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
 import open.dolphin.infomodel.AppointmentModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.MyJScrollPane;

@@ -15,13 +15,14 @@ import open.dolphin.infomodel.LaboImportSummary;
 import open.dolphin.infomodel.LaboItemValue;
 import open.dolphin.infomodel.LaboModuleValue;
 import open.dolphin.infomodel.LaboSpecimenValue;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.project.Project;
-import open.dolphin.util.GUIDGenerator;
+import open.dolphin.helper.GUIDGenerator;
 import org.apache.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 
@@ -94,9 +95,7 @@ public class LaboModuleBuilder {
         this.laboDelegater = laboDelegater;
     }
 
-    public List<LaboModuleValue> getProduct() {
-        return allModules != null ? allModules : null;
-    }
+    public List<LaboModuleValue> getProduct() { return allModules; }
 
     /**
      * 引数のMML検査結果ファイルをパースしその中に含まれる.
@@ -227,7 +226,7 @@ public class LaboModuleBuilder {
      * @param reader
      * @throws java.io.IOException
      */
-    public void parse(BufferedReader reader) throws IOException, Exception {
+    public void parse(BufferedReader reader) throws IOException, JDOMException {
 
         SAXBuilder docBuilder = new SAXBuilder();
         Document doc = docBuilder.build(reader);
@@ -334,7 +333,7 @@ public class LaboModuleBuilder {
     /**
      * Content要素をパースする.
      * クライアント情報，ラボセンター情報，検体情報，検査項目情報を取得する.
-     * @param content 検査結果があるコンテント要素
+     * @param testModule 検査結果があるコンテント要素
      */
     private void parseTestModule(Element testModule) {
 

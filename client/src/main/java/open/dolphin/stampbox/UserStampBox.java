@@ -5,11 +5,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JList;
@@ -27,7 +23,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.inspector.DiagnosisInspector;
-import open.dolphin.util.StampTreeUtils;
+import open.dolphin.helper.StampTreeUtils;
 
 /**
  * UserStampBox.
@@ -79,8 +75,7 @@ public class UserStampBox extends AbstractStampBox {
         StampTreeTransferHandler transferHandler = new StampTreeTransferHandler();
 
         // userTrees を順番に並べ替える
-        Collections.sort(userTrees,
-                (o1, o2) -> tabMap.get(o1.getTreeName()) - tabMap.get(o2.getTreeName()));
+        Collections.sort(userTrees, Comparator.comparingInt(o -> tabMap.get(o.getTreeName())));
 
         // StampBox(TabbedPane) へリスト順に格納する
         // 一つのtabへ一つのtreeが対応
@@ -169,7 +164,7 @@ public class UserStampBox extends AbstractStampBox {
                             textPane.setCaretPosition(doc.getLength());
 
                             if (IInfoModel.ENTITY_ORCA.equals(stampTree.getEntity())) {
-                                stampList.forEach(stampInfo -> pane.stampInfoDropped(stampInfo));
+                                stampList.forEach(pane::stampInfoDropped);
                             } else {
                                 pane.stampInfoDropped(stampList);
                             }
@@ -335,7 +330,7 @@ public class UserStampBox extends AbstractStampBox {
             textPane.setCaretPosition(doc.getLength());
 
             if (IInfoModel.ENTITY_ORCA.equals(entity)) {
-                stampList.forEach(stampInfo -> pane.stampInfoDropped(stampInfo));
+                stampList.forEach(pane::stampInfoDropped);
             } else {
                 pane.stampInfoDropped(stampList);
             }

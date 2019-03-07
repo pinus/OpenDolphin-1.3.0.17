@@ -17,11 +17,12 @@ import javax.swing.border.AbstractBorder;
 import javax.swing.border.Border;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.Gengo;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.SimpleAddressModel;
 import open.dolphin.util.MMLDate;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.StringTool;
 
 /**
  * BasicInfoInspector.
@@ -232,7 +233,7 @@ public class BasicInfoInspector implements IInspector {
         kanaLabel.setText(kanaName);
 
         String birthday = patient.getBirthday();
-        String nengoBirthday = MMLDate.toFullNengo(birthday);
+        String nengoBirthday = Gengo.isoDateToFullGengo(birthday);
         birthdayLabel.setText(nengoBirthday + "生");
 
         String age = ModelUtils.getAge(birthday);

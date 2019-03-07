@@ -1,5 +1,7 @@
 package open.dolphin.infomodel;
 
+import open.dolphin.util.ModelUtils;
+
 import java.util.Date;
 import javax.persistence.*;
 

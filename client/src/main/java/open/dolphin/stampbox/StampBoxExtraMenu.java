@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,11 +19,11 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.MenuActionManager;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.StampModel;
 import open.dolphin.project.Project;
-import open.dolphin.util.HexBytesTool;
+import open.dolphin.helper.HexBytesTool;
 import org.jdom2.Element;
 import open.dolphin.helper.MenuActionManager.MenuAction;
 import open.dolphin.ui.sheet.JSheet;
@@ -201,7 +202,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
                 }
             }
             writer.write("/>\n");
-            blockGlass.setText(String.valueOf(count) + " 個のスタンプを保存しました");
+            blockGlass.setText(count + " 個のスタンプを保存しました");
             count++;
         }
 
@@ -301,7 +302,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
                             e.getAttributeValue("stampId"),
                             e.getAttributeValue("stampBytes")
                     );
-                    blockGlass.setText(String.valueOf(count) + " 個のスタンプを読み込みました");
+                    blockGlass.setText(count + " 個のスタンプを読み込みました");
                     count ++;
                     return TT_STAMP_INFO;
 
@@ -345,20 +346,19 @@ public class StampBoxExtraMenu extends MouseAdapter {
                     SwingWorker<String,Void> worker = new SwingWorker<String, Void>() {
 
                         @Override
-                        protected String doInBackground() throws Exception {
+                        protected String doInBackground() {
                             blockGlass.block();
                             List<StampTree> publishList = new ArrayList<>(IInfoModel.STAMP_ENTITIES.length);
                             List<StampTree> trees = stampBox.getAllTrees();
                             publishList.addAll(trees);
-                            String ret = director.build(publishList);
-                            return ret;
+                            return director.build(publishList);
                         }
 
                         @Override
                         protected void done() {
 
                             try (FileOutputStream f = new FileOutputStream(file);
-                                 OutputStreamWriter w = new OutputStreamWriter(f, "UTF-8")) {
+                                 OutputStreamWriter w = new OutputStreamWriter(f, StandardCharsets.UTF_8)) {
 
                                 w.write(get());
 
@@ -416,14 +416,14 @@ public class StampBoxExtraMenu extends MouseAdapter {
                 SwingWorker worker = new SwingWorker(){
 
                     @Override
-                    protected Object doInBackground() throws Exception {
+                    protected Object doInBackground() {
                         blockGlass.block();
                         try {
                             // xml ファイルから StampTree 作成
                             FileInputStream in = new FileInputStream(file);
                             List<StampTree> userTrees;
                             // stampBytesを含めたデータを読み込む
-                            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
+                            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
                                 // stampBytesを含めたデータを読み込む
                                 ExtendedStampTreeBuilder builder = new ExtendedStampTreeBuilder();
                                 ExtendedStampTreeDirector director = new ExtendedStampTreeDirector(builder);

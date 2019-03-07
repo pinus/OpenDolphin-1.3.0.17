@@ -27,9 +27,9 @@ import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.util.PNSPair;
-import open.dolphin.util.PNSTriple;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.PNSPair;
+import open.dolphin.helper.PNSTriple;
+import open.dolphin.helper.StringTool;
 
 /**
  * MasterSearchPanel.
@@ -123,7 +123,7 @@ public class MasterSearchPanel extends JPanel {
         ActionListener listener = e -> {
             String key = keywordField.getText().trim();
             // 全ての桁が数字 or Z の場合（＝コード検索）半角に，それ以外は全角に
-            if (key.matches("^[0-9,０-９,Z]+$")) {
+            if (key.matches("^[0-9,０-９Z]+$")) {
                 key = StringTool.toHankakuNumber(key);
             } else {
                 key = StringTool.toZenkakuNumber(key);
@@ -232,7 +232,7 @@ public class MasterSearchPanel extends JPanel {
                     String code = o.getCode();
                     if (code.startsWith(ClaimConst.ADMIN_CODE_START)) {
                         // 部位コード 001000800-999，コメント 0010000 00-99 は薬剤コードで登録する
-                        if (code.matches("^001000[0,8,9].*")) {
+                        if (code.matches("^001000[089].*")) {
                             mItem.setClassCode(ClaimConst.YAKUZAI);
                         } else {
                             mItem.setClassCode(ClaimConst.ADMIN);

@@ -29,7 +29,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSTitledBorder;

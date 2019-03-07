@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.infomodel.*;
+import open.dolphin.util.ModelUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.ParseException;

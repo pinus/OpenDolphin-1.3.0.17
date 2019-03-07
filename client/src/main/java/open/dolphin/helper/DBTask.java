@@ -6,18 +6,20 @@ import java.util.concurrent.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+
 import open.dolphin.client.Chart;
 import open.dolphin.client.ClientContext;
 import org.apache.log4j.Logger;
 
 /**
  *
- * @author Kazushi Minagawa, Digital Globe, Inc.
+ *
  * @param <T>
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
-public abstract class DBTask<T> extends SwingWorker<T,Void> implements PropertyChangeListener {
+public abstract class DBTask<T> extends SwingWorker<T, Void> implements PropertyChangeListener {
 
-    private static long TIMEOUT = 60*1000L;
+    private static long TIMEOUT = 60 * 1000L;
 
     private Chart context;
     private Logger logger;
@@ -100,7 +102,7 @@ public abstract class DBTask<T> extends SwingWorker<T,Void> implements PropertyC
 
         } else {
             try {
-                succeeded( get(TIMEOUT, TimeUnit.SECONDS) );
+                succeeded(get(TIMEOUT, TimeUnit.SECONDS));
 
             } catch (InterruptedException ex) {
                 cancelled();

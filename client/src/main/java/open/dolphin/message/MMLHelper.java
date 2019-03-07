@@ -13,7 +13,7 @@ import open.dolphin.infomodel.BundleMed;
 import open.dolphin.infomodel.ClaimItem;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.ProgressCourse;
 import open.dolphin.infomodel.SchemaModel;
@@ -67,34 +67,38 @@ public class MMLHelper {
 
         // Moduleを抽出する
         Collection<ModuleModel> moduleBeans = getDocument().getModules();
-        pModules = new ArrayList<ModuleModel>();
+        pModules = new ArrayList<>();
 
         for (ModuleModel module : moduleBeans) {
 
             String role = module.getModuleInfo().getStampRole();
 
-            if (role.equals(IInfoModel.ROLE_SOA_SPEC)) {
-                soaSpec = ((ProgressCourse) module.getModel()).getFreeText();
+            switch (role) {
+                case IInfoModel.ROLE_SOA_SPEC:
+                    soaSpec = ((ProgressCourse) module.getModel()).getFreeText();
+                    break;
 
-            } else if (role.equals(IInfoModel.ROLE_P)) {
-                pModules.add(module);
+                case IInfoModel.ROLE_P:
+                    pModules.add(module);
+                    break;
 
-            } else if (role.equals(IInfoModel.ROLE_P_SPEC)) {
-                pSpec = ((ProgressCourse) module.getModel()).getFreeText();
+                case IInfoModel.ROLE_P_SPEC:
+                    pSpec = ((ProgressCourse) module.getModel()).getFreeText();
+                    break;
             }
         }
 
         // Schemaを抽出する
         Collection<SchemaModel> schemaC = getDocument().getSchema();
         if (schemaC != null && schemaC.size() > 0) {
-            schemas = new ArrayList<SchemaModel>(schemaC.size());
+            schemas = new ArrayList<>(schemaC.size());
             schemas.addAll(schemaC);
         }
 
         // アクセス権を抽出する
         Collection<AccessRightModel> arc = getDocument().getDocInfo().getAccessRights();
         if (arc != null && arc.size() > 0) {
-            accessRights = new ArrayList<AccessRightModel>(arc.size());
+            accessRights = new ArrayList<>(arc.size());
             accessRights.addAll(arc);
         }
 
@@ -320,38 +324,41 @@ public class MMLHelper {
             //Namespace ns = child.getNamespace();
             //debug(ename);
 
-            if (ename.equals("paragraph")) {
-                // 段落単位に<xhtml:br/>をつける
-                // 次の段落用にビルダを新たに生成する
-                if (paragraphBuilder != null) {
-                    freeExp.append(paragraphBuilder.toString());
-                    freeExp.append("<xhtml:br/>\n");
-                }
-                paragraphBuilder = new StringBuilder();
+            switch (ename) {
+                case "paragraph":
+                    // 段落単位に<xhtml:br/>をつける
+                    // 次の段落用にビルダを新たに生成する
+                    if (paragraphBuilder != null) {
+                        freeExp.append(paragraphBuilder.toString());
+                        freeExp.append("<xhtml:br/>\n");
+                    }
+                    paragraphBuilder = new StringBuilder();
+                    break;
 
+                case "content":
+                    // 取得するものなし
+                    break;
 
-            } else if (ename.equals("content")) {
-                // 取得するものなし
+                case "component":
 
-            } else if (ename.equals("component")) {
+                    String name = child.getAttributeValue("name");
+                    int number = Integer.parseInt(child.getAttributeValue("component"));
 
-                String name = child.getAttributeValue("name");
-                int number = Integer.parseInt(child.getAttributeValue("component"));
+                    if (name.equals("schemaHolder")) {
+                        // Schema の場合はextRefに変換する
+                        paragraphBuilder.append(getSchemaInfo(schemas.get(number)));
 
-                if (name.equals("schemaHolder")) {
-                    // Schema の場合はextRefに変換する
-                    paragraphBuilder.append(getSchemaInfo(schemas.get(number)));
+                    } else if (name.equals("stampHolder")) {
+                        // オーダの場合は<br>でtoString()
+                        paragraphBuilder.append(getStampInfo(pModules.get(number)));
+                    }
+                    break;
 
-                } else if (name.equals("stampHolder")) {
-                    // オーダの場合は<br>でtoString()
-                    paragraphBuilder.append(getStampInfo(pModules.get(number)));
-                }
-
-
-            } else if (ename.equals("text")) {
-                // 意味があるかも知れないのでtrim()しない
-                //paragraphBuilder.append(child.getTextTrim());
-                paragraphBuilder.append(child.getText());
+                case "text":
+                    // 意味があるかも知れないのでtrim()しない
+                    //paragraphBuilder.append(child.getTextTrim());
+                    paragraphBuilder.append(child.getText());
+                    break;
             }
 
             // 再帰する
@@ -495,11 +502,7 @@ public class MMLHelper {
     }
 
     String addQuote(String str) {
-        StringBuilder buf = new StringBuilder();
-        buf.append("\"");
-        buf.append(str);
-        buf.append("\"");
-        return buf.toString();
+        return "\"" + str + "\"";
     }
 
     private void debug(String msg) {

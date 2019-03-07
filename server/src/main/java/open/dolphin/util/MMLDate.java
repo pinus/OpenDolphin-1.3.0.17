@@ -1,16 +1,16 @@
 package open.dolphin.util;
 
-import open.dolphin.infomodel.ModelUtils;
 import java.util.*;
 import java.text.*;
 import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.util.ModelUtils;
 
 /**
  * Utility class to handle MML Date format.
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
-public final class MMLDate extends Object {
+public final class MMLDate {
 
     // mmlDate形式 yyyy-MM-dd'T'HH:mm:ss
     private static final String MML_DATETIME_PATTERN = IInfoModel.ISO_8601_DATE_FORMAT;
@@ -177,17 +177,5 @@ public final class MMLDate extends Object {
      */
     public static GregorianCalendar getCalendar(String mmlDate) {
         return ModelUtils.getCalendar(mmlDate);
-    }
-
-    /**
-     * mmlDate 型式から年号月日を作る.
-     * @param mmlDate
-     * @return
-     */
-    public static String toFullNengo(String mmlDate) {
-        GregorianCalendar gc = getCalendar(mmlDate);
-        Locale locale = new Locale("ja", "JP", "JP");
-        DateFormat format = new SimpleDateFormat("GGGGy年M月d日", locale);
-        return format.format(gc.getTime());
     }
 }

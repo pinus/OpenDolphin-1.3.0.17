@@ -11,7 +11,7 @@ import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.project.Project;
 import open.dolphin.ui.MyJScrollPane;
@@ -147,7 +147,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     @Override
     public void stop() {
         if (karteList != null) {
-            karteList.stream().forEach((karte) -> karte.stop());
+            karteList.stream().forEach(KarteViewer2::stop);
             karteList.clear();
         }
     }
@@ -254,7 +254,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
      * データベースで検索した KarteModelを Viewer で表示する.
      * KarteTask から呼ばれる
      * @param models KarteModel
-     * @param docInfos DocInfo
+     * @param models List of DocumentModel
      */
     private void addKarteViewer(List<DocumentModel> models) {
 
@@ -624,7 +624,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         @Override
         protected void process(List<List<DocumentModel>> chunks) {
             //logger.info("process published chunks");
-            chunks.forEach(dm -> addKarteViewer(dm));
+            chunks.forEach(KarteDocumentViewer.this::addKarteViewer);
         }
     }
 

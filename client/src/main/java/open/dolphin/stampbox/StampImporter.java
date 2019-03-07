@@ -36,7 +36,7 @@ import open.dolphin.infomodel.SubscribedTreeModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.helper.PNSTriple;
 import org.apache.log4j.Logger;
 
 /**
@@ -97,8 +97,7 @@ public class StampImporter {
 
             @Override
             protected List<PublishedTreeModel> doInBackground() {
-                List<PublishedTreeModel> result = sdl.getPublishedTrees();
-                return result;
+                return sdl.getPublishedTrees();
             }
 
             @Override
@@ -334,7 +333,7 @@ public class StampImporter {
         Task task = new Task<Boolean>(c, message, mmsg, maxEstimation) {
 
             @Override
-            protected Boolean doInBackground() throws Exception {
+            protected Boolean doInBackground() {
                 sdl.unsubscribeTrees(list);
                 return sdl.isNoError();
             }
@@ -388,7 +387,7 @@ public class StampImporter {
                 }
             }
 
-            if (value != null && value instanceof String) {
+            if (value instanceof String) {
 
                 String pubType = (String) value;
 
@@ -435,7 +434,7 @@ public class StampImporter {
                 }
             }
 
-            if (value != null && value instanceof Boolean) {
+            if (value instanceof Boolean) {
 
                 Boolean imported = (Boolean) value;
 

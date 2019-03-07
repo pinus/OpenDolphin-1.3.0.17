@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import open.dolphin.dto.*;
 import open.dolphin.infomodel.*;
+import open.dolphin.util.ModelUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
@@ -522,8 +523,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
      */
     @Override
     public SchemaModel getImage(Long id) {
-        SchemaModel image = em.find(SchemaModel.class, id);
-        return image;
+        return em.find(SchemaModel.class, id);
     }
 
     /**

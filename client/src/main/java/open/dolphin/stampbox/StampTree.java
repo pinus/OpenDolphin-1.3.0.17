@@ -22,7 +22,7 @@ import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSTreeCellEditor;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.util.GUIDGenerator;
+import open.dolphin.helper.GUIDGenerator;
 import org.apache.log4j.Logger;
 
 /**
@@ -161,8 +161,7 @@ public class StampTree extends JTree implements TreeModelListener {
      */
     public TreeInfo getTreeInfo() {
         StampTreeNode node = (StampTreeNode) this.getModel().getRoot();
-        TreeInfo info = (TreeInfo)node.getUserObject();
-        return info;
+        return (TreeInfo)node.getUserObject();
     }
 
     /**
@@ -305,10 +304,9 @@ public class StampTree extends JTree implements TreeModelListener {
         Task task = new Task<String>(c, message, note, 60*1000) {
 
             @Override
-            protected String doInBackground() throws Exception {
+            protected String doInBackground() {
                 logger.debug("addStamp doInBackground");
-                String ret = sdl.putStamp(stampModel); // ret は StampId (UUID)
-                return ret;
+                return sdl.putStamp(stampModel); // ret は StampId (UUID)
             }
 
             @Override
@@ -392,13 +390,10 @@ public class StampTree extends JTree implements TreeModelListener {
             // メッセージを表示する
             if (!myTree) {
                 SwingUtilities.invokeLater(() -> {
-                    StringBuilder buf = new StringBuilder();
-                    buf.append("スタンプは個人用の ");
-                    buf.append(treeName);
-                    buf.append(" に保存しました。");
+                    String buf = "スタンプは個人用の " + treeName + " に保存しました。";
                     JSheet.showMessageDialog(
                             StampTree.this,
-                            buf.toString(),
+                            buf,
                             ClientContext.getFrameTitle(STAMP_SAVE_TASK_NAME),
                             JOptionPane.INFORMATION_MESSAGE);
                 });
@@ -460,10 +455,9 @@ public class StampTree extends JTree implements TreeModelListener {
         Task task = new Task<String>(c, message, note, 60*1000) {
 
             @Override
-            protected String doInBackground() throws Exception {
+            protected String doInBackground() {
                 logger.debug("addDiagnosis doInBackground");
-                String ret = sdl.putStamp(addStamp);
-                return ret;
+                return sdl.putStamp(addStamp);
             }
 
             @Override
@@ -528,9 +522,7 @@ public class StampTree extends JTree implements TreeModelListener {
             }
             info.setStampMemo(buf.toString());
             return info;
-        }).forEach(info -> {
-            infoList.add(info);
-        });
+        }).forEach(infoList::add);
 
         final StampDelegater sdl = new StampDelegater();
 
@@ -541,7 +533,7 @@ public class StampTree extends JTree implements TreeModelListener {
         Task<List<String>> task = new Task<List<String>>(c, message, note, 60*1000) {
 
             @Override
-            protected List<String> doInBackground() throws Exception {
+            protected List<String> doInBackground() {
                 logger.debug("addDiagnosis doInBackground");
                 return sdl.putStamp(stampList);
             }
@@ -581,7 +573,7 @@ public class StampTree extends JTree implements TreeModelListener {
      */
     public boolean addTextStamp(String text, final StampTreeNode selected) {
 
-        if ( (text == null) || (text.length() == 0) || text.equals("") )  {
+        if (text == null || text.length() == 0)  {
             return false;
         }
 
@@ -619,7 +611,7 @@ public class StampTree extends JTree implements TreeModelListener {
         Task task = new Task<String>(c, message, note, 60*1000) {
 
             @Override
-            protected String doInBackground() throws Exception {
+            protected String doInBackground() {
                 logger.debug("addTextStamp doInBackground");
                 return sdl.putStamp(addStamp);
             }
@@ -647,7 +639,7 @@ public class StampTree extends JTree implements TreeModelListener {
      */
     protected String constractToolTip(ModuleModel stamp) {
 
-        try (BufferedReader reader = new BufferedReader(new StringReader(stamp.getModel().toString()));) {
+        try (BufferedReader reader = new BufferedReader(new StringReader(stamp.getModel().toString()))) {
 
             StringBuilder buf = new StringBuilder();
             String line;
@@ -673,7 +665,6 @@ public class StampTree extends JTree implements TreeModelListener {
 
     /**
      * スタンプタスク共通の warning ダイアログを表示する.
-     * @param title  ダイアログウインドウに表示するタイトル
      * @param message　エラーメッセージ
      */
     private void warning(String message) {

@@ -22,12 +22,12 @@ import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.AllergyModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.helper.PNSTriple;
 
 /**
  * AllergyInspector.
@@ -216,7 +216,7 @@ public class AllergyInspector implements IInspector {
         DBTask task = new DBTask<List<Long>>(context) {
 
             @Override
-            protected List<Long> doInBackground() throws Exception {
+            protected List<Long> doInBackground() {
                 //logger.debug("allergy add doInBackground");
                 DocumentDelegater ddl = new DocumentDelegater();
                 List<Long> ids = ddl.addObservations(addList);
@@ -256,7 +256,7 @@ public class AllergyInspector implements IInspector {
         DBTask task = new DBTask<Void>(this.context) {
 
             @Override
-            protected Void doInBackground() throws Exception {
+            protected Void doInBackground() {
                // logger.debug("allergy delete doInBackground");
                 DocumentDelegater ddl = new DocumentDelegater();
                 ddl.removeObservations(list);

@@ -10,51 +10,67 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
+
 import open.dolphin.ui.MyProgressMonitor;
 
 /**
- * Progress 表示付き Task
+ * Progress 表示付き Task.
+ *
+ * @param <T> Target
  * @author pns
- * @param <T>
  */
 public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionListener, PropertyChangeListener {
 
-    /** 起動している Task instance のリスト. 表示される ProgressMonitor を１つにするのに使う */
+    /**
+     * 起動している Task instance のリスト. 表示される ProgressMonitor を１つにするのに使う.
+     */
     private static List<Task> taskList = new ArrayList<>();
 
-    /** ProgressMonitor のレンジは 0-100 で固定なので MAX は 100 で固定する */
+    /**
+     * ProgressMonitor のレンジは 0-100 で固定なので MAX は 100 で固定する.
+     */
     private static final double MAX = 100;
-    /** 進捗状況を表示する間隔 (msec) */
+    /**
+     * 進捗状況を表示する間隔 (msec).
+     */
     private static int INTERVAL = 500;
 
     private MyProgressMonitor progressMonitor;
     private Timer timer;
     private InputBlocker blocker;
-    private int timeout = 0;
-    /** interval と timeout から計算される ProgressMonitor の増加量 */
+    private int timeout;
+    /**
+     * interval と timeout から計算される ProgressMonitor の増加量.
+     */
     private double tick = 0;
-    /** 進捗値　0〜MAX の間を動く */
+    /**
+     * 進捗値　0〜MAX の間を動く.
+     */
     private double current = 0;
-    /** cancel の時に処理に interrupt を入れるかどうか */
+    /**
+     * cancel の時に処理に interrupt を入れるかどうか.
+     */
     private boolean interrupt = true;
 
     /**
-     * 進捗状況を自分で setProgress する Task を作る
-     * setProgress しないと，勝手に 1/10 ずつ count up していくが終了はしない
-     * @param parent ダイアログの親
+     * 進捗状況を自分で setProgress する Task を作る.
+     * setProgress しないと，勝手に 1/10 ずつ count up していくが終了はしない.
+     *
+     * @param parent  ダイアログの親
      * @param message ダイアログに出すメッセージ（後から変更不可）
-     * @param note ダイアログに出すノート（後から変更可能）
+     * @param note    ダイアログに出すノート（後から変更可能）
      */
     public Task(Component parent, Object message, String note) {
         this(parent, message, note, 0);
     }
 
     /**
-     * 一定時間ごとに進捗状況を表示する Task を作る
-     * maxEstimation=0 の場合は自分で setProgress して管理する必要あり
-     * @param parent ダイアログの親
-     * @param message ダイアログに出すメッセージ
-     * @param note ダイアログに出すノート（後から setNote で変更可能）
+     * 一定時間ごとに進捗状況を表示する Task を作る.
+     * maxEstimation=0 の場合は自分で setProgress して管理する必要あり.
+     *
+     * @param parent        ダイアログの親
+     * @param message       ダイアログに出すメッセージ
+     * @param note          ダイアログに出すノート（後から setNote で変更可能）
      * @param maxEstimation timeout までの時間（msec）
      */
     public Task(Component parent, Object message, String note, int maxEstimation) {
@@ -77,64 +93,78 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
     }
 
     /**
-     * ProgressMonitor を出す前に無条件で待つ時間 (default = 500 msec)
-     * @param msec
+     * ProgressMonitor を出す前に無条件で待つ時間 (default = 500 msec).
+     *
+     * @param msec 待ち時間
      */
     public void setMillisToDecidePopup(int msec) {
         progressMonitor.setMillisToDecideToPopup(msec);
     }
+
     /**
-     * この時間が予想残り時間より短い場合に ProgressMonitor を出す
-     * 残り時間は，setValue の度に経過時間から計算される
-     * @param msec
+     * この時間が予想残り時間より短い場合に ProgressMonitor を出す.
+     * 残り時間は，setValue の度に経過時間から計算される.
+     *
+     * @param msec 待ち時間
      */
     public void setMillisToPopup(int msec) {
         progressMonitor.setMillisToPopup(msec);
     }
+
     /**
-     * Time out までの時間 (msec) 0=time out しない
-     * @param msec
+     * Time out までの時間 (msec) 0=time out しない.
+     *
+     * @param msec Time out までの時間
      */
     public void setTimeOut(int msec) {
         this.timeout = msec;
     }
+
     /**
-     * ProgressMonitor に note を表示
-     * @param note
+     * ProgressMonitor に note を表示.
+     *
+     * @param note Note
      */
     public void setNote(String note) {
         progressMonitor.setNote(note);
     }
+
     /**
-     * ProgressMonitor を表示するのは，一番先に加わった task のみにする
-     * たくさん ProgressMonitor dialog が出るとうざいので
-     * @param nv
+     * ProgressMonitor を表示するのは，一番先に加わった task のみにする.
+     * たくさん ProgressMonitor dialog が出るとうざいので.
+     *
+     * @param nv new value
      */
     private void setProgressMonitorProgress(int nv) {
         if (!taskList.isEmpty() && taskList.get(0).hashCode() == this.hashCode()) {
             progressMonitor.setProgress(nv);
         }
     }
+
     /**
-     * Task.InputBlocker をセットする
-     * @param blocker
+     * Task#InputBlocker をセットする.
+     *
+     * @param blocker InputBlocker
      */
     public void setInputBlocker(InputBlocker blocker) {
         this.blocker = blocker;
     }
+
     /**
-     * Cancel の時に，強制 interrupt かけるかどうか
-     * doInBackground に自分でキャンセル処理入れた場合 false にする
-     * @param b
+     * Cancel の時に，強制 interrupt かけるかどうか.
+     * doInBackground に自分でキャンセル処理入れた場合 false にする.
+     *
+     * @param b true to interrupt
      */
     public void setInterruptOnCancel(boolean b) {
         interrupt = b;
     }
 
     /**
-     * interval 時間ごとに実行される action
-     * ProgressBar 表示処理，timeout 処理をする
-     * @param e
+     * interval 時間ごとに実行される action.
+     * ProgressBar 表示処理，timeout 処理をする.
+     *
+     * @param e ActionEvent
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -148,17 +178,21 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
 
         if (timeout == 0) {
             // timeout しない場合は残りの 1/10 を足す
-            current += (MAX - current)/10;
+            current += (MAX - current) / 10;
 
-        } else  {
+        } else {
             current += tick;
             // timeout した場合は強制的に cancel
-            if (current >= MAX) { cancel(true); }
+            if (current >= MAX) {
+                cancel(true);
+            }
         }
     }
+
     /**
      * SwingWorker からの propertyChange を受け取る
-     * @param e
+     *
+     * @param e PropertyChangeEvent
      */
     @Override
     public void propertyChange(PropertyChangeEvent e) {
@@ -168,16 +202,22 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
             switch ((StateValue) e.getNewValue()) {
                 case STARTED:
                     // 一定時間ごとに割り込んで進捗状況を表示するタイマーをスタート
-                    if (!timer.isRunning()) { timer.start(); }
-                    if (blocker != null) { blocker.block(); }
+                    if (!timer.isRunning()) {
+                        timer.start();
+                    }
+                    if (blocker != null) {
+                        blocker.block();
+                    }
                     break;
 
                 case DONE:
                     timer.stop();
-                    if (blocker != null) { blocker.unblock(); }
+                    if (blocker != null) {
+                        blocker.unblock();
+                    }
                     break;
             }
-        // setProgress した場合呼ばれる
+            // setProgress した場合呼ばれる
         } else if ("progress".equals(prop)) {
             int nv = (Integer) e.getNewValue();
             setProgressMonitorProgress(nv);
@@ -190,15 +230,14 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
         taskList.remove(this);
         progressMonitor.close();
 
-        if (isCancelled()) { cancelled(); }
-        else {
+        if (isCancelled()) {
+            cancelled();
+        } else {
             try {
                 succeeded(get());
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 interrupted(e);
-            }
-            catch (ExecutionException e) {
+            } catch (ExecutionException e) {
                 failed(e.getCause());
             }
         }
@@ -209,24 +248,28 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
      */
     public interface InputBlocker {
         public void block();
+
         public void unblock();
     }
 
     protected abstract void succeeded(T result);
 
-    protected void cancelled() {};
+    protected void cancelled() {
+    }
 
-    protected void failed(Throwable cause) {};
+    protected void failed(Throwable cause) {
+    }
 
-    protected void interrupted(InterruptedException ex) {};
+    protected void interrupted(InterruptedException ex) {
+    }
 
-    public static void main (String[] argv) {
+    public static void main(String[] argv) {
         Task task = new Task<String>(null, "テスト１", "実行中...") {
 
             @Override
             protected String doInBackground() throws Exception {
-                for(int i=0; i<4; i++) {
-                    setProgress(i*25);
+                for (int i = 0; i < 4; i++) {
+                    setProgress(i * 25);
                     Thread.sleep(1000);
                 }
                 return "test";
@@ -242,10 +285,12 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
             protected void cancelled() {
                 System.out.println("Canceled");
             }
+
             @Override
             protected void failed(Throwable cause) {
                 System.out.println("failed " + cause);
             }
+
             @Override
             protected void interrupted(InterruptedException ex) {
                 System.out.println("interrupted " + ex);
@@ -261,8 +306,8 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
             @Override
             protected Object doInBackground() throws Exception {
                 System.out.println("task2 start");
-                for(int i=0; i<5; i++) {
-                    setProgress(i*20);
+                for (int i = 0; i < 5; i++) {
+                    setProgress(i * 20);
                     Thread.sleep(1000);
                 }
                 return null;

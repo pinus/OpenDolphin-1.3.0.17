@@ -11,11 +11,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBorderFactory;
 
 /**
  * GridBagLayout の JPanel を作る.
+ *
  * @author Kazushi Minagawa Digital Globe, Inc.
  */
 public class GridBagBuilder {
@@ -49,6 +51,7 @@ public class GridBagBuilder {
     /**
      * GridBagLayout の JPanel を BorderLayout の CENTER に入れた
      * TitledBorder を付けた JPanel を返す.
+     *
      * @param title
      */
     public GridBagBuilder(String title) {
@@ -81,6 +84,7 @@ public class GridBagBuilder {
 
     /**
      * 座標(x, y) anchor の位置に長さ 1 のコンポーネントを追加する.
+     *
      * @param c
      * @param x
      * @param y
@@ -92,6 +96,7 @@ public class GridBagBuilder {
 
     /**
      * 座標(x, y) anchor の位置にスパン(width, height)のコンポーネントを追加する.
+     *
      * @param cmp
      * @param x
      * @param y
@@ -108,7 +113,7 @@ public class GridBagBuilder {
         c.gridy = y;
         c.gridwidth = width;
         c.gridheight = height;
-        c.fill = GridBagConstraints.NONE;	// 大きくしない !!!
+        c.fill = GridBagConstraints.NONE;    // 大きくしない !!!
         c.anchor = anchor;
 
         // X,Y 方向とも２番目以降の部品は水平方向に 7,
@@ -117,12 +122,13 @@ public class GridBagBuilder {
             c.insets = new Insets(top, left, 0, 0);  // top left bottom right
         }
 
-        ((GridBagLayout)container.getLayout()).setConstraints(cmp, c);
+        ((GridBagLayout) container.getLayout()).setConstraints(cmp, c);
         container.add(cmp);
     }
 
     /**
      * 座標(x, y)の位置にスパン１で重み(wx, wy)のコンポーネントを追加する.
+     *
      * @param cmp
      * @param x
      * @param y
@@ -136,6 +142,7 @@ public class GridBagBuilder {
 
     /**
      * 座標(x, y)の位置にスパン(width, height)で重み(wx, wy)のコンポーネントを追加する.
+     *
      * @param cmp
      * @param x
      * @param y
@@ -163,7 +170,7 @@ public class GridBagBuilder {
             c.insets = new Insets(top, left, 0, 0);  // top left bottom right
         }
 
-        ((GridBagLayout)container.getLayout()).setConstraints(cmp, c);
+        ((GridBagLayout) container.getLayout()).setConstraints(cmp, c);
         container.add(cmp);
     }
 
@@ -232,22 +239,20 @@ public class GridBagBuilder {
         JLabel l = new JLabel(title, SwingConstants.RIGHT);
 
         JTextField tf = new JTextField(length);
-        tf.setMargin(new Insets(1,2,1,2));
+        tf.setMargin(new Insets(1, 2, 1, 2));
 
-      if (kanji) {
+        if (kanji) {
             IMEControl.setImeOnIfFocused(tf);
         } else {
             IMEControl.setImeOffIfFocused(tf);
         }
 
-        add(l,  col, row, 1, 1, SwingConstants.EAST);
+        add(l, col, row, 1, 1, SwingConstants.EAST);
         add(tf, col, row, 1, 1, SwingConstants.WEST);
     }
 
 
-
     /**
-     *
      * @param components
      */
     public void layout(List<GridBagComponent> components) {

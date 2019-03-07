@@ -16,6 +16,7 @@ import javax.swing.undo.UndoManager;
  * manager.addUndoActionTo(textComponent);
  * textComponent.getDocument().addUndoableEditListener(manager::listener);
  * }</pre>
+ *
  * @author pns
  */
 public class TextComponentUndoManager extends UndoManager {
@@ -28,6 +29,7 @@ public class TextComponentUndoManager extends UndoManager {
         // default undo action
         undoAction = new AbstractAction("undo") {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 undo();
@@ -36,6 +38,7 @@ public class TextComponentUndoManager extends UndoManager {
         // default redo action
         redoAction = new AbstractAction("redo") {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 redo();
@@ -45,8 +48,9 @@ public class TextComponentUndoManager extends UndoManager {
 
     /**
      * JTextComponent に Undo 機能を付ける utility static method.
-     * @param c
-     * @return
+     *
+     * @param c JTextComponent
+     * @return TextComponentUndoManager
      */
     public static TextComponentUndoManager getManager(JTextComponent c) {
         TextComponentUndoManager manager = new TextComponentUndoManager();
@@ -72,20 +76,24 @@ public class TextComponentUndoManager extends UndoManager {
         redoAction = action;
     }
 
-    public void listener (UndoableEditEvent e) {
+    public void listener(UndoableEditEvent e) {
         addEdit(e.getEdit());
         updateActionStatus(); // 文字入力毎に action が enable/disable される
     }
 
     @Override
     public void undo() {
-        if (canUndo()) { super.undo(); }
+        if (canUndo()) {
+            super.undo();
+        }
         updateActionStatus();
     }
 
     @Override
     public void redo() {
-        if (canRedo()) { super.redo(); }
+        if (canRedo()) {
+            super.redo();
+        }
         updateActionStatus();
     }
 

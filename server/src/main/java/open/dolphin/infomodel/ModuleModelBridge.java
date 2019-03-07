@@ -1,5 +1,6 @@
 package open.dolphin.infomodel;
 
+import open.dolphin.util.ModelUtils;
 import org.hibernate.search.bridge.StringBridge;
 
 /**

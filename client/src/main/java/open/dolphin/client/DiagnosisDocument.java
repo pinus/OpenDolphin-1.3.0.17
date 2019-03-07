@@ -33,8 +33,8 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.MMLDate;
-import open.dolphin.util.PNSTriple;
-import open.dolphin.util.PNSPair;
+import open.dolphin.helper.PNSTriple;
+import open.dolphin.helper.PNSPair;
 import org.apache.log4j.Logger;
 
 /**
@@ -520,7 +520,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             today.clear(Calendar.MILLISECOND);
             date = today.getTime();
         } else {
-            date = new Date(0l);
+            date = new Date(0L);
         }
 
         getDiagnosisHistory(date);
@@ -578,9 +578,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             if (!updatedDiagnosis.contains(updated)) { updatedDiagnosis.add(updated); }
         }
         // 削除を undo した場合は deletedDiagnosis から削除
-        if (deletedDiagnosis.contains(updated)) {
-            deletedDiagnosis.remove(updated);
-        }
+        deletedDiagnosis.remove(updated);
+
         controlButtons();
     }
 
@@ -591,8 +590,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private void addDeletedList(RegisteredDiagnosisModel deleted) {
         deletedDiagnosis.add(deleted);
         // delete したら 他のリストからも削除
-        if (addedDiagnosis.contains(deleted)) { addedDiagnosis.remove(deleted); }
-        if (updatedDiagnosis.contains(deleted)) { updatedDiagnosis.remove(deleted); }
+        addedDiagnosis.remove(deleted);
+        updatedDiagnosis.remove(deleted);
         controlButtons();
     }
 
@@ -738,9 +737,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         DBTask task = new DBTask<List<StampModel>>(getContext()) {
             @Override
-            protected List<StampModel> doInBackground() throws Exception {
-                List<StampModel> result = sdl.getStamp(stampList);
-                return result;
+            protected List<StampModel> doInBackground() {
+                return sdl.getStamp(stampList);
             }
             @Override
             protected void succeeded(List<StampModel> list) {
@@ -767,7 +765,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 傷病名スタンプをデータベースから取得しテーブルへ挿入する. Worker Thread で実行される.
-     * @param stampInfo
+     * @param sm StampModel
      * @param row 自動判定するので使っていない
      */
     private void insertStamp(StampModel sm, int row) {
@@ -1102,14 +1100,12 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         DBTask task = new DBTask<List<RegisteredDiagnosisModel>>(getContext()) {
 
             @Override
-            protected List<RegisteredDiagnosisModel> doInBackground() throws Exception {
+            protected List<RegisteredDiagnosisModel> doInBackground() {
                 logger.debug("getDiagnosisHistory doInBackground");
-                List<RegisteredDiagnosisModel> result = ddl.getDiagnosisList(spec);
-                return result;
+                return ddl.getDiagnosisList(spec);
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void succeeded(List<RegisteredDiagnosisModel> list) {
                 logger.debug("getDiagnosisHistory succeeded");
                 // if (list == null) { list = new ArrayList<>(); } // null にはならない
@@ -1121,7 +1117,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 // addedDiagnosis がある場合は list に追加
                 if (addedDiagnosis.size() > 0) {
                     if (ascend) {
-                        addedDiagnosis.forEach(rd -> list.add(rd));
+                        addedDiagnosis.addAll(list);
                     } else {
                         addedDiagnosis.forEach(rd -> list.add(0, rd));
                     }
@@ -1160,15 +1156,15 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         Task<Boolean> task = new Task<Boolean>(c, message, note, maxEstimation) {
 
             @Override
-            protected Boolean doInBackground() throws Exception {
-                Boolean found = false;
+            protected Boolean doInBackground() {
+                boolean found = false;
 
                 // 病名コードを切り出して（接頭語，接尾語は捨てる）コードのリストを作る
                 // 重複は不要なので，HashSet を使う
                 HashSet<String> codeSet = new HashSet<>();
                 // codes のうち，７桁のものが srycd コード → これを codeSet にためる
                 rdList.stream().map(rd -> rd.getDiagnosisCode().split("\\.")).forEach(codes ->
-                   Arrays.stream(codes).filter(code -> code.length() == 7).forEach(code -> codeSet.add(code)));
+                   Arrays.stream(codes).filter(code -> code.length() == 7).forEach(codeSet::add));
 
                 //dao 取得
                 OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
@@ -1245,7 +1241,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             today.clear(Calendar.MILLISECOND);
             date = today.getTime();
         } else {
-            date = new Date(0l);
+            date = new Date(0L);
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -1258,7 +1254,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         DBTask<List<RegisteredDiagnosisModel>> task = new DBTask<List<RegisteredDiagnosisModel>>(getContext()){
 
             @Override
-            protected List<RegisteredDiagnosisModel> doInBackground() throws Exception {
+            protected List<RegisteredDiagnosisModel> doInBackground() {
                 return dao.getOrcaDisease(patientId, from, to, ascend);
             }
 
@@ -1528,7 +1524,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         RegisteredDiagnosisModel rd;
         List<RegisteredDiagnosisModel> diagList = new ArrayList<>();
         Date confirmed = new Date();
-        int rows[] = diagTable.getSelectedRows();
+        int[] rows = diagTable.getSelectedRows();
         for (int r : rows) {
             int row = diagTable.convertRowIndexToModel(r);
             rd = tableModel.getObject(row);
@@ -1597,7 +1593,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     public void duplicateDiagnosis() {
 
-        int rows[] = diagTable.getSelectedRows();
+        int[] rows = diagTable.getSelectedRows();
         for (int r : rows) {
             int row = diagTable.convertRowIndexToModel(r);
 

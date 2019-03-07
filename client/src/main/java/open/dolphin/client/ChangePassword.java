@@ -21,7 +21,7 @@ import open.dolphin.infomodel.LicenseModel;
 import open.dolphin.infomodel.RoleModel;
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.project.*;
-import open.dolphin.util.HashUtil;
+import open.dolphin.helper.HashUtil;
 import org.apache.log4j.Logger;
 
 /**
@@ -407,7 +407,7 @@ public class ChangePassword extends AbstractMainTool {
             Task task = new Task<Boolean>(frame, message, PROGRESS_NOTE, maxEstimation) {
 
                 @Override
-                protected Boolean doInBackground() throws Exception {
+                protected Boolean doInBackground() {
                     logger.debug("ChangePassword doInBackground");
                     int cnt = udl.updateUser(updateModel);
                     return cnt > 0;

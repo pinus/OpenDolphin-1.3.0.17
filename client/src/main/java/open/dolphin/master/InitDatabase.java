@@ -17,7 +17,7 @@ import open.dolphin.infomodel.LicenseModel;
 import open.dolphin.infomodel.RadiologyMethodValue;
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.service.SystemService;
-import open.dolphin.util.HashUtil;
+import open.dolphin.helper.HashUtil;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -89,7 +89,7 @@ public class InitDatabase {
 
         try (InputStream in = this.getClass().getResourceAsStream(PROFIEL_RESOURCE);
             InputStreamReader ir = new InputStreamReader(in, ENCODING);
-            BufferedReader reader = new BufferedReader(ir); ) {
+            BufferedReader reader = new BufferedReader(ir)) {
 
             // profiel.txt ファイルの読み込み
             String line;
@@ -212,7 +212,7 @@ public class InitDatabase {
 
         try ( InputStream in = this.getClass().getResourceAsStream(name);
             InputStreamReader ir = new InputStreamReader(in, ENCODING);
-            BufferedReader reader = new BufferedReader(ir); ){
+            BufferedReader reader = new BufferedReader(ir)){
 
             List<RadiologyMethodValue> list = null;
 

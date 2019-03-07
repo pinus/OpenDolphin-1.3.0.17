@@ -1,9 +1,10 @@
-package open.dolphin.util;
+package open.dolphin.helper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
+
 import open.dolphin.stampbox.AbstractStampTreeBuilder;
 import open.dolphin.stampbox.DefaultStampTreeBuilder;
 import open.dolphin.stampbox.DefaultStampTreeXmlBuilder;
@@ -14,6 +15,7 @@ import open.dolphin.infomodel.PersonalTreeModel;
 import open.dolphin.infomodel.PublishedTreeModel;
 
 /**
+ * StampTreeUtils.
  *
  * @author pns
  */
@@ -21,9 +23,10 @@ public class StampTreeUtils {
 
     /**
      * PersonalTreeModel をコピーして Publish 用の treeXml をセットした PublishedTreeModel を作る.
-     * @param model
-     * @param treeXml
-     * @return
+     *
+     * @param model PersonalTreeModel
+     * @param treeXml TreeXML
+     * @return PublishedTreeModel
      */
     public static PublishedTreeModel createPublishedTreeModel(PersonalTreeModel model, String treeXml) {
         PublishedTreeModel publishedModel = new PublishedTreeModel();
@@ -46,8 +49,9 @@ public class StampTreeUtils {
 
     /**
      * StampTree のリストを XML にエンコードする
-     * @param tree
-     * @return
+     *
+     * @param tree List of StampTree
+     * @return XML
      */
     public static String xmlEncode(List<StampTree> tree) {
         DefaultStampTreeXmlBuilder builder = new DefaultStampTreeXmlBuilder();
@@ -57,8 +61,9 @@ public class StampTreeUtils {
 
     /**
      * TreeXml を DefaultStampTreeBuilder でデコードして StampTree のリストを得る.
-     * @param treeXml
-     * @return
+     *
+     * @param treeXml XML
+     * @return List of StampTree
      */
     public static List<StampTree> xmlDecode(String treeXml) {
         return xmlDecode(treeXml, new DefaultStampTreeBuilder());
@@ -66,9 +71,10 @@ public class StampTreeUtils {
 
     /**
      * 指定した builder を使って xmlDecode する
-     * @param treeXml
-     * @param builder
-     * @return
+     *
+     * @param treeXml XML
+     * @param builder StampTreeBuilder
+     * @return List of StampTree
      */
     public static List<StampTree> xmlDecode(String treeXml, AbstractStampTreeBuilder builder) {
         try (BufferedReader reader = new BufferedReader(new StringReader(treeXml))) {

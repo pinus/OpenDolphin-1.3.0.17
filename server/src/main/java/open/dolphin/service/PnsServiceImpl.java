@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import org.apache.log4j.Logger;
 import org.hibernate.search.MassIndexer;

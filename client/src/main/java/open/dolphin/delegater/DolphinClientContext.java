@@ -11,7 +11,7 @@ import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import open.dolphin.JsonConverter;
 import open.dolphin.infomodel.InfoModel;
-import open.dolphin.util.HashUtil;
+import open.dolphin.helper.HashUtil;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
@@ -116,7 +116,7 @@ public class DolphinClientContext {
         }
 
         @Override
-        public void filter(ClientRequestContext requestContext) throws IOException {
+        public void filter(ClientRequestContext requestContext) {
             requestContext.getHeaders().add("Authorization", header);
         }
     }

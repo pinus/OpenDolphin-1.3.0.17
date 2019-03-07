@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
+ * ImageHelper
  *
  * @author kazm
  * @author pns
@@ -23,11 +24,14 @@ public class ImageHelper {
     /**
      * ImageIcon から BufferedImage に変換.
      * alpha 対応.
+     *
      * @param src
      * @return
      */
     public static BufferedImage imageToBufferedImage(ImageIcon src) {
-        if (src == null) { return null; }
+        if (src == null) {
+            return null;
+        }
 
         int width = src.getImage().getWidth(null);
         int height = src.getImage().getHeight(null);
@@ -44,6 +48,7 @@ public class ImageHelper {
 
     /**
      * inImage の幅と高さの長い方が maxDim になるように縮小する.
+     *
      * @param inImage
      * @param maxDim
      * @return
@@ -87,6 +92,7 @@ public class ImageHelper {
 
     /**
      * Convert Image to ByteArray.
+     *
      * @param image
      * @return
      */
@@ -115,26 +121,27 @@ public class ImageHelper {
 
     /**
      * ImageIcon のサイズを dim サイズ以内になるように調節する.
+     *
      * @param icon
      * @param dim
      * @return
      */
     public static ImageIcon adjustImageSize(ImageIcon icon, Dimension dim) {
 
-        if ((icon.getIconHeight() > dim.height) || (icon.getIconWidth() > dim.width) ) {
+        if ((icon.getIconHeight() > dim.height) || (icon.getIconWidth() > dim.width)) {
 
             Image img = icon.getImage();
-            float hRatio = (float)icon.getIconHeight() / dim.height;
-            float wRatio = (float)icon.getIconWidth() / dim.width;
+            float hRatio = (float) icon.getIconHeight() / dim.height;
+            float wRatio = (float) icon.getIconWidth() / dim.width;
             int h, w;
 
             if (hRatio > wRatio) {
                 h = dim.height;
-                w = (int)(icon.getIconWidth() / hRatio);
+                w = (int) (icon.getIconWidth() / hRatio);
 
             } else {
                 w = dim.width;
-                h = (int)(icon.getIconHeight() / wRatio);
+                h = (int) (icon.getIconHeight() / wRatio);
             }
 
             img = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);

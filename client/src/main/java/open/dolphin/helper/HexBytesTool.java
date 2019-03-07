@@ -1,5 +1,5 @@
 
-package open.dolphin.util;
+package open.dolphin.helper;
 
 /**
  * Hex文字列とbyte[]を相互変換する
@@ -23,7 +23,7 @@ public class HexBytesTool {
     }
 
     // byte[]を２桁のHex文字列に変換
-    public static String bytesToHex(byte[] bytes){
+    public static String bytesToHex(byte[] bytes) {
 
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {

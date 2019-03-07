@@ -33,7 +33,8 @@ import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.util.ModelUtils;
+import open.dolphin.helper.PNSTriple;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 
@@ -325,7 +326,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         // ListSelectionListener を組み込む
         pvtTable.getSelectionModel().addListSelectionListener(e -> {
-            if (e.getValueIsAdjusting() == false) {
+            if (! e.getValueIsAdjusting()) {
                 int[] rows = pvtTable.getSelectedRows();
                 if (rows == null) {
                     setSelectedPvt(null);
@@ -541,9 +542,9 @@ public class WaitingListImpl extends AbstractMainComponent {
      * 複数行選択対応 by pns
      */
     public void openKarte() {
-        PatientVisitModel pvtModel[] = getSelectedPvt();
+        PatientVisitModel[] pvtModel = getSelectedPvt();
         if (pvtModel != null) {
-            Arrays.asList(pvtModel).forEach(model -> openKarte(model));
+            Arrays.asList(pvtModel).forEach(this::openKarte);
         }
     }
 
@@ -756,14 +757,13 @@ public class WaitingListImpl extends AbstractMainComponent {
     public Callable<Boolean> getStoppingTask() {
         logger.info("WaitingListImpl stoppingTask starts");
 
-        Callable<Boolean> longTask = () -> {
+        return () -> {
             // 開いているカルテを調べる
             // java.util.ConcurrentModificationException 対策のためにコピーで実行
-            List<ChartImpl> allCharts = new ArrayList<>();
-            allCharts.addAll(ChartImpl.getAllChart());
+            List<ChartImpl> allCharts = new ArrayList<>(ChartImpl.getAllChart());
 
             allCharts.stream()
-                .map(chart -> chart.getPatientVisit())
+                .map(ChartImpl::getPatientVisit)
                 .filter(pvt -> pvt.getPvtDate() != null) // 今日の受診と関係あるカルテのみ選択
                 .forEach(pvt -> {
                     // 今日の受診がある場合は pvt status を変更する（open -> close)
@@ -783,14 +783,12 @@ public class WaitingListImpl extends AbstractMainComponent {
             });
             return true;
         };
-
-        return longTask;
     }
 
     /**
      * 与えられた pvt に対応する TableModel の行を返す.
      * 要素が別オブジェクトになっている場合があるため，レコードIDで探す.
-     * @param pvt
+     * @param updated
      * @return
      */
     private int getRowForPvt(PatientVisitModel updated) {
@@ -1043,7 +1041,7 @@ public class WaitingListImpl extends AbstractMainComponent {
             // 患者数セット
             setPvtCount(row+1);
             // 通知を表示
-            ScriptExecutor.displayNotification(hostPvt.getPatientAgeBirthday(), "受付 " + String.valueOf(row+1), hostPvt.getPatientName());
+            ScriptExecutor.displayNotification(hostPvt.getPatientAgeBirthday(), "受付 " + (row+1), hostPvt.getPatientName());
         }
     }
 
@@ -1093,7 +1091,6 @@ public class WaitingListImpl extends AbstractMainComponent {
          * @param isFocused
          * @param row
          * @param col
-         * @return
          */
         public void setBackground(JTable table,
                 Object value,
@@ -1149,7 +1146,7 @@ public class WaitingListImpl extends AbstractMainComponent {
             this.setForeground(fore);
 
             // state の value チェック，本日のカルテがあるかどうか（今日のカルテはないけど，以前のカルテを編集しただけの場合）
-            if (value != null && value instanceof Integer) {
+            if (value instanceof Integer) {
                 int state = (Integer) value;
 
                 switch (state) {
@@ -1270,7 +1267,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 this.setForeground(fore);
             }
 
-            if (value != null && value instanceof String) {
+            if (value instanceof String) {
                 switch (col) {
                     case 1: // ID
                     case 3: // 名前

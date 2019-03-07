@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.Position;
@@ -17,8 +18,8 @@ import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.util.PreferencesUtils;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.PreferencesUtils;
+import open.dolphin.helper.StringTool;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -335,7 +336,7 @@ public final class StampHolder extends AbstractComponentHolder {
             BufferedReader reader;
             try (BufferedWriter bw = new BufferedWriter(sw)) {
                 InputStream instream = ClientContext.getTemplateAsStream(templateFile);
-                reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
+                reader = new BufferedReader(new InputStreamReader(instream, StandardCharsets.UTF_8));
                 Velocity.evaluate(context, bw, "stmpHolder", reader);
                 bw.flush();
             }
@@ -403,7 +404,7 @@ public final class StampHolder extends AbstractComponentHolder {
                         BufferedReader reader;
                         try (BufferedWriter bw = new BufferedWriter(sw)) {
                             InputStream instream = ClientContext.getTemplateAsStream(templateFile);
-                            reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
+                            reader = new BufferedReader(new InputStreamReader(instream, StandardCharsets.UTF_8));
                             Velocity.evaluate(context, bw, "stmpHolder", reader);
                             bw.flush();
                         }

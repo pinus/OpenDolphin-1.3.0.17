@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 import java.awt.event.MouseEvent;
 import javax.swing.JTable;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 
 /**

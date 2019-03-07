@@ -8,7 +8,7 @@ import open.dolphin.infomodel.ClaimBundle;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.PatientLiteModel;
 import open.dolphin.infomodel.PatientVisitModel;
@@ -18,7 +18,7 @@ import open.dolphin.message.DiagnosisModuleItem;
 import open.dolphin.message.DiseaseHelper;
 import open.dolphin.message.MessageBuilder;
 import open.dolphin.project.Project;
-import open.dolphin.util.GUIDGenerator;
+import open.dolphin.helper.GUIDGenerator;
 
 /**
  * Karte と Diagnosis の CLAIM を送る.
@@ -131,7 +131,7 @@ public class ClaimSender {
 
         // 保存する KarteModel の全モジュールをチェックし
         // それが ClaimBundle ならヘルパーへ追加する
-        modules.stream().map(module -> module.getModel())
+        modules.stream().map(ModuleModel::getModel)
                 .filter(model -> model instanceof ClaimBundle)
                 .forEach(model -> helper.addClaimBundle((ClaimBundle) model));
 
@@ -172,7 +172,7 @@ public class ClaimSender {
             mItem.setRegisteredDiagnosisModule(rd);
             return mItem;
 
-        }).forEach(mItem -> moduleItems.add(mItem));
+        }).forEach(moduleItems::add);
 
         // ヘルパー用の値を生成する
         String confirmDate = diagnoses.get(0).getConfirmDate();

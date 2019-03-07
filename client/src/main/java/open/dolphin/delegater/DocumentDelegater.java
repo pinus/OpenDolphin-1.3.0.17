@@ -8,6 +8,7 @@ import open.dolphin.dto.*;
 import open.dolphin.helper.ImageHelper;
 import open.dolphin.infomodel.*;
 import open.dolphin.service.KarteService;
+import open.dolphin.util.ModelUtils;
 
 /**
  *
@@ -68,7 +69,7 @@ public class  DocumentDelegater extends BusinessDelegater {
         List<DocumentModel> ret = getService().getDocumentList(ids);
 
         // ByteArray をアイコンへ戻す (getSchema() は必ず non null)
-        ret.stream().map(doc -> doc.getSchema()).forEach(sc -> {
+        ret.stream().map(DocumentModel::getSchema).forEach(sc -> {
             sc.stream().forEach(schema -> {
                 ImageIcon icon = new ImageIcon(schema.getJpegByte());
                 schema.setIcon(icon);

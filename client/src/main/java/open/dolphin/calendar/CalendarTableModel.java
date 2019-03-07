@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.util.Holiday;
+import open.dolphin.helper.Holiday;
 
 /**
  * CalendarTableModel.

@@ -1,4 +1,4 @@
-package open.dolphin.util;
+package open.dolphin.helper;
 
 /**
  * 休日データベース.

@@ -8,13 +8,13 @@ import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.table.*;
-import javax.swing.event.*;
+
 import open.dolphin.client.*;
 
 import open.dolphin.delegater.LaboDelegater;
 import open.dolphin.dto.LaboSearchSpec;
+import open.dolphin.util.MMLDate;
 import open.dolphin.project.Project;
-import open.dolphin.util.*;
 
 import java.awt.event.*;
 import java.awt.print.PageFormat;
@@ -322,12 +322,9 @@ public class LaboTestBean extends AbstractChartDocument {
             table.setRowSelectionAllowed(true);
 
             ListSelectionModel m = table.getSelectionModel();
-            m.addListSelectionListener(new ListSelectionListener() {
-
-                public void valueChanged(ListSelectionEvent e) {
-                    if (e.getValueIsAdjusting() == false) {
-                        createLaboTestGraph();
-                    }
+            m.addListSelectionListener(e -> {
+                if (! e.getValueIsAdjusting()) {
+                    createLaboTestGraph();
                 }
             });
 
@@ -424,15 +421,15 @@ public class LaboTestBean extends AbstractChartDocument {
         DBTask task = new DBTask<Void>(getContext()) {
 
             @Override
-            public Void doInBackground() throws Exception {
-                List<LaboModuleValue> results = (List<LaboModuleValue>) ldl.getLaboModules(spec);
+            public Void doInBackground() {
+                List<LaboModuleValue> results = ldl.getLaboModules(spec);
                 if (results == null || results.size() == 0) {
                     return null;
                 }
                 if (laboModules != null) {
                     laboModules.clear();
                 }
-                laboModules = new Vector<SimpleLaboModule>();
+                laboModules = new Vector<>();
 
                 // LaboModuleValueをイテレートし，テーブルへ表示できるデータに分解する
                 for (LaboModuleValue moduleValue : results) {
@@ -558,7 +555,7 @@ public class LaboTestBean extends AbstractChartDocument {
 
                 Object o = table.getValueAt(selectedRows[i], j);
 
-                if (o != null && o instanceof SimpleLaboTestItem) {
+                if (o instanceof SimpleLaboTestItem) {
 
                     SimpleLaboTestItem item = (SimpleLaboTestItem) o;
                     String value = item.getItemValue();
@@ -635,17 +632,14 @@ public class LaboTestBean extends AbstractChartDocument {
         int past = Project.getPreferences().getInt(Project.LABOTEST_PERIOD, -6);
         int index = NameValuePair.getIndex(String.valueOf(past), periodObject);
         extractionCombo.setSelectedIndex(index);
-        extractionCombo.addItemListener(new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    NameValuePair pair = (NameValuePair) extractionCombo.getSelectedItem();
-                    String value = pair.getValue();
-                    int addValue = Integer.parseInt(value);
-                    GregorianCalendar today = new GregorianCalendar();
-                    today.add(GregorianCalendar.MONTH, addValue);
-                    searchLaboTest(MMLDate.getDate(today));
-                }
+        extractionCombo.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                NameValuePair pair = (NameValuePair) extractionCombo.getSelectedItem();
+                String value = pair.getValue();
+                int addValue = Integer.parseInt(value);
+                GregorianCalendar today = new GregorianCalendar();
+                today.add(GregorianCalendar.MONTH, addValue);
+                searchLaboTest(MMLDate.getDate(today));
             }
         });
         JPanel comboPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -681,23 +675,20 @@ public class LaboTestBean extends AbstractChartDocument {
         relativeRadio.setSelected(!bAbsolute);
         absoluteRadio.setSelected(bAbsolute);
 
-        ActionListener al = new ActionListener() {
+        ActionListener al = e -> {
 
-            public void actionPerformed(ActionEvent e) {
+            boolean b = absoluteRadio.isSelected();
+            myPrefs.putBoolean("laboTestDocument.absoluteGraphProp", b);
 
-                boolean b = absoluteRadio.isSelected();
-                myPrefs.putBoolean("laboTestDocument.absoluteGraphProp", b);
+            if (laboTestGraph == null) {
+                return;
+            }
 
-                if (laboTestGraph == null) {
-                    return;
-                }
-
-                int myMode = getMyGraphMode();
-                int mode = laboTestGraph.getMode();
-                if (myMode != mode) {
-                    if (laboTestGraph != null) {
-                        laboTestGraph.setMode(myMode);
-                    }
+            int myMode = getMyGraphMode();
+            int mode = laboTestGraph.getMode();
+            if (myMode != mode) {
+                if (laboTestGraph != null) {
+                    laboTestGraph.setMode(myMode);
                 }
             }
         };

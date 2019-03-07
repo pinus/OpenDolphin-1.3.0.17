@@ -27,7 +27,7 @@ import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.helper.PNSTriple;
 
 /**
  * LaboTestImport.

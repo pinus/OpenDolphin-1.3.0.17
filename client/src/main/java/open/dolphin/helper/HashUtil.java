@@ -1,6 +1,7 @@
-package open.dolphin.util;
+package open.dolphin.helper;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -11,7 +12,6 @@ import java.security.NoSuchAlgorithmException;
 public class HashUtil {
 
     private static final String MD5 = "MD5";
-    private static final String ISO_8859_1 = "iso-8859-1";
 
     public static String convertToHex(byte[] data) {
         StringBuilder buf = new StringBuilder();
@@ -36,11 +36,11 @@ public class HashUtil {
         try {
             md = MessageDigest.getInstance(MD5);
             byte[] md5hash;
-            md.update(text.getBytes(ISO_8859_1), 0, text.length());
+            md.update(text.getBytes(StandardCharsets.ISO_8859_1), 0, text.length());
             md5hash = md.digest();
             return convertToHex(md5hash);
 
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace(System.err);
         }
 

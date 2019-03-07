@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseListener;
 import java.awt.print.PageFormat;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -12,8 +11,7 @@ import javax.swing.SwingConstants;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
-import open.dolphin.project.Project;
+import open.dolphin.util.ModelUtils;
 
 /**
  * 2号カルテを View する ChartDocument.

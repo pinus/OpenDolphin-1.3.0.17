@@ -7,7 +7,7 @@ import open.dolphin.client.KartePane;
 import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.StringTool;
 
 /**
  * Pペインのコードヘルパークラス.

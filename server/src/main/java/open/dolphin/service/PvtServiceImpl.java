@@ -8,6 +8,7 @@ import javax.persistence.NoResultException;
 import open.dolphin.dto.PatientVisitSpec;
 import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.infomodel.*;
+import open.dolphin.util.ModelUtils;
 import org.apache.log4j.Logger;
 
 /**

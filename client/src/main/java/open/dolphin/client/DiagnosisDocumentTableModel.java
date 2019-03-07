@@ -16,7 +16,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.util.MMLDate;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.helper.PNSTriple;
 
 /**
  * DiagnosisDocumentTableModel を独立させて，undo/redo に対応した.
@@ -33,7 +33,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     // undo/redo 用 map（rd ごとに queue を作っておく）
     private final Map<Integer, Deque<DiagnosisLiteModel>> undoMap = new HashMap<>();
     private final Map<Integer, Deque<DiagnosisLiteModel>> redoMap = new HashMap<>();
-    private enum PollResult { succeeded, noMore };
+    private enum PollResult { succeeded, noMore }
 
     public DiagnosisDocumentTableModel(List<PNSTriple<String,Class<?>,String>> triples, boolean readOnly) {
         super (triples);
@@ -77,9 +77,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
         if (col == DiagnosisDocument.DIAGNOSIS_COL) { return false; }
 
         // DELETED_RECORD フラグが立っていたら cell editor による編集不可
-        if (DiagnosisDocument.DELETED_RECORD.equals(rd.getStatus())) { return false; }
-
-        return true;
+        return ! DiagnosisDocument.DELETED_RECORD.equals(rd.getStatus());
     }
 
     // オブジェクトの値を設定する
@@ -336,12 +334,14 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
      */
     private void offerQueue(Map<Integer, Deque<DiagnosisLiteModel>> dequeMap, RegisteredDiagnosisModel rd) {
         int id = System.identityHashCode(rd);
-        Deque<DiagnosisLiteModel> dq = dequeMap.get(id);
-        if (dq == null) {
-            dq = new LinkedList<>();
-            dequeMap.put(id, dq);
-        }
-        dq.offerFirst(new DiagnosisLiteModel(rd));
+        //Deque<DiagnosisLiteModel> dq = dequeMap.get(id);
+        //if (dq == null) {
+        //    dq = new LinkedList<>();
+        //    dequeMap.put(id, dq);
+        //}
+        //dq.offerFirst(new DiagnosisLiteModel(rd));
+        dequeMap.computeIfAbsent(id, key -> new LinkedList<>());
+        dequeMap.get(id).offerFirst(new DiagnosisLiteModel(rd));
     }
 
     /**

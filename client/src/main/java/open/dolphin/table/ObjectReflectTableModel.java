@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.helper.PNSTriple;
 
 /**
  * ObjectReflectTableModel.
@@ -238,7 +238,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
                 objectList = new ArrayList<>();
             }
             int first = objectList.size();
-            c.forEach(item -> objectList.add(item));
+            objectList.addAll(c);
             fireTableRowsInserted(first, first + c.size() - 1);
         }
     }

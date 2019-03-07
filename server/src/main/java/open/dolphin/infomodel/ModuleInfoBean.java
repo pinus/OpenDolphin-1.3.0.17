@@ -1,5 +1,7 @@
 package open.dolphin.infomodel;
 
+import open.dolphin.util.ModelUtils;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;

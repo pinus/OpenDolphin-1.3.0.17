@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.StringTool;
 
 /**
  * drop された stamp を加工する.

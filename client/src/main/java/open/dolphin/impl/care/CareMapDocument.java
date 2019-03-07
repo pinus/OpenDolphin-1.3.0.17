@@ -14,12 +14,12 @@ import open.dolphin.dto.ModuleSearchSpec;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.util.PNSPair;
+import open.dolphin.helper.PNSPair;
 
 /**
  * CareMapDocument.
@@ -306,7 +306,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         calendarMap.get(1).setAppointmentList(allAppo.get(2));
 
         List<AppointmentModel> list = new ArrayList<>();
-        allAppo.forEach(appointList -> list.addAll(appointList));
+        allAppo.forEach(list::addAll);
 
         appointTablePanel.setAppointmentList(list);
     }
@@ -399,7 +399,7 @@ public final class CareMapDocument extends AbstractChartDocument {
                 new DBTask<PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>>>(getContext()) {
 
             @Override
-            public PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>> doInBackground() throws Exception {
+            public PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>> doInBackground() {
                 List<List<ModuleModel>> modules = ddl.getModuleList(spec);
                 List<List<AppointmentModel>> appoints = appo? ddl.getAppoinmentList(spec) : null;
                 return new PNSPair<>(modules, appoints);
@@ -450,7 +450,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         DBTask<List<List<ImageEntry>>> task = new DBTask<List<List<ImageEntry>>>(getContext()) {
 
             @Override
-            public List<List<ImageEntry>> doInBackground() throws Exception {
+            public List<List<ImageEntry>> doInBackground() {
                 return ddl.getImageList(spec);
             }
 
@@ -520,7 +520,7 @@ public final class CareMapDocument extends AbstractChartDocument {
         DBTask<Void> task = new DBTask<Void>(getContext()) {
 
             @Override
-            protected Void doInBackground() throws Exception {
+            protected Void doInBackground() {
                 adl.putAppointments(results);
                 return null;
             }

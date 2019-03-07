@@ -20,8 +20,8 @@ import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.util.PNSPair;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.PNSPair;
+import open.dolphin.helper.StringTool;
 
 /**
  * KarteSettingPanel.

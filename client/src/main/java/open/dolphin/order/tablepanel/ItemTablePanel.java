@@ -25,8 +25,8 @@ import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.util.PNSTriple;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.PNSTriple;
+import open.dolphin.helper.StringTool;
 
 /**
  * ItemTablePanel.
@@ -66,7 +66,7 @@ public class ItemTablePanel extends JPanel {
     public static final String MEMO_LABEL_TEXT = "メ モ";
 
     // 数量コンボ用のデータを生成する
-    private static String[] NUMBER_LIST = null;
+    private static String[] NUMBER_LIST;
     static {
         NUMBER_LIST = new String[31];
         for (int i = 0; i < 31; i++) { NUMBER_LIST[i] = String.valueOf(i+1); }

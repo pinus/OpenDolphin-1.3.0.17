@@ -27,13 +27,13 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.infomodel.PhysicalModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.helper.PNSTriple;
 import org.apache.log4j.Logger;
 
 /**
@@ -247,7 +247,7 @@ public class PhysicalInspector implements IInspector {
         DBTask task = new DBTask<List<Long>>(context) {
 
             @Override
-            protected List<Long> doInBackground() throws Exception {
+            protected List<Long> doInBackground() {
                 logger.debug("physical add doInBackground");
                 DocumentDelegater pdl = new DocumentDelegater();
                 List<Long> ids = pdl.addObservations(addList);
@@ -299,7 +299,7 @@ public class PhysicalInspector implements IInspector {
         DBTask task = new DBTask<Void>(context) {
 
             @Override
-            protected Void doInBackground() throws Exception {
+            protected Void doInBackground() {
                 logger.debug("physical delete doInBackground");
                 DocumentDelegater ddl = new DocumentDelegater();
                 ddl.removeObservations(list);

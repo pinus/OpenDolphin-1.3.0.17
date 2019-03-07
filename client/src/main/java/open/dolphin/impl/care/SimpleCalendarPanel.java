@@ -18,12 +18,12 @@ import open.dolphin.calendar.CalendarTable;
 import open.dolphin.calendar.CalendarTableModel;
 import open.dolphin.client.*;
 import open.dolphin.event.ProxyAction;
+import open.dolphin.util.MMLDate;
 import open.dolphin.infomodel.AppointmentModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSTransferHandler;
-import open.dolphin.util.*;
 
 /**
  * SimpleCalendarPanel.
@@ -520,11 +520,7 @@ public final class SimpleCalendarPanel extends JPanel {
             }
 
             // 本日以前?
-            if (today.compareTo(date) >= 0) {
-                return false;
-            }
-
-            return true;
+            return today.compareTo(date) < 0;
         }
 
         @Override

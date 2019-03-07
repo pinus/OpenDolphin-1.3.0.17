@@ -6,12 +6,14 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ComponentListener;
 import java.util.prefs.Preferences;
+
 import open.dolphin.client.ClientContext;
 import org.apache.log4j.Logger;
 
 /**
  * ComponentBoundsManager.
  * Component の位置・サイズ変更を Listen して，リアルタイムで preference ファイルに保存する.
+ *
  * @author Kazushi Minagawa
  */
 public class ComponentBoundsManager implements ComponentListener {
@@ -24,11 +26,10 @@ public class ComponentBoundsManager implements ComponentListener {
     private final Logger logger;
 
     /**
-     *
      * @param component - target component
-     * @param location - initial component location
-     * @param size - intitial component size
-     * @param object - この object のクラス名が preference の key になる. null にすると記録されない.
+     * @param location  - initial component location
+     * @param size      - intitial component size
+     * @param object    - この object のクラス名が preference の key になる. null にすると記録されない.
      */
     public ComponentBoundsManager(Component component, Point location, Dimension size, Object object) {
         target = component;
@@ -72,10 +73,12 @@ public class ComponentBoundsManager implements ComponentListener {
     }
 
     @Override
-    public void componentShown(java.awt.event.ComponentEvent e) {}
+    public void componentShown(java.awt.event.ComponentEvent e) {
+    }
 
     @Override
-    public void componentHidden(java.awt.event.ComponentEvent e) {}
+    public void componentHidden(java.awt.event.ComponentEvent e) {
+    }
 
     /**
      * Preferences に記録された Bounds に戻す.

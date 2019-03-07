@@ -10,8 +10,8 @@ import open.dolphin.infomodel.*;
 import open.dolphin.order.*;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.util.PNSTriple;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.PNSTriple;
+import open.dolphin.helper.StringTool;
 
 /**
  * ItemTablePanel を extend して作った RecipeTablePanel.
@@ -59,7 +59,7 @@ public class RecipeTablePanel extends ItemTablePanel {
      * @return
      */
     @Override
-    public ObjectReflectTableModel createTableModel() {
+    public ObjectReflectTableModel<MasterItem> createTableModel() {
         List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" コード", String.class, "getCode"),
                 new PNSTriple<>("　診療内容", String.class, "getName"),
@@ -88,7 +88,7 @@ public class RecipeTablePanel extends ItemTablePanel {
 
                 if ( col == 2) { mItem.setNumber((String) o); } // １日量
                 else if ( col == 5) { mItem.setBundleNumber((String) o); }// 何日分
-                else if (col == 1 && mItem != null) { mItem.setName((String) o); }// 入力したコメントは name に入れる
+                else if (col == 1) { mItem.setName((String) o); }// 入力したコメントは name に入れる
 
                 checkState();
             }
@@ -332,9 +332,11 @@ public class RecipeTablePanel extends ItemTablePanel {
 
         // まず，頓用フラグ処理
         boolean tonyo = false;
-        for (Iterator iter = items.iterator(); iter.hasNext(); ) {
-            MasterItem mItem = (MasterItem) iter.next();
-            if (mItem == null) { break; } // ありえない
+        for (Object item : items) {
+            MasterItem mItem = (MasterItem) item;
+            if (mItem == null) {
+                break;
+            } // ありえない
             if (mItem.getClassCode() == ClaimConst.ADMIN && mItem.isTonyo()) {
                 tonyo = true;
                 break;
@@ -342,9 +344,11 @@ public class RecipeTablePanel extends ItemTablePanel {
         }
 
         // MasterItem を全部調べて ModuleModel にセットしていく
-        for (Iterator iter = items.iterator(); iter.hasNext(); ) {
-            MasterItem mItem = (MasterItem) iter.next();
-            if (mItem == null) { break; } // ありえない
+        for (Object item : items) {
+            MasterItem mItem = (MasterItem) item;
+            if (mItem == null) {
+                break;
+            } // ありえない
 
             // number（１日量）を半角変換して設定し直す
             String number = mItem.getNumber();
@@ -355,7 +359,7 @@ public class RecipeTablePanel extends ItemTablePanel {
                 number = null;
             }
 
-            switch(mItem.getClassCode()) {
+            switch (mItem.getClassCode()) {
 
                 case ClaimConst.SYUGI:
                     ClaimItem sItem = createClaimItem(mItem);
@@ -380,20 +384,20 @@ public class RecipeTablePanel extends ItemTablePanel {
                         // 薬剤区分（内用1，外用6，注射薬4）がセットされていればそれを使う
                         if (mItem.getYkzKbn() != null) {
                             rCode = mItem.getYkzKbn().equals(ClaimConst.YKZ_KBN_NAIYO)
-                                        ? ClaimConst.RECEIPT_CODE_NAIYO     // 210 診療種別区分
-                                        : ClaimConst.RECEIPT_CODE_GAIYO;    // 230 診療種別区分
-                        // 薬剤区分がセットされていなければ，setValue の時に保存しておいたコードを使う
+                                    ? ClaimConst.RECEIPT_CODE_NAIYO     // 210 診療種別区分
+                                    : ClaimConst.RECEIPT_CODE_GAIYO;    // 230 診療種別区分
+                            // 薬剤区分がセットされていなければ，setValue の時に保存しておいたコードを使う
                         } else if (saveReceiptCode != null) {
                             rCode = saveReceiptCode;
 
-                        // 薬剤区分がセットされておらず，保存もされていない場合は内用としておく
+                            // 薬剤区分がセットされておらず，保存もされていない場合は内用としておく
                         } else {
                             rCode = ClaimConst.RECEIPT_CODE_NAIYO;  // 220 診療種別区分
                         }
 
                         // 内用の場合は頓用かどうか処理する
                         if (rCode.equals(ClaimConst.RECEIPT_CODE_NAIYO) || rCode.equals(ClaimConst.RECEIPT_CODE_TONYO)) {
-                            rCode = tonyo? ClaimConst.RECEIPT_CODE_TONYO : ClaimConst.RECEIPT_CODE_NAIYO;
+                            rCode = tonyo ? ClaimConst.RECEIPT_CODE_TONYO : ClaimConst.RECEIPT_CODE_NAIYO;
                             //System.out.println("----- Tonyo="+ tonyo);
                         }
 
@@ -599,7 +603,7 @@ public class RecipeTablePanel extends ItemTablePanel {
         if (test.equals(".") || test.equals("")) { return true; }
 
         try {
-            Float num = Float.parseFloat(test);
+            float num = Float.parseFloat(test);
             if (num < 0F || num == 0F) { return false; }
         } catch (NumberFormatException e) {
             System.out.println("RecipeTablePanel.java: " + e);

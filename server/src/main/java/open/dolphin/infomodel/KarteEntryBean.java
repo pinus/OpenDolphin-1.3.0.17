@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.*;
+
+import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.search.annotations.IndexedEmbedded;
 

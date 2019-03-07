@@ -9,6 +9,7 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+
 import open.dolphin.client.ClientContext;
 import org.apache.log4j.Logger;
 
@@ -22,7 +23,7 @@ import org.apache.log4j.Logger;
  * <li>chains[3] = Dolphin
  * </ul>
  * addChain するところは {@link open.dolphin.client.Dolphin#initComponents() Dolphin} のタブ切換設定の部分.
- * StampBoxPlugin, ImageBox もインスタンスを持っているが，メニュー表示だけで adChain は未実装.<br>
+ * StampBoxPlugin, ImageBox もインスタンスを持っているが，メニュー表示だけで addChain は未実装.<br>
  * ChartDocument 層での使用は {@link open.dolphin.client.ChartMediator ChartMediator} で行う.
  *
  * @author Minagawa, Kazushi
@@ -45,17 +46,21 @@ public class MenuSupport implements MenuListener {
     }
 
     @Override
-    public void menuSelected(MenuEvent e) {}
+    public void menuSelected(MenuEvent e) {
+    }
 
     @Override
-    public void menuDeselected(MenuEvent e) {}
+    public void menuDeselected(MenuEvent e) {
+    }
 
     @Override
-    public void menuCanceled(MenuEvent e) {}
+    public void menuCanceled(MenuEvent e) {
+    }
 
     /**
      * メニューの ActionMap.
-     * @param actions
+     *
+     * @param actions ActionMap
      */
     public void registerActions(ActionMap actions) {
         this.actions = actions;
@@ -106,7 +111,8 @@ public class MenuSupport implements MenuListener {
 
     /**
      * 最初のターゲットに設定する.
-     * @param obj
+     *
+     * @param obj first target
      */
     public void addChain(Object obj) {
         chains[0] = obj;
@@ -117,7 +123,8 @@ public class MenuSupport implements MenuListener {
 
     /**
      * 最初のターゲットを返す.
-     * @return
+     *
+     * @return first target
      */
     public Object getChain() {
         return chains[0];
@@ -125,7 +132,8 @@ public class MenuSupport implements MenuListener {
 
     /**
      * 二番目のターゲットに設定する.
-     * @param obj
+     *
+     * @param obj second target
      */
     public void addChain2(Object obj) {
         chains[1] = obj;
@@ -136,7 +144,8 @@ public class MenuSupport implements MenuListener {
 
     /**
      * ２番目のターゲットを返す.
-     * @return
+     *
+     * @return second target
      */
     public Object getChain2() {
         return chains[1];
@@ -147,7 +156,8 @@ public class MenuSupport implements MenuListener {
      * メソッドを実行するオブジェクトがあればそこで終了する.
      * メソッドを実行するオブジェクトが存在しない場合もそこで終了する.
      * コマンドチェインパターンのリフレクション版.
-     * @param method
+     *
+     * @param method メソッド
      * @return メソッドが実行された時 true
      */
     public boolean sendToChain(String method) {
@@ -159,16 +169,19 @@ public class MenuSupport implements MenuListener {
 
             if (target != null) {
                 try {
-                    Method mth = target.getClass().getMethod(method, (Class[])null);
+                    Method mth = target.getClass().getMethod(method, (Class[]) null);
                     // System.out.println("invoked: " + target.getClass() + "#" + method);
-                    mth.invoke(target, (Object[])null);
+                    mth.invoke(target, (Object[]) null);
                     handled = true;
                     break;
 
-                } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) { System.out.println("MenuSupport.java: " + ex);
-                } catch (InvocationTargetException ex) { System.out.println("MenuSupport.java: " + ex); ex.printStackTrace(System.err);
+                } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) {
+                    System.out.println("MenuSupport.java: " + ex);
+                } catch (InvocationTargetException ex) {
+                    System.out.println("MenuSupport.java: " + ex);
+                    ex.printStackTrace(System.err);
 
-                // この target では実行できない. NoSuchMethodException が出るのは問題なし.
+                    // この target では実行できない. NoSuchMethodException が出るのは問題なし.
                 } catch (NoSuchMethodException ex) { //System.out.println("MenuSupport.java: " + ex);
                 }
             }

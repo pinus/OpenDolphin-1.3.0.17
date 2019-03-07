@@ -1,4 +1,4 @@
-package open.dolphin.util;
+package open.dolphin.helper;
 
 import java.util.List;
 import java.util.Objects;
@@ -6,11 +6,12 @@ import java.util.Objects;
 /**
  * PNSPair.
  * Generics に対応した open.dolphin.client.NameValuePair
+ *
+ * @param <N> name
+ * @param <V> value
  * @author pns
- * @param <N>
- * @param <V>
  */
-public class PNSPair<N,V> implements Comparable<PNSPair<N,V>>{
+public class PNSPair<N, V> implements Comparable<PNSPair<N, V>> {
 
     private N name;
     private V value;
@@ -18,26 +19,28 @@ public class PNSPair<N,V> implements Comparable<PNSPair<N,V>>{
     /**
      * Value を比較して，targetPair が pairList の何番目の要素であるかを返す.
      * int index = PNSPair.<String,Integer>getIndex(targetPair, targetList)
-     * @param <N>
-     * @param <V>
-     * @param targetPair
-     * @param pairList
-     * @return
+     *
+     * @param <N> name
+     * @param <V> value
+     * @param targetPair target
+     * @param pairList source
+     * @return index
      */
-    public static <N,V extends Comparable<V>> int getIndex(PNSPair<N,V> targetPair, List<PNSPair<N,V>> pairList) {
+    public static <N, V extends Comparable<V>> int getIndex(PNSPair<N, V> targetPair, List<PNSPair<N, V>> pairList) {
         return getIndex(targetPair.getValue(), pairList);
     }
 
     /**
-     * Value を比較して targetValue が pairList の何番目の要素であるかを返す
+     * Value を比較して targetValue が pairList の何番目の要素であるかを返す.
      * int index = PNSPair.<String,Integer>getIndex(int, targetList)
-     * @param <N>
-     * @param <V>
-     * @param targetVal
-     * @param pairList
+     *
+     * @param <N> name
+     * @param <V> value
+     * @param targetVal target
+     * @param pairList source
      * @return
      */
-    public static <N,V extends Comparable<V>> int getIndex(V targetVal, List<PNSPair<N,V>> pairList) {
+    public static <N, V extends Comparable<V>> int getIndex(V targetVal, List<PNSPair<N, V>> pairList) {
         int index = 0;
         for (int i = 0; i < pairList.size(); i++) {
             if (pairList.get(i).getValue().equals(targetVal)) {
@@ -74,8 +77,9 @@ public class PNSPair<N,V> implements Comparable<PNSPair<N,V>>{
     }
 
     /**
-     * name の文字列を返す
-     * @return
+     * name の文字列を返す.
+     *
+     * @return name
      */
     @Override
     public String toString() {
@@ -89,9 +93,10 @@ public class PNSPair<N,V> implements Comparable<PNSPair<N,V>>{
 
 
     /**
-     * value を比較して同じなら equal とする
-     * @param obj
-     * @return
+     * value を比較して同じなら equal とする.
+     *
+     * @param obj target
+     * @return true if equal
      */
     @Override
     public boolean equals(Object obj) {
@@ -105,23 +110,22 @@ public class PNSPair<N,V> implements Comparable<PNSPair<N,V>>{
             return false;
         }
         final PNSPair<?, ?> other = (PNSPair<?, ?>) obj;
-        if (!Objects.equals(this.value, other.getValue())) {
-            return false;
-        }
-        return true;
+
+        return Objects.equals(this.value, other.getValue());
     }
 
     /**
-     * value を比較して大小を返す
-     * @param other
-     * @return
+     * value を比較して大小を返す.
+     *
+     * @param other target
+     * @return compare value
      */
     @Override
-    public int compareTo(PNSPair<N,V> other) {
+    public int compareTo(PNSPair<N, V> other) {
         if (other != null) {
             V otherValue = other.getValue();
             if (value instanceof Comparable<?>) {
-                return ((Comparable)value).compareTo(otherValue);
+                return ((Comparable) value).compareTo(otherValue);
             }
         }
         return -1;

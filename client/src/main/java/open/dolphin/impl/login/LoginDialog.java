@@ -16,7 +16,7 @@ import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.Task;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.project.DolphinPrincipal;
 import open.dolphin.project.Project;

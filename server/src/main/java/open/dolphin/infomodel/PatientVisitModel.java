@@ -5,6 +5,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.util.StringTokenizer;
 import javax.persistence.*;
 
+import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**

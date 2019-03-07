@@ -1,9 +1,10 @@
-package open.dolphin.util;
+package open.dolphin.helper;
 
 import java.awt.Rectangle;
 import java.util.prefs.Preferences;
 
 /**
+ * PreferencesUtils.
  *
  * @author pns
  */

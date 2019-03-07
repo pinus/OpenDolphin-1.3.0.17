@@ -19,7 +19,7 @@ import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
-import open.dolphin.util.PNSPair;
+import open.dolphin.helper.PNSPair;
 
 /**
  * PatientSearchView 互換 JPanel.

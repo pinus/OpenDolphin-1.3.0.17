@@ -1,4 +1,4 @@
-package open.dolphin.util;
+package open.dolphin.helper;
 
 /**
  * Utilities to handle String.
@@ -8,45 +8,47 @@ package open.dolphin.util;
  */
 public final class StringTool {
 
-    private static final Character[] HIRAGANA = { 'ぁ', 'ゟ'};
-    private static final Character[] KATAKANA = { 'ァ', 'ヾ'};
+    private static final Character[] HIRAGANA = {'ぁ', 'ゟ'};
+    private static final Character[] KATAKANA = {'ァ', 'ヾ'};
 
     private static final Character[] ZENKAKU_UPPER = {'Ａ', 'Ｚ'};
     private static final Character[] ZENKAKU_LOWER = {'ａ', 'ｚ'};
-    private static final Character[] ZENKAKU_NUMBER = { '０', '９'};
+    private static final Character[] ZENKAKU_NUMBER = {'０', '９'};
 
     private static final Character[] HANKAKU_UPPER = {'A', 'Z'};
     private static final Character[] HANKAKU_LOWER = {'a', 'z'};
-    private static final Character[] HANKAKU_NUMBER = { '0', '9'};
+    private static final Character[] HANKAKU_NUMBER = {'0', '9'};
 
-    private static final char[] ZENKAKU_KATAKANA = { 'ァ', 'ア', 'ィ', 'イ', 'ゥ',
-          'ウ', 'ェ', 'エ', 'ォ', 'オ', 'カ', 'ガ', 'キ', 'ギ', 'ク', 'グ', 'ケ', 'ゲ',
-          'コ', 'ゴ', 'サ', 'ザ', 'シ', 'ジ', 'ス', 'ズ', 'セ', 'ゼ', 'ソ', 'ゾ', 'タ',
-          'ダ', 'チ', 'ヂ', 'ッ', 'ツ', 'ヅ', 'テ', 'デ', 'ト', 'ド', 'ナ', 'ニ', 'ヌ',
-          'ネ', 'ノ', 'ハ', 'バ', 'パ', 'ヒ', 'ビ', 'ピ', 'フ', 'ブ', 'プ', 'ヘ', 'ベ',
-          'ペ', 'ホ', 'ボ', 'ポ', 'マ', 'ミ', 'ム', 'メ', 'モ', 'ャ', 'ヤ', 'ュ', 'ユ',
-          'ョ', 'ヨ', 'ラ', 'リ', 'ル', 'レ', 'ロ', 'ヮ', 'ワ', 'ヰ', 'ヱ', 'ヲ', 'ン',
-          'ヴ', 'ヵ', 'ヶ' };
+    private static final char[] ZENKAKU_KATAKANA = {'ァ', 'ア', 'ィ', 'イ', 'ゥ',
+            'ウ', 'ェ', 'エ', 'ォ', 'オ', 'カ', 'ガ', 'キ', 'ギ', 'ク', 'グ', 'ケ', 'ゲ',
+            'コ', 'ゴ', 'サ', 'ザ', 'シ', 'ジ', 'ス', 'ズ', 'セ', 'ゼ', 'ソ', 'ゾ', 'タ',
+            'ダ', 'チ', 'ヂ', 'ッ', 'ツ', 'ヅ', 'テ', 'デ', 'ト', 'ド', 'ナ', 'ニ', 'ヌ',
+            'ネ', 'ノ', 'ハ', 'バ', 'パ', 'ヒ', 'ビ', 'ピ', 'フ', 'ブ', 'プ', 'ヘ', 'ベ',
+            'ペ', 'ホ', 'ボ', 'ポ', 'マ', 'ミ', 'ム', 'メ', 'モ', 'ャ', 'ヤ', 'ュ', 'ユ',
+            'ョ', 'ヨ', 'ラ', 'リ', 'ル', 'レ', 'ロ', 'ヮ', 'ワ', 'ヰ', 'ヱ', 'ヲ', 'ン',
+            'ヴ', 'ヵ', 'ヶ'};
 
-    private static final String[] HANKAKU_KATAKANA = { "ｧ", "ｱ", "ｨ", "ｲ", "ｩ",
-          "ｳ", "ｪ", "ｴ", "ｫ", "ｵ", "ｶ", "ｶﾞ", "ｷ", "ｷﾞ", "ｸ", "ｸﾞ", "ｹ",
-          "ｹﾞ", "ｺ", "ｺﾞ", "ｻ", "ｻﾞ", "ｼ", "ｼﾞ", "ｽ", "ｽﾞ", "ｾ", "ｾﾞ", "ｿ",
-          "ｿﾞ", "ﾀ", "ﾀﾞ", "ﾁ", "ﾁﾞ", "ｯ", "ﾂ", "ﾂﾞ", "ﾃ", "ﾃﾞ", "ﾄ", "ﾄﾞ",
-          "ﾅ", "ﾆ", "ﾇ", "ﾈ", "ﾉ", "ﾊ", "ﾊﾞ", "ﾊﾟ", "ﾋ", "ﾋﾞ", "ﾋﾟ", "ﾌ",
-          "ﾌﾞ", "ﾌﾟ", "ﾍ", "ﾍﾞ", "ﾍﾟ", "ﾎ", "ﾎﾞ", "ﾎﾟ", "ﾏ", "ﾐ", "ﾑ", "ﾒ",
-          "ﾓ", "ｬ", "ﾔ", "ｭ", "ﾕ", "ｮ", "ﾖ", "ﾗ", "ﾘ", "ﾙ", "ﾚ", "ﾛ", "ﾜ",
-          "ﾜ", "ｲ", "ｴ", "ｦ", "ﾝ", "ｳﾞ", "ｶ", "ｹ" };
+    private static final String[] HANKAKU_KATAKANA = {"ｧ", "ｱ", "ｨ", "ｲ", "ｩ",
+            "ｳ", "ｪ", "ｴ", "ｫ", "ｵ", "ｶ", "ｶﾞ", "ｷ", "ｷﾞ", "ｸ", "ｸﾞ", "ｹ",
+            "ｹﾞ", "ｺ", "ｺﾞ", "ｻ", "ｻﾞ", "ｼ", "ｼﾞ", "ｽ", "ｽﾞ", "ｾ", "ｾﾞ", "ｿ",
+            "ｿﾞ", "ﾀ", "ﾀﾞ", "ﾁ", "ﾁﾞ", "ｯ", "ﾂ", "ﾂﾞ", "ﾃ", "ﾃﾞ", "ﾄ", "ﾄﾞ",
+            "ﾅ", "ﾆ", "ﾇ", "ﾈ", "ﾉ", "ﾊ", "ﾊﾞ", "ﾊﾟ", "ﾋ", "ﾋﾞ", "ﾋﾟ", "ﾌ",
+            "ﾌﾞ", "ﾌﾟ", "ﾍ", "ﾍﾞ", "ﾍﾟ", "ﾎ", "ﾎﾞ", "ﾎﾟ", "ﾏ", "ﾐ", "ﾑ", "ﾒ",
+            "ﾓ", "ｬ", "ﾔ", "ｭ", "ﾕ", "ｮ", "ﾖ", "ﾗ", "ﾘ", "ﾙ", "ﾚ", "ﾛ", "ﾜ",
+            "ﾜ", "ｲ", "ｴ", "ｦ", "ﾝ", "ｳﾞ", "ｶ", "ｹ"};
 
     private static final char ZENKAKU_KATAKANA_FIRST_CHAR = ZENKAKU_KATAKANA[0];
 
     private static final char ZENKAKU_KATAKANA_LAST_CHAR = ZENKAKU_KATAKANA[ZENKAKU_KATAKANA.length - 1];
 
-    private StringTool() {}
+    private StringTool() {
+    }
 
     /**
      * 文字 c がカタカナかどうか.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return true if カタカナ
      */
     public static boolean isKatakana(char c) {
         // ア 12449 (12353 半角)
@@ -57,17 +59,19 @@ public final class StringTool {
 
     /**
      * 文字列 target が全てカタカナかどうか.
-     * @param target
-     * @return
+     *
+     * @param target 文字列
+     * @return true if all カタカナ
      */
     public static boolean isAllKatakana(String target) {
-        return target.chars().allMatch(c -> isKatakana((char)c));
+        return target.chars().allMatch(c -> isKatakana((char) c));
     }
 
     /**
      * 文字 c がひらがなかどうか.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return true if ひらがな
      */
     public static boolean isHiragana(char c) {
         // あ 12354
@@ -78,8 +82,9 @@ public final class StringTool {
 
     /**
      * 文字 c がひらがななら，カタカナに変換する.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return カタカナ
      */
     private static char toKatakana(char c) {
         return isHiragana(c) ? (char) (c + 96) : c;
@@ -87,22 +92,26 @@ public final class StringTool {
 
     /**
      * 文字列 s のひらがな部分をカタカナに変換する.
-     * @param s
-     * @return
+     *
+     * @param s 文字列
+     * @return 変換した文字列
      */
     public static String hiraganaToKatakana(String s) {
         int len = s.length();
         char[] src = new char[len];
         s.getChars(0, s.length(), src, 0);
         char[] dst = new char[len];
-        for (int i = 0; i < len; i++) { dst[i] = toKatakana(src[i]); }
+        for (int i = 0; i < len; i++) {
+            dst[i] = toKatakana(src[i]);
+        }
         return new String(dst);
     }
 
     /**
      * 文字列 target が全て半角数字かどうか.
-     * @param target
-     * @return
+     *
+     * @param target 文字列
+     * @return true if all 半角数字
      */
     public static boolean isAllDigit(String target) {
         return target.chars().allMatch(Character::isDigit);
@@ -110,8 +119,9 @@ public final class StringTool {
 
     /**
      * 文字 c が全角の大文字アルファベットかどうか.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return true if 全角大文字アルファベット
      */
     public static boolean isZenkakuUpper(char c) {
         Character test = c;
@@ -120,8 +130,9 @@ public final class StringTool {
 
     /**
      * 文字 c が全角の小文字アルファベットかどうか.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return true if 全角小文字アルファベット
      */
     public static boolean isZenkakuLower(char c) {
         Character test = c;
@@ -130,8 +141,9 @@ public final class StringTool {
 
     /**
      * 文字 c が全角の数字かどうか.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return true if 全角数字
      */
     public static boolean isZenkakuNumber(char c) {
         Character test = c;
@@ -140,8 +152,9 @@ public final class StringTool {
 
     /**
      * 文字 c が半角の大文字アルファベットかどうか.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return true if 半角大文字アルファベット
      */
     public static boolean isHankakuUpper(char c) {
         Character test = c;
@@ -150,8 +163,9 @@ public final class StringTool {
 
     /**
      * 文字 c が半角の小文字アルファベットかどうか.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return true if 半角小文字アルファベット
      */
     public static boolean isHanakuLower(char c) {
         Character test = c;
@@ -160,8 +174,9 @@ public final class StringTool {
 
     /**
      * 文字 c が半角の数字かどうか.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return true if 半角数字
      */
     public static boolean isHankakuNumber(char c) {
         Character test = c;
@@ -170,8 +185,9 @@ public final class StringTool {
 
     /**
      * 半角または全角のスペースかどうか.
-     * @param c
-     * @return
+     *
+     * @param c 文字
+     * @return true if 半角 or 全角スペース
      */
     public static boolean isSpace(char c) {
         Character test = c;
@@ -180,8 +196,9 @@ public final class StringTool {
 
     /**
      * 文字列 s の半角アルファベットを全角に変換する.
-     * @param s
-     * @return
+     *
+     * @param s 文字列
+     * @return 変換した文字列
      */
     public static String toZenkakuUpperLower(String s) {
         int len = s.length();
@@ -191,7 +208,7 @@ public final class StringTool {
         StringBuilder sb = new StringBuilder();
         for (char c : src) {
             if (isHankakuUpper(c) || isHanakuLower(c)) {
-                sb.append( (char)(c + 65248) );
+                sb.append((char) (c + 65248));
             } else {
                 sb.append(c);
             }
@@ -201,8 +218,9 @@ public final class StringTool {
 
     /**
      * 文字列 s の全角アルファベットを半角に変換する.
-     * @param s
-     * @return
+     *
+     * @param s 文字列
+     * @return 変換した文字列
      */
     public static String toHankakuUpperLower(String s) {
         int len = s.length();
@@ -211,7 +229,7 @@ public final class StringTool {
         StringBuilder sb = new StringBuilder();
         for (char c : src) {
             if (isZenkakuUpper(c) || isZenkakuLower(c)) {
-                sb.append( (char)(c - 65248) );
+                sb.append((char) (c - 65248));
             } else {
                 sb.append(c);
             }
@@ -221,8 +239,9 @@ public final class StringTool {
 
     /**
      * 文字列 s の半角数字を全角に変換する.
-     * @param s
-     * @return
+     *
+     * @param s 文字列
+     * @return 変換した文字列
      */
     public static String toZenkakuNumber(String s) {
         int len = s.length();
@@ -231,7 +250,7 @@ public final class StringTool {
         StringBuilder sb = new StringBuilder();
         for (char c : src) {
             if (isHankakuNumber(c)) {
-                sb.append( (char)(c + 65248) );
+                sb.append((char) (c + 65248));
             } else {
                 sb.append(c);
             }
@@ -241,8 +260,9 @@ public final class StringTool {
 
     /**
      * 文字列 s の全角数字を半角に変換する.
-     * @param s
-     * @return
+     *
+     * @param s 文字列
+     * @return 変換した文字列
      */
     public static String toHankakuNumber(String s) {
         int len = s.length();
@@ -251,7 +271,7 @@ public final class StringTool {
         StringBuilder sb = new StringBuilder();
         for (char c : src) {
             if (isZenkakuNumber(c)) {
-                sb.append( (char)(c - 65248) );
+                sb.append((char) (c - 65248));
             } else {
                 sb.append(c);
             }
@@ -261,8 +281,9 @@ public final class StringTool {
 
     /**
      * 文字列をシングルクオートで囲む.
-     * @param s
-     * @return
+     *
+     * @param s 文字列
+     * @return 変換した文字列
      */
     public static String addSingleQuote(String s) {
         return String.format("'%s'", s);
@@ -270,8 +291,9 @@ public final class StringTool {
 
     /**
      * 文字列をシングルクオートで囲み，コンマをつける.
-     * @param s
-     * @return
+     *
+     * @param s 文字列
+     * @return 変換した文字列
      */
     public static String addSingleQuoteComma(String s) {
         return String.format("'%s',", s);
@@ -280,8 +302,9 @@ public final class StringTool {
     /**
      * 全角カタカナを半角カタカナに変換.
      * Java Master から引用.
-     * @param c
-     * @return
+     *
+     * @param c 全角カタカナ文字
+     * @return 半角カタカナ文字
      */
     public static String zenkakuKatakanaToHankakuKatakana(char c) {
         if (c >= ZENKAKU_KATAKANA_FIRST_CHAR && c <= ZENKAKU_KATAKANA_LAST_CHAR) {
@@ -292,10 +315,11 @@ public final class StringTool {
     }
 
     /**
-     * 全角カタカナを半角カタカナに変換.
+     * 全角カタカナ文字列を半角カタカナ文字列に変換.
      * Java Master から引用.
-     * @param s
-     * @return
+     *
+     * @param s 全角カタカナ文字列
+     * @return 半角カタカナ文字列
      */
     public static String zenkakuKatakanaToHankakuKatakana(String s) {
         StringBuilder sb = new StringBuilder();

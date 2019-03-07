@@ -4,7 +4,7 @@ import java.awt.event.MouseEvent;
 import java.util.Date;
 import javax.swing.JTable;
 import open.dolphin.infomodel.KarteState;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.table.ObjectReflectTableModel;
 import org.apache.commons.lang.time.DurationFormatUtils;

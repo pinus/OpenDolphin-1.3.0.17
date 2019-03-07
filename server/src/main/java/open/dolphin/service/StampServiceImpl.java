@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.infomodel.StampModel;
 import open.dolphin.infomodel.PersonalTreeModel;

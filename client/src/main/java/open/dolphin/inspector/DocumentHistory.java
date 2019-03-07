@@ -35,8 +35,8 @@ import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSCellEditor;
-import open.dolphin.util.PNSPair;
-import open.dolphin.util.PNSTriple;
+import open.dolphin.helper.PNSPair;
+import open.dolphin.helper.PNSTriple;
 
 /**
  * 文書履歴を取得し，表示するクラス.
@@ -167,7 +167,7 @@ public class DocumentHistory implements IInspector {
         // 履歴テーブルで選択された行の文書を表示する
         ListSelectionModel slm = view.getTable().getSelectionModel();
         slm.addListSelectionListener(e -> {
-            if (e.getValueIsAdjusting() == false) {
+            if (! e.getValueIsAdjusting()) {
                 JTable table = view.getTable();
                 int[] selectedRows = table.getSelectedRows();
                 if (selectedRows.length > 0) {
@@ -178,8 +178,8 @@ public class DocumentHistory implements IInspector {
                             list.add(obj);
                         }
                     }
-                    DocInfoModel[] selected = list.toArray(new DocInfoModel[list.size()]);
-                    if (selected != null && selected.length > 0) {
+                    DocInfoModel[] selected = list.toArray(new DocInfoModel[0]);
+                    if (selected.length > 0) {
                         setSelectedHistories(selected);
                     } else {
                         setSelectedHistories(null);
@@ -365,7 +365,7 @@ public class DocumentHistory implements IInspector {
 
         if (newHistory != null && ! newHistory.isEmpty()) {
             int historySize = newHistory.size();
-            countField.setText(String.valueOf(historySize) + " 件");
+            countField.setText(historySize + " 件");
             int fetchCount = historySize > autoFetchCount ? autoFetchCount : historySize;
 
             ListSelectionModel selectionModel = table.getSelectionModel();

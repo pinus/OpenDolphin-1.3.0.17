@@ -16,13 +16,15 @@ import javax.swing.JMenuBar;
 import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+
 import open.dolphin.client.GUIConst;
 import open.dolphin.ui.MainFrame;
 
 /**
  * Window Menu をサポートするためのクラス.
  * Factory method で WindowMenu をもつ JFrame を生成する.
- * @author Minagawa,Kazushi
+ *
+ * @author Minagawa, Kazushi
  * @author pns
  */
 public class WindowSupport implements MenuListener {
@@ -31,7 +33,7 @@ public class WindowSupport implements MenuListener {
 
     private static final String WINDOW_MWNU_NAME = "ウインドウ";
 
-    private static enum State { OPENED, CLOSED };
+    private enum State {OPENED, CLOSED}
 
     // frame を整列させるときの初期位置と移動幅
     final public static int INITIAL_X = 256;
@@ -54,6 +56,7 @@ public class WindowSupport implements MenuListener {
 
     /**
      * WindowSupportを生成する.
+     *
      * @param title フレームタイトル
      * @return WindowSupport
      */
@@ -78,6 +81,7 @@ public class WindowSupport implements MenuListener {
         // 選択されたらフレームを前面にする
         Action windowAction = new AbstractAction(title) {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.toFront();
@@ -107,7 +111,7 @@ public class WindowSupport implements MenuListener {
         return ret;
     }
 
-  public static List<WindowSupport> getAllWindows() {
+    public static List<WindowSupport> getAllWindows() {
         return Collections.unmodifiableList(allWindows);
     }
 
@@ -160,11 +164,13 @@ public class WindowSupport implements MenuListener {
             name = action.getValue(Action.NAME).toString();
             if (!name.contains("インスペクタ") && !name.contains("カルテ")) {
                 wm.add(action);
-                count ++;
+                count++;
             }
         }
         // カルテ，インスペクタが開いていない場合はリターン
-        if (allWindows.size() == count) { return; }
+        if (allWindows.size() == count) {
+            return;
+        }
 
         count = 0;
         wm.addSeparator();
@@ -223,17 +229,25 @@ public class WindowSupport implements MenuListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             JFrame f;
-            int x = INITIAL_X; int y = INITIAL_Y; int width = 0; int height = 0;
+            int x = INITIAL_X;
+            int y = INITIAL_Y;
+            int width = 0;
+            int height = 0;
 
             for (WindowSupport ws : allWindows) {
                 f = ws.getFrame();
                 if (f.getTitle().contains("インスペクタ")) {
-                    if (width == 0) { width = f.getBounds().width; }
-                    if (height == 0) { height = f.getBounds().height; }
+                    if (width == 0) {
+                        width = f.getBounds().width;
+                    }
+                    if (height == 0) {
+                        height = f.getBounds().height;
+                    }
 
                     f.setBounds(x, y, width, height);
                     f.toFront();
-                    x += INITIAL_DX; y += INITIAL_DY;
+                    x += INITIAL_DX;
+                    y += INITIAL_DY;
                 }
             }
         }
@@ -247,7 +261,7 @@ public class WindowSupport implements MenuListener {
     public void menuCanceled(MenuEvent e) {
     }
 
-    public static ImageIcon getIcon(JFrame frame)  {
-        return frame.isActive()? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16;
+    public static ImageIcon getIcon(JFrame frame) {
+        return frame.isActive() ? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16;
     }
 }

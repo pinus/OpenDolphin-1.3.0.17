@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import open.dolphin.client.*;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.table.ObjectReflectTableModel;
 import org.apache.velocity.VelocityContext;
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
@@ -86,7 +87,7 @@ public final class OrderHistoryPanel extends JPanel {
         table.setRowSelectionAllowed(true);
         ListSelectionModel m = table.getSelectionModel();
         m.addListSelectionListener(e -> {
-            if (e.getValueIsAdjusting() == false) {
+            if (! e.getValueIsAdjusting()) {
                 int index = table.getSelectedRow();
                 displayOrder(index);
             }
@@ -131,7 +132,8 @@ public final class OrderHistoryPanel extends JPanel {
     public void setModuleList(List<List<ModuleModel>> allModules) {
         tModel.clear();
         List<ModuleModel> moduleList = new ArrayList<>();
-        allModules.forEach(list -> list.forEach(model -> moduleList.add(model)));
+        //allModules.forEach(list -> list.forEach(model -> moduleList.add(model)));
+        allModules.forEach(moduleList::addAll);
         tModel.setObjectList(moduleList);
     }
 
@@ -160,7 +162,7 @@ public final class OrderHistoryPanel extends JPanel {
             BufferedReader reader;
             try (BufferedWriter bw = new BufferedWriter(sw)) {
                 InputStream instream = ClientContext.getTemplateAsStream(templateFile);
-                reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
+                reader = new BufferedReader(new InputStreamReader(instream, StandardCharsets.UTF_8));
                 Velocity.evaluate(context, bw, "stmpHolder", reader);
                 bw.flush();
             }

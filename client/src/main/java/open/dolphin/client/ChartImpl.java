@@ -29,8 +29,9 @@ import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
 import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.util.GUIDGenerator;
-import open.dolphin.util.PreferencesUtils;
+import open.dolphin.helper.GUIDGenerator;
+import open.dolphin.util.ModelUtils;
+import open.dolphin.helper.PreferencesUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 
@@ -390,7 +391,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         Task task = new Task<KarteBean>(null, message, note, maxEstimation) {
 
             @Override
-            protected KarteBean doInBackground() throws Exception {
+            protected KarteBean doInBackground() {
                 logger.debug("CahrtImpl start task doInBackground");
                 //
                 // Database から患者のカルテを取得する
@@ -403,8 +404,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                 today.clear(Calendar.SECOND);
                 today.clear(Calendar.MILLISECOND);
                 DocumentDelegater ddl = new DocumentDelegater();
-                KarteBean karteBean = ddl.getKarte(getPatientVisit().getPatient().getId(), today.getTime());
-                return karteBean;
+                return ddl.getKarte(getPatientVisit().getPatient().getId(), today.getTime());
             }
 
             @Override
@@ -1194,7 +1194,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // 保険コレクションを配列に変換し，パラメータにセットする
         // ユーザがこの中の保険を選択する
-        PVTHealthInsuranceModel[] insModels = insurances.toArray(new PVTHealthInsuranceModel[insurances.size()]);
+        PVTHealthInsuranceModel[] insModels = insurances.toArray(new PVTHealthInsuranceModel[0]);
         params.setInsurances(insModels);
         int index = 0;
         if (insuranceUid != null) {
@@ -1245,7 +1245,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             insurances.add(model);
         }
 
-        return insurances.toArray(new PVTHealthInsuranceModel[insurances.size()]);
+        return insurances.toArray(new PVTHealthInsuranceModel[0]);
     }
 
     /**
@@ -1327,7 +1327,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         if (dirtyList == null || dirtyList.isEmpty()) { return; }
 
-        dirtyList.stream().filter(undoc -> undoc.isNeedSave()).forEach(undoc -> {
+        dirtyList.stream().filter(UnsavedDocument::isNeedSave).forEach(undoc -> {
             ChartDocument doc = providers.get(tabbedPane.getTitleAt(undoc.getIndex()));
             if (doc != null && doc.isDirty()) {
                 //tabbedPane.setSelectedIndex(undoc.getIndex());

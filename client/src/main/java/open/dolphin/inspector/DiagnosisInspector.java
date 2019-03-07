@@ -22,7 +22,7 @@ import javax.swing.*;
 import open.dolphin.client.*;
 import open.dolphin.helper.MenuActionManager;
 import open.dolphin.helper.MenuActionManager.MenuAction;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSBorder;

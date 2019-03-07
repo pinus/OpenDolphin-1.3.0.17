@@ -13,17 +13,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 
 /**
- * ＠MenuAction で action を作っていろいろするクラス.
+ * {@literal @}MenuAction で action を作っていろいろするクラス.
+ *
  * @author pns
  */
 public class MenuActionManager {
 
     /**
-     * @MenuAction を付けたメソッドが Action で呼ばれる.
+     * {@literal @}MenuAction を付けたメソッドが Action で呼ばれる.
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface MenuAction {}
+    public @interface MenuAction {
+    }
 
     private final ActionMap actionMap;
 
@@ -33,8 +35,9 @@ public class MenuActionManager {
 
     /**
      * メソッド名をキーとする ActionMap を作成する
-     * @param obj
-     * @return
+     *
+     * @param obj {@literal @}MenuAction を付けたインスタンス
+     * @return ActionMap
      */
     public static ActionMap getActionMap(final Object obj) {
 
@@ -47,6 +50,7 @@ public class MenuActionManager {
                 final Method method = m;
                 javax.swing.Action action = new AbstractAction() {
                     private static final long serialVersionUID = 1L;
+
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try {
@@ -62,13 +66,15 @@ public class MenuActionManager {
         }
         return map;
     }
+
     /**
-     * ActionMap に登録された action に名前とアイコンを付けて JMenuItem として取り出す
-     * static バージョン
-     * @param actionMap
-     * @param key
-     * @param name
-     * @param icon
+     * ActionMap に登録された action に名前とアイコンを付けて JMenuItem として取り出す.
+     * static バージョン.
+     *
+     * @param actionMap ActionMap
+     * @param key キー
+     * @param name 名前
+     * @param icon アイコン
      * @return
      */
     public static JMenuItem getMenuItem(ActionMap actionMap, String key, String name, ImageIcon icon) {
@@ -82,11 +88,12 @@ public class MenuActionManager {
     }
 
     /**
-     * ActionMap に登録された action に名前とアイコンを付けて JMenuItem として取り出す
-     * instance 作って使うバージョン
-     * @param key
-     * @param name
-     * @param icon
+     * ActionMap に登録された action に名前とアイコンを付けて JMenuItem として取り出す.
+     * instance 作って使うバージョン.
+     *
+     * @param key キー
+     * @param name 名前
+     * @param icon アイコン
      * @return
      */
     public JMenuItem getMenuItem(String key, String name, ImageIcon icon) {
@@ -94,7 +101,8 @@ public class MenuActionManager {
     }
 
     /**
-     * 生成した ActionMap を返す
+     * 生成した ActionMap を返す.
+     *
      * @return
      */
     public ActionMap getActionMap() {

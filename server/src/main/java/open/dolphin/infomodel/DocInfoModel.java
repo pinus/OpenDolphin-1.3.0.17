@@ -1,5 +1,7 @@
 package open.dolphin.infomodel;
 
+import open.dolphin.util.ModelUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;

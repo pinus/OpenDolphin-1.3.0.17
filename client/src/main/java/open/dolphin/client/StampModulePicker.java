@@ -147,7 +147,7 @@ public class StampModulePicker {
         if (dif_month >= 4) { return true; }
         // 3ヶ月離れている場合は，日付を比較
         else if (dif_month == 3) {
-            return dif_day > 0;
+            return dif_day >= 0;
             // それ以外は再診
         } else { return false; }
     }

@@ -23,7 +23,7 @@ import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.KeyBlocker;
 import open.dolphin.helper.Task;
-import open.dolphin.infomodel.ModelUtils;
+import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.table.IndentTableCellRenderer;
@@ -32,8 +32,8 @@ import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.util.PNSTriple;
-import open.dolphin.util.StringTool;
+import open.dolphin.helper.PNSTriple;
+import open.dolphin.helper.StringTool;
 import org.apache.log4j.Logger;
 
 /**
@@ -287,7 +287,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         final ObjectReflectTableModel<PatientModel> tableModel = (ObjectReflectTableModel<PatientModel>) table.getModel();
 
         table.getSelectionModel().addListSelectionListener(e -> {
-            if (e.getValueIsAdjusting() == false) {
+            if (! e.getValueIsAdjusting()) {
 
                 int[] rows = table.getSelectedRows();
                 if (rows == null) {
@@ -374,9 +374,9 @@ public class PatientSearchImpl extends AbstractMainComponent {
      * by pns
      */
     public void openKarte() {
-        PatientModel patient[] = getSelectedPatinet();
+        PatientModel[] patient = getSelectedPatinet();
         if (patient == null) { return; }
-        Arrays.asList(patient).forEach(pt -> openKarte(pt));
+        Arrays.asList(patient).forEach(this::openKarte);
     }
 
     /**
@@ -565,14 +565,14 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     private boolean isDate(String text) {
-        return text==null? false: text.matches("[0-9][0-9][0-9][0-9]-[0-9]+-[0-9]+");
+        return text != null && text.matches("[0-9][0-9][0-9][0-9]-[0-9]+-[0-9]+");
     }
     private boolean isNengoDate(String text) {
-        return text==null? false: text.matches("[MmTtSsHh][0-9]+-[0-9]+-[0-9]+");
+        return text != null && text.matches("[MmTtSsHh][0-9]+-[0-9]+-[0-9]+");
     }
     private boolean isOrcaDate(String text) {
         // S12-3-4 = 3120304
-        return text==null? false: text.matches("[1-4][0-6][0-9][0-1][0-9][0-3][0-9]");
+        return text != null && text.matches("[1-4][0-6][0-9][0-1][0-9][0-3][0-9]");
     }
     private boolean isKana(String text) {
         boolean maybe = true;
@@ -712,8 +712,6 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.WARNING_MESSAGE );
 
-        if(confirm == JOptionPane.OK_OPTION) { return true; }
-
-        return false;
+        return confirm == JOptionPane.OK_OPTION;
     }
 }

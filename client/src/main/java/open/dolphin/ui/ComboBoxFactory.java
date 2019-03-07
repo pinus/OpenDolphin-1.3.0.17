@@ -3,7 +3,7 @@ package open.dolphin.ui;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JComboBox;
-import open.dolphin.util.PNSPair;
+import open.dolphin.helper.PNSPair;
 
 /**
  *
@@ -107,7 +107,7 @@ public class ComboBoxFactory {
 
     private static <T> JComboBox<PNSPair<String, T>> createComboBox(List<PNSPair<String, T>> periods) {
         JComboBox<PNSPair<String,T>> combo = new JComboBox<>();
-        periods.forEach(periodPair -> combo.addItem(periodPair));
+        periods.forEach(combo::addItem);
 
         return combo;
     }

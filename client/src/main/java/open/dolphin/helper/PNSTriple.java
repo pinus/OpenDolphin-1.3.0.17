@@ -1,16 +1,17 @@
-package open.dolphin.util;
+package open.dolphin.helper;
 
 import java.util.Objects;
 
 /**
  * PNSTriple.
  * PNSPair の３要素版
+ *
+ * @param <F> first
+ * @param <S> second
+ * @param <T> third
  * @author pns
- * @param <F>
- * @param <S>
- * @param <T>
  */
-public class PNSTriple<F,S,T> {
+public class PNSTriple<F, S, T> {
     private F first;
     private S second;
     private T third;
@@ -84,9 +85,6 @@ public class PNSTriple<F,S,T> {
             return false;
         }
         final PNSTriple<?, ?, ?> other = (PNSTriple<?, ?, ?>) obj;
-        if (!Objects.equals(this.first, other.first)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.first, other.first);
     }
 }
