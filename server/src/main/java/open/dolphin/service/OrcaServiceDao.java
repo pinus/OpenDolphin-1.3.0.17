@@ -95,7 +95,7 @@ public class OrcaServiceDao {
                 syskanri.setCode(rs.getString(1).trim());   // kbncd
                 String kanritbl = rs.getString(2);   // kanritlb
                 String[] kanriTblItem = kanritbl.split(" +");
-                // 0:login id, 1:kana name, 2:kanji name
+                // 0:login id, 1:kana name, 2:littleKanji name
                 syskanri.setWholeName(kanriTblItem[2]);
                 syskanri.setKanaName(kanriTblItem[1]);
                 ret.add(syskanri);

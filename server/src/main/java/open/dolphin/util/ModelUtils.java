@@ -67,35 +67,7 @@ public class ModelUtils {
     public static String getAgeBirthday(String mmlBirthday) {
         String age = getAge(mmlBirthday);
         if (age == null) return null;
-        return String.format("%s %s (%s)", age, IInfoModel.AGE, toNengo(mmlBirthday));
-    }
-
-    /**
-     * 年齢付きの生年月日「32.10 歳 (S50-01-01)」形式から mmlBirthday を返す.
-     * @param birthdayWithAge 32.10 歳 (S50-01-01)
-     * @return 1975-01-01
-     */
-    public static String getMmlBirthdayFromAge(String birthdayWithAge) {
-        String[] s = birthdayWithAge.split("[()]");
-        return toSeireki(s[1]);
-    }
-
-    /**
-     * 西暦 -> 年号変換.
-     * @param mmlBirthday 1975-01-01
-     * @return nengoBirthday S50-01-01
-     */
-    public static String toNengo(String mmlBirthday) {
-        return Gengo.isoDateToGengo(mmlBirthday);
-    }
-
-    /**
-     * 年号 -> 西暦変換.
-     * @param nengoBirthday H22-7-26
-     * @return mmlBirthday 2010-07-26
-     */
-    public static String toSeireki(String nengoBirthday) {
-        return Gengo.gengoToIsoDate(nengoBirthday);
+        return String.format("%s %s (%s)", age, IInfoModel.AGE, Gengo.isoDateToGengo(mmlBirthday));
     }
 
     /**
@@ -103,7 +75,7 @@ public class ModelUtils {
      * @param orcaBirthday 4220726
      * @return h22-07-26
      */
-    public static String orcaDateToNengo(String orcaBirthday) {
+    public static String orcaDateToGengo(String orcaBirthday) {
         //元号
         String nengo = Gengo.gengoNumberToAlphabet(orcaBirthday.substring(0, 1));
         //年
@@ -113,13 +85,6 @@ public class ModelUtils {
 
         return nengo.toLowerCase() + y + "-" + m + "-" + d;
     }
-
-    /**
-     * 年号アルファベットを漢字に変換.
-     * @param alphabet [M,T,S,H,...]
-     * @return 元号漢字 [㍾,㍽,㍼,㍻,...]
-     */
-    public static String nengoAlphabetToKanji(String alphabet) { return Gengo.gengoAlphabetToKanji(alphabet); }
 
     /**
      * 年齢を作る.
@@ -252,6 +217,16 @@ public class ModelUtils {
     public static String toDolphinDateString(String orcaDateString) {
         if (orcaDateString == null || ! orcaDateString.matches("[0-9]+")) { return null; }
         return String.join("-", orcaDateString.substring(0,4), orcaDateString.substring(4,6), orcaDateString.substring(6,8));
+    }
+
+    /**
+     * ISO_DATE -> 元号変換の簡易呼び出し.
+     *
+     * @param isoDate ISO_DATE
+     * @return gengo date
+     */
+    public static String toNengo(String isoDate) {
+        return Gengo.isoDateToGengo(isoDate);
     }
 
     /**
@@ -502,16 +477,9 @@ public class ModelUtils {
     }
 
     public static void main(String[] argv) {
-        System.out.println(toNengo("2019-04-30"));
-        System.out.println(toNengo("2019-05-01"));
-        System.out.println(toSeireki("h01-04-30"));
-        System.out.println(toSeireki("a01-05-01"));
-        System.out.println(toSeireki("2019-2-25"));
-        System.out.println(orcaDateToNengo("3300101"));
-        System.out.println(orcaDateToNengo("4300430"));
-        System.out.println(orcaDateToNengo("5010501"));
-        System.out.println(nengoAlphabetToKanji("H"));
-        System.out.println(nengoAlphabetToKanji("A"));
+        System.out.println(orcaDateToGengo("3300101"));
+        System.out.println(orcaDateToGengo("4300430"));
+        System.out.println(orcaDateToGengo("5010501"));
         System.out.println(claimInsuranceCodeToOrcaInsuranceCode("00"));
         System.out.println(claimInsuranceCodeToOrcaInsuranceCode("09"));
         System.out.println(claimInsuranceCodeToOrcaInsuranceCode("39"));

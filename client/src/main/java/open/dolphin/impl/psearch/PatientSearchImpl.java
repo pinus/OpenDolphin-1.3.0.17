@@ -23,6 +23,7 @@ import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.KeyBlocker;
 import open.dolphin.helper.Task;
+import open.dolphin.util.Gengo;
 import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
@@ -193,8 +194,8 @@ public class PatientSearchImpl extends AbstractMainComponent {
             String birthday1;
             String birthday2;
             if (ageDisplay) {
-                birthday1 = ModelUtils.getMmlBirthdayFromAge(o1);
-                birthday2 = ModelUtils.getMmlBirthdayFromAge(o2);
+                birthday1 = Gengo.gengoToIsoDate(o1.split("[()]")[1]);
+                birthday2 = Gengo.gengoToIsoDate(o2.split("[()]")[1]);
                 return birthday2.compareTo(birthday1);
             } else {
                 birthday1 = o1;
@@ -486,7 +487,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         } else if (text.startsWith("B ") || text.startsWith("b ")) {
             spec.setCode(PatientSearchSpec.BIRTHDAY_SEARCH);
             text = text.substring(2);
-            spec.setBirthday(ModelUtils.toSeireki(text));
+            spec.setBirthday(Gengo.toSeireki(text));
 
         } else if (text.startsWith("M ") || text.startsWith("m ")) {
             spec.setCode(PatientSearchSpec.MEMO_SEARCH);
@@ -500,16 +501,16 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         } else if (isNengoDate(text)) {
             spec.setCode(PatientSearchSpec.BIRTHDAY_SEARCH);
-            spec.setBirthday(ModelUtils.toSeireki(text));
+            spec.setBirthday(Gengo.toSeireki(text));
 
         } else if (isOrcaDate(text)) {
             spec.setCode(PatientSearchSpec.BIRTHDAY_SEARCH);
-            spec.setBirthday(ModelUtils.toSeireki(ModelUtils.orcaDateToNengo(text)));
+            spec.setBirthday(Gengo.toSeireki(ModelUtils.orcaDateToGengo(text)));
 
         } else if (isDate(text)) {
             //System.out.println("Date search");
             spec.setCode(PatientSearchSpec.DATE_SEARCH);
-            spec.setDate(ModelUtils.toSeireki(text)); // 月/日が１桁で指定された場合の調整 by pns
+            spec.setDate(Gengo.toSeireki(text)); // 月/日が１桁で指定された場合の調整 by pns
 
         } else if (isKana(text)) {
             spec.setCode(PatientSearchSpec.KANA_SEARCH);

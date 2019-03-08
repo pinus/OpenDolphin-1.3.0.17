@@ -29,6 +29,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
+
+import open.dolphin.util.Gengo;
 import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSBorderFactory;
@@ -286,12 +288,12 @@ public class CalendarTable extends JTable {
     private String getNengo() {
         SimpleDate date = new SimpleDate(tableModel.getYear(), tableModel.getMonth(), 1);
         String mmlDate = SimpleDate.simpleDateToMmldate(date);
-        String nengoDate = ModelUtils.toNengo(mmlDate);
+        String nengoDate = Gengo.toGengo(mmlDate);
         String[] split = nengoDate.split("-");
 
         String nengoAlphabet = String.valueOf(split[0].charAt(0));
         int year = Integer.valueOf(split[0].substring(1));
-        String nengo = ModelUtils.nengoAlphabetToKanji(nengoAlphabet);
+        String nengo = Gengo.gengoAlphabetToLittleKanji(nengoAlphabet);
 
         return String.format("%s%2d", nengo, year);
     }

@@ -8,10 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.prefs.Preferences;
 import javax.swing.*;
@@ -33,6 +30,7 @@ import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.sheet.JSheet;
+import open.dolphin.util.Gengo;
 import open.dolphin.util.ModelUtils;
 import open.dolphin.helper.PNSTriple;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -250,29 +248,16 @@ public class WaitingListImpl extends AbstractMainComponent {
         pvtTable.setRowSorter(sorter);
 
         // 年齢コラム 32.10 の型式をソートできるようにする
-        sorter.setComparator(AGE_COLUMN, (o1, o2) -> {
-            String[] age1 = ((String) o1).split("\\.");
-            String[] age2 = ((String) o2).split("\\.");
-
-            int y1 = Integer.valueOf(age1[0]);
-            int y2 = Integer.valueOf(age2[0]);
-
-            if (y1 == y2) {
-                int m1 = Integer.valueOf(age1[1]);
-                int m2 = Integer.valueOf(age2[1]);
-                return m1 - m2;
-
-            } else {
-                return y1 - y2;
-            }
-        });
+        sorter.setComparator(AGE_COLUMN, Comparator.comparing(x -> {
+            String[] age = ((String)x).split("\\.");
+            int y = Integer.valueOf(age[0]); // 歳
+            int m = Integer.valueOf(age[1]); // ヶ月
+            return 100 * y + m;
+        }));
 
         // 生年月日コラム
-        sorter.setComparator(BIRTHDAY_COLUMN, (o1, o2) -> {
-            String bd1 = ageDisplay? ModelUtils.toSeireki((String)o1) : (String)o1;
-            String bd2 = ageDisplay? ModelUtils.toSeireki((String)o2) : (String)o2;
-            return bd1.compareTo(bd2);
-        });
+        sorter.setComparator(BIRTHDAY_COLUMN,
+                Comparator.comparing(x -> ageDisplay? Gengo.toSeireki((String)x) : (String)x));
 
         // コラム幅の設定
         for (int i = 0; i <columnWidth.length; i++) {
