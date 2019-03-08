@@ -27,7 +27,7 @@ public enum Gengo {
         return alphabet;
     }
 
-    public String littleKanji() {
+    public String halfKanji() {
         return halfKanji;
     }
 
@@ -211,8 +211,8 @@ public enum Gengo {
      * @param alphabet [M,T,S,H,...]
      * @return 元号漢字 [㍾,㍽,㍼,㍻,...]
      */
-    public static String gengoAlphabetToLittleKanji(String alphabet) {
-        return Arrays.stream(values()).filter(value -> value.alphabet().equals(alphabet)).findAny().orElse(Gengo.DEFAULT).littleKanji();
+    public static String gengoAlphabetToHalfKanji(String alphabet) {
+        return Arrays.stream(values()).filter(value -> value.alphabet().equals(alphabet)).findAny().orElse(Gengo.DEFAULT).halfKanji();
     }
 
     /**

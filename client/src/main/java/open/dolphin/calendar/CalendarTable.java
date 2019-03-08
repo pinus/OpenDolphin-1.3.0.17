@@ -31,7 +31,6 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import open.dolphin.util.Gengo;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSTitledBorder;
@@ -293,7 +292,7 @@ public class CalendarTable extends JTable {
 
         String nengoAlphabet = String.valueOf(split[0].charAt(0));
         int year = Integer.valueOf(split[0].substring(1));
-        String nengo = Gengo.gengoAlphabetToLittleKanji(nengoAlphabet);
+        String nengo = Gengo.gengoAlphabetToHalfKanji(nengoAlphabet);
 
         return String.format("%s%2d", nengo, year);
     }
