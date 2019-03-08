@@ -6,8 +6,6 @@ import java.awt.event.MouseEvent;
 import java.awt.print.PageFormat;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -17,7 +15,7 @@ import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.delegater.DocumentDelegater;
-import open.dolphin.event.FinishListener;
+import open.dolphin.event.CompletionListener;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.*;
 import open.dolphin.message.MMLHelper;
@@ -88,7 +86,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     // ClaimSender
     private final ClaimSender claimSender = new ClaimSender();
     // EditorFrame に save 完了を知らせる
-    private FinishListener finListener;
+    private CompletionListener competionListener;
     // KarteEditor ノードの Preferences
     private Preferences prefs;
     // 一時保存
@@ -111,10 +109,10 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     /**
      * エディタ終了を知らせるリスナを登録.
      * EditorFrame に知らせる.
-     * @param listener FinishListener
+     * @param listener CompletionListener
      */
-    public void addFinishListener(FinishListener listener) {
-        finListener = listener;
+    public void addFinishListener(CompletionListener listener) {
+        competionListener = listener;
     }
 
     public void selectAll() {
@@ -446,12 +444,10 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private void displayModel() {
 
         // Timestamp を表示する
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(IInfoModel.KARTE_DATE_FORMAT);
-        String now = ModelUtils.getDateTimeAsFormatString(LocalDateTime.now(), format);
+        String now = ModelUtils.getDateAsFormatString(new Date(), IInfoModel.KARTE_DATE_FORMAT);
 
         if (modify) {
-            LocalDateTime dateTime = ModelUtils.toLocalDateTime(model.getDocInfo().getFirstConfirmDate());
-            String firstConfirm = ModelUtils.getDateTimeAsFormatString(dateTime, format);
+            String firstConfirm  = ModelUtils.getDateAsFormatString(model.getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
             timeStamp = String.format("%s%s [%s]", UPDATE_MARK, now, firstConfirm);
         } else {
             timeStamp = now;
@@ -661,7 +657,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 save2(params);
             } else if (selection == SaveDialog.DISPOSE) {
                 // save 前に EditorFrame に Termination を送って dispose する
-                finListener.finished();
+                competionListener.completed();
             }
 
         } catch (Exception e) {
@@ -747,7 +743,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                     chart.getDocumentHistory().update(docInfo.getFirstConfirmDateTrimTime());
 
                     // save が終了したことを EditorFrame に知らせる
-                    finListener.finished();
+                    competionListener.completed();
 
                 } else {
                     // errMsg を処理する

@@ -11,10 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -219,39 +215,12 @@ public class ModelUtils {
     }
 
     /**
-     * 時間なしの mmlDate 形式から LocalDate を作る.
-     * @param mmlDate 1975-01-01
-     * @return parsed LocalDate
-     */
-    public static LocalDate toLocalDate(String mmlDate) {
-        return LocalDate.parse(mmlDate, DateTimeFormatter.ISO_DATE);
-    }
-
-    /**
-     * 時間付きの mmlDate 形式から LocalDateTime を作る.
-     * @param mmlDate 1975-01-01T12:23:34
-     * @return parsed LocalDateTime
-     */
-    public static LocalDateTime toLocalDateTime(String mmlDate) {
-        return LocalDateTime.parse(mmlDate, DateTimeFormatter.ISO_DATE_TIME);
-    }
-
-    /**
      * Date から時間なしの mmlDate 形式を作る.
      * @param date Date
      * @return 1975-01-01
      */
     public static String getDateAsString(Date date) {
         return getDateAsFormatString(date, IInfoModel.DATE_WITHOUT_TIME);
-    }
-
-    /**
-     * LocalDateTime から時間なしの mmlDate 形式を作る.
-     * @param localDateTime LocalDateTime
-     * @return 1975-01-01
-     */
-    public static String getDateAsString(LocalDateTime localDateTime) {
-        return getDateTimeAsFormatString(localDateTime, DateTimeFormatter.ISO_DATE);
     }
 
     /**
@@ -264,53 +233,15 @@ public class ModelUtils {
     }
 
     /**
-     * LocalDateTime から時間付きの mmlDate 形式を作る.
-     * @param localDateTime LocalDateTime
-     * @return 1975-01-01T12:23:34
-     */
-    public static String getDateTimeAsString(LocalDateTime localDateTime) {
-        return getDateTimeAsFormatString(localDateTime, DateTimeFormatter.ofPattern(IInfoModel.ISO_8601_DATE_FORMAT));
-    }
-
-    /**
      * Date から format で指定した形式の日付文字列を作る.
      * @param date Date
      * @param format SimpleDateFormat string
      * @return formatted string
      */
     public static String getDateAsFormatString(Date date, String format) {
-        if (Objects.isNull(date)) { return null; }
-        LocalDateTime ldt = toLocalDateTime(date);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(format);
-        return getDateTimeAsFormatString(ldt, dtf);
-    }
-
-    /**
-     * LocalDateTime から format で指定した形式の日付文字列を作る.
-     * @param localDateTime LocalDateTime
-     * @param format DateTimeFormatter string
-     * @return formatted string
-     */
-    public static String getDateTimeAsFormatString(LocalDateTime localDateTime, DateTimeFormatter format) {
-        return localDateTime.format(format);
-    }
-
-    /**
-     * Date から LocalDate を作る.
-     * @param date Date
-     * @return LocalDate
-     */
-    public static LocalDate toLocalDate(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-
-    /**
-     * Date から LocalDateTime を作る.
-     * @param date Date
-     * @return LocalDateTime
-     */
-    public static LocalDateTime toLocalDateTime(Date date) {
-        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        if (date == null) return null;
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(date);
     }
 
     /**
@@ -587,11 +518,5 @@ public class ModelUtils {
         System.out.println(claimInsuranceCodeToOrcaInsuranceCode("XX"));
         System.out.println(claimInsuranceCodeToOrcaInsuranceCode("Z0"));
         System.out.println(claimInsuranceCodeToOrcaInsuranceCode("060"));
-
-        System.out.println(getDateAsFormatString(new Date(), IInfoModel.ISO_8601_DATE_FORMAT));
-        System.out.println(getDateTimeAsFormatString(LocalDateTime.now(), DateTimeFormatter.ofPattern(IInfoModel.ISO_8601_DATE_FORMAT)));
-        System.out.println(toLocalDateTime("1975-01-01T12:23:34"));
-        System.out.println(toLocalDate("2019-03-05"));
-
     }
 }
