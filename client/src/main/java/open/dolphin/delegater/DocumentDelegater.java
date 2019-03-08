@@ -114,7 +114,7 @@ public class  DocumentDelegater extends BusinessDelegater {
      * Moduleを検索して返す.
      * beanBytes はデコード済み
      * @param spec ModuleSearchSpec 検索仕様
-     * @return List&lt;ModuleModel&gt; の List
+     * @return {@code List<ModuleModel>} の List
      */
     public List<List<ModuleModel>> getModuleList(ModuleSearchSpec spec) {
         return getService().getModuleList(spec);

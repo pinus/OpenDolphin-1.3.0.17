@@ -18,7 +18,7 @@ public class PNSPair<N, V> implements Comparable<PNSPair<N, V>> {
 
     /**
      * Value を比較して，targetPair が pairList の何番目の要素であるかを返す.
-     * int index = PNSPair.<String,Integer>getIndex(targetPair, targetList)
+     * {@code int index = PNSPair<String,Integer>getIndex(targetPair, targetList)}
      *
      * @param <N> name
      * @param <V> value
@@ -32,7 +32,7 @@ public class PNSPair<N, V> implements Comparable<PNSPair<N, V>> {
 
     /**
      * Value を比較して targetValue が pairList の何番目の要素であるかを返す.
-     * int index = PNSPair.<String,Integer>getIndex(int, targetList)
+     * {@code }int index = PNSPair.<String,Integer>getIndex(int, targetList)}
      *
      * @param <N> name
      * @param <V> value

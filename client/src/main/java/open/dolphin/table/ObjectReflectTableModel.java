@@ -30,7 +30,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     private List<T> objectList = new ArrayList<>();
 
     /**
-     * PNSTriple&lt;columnName,columnClass,methodName&gt; から TableModel を生成する.
+     * {@code PNSTriple<columnName,columnClass,methodName>} から TableModel を生成する.
      * @param reflectionList
      */
     public ObjectReflectTableModel(List<PNSTriple<String,Class<?>,String>> reflectionList) {

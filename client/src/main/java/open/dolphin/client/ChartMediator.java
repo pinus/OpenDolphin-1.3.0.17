@@ -173,7 +173,7 @@ public final class ChartMediator extends MenuSupport {
     public void dispose() {}
 
     /**
-     * 現在の KarteCompsite&lt;T&gt; の中身の T (JComponent) を返す.
+     * 現在の {@code KarteCompsite<T>} の中身の T (JComponent) を返す.
      * @return
      */
     private JComponent getCurrentComponent() {

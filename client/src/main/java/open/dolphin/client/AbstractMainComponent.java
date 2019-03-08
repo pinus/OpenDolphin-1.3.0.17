@@ -217,7 +217,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
         }
 
         /**
-         * ObjectReflectTableModel&lt;T&gt; に格納されている T からカルテを開く.
+         * {@code ObjectReflectTableModel<T>} に格納されている T からカルテを開く.
          * @param value
          */
         public abstract void openKarte(T value);

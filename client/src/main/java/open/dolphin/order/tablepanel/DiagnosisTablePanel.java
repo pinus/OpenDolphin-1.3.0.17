@@ -22,7 +22,7 @@ import open.dolphin.helper.PNSTriple;
  * ItemTablePanel を extend して作った DiagnosisTablePanel.
  * オリジナルは RegisteredDiagnosisModel ベースだったが，ItemTablePanel に合わせて MasterItem ベースに変更した.
  * setValue で入ってくるときは必ず１個だが，getValue で出て行くときには複数病名になっている可能性があるため，
- * List&lt;RegisteredDiagnosisModel&hgt; で処理する.
+ * {@code List<RegisteredDiagnosisModel>} で処理する.
  * @author pns
  */
 public class DiagnosisTablePanel extends ItemTablePanel {
@@ -236,7 +236,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
      * 受けるのは DiagnosisDocument#propertyChange，StampBoxPlugin.EditorValueListener.
      * alias が設定されている場合は，スタンプに登録されたとき alias　がスタンプ名として採用される.
      * see ModuleInfoBean#toString().
-     * @return ArrayList&lt;RegisteredDiagnosisModel&gt;
+     * @return {@code ArrayList<RegisteredDiagnosisModel>}
      */
     @Override
     public Object getValue() {
@@ -250,7 +250,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
     /**
      * 病名修飾のある場合の getValue.
-     * @return List&lt;RegisteredDiagnosisModel&gt;
+     * @return {@code List<RegisteredDiagnosisMode>}
      */
     private Object getValue1() {
 
@@ -297,7 +297,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
     /**
      * 病名修飾のない場合の getValue.
-     * @return List&lt;RegisteredDiagnosisModel&gt;
+     * @return {@code List<RegisteredDiagnosisModel>}
      */
     private Object getValue2() {
         List<RegisteredDiagnosisModel> ret = new ArrayList<>();

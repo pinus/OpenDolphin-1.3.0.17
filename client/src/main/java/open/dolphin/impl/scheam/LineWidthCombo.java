@@ -24,7 +24,7 @@ public class LineWidthCombo extends PnsComboBox<Double> {
     private final static ObservableList<Double> LINE_WIDTH = FXCollections.observableArrayList(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 );
     /** Line アイコンの幅 */
     private final static double ICON_WIDTH = 40;
-    /** ObjectProperty&gt;Double&lt; を DoubleProperty に変換するための Proxy */
+    /** {@code ObjectProperty<Double>} を DoubleProperty に変換するための Proxy */
     private final DoubleProperty selectionPropertyProxy;
 
     public LineWidthCombo() {
