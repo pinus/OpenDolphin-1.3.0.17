@@ -2,17 +2,20 @@ package open.dolphin.delegater;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.service.UserService;
 
 /**
+ * UserDelegeter.
  *
  * @author pns
  */
-public class UserDelegater extends BusinessDelegater {
+public class UserDelegater extends BusinessDelegater<UserService> {
 
     /**
      * ユーザを検索して返す.
+     *
      * @param uid facilityId:username 型式の userId
      * @return UserModel
      */
@@ -21,7 +24,8 @@ public class UserDelegater extends BusinessDelegater {
     }
 
     /**
-     * 全てのユーザリストを返す
+     * 全てのユーザリストを返す.
+     *
      * @return
      */
     public List<UserModel> getAllUser() {
@@ -32,6 +36,7 @@ public class UserDelegater extends BusinessDelegater {
 
     /**
      * ユーザを保存する.
+     *
      * @param userModel
      * @return
      */
@@ -40,7 +45,8 @@ public class UserDelegater extends BusinessDelegater {
     }
 
     /**
-     * ユーザを更新する
+     * ユーザを更新する.
+     *
      * @param userModel
      * @return
      */
@@ -49,7 +55,8 @@ public class UserDelegater extends BusinessDelegater {
     }
 
     /**
-     * ユーザ ID を指定してユーザを削除する
+     * ユーザ ID を指定してユーザを削除する.
+     *
      * @param uid facilityId:username 型式の userId
      * @return
      */
@@ -58,15 +65,12 @@ public class UserDelegater extends BusinessDelegater {
     }
 
     /**
-     * ユーザの FacilityModel を更新する
+     * ユーザの FacilityModel を更新する.
+     *
      * @param user
      * @return
      */
     public int updateFacility(UserModel user) {
         return getService().updateFacility(user);
-    }
-
-    private UserService getService() {
-        return getService(UserService.class);
     }
 }

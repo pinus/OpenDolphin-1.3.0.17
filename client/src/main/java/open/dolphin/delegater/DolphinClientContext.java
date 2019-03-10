@@ -9,6 +9,7 @@ import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
+
 import open.dolphin.JsonConverter;
 import open.dolphin.infomodel.InfoModel;
 import open.dolphin.helper.HashUtil;
@@ -19,6 +20,7 @@ import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
 import org.jboss.resteasy.util.Base64;
 
 /**
+ * DolphinClientContext.
  *
  * @author pns
  */
@@ -36,10 +38,11 @@ public class DolphinClientContext {
 
     /**
      * hostAddress, userId, password で context を設定する.
-     * userId は facilityId:username というコンポジット型式
+     * userId は facilityId:username というコンポジット型式.
+     *
      * @param hostAddress 8080 ポートも指定されたホストアドレス
-     * @param userId コンポジット形式の userId
-     * @param password hash されていない生パスワード
+     * @param userId      コンポジット形式の userId (=facilityId:username)
+     * @param password    hash されていない生パスワード
      */
     public static void configure(String hostAddress, String userId, String password) {
         // password を MD5 変換
@@ -76,19 +79,26 @@ public class DolphinClientContext {
     }
 
     /**
-     * DolphinClientContext を返す
+     * DolphinClientContext を返す.
+     *
      * @return
      */
-    public static DolphinClientContext getContext() { return context; }
+    public static DolphinClientContext getContext() {
+        return context;
+    }
 
     /**
-     * ResteasyWebTarget を返す
+     * ResteasyWebTarget を返す.
+     *
      * @return
      */
-    public ResteasyWebTarget getWebTarget() { return target; }
+    public ResteasyWebTarget getWebTarget() {
+        return target;
+    }
 
     /**
-     * WebSocket の Endpoint に登録する
+     * WebSocket の Endpoint に登録する.
+     *
      * @param endpoint
      * @return 登録されたセッション
      */
@@ -103,7 +113,7 @@ public class DolphinClientContext {
 
     /**
      * Authorization header を作成する.
-     * facilityId:username;password という型式を Base64 変換したものを送る
+     * facilityId:username;password という型式を Base64 変換したものを送る.
      */
     private static class AuthorizationFilter implements ClientRequestFilter {
         private final String header;

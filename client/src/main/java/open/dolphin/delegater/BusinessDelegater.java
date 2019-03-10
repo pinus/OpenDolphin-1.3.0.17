@@ -1,22 +1,35 @@
 package open.dolphin.delegater;
 
+import java.lang.reflect.ParameterizedType;
+
 /**
+ * BusinessDelegater.
  *
  * @author pns
  */
-public class BusinessDelegater {
+public class BusinessDelegater<T> {
     public static final int NO_ERROR = 0;
     public static final int ERROR = -1;
 
     private int errorCode = NO_ERROR;
     private String errorMessage = "delegate error";
 
+    // 呼び出し元の class
+    private Class<T> target;
+
     public BusinessDelegater() {
+        // 呼び出し元の class を取得
+        String className = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0].getTypeName();
+        try {
+            target = (Class<T>) Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            processError(e);
+        }
     }
 
-    public <T> T getService(Class<T> clazz) {
+    public T getService() {
         try {
-            return DolphinClientContext.getContext().getWebTarget().proxy(clazz);
+            return DolphinClientContext.getContext().getWebTarget().proxy(target);
         } catch (Exception e) {
             processError(e);
         }

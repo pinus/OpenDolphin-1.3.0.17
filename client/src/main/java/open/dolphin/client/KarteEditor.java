@@ -15,6 +15,7 @@ import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.event.CompletionListener;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.*;
@@ -583,13 +584,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             logger.debug("saveFromModify");
             if (sendClaim) {
                 // modify 時に既に中途終了データがあれば sendClaim = true にする
-                OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
-                List<OrcaEntry> entries = dao.getWksryactEntries(getContext().getPatient().getPatientId());
-                if (entries.isEmpty()) {
-                    sendClaim = Project.getSendClaimModify();
-                } else {
-                    sendClaim = Project.getSendClaim();
-                }
+                OrcaDelegater delegater = new OrcaDelegater();
+                sendClaim = delegater.existsOrcaWorkingData(getContext().getPatient().getPatientId()) ?
+                        Project.getSendClaimModify() : Project.getSendClaim();
             }
         }
 
@@ -1091,9 +1088,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 if (Project.getProjectStub().isUseOrcaApi()) {
                     OrcaApi api = OrcaApi.getInstance();
                     api.setContext(getContext());
-                    api.send(model);
+                    api.sendDocument(model);
                 } else {
-                    claimSender.send(model);
+                    claimSender.sendDocument(model);
                 }
             }
             message = "ORCA に送信しました";

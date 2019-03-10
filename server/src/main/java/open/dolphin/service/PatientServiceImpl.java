@@ -239,7 +239,7 @@ public class PatientServiceImpl extends DolphinService implements PatientService
                     javax.persistence.Query persistenceQuery = fullTextEntityManager.createFullTextQuery(luceneQuery, DocumentModel.class);
 
                     // Too many results (>32768) cause
-                    // java.io.IOException: Tried to send an out-of-range integer as a 2-byte value: xxxxx
+                    // java.io.IOException: Tried to sendDocument an out-of-range integer as a 2-byte value: xxxxx
                     // 暫定的に 1000 にしておく
                     persistenceQuery.setMaxResults(1000);
 

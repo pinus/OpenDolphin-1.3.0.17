@@ -1,25 +1,30 @@
 package open.dolphin.delegater;
 
 import java.util.*;
+
 import open.dolphin.infomodel.*;
 import open.dolphin.service.PnsService;
 import open.dolphin.util.ModelUtils;
 
 /**
- * いろいろやってみる delegater
+ * いろいろやってみる delegater.
+ *
  * @author pns
  */
-public class PnsDelegater extends BusinessDelegater {
+public class PnsDelegater extends BusinessDelegater<PnsService> {
 
     /**
-     * 今日のカルテの記載を返す（カルテ未記入をチェックするため）
-     * @param patientId
-     * @return
+     * 今日のカルテの記載を返す.（カルテ未記入をチェックするため）
+     *
+     * @param patientId PatientModel の pk
+     * @return 今日のカルテの記載
      */
     public String peekKarte(Long patientId) {
         List<ModuleModel> list = getService().peekKarte(patientId);
         // 今日のカルテがない場合
-        if (list == null) { return null; }
+        if (list == null) {
+            return null;
+        }
 
         String text = null;
 
@@ -35,11 +40,10 @@ public class PnsDelegater extends BusinessDelegater {
         return text;
     }
 
+    /**
+     * HibernateSearch 用のインデックスを作る.
+     */
     public void makeInitialIndex() {
         getService().makeInitialIndex();
-    }
-
-    private PnsService getService() {
-        return getService(PnsService.class);
     }
 }

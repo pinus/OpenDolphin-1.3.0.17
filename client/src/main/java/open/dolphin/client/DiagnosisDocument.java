@@ -7,6 +7,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.function.Predicate;
@@ -20,6 +22,7 @@ import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.event.ProxyAction;
@@ -32,6 +35,7 @@ import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
+import open.dolphin.util.DateUtils;
 import open.dolphin.util.MMLDate;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.PNSPair;
@@ -1224,38 +1228,20 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     public void viewOrca() {
 
-        // 患者IDを取得する
-        final String patientId = getContext().getPatient().getPatientId();
-
-        // 抽出期間から検索範囲の最初の日を取得する
-        int index = extractionCombo.getSelectedIndex();
-        int past = extractionCombo.getItemAt(index).getValue();
-
-        Date date;
-        if (past != 0) {
-            GregorianCalendar today = new GregorianCalendar();
-            today.add(GregorianCalendar.MONTH, past);
-            today.clear(Calendar.HOUR_OF_DAY);
-            today.clear(Calendar.MINUTE);
-            today.clear(Calendar.SECOND);
-            today.clear(Calendar.MILLISECOND);
-            date = today.getTime();
-        } else {
-            date = new Date(0L);
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        final String from = sdf.format(date);
-        final String to = sdf.format(new Date());
-
-        // DAOを生成する
-        final OrcaMasterDao dao = new OrcaMasterDao();
-
         DBTask<List<RegisteredDiagnosisModel>> task = new DBTask<List<RegisteredDiagnosisModel>>(getContext()){
 
             @Override
             protected List<RegisteredDiagnosisModel> doInBackground() {
-                return dao.getOrcaDisease(patientId, from, to, ascend);
+                // 患者IDを取得する
+                final String patientId = getContext().getPatient().getPatientId();
+                // 抽出期間から検索範囲の最初の日を取得する
+                int index = extractionCombo.getSelectedIndex();
+                int past = extractionCombo.getItemAt(index).getValue(); // months
+
+                LocalDate from = (past == 0) ? DateUtils.getMinLocalDate() : LocalDate.now().minusMonths(past);
+                LocalDate to = LocalDate.now();
+                OrcaDelegater delegater = new OrcaDelegater();
+                return delegater.getOrcaDisease(patientId, from, to, ascend);
             }
 
             @Override

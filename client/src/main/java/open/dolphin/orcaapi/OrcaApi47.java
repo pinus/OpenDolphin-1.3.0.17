@@ -41,7 +41,7 @@ public class OrcaApi47 extends OrcaApi {
     private SAXBuilder builder = new SAXBuilder();
     private XMLOutputter outputter = new XMLOutputter();
     //private ExecutorService executor = Executors.newSingleThreadExecutor();
-    // singlethread だと，busy 処理中に次の send が受けられなくなる
+    // singlethread だと，busy 処理中に次の sendDocument が受けられなくなる
     private ExecutorService executor = Executors.newCachedThreadPool();
 
     private Logger logger;

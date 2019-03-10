@@ -55,7 +55,7 @@ public class Project  {
     public static final String AREA_NETWORK_CREATOR_ID  = "jareaNetworkCreatorId";
 
     // MML
-    public static final String SEND_MML			= "mml.send";
+    public static final String SEND_MML			= "mml.sendDocument";
     public static final String MML_VERSION    		= "mml.version";
     public static final String MML_ENCODING		= "mml.encoding";
     public static final String SEND_MML_ADDRESS 	= "mml.address";

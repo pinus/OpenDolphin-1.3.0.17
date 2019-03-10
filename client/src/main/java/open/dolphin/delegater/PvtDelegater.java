@@ -1,6 +1,7 @@
 package open.dolphin.delegater;
 
 import java.util.List;
+
 import open.dolphin.dto.PatientVisitSpec;
 import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.infomodel.PatientModel;
@@ -8,14 +9,16 @@ import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.service.PvtService;
 
 /**
+ * PvtDelegater.
  *
  * @author pns
  */
-public class PvtDelegater extends BusinessDelegater {
+public class PvtDelegater extends BusinessDelegater<PvtService> {
 
     /**
      * 受付情報 PatientVisitModel をデータベースに登録する.
-     * @param pvtModel   受付情報 PatientVisitModel
+     *
+     * @param pvtModel 受付情報 PatientVisitModel
      * @return 保存に成功した個数
      */
     public int addPvt(PatientVisitModel pvtModel) {
@@ -24,7 +27,8 @@ public class PvtDelegater extends BusinessDelegater {
 
     /**
      * 来院情報をデータベースから取得する.
-     * @param date     検索する来院日
+     *
+     * @param date        検索する来院日
      * @param firstRecord 何番目のレコードから取得するか
      * @return PatientVisitModel の List
      */
@@ -42,6 +46,7 @@ public class PvtDelegater extends BusinessDelegater {
 
     /**
      * 引数の PatientModel をもつ今日の PatientVisitModel があれば取ってくる
+     *
      * @param patient
      * @return
      */
@@ -51,6 +56,7 @@ public class PvtDelegater extends BusinessDelegater {
 
     /**
      * 受付情報を削除する.
+     *
      * @param id PatientVisitModel の primary key
      * @return 削除件数
      */
@@ -60,6 +66,7 @@ public class PvtDelegater extends BusinessDelegater {
 
     /**
      * 受付情報を更新する
+     *
      * @param pvt
      * @return
      */
@@ -69,6 +76,7 @@ public class PvtDelegater extends BusinessDelegater {
 
     /**
      * pvt state だけスピーディーにとってくる
+     *
      * @return State 番号のリスト
      */
     public List<PvtStateSpec> getPvtState() {
@@ -77,14 +85,11 @@ public class PvtDelegater extends BusinessDelegater {
 
     /**
      * PatientVisitModel pk の state を取ってくる
+     *
      * @param pk
      * @return
      */
     public int getPvtState(long pk) {
         return getService().getPvtState(pk);
-    }
-
-    private PvtService getService() {
-        return getService(PvtService.class);
     }
 }

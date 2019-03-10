@@ -109,33 +109,33 @@ public class ClaimSettingPanel extends AbstractSettingPanel {
         orcaPasswordField = GUIFactory.createPassField(10, null, null, null);
         orcaStaffCodeField = GUIFactory.createTextField(10, null, null, null);
         orcaStaffCodeButton = new JButton("コード検索");
-        orcaStaffCodeButton.addActionListener(ev -> {
-            //
-            // Orca Dao を使って，職員コードを検索する
-            //
-            orcaStaffCodeField.setText("");
-
-            // 初めて起動したときは orca アドレスがまだ Project に設定されていないので，現在の field から数値を取る
-            getProjectStub().setClaimAddress(claimAddressField.getText().trim());
-
-            OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
-            List<OrcaEntry> entry = dao.getSyskanriEntries("1010"); // 1010 職員情報
-
-            for (OrcaEntry e : entry) {
-                String drid = e.getComment();   // 最初の 16 文字が ユーザー ID
-                String cd = e.getCode();        // ORCA の ドクター ID（職員コード）
-
-                if (drid != null && cd != null) {
-                    drid = drid.substring(0, 16).trim();
-                    cd = cd.trim();
-                    // ユーザーID が一致した職員コードを doctor id field に設定する
-                    if (drid.equals(orcaUserIdField.getText())) {
-                        orcaStaffCodeField.setText(cd);
-                        break;
-                    }
-                }
-            }
-        });
+//        orcaStaffCodeButton.addActionListener(ev -> {
+//            //
+//            // Orca Dao を使って，職員コードを検索する
+//            //
+//            orcaStaffCodeField.setText("");
+//
+//            // 初めて起動したときは orca アドレスがまだ Project に設定されていないので，現在の field から数値を取る
+//            getProjectStub().setClaimAddress(claimAddressField.getText().trim());
+//
+//            OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
+//            List<OrcaEntry> entry = dao.getSyskanriEntries("1010"); // 1010 職員情報
+//
+//            for (OrcaEntry e : entry) {
+//                String drid = e.getComment();   // 最初の 16 文字が ユーザー ID
+//                String cd = e.getCode();        // ORCA の ドクター ID（職員コード）
+//
+//                if (drid != null && cd != null) {
+//                    drid = drid.substring(0, 16).trim();
+//                    cd = cd.trim();
+//                    // ユーザーID が一致した職員コードを doctor id field に設定する
+//                    if (drid.equals(orcaUserIdField.getText())) {
+//                        orcaStaffCodeField.setText(cd);
+//                        break;
+//                    }
+//                }
+//            }
+//        });
 
         // 01 小児科等
         claim01 = new JCheckBox("デフォルト01を使用");

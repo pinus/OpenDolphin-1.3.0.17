@@ -95,7 +95,7 @@ public class SendMmlImpl implements MmlMessageListener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            getLogger().warn("Exception while stopping the send MML");
+            getLogger().warn("Exception while stopping the sendDocument MML");
             getLogger().warn(e.getMessage());
         }
     }
@@ -204,11 +204,11 @@ public class SendMmlImpl implements MmlMessageListener {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    getLogger().warn("IOException while send MML");
+                    getLogger().warn("IOException while sendDocument MML");
                     getLogger().warn(e.getMessage());
 
                 } catch (InterruptedException ie) {
-                    getLogger().warn("InterruptedException while send MML");
+                    getLogger().warn("InterruptedException while sendDocument MML");
                     break;
                 }
             }

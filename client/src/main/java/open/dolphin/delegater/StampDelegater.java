@@ -2,17 +2,20 @@ package open.dolphin.delegater;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import open.dolphin.infomodel.*;
 import open.dolphin.service.StampService;
 
 /**
+ * StampDelegater.
  *
  * @author pns
  */
-public class StampDelegater extends BusinessDelegater {
+public class StampDelegater extends BusinessDelegater<StampService> {
 
     /**
      * StampTree を保存/更新する.
+     *
      * @param model 保存する StampTree
      * @return 永続化された StampTreeBean の primary key
      */
@@ -23,6 +26,7 @@ public class StampDelegater extends BusinessDelegater {
     /**
      * User のスタンプツリーを読み込む.
      * User 個人のものとサブスクライブしている PublishedTree を混ぜて入れる
+     *
      * @param userPk ログインユーザの primary key
      * @return
      */
@@ -43,6 +47,7 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * 個人用の StampTree を保存し公開する.
+     *
      * @param model
      * @return 引数で持ってきた PersonalTreeModel の primary key
      */
@@ -53,6 +58,7 @@ public class StampDelegater extends BusinessDelegater {
     /**
      * 公開されている Tree を削除する.
      * PersonalTreeModel を更新してから PublishedTreeModel を削除する
+     *
      * @param model 削除する PublishTree の元の PersonalTreeModel
      * @return 削除数
      */
@@ -62,6 +68,7 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * 公開されている PublishedTree のリストを取得する.
+     *
      * @return ローカル及びパブリックTreeのリスト
      */
     public List<PublishedTreeModel> getPublishedTrees() {
@@ -70,6 +77,7 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * 公開 Tree をサブスクライブする.
+     *
      * @param subscribeList サブスクライブする SubscribedTreeModel の List
      * @return
      */
@@ -79,6 +87,7 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * 公開 Tree をアンサブスクライブする.
+     *
      * @param removeList アンサブスクライブする PublishedTree の Id リスト
      * @return
      */
@@ -88,6 +97,7 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * Stampを保存する.
+     *
      * @param list StampModel の List
      * @return 保存件数
      */
@@ -97,6 +107,7 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * Stampを保存する.
+     *
      * @param model StampModel
      * @return 保存件数
      */
@@ -106,6 +117,7 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * Stampを取得する.
+     *
      * @param stampId 取得する StampModel の id
      * @return StampModel
      */
@@ -115,6 +127,7 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * Stampを取得する.
+     *
      * @param list 取得する ModuleInfoBean の list
      * @return StampModel の list
      */
@@ -131,6 +144,7 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * Stampを削除する.
+     *
      * @param stampId 削除する StampModel の id
      * @return 削除件数
      */
@@ -140,14 +154,11 @@ public class StampDelegater extends BusinessDelegater {
 
     /**
      * Stampを削除する.
+     *
      * @param ids 削除する StampModel の id リスト
      * @return 削除件数
      */
     public int removeStamp(List<String> ids) {
         return getService().removeStampList(ids);
-    }
-
-    private StampService getService() {
-        return getService(StampService.class);
     }
 }

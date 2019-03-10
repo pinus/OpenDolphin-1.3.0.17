@@ -1,6 +1,4 @@
-package open.dolphin.service;
-
-import java.util.List;
+package open.dolphin.delegater;
 
 import open.dolphin.dto.ApiResult;
 import open.dolphin.dto.DiagnosisSearchSpec;
@@ -12,24 +10,19 @@ import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
+import open.dolphin.service.OrcaService;
 
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
 /**
- * OrcaService.
+ * OrcaDelegater.
  *
  * @author pns
  */
-@Path("orca")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
-@RolesAllowed("user")
-public interface OrcaService {
+public class OrcaDelegater extends BusinessDelegater<OrcaService> {
 
     /**
      * 中途終了患者情報.
@@ -37,9 +30,9 @@ public interface OrcaService {
      * @param spec PatientVisitSpec (patientId と date を使用)
      * @return Wksryact
      */
-    @POST
-    @Path("getWksryact")
-    public Wksryact getWksryact(PatientVisitSpec spec);
+    public Wksryact getWksryact(PatientVisitSpec spec) {
+        return getService().getWksryact(spec);
+    }
 
     /**
      * 中途終了患者情報が存在するかどうか.
@@ -47,18 +40,18 @@ public interface OrcaService {
      * @param ptId "000001"
      * @return 中途終了情報あり=true
      */
-    @POST
-    @Path("existsOrcaWorkingData")
-    public boolean existsOrcaWorkingData(String ptId);
+    public boolean existsOrcaWorkingData(String ptId) {
+        return getService().existsOrcaWorkingData(ptId);
+    }
 
     /**
      * 職員情報.
      *
      * @return Syskanri のリスト
      */
-    @POST
-    @Path("getSyskanri")
-    public List<Syskanri> getSyskanri();
+    public List<Syskanri> getSyskanri() {
+        return getService().getSyskanri();
+    }
 
     /**
      * TBL_TENSU からキーワードを検索.
@@ -66,9 +59,9 @@ public interface OrcaService {
      * @param keyword キーワード
      * @return OrcaEntry の List
      */
-    @POST
-    @Path("findTensu")
-    public List<OrcaEntry> findTensu(String keyword);
+    public List<OrcaEntry> findTensu(String keyword) {
+        return getService().findTensu(keyword);
+    }
 
     /**
      * TBL_BYOMEI からキーワードを検索.
@@ -76,9 +69,9 @@ public interface OrcaService {
      * @param keyword キーワード
      * @return OrcaEntry の List
      */
-    @POST
-    @Path("findDiagnosisByKeyword")
-    public List<OrcaEntry> findDiagnosisByKeyword(String keyword);
+    public List<OrcaEntry> findDiagnosis(String keyword) {
+        return getService().findDiagnosisByKeyword(keyword);
+    }
 
     /**
      * TBL_BYOMEI から病名コードのリストに対応する病名を検索.
@@ -86,9 +79,9 @@ public interface OrcaService {
      * @param srycds 病名コードのセット
      * @return OrcaEntry の List
      */
-    @POST
-    @Path("findDiagnosisByCodes")
-    public List<OrcaEntry> findDiagnosisByCodes(List<String> srycds);
+    public List<OrcaEntry> findDiagnosis(List<String> srycds) {
+        return getService().findDiagnosisByCodes(srycds);
+    }
 
     /**
      * 移行病名を調べる.
@@ -96,18 +89,18 @@ public interface OrcaService {
      * @param srycds 病名コードのリスト
      * @return そのうち移行病名になっているののリスト
      */
-    @POST
-    @Path("findIkouByomei")
-    public List<String> findIkouByomei(List<String> srycds);
+    public List<String> findIkouByomei(List<String> srycds) {
+        return getService().findIkouByomei(srycds);
+    }
 
     /**
      * TBL_INPUTCD を検索して入力セット（約束処方、診療セット）のリストを返す.
      *
      * @return ModuleInfoBean
      */
-    @POST
-    @Path("getOrcaInputCdList")
-    public List<ModuleInfoBean> getOrcaInputCdList();
+    public List<ModuleInfoBean> getOrcaInputCdList() {
+        return getService().getOrcaInputCdList();
+    }
 
     /**
      * StampInfo を元に TBL_INPUTSET，TBL_TENSU を検索してスタンプの実体を作る
@@ -115,19 +108,28 @@ public interface OrcaService {
      * @param stampInfo ModuleInfoBean
      * @return ModuleModel の List
      */
-    @POST
-    @Path("getStamp")
-    public List<ModuleModel> getStamp(ModuleInfoBean stampInfo);
+    public List<ModuleModel> getStamp(ModuleInfoBean stampInfo) {
+        return getService().getStamp(stampInfo);
+    }
 
     /**
      * TBL_PTBYOMEI を検索して RegisteredDiagnosisModel を作る
      *
-     * @param spec DiagnosisSearchSpec (patientId, fromDate を使用)
+     * @param patientId 患者 ID "000001"
+     * @param from Date
+     * @param to Date
+     * @param ascend 昇順=true
      * @return List of RegisteredDiagnosisModel
      */
-    @POST
-    @Path("getOrcaDisease")
-    public List<RegisteredDiagnosisModel> getOrcaDisease(DiagnosisSearchSpec spec);
+    public List<RegisteredDiagnosisModel> getOrcaDisease(String patientId, LocalDate from, LocalDate to, boolean ascend) {
+
+        DiagnosisSearchSpec spec = new DiagnosisSearchSpec();
+        spec.setPatientId(patientId);
+        spec.setFromDate(Date.from(from.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        spec.setToDate(Date.from(to.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        return getService().getOrcaDisease(spec);
+    }
 
     /**
      * DocumentModel から中途終了データ作成 (medicalmodv2).
@@ -135,9 +137,9 @@ public interface OrcaService {
      * @param document DocumentModel
      * @return ApiResult
      */
-    @POST
-    @Path("sendDocument")
-    public ApiResult sendDocument(DocumentModel document);
+    public ApiResult send(DocumentModel document) {
+        return getService().sendDocument(document);
+    }
 
     /**
      * medicalmodv2 で ORCA に病名を送る.
@@ -145,7 +147,7 @@ public interface OrcaService {
      * @param diagnoses List of RegisteredDiagnosisModel
      * @return ApiResult
      */
-    @POST
-    @Path("sendDiagnoses")
-    public ApiResult sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses);
+    public ApiResult send(List<RegisteredDiagnosisModel> diagnoses) {
+        return getService().sendDiagnoses(diagnoses);
+    }
 }

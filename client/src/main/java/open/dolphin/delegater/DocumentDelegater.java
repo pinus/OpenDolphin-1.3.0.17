@@ -3,6 +3,7 @@ package open.dolphin.delegater;
 import java.awt.Dimension;
 import java.util.*;
 import javax.swing.ImageIcon;
+
 import open.dolphin.client.ImageEntry;
 import open.dolphin.dto.*;
 import open.dolphin.helper.ImageHelper;
@@ -11,18 +12,20 @@ import open.dolphin.service.KarteService;
 import open.dolphin.util.ModelUtils;
 
 /**
+ * DocumentDelegater.
  *
  * @author pns
  */
-public class  DocumentDelegater extends BusinessDelegater {
+public class DocumentDelegater extends BusinessDelegater<KarteService> {
     private static final int MAX_IMAGE_WIDTH = 522; // ClientContext.getInt("image.max.width")
     private static final int MAX_IMAGE_HEIGHT = 522; // ClientContext.getInt("image.max.height")
     private static final Dimension MAX_IMAGE_SIZE = new Dimension(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
 
     /**
      * 患者のカルテを取得する.
+     *
      * @param patientPk 患者PK
-     * @param fromDate 履歴の検索開始日
+     * @param fromDate  履歴の検索開始日
      * @return KarteBean
      */
     public KarteBean getKarte(long patientPk, Date fromDate) {
@@ -34,6 +37,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * Documentを保存する.
+     *
      * @param karteModel KarteModel
      * @return 保存した document の primary key
      */
@@ -60,6 +64,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     /**
      * Documentを検索して返す.
      * ModuleModel の beanBytes はサーバでデコード済み
+     *
      * @param ids DocumentModel の primary key リスト
      * @return DocumentValue
      */
@@ -81,16 +86,18 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * 文書履歴を検索して返す.
+     *
      * @param spec DocumentSearchSpec 検索仕様
      * @return DocInfoModel の List
      */
     public List<DocInfoModel> getDocInfoList(DocumentSearchSpec spec) {
-        return spec.getDocType().equals(InfoModel.DOCTYPE_KARTE)?
-            getService().getDocInfoList(spec) : null;
+        return spec.getDocType().equals(InfoModel.DOCTYPE_KARTE) ?
+                getService().getDocInfoList(spec) : null;
     }
 
     /**
      * ドキュメントを論理削除する.
+     *
      * @param pk 論理削除するドキュメントの prmary key
      * @return 削除件数
      */
@@ -100,6 +107,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * 文書履歴のタイトルを変更する.
+     *
      * @param docInfo DocInfoModel
      * @return 変更した件数
      */
@@ -113,6 +121,7 @@ public class  DocumentDelegater extends BusinessDelegater {
     /**
      * Moduleを検索して返す.
      * beanBytes はデコード済み
+     *
      * @param spec ModuleSearchSpec 検索仕様
      * @return {@code List<ModuleModel>} の List
      */
@@ -122,6 +131,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * イメージを取得する.
+     *
      * @param id 画像のId
      * @return SchemaModel
      */
@@ -139,12 +149,13 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * Imageを検索して返す.
+     *
      * @param spec ImageSearchSpec 検索仕様
      * @return ImageEntryリストのリスト
      */
     public List<List<ImageEntry>> getImageList(ImageSearchSpec spec) {
 
-        List<List<ImageEntry>> ret= new ArrayList<>();
+        List<List<ImageEntry>> ret = new ArrayList<>();
 
         // 検索結果
         List<List<SchemaModel>> result = getService().getImageList(spec);
@@ -154,7 +165,7 @@ public class  DocumentDelegater extends BusinessDelegater {
             List<ImageEntry> el = new ArrayList<>();
 
             // 抽出期間をイテレートする
-            for(SchemaModel model : periodList) {
+            for (SchemaModel model : periodList) {
                 ImageEntry entry = getImageEntry(model, spec.getIconSize());
                 el.add(entry);
             }
@@ -166,7 +177,8 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * SchemaModel を ImageEntry に変換する.
-     * @param schema シェーマモデル
+     *
+     * @param schema   シェーマモデル
      * @param iconSize アイコンのサイズ
      * @return ImageEntry
      */
@@ -191,6 +203,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * RegisteredDiagnosisModel を登録する
+     *
      * @param beans
      * @return 登録した Model の primary key のリスト
      */
@@ -200,6 +213,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * RegisteredDiagnosisModel を更新する
+     *
      * @param beans
      * @return 更新した数
      */
@@ -209,6 +223,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * 病名を削除する
+     *
      * @param ids 削除する傷病名の primary key リスト
      * @return 削除数
      */
@@ -218,6 +233,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * Diagnosisを検索して返す.
+     *
      * @param spec DiagnosisSearchSpec 検索仕様
      * @return DiagnosisModel の Collection
      */
@@ -227,6 +243,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * Observationを追加する.
+     *
      * @param observations 追加するObservationのリスト
      * @return 追加したObservationのIdリスト
      */
@@ -236,6 +253,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * Observationを取得する.
+     *
      * @param spec 検索仕様
      * @return Observationのリスト
      */
@@ -245,6 +263,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * Observationを更新する.
+     *
      * @param observations 更新するObservationのリスト
      * @return 更新した数
      */
@@ -254,6 +273,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * Observationを削除する.
+     *
      * @param ids 削除する Observation の primary key リスト
      * @return 削除した数
      */
@@ -263,6 +283,7 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * 患者メモを更新する.
+     *
      * @param memo 更新するメモ
      * @return 更新した数 1
      */
@@ -272,14 +293,11 @@ public class  DocumentDelegater extends BusinessDelegater {
 
     /**
      * 予約を検索する.
+     *
      * @param spec 検索仕様
      * @return 予約の List
      */
     public List<List<AppointmentModel>> getAppoinmentList(ModuleSearchSpec spec) {
         return getService().getAppointmentList(spec);
-    }
-
-    private KarteService getService() {
-        return getService(KarteService.class);
     }
 }

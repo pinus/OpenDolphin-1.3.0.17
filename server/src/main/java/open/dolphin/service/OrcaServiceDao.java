@@ -209,7 +209,7 @@ public class OrcaServiceDao {
     }
 
     /**
-     * findDiagnosis に共通する ResultSet から List of RegisteredDiagnosisModel を作る部分.
+     * findDiagnosisByKeyword に共通する ResultSet から List of RegisteredDiagnosisModel を作る部分.
      *
      * @param rs ResultSet
      * @return 作った List of OrcaEntry

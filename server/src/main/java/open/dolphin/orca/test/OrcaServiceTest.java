@@ -54,7 +54,7 @@ public class OrcaServiceTest {
 
     // only dao 128 msec
     private void findDiagnosis(Object orcaService) throws ReflectiveOperationException {
-        List<OrcaEntry> rds = (List<OrcaEntry>) invoke(orcaService, "findDiagnosis", "多形");
+        List<OrcaEntry> rds = (List<OrcaEntry>) invoke(orcaService, "findDiagnosisByKeyword", "多形");
         rds.stream().forEach(rd -> {
             System.out.println(String.join(",", rd.getCode(), rd.getName(), rd.getIcd10()));
         });
@@ -65,7 +65,7 @@ public class OrcaServiceTest {
         codes.add("7018006");
         codes.add("ZZZ5109");
         codes.add("9490004");
-        rds = (List<OrcaEntry>) invoke(orcaService, "findDiagnosis", codes);
+        rds = (List<OrcaEntry>) invoke(orcaService, "findDiagnosisByKeyword", codes);
         rds.stream().forEach(rd -> {
             System.out.println(String.join(",", rd.getCode(), rd.getName(), rd.getIcd10()));
         });

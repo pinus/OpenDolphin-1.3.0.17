@@ -1,19 +1,22 @@
 package open.dolphin.delegater;
 
 import java.util.List;
+
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.service.PatientService;
 
 /**
+ * PatientDelegater.
  *
  * @author pns
  */
-public class  PatientDelegater extends BusinessDelegater {
+public class PatientDelegater extends BusinessDelegater<PatientService> {
 
     /**
      * 患者を登録する.
+     *
      * @param patient PatientModel
      * @return PatientModel の primary key
      */
@@ -23,8 +26,9 @@ public class  PatientDelegater extends BusinessDelegater {
 
     /**
      * 患者情報を検索して返す.
-     * 検索高速化のため，健康保険情報は持っていない (@OneToMany のため lazy fetch になっている)
-     * カルテオープン時（AbstractMainComponent#openKarte）に fetchHealthInsurance する必要あり
+     * 検索高速化のため，健康保険情報は持っていない. (@OneToMany のため lazy fetch になっている)
+     * カルテオープン時（AbstractMainComponent#openKarte）に fetchHealthInsurance する必要あり.
+     *
      * @param spec PatientSearchSpec 検索仕様
      * @return
      */
@@ -33,13 +37,16 @@ public class  PatientDelegater extends BusinessDelegater {
     }
 
     /**
-     * 保険情報を情報を取りに行く
+     * 保険情報を情報を取りに行く.
+     *
      * @param patient
      */
     public void fetchHealthInsurance(PatientModel patient) {
 
         // 既に fetch してあればそのまま帰る
-        if (patient.getPvtHealthInsurances() != null) { return; }
+        if (patient.getPvtHealthInsurances() != null) {
+            return;
+        }
 
         long patientPk = patient.getId();
         List<PVTHealthInsuranceModel> insurances = getService().getHealthInsuranceList(patientPk);
@@ -50,14 +57,11 @@ public class  PatientDelegater extends BusinessDelegater {
 
     /**
      * 患者情報を更新する.
+     *
      * @param patient 更新する患者
      * @return 更新数 1
      */
     public int updatePatient(PatientModel patient) {
         return getService().update(patient);
-    }
-
-    private PatientService getService() {
-        return getService(PatientService.class);
     }
 }

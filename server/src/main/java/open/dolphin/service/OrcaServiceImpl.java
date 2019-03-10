@@ -39,12 +39,12 @@ public class OrcaServiceImpl implements OrcaService {
     public List<OrcaEntry> findTensu(String keyword) { return dao.findTensu(keyword); }
 
     @Override
-    public List<OrcaEntry> findDiagnosis(String keyword) {
+    public List<OrcaEntry> findDiagnosisByKeyword(String keyword) {
         return dao.findDiagnosis(keyword);
     }
 
     @Override
-    public List<OrcaEntry> findDiagnosis(List<String> srycds) {
+    public List<OrcaEntry> findDiagnosisByCodes(List<String> srycds) {
         return dao.findDiagnosis(srycds);
     }
 
@@ -69,10 +69,10 @@ public class OrcaServiceImpl implements OrcaService {
     }
 
     @Override
-    public ApiResult send(DocumentModel document) { return api.send(document); }
+    public ApiResult sendDocument(DocumentModel document) { return api.send(document); }
 
     @Override
-    public ApiResult send(List<RegisteredDiagnosisModel> diagnoses) {
+    public ApiResult sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses) {
         return api.send(diagnoses);
     }
 }

@@ -1,7 +1,9 @@
 package open.dolphin.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Java 8 Date/Time API.
@@ -13,6 +15,8 @@ public class DateUtils {
     private static String ISO_TIME = "HH:mm:ss";
     private static String ISO_DATE_TIME = ISO_DATE + "'T'" + ISO_TIME;
 
+    private static String MIN_DATE = "1970-01-01'T'00:00:00";
+
     /**
      * ISO_DATE または ISO_DATE_TIME 型式から LocalDateTime を作る.
      *
@@ -22,6 +26,17 @@ public class DateUtils {
     public static LocalDateTime toLocalDateTime(String isoDateTime) {
         String target = isoDateTime.contains("T") ? isoDateTime : isoDateTime + "T00:00:00";
         return LocalDateTime.parse(target, DateTimeFormatter.ofPattern(ISO_DATE_TIME));
+    }
+
+    /**
+     * ISO_DATE または ISO_DATE_TIME 型式から LocalDate を作る.
+     *
+     * @param isoDate ISO_DATE (1975-01-01) or ISO_DATE_TIME (1975-01-01T12:23:34)
+     * @return parsed Date
+     */
+    public static LocalDate toLocalDate(String isoDate) {
+        String target = isoDate.contains("T") ? isoDate.substring(0, 10) : isoDate;
+        return LocalDate.parse(target, DateTimeFormatter.ofPattern(ISO_DATE));
     }
 
     /**
@@ -95,7 +110,7 @@ public class DateUtils {
     /**
      * 今日から days 日後の日付を ISO_DATE 型式で返す.
      *
-     * @param  days 日数
+     * @param days 日数
      * @return ISO_DATE
      */
     public static String getIsoDateDaysAhead(int days) {
@@ -106,7 +121,7 @@ public class DateUtils {
     /**
      * 今日から months ヶ月後の日付を ISO_DATE 型式で返す.
      *
-     * @param  months 月数
+     * @param months 月数
      * @return ISO_DATE
      */
     public static String getIsoDateMonthsAhead(int months) {
@@ -117,7 +132,7 @@ public class DateUtils {
     /**
      * 今日から years 年後の日付を ISO_DATE 型式で返す.
      *
-     * @param  years 年数
+     * @param years 年数
      * @return ISO_DATE
      */
     public static String getIsoDateYearsAhead(int years) {
@@ -128,12 +143,10 @@ public class DateUtils {
     /**
      * ISO_DATE 型式の日付を {年，月，日} の整数配列にして返す.
      *
-     * @param isoDate
-     * @return
+     * @param isoDate ISO_DATE
+     * @return array of YMD
      */
-    public static int[] toDateArray(String isoDate) {
-        if (isoDate == null) { return null; }
-
+    public static int[] toDateArray(@NotNull String isoDate) {
         int i = 0;
         int[] ret = new int[3];
         for (String s : isoDate.split("-")) {
@@ -147,12 +160,10 @@ public class DateUtils {
     /**
      * ISO_DATE_TIME 形式から時間を取り除いて ISO_DATE を返す.
      *
-     * @param isoDateTime
+     * @param isoDateTime ISO_DATE_TIME
      * @return ISO_DATE
      */
-    public static String trimTime(String isoDateTime) {
-        if (isoDateTime == null) { return null; }
-
+    public static String trimTime(@NotNull String isoDateTime) {
         int index = isoDateTime.indexOf('T');
         if (index > -1) {
             return isoDateTime.substring(0, index);
@@ -164,18 +175,34 @@ public class DateUtils {
     /**
      * ISO_DATE_TIME 形式から日付を取り除いて ISO_TIME を返す.
      *
-     * @param isoDateTime
-     * @return
+     * @param isoDateTime ISO_DATETIME
+     * @return ISO_TIME
      */
-    public static String trimDate(String isoDateTime) {
-        if (isoDateTime == null) { return null; }
-
+    public static String trimDate(@NotNull String isoDateTime) {
         int index = isoDateTime.indexOf('T');
         if (index > -1) {
             return isoDateTime.substring(index + 1, index + 6); // THH:mm:ss -> HH:mm:ss
         } else {
             return isoDateTime;
         }
+    }
+
+    /**
+     * Date の開始日の LocalDate.
+     *
+     * @return minimal date
+     */
+    public static LocalDate getMinLocalDate() {
+        return toLocalDate(MIN_DATE);
+    }
+
+    /**
+     * Date の開始日の LocalDateTime.
+     *
+     * @return minimal date
+     */
+    public static LocalDateTime getMinLocalDateTime() {
+        return toLocalDateTime(MIN_DATE);
     }
 
     public static void main(String[] arg) {
