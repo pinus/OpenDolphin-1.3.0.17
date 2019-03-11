@@ -8,7 +8,6 @@ import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,6 +17,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
+
 import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
@@ -26,24 +26,22 @@ import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.event.ProxyAction;
-import open.dolphin.helper.DBTask;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.*;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DiagnosisInspector;
-import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.DateUtils;
 import open.dolphin.util.MMLDate;
-import open.dolphin.helper.PNSTriple;
-import open.dolphin.helper.PNSPair;
 import org.apache.log4j.Logger;
 
 /**
  * DiagnosisDocument
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public final class DiagnosisDocument extends AbstractChartDocument implements PropertyChangeListener {
 
@@ -77,9 +75,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private static final String ORCA_VIEW = "ORCA View";
     private static final Color ORCA_BACK_COLOR = ClientContext.getColor("color.CALENDAR_BACK");
     public static final Color IKOU_BYOMEI_COLOR = Color.red;
-    public static final Color DELETED_COLOR = new Color(192,192,192); // silver
-    public static final Color ENDED_COLOR = new Color(119,136,153); // light slate gray
-    public static final Color ENDED_SELECTION_COLOR = new Color(220,220,220);// grains boro
+    public static final Color DELETED_COLOR = new Color(192, 192, 192); // silver
+    public static final Color ENDED_COLOR = new Color(119, 136, 153); // light slate gray
+    public static final Color ENDED_SELECTION_COLOR = new Color(220, 220, 220);// grains boro
 
     private JButton addButton;                  // 新規病名エディタボタン
     private JButton updateButton;               // 既存傷病名の転帰等の更新ボタン
@@ -87,7 +85,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private JButton orcaButton;                 // ORCA View ボタン
     private DiagnosisDocumentTable diagTable;   // 病歴テーブル
     private DiagnosisDocumentTableModel tableModel; // TableModel
-    private JComboBox<PNSPair<String,Integer>> extractionCombo;          // 抽出期間コンボ
+    private JComboBox<PNSPair<String, Integer>> extractionCombo;          // 抽出期間コンボ
     private JTextField countField;              // 件数フィールド
     private JTextField startDateField;
     private JTextField endDateField;
@@ -105,7 +103,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     // 傷病名件数
     private int diagnosisCount;
     // 最終受診日＝今日受診している場合は今日，していないばあいは最後の受診日
-    private int[] lastVisitYmd = {2008,2,1};
+    private int[] lastVisitYmd = {2008, 2, 1};
     // Stamp から drop を受け取る場合のアクション : DiagnosisInspector でも使うので，public にした
     private int dropAction; // 通常は MOVE で，ALT が押されていたら COPY になる
     // DiagnosisInspector
@@ -114,19 +112,17 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private DiagnosisDocumentPopupMenu popup;
     // ChartImpl#close() で isValidOutcome でない時，DiagnosisDocument に戻れるようにするために使う
     private boolean isValidOutcome = true;
+    // Logger
+    private final Logger logger = Logger.getLogger(DiagnosisDocument.class);
 
-    private final Logger logger = ClientContext.getBootLogger();
-
-    /**
-     *  Creates new DiagnosisDocument.
-     */
     public DiagnosisDocument() {
         setTitle(TITLE);
     }
 
     /**
      * ChartMediator から呼ばれる.
-     * @return
+     *
+     * @return DiagnosisDocumentTable
      */
     public DiagnosisDocumentTable getDiagnosisTable() {
         return diagTable;
@@ -134,23 +130,29 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * DiagnosisDocumentPopupMenu 用.
-     * @return
+     *
+     * @return startDateField
      */
     public JTextField getStartDateField() {
         return startDateField;
     }
+
     public JTextField getEndDateField() {
         return endDateField;
     }
+
     public int[] getLastVisitYmd() {
         return lastVisitYmd;
     }
+
     public DiagnosisDocumentPopupMenu getDiagnosisDocumentPopup() {
         return popup;
     }
+
     public int getDropAction() {
         return dropAction;
     }
+
     public void setDropAction(int d) {
         dropAction = d;
     }
@@ -211,15 +213,18 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // tableModel 用設定
         tableModel.setLastVisit(lastVisitYmd);
-        tableModel.getBoundSupport().addPropertyChangeListener (evt -> {
+        tableModel.getBoundSupport().addPropertyChangeListener(evt -> {
             String prop = evt.getPropertyName();
             // update があった場合
             if (ADD_UPDATED_LIST.equals(prop)) {
                 // tableModel から呼ばれた場合は，update の場合と delete の場合がある
                 RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) evt.getNewValue();
 
-                if (DELETED_RECORD.equals(rd.getStatus())) { addDeletedList(rd); }
-                else { addUpdatedList(rd); }
+                if (DELETED_RECORD.equals(rd.getStatus())) {
+                    addDeletedList(rd);
+                } else {
+                    addUpdatedList(rd);
+                }
 
                 // insert された場合 → 転帰を空白にして新規病名として使い回す場合は挿入として扱う
             } else if (ADD_ADDED_LIST.equals(prop)) {
@@ -300,12 +305,12 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         int clickCountToStart = Project.getPreferences().getInt("diagnosis.table.clickCountToStart", 1);
 
         // Diagnosis テーブルモデルを生成する
-        List<PNSTriple<String,Class<?>,String>> reflectionList = Arrays.asList(
+        List<PNSTriple<String, Class<?>, String>> reflectionList = Arrays.asList(
                 new PNSTriple<>("　疾患名/修飾語", String.class, "getAliasOrName"),
-                new PNSTriple<>("　分 類",        String.class, "getCategoryDesc"),
-                new PNSTriple<>("　転 帰",        String.class, "getOutcomeDesc"),
-                new PNSTriple<>("　疾患開始日",    String.class, "getStartDate"),
-                new PNSTriple<>("　疾患終了日",    String.class, "getEndDate")
+                new PNSTriple<>("　分 類", String.class, "getCategoryDesc"),
+                new PNSTriple<>("　転 帰", String.class, "getOutcomeDesc"),
+                new PNSTriple<>("　疾患開始日", String.class, "getStartDate"),
+                new PNSTriple<>("　疾患終了日", String.class, "getEndDate")
         );
         tableModel = new DiagnosisDocumentTableModel(reflectionList, isReadOnly());
 
@@ -318,11 +323,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             // ASCENDING -> DESENDING -> 初期状態 と切り替える
             @Override
             public void toggleSortOrder(int column) {
-                if(column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
+                if (column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
                     List<SortKey> keys = new ArrayList<>(getSortKeys());
-                    if(!keys.isEmpty()) {
+                    if (!keys.isEmpty()) {
                         SortKey sortKey = keys.get(0);
-                        if(sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {
+                        if (sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {
                             setSortKeys(null);
                             return;
                         }
@@ -334,11 +339,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         diagTable.setRowSorter(sorter);
 
         // 日付でソートしたとき，空白は一番最近のものとしてソート
-        Comparator<String> dateComparator = (o1, o2) -> {
-            if (o1 == null || o1.equals("")) { o1 = "9999-99-99"; }
-            if (o2 == null || o2.equals("")) { o2 = "9999-99-99"; }
-            return o2.compareTo(o1);
-        };
+        Comparator<String> dateComparator = Comparator.comparing(x -> StringTool.isEmpty(x) ? "9999-99-99" : x);
         sorter.setComparator(START_DATE_COL, dateComparator);
         sorter.setComparator(END_DATE_COL, dateComparator);
 
@@ -348,8 +349,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         //diagTable.setGridColor(Color.WHITE);
 
         // コラム幅設定
-        int[] columnWidth = {150,80,80,120,120};
-        for (int i = 0; i <columnWidth.length; i++) {
+        int[] columnWidth = {150, 80, 80, 120, 120};
+        for (int i = 0; i < columnWidth.length; i++) {
             TableColumn column = diagTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(columnWidth[i]);
             if (i != 0) { //固定幅
@@ -368,7 +369,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         // 行選択が起った時のリスナを設定する
         ListSelectionModel m = diagTable.getSelectionModel();
         m.addListSelectionListener(e -> {
-            if (! e.getValueIsAdjusting()) { controlButtons(); }
+            if (!e.getValueIsAdjusting()) {
+                controlButtons();
+            }
         });
 
         // Category comboBox 設定
@@ -401,9 +404,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         if (!getContext().isReadOnly()) {
             diagTable.setTransferHandler(new DiagnosisTransferHandler(this));
             //diagTable.setDragEnabled(true); // これだと，focus が当たっていないところを drag すると無視される
-            diagTable.addMouseMotionListener(new MouseMotionAdapter(){
+            diagTable.addMouseMotionListener(new MouseMotionAdapter() {
                 @Override
-                public void mouseDragged (MouseEvent e) {
+                public void mouseDragged(MouseEvent e) {
                     diagTable.getTransferHandler().exportAsDrag((JComponent) e.getSource(), e, TransferHandler.COPY);
                 }
             });
@@ -415,7 +418,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //scroller.setBorder(BorderFactory.createEmptyBorder());
 
-        JPanel p = new JPanel(new BorderLayout(0,0));
+        JPanel p = new JPanel(new BorderLayout(0, 0));
         p.add(scroller, BorderLayout.CENTER);
 
         // insertStamp() でALT キーで疑い病名に変換する機能をつけるため，action を記録する
@@ -427,10 +430,12 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 dropAction = dtde.getDropAction();
                 scroller.setShowDropFeedback(true);
             }
+
             @Override
             public void dropActionChanged(DropTargetDragEvent dtde) {
                 dropAction = dtde.getDropAction();
             }
+
             @Override
             public void drop(DropTargetDropEvent dtde) {
                 dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
@@ -438,8 +443,10 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 dtde.dropComplete(true); // これをしないとドラッグしてきたアイコンが逃げる
                 scroller.setShowDropFeedback(false);
             }
+
             @Override
-            public void dragOver(DropTargetDragEvent dtde) {}
+            public void dragOver(DropTargetDragEvent dtde) {
+            }
 
             @Override
             public void dragExit(DropTargetEvent dte) {
@@ -469,15 +476,17 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         int currentDiagnosisPeriod = prefs.getInt(Project.DIAGNOSIS_PERIOD, 0);
 
         int selectIndex = 0;
-        for (int i=0; i<extractionCombo.getItemCount(); i++) {
+        for (int i = 0; i < extractionCombo.getItemCount(); i++) {
             if (currentDiagnosisPeriod == extractionCombo.getItemAt(i).getValue()) {
                 selectIndex = i;
                 break;
             }
         }
         extractionCombo.setSelectedIndex(selectIndex);
-        extractionCombo.addItemListener(e ->  {
-            if (e.getStateChange() == ItemEvent.SELECTED) { updateDiagnosisHistory(); }
+        extractionCombo.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                updateDiagnosisHistory();
+            }
         });
 
         JPanel comboPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -532,7 +541,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     @Override
     public void stop() {
-        // isDirty() = true means 破棄 or 保存だけれどセーブが完了していない
+        // "isDirty()=true" means "破棄" or "保存だけれどセーブが完了していない"
         // There is no way distinguish them.
         if (tableModel != null) {
             tableModel.clear();
@@ -553,7 +562,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * フォーカス処理.
-     * @param c
+     *
+     * @param c focus requester
      */
     private void requestFocus(Component c) {
         Focuser.requestFocus(c);
@@ -561,25 +571,33 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 新規傷病名リストに追加する.
+     *
      * @param added 追加されたRegisteredDiagnosisModel
      */
     private void addAddedList(RegisteredDiagnosisModel added) {
         // 同じものは update しない -> RegisteredDiagnosis#equals の変更が必要
         // オリジナルでは equals は id で比較しているので，id=0 は全部 contains=true になってしまう
-        if (!addedDiagnosis.contains(added)) { addedDiagnosis.add(added); }
+        if (!addedDiagnosis.contains(added)) {
+            addedDiagnosis.add(added);
+        }
         controlButtons();
     }
 
     /**
      * 更新リストに追加する.
+     *
      * @param updated 更新されたRegisteredDiagnosisModel
      */
     private void addUpdatedList(RegisteredDiagnosisModel updated) {
         // addedDiagnosis を編集／undo した場合ここに入ってくる
         if (updated.getId() == 0L) { // addedDiagnosis は id=0
-            if (!addedDiagnosis.contains(updated)) { addedDiagnosis.add(updated); }
+            if (!addedDiagnosis.contains(updated)) {
+                addedDiagnosis.add(updated);
+            }
         } else {
-            if (!updatedDiagnosis.contains(updated)) { updatedDiagnosis.add(updated); }
+            if (!updatedDiagnosis.contains(updated)) {
+                updatedDiagnosis.add(updated);
+            }
         }
         // 削除を undo した場合は deletedDiagnosis から削除
         deletedDiagnosis.remove(updated);
@@ -589,7 +607,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 削除リストに追加する.
-     * @param deleted
+     *
+     * @param deleted 削除病名
      */
     private void addDeletedList(RegisteredDiagnosisModel deleted) {
         deletedDiagnosis.add(deleted);
@@ -633,25 +652,30 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         }
     }
 */
+
     /**
      * ボタン制御 update, delete, undo, redo.
      */
     private void controlButtons() {
         //showList(); //デバッグ用
-        if (isReadOnly()) { return; }
+        if (isReadOnly()) {
+            return;
+        }
 
         // update button
         // initDiagnosis に戻ったものがあれば updatedDiagnosis を削除
         List<RegisteredDiagnosisModel> resumed = new ArrayList<>();
         updatedDiagnosis.forEach(rd ->
-            initialDiagnosis.stream().filter(Predicate.isEqual(rd)).forEach(dlm -> resumed.add(rd)));
+                initialDiagnosis.stream().filter(Predicate.isEqual(rd)).forEach(dlm -> resumed.add(rd)));
         updatedDiagnosis.removeAll(resumed);
 
         boolean newDirty = !addedDiagnosis.isEmpty() || !updatedDiagnosis.isEmpty() || !deletedDiagnosis.isEmpty();
         setDirty(newDirty);
 
         // タブが選択されていない場合（DiagnosisInspector で操作した場合）はボタンのコントロールはしない
-        if (getUI().isShowing()) { updateButton.setEnabled(isDirty()); }
+        if (getUI().isShowing()) {
+            updateButton.setEnabled(isDirty());
+        }
 
         // delete button : 選択中に null や ORCA や DELETED が１つでもあれば disable する
         // undo/redo     : 選択内に１つでも undo/redo 可能なものがあれば enable
@@ -667,7 +691,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 int r = diagTable.convertRowIndexToModel(row);
                 RegisteredDiagnosisModel rd = tableModel.getObject(r);
 
-                isDeletable = rd != null && ! ORCA_RECORD.equals(rd.getStatus()) && ! DELETED_RECORD.equals(rd.getStatus());
+                isDeletable = rd != null && !ORCA_RECORD.equals(rd.getStatus()) && !DELETED_RECORD.equals(rd.getStatus());
                 isUndoable = tableModel.isUndoable(rd);
                 isRedoable = tableModel.isRedoable(rd);
             }
@@ -682,6 +706,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 傷病名件数を返す.
+     *
      * @return 傷病名件数
      */
     public int getDiagnosisCount() {
@@ -697,11 +722,13 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         int diagnosisCountToday = 0;
         String today = SimpleDate.simpleDateToMmldate(new SimpleDate(new GregorianCalendar()));
 
-        for(int row=0; row<tableModel.getObjectCount(); row++) {
+        for (int row = 0; row < tableModel.getObjectCount(); row++) {
             RegisteredDiagnosisModel rd = tableModel.getObject(row);
             if (!DELETED_RECORD.equals(rd.getStatus())) {
                 diagnosisCount++;
-                if (today.equals(rd.getStartDate())) { diagnosisCountToday++; }
+                if (today.equals(rd.getStartDate())) {
+                    diagnosisCountToday++;
+                }
             }
         }
 
@@ -724,8 +751,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 傷病名スタンプを取得する worker を起動する.
-     * @param stampList
-     * @param insertRow
+     *
+     * @param stampList スタンプリスト
+     * @param insertRow 挿入位置
      */
     public void importStampList(final List<ModuleInfoBean> stampList, final int insertRow) {
         // 4 個以上一気にドロップされたら警告を出す
@@ -733,8 +761,10 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             int ans = JSheet.showConfirmDialog(getContext().getFrame(),
                     stampList.size() + "個のスタンプが同時にドロップされましたが続けますか", "スタンプ挿入確認",
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE
-                    );
-            if (ans != JOptionPane.YES_OPTION) { return; }
+            );
+            if (ans != JOptionPane.YES_OPTION) {
+                return;
+            }
         }
 
         final StampDelegater sdl = new StampDelegater();
@@ -744,6 +774,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             protected List<StampModel> doInBackground() {
                 return sdl.getStamp(stampList);
             }
+
             @Override
             protected void succeeded(List<StampModel> list) {
                 logger.debug("importStampList succeeded");
@@ -758,7 +789,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 // 挿入した row を選択する
                 // setDiagnosisCount で DiagnosisInspector の update が行われるので，
                 // その後に選択しないと DiagnosisInspector に伝えられない
-                int row = (ascend)? diagTable.getRowCount()-1 : 0;
+                int row = (ascend) ? diagTable.getRowCount() - 1 : 0;
                 row = diagTable.convertRowIndexToView(row);
                 diagTable.getSelectionModel().setSelectionInterval(row, row);
             }
@@ -769,7 +800,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 傷病名スタンプをデータベースから取得しテーブルへ挿入する. Worker Thread で実行される.
-     * @param sm StampModel
+     *
+     * @param sm  StampModel
      * @param row 自動判定するので使っていない
      */
     private void insertStamp(StampModel sm, int row) {
@@ -787,6 +819,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     /**
      * row に RegisteredDiagnosisModel を挿入する.
      * テーブルへの挿入をする場所はここ（スタンプ箱，DiagnosisDocumentTableModel）と propertyChange（エディタから挿入）.
+     *
      * @param module
      */
     private void insertDiagnosis(RegisteredDiagnosisModel module) {
@@ -819,8 +852,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         checkIkouByomei(modules);
 
         // module 挿入
-        if (ascend) { tableModel.addRow(module); }
-        else { tableModel.insertRow(0, module); }
+        if (ascend) {
+            tableModel.addRow(module);
+        } else {
+            tableModel.insertRow(0, module);
+        }
 
         addAddedList(module);
     }
@@ -847,6 +883,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 傷病名エディタからデータを受け取りテーブルへ追加する.
+     *
      * @param e
      */
     @Override
@@ -854,10 +891,14 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         getContext().enabledAction(GUIConst.ACTION_CLOSE, true);
 
         String prop = e.getPropertyName();
-        if (!StampEditorDialog.VALUE_PROP.equals(prop)) { return; }
+        if (!StampEditorDialog.VALUE_PROP.equals(prop)) {
+            return;
+        }
 
         List<RegisteredDiagnosisModel> list = (List) e.getNewValue();
-        if (list == null || list.isEmpty()) { return; }
+        if (list == null || list.isEmpty()) {
+            return;
+        }
 
         boolean isAddedDiagnosis = (Boolean) e.getOldValue(); // openEditor2 からよばれると true になるようにした
         GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
@@ -869,8 +910,12 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             if (isAddedDiagnosis) {
                 // エディタから新規に挿入された場合（openEditor2）
                 rd.setStartDate(today); // startDate は LastVisit に設定
-                if (ascend) { tableModel.addRow(rd); } // 昇順はテーブルの最後へ追加する
-                else { tableModel.insertRow(0, rd); } // 降順はテーブルの先頭へ追加する
+                if (ascend) {
+                    tableModel.addRow(rd);
+                } // 昇順はテーブルの最後へ追加する
+                else {
+                    tableModel.insertRow(0, rd);
+                } // 降順はテーブルの先頭へ追加する
                 addAddedList(rd);
             } else {
                 // openEditor3 のデータの場合ー必ず選択が起きている
@@ -887,7 +932,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // added の場合挿入した row を選択する
         if (isAddedDiagnosis) {
-            int row = (ascend)? diagTable.getRowCount()-1 : 0;
+            int row = (ascend) ? diagTable.getRowCount() - 1 : 0;
             row = diagTable.convertRowIndexToView(row);
             diagTable.getSelectionModel().setSelectionInterval(row, row);
         }
@@ -985,6 +1030,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * ChartImpl#close() で isValidOutcome でなかった場合，DiagnosisDocument に戻れるようにするために使う.
+     *
      * @return
      */
     public boolean isValidOutcome() {
@@ -998,10 +1044,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     @Override
     public void save() {
 
-        if (addedDiagnosis.isEmpty() && updatedDiagnosis.isEmpty() && deletedDiagnosis.isEmpty()) { return; }
+        if (addedDiagnosis.isEmpty() && updatedDiagnosis.isEmpty() && deletedDiagnosis.isEmpty()) {
+            return;
+        }
 
-        final boolean sendDiagnosis = Project.getSendDiagnosis() &&
-                ((ChartImpl) getContext()).getCLAIMListener() != null;
+        final boolean sendDiagnosis = Project.getSendDiagnosis();
         logger.debug("sendDiagnosis = " + sendDiagnosis);
 
         // continue to save
@@ -1088,6 +1135,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      * 指定期間以降の傷病名を検索してテーブルへ表示する.
      * バッググランドスレッドで実行される.
      * addedDiagnosis, updatedDiagnossis, deletedDiagnosis 対応 by pns
+     *
      * @param past
      */
     public void getDiagnosisHistory(Date past) {
@@ -1115,8 +1163,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 // if (list == null) { list = new ArrayList<>(); } // null にはならない
 
                 if (ddl.isNoError() && list.size() > 0) {
-                    if (ascend) { Collections.sort(list); }
-                    else { Collections.sort(list, Collections.reverseOrder()); }
+                    if (ascend) {
+                        Collections.sort(list);
+                    } else {
+                        Collections.sort(list, Collections.reverseOrder());
+                    }
                 }
                 // addedDiagnosis がある場合は list に追加
                 if (addedDiagnosis.size() > 0) {
@@ -1148,6 +1199,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * RegisteredDiagnosisModel を元に，移行病名かどうかをチェックする.
+     *
      * @param rdList
      */
     public void checkIkouByomei(final List<RegisteredDiagnosisModel> rdList) {
@@ -1168,7 +1220,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 HashSet<String> codeSet = new HashSet<>();
                 // codes のうち，７桁のものが srycd コード → これを codeSet にためる
                 rdList.stream().map(rd -> rd.getDiagnosisCode().split("\\.")).forEach(codes ->
-                   Arrays.stream(codes).filter(code -> code.length() == 7).forEach(codeSet::add));
+                        Arrays.stream(codes).filter(code -> code.length() == 7).forEach(codeSet::add));
 
                 //dao 取得
                 OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
@@ -1177,7 +1229,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 List<OrcaEntry> entries = dao.getByomeiEntries(codeSet.toArray(new String[0]));
                 for (OrcaEntry entry : entries) {
                     // DisUseDate が 99999999 でないならば，移行病名または廃止病名
-                    if (! entry.getEndDate().equals("99999999")) {
+                    if (!entry.getEndDate().equals("99999999")) {
                         // 対応する rd の status に移行病名をセット
                         for (RegisteredDiagnosisModel rd : rdList) {
                             if (rd.getDiagnosisCode().contains(entry.getCode())) {
@@ -1189,13 +1241,14 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 }
                 return found;
             }
+
             @Override
             protected void succeeded(Boolean found) {
                 if (found) {
                     // fire すると選択が解除されてしまうので，選択を保存・復帰する
                     int[] selected = diagTable.getSelectedRows();
                     tableModel.fireTableDataChanged();
-                    for(int row : selected) {
+                    for (int row : selected) {
                         diagTable.getSelectionModel().setSelectionInterval(row, row);
                     }
                 }
@@ -1228,7 +1281,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     public void viewOrca() {
 
-        DBTask<List<RegisteredDiagnosisModel>> task = new DBTask<List<RegisteredDiagnosisModel>>(getContext()){
+        DBTask<List<RegisteredDiagnosisModel>> task = new DBTask<List<RegisteredDiagnosisModel>>(getContext()) {
 
             @Override
             protected List<RegisteredDiagnosisModel> doInBackground() {
@@ -1315,9 +1368,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 List<RegisteredDiagnosisModel> sendList = new ArrayList<>();
                 sendList.addAll(updatedDiagnosis);
                 sendList.addAll(addedDiagnosis);
-                if (! sendList.isEmpty()) { sendClaim(sendList); }
+                if (!sendList.isEmpty()) {
+                    OrcaDelegater delegater = new OrcaDelegater();
+                    delegater.send(sendList);
+                }
             }
-
             return result;
         }
 
@@ -1347,6 +1402,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         /**
          * Retina 対応 - show holizontal grid
+         *
          * @param graphics
          */
         @Override
@@ -1360,10 +1416,10 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         @Override
         public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
+                                                       Object value,
+                                                       boolean isSelected,
+                                                       boolean isFocused,
+                                                       int row, int col) {
 
             JLabel comp = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, isFocused, row, col);
             comp.setBorder(null); // 選択が外れた後に枠が残るのを防ぐ
@@ -1382,12 +1438,16 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 if (deleted || ended) {
                     int rgb = table.getSelectionForeground().getRGB();
                     int adjust = 0x4f4f4f;
-                    if ((rgb & 0x00ffffff) > adjust) { rgb -= adjust; }
-                    if ((rgb & 0x00ffffff) < adjust) { rgb += adjust; }
+                    if ((rgb & 0x00ffffff) > adjust) {
+                        rgb -= adjust;
+                    }
+                    if ((rgb & 0x00ffffff) < adjust) {
+                        rgb += adjust;
+                    }
                     comp.setForeground(new Color(rgb));
-                }
-                else if (ikou) { comp.setForeground(IKOU_BYOMEI_COLOR); }
-                else {
+                } else if (ikou) {
+                    comp.setForeground(IKOU_BYOMEI_COLOR);
+                } else {
                     if (table.isFocusOwner()) {
                         comp.setForeground(table.getSelectionForeground());
                     } else {
@@ -1398,18 +1458,26 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 if (table.isFocusOwner()) {
                     comp.setBackground(table.getSelectionBackground());
                 } else {
-                    comp.setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                    comp.setBackground((Color) table.getClientProperty("JTable.backgroundOffFocus"));
                 }
 
             } else {
                 // foreground
-                if (deleted) { comp.setForeground(DELETED_COLOR); }
-                else if (ikou) { comp.setForeground(IKOU_BYOMEI_COLOR); }
-                else if (ended) { comp.setForeground(ENDED_COLOR); }
-                else { comp.setForeground(table.getForeground()); }
+                if (deleted) {
+                    comp.setForeground(DELETED_COLOR);
+                } else if (ikou) {
+                    comp.setForeground(IKOU_BYOMEI_COLOR);
+                } else if (ended) {
+                    comp.setForeground(ENDED_COLOR);
+                } else {
+                    comp.setForeground(table.getForeground());
+                }
                 // background
-                if (orca) { comp.setBackground(ORCA_BACK_COLOR); }
-                else { comp.setBackground(table.getBackground()); }
+                if (orca) {
+                    comp.setBackground(ORCA_BACK_COLOR);
+                } else {
+                    comp.setBackground(table.getBackground());
+                }
             }
 
             // インデントを入れる
@@ -1444,22 +1512,26 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             // JComboBox の値を変更しなかったとき，editor が残ってしまうのを回避
             combo.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
                 @Override
-                public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
+                public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                }
+
                 @Override
                 public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
                     cancelCellEditing();
                 }
+
                 @Override
-                public void popupMenuCanceled(PopupMenuEvent e) {}
+                public void popupMenuCanceled(PopupMenuEvent e) {
+                }
             });
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value,
-                               boolean isSelected, int row, int col){
+                                                     boolean isSelected, int row, int col) {
 
             // value は String で入ってくる　combo.setSelectedItem(value)は効かない
-            switch(col) {
+            switch (col) {
                 case CATEGORY_COL:
                 case OUTCOME_COL:
                     if (value != null) {
@@ -1474,13 +1546,14 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * JComboBox の項目から index を返す.
+     *
      * @param combo
      * @param item
      * @return
      */
     public static int itemToIndex(JComboBox combo, String item) {
         int index = 0;
-        for(int i=0; i<combo.getItemCount(); i++) {
+        for (int i = 0; i < combo.getItemCount(); i++) {
             if (item.equals(combo.getItemAt(i).toString())) {
                 index = i;
                 break;
@@ -1493,10 +1566,12 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         tableModel.undo();
         setDiagnosisCount();
     }
+
     public void redo() {
         tableModel.redo();
         setDiagnosisCount();
     }
+
     public void selectAll() {
         diagTable.selectAll();
     }
@@ -1526,7 +1601,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             rd.setUserLiteModel(Project.getUserModel().getLiteModel());
 
             // 転帰をチェックする
-            if (!isValidOutcome(rd)) { return; }
+            if (!isValidOutcome(rd)) {
+                return;
+            }
 
             diagList.add(rd);
         }
@@ -1535,12 +1612,13 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         String message;
         int messageType = JOptionPane.PLAIN_MESSAGE;
 
-        if (! Project.getSendClaim()) {
+        if (!Project.getSendClaim()) {
             message = "CLAIM を送信しない設定になっています";
             messageType = JOptionPane.ERROR_MESSAGE;
 
-        } else if (! diagList.isEmpty()) {
-            sendClaim(diagList);
+        } else if (!diagList.isEmpty()) {
+            OrcaDelegater delegater = new OrcaDelegater();
+            delegater.send(diagList);
             message = diagList.size() + " 件を ORCA に送信しました";
 
         } else {
@@ -1553,25 +1631,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             return;
         }
         JSheet.showMessageDialog(parent, message, "", messageType);
-    }
-
-    private void sendClaim(List<RegisteredDiagnosisModel> sendList) {
-        // ORCA API 通信
-        if (Project.getProjectStub().isUseOrcaApi()) {
-            OrcaApi orcaApi = OrcaApi.getInstance();
-            orcaApi.setContext(getContext());
-            orcaApi.send(sendList);
-
-        // CLAIM 送信
-        } else { try {
-
-            ClaimSender sender = new ClaimSender();
-            sender.setPatientVisitModel(getContext().getPatientVisit());
-            sender.addCLAIMListener(((ChartImpl) getContext()).getCLAIMListener());
-            sender.send(sendList);
-
-            } catch (TooManyListenersException ex) {}
-        }
     }
 
     /**
@@ -1607,7 +1666,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             // distRd.setEndDate(srcRd.getEndDate());
 
             tableModel.insertRow(r, distRd);
-            diagTable.getSelectionModel().setSelectionInterval(r,r);
+            diagTable.getSelectionModel().setSelectionInterval(r, r);
             addAddedList(distRd);
 
             // DiagnosisInspector に連絡

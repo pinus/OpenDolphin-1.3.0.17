@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.util.Objects;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -240,7 +241,7 @@ public class BasicInfoInspector implements IInspector {
         ageLabel.setText(String.format("%s 歳", age));
 
         SimpleAddressModel address = patient.getAddress();
-        if (address != null) {
+        if (Objects.nonNull(address)  && Objects.nonNull(address.getAddress())) {
             String addr = StringTool.toZenkakuNumber(address.getAddress());
             addressLabel.setText(addr.replaceAll("北海道", "")); // 北海道は省略
         } else {
