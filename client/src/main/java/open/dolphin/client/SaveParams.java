@@ -3,12 +3,10 @@ package open.dolphin.client;
 /**
  * Parametrs to save document.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class SaveParams {
-
-    // MML送信するかどうかのフラグ 送信する時 true
-    private boolean sendMML;
 
     // 文書タイトル
     private String title;
@@ -33,36 +31,11 @@ public class SaveParams {
 
     // CLAIM 送信を disable にする
     private boolean disableSendClaim;
-//pns^
-    // 保存，一時保存，破棄，キャンセル
+
+    // SaveDialog.SAVE(0), TMP_SAVE(1), DISPOSE(2), or CANCEL(3);
     private int selection;
-    public int getSelection() {
-        return selection;
-    }
-    public void setSelection(int selection) {
-        this.selection = selection;
-    }
-//pns$
 
-    /**
-     * Creates new SaveParams
-     */
-    public SaveParams() {
-        super();
-    }
-
-    public SaveParams(boolean sendMML) {
-        this();
-        this.sendMML = sendMML;
-    }
-
-    public boolean getSendMML() {
-        return sendMML;
-    }
-
-    public void setSendMML(boolean b) {
-        sendMML = b;
-    }
+    public SaveParams() { }
 
     public String getTitle() {
         return title;
@@ -127,4 +100,13 @@ public class SaveParams {
     public void setDisableSendClaim(boolean disableSendClaim) {
         this.disableSendClaim = disableSendClaim;
     }
+
+    public int getSelection() {
+        return selection;
+    }
+
+    public void setSelection(int selection) {
+        this.selection = selection;
+    }
+
 }

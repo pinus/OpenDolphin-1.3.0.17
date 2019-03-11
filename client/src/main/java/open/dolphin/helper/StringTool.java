@@ -1,5 +1,7 @@
 package open.dolphin.helper;
 
+import java.util.Objects;
+
 /**
  * Utilities to handle String.
  *
@@ -329,5 +331,14 @@ public final class StringTool {
             sb.append(convertedChar);
         }
         return sb.toString();
+    }
+
+    /**
+     * 文字変数 str が空かどうかを返す.
+     * @param str 文字列
+     * @return null or "" で空と判断
+     */
+    public static boolean isEmpty(String str) {
+        return Objects.isNull(str) || str.length() == 0;
     }
 }

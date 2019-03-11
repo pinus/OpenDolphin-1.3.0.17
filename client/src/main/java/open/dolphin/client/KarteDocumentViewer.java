@@ -6,13 +6,14 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.prefs.Preferences;
 import javax.swing.*;
+
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.util.ModelUtils;
-import open.dolphin.orcaapi.OrcaApi;
 import open.dolphin.project.Project;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.sheet.JSheet;
@@ -393,10 +394,6 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         editor.setModel(editModel);
         editor.setEditable(true);
         editor.setModify(true);
-
-        String docType = baseDocumentModel.getDocInfo().getDocType();
-        int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
-        editor.setMode(mode);
 
         // このフラグはカルテを別ウインドウで編集するかどうか (使ってない)
         //if (Project.getPreferences().getBoolean(Project.KARTE_PLACE_MODE, true)) {
@@ -893,11 +890,18 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
             DocumentModel model = chart.getKarteModelToEdit(getBaseKarte().getModel());
             model.setKarte(getContext().getKarte());
             model.getDocInfo().setConfirmDate(new Date());
+            model.setCreator(Project.getUserModel());       // 送信者
 
-            sendClaim(model);
+            OrcaDelegater delegater = new OrcaDelegater();
+            OrcaDelegater.Result result = delegater.send(model);
 
-            message = "ORCA に送信しました";
-            messageType = JOptionPane.PLAIN_MESSAGE;
+            if (result.equals(OrcaDelegater.Result.NO_ERROR)) {
+                message = "ORCA に送信しました";
+                messageType = JOptionPane.PLAIN_MESSAGE;
+            } else {
+                message = "ORCA に送信できませんでした";
+                messageType = JOptionPane.ERROR_MESSAGE;
+            }
         }
 
         Frame parent = getContext().getFrame();
@@ -906,23 +910,5 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
             return;
         }
         JSheet.showMessageDialog(parent, message, "", messageType);
-    }
-
-    private void sendClaim(DocumentModel model) {
-        // ORCA API 通信
-        if (Project.getProjectStub().isUseOrcaApi()) {
-            OrcaApi orcaApi = OrcaApi.getInstance();
-            orcaApi.setContext(getContext());
-            orcaApi.send(model);
-
-        // CLAIM 送信
-        } else { try {
-
-            ClaimSender sender = new ClaimSender();
-            sender.addCLAIMListener(((ChartImpl)getContext()).getCLAIMListener());
-            sender.send(model);
-
-            } catch (TooManyListenersException ex) {}
-        }
     }
 }

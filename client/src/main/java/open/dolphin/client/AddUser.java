@@ -482,7 +482,7 @@ public class AddUser extends AbstractMainTool {
                 @Override
                 protected void succeeded(List<UserModel> results) {
                     logger.debug("getUsers succeeded");
-                    if (udl.getErrorCode() == BusinessDelegater.NO_ERROR) {
+                    if (udl.getErrorCode() == BusinessDelegater.Result.NO_ERROR) {
                         tableModel.setObjectList(results);
                     } else {
                         JOptionPane.showMessageDialog(frame,
@@ -540,7 +540,7 @@ public class AddUser extends AbstractMainTool {
                 @Override
                 protected void succeeded(List<UserModel> results) {
                     logger.debug("deleteUser succeeded");
-                    if (udl.getErrorCode() == BusinessDelegater.NO_ERROR) {
+                    if (udl.getErrorCode() == BusinessDelegater.Result.NO_ERROR) {
                         tableModel.setObjectList(results);
                         JOptionPane.showMessageDialog(frame,
                                 DELETE_USER_SUCCESS_MSG,

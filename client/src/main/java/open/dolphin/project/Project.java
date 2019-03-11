@@ -18,55 +18,41 @@ public class Project  {
     public static final String PROJECT_NAME		= "name";
 
     // USER
-    public static final String USER_TYPE		= "userType";
-    public static final String USER_ID 			= "userId";
-    public static final String USER_PASSWORD 		= "userPassword";
-    public static final String FACILITY_ID 		= "facilityId";
-    public static final String SAVE_PASSWORD            = "savepassword";
+    public static final String USER_TYPE		 = "userType";
+    public static final String USER_ID 			 = "userId";
+    public static final String USER_PASSWORD 	 = "userPassword";
+    public static final String FACILITY_ID 		 = "facilityId";
+    public static final String SAVE_PASSWORD     = "savepassword";
 
     // ORCA API
-    public static final String ORCA_API                 = "ORCAAPI";
-    public static final String ORCA_USR_ID              = "ORCAUSERID";
-    public static final String ORCA_PASSWORD            = "ORCAPASSWORD";
-    public static final String ORCA_STAFF_CODE          = "ORCASTAFFCODE";
+    public static final String ORCA_API          = "ORCAAPI";
+    public static final String ORCA_USR_ID       = "ORCAUSERID";
+    public static final String ORCA_PASSWORD     = "ORCAPASSWORD";
+    public static final String ORCA_STAFF_CODE   = "ORCASTAFFCODE";
 
     // SERVER
-    public static final String HOST_ADDRESS 		= "hostAddress";
-    public static final String HOST_PORT 		= "hostPort";
+    public static final String HOST_ADDRESS 	 = "hostAddress";
+    public static final String HOST_PORT 		 = "hostPort";
 
     // CLAIM
-    public static final String SEND_CLAIM 		= "sendClaim";
-    public static final String SEND_CLAIM_SAVE          = "sendClaimSave";
-    public static final String SEND_CLAIM_TMP 		= "sendClaimTmp";
-    public static final String SEND_CLAIM_MODIFY 	= "sendClaimModify";
-    public static final String SEND_DIAGNOSIS 		= "sendDiagnosis";
-    public static final String CLAIM_HOST_NAME          = "claimHostName";
-    public static final String CLAIM_VERSION 		= "claimVersion";
-    public static final String CLAIM_ENCODING 		= "claimEncoding";
-    public static final String CLAIM_ADDRESS 		= "claimAddress";
-    public static final String CLAIM_PORT 		= "claimPort";
-    public static final String USE_AS_PVT_SERVER 	= "useAsPVTServer";
-    public static final String CLAIM01                  = "CLAIM01";
-
-    // Area Network
-    public static final String JOIN_AREA_NETWORK 	= "joinAreaNetwork";
-    public static final String AREA_NETWORK_NAME 	= "jareaNetworkName";
-    public static final String AREA_NETWORK_FACILITY_ID = "jareaNetworkFacilityId";
-    public static final String AREA_NETWORK_CREATOR_ID  = "jareaNetworkCreatorId";
-
-    // MML
-    public static final String SEND_MML			= "mml.sendDocument";
-    public static final String MML_VERSION    		= "mml.version";
-    public static final String MML_ENCODING		= "mml.encoding";
-    public static final String SEND_MML_ADDRESS 	= "mml.address";
-    public static final String SEND_MML_DIRECTORY 	= "mml.directory";
-    public static final String SEND_MML_PROTOCOL 	= "mml.protocol";
+    public static final String SEND_CLAIM 		 = "sendClaim";
+    public static final String SEND_CLAIM_SAVE   = "sendClaimSave";
+    public static final String SEND_CLAIM_TMP 	 = "sendClaimTmp";
+    public static final String SEND_CLAIM_MODIFY = "sendClaimModify";
+    public static final String SEND_DIAGNOSIS 	 = "sendDiagnosis";
+    public static final String CLAIM_HOST_NAME   = "claimHostName";
+    public static final String CLAIM_VERSION 	 = "claimVersion";
+    public static final String CLAIM_ENCODING 	 = "claimEncoding";
+    public static final String CLAIM_ADDRESS 	 = "claimAddress";
+    public static final String CLAIM_PORT 		 = "claimPort";
+    public static final String USE_AS_PVT_SERVER = "useAsPVTServer";
+    public static final String CLAIM01           = "CLAIM01";
 
     // ソフトウェア更新
-    public static final String USE_PROXY		= "useProxy";
-    public static final String PROXY_HOST		= "proxyHost";
-    public static final String PROXY_PORT		= "proxyPort";
-    public static final String LAST_MODIFIED  		= "lastModify";
+    public static final String USE_PROXY		 = "useProxy";
+    public static final String PROXY_HOST		 = "proxyHost";
+    public static final String PROXY_PORT		 = "proxyPort";
+    public static final String LAST_MODIFIED  	 = "lastModify";
 
     // インスペクタのメモ位置
     public static final String INSPECTOR_MEMO_LOCATION  = "inspectorMemoLocation";
@@ -88,10 +74,10 @@ public class Project  {
     public static final String OFFSET_OUTCOME_DATE 	= "diagnosis.offsetOutcomeDate";
 
     // 検体検査
-    public static final String LABOTEST_PERIOD 		= "laboTest.period";
+    public static final String LABOTEST_PERIOD = "laboTest.period";
 
     // 処方
-    public static final String RP_OUT			= "rp.out";
+    public static final String RP_OUT = "rp.out";
 
     // 確認ダイアログ
     public static final String KARTE_SHOW_CONFIRM_AT_NEW = "karte.showConfirmAtNew";
@@ -117,7 +103,6 @@ public class Project  {
 
     private static ProjectStub stub;
 
-    /** Creates new Project */
     public Project() {
     }
 
@@ -304,39 +289,6 @@ public class Project  {
     }
 
     /**
-     * 地域連携に参加するかどうかを返す.
-     * @return 参加する時 true
-     */
-    public static boolean getJoinAreaNetwork() {
-        return stub.getJoinAreaNetwork();
-    }
-
-    /**
-     * 地域連携用の施設IDを返す.
-     * @return 地域連携で使用する施設ID
-     */
-    public static String getAreaNetworkFacilityId() {
-        return stub.getAreaNetworkFacilityId();
-    }
-
-    /**
-     * 地域連携用のCreatorIDを返す.
-     * @return 地域連携で使用するCreatorId
-     */
-    public static String getAreaNetworkCreatorId() {
-        return stub.getAreaNetworkCreatorId();
-    }
-
-    /**
-     * 地域連携用の患者MasterIdを返す.
-     * @return 地域連携で使用する患者MasterId
-     */
-    public static ID getMasterId(String pid) {
-        String fid = stub.getAreaNetworkFacilityId();
-        return getProjectFactory().createMasterId(pid, fid);
-    }
-
-    /**
      * CLAIM送信に使用する患者MasterIdを返す.
      * 地域連携ルールと異なるため.
      */
@@ -346,39 +298,6 @@ public class Project  {
 
     public static Object createSaveDialog(Window parent, SaveParams params) {
         return getProjectFactory().createSaveDialog(parent, params);
-    }
-
-    /**
-     * CSGW(Client Side Gate Way)へのパスを返す.
-     */
-    public static String getCSGWPath() {
-        String uploader = getUploaderIPAddress();
-        String share = getUploadShareDirectory();
-        String id = stub.getAreaNetworkFacilityId()!= null
-                    ? stub.getAreaNetworkFacilityId()
-                    : stub.getUserModel().getFacilityModel().getFacilityId();
-        return getProjectFactory().createCSGWPath(uploader, share, id);
-    }
-
-    // HOT
-    public static boolean getSendMML() {
-        return stub.getSendMML();
-    }
-
-    public static String getMMLVersion() {
-        return stub.getMMLVersion();
-    }
-
-    public static String getMMLEncoding() {
-        return stub.getMMLEncoding();
-    }
-
-    public static String getUploaderIPAddress() {
-        return stub.getUploaderIPAddress();
-    }
-
-    public static String getUploadShareDirectory() {
-        return stub.getUploadShareDirectory();
     }
 
     public static void exportSubtree(OutputStream os) {

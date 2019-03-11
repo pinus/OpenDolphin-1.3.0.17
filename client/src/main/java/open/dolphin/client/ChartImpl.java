@@ -661,16 +661,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             frame.setBounds(bounds);
         }
 
-        // MML 送信 Queue
-        if (Project.getSendMML()) {
-            mmlListener = (MmlMessageListener) getContext().getPlugin("sendMml");
-        }
-
-        // CLAIM 送信 Queue
-        if (Project.getSendClaim()) {
-            claimListener = (ClaimMessageListener) getContext().getPlugin("sendClaim");
-        }
-
         frame.setVisible(true);
 
         // IME off
@@ -933,7 +923,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         editor = createEditor();
         editor.setModel(editModel);
         editor.setEditable(true);
-        editor.setMode(KarteEditor.DOUBLE_MODE);
 
         if (params.isOpenFrame()) {
             final EditorFrame editorFrame = new EditorFrame();
@@ -1110,16 +1099,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * @return カルテエディタ
      */
     public KarteEditor createEditor() {
-        KarteEditor editor;
-        try {
-            editor = new KarteEditor();
-            editor.addMMLListner(mmlListener);
-            editor.addCLAIMListner(claimListener);
-        } catch (TooManyListenersException e) {
-            logger.warn(e);
-            editor = null;
-        }
-        return editor;
+        return new KarteEditor();
     }
 
     /**

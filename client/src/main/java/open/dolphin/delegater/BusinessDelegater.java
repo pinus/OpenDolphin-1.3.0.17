@@ -1,5 +1,7 @@
 package open.dolphin.delegater;
 
+import org.apache.log4j.Logger;
+
 import java.lang.reflect.ParameterizedType;
 
 /**
@@ -8,11 +10,12 @@ import java.lang.reflect.ParameterizedType;
  * @author pns
  */
 public class BusinessDelegater<T> {
-    public static final int NO_ERROR = 0;
-    public static final int ERROR = -1;
+    public enum Result { NO_ERROR, ERROR }
 
-    private int errorCode = NO_ERROR;
+    private Result errorCode = Result.NO_ERROR;
     private String errorMessage = "delegate error";
+
+    protected Logger logger;
 
     // 呼び出し元の class
     private Class<T> target;
@@ -25,6 +28,7 @@ public class BusinessDelegater<T> {
         } catch (ClassNotFoundException e) {
             processError(e);
         }
+        logger = Logger.getLogger(target);
     }
 
     public T getService() {
@@ -36,16 +40,16 @@ public class BusinessDelegater<T> {
         return null;
     }
 
-    public void setErrorCode(int errCode) {
+    public void setErrorCode(Result errCode) {
         this.errorCode = errCode;
     }
 
-    public int getErrorCode() {
+    public Result getErrorCode() {
         return errorCode;
     }
 
     public boolean isNoError() {
-        return errorCode == NO_ERROR;
+        return errorCode.equals(Result.NO_ERROR);
     }
 
     public String getErrorMessage() {
@@ -58,7 +62,7 @@ public class BusinessDelegater<T> {
 
     public void processError(Exception e) {
         setErrorMessage(e.toString());
-        setErrorCode(ERROR);
+        setErrorCode(Result.ERROR);
         e.printStackTrace(System.err);
     }
 }

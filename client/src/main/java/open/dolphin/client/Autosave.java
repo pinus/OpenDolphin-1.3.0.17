@@ -145,7 +145,6 @@ public class Autosave implements Runnable {
 
                         editor.setEditable(true);
                         editor.setModify(true);
-                        editor.setMode(KarteEditor.DOUBLE_MODE);
 
                         EditorFrame editorFrame = new EditorFrame();
                         editorFrame.setChart(chart);

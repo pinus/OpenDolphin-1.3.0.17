@@ -94,17 +94,6 @@ public class ProjectStub implements java.io.Serializable {
             return false;
         }
 
-        // Master 検索のため
-        // 2007-01-05 ASP StampBox のため上記条件は廃止
-        //        if ( getClaimAddress() == null ) {
-        //            return false;
-        //        }
-
-        // MML送信を行う場合の確認をする
-        if (getSendMML() && (getUploaderIPAddress() == null || getUploadShareDirectory() == null)) {
-            return false;
-        }
-
         // ここまで来れば有効である
         valid = true;
         return valid;
@@ -697,92 +686,6 @@ public class ProjectStub implements java.io.Serializable {
     }
 
     //
-    // AreaNetwork関連情報
-    //
-    public boolean getJoinAreaNetwork() {
-        return prefs.getBoolean(Project.JOIN_AREA_NETWORK, false);		// 地域連携参加
-    }
-
-    public void setJoinAreaNetwork(boolean b) {
-        prefs.putBoolean(Project.JOIN_AREA_NETWORK, b);				// 地域連携参加
-    }
-
-    public String getAreaNetworkName() {
-        return prefs.get(Project.AREA_NETWORK_NAME, null);			// 地域連携名
-    }
-
-    public void setAreaNetworkName(String name) {
-        prefs.put(Project.AREA_NETWORK_NAME, name);				// 地域連携名
-    }
-
-    public String getAreaNetworkFacilityId() {
-        return prefs.get(Project.AREA_NETWORK_FACILITY_ID, null);		// 地域連携施設ID
-    }
-
-    public void setAreaNetworkFacilityId(String id) {
-        prefs.put(Project.AREA_NETWORK_FACILITY_ID, id);			// 地域連携施設ID
-    }
-
-    public String getAreaNetworkCreatorId() {
-        return prefs.get(Project.AREA_NETWORK_CREATOR_ID, null);		// 地域連携CreatorID
-    }
-
-    public void setAreaNetworkCreatorId(String id) {
-        prefs.put(Project.AREA_NETWORK_CREATOR_ID, id);                         // 地域連携CreatorID
-    }
-
-    //
-    // MML送信関連の情報
-    //
-    public boolean getSendMML() {
-        return prefs.getBoolean(Project.SEND_MML, DEFAULT_SEND_MML);
-    }
-
-    public void setSendMML(boolean b) {
-        prefs.putBoolean(Project.SEND_MML, b);
-    }
-
-    public String getMMLVersion() {
-        return prefs.get(Project.MML_VERSION, DEFAULT_MML_VERSION);
-    }
-
-    public void setMMLVersion(String b) {
-        prefs.put(Project.MML_VERSION, b);
-    }
-
-    public String getMMLEncoding() {
-        return prefs.get(Project.MML_ENCODING, DEFAULT_MML_ENCODING);
-    }
-
-    public void setMMLEncoding(String val) {
-        prefs.put(Project.MML_ENCODING, val);
-    }
-
-    public boolean getMIMEEncoding() {
-        return prefs.getBoolean("mimeEncoding", false);
-    }
-
-    public void setMIMEEncoding(boolean val) {
-        prefs.putBoolean("mimeEncoding", val);
-    }
-
-    public String getUploaderIPAddress() {
-        return prefs.get(Project.SEND_MML_ADDRESS, DEFAULT_SEND_MML_ADDRESS);
-    }
-
-    public void setUploaderIPAddress(String val) {
-        prefs.put(Project.SEND_MML_ADDRESS, val);
-    }
-
-    public String getUploadShareDirectory() {
-        return prefs.get(Project.SEND_MML_DIRECTORY, DEFAULT_SEND_MML_DIRECTORY);
-    }
-
-    public void setUploadShareDirectory(String val) {
-        prefs.put(Project.SEND_MML_DIRECTORY, val);
-    }
-
-    //
     // Software Update 関連
     //
     public boolean getUseProxy() {
@@ -817,7 +720,6 @@ public class ProjectStub implements java.io.Serializable {
         prefs.putLong(Project.LAST_MODIFIED, val);
     }
 
-    ///////////////////////////////////////////////
     public void exportSubtree(OutputStream os) {
         try {
             prefs.exportSubtree(os);

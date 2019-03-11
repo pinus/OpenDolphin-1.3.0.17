@@ -12,6 +12,7 @@ import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
 import open.dolphin.service.OrcaService;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -137,8 +138,21 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      * @param document DocumentModel
      * @return ApiResult
      */
-    public ApiResult send(DocumentModel document) {
-        return getService().sendDocument(document);
+    public Result send(DocumentModel document) {
+        ApiResult result = getService().sendDocument(document);
+        String apiResult = result.getApiResult();
+
+        // 他端末で使用中(90)の場合は，手動でリトライする
+        while("90".equals(apiResult)) {
+            logger.info("OrcaApi47: busy, waiting for retrial (" + apiResult + ")");
+            if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null,
+                            "ORCA で使用中のため送信できません。リトライしますか？", "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
+                return Result.ERROR;
+            }
+            result = getService().sendDocument(document);
+            apiResult = result.getApiResult();
+        }
+        return Result.NO_ERROR;
     }
 
     /**
@@ -147,7 +161,8 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      * @param diagnoses List of RegisteredDiagnosisModel
      * @return ApiResult
      */
-    public ApiResult send(List<RegisteredDiagnosisModel> diagnoses) {
-        return getService().sendDiagnoses(diagnoses);
+    public Result send(List<RegisteredDiagnosisModel> diagnoses) {
+        ApiResult result = getService().sendDiagnoses(diagnoses);
+        return Result.NO_ERROR;
     }
 }
