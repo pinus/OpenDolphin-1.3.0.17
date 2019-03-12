@@ -1,7 +1,6 @@
 package open.dolphin.stampbox;
 
-import open.dolphin.dao.OrcaEntry;
-import open.dolphin.dao.OrcaMasterDao;
+import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.project.Project;
@@ -48,16 +47,11 @@ public class OrcaTree extends StampTree {
 
             @Override
             protected Boolean doInBackground() throws Exception {
-                OrcaMasterDao dao = new OrcaMasterDao();
+                OrcaDelegater delegater = new OrcaDelegater();
+                List<ModuleInfoBean> beans = delegater.getOrcaInputCdList();
 
-                List<OrcaEntry> entries = dao.getOrcaInputCdList();
                 StampTreeNode root = (StampTreeNode) getModel().getRoot();
-
-                entries.forEach(entry -> {
-                    ModuleInfoBean stampInfo = entry.getStampInfo();
-                    StampTreeNode node = new StampTreeNode(stampInfo);
-                    root.add(node);
-                });
+                beans.stream().map(stampInfo -> new StampTreeNode(stampInfo)).forEach(root::add);
 
                 DefaultTreeModel model = (DefaultTreeModel) getModel();
                 model.reload(root);
@@ -69,6 +63,7 @@ public class OrcaTree extends StampTree {
             protected void succeeded(Boolean result) {
                 //fetched = true;
             }
+
 
             @Override
             protected void cancelled() {

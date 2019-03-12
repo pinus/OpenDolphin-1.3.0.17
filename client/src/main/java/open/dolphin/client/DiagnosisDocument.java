@@ -1188,6 +1188,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
                 // 最後に有効期限(disUseDate)が99999999以外に設定されていたら移行病名としてセット
                 checkIkouByomei(list);
+
+                // orca ボタン enable
+                orcaButton.setEnabled(true);
             }
         };
 
@@ -1271,7 +1274,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * ORCAに登録されている病名を取り込む. （テーブルへ追加する）
-     * 検索後，ボタンを disabled にする.
      */
     public void viewOrca() {
 

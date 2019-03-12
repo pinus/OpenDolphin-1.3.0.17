@@ -19,6 +19,8 @@ import org.apache.log4j.Logger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,8 +36,8 @@ public class OrcaServiceDao {
     private Logger logger = Logger.getLogger(OrcaServiceApi.class);
 
     // ORCA 形式の今日の日付
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-    String today = sdf.format(new Date());
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+    String today = dtf.format(LocalDate.now());
 
     /**
      * 中途終了患者情報.
@@ -195,14 +197,15 @@ public class OrcaServiceDao {
      */
     public List<OrcaEntry> findDiagnosis(List<String> srycds) {
 
+        List<OrcaEntry> ret = new ArrayList<>();
+        if (srycds.isEmpty()) { return ret; } // 空の場合
+
         String sql = "select byomeicd, byomei, byomeikana, syusaiymd, haisiymd, icd10_1 from tbl_byomei "
                 + "where byomeicd in (?) order by icd10_1, byomeicd";
 
         if (srycds.size() > 1) {
             sql = sql.replace("?", "?" + StringUtils.repeat(",?", srycds.size() - 1));
         }
-
-        List<OrcaEntry> ret = new ArrayList<>();
 
         OrcaDbConnection con = dao.getConnection(rs -> ret.addAll(createOrcaEntry(rs)));
         for (int i = 0; i < srycds.size(); i++) { con.setParam(i + 1, srycds.get(i)); }

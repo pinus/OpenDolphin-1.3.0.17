@@ -3,7 +3,7 @@ package open.dolphin.client;
 import javafx.application.Platform;
 import open.dolphin.codehelper.PCodeHelper;
 import open.dolphin.codehelper.SOACodeHelper;
-import open.dolphin.dao.OrcaMasterDao;
+import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.ImageHelper;
@@ -52,7 +52,10 @@ import java.util.prefs.Preferences;
 public class KartePane implements DocumentListener, MouseListener, CaretListener, PropertyChangeListener, KarteComposite<JTextPane> {
 
     // KartePane の状態　(_TEXT はテキストが選択された状態)
-    private enum State {NONE, SOA, SOA_TEXT, SCHEMA, P, P_TEXT, STAMP};
+    private enum State {
+        NONE, SOA, SOA_TEXT, SCHEMA, P, P_TEXT, STAMP
+    }
+
     private State curState;
 
     // 文書に付けるタイトルを自動で取得する時の長さ
@@ -112,6 +115,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneのオーナを設定する.
+     *
      * @param parent KarteEditorオーナ
      */
     public void setParent(ChartDocument parent) {
@@ -120,6 +124,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneのオーナを返す.
+     *
      * @return KarteEditorオーナ
      */
     public ChartDocument getParent() {
@@ -128,6 +133,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * 編集不可を表すカラーを設定する.
+     *
      * @param uneditableColor 編集不可を表すカラー
      */
     public void setUneditableColor(Color uneditableColor) {
@@ -136,6 +142,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * 編集不可を表すカラーを返す.
+     *
      * @return 編集不可を表すカラー
      */
     public Color getUneditableColor() {
@@ -144,6 +151,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneで生成するDocumentModelの文書IDを設定する.
+     *
      * @param docId 文書ID
      */
     protected void setDocId(String docId) {
@@ -152,6 +160,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneで生成するDocumentModelの文書IDを返す.
+     *
      * @return 文書ID
      */
     protected String getDocId() {
@@ -160,6 +169,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * ChartMediatorを返す.
+     *
      * @return ChartMediator
      */
     protected ChartMediator getMediator() {
@@ -168,6 +178,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneのロールを設定する.
+     *
      * @param myRole SOAまたはPのロール
      */
     public void setMyRole(String myRole) {
@@ -175,7 +186,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
-     *  このPaneのロールを返す.
+     * このPaneのロールを返す.
+     *
      * @return SOAまたはPのロール
      */
     public String getMyRole() {
@@ -184,6 +196,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * JTextPaneを設定する.
+     *
      * @param textPane JTextPane
      */
     public void setTextPane(JTextPane textPane) {
@@ -201,6 +214,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * JTextPaneを返す.
+     *
      * @return JTextPane
      */
     public JTextPane getTextPane() {
@@ -209,6 +223,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * JTextPaneのStyledDocumentを返す.
+     *
      * @return JTextPaneのStyledDocument
      */
     public KarteStyledDocument getDocument() {
@@ -217,6 +232,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * 初期長を設定する.
+     *
      * @param initialLength Documentの初期長
      */
     public void setInitialLength(int initialLength) {
@@ -225,6 +241,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * 初期長を返す.
+     *
      * @return Documentの初期長
      */
     public int getInitialLength() {
@@ -233,6 +250,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneからDragされたスタンプ数を返す.
+     *
      * @return このPaneからDragされたスタンプ数
      */
     protected int getDraggedCount() {
@@ -241,6 +259,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneからDragされたスタンプ数を設定する.
+     *
      * @param draggedCount このPaneからDragされたスタンプ数
      */
     protected void setDraggedCount(int draggedCount) {
@@ -249,6 +268,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneにDropされたスタンプ数を返す.
+     *
      * @return このPaneにDropされたスタンプ数
      */
     protected int getDroppedCount() {
@@ -257,6 +277,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneにDropされたスタンプ数を設定する.
+     *
      * @param droppedCount このPaneにDropされたスタンプ数
      */
     protected void setDroppedCount(int droppedCount) {
@@ -265,6 +286,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneからDragされたスタンプを返す.
+     *
      * @return このPaneからDragされたスタンプ配列
      */
     protected ComponentHolder<?>[] getDraggedStamp() {
@@ -273,6 +295,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このPaneからDragされたスタンプを設定（記録）する.
+     *
      * @param drragedStamp このPaneからDragされたスタンプ配列
      */
     protected void setDraggedStamp(ComponentHolder<?>[] drragedStamp) {
@@ -282,7 +305,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     /**
      * 初期化する.
      * KarteViewer, KarteEditor から呼ばれる.
-     * @param editable 編集可能かどうかのフラグ
+     *
+     * @param editable      編集可能かどうかのフラグ
      * @param chartMediator チャートメディエータ（メニューサポート）
      */
     public void init(boolean editable, ChartMediator chartMediator) {
@@ -363,7 +387,9 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      */
     public void clear() {
         JTextPane pane = getTextPane();
-        if (pane == null) { return; }
+        if (pane == null) {
+            return;
+        }
 
         pane.getDocument().removeDocumentListener(this);
         pane.getDocument().removeUndoableEditListener(undoListener);
@@ -522,6 +548,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * ロールとパートナを設定する.
+     *
      * @param role このペインのロール
      */
     public void setRole(String role) {
@@ -530,10 +557,11 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * Dirtyかどうかを返す.
-     * @return dirty の時 true
+     *
+     * @return editable かつ dirty の時 true
      */
     protected boolean isDirty() {
-        return getTextPane().isEditable() ? dirty : false;
+        return getTextPane().isEditable() && dirty;
     }
 
     protected void setDirty(boolean newDirty) {
@@ -546,6 +574,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * 保存時につけるドキュメントのタイトルをDocument Objectから抽出する.
+     *
      * @return 先頭から指定された長さを切り出した文字列
      */
     protected String getTitle() {
@@ -564,6 +593,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * Documentの段落スタイルを設定する.
+     *
      * @param str スタイル
      */
     public void setLogicalStyle(String str) {
@@ -586,6 +616,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * Documentに文字列を挿入する.
+     *
      * @param s 挿入する文字列
      * @param a 属性
      */
@@ -595,7 +626,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このペインに Stamp を挿入する. (drag & drop した場合)
-     * @param stamp
+     *
+     * @param stamp ModuleModel
      */
     public void stamp(final ModuleModel stamp) {
         if (stamp != null) {
@@ -619,7 +651,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * 重複をチェックする stamp(ModuleModel) - StampHolder から呼ばれる
-     * @param stamp
+     *
+     * @param stamp ModuleModel
      */
     public void stampWithDuplicateCheck(final ModuleModel stamp) {
         stamp(stamp);
@@ -628,7 +661,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このペインに Stamp を挿入する. (KarteRenderer_2 から呼ばれる)
-     * @param stamp
+     *
+     * @param stamp ModuleModel
      */
     public void flowStamp(ModuleModel stamp) {
         if (stamp != null) {
@@ -643,6 +677,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このペインにシェーマを挿入する.
+     *
      * @param schema シェーマ
      */
     public void stampSchema(final SchemaModel schema) {
@@ -658,7 +693,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このペインにシェーマを挿入する.
-     * @param schema  シェーマ
+     *
+     * @param schema シェーマ
      */
     public void flowSchema(SchemaModel schema) {
         if (schema != null) {
@@ -671,7 +707,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このペインに TextStamp を挿入する.
-     * @param s
+     *
+     * @param s TextStamp
      */
     public void insertTextStamp(final String s) {
         EventQueue.invokeLater(() -> {
@@ -683,6 +720,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     /**
      * StampInfoがDropされた時，そのデータをペインに挿入する.
      * ドロップされたスタンプが１個の時
+     *
      * @param stampInfo ドロップされたスタンプ情報
      */
     public void stampInfoDropped(ModuleInfoBean stampInfo) {
@@ -728,6 +766,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     /**
      * StampInfo（スタンプ箱の項目）が 複数 Drop された時，そのデータをペインに挿入する.
      * 複数がドロップされたときはこちらが呼ばれる
+     *
      * @param addList スタンプ情報のリスト
      */
     public void stampInfoDropped(final List<ModuleInfoBean> addList) {
@@ -736,8 +775,10 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             int ans = JSheet.showConfirmDialog(parent.getContext().getFrame(),
                     addList.size() + "個のスタンプが同時にドロップされましたが続けますか", "スタンプ挿入確認",
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE
-                    );
-            if (ans != JOptionPane.YES_OPTION) { return; }
+            );
+            if (ans != JOptionPane.YES_OPTION) {
+                return;
+            }
         }
 
         final StampDelegater sdl = new StampDelegater();
@@ -774,7 +815,9 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
                     // スタンプ重複チェック
                     for (ModuleModel module : duplicateCheckList) {
                         int count = StampModifier.checkDuplicates(module, KartePane.this);
-                        if (count > 0) { break; }
+                        if (count > 0) {
+                            break;
+                        }
                     }
                 } else {
                     showNoStampModelMessage();
@@ -787,7 +830,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * TextStampInfo が Drop された時の処理を行なう.
-     * @param addList
+     *
+     * @param addList List of ModuleInfoBean (= stampInfo)
      */
     public void textStampInfoDropped(final List<ModuleInfoBean> addList) {
 
@@ -823,8 +867,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     private void showNoStampModelMessage() {
         JOptionPane.showMessageDialog(null, "実体のないスタンプです。削除してください。",
-            ClientContext.getFrameTitle("実体のないスタンプ"),
-            JOptionPane.WARNING_MESSAGE);
+                ClientContext.getFrameTitle("実体のないスタンプ"),
+                JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -832,21 +876,19 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      */
     private void applyOrcaSet(final ModuleInfoBean stampInfo) {
 
-        final OrcaMasterDao dao = new OrcaMasterDao();
-
         DBTask<List<ModuleModel>> task = new DBTask<List<ModuleModel>>(parent.getContext()) {
 
             @Override
-            protected List<ModuleModel> doInBackground() throws Exception {
-                List<ModuleModel> models = dao.getStamp(stampInfo);
-                return models;
+            protected List<ModuleModel> doInBackground() {
+                OrcaDelegater delegater = new OrcaDelegater();
+                return delegater.getStamp(stampInfo);
             }
 
             @Override
             public void succeeded(List<ModuleModel> models) {
                 logger.debug("applyOrcaSet succeeded");
                 if (models != null) {
-                    models.forEach(stamp -> stamp(stamp));
+                    models.forEach(KartePane.this::stamp);
                 }
             }
         };
@@ -858,9 +900,9 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
         Window w = SwingUtilities.getWindowAncestor(getTextPane());
         JOptionPane.showMessageDialog(w,
-                                      "画像のメタデータが取得できず、読み込むことができません。",
-                                      ClientContext.getFrameTitle("画像インポート"),
-                                      JOptionPane.WARNING_MESSAGE);
+                "画像のメタデータが取得できず、読み込むことができません。",
+                ClientContext.getFrameTitle("画像インポート"),
+                JOptionPane.WARNING_MESSAGE);
     }
 
     private boolean showMaxSizeMessage() {
@@ -893,21 +935,21 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         Window w = SwingUtilities.getWindowAncestor(getTextPane());
 
         int option = JOptionPane.showOptionDialog(w,
-                            new Object[]{box},
-                            ClientContext.getFrameTitle(title),
-                            JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.INFORMATION_MESSAGE,
-                            null,
-                            new String[]{"縮小する", "取消す"}, "縮小する");
+                new Object[]{box},
+                ClientContext.getFrameTitle(title),
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                new String[]{"縮小する", "取消す"}, "縮小する");
         return option == 0;
     }
 
     private void showNoReaderMessage() {
         Window w = SwingUtilities.getWindowAncestor(getTextPane());
         JOptionPane.showMessageDialog(w,
-                                      "選択した画像を読むことができるリーダが存在しません。",
-                                      ClientContext.getFrameTitle("画像インポート"),
-                                      JOptionPane.WARNING_MESSAGE);
+                "選択した画像を読むことができるリーダが存在しません。",
+                ClientContext.getFrameTitle("画像インポート"),
+                JOptionPane.WARNING_MESSAGE);
     }
 
     public void imageEntryDropped(final ImageEntry entry) {
@@ -997,7 +1039,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * Schema が DnD された場合，シェーマエディタを開いて編集する.
-     * @param path
+     *
+     * @param path path to image
      */
     public void insertImage(String path) {
 
@@ -1011,7 +1054,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             showNoReaderMessage();
             return;
         }
-        suffix = suffix.substring(index+1);
+        suffix = suffix.substring(index + 1);
 
         Iterator<ImageReader> readers = ImageIO.getImageReadersBySuffix(suffix);
 
@@ -1020,7 +1063,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             return;
         }
 
-        ImageReader reader = (ImageReader) readers.next();
+        ImageReader reader = readers.next();
         logger.debug("reader = " + reader.getClass().getName());
         int width, height;
         String name;
@@ -1050,7 +1093,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     /**
      * StampEditor の編集が終了するとここへ通知される.
      * 通知されたスタンプをペインに挿入する.
-     * @param e
+     *
+     * @param e PropertyChangeEvent
      */
     @Override
     public void propertyChange(PropertyChangeEvent e) {
@@ -1079,22 +1123,29 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * メニュー制御のため，ペースト可能かどうかを返す.
+     *
      * @return ペースト可能な時 true
      */
     protected boolean canPaste() {
-        boolean ret = false;
-
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
 
-        if (t == null) { return false; }
+        if (t == null) {
+            return false;
+        }
 
-        if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) { return true; }
+        if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            return true;
+        }
 
         if (getMyRole().equals(IInfoModel.ROLE_P)) {
-            if (t.isDataFlavorSupported(OrderListTransferable.orderListFlavor)) { ret = true; }
+            if (t.isDataFlavorSupported(OrderListTransferable.orderListFlavor)) {
+                return true;
+            }
 
         } else {
-            if (t.isDataFlavorSupported(SchemaListTransferable.schemaListFlavor)) { return true; }
+            if (t.isDataFlavorSupported(SchemaListTransferable.schemaListFlavor)) {
+                return true;
+            }
         }
 
         return false;
@@ -1102,6 +1153,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このペインからスタンプを削除する.
+     *
      * @param sh 削除するスタンプのホルダ
      */
     public void removeStamp(StampHolder sh) {
@@ -1110,6 +1162,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このペインからスタンプを削除する.
+     *
      * @param sh 削除するスタンプのホルダリスト
      */
     public void removeStamp(StampHolder[] sh) {
@@ -1122,6 +1175,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このペインからシェーマを削除する.
+     *
      * @param sh 削除するシェーマのホルダ
      */
     public void removeSchema(SchemaHolder sh) {
@@ -1130,6 +1184,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     /**
      * このペインからシェーマを削除する.
+     *
      * @param sh 削除するシェーマのホルダリスト
      */
     public void removeSchema(SchemaHolder[] sh) {

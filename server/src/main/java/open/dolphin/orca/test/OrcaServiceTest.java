@@ -102,16 +102,16 @@ public class OrcaServiceTest {
         }
     }
 
-    private void sendDoc(Object orcaService) throws ReflectiveOperationException {
+    private void sendDoc(Object orcaService) {
         DocumentModel doc = SampleDocument.getDocumentModel("SampleDocumentModel.json");
-        ApiResult result = ((OrcaServiceApi)orcaService).send(doc);
+        ApiResult result = ((OrcaServiceApi)orcaService).sendDocument(doc);
 
         System.out.println(JsonConverter.toJson(result));
     }
 
-    private void sendDiag(Object orcaService) throws ReflectiveOperationException {
+    private void sendDiag(Object orcaService) {
         List<RegisteredDiagnosisModel> diagnoses = SampleDocument.getRegisteredDiagnosisModel("SampleRegisteredDiagnosisModels.json");
-        ApiResult result = ((OrcaServiceApi)orcaService).send(diagnoses);
+        ApiResult result = ((OrcaServiceApi)orcaService).sendDiagnoses(diagnoses);
 
         System.out.println(JsonConverter.toJson(result));
     }

@@ -33,10 +33,6 @@ public class OrcaServiceApi {
     private OrcaDao dao = OrcaDao.getInstance();
     private Logger logger = Logger.getLogger(OrcaServiceApi.class);
 
-    // ORCA 形式の今日の日付
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-    String today = sdf.format(new Date());
-
     /**
      * 中途終了患者情報.
      * TBL_WKSRYACT ワーク診療行為 (中途終了データ). Mode:画面展開, Mode2:中途データ有無
@@ -339,7 +335,7 @@ public class OrcaServiceApi {
      * @param doc DocumentModel
      * @return ApiResult
      */
-    public ApiResult send(DocumentModel doc) {
+    public ApiResult sendDocument(DocumentModel doc) {
 
         Medicalreq req = new Medicalreq();
         String ptId = doc.getKarte().getPatient().getPatientId(); // 000001
@@ -533,12 +529,13 @@ public class OrcaServiceApi {
      * @param diagnoses List of RegisteredDiagnosisModel
      * @return ApiResult
      */
-    public ApiResult send(List<RegisteredDiagnosisModel> diagnoses) {
+    public ApiResult sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses) {
         RegisteredDiagnosisModel firstDiag = diagnoses.get(0);
 
         Medicalreq req = new Medicalreq();
 
         String ptId = firstDiag.getKarte().getPatient().getPatientId();
+        String ptName = firstDiag.getKarte().getPatient().getFullName();
         String confirmDate = ModelUtils.getDateTimeAsString(firstDiag.getConfirmed()); // 2008-02-01T08:30:00
         String[] date = confirmDate.split("T");
 
@@ -583,6 +580,39 @@ public class OrcaServiceApi {
         diagnosisInfo.setDisease_Information(diseaseInfos.toArray(new DiseaseInformation[0]));
         req.setDiagnosis_Information(diagnosisInfo);
 
+        // ORCA Api に post する
+        ApiResult result = postDiagnosis(req);
+        String apiResult = result.getApiResult();
+
+        // 他端末で使用中(apiResult=90)の場合はバックグランドで再送を繰り返す.
+        int retryCounter = 0;
+        int maxRetry = 100;
+        long wait = 15000; // 15秒毎に100回=25分
+
+        while("90".equals(apiResult) && retryCounter < maxRetry) {
+            retryCounter++;
+            logger.info("[" + ptId + "] busy, waiting for retrial: " + retryCounter);
+
+            try{Thread.sleep(wait);}catch(Exception e){}
+
+            result = postDiagnosis(req);
+            apiResult = result.getApiResult();
+        }
+
+        String message = "90".equals(apiResult)
+                ? "Diagnosis NOT sent to ORCA: retry time out"
+                : "Diagnosis sent to ORCA";
+        logger.info("[" + ptId + "] " + message);
+        return result;
+    }
+
+    /**
+     * sendDiagnoses の Api post 部分.
+     *
+     * @param req Medicalreq
+     * @return ApiResult
+     */
+    private ApiResult postDiagnosis(Medicalreq req) {
         Medicalres res = api.post(req, "01");
 
         // 結果の構築
@@ -610,7 +640,6 @@ public class OrcaServiceApi {
                 result.setWarningInfo(warnings.toArray(new ApiWarning[0]));
             }
         }
-
         return result;
     }
 }

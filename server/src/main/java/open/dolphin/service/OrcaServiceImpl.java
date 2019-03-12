@@ -69,10 +69,10 @@ public class OrcaServiceImpl implements OrcaService {
     }
 
     @Override
-    public ApiResult sendDocument(DocumentModel document) { return api.send(document); }
+    public ApiResult sendDocument(DocumentModel document) { return api.sendDocument(document); }
 
     @Override
     public ApiResult sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses) {
-        return api.send(diagnoses);
+        return api.sendDiagnoses(diagnoses);
     }
 }

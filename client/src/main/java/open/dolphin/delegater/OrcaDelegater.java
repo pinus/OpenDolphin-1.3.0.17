@@ -171,41 +171,9 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      * @return ApiResult
      */
     public Result send(List<RegisteredDiagnosisModel> diagnoses) {
-
-        // 病名は非同期で送信する
-        Executors.newCachedThreadPool().submit(() -> {
-            ApiResult result = getService().sendDiagnoses(diagnoses);
-            String apiResult = result.getApiResult();
-            String ptId = diagnoses.get(0).getKarte().getPatient().getPatientId();
-            String ptName = diagnoses.get(0).getKarte().getPatient().getFullName();
-
-            int retryCounter = 0;
-            int maxRetry = 5;
-            long wait = 1000;
-
-            // 他端末で使用中(90)の場合はバックグランドで再送を繰り返す.
-            while("90".equals(apiResult)) {
-                retryCounter++;
-                logger.info("[" + ptId + "] busy, waiting for retrial: " + retryCounter);
-
-                if (retryCounter > maxRetry) {
-                    String message = String.format("[%s] %s\nORCA で使用中のため病名送信できませんでした。再送しますか？", ptId, ptName);
-
-                    if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null,
-                            message, "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
-                        break;
-                    }
-                    retryCounter = 0; // さらに 20回繰り返す
-                }
-                try{Thread.sleep(wait);}catch(Exception e){}
-
-                result = getService().sendDiagnoses(diagnoses);
-                apiResult = result.getApiResult();
-            }
-            String not = "90".equals(apiResult) ? " NOT " : " ";
-            logger.info("[" + ptId + "] Diagnosis" + not + "sent to ORCA");
-        });
-
+        // 非同期で送信
+        Executors.newCachedThreadPool().submit(() -> getService().sendDiagnoses(diagnoses));
+        // 再送処理はサーバー側で行う
         return Result.NO_ERROR;
     }
 }
