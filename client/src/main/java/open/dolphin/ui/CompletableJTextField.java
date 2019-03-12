@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 /**
  * CompletableJTextField.
  * modified from JAVA SWING HACKS.
+ *
  * @author pns
  */
 public class CompletableJTextField extends JTextField
@@ -46,7 +47,7 @@ public class CompletableJTextField extends JTextField
         completionListModel = new DefaultListModel<>();
         completionList = new JList<>(completionListModel);
         completionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        completionList.setBackground(new Color(255,255,240));
+        completionList.setBackground(new Color(255, 255, 240));
 
         listWindow = new JWindow();
         listWindow.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
@@ -79,6 +80,7 @@ public class CompletableJTextField extends JTextField
 
     /**
      * 補完した内容を保存する preferences をセットする.
+     *
      * @param prefs Preferences
      */
     public void setPreferences(Preferences prefs) {
@@ -98,8 +100,8 @@ public class CompletableJTextField extends JTextField
         String str = prefs.get(PREFS, "");
         String[] items = str.split("\t");
         // 古い方から登録
-        for(int i=items.length-1; i>=0; i--) {
-            if (! items[i].matches("^ *$")) { // 空行は除く
+        for (int i = items.length - 1; i >= 0; i--) {
+            if (!items[i].matches("^ *$")) { // 空行は除く
                 completer.addCompletion(items[i]);
             }
         }
@@ -107,7 +109,9 @@ public class CompletableJTextField extends JTextField
 
     public void addCompletion(String s) {
         completer.addCompletion(s);
-        if (prefs != null) { savePrefs(); }
+        if (prefs != null) {
+            savePrefs();
+        }
     }
 
     public void removeCompletion(String s) {
@@ -133,20 +137,25 @@ public class CompletableJTextField extends JTextField
         int popY = los.y + getHeight();
         listWindow.pack();
         int h = listWindow.getHeight();
-        listWindow.setBounds(popX+5, popY, getWidth()-10, h);
+        listWindow.setBounds(popX + 5, popY, getWidth() - 10, h);
         listWindow.setVisible(true);
     }
 
     /**
      * リストが選択されたときの処理.
+     *
      * @param e ListSelectionEvent
      */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
-        if (e.getValueIsAdjusting() || completionList.getModel().getSize() == 0) { return; }
+        if (e.getValueIsAdjusting() || completionList.getModel().getSize() == 0) {
+            return;
+        }
 
         final String completionString = completionList.getSelectedValue();
-        if (completionString == null) { return; }
+        if (completionString == null) {
+            return;
+        }
 
         SwingUtilities.invokeLater(() -> {
             // リストが選択されたら，選択された文字を text field に挿入
@@ -159,6 +168,7 @@ public class CompletableJTextField extends JTextField
 
     /**
      * フォーカスを取ったら補完ウインドウを出す.
+     *
      * @param e FocusEvent
      */
     @Override
@@ -168,6 +178,7 @@ public class CompletableJTextField extends JTextField
 
     /**
      * フォーカスを失ったら補完ウインドウは消す.
+     *
      * @param e FocusEvent
      */
     @Override
@@ -178,12 +189,15 @@ public class CompletableJTextField extends JTextField
     /**
      * Enter キー入力の動作.
      * リストが選択された状態でリターン＝リストの文字をフィールドにセット.
+     *
      * @param e ActionEvent
      */
     @Override
     public void actionPerformed(ActionEvent e) {
         // 空行は無視
-        if (getText().matches("^ *$")) { return; }
+        if (getText().matches("^ *$")) {
+            return;
+        }
 
         // リストが選択されている時の enter の処理
         if (completionList.getSelectedIndex() != -1) {
@@ -197,11 +211,13 @@ public class CompletableJTextField extends JTextField
     /**
      * キー入力を監視.
      * 上キー：選択を上へ，下キー：選択を下へ
+     *
      * @param e KeyEvent
      */
     @Override
     public void keyPressed(KeyEvent e) {
         keyCode = e.getKeyCode();
+        int modifier = e.getModifiers();
 
         // リストが表示されているとき
         if (listWindow.isVisible()) {
@@ -211,15 +227,15 @@ public class CompletableJTextField extends JTextField
             switch (keyCode) {
                 case KeyEvent.VK_UP:
                     if (selection > 0) {
-                        selection --;
+                        selection--;
                         completionList.getSelectionModel().setSelectionInterval(selection, selection);
                     }
                     e.consume();
                     break;
 
                 case KeyEvent.VK_DOWN:
-                    if (selection < size - 1){
-                        selection ++;
+                    if (selection < size - 1) {
+                        selection++;
                         completionList.getSelectionModel().setSelectionInterval(selection, selection);
                     } else if (selection == -1) {
                         // ウインドウが表示されていて選択されていない状態
@@ -229,9 +245,18 @@ public class CompletableJTextField extends JTextField
                     e.consume();
                     break;
 
-                case KeyEvent.VK_CLEAR:
+                case KeyEvent.VK_CLEAR: // 全クリア
                     clearCompletions();
                     e.consume();
+                    break;
+
+                case KeyEvent.VK_D: // Ctrl-D 1項目削除
+                    int index = completionList.getSelectedIndex();
+                    if (modifier == KeyEvent.CTRL_MASK && index != -1) {
+                        String s = completionListModel.get(index);
+                        removeCompletion(s);
+                        e.consume();
+                    }
                     break;
 
                 case KeyEvent.VK_ESCAPE:
@@ -244,17 +269,19 @@ public class CompletableJTextField extends JTextField
             }
         } else {
             // リストが表示されていないとき，下キーで候補を全部出す
-            if (keyCode == KeyEvent.VK_DOWN && getText().length() < 1 && ! getCompletions().isEmpty()) {
+            if (keyCode == KeyEvent.VK_DOWN && getText().length() < 1 && !getCompletions().isEmpty()) {
                 completer.showAll();
             }
         }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+    }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     // window が動いたら listWindow は消す
     @Override
@@ -290,6 +317,7 @@ public class CompletableJTextField extends JTextField
         private boolean update = true;
         private Pattern pattern;
         private final List<String> completions;
+
         public Completer() {
             completions = new ArrayList<>();
         }
@@ -349,7 +377,9 @@ public class CompletableJTextField extends JTextField
         }
 
         private void buildAndShowPopup() {
-            if (! update) { return; }
+            if (!update) {
+                return;
+            }
 
             if (getText().length() < 1) {
                 listWindow.setVisible(false);
@@ -371,10 +401,12 @@ public class CompletableJTextField extends JTextField
         public void insertUpdate(DocumentEvent e) {
             buildAndShowPopup();
         }
+
         @Override
         public void removeUpdate(DocumentEvent e) {
             buildAndShowPopup();
         }
+
         @Override
         public void changedUpdate(DocumentEvent e) {
             buildAndShowPopup();
@@ -394,7 +426,7 @@ public class CompletableJTextField extends JTextField
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(300,300,300,300);
+        frame.setBounds(300, 300, 300, 300);
         JPanel p = new JPanel();
         frame.add(p);
         p.add(completableField);
