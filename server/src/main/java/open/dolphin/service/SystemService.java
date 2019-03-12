@@ -1,11 +1,12 @@
 package open.dolphin.service;
 
-import java.util.List;
+import open.dolphin.infomodel.RadiologyMethodValue;
+import open.dolphin.infomodel.UserModel;
+
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import open.dolphin.infomodel.RadiologyMethodValue;
-import open.dolphin.infomodel.UserModel;
+import java.util.List;
 
 /**
  * データベース初期化に使う Rest Service

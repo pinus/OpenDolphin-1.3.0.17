@@ -1,10 +1,11 @@
 package open.dolphin.dto;
 
+import open.dolphin.infomodel.AppointmentModel;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import open.dolphin.infomodel.AppointmentModel;
 
 /**
  * AppointSpec.

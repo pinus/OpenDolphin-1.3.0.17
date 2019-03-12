@@ -1,8 +1,9 @@
 package open.dolphin.service;
 
-import java.util.List;
-import javax.ejb.Stateless;
 import open.dolphin.infomodel.RadiologyMethodValue;
+
+import javax.ejb.Stateless;
+import java.util.List;
 
 /**
  * RadiologyServiceImpl.

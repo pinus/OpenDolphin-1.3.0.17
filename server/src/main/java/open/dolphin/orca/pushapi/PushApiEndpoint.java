@@ -1,18 +1,11 @@
 package open.dolphin.orca.pushapi;
 
-import java.util.HashSet;
-import javax.websocket.ClientEndpoint;
-import javax.websocket.CloseReason;
-import javax.websocket.EndpointConfig;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-
-import open.dolphin.orca.pushapi.bean.Response;
 import open.dolphin.JsonConverter;
+import open.dolphin.orca.pushapi.bean.Response;
 import org.apache.log4j.Logger;
+
+import javax.websocket.*;
+import java.util.HashSet;
 
 /**
  * WebSocket の Endpoint (Tyrus).

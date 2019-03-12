@@ -1,13 +1,10 @@
 package open.dolphin.service;
 
-import java.util.List;
-import javax.ejb.Stateless;
 import open.dolphin.dto.LaboSearchSpec;
-import open.dolphin.infomodel.KarteBean;
-import open.dolphin.infomodel.LaboItemValue;
-import open.dolphin.infomodel.LaboModuleValue;
-import open.dolphin.infomodel.LaboSpecimenValue;
-import open.dolphin.infomodel.PatientModel;
+import open.dolphin.infomodel.*;
+
+import javax.ejb.Stateless;
+import java.util.List;
 
 /**
  * LaboServiceImpl.

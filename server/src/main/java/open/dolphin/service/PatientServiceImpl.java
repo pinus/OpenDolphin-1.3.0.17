@@ -1,9 +1,5 @@
 package open.dolphin.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.ejb.Stateless;
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.infomodel.*;
 import open.dolphin.util.ModelUtils;
@@ -13,6 +9,11 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
+
+import javax.ejb.Stateless;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * PatientServiceImpl.

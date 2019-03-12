@@ -1,6 +1,6 @@
 package open.dolphin.dto;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.Serializable;
 import java.util.Date;
 

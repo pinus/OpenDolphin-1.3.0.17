@@ -1,17 +1,14 @@
 package open.dolphin.service;
 
+import open.dolphin.infomodel.*;
+import open.dolphin.util.ModelUtils;
+
+import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.ModelUtils;
-import open.dolphin.infomodel.PublishedTreeModel;
-import open.dolphin.infomodel.StampModel;
-import open.dolphin.infomodel.PersonalTreeModel;
-import open.dolphin.infomodel.SubscribedTreeModel;
 
 /**
  * StampServiceImpl.

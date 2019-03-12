@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * FacilityModel.

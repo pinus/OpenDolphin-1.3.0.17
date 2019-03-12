@@ -1,7 +1,8 @@
 package open.dolphin.orca;
 
-import java.util.HashMap;
 import open.dolphin.infomodel.IInfoModel;
+
+import java.util.HashMap;
 
 public class ClaimConst {
 

@@ -1,18 +1,17 @@
 package open.dolphin.service;
 
-import java.util.List;
-import javax.annotation.security.PermitAll;
+import open.dolphin.dto.PatientVisitSpec;
+import open.dolphin.dto.PvtStateSpec;
+import open.dolphin.infomodel.PatientModel;
+import open.dolphin.infomodel.PatientVisitModel;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import open.dolphin.dto.PatientVisitSpec;
-import open.dolphin.dto.PvtStateSpec;
-import open.dolphin.infomodel.PatientModel;
-import open.dolphin.infomodel.PatientVisitModel;
+import java.util.List;
 
 /**
  * PvtService

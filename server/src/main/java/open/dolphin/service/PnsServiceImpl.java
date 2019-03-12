@@ -1,16 +1,19 @@
 package open.dolphin.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.ejb.Stateless;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.util.ModelUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
+
+import javax.ejb.Stateless;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * いろいろやってみる service.

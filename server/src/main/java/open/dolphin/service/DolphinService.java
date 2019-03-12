@@ -1,13 +1,13 @@
 package open.dolphin.service;
 
-import java.io.IOException;
+import open.dolphin.infomodel.InfoModel;
+import org.jboss.resteasy.util.Base64;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-
-import open.dolphin.infomodel.InfoModel;
-import org.jboss.resteasy.util.Base64;
+import java.io.IOException;
 
 /**
  * DolphinService.

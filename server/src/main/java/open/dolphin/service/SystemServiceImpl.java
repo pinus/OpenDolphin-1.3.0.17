@@ -1,15 +1,12 @@
 package open.dolphin.service;
 
-import java.util.Collection;
-import java.util.List;
+import open.dolphin.infomodel.*;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
-import open.dolphin.infomodel.FacilityModel;
-import open.dolphin.infomodel.InfoModel;
-import open.dolphin.infomodel.RadiologyMethodValue;
-import open.dolphin.infomodel.RoleModel;
-import open.dolphin.infomodel.UserModel;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * データベース初期化に使う session bean.

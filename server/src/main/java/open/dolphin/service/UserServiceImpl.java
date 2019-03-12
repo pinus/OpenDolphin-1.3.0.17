@@ -1,23 +1,13 @@
 package open.dolphin.service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import open.dolphin.infomodel.*;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
-import open.dolphin.infomodel.AppointmentModel;
-import open.dolphin.infomodel.DocumentModel;
-import open.dolphin.infomodel.FacilityModel;
-import open.dolphin.infomodel.LaboModuleValue;
-import open.dolphin.infomodel.ObservationModel;
-import open.dolphin.infomodel.PatientMemoModel;
-import open.dolphin.infomodel.PublishedTreeModel;
-import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.infomodel.StampModel;
-import open.dolphin.infomodel.PersonalTreeModel;
-import open.dolphin.infomodel.SubscribedTreeModel;
-import open.dolphin.infomodel.UserModel;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * UserServiceImpl.

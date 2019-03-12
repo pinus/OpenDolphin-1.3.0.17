@@ -1,7 +1,7 @@
 package open.dolphin.infomodel;
 
 import javax.persistence.*;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 /**
  * SchemaModel.

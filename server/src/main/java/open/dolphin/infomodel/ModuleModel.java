@@ -1,12 +1,13 @@
 package open.dolphin.infomodel;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import javax.persistence.*;
 import org.apache.lucene.analysis.cjk.CJKAnalyzer;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
+
+import javax.persistence.*;
 
 /**
  * ModuleModel.

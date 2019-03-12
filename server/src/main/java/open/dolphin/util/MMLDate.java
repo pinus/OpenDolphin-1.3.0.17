@@ -1,9 +1,11 @@
 package open.dolphin.util;
 
-import java.util.*;
-import java.text.*;
-
 import open.dolphin.infomodel.IInfoModel;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Utility class to handle MML Date format.

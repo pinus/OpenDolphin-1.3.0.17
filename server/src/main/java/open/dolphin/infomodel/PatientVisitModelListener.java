@@ -1,12 +1,11 @@
 package open.dolphin.infomodel;
 
+import open.dolphin.JsonConverter;
 import open.dolphin.WebSocket;
 
 import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 import javax.persistence.PostUpdate;
-
-import open.dolphin.JsonConverter;
 
 /**
  * PatientVisitModel が変化したら通知を受ける Listener.

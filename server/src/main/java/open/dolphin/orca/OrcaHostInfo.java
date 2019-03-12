@@ -6,18 +6,13 @@ import org.apache.log4j.Logger;
 
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.*;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.NoSuchElementException;
 import java.util.Properties;
-import java.util.stream.StreamSupport;
 
 /**
  * OrcaHostInfo. ORCA の接続情報を何らかの方法で取得するクラス.

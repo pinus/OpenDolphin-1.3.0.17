@@ -1,7 +1,8 @@
 package open.dolphin.orca.test;
 
 import open.dolphin.JsonConverter;
-import open.dolphin.infomodel.*;
+import open.dolphin.infomodel.DocumentModel;
+import open.dolphin.infomodel.RegisteredDiagnosisModel;
 
 import java.io.IOException;
 import java.nio.file.Files;

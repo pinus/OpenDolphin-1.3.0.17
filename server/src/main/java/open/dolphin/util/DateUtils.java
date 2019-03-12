@@ -1,9 +1,10 @@
 package open.dolphin.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Java 8 Date/Time API.

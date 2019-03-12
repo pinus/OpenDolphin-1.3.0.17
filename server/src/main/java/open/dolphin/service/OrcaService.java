@@ -1,7 +1,5 @@
 package open.dolphin.service;
 
-import java.util.List;
-
 import open.dolphin.dto.ApiResult;
 import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.dto.OrcaEntry;
@@ -19,6 +17,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * OrcaService.

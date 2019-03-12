@@ -1,8 +1,8 @@
 package open.dolphin.orca.pushapi;
 
-import java.util.EventListener;
-
 import open.dolphin.orca.pushapi.bean.Response;
+
+import java.util.EventListener;
 
 /**
  * WebSocket 接続開始時に返ってくる response のリスナ.

@@ -1,8 +1,8 @@
 package open.dolphin.infomodel;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import javax.persistence.*;
 
 /**
  * LaboModuleValue.

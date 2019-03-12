@@ -2,8 +2,8 @@ package open.dolphin.infomodel;
 
 import open.dolphin.util.ModelUtils;
 
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * AppointmentModel.

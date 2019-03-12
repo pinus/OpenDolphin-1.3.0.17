@@ -1,6 +1,5 @@
 package open.dolphin.orca;
 
-import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.InfoModel;
 import open.dolphin.infomodel.PatientModel;

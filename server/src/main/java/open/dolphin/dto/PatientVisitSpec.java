@@ -1,7 +1,8 @@
 package open.dolphin.dto;
 
-import java.io.Serializable;
 import open.dolphin.infomodel.PatientVisitModel;
+
+import java.io.Serializable;
 
 /**
  * PatientVisitSpec.

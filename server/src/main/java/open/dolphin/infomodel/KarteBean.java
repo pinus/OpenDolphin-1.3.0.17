@@ -2,10 +2,11 @@ package open.dolphin.infomodel;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.search.annotations.IndexedEmbedded;
+
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
  * KarteBean.

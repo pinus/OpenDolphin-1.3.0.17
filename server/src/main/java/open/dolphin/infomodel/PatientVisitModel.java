@@ -1,12 +1,12 @@
 package open.dolphin.infomodel;
 
+import open.dolphin.util.ModelUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+import javax.persistence.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.util.StringTokenizer;
-import javax.persistence.*;
-
-import open.dolphin.util.ModelUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * PatientVisitModel.
