@@ -22,7 +22,6 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 
 import open.dolphin.helper.*;
-import open.dolphin.impl.claim.SendClaimImpl;
 import open.dolphin.impl.labrcv.LaboTestImporter;
 import open.dolphin.impl.login.LoginDialog;
 import open.dolphin.impl.psearch.PatientSearchImpl;
@@ -43,6 +42,7 @@ import org.apache.log4j.Logger;
  * アプリケーションのメインウインドウクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class Dolphin implements MainWindow {
 
@@ -60,8 +60,6 @@ public class Dolphin implements MainWindow {
     private javax.swing.Timer taskTimer;
     // ロガー
     private Logger bootLogger;
-    // プリンターセットアップはMainWindowのみで行い，設定された PageFormat各プラグインが使用する
-    private PageFormat pageFormat;
     // 環境設定用の Properties
     private Properties saveEnv;
     // BlockGlass
@@ -70,17 +68,17 @@ public class Dolphin implements MainWindow {
     private ImageBox imageBox;
     // StampBox
     private StampBoxPlugin stampBox;
-    // CLAIM リスナ
-    private ClaimMessageListener sendClaim;
-    // MML リスナ
-    private MmlMessageListener sendMml;
     // URL クラスローダ
     private ClassLoader pluginClassLoader;
     // dirty 警告を出す Frame を保持
     private Chart dirtyChart;
 
-    public Dolphin() {}
+    public Dolphin() {
+    }
 
+    /**
+     * 初期化. 最初に呼ばれる.
+     */
     private void initialize() {
 
         SettingForMac.set(this);
@@ -126,6 +124,9 @@ public class Dolphin implements MainWindow {
         checkDocumentFolder();
     }
 
+    /**
+     * initialize() の次に呼ばれる.
+     */
     private void startup() {
         // ログインダイアログを表示し認証を行う
         LoginDialog login = new LoginDialog();
@@ -147,7 +148,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * 起動時のバックグラウンドで実行されるべきタスクを行う.
+     * 起動時のバックグラウンドで実行されるべきタスクを行う. ログイン後に startup() から呼ばれる.
      */
     private void startServices() {
 
@@ -156,25 +157,12 @@ public class Dolphin implements MainWindow {
 
         // 環境設定ダイアログで変更される場合があるので保存する
         saveEnv = new Properties();
-
         saveEnv.put(GUIConst.KEY_PVT_SERVER, GUIConst.SERVICE_NOT_RUNNING);
-
-        // CLAIM送信を生成する
-        if (Project.getSendClaim()) {
-            startSendClaim();
-
-        } else {
-            saveEnv.put(GUIConst.KEY_SEND_CLAIM, GUIConst.SERVICE_NOT_RUNNING);
-        }
-        if (Project.getClaimAddress() != null) {
-            saveEnv.put(GUIConst.ADDRESS_CLAIM, Project.getClaimAddress());
-        }
-
         saveEnv.put(GUIConst.KEY_SEND_MML, GUIConst.SERVICE_NOT_RUNNING);
     }
 
     /**
-     * GUI を構築して最初の画面を表示する.
+     * GUI を構築して最初の画面を表示する. ログイン後に startup() から呼ばれる.
      */
     private void initComponents() {
 
@@ -195,8 +183,8 @@ public class Dolphin implements MainWindow {
         String title = ClientContext.getFrameTitle(windowTitle);
         // System.out.println(title);
         windowSupport = WindowSupport.create(title);
-        MainFrame myFrame = windowSupport.getFrame();		// MainWindow の JFrame
-        JMenuBar myMenuBar = windowSupport.getMenuBar();	// MainWindow の JMenuBar
+        MainFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
+        JMenuBar myMenuBar = windowSupport.getMenuBar();    // MainWindow の JMenuBar
 
         // Windowにこのクラス固有の設定をする
         Point loc = new Point(defaultX, defaultY);
@@ -227,7 +215,7 @@ public class Dolphin implements MainWindow {
         //tabbedPane.setButtonVgap(4);
 
         MainFrame.MainPanel mainPanel = myFrame.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(0,0));
+        mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
 
         // MainComponent では，MainFrame の CommandPanel, StatusPanel は使わない
@@ -276,7 +264,7 @@ public class Dolphin implements MainWindow {
         String note = "スタンプツリーを読み込んでいます...";
         Component c = windowSupport.getFrame();
 
-        Task<Boolean> stampTask = new Task<Boolean>(c, message, note, 30*1000) {
+        Task<Boolean> stampTask = new Task<Boolean>(c, message, note, 30 * 1000) {
 
             @Override
             protected Boolean doInBackground() throws Exception {
@@ -319,6 +307,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * MainComponent を入れる TabbedPane を返す.
+     *
      * @return PNSBadgeTabbedPane
      */
     public PNSBadgeTabbedPane getTabbedPane() {
@@ -347,6 +336,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * カルテをオープンする.
+     *
      * @param pvt 患者来院情報
      */
     @Override
@@ -375,6 +365,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * MainWindow のアクションを返す.
+     *
      * @param name Action名
      * @return Action
      */
@@ -403,15 +394,13 @@ public class Dolphin implements MainWindow {
         return windowSupport.getFrame();
     }
 
+    /**
+     * 使ってない. (MainWindow の implement に必要)
+     * @return PageFormat
+     */
     @Override
     public PageFormat getPageFormat() {
-        if (pageFormat == null) {
-            PrinterJob printJob = PrinterJob.getPrinterJob();
-            if (printJob != null) {
-                pageFormat = printJob.defaultPage();
-            }
-        }
-        return pageFormat;
+        return PrinterJob.getPrinterJob().getPageFormat(null);
     }
 
     /**
@@ -431,35 +420,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * CLAIM 送信を開始する.
-     */
-    private void startSendClaim() {
-        sendClaim = new SendClaimImpl();
-        sendClaim.setContext(this);
-        sendClaim.start();
-        providers.put("sendClaim", sendClaim);
-        saveEnv.put(GUIConst.KEY_SEND_CLAIM, GUIConst.SERVICE_RUNNING);
-    }
-
-    /**
-     * プリンターをセットアップする.
-     */
-    public void printerSetup() {
-        Thread t = new Thread(() -> {
-            PrinterJob printJob = PrinterJob.getPrinterJob();
-            if (pageFormat != null) {
-                pageFormat = printJob.pageDialog(pageFormat);
-            } else {
-                pageFormat = printJob.defaultPage();
-                pageFormat = printJob.pageDialog(pageFormat);
-            }
-        });
-        t.setPriority(Thread.NORM_PRIORITY);
-        t.start();
-    }
-
-    /**
-     * カルテの環境設定を行う.
+     * カルテの環境設定を行う. メニューから reflection で呼ばれる.
      */
     public void setKarteEnviroment() {
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
@@ -472,10 +433,13 @@ public class Dolphin implements MainWindow {
 
     /**
      * 環境設定を行う.
+     * com.apple.eawt.Application の handler から呼ばれる.
      */
     public void doPreference() {
         //ログイン画面の段階で，メニューから環境設定を選択すると null のまま入ってくる
-        if (stateMgr == null) { return; }
+        if (stateMgr == null) {
+            return;
+        }
         ProjectSettingDialog sd = new ProjectSettingDialog();
         sd.addValidListener(this::controlService);
         sd.setLoginState(stateMgr.isLogin());
@@ -484,49 +448,21 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * 環境設定の値によりサービスを制御する.
+     * 環境設定から呼ばれる. 値によりサービスを制御する.
+     *
      * @param valid ValidListener validity
      */
     private void controlService(boolean valid) {
-        if (! valid) { return; }
+        if (!valid) {
+            return;
+        }
 
         // 設定の変化を調べ，サービスの制御を行う
-        List<String> messages = new ArrayList<>(2);
+        List<String> messages = new ArrayList<>();
 
-        // SendClaim
-        boolean oldRunning = saveEnv.getProperty(GUIConst.KEY_SEND_CLAIM).equals(GUIConst.SERVICE_RUNNING);
-        boolean newRun = Project.getSendClaim();
-        boolean start = (!oldRunning) && newRun;
-        boolean stop = (oldRunning) && (!newRun);
+        // ここで処理して message をセットして下の Dialog で表示する
 
-        boolean restart = false;
-        String oldAddress = saveEnv.getProperty(GUIConst.ADDRESS_CLAIM);
-        String newAddress = Project.getClaimAddress();
-        if (oldAddress != null && newAddress != null && (!oldAddress.equals(newAddress)) && newRun) {
-            restart = true;
-        }
-
-        if (start) {
-            startSendClaim();
-            saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
-            messages.add("CLAIM送信を開始しました。(送信アドレス=" + newAddress + ")");
-
-        } else if (stop && sendClaim != null) {
-            sendClaim.stop();
-            sendClaim = null;
-            saveEnv.put(GUIConst.KEY_SEND_CLAIM, GUIConst.SERVICE_NOT_RUNNING);
-            saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
-            messages.add("CLAIM送信を停止しました。");
-
-        } else if (restart) {
-            sendClaim.stop();
-            sendClaim = null;
-            startSendClaim();
-            saveEnv.put(GUIConst.ADDRESS_CLAIM, newAddress);
-            messages.add("CLAIM送信をリスタートしました。(送信アドレス=" + newAddress + ")");
-        }
-
-        if (messages.size() > 0) {
+        if (! messages.isEmpty()) {
             String[] msgArray = messages.toArray(new String[0]);
             Component cmp = null;
             String title = ClientContext.getString("settingDialog.title");
@@ -539,6 +475,10 @@ public class Dolphin implements MainWindow {
         }
     }
 
+    /**
+     * Dirty check.
+     * @return dirty or not
+     */
     private boolean isDirty() {
 
         // 未保存のカルテがある場合は警告しリターンする
@@ -572,18 +512,26 @@ public class Dolphin implements MainWindow {
         return dirty;
     }
 
+    /**
+     * MainTool の StoppingTask を集めた Callable リストを生成する.
+     * @return 作った Callabel のリスト
+     */
     private List<Callable<Boolean>> getStoppingTask() {
 
         // StoppingTask を集める
         List<Callable<Boolean>> stoppingTasks = new ArrayList<>(1);
 
         // ログイン前に終了すると，providers = null でここに入って exception が出る
-        if (providers == null) { return stoppingTasks; }
+        if (providers == null) {
+            return stoppingTasks;
+        }
 
         providers.values().forEach(service -> {
             if (service instanceof MainTool) {
                 Callable<Boolean> task = ((MainTool) service).getStoppingTask();
-                if (task != null) { stoppingTasks.add(task); }
+                if (task != null) {
+                    stoppingTasks.add(task);
+                }
             }
         });
         // WaitingListImpl と StampBoxPlugin
@@ -591,16 +539,20 @@ public class Dolphin implements MainWindow {
         return stoppingTasks;
     }
 
+    /**
+     * 終了処理.
+     */
     public void processExit() {
 
         if (isDirty()) {
-            dirtyChart.close(); //pns dirtyChart あれば，クローズして，終了処理自体はキャンセル
+            dirtyChart.close(); // dirtyChart あれば，クローズして，終了処理自体はキャンセル
             return;
         }
 
-        if (saveEnv != null && ! ClientContext.isWin()) {
+        // 終了確認
+        if (saveEnv != null && !ClientContext.isWin()) {
             Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
-            int ans = JOptionPane.showConfirmDialog( null,
+            int ans = JOptionPane.showConfirmDialog(null,
                     "本当に終了しますか", "終了確認", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (ans != JOptionPane.YES_OPTION) {
                 activeWindow.toFront();
@@ -620,7 +572,7 @@ public class Dolphin implements MainWindow {
             String note = ClientContext.getString("exitDolphin.savingNote");
             Component c = getFrame();
 
-            Task<Boolean> stampTask = new Task<Boolean>(c, message, note, 60*1000) {
+            Task<Boolean> stampTask = new Task<Boolean>(c, message, note, 60 * 1000) {
 
                 @Override
                 protected Boolean doInBackground() throws Exception {
@@ -692,6 +644,9 @@ public class Dolphin implements MainWindow {
         }
     }
 
+    /**
+     * 最終 exit.
+     */
     private void exit() {
 
         if (providers != null) {
@@ -708,7 +663,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * ユーザのパスワードを変更する.
+     * ユーザのパスワードを変更する. メニューから reflection で呼ばれる.
      */
     public void changePassword() {
         ChangePassword cp = new ChangePassword();
@@ -717,26 +672,12 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * ユーザ登録を行う. 管理者メニュー.
+     * ユーザ登録を行う. 管理者メニュー. メニューから reflection で呼ばれる.
      */
     public void addUser() {
         AddUser au = new AddUser();
         au.setContext(this);
         au.start();
-    }
-
-    public void invokeToolPlugin(String pluginClass) {
-
-        try {
-            MainTool tool = (MainTool) Class.forName(pluginClass, true, pluginClassLoader).newInstance();
-            tool.setContext(this);
-            tool.start();
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace(System.err);
-        } catch (IllegalAccessException | InstantiationException ex) {
-            System.out.println("Dolphin.java: " + ex);
-        }
     }
 
     /**
@@ -769,6 +710,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * URLをオープンする.
+     *
      * @param url URL
      */
     private void browseURL(String url) {
@@ -784,7 +726,7 @@ public class Dolphin implements MainWindow {
 
             } else {
                 String[] browsers = {
-                    "firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape"
+                        "firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape"
                 };
                 String browser = null;
                 for (int count = 0; count < browsers.length && browser == null; count++) {
@@ -807,7 +749,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * About を表示する.
-      */
+     */
     public void showAbout() {
         Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
         AbstractProjectFactory f = Project.getProjectFactory();
@@ -878,20 +820,15 @@ public class Dolphin implements MainWindow {
     /**
      * MainWindowState.
      */
-    private abstract class MainWindowState {
-
-        public MainWindowState() {
-        }
-
-        public abstract void enter();
-
-        public abstract boolean isLogin();
+    private interface MainWindowState {
+        void enter();
+        boolean isLogin();
     }
 
     /**
      * LoginState.
      */
-    private class LoginState extends MainWindowState {
+    private class LoginState implements MainWindowState {
 
         public LoginState() {
         }
@@ -908,20 +845,20 @@ public class Dolphin implements MainWindow {
             mediator.disableAllMenus();
 
             String[] enables = new String[]{
-                GUIConst.ACTION_PRINTER_SETUP,
-                GUIConst.ACTION_PROCESS_EXIT,
-                GUIConst.ACTION_SET_KARTE_ENVIROMENT,
-                GUIConst.ACTION_SHOW_STAMPBOX,
-                GUIConst.ACTION_SHOW_SCHEMABOX,
-                GUIConst.ACTION_CHANGE_PASSWORD,
-                GUIConst.ACTION_CONFIRM_RUN,
-                GUIConst.ACTION_SOFTWARE_UPDATE,
-                GUIConst.ACTION_BROWS_DOLPHIN,
-                GUIConst.ACTION_BROWS_DOLPHIN_PROJECT,
-                GUIConst.ACTION_BROWS_MEDXML,
-                GUIConst.ACTION_SHOW_ABOUT,
-                "showWaitingList",
-                "showPatientSearch"
+                    GUIConst.ACTION_PRINTER_SETUP,
+                    GUIConst.ACTION_PROCESS_EXIT,
+                    GUIConst.ACTION_SET_KARTE_ENVIROMENT,
+                    GUIConst.ACTION_SHOW_STAMPBOX,
+                    GUIConst.ACTION_SHOW_SCHEMABOX,
+                    GUIConst.ACTION_CHANGE_PASSWORD,
+                    GUIConst.ACTION_CONFIRM_RUN,
+                    GUIConst.ACTION_SOFTWARE_UPDATE,
+                    GUIConst.ACTION_BROWS_DOLPHIN,
+                    GUIConst.ACTION_BROWS_DOLPHIN_PROJECT,
+                    GUIConst.ACTION_BROWS_MEDXML,
+                    GUIConst.ACTION_SHOW_ABOUT,
+                    "showWaitingList",
+                    "showPatientSearch"
             };
             mediator.enableMenus(enables);
 
@@ -941,7 +878,7 @@ public class Dolphin implements MainWindow {
     /**
      * LogoffState.
      */
-    private class LogoffState extends MainWindowState {
+    private class LogoffState implements MainWindowState {
 
         public LogoffState() {
         }
@@ -1028,10 +965,10 @@ public class Dolphin implements MainWindow {
         public synchronized void addDirtyRegion(javax.swing.JComponent c, int x, int y, int w, int h) {
             if (windowSupport != null) {
                 if (javax.swing.SwingUtilities.getWindowAncestor(c) == windowSupport.getFrame()) {
-                    System.out.println(c.getClass().toString().replace("class javax.swing.", "") +":"+x+":"+y+":"+w+":"+h);
+                    System.out.println(c.getClass().toString().replace("class javax.swing.", "") + ":" + x + ":" + y + ":" + w + ":" + h);
                 }
             }
-            super.addDirtyRegion(c,x,y,w,h);
+            super.addDirtyRegion(c, x, y, w, h);
         }
 
         @Override
@@ -1045,10 +982,12 @@ public class Dolphin implements MainWindow {
 
     private static class FocusMonitor implements PropertyChangeListener {
         private final KeyboardFocusManager focusManager;
+
         public FocusMonitor() {
             focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
             focusManager.addPropertyChangeListener(this);
         }
+
         @Override
         public void propertyChange(PropertyChangeEvent e) {
             System.out.println("FocusManager Report ----------------");

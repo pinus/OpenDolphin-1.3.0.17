@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * OrcaDelegater.
@@ -141,17 +142,25 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
     public Result send(DocumentModel document) {
         ApiResult result = getService().sendDocument(document);
         String apiResult = result.getApiResult();
+        String ptId = document.getKarte().getPatient().getPatientId();
+        String ptName = document.getKarte().getPatient().getFullName();
 
         // 他端末で使用中(90)の場合は，手動でリトライする
         while("90".equals(apiResult)) {
-            logger.info("OrcaApi47: busy, waiting for retrial (" + apiResult + ")");
+            logger.info("[" + ptId + "] ORCA busy, waiting for retrial");
+
+            String message = String.format("[%s] %s\nORCA で使用中のため送信できませんでした。再送しますか？", ptId, ptName);
+
             if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null,
-                            "ORCA で使用中のため送信できません。リトライしますか？", "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
+                            message, "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
+                logger.info("[" + ptId + "] Document NOT sent to ORCA");
                 return Result.ERROR;
             }
             result = getService().sendDocument(document);
             apiResult = result.getApiResult();
         }
+
+        logger.info("[" + ptId + "] Document sent to ORCA");
         return Result.NO_ERROR;
     }
 
@@ -162,7 +171,41 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      * @return ApiResult
      */
     public Result send(List<RegisteredDiagnosisModel> diagnoses) {
-        ApiResult result = getService().sendDiagnoses(diagnoses);
+
+        // 病名は非同期で送信する
+        Executors.newCachedThreadPool().submit(() -> {
+            ApiResult result = getService().sendDiagnoses(diagnoses);
+            String apiResult = result.getApiResult();
+            String ptId = diagnoses.get(0).getKarte().getPatient().getPatientId();
+            String ptName = diagnoses.get(0).getKarte().getPatient().getFullName();
+
+            int retryCounter = 0;
+            int maxRetry = 5;
+            long wait = 1000;
+
+            // 他端末で使用中(90)の場合はバックグランドで再送を繰り返す.
+            while("90".equals(apiResult)) {
+                retryCounter++;
+                logger.info("[" + ptId + "] busy, waiting for retrial: " + retryCounter);
+
+                if (retryCounter > maxRetry) {
+                    String message = String.format("[%s] %s\nORCA で使用中のため病名送信できませんでした。再送しますか？", ptId, ptName);
+
+                    if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null,
+                            message, "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
+                        break;
+                    }
+                    retryCounter = 0; // さらに 20回繰り返す
+                }
+                try{Thread.sleep(wait);}catch(Exception e){}
+
+                result = getService().sendDiagnoses(diagnoses);
+                apiResult = result.getApiResult();
+            }
+            String not = "90".equals(apiResult) ? " NOT " : " ";
+            logger.info("[" + ptId + "] Diagnosis" + not + "sent to ORCA");
+        });
+
         return Result.NO_ERROR;
     }
 }

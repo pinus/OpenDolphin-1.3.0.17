@@ -21,6 +21,7 @@ import javax.swing.table.TableRowSorter;
 import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
+import open.dolphin.delegater.BusinessDelegater;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
@@ -820,7 +821,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      * row に RegisteredDiagnosisModel を挿入する.
      * テーブルへの挿入をする場所はここ（スタンプ箱，DiagnosisDocumentTableModel）と propertyChange（エディタから挿入）.
      *
-     * @param module
+     * @param module RegisteredDiagnosisModule
      */
     private void insertDiagnosis(RegisteredDiagnosisModel module) {
         // 今日の日付を疾患開始日として設定する
@@ -884,7 +885,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     /**
      * 傷病名エディタからデータを受け取りテーブルへ追加する.
      *
-     * @param e
+     * @param e PropertyChangeEvent
      */
     @Override
     public void propertyChange(PropertyChangeEvent e) {
@@ -1031,7 +1032,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     /**
      * ChartImpl#close() で isValidOutcome でなかった場合，DiagnosisDocument に戻れるようにするために使う.
      *
-     * @return
+     * @return valid or not
      */
     public boolean isValidOutcome() {
         return isValidOutcome;
@@ -1136,7 +1137,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      * バッググランドスレッドで実行される.
      * addedDiagnosis, updatedDiagnossis, deletedDiagnosis 対応 by pns
      *
-     * @param past
+     * @param past 指定期間の開始日
      */
     public void getDiagnosisHistory(Date past) {
 
@@ -1164,9 +1165,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
                 if (ddl.isNoError() && list.size() > 0) {
                     if (ascend) {
-                        Collections.sort(list);
+                        list.sort(Comparator.naturalOrder());
                     } else {
-                        Collections.sort(list, Collections.reverseOrder());
+                        list.sort(Comparator.reverseOrder());
                     }
                 }
                 // addedDiagnosis がある場合は list に追加
@@ -1200,7 +1201,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     /**
      * RegisteredDiagnosisModel を元に，移行病名かどうかをチェックする.
      *
-     * @param rdList
+     * @param rdList List of RegisteredDiagnosisModel
      */
     public void checkIkouByomei(final List<RegisteredDiagnosisModel> rdList) {
         MainFrame c = getContext().getFrame();
@@ -1403,7 +1404,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         /**
          * Retina 対応 - show holizontal grid
          *
-         * @param graphics
+         * @param graphics Graphics
          */
         @Override
         public void paint(Graphics graphics) {
@@ -1545,11 +1546,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * JComboBox の項目から index を返す.
+     * JComboBox の項目から target item の index を返す.
      *
-     * @param combo
-     * @param item
-     * @return
+     * @param combo JComboBox
+     * @param item targetItem
+     * @return index
      */
     public static int itemToIndex(JComboBox combo, String item) {
         int index = 0;
@@ -1612,11 +1613,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         String message;
         int messageType = JOptionPane.PLAIN_MESSAGE;
 
-        if (!Project.getSendClaim()) {
-            message = "CLAIM を送信しない設定になっています";
-            messageType = JOptionPane.ERROR_MESSAGE;
-
-        } else if (!diagList.isEmpty()) {
+        if (!diagList.isEmpty()) {
             OrcaDelegater delegater = new OrcaDelegater();
             delegater.send(diagList);
             message = diagList.size() + " 件を ORCA に送信しました";

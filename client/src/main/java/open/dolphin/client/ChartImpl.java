@@ -1,16 +1,18 @@
 package open.dolphin.client;
 
 import com.sun.glass.events.KeyEvent;
+
+import java.util.List;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.helper.Task;
 import open.dolphin.helper.WindowSupport;
@@ -68,8 +70,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private StateMgr stateMgr;
     // MML送信 listener
     private MmlMessageListener mmlListener;
-    // CLAIM 送信 listener
-    private ClaimMessageListener claimListener;
     // このチャートの KarteBean
     private KarteBean karte;
     // GlassPane
@@ -82,7 +82,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private final Preferences prefs;
     public static final String PN_FRAME = "chart.frame";
 
-    // getDiagnosisDocument() に loadDocuments() が終わったことを知らせる lock オブジェクト
+    // getDiagnosisDocument() に loadDocuments() が終わったことを知らせる lock オブジェクトta
     public final boolean[] loadDocumentsDone = {false};
 
     /**
@@ -95,6 +95,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * オープンしている全インスタンスを保持するリストを返す static method.
+     *
      * @return オープンしている ChartPlugin のリスト
      */
     public static List<ChartImpl> getAllChart() {
@@ -103,7 +104,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * PvtListener を登録するための static method.
-     * @param listener
+     *
+     * @param listener PvtListener
      */
     public static void addPvtListener(PvtListener listener) {
         pvtListener = listener;
@@ -111,7 +113,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * PvtListener に PatientVisitModel を通知する static method.
-     * @param model
+     *
+     * @param model PatientVisitModel
      */
     private static void firePvtChange(PatientVisitModel model) {
         pvtListener.pvtChanged(model);
@@ -121,6 +124,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * チャートウインドウのオープンを通知する static method.
      * CLOSE -> OPEN に変換する操作，ReadOnly の場合は WaitingList に通知しない
      * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WaitingList に通知しない
+     *
      * @param opened オープンした Chart(=this)
      */
     public static void windowOpened(ChartImpl opened) {
@@ -134,7 +138,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         int newState = KarteState.toOpenState(oldState);
         model.setState(newState);
 
-        if (!opened.isReadOnly() && model.getId() != 0) { firePvtChange(model); }
+        if (!opened.isReadOnly() && model.getId() != 0) {
+            firePvtChange(model);
+        }
 
         // このあと，pvt.state は karteBean 読み込みがあればサーバデータでリストアされる
     }
@@ -143,6 +149,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * チャートウインドウのクローズを通知する static method.
      * OPEN -> CLOSE に変更する操作   ReadOnly のときも WaitingList に通知する
      * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WaitingList に通知しない
+     *
      * @param closed クローズした Chart(=this)
      */
     public static void windowClosed(ChartImpl closed) {
@@ -160,7 +167,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         }
         // WaitingListImpl に通知する
         // 書き込み時の ReadOnly 対応は WaitingList 側で施行
-        if (model.getId() != 0) { firePvtChange(model); }
+        if (model.getId() != 0) {
+            firePvtChange(model);
+        }
 
         // 最後にインスタンスリストから取り除く
         boolean succeeded = allCharts.remove(closed);
@@ -172,6 +181,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * このチャートのカルテを返す.
+     *
      * @return カルテ
      */
     @Override
@@ -181,6 +191,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * このチャートのカルテを設定する.
+     *
      * @param karte このチャートのカルテ
      */
     @Override
@@ -190,6 +201,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * Chart の JFrame を返す.
+     *
      * @return チャートウインドウno JFrame
      */
     @Override
@@ -199,6 +211,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * Chart内ドキュメントが共通に使用する Status パネルを返す.
+     *
      * @return IStatusPanel
      */
     @Override
@@ -208,6 +221,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * Chart内ドキュメントが共通に使用する Status パネルを設定する.
+     *
      * @param statusPanel IStatusPanel
      */
     @Override
@@ -217,6 +231,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 来院情報を設定する.
+     *
      * @param pvt 来院情報
      */
     @Override
@@ -226,6 +241,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 来院情報を返す.
+     *
      * @return 来院情報
      */
     @Override
@@ -235,6 +251,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * ReadOnly かどうかを返す.
+     *
      * @return ReadOnlyの時 true
      */
     @Override
@@ -244,6 +261,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * ReadOnly 属性を設定する.
+     *
      * @param readOnly ReadOnly user の時 true
      */
     @Override
@@ -253,6 +271,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * このチャートが対象としている患者モデルを返す.
+     *
      * @return チャートが対象としている患者モデル
      */
     @Override
@@ -262,6 +281,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * このチャートが対象としている患者モデルを設定する.
+     *
      * @param patientModel チャートが対象とする患者モデル
      */
     public void setPatientModel(PatientModel patientModel) {
@@ -270,6 +290,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャートのステート属性を返す.
+     *
      * @return チャートのステート属性
      */
     @Override
@@ -279,6 +300,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャートのステートを設定する.
+     *
      * @param chartState チャートステート
      */
     @Override
@@ -288,6 +310,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャート内で共通に使用する Mediator を返す.
+     *
      * @return ChartMediator
      */
     @Override
@@ -297,6 +320,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャート内で共通に使用する Mediator を設定する.
+     *
      * @param mediator ChartMediator
      */
     public void setChartMediator(ChartMediator mediator) {
@@ -305,8 +329,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * Menu アクションを制御する.
-     * @param name
-     * @param enabled
+     *
+     * @param name    Menu name
+     * @param enabled enable or not
      */
     @Override
     public void enabledAction(String name, boolean enabled) {
@@ -320,6 +345,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 文書ヒストリオブジェクトを返す.
+     *
      * @return 文書ヒストリオブジェクト DocumentHistory
      */
     @Override
@@ -329,7 +355,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 病名インスペクタを返す.
-     * @return
+     *
+     * @return DiagnosisInspector
      */
     public DiagnosisInspector getDiagnosisInspector() {
         return inspector.getDiagnosisInspector();
@@ -337,7 +364,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 最終受診日を返す.
-     * @return
+     *
+     * @return LastVisit
      */
     public LastVisit getLastVisit() {
         return lastVisit;
@@ -345,6 +373,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 引数で指定されたタブ番号のドキュメントを表示する.
+     *
      * @param index 表示するドキュメントのタブ番号
      */
     @Override
@@ -357,6 +386,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャート内に未保存ドキュメントがあるかどうかを返す.
+     *
      * @return 未保存ドキュメントがある時 true
      */
     @Override
@@ -455,27 +485,34 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         frame.setName("chartFrame");
 
         // FocusTraversalPolicy
-        frame.setFocusTraversalPolicy(new FocusTraversalPolicy(){
+        frame.setFocusTraversalPolicy(new FocusTraversalPolicy() {
             @Override
             public Component getDefaultComponent(Container aContainer) {
                 // 最初にフォーカスを取る component
                 return getDocumentHistory().getDocumentHistoryTable();
             }
+
             @Override
             public Component getComponentAfter(Container aContainer, Component aComponent) {
                 // 余計な focus 移動を行わない
                 return aComponent;
             }
+
             @Override
             public Component getComponentBefore(Container aContainer, Component aComponent) {
                 // 余計な focus 移動を行わない
                 return aComponent;
             }
-            @Override
-            public Component getFirstComponent(Container aContainer) { return null; }
 
             @Override
-            public Component getLastComponent(Container aContainer) { return null; }
+            public Component getFirstComponent(Container aContainer) {
+                return null;
+            }
+
+            @Override
+            public Component getLastComponent(Container aContainer) {
+                return null;
+            }
         });
 
         // 患者インスペクタを生成する
@@ -532,13 +569,13 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // 病名検索フィールド
         CompletableSearchField keywordFld = new CompletableSearchField(15);
-        keywordFld.setPreferredSize(new Dimension(300,26)); // width は JTextField の columns が優先される
+        keywordFld.setPreferredSize(new Dimension(300, 26)); // width は JTextField の columns が優先される
         keywordFld.setLabel("病名検索");
         keywordFld.setPreferences(Preferences.userNodeForPackage(ChartToolBar.class).node(ChartImpl.class.getName()));
         keywordFld.addActionListener(e -> {
             String text = keywordFld.getText();
 
-            if (text != null && ! text.equals("")) {
+            if (text != null && !text.equals("")) {
                 JPopupMenu popup = new JPopupMenu();
                 String pattern = ".*" + keywordFld.getText() + ".*";
 
@@ -569,7 +606,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // ctrl-return でもリターンキーの notify-field-accept が発生するようにする
         InputMap map = keywordFld.getInputMap();
-        Object value =  map.get(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+        Object value = map.get(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
         map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), value);
 
         // Document プラグインのタブを生成する
@@ -583,23 +620,24 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         JPanel inspectorPanel = new JPanel() {
             // 右側の境界線を描く
             private static final long serialVersionUID = 1L;
+
             @Override
             public void paint(Graphics g) {
                 super.paint(g);
                 g.setColor(IInspector.BORDER_COLOR);
-                g.drawLine(getWidth()-1, 31, getWidth()-1, getHeight()-1);
+                g.drawLine(getWidth() - 1, 31, getWidth() - 1, getHeight() - 1);
             }
         };
         inspectorPanel.setOpaque(true);
         inspectorPanel.setBackground(IInspector.BACKGROUND);
         inspectorPanel.setLayout(new BoxLayout(inspectorPanel, BoxLayout.Y_AXIS));
-        inspectorPanel.setPreferredSize(new Dimension(IInspector.DEFAULT_WIDTH+20, 10));
+        inspectorPanel.setPreferredSize(new Dimension(IInspector.DEFAULT_WIDTH + 20, 10));
 
         inspectorPanel.add(inspector.getBasicInfoInspector().getPanel());
         inspectorPanel.add(inspector.getPanel());
 
         final MainFrame.MainPanel mainPanel = frame.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(0,0));
+        mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         mainPanel.add(inspectorPanel, BorderLayout.WEST);
 
@@ -669,18 +707,11 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * MML送信リスナを返す.
+     *
      * @return MML送信リスナ
      */
     public MmlMessageListener getMMLListener() {
         return mmlListener;
-    }
-
-    /**
-     * CLAIM送信リスナを返す.
-     * @return CLAIM送信リスナ
-     */
-    public ClaimMessageListener getCLAIMListener() {
-        return claimListener;
     }
 
     /**
@@ -699,7 +730,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         providers = new HashMap<>();
 
         PNSTabbedPane tab = new PNSTabbedPane();
-        tab.setButtonPanelPadding(new Dimension(0,4));
+        tab.setButtonPanelPadding(new Dimension(0, 4));
 
         ChartDocument[] plugin = new ChartDocument[5];
         plugin[0] = new DocumentBridgeImpl();
@@ -710,7 +741,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         for (int index = 0; index < plugin.length; index++) {
 
-            if (index == 0 ) {
+            if (index == 0) {
                 plugin[index].setContext(this);
                 plugin[index].start();
             }
@@ -727,7 +758,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         tab.addChangeListener(this::tabChanged);
 
         // getDiagnosisDocument() に loadDocuments が終わったことを通知する
-        synchronized(loadDocumentsDone) {
+        synchronized (loadDocumentsDone) {
             loadDocumentsDone[0] = true;
             loadDocumentsDone.notify();
         }
@@ -739,14 +770,17 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * loadDocuments() が完了するまで synchronized で堰き止める.
      * DiangosisInspector, DiagnosisInspectorTransferHandler, UserStampBox から呼ばれる.
      * DiagnosisInspector は loadDocuments() が完了する前に呼びに来る.
-     * @return
+     *
+     * @return DiagnosisDocument
      */
     public DiagnosisDocument getDiagnosisDocument() {
         // loadDocuments されて，providers がセットされるまで待つ
-        synchronized(loadDocumentsDone) {
+        synchronized (loadDocumentsDone) {
             if (!loadDocumentsDone[0]) {
-                try{ loadDocumentsDone.wait();}
-                catch (InterruptedException e){}
+                try {
+                    loadDocumentsDone.wait();
+                } catch (InterruptedException e) {
+                }
             }
         }
 
@@ -760,7 +794,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * ドキュメントタブにプラグインを遅延生成し追加する.
-     * @param e
+     *
+     * @param e ChangeEvent
      */
     public void tabChanged(ChangeEvent e) {
 
@@ -786,10 +821,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         logger.debug("newKarte() in ChartImpl starts");
 
         // ReadOnly なら開かない
-        if (isReadOnly()) { return; }
+        if (isReadOnly()) {
+            return;
+        }
 
         // 新規カルテ作成はひとつだけ　masuda
-        if (toFrontNewKarteIfPresent()) { return; }
+        if (toFrontNewKarteIfPresent()) {
+            return;
+        }
 
         String dept = getPatientVisit().getDeptNoTokenize();
         String deptCode = getPatientVisit().getDepartmentCode();
@@ -853,7 +892,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             PVTHealthInsuranceModel[] ins = getHealthInsurances();
             params.setPVTHealthInsurance(ins[0]);
             if (insuranceUid != null) {
-                for(PVTHealthInsuranceModel model : ins) {
+                for (PVTHealthInsuranceModel model : ins) {
                     if (insuranceUid.equals(model.getGUID())) {
                         params.setPVTHealthInsurance(model);
                         break;
@@ -915,10 +954,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         StampModulePicker picker = new StampModulePicker(this);
         // 初診・再診 stampTreeModule を自動入力する
         ModuleModel mm = picker.getBaseCharge();
-        if (mm != null) { editModel.addModule(mm); }
+        if (mm != null) {
+            editModel.addModule(mm);
+        }
         // 初期テキストスタンプ挿入
         mm = picker.getInitialStamp();
-        if (mm != null) { editModel.addModule(mm); }
+        if (mm != null) {
+            editModel.addModule(mm);
+        }
 
         editor = createEditor();
         editor.setModel(editModel);
@@ -940,6 +983,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * EmptyNew 新規カルテのモデルを生成する.
+     *
      * @param params 作成パラメータセット
      * @return 新規カルテのモデル
      */
@@ -982,8 +1026,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * コピーして新規カルテを生成する場合のカルテモデルを生成する.
+     *
      * @param oldModel コピー元のカルテモデル
-     * @param params 生成パラメータセット
+     * @param params   生成パラメータセット
      * @return 新規カルテのモデル
      */
     public DocumentModel getKarteModelToEdit(DocumentModel oldModel, NewKarteParams params) {
@@ -1032,6 +1077,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 修正の場合のカルテモデルを生成する.
+     *
      * @param oldModel 修正対象のカルテモデル
      * @return 新しい版のカルテモデル
      */
@@ -1096,6 +1142,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * カルテエディタを生成する.
+     *
      * @return カルテエディタ
      */
     public KarteEditor createEditor() {
@@ -1144,12 +1191,12 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     /**
      * カルテ作成時にダアイログをオープンし，保険を選択させる.
      *
-     * @param docType
-     * @param option
-     * @param f
-     * @param dept
-     * @param insuranceUid
-     * @param deptCode
+     * @param docType 生成するドキュメントの種類. ２号カルテで固定.
+     * @param option NewKarteOption
+     * @param f Frame
+     * @param dept Department
+     * @param insuranceUid Insurance UID
+     * @param deptCode Department ocd
      * @return NewKarteParams
      */
     public NewKarteParams getNewKarteParams(String docType, Chart.NewKarteOption option, MainFrame f, String dept, String deptCode, String insuranceUid) {
@@ -1208,6 +1255,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 患者の健康保険を返す.
+     *
      * @return 患者の健康保険配列
      */
     @Override
@@ -1231,6 +1279,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     /**
      * 選択された保険を特定する
      * UUID が見つかったらそれを返す. なかったら最初に見つかった保険を返す.
+     *
      * @param uuid 選択された保険のUUID
      * @return 選択された保険
      */
@@ -1240,12 +1289,16 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // 患者の健康保険
         Collection<PVTHealthInsuranceModel> insurances = pvt.getPatient().getPvtHealthInsurances();
         // insurance model がなければ null を返す
-        if (uuid == null || insurances == null || insurances.isEmpty()) { return null; }
+        if (uuid == null || insurances == null || insurances.isEmpty()) {
+            return null;
+        }
 
         PVTHealthInsuranceModel ret = null;
 
         for (PVTHealthInsuranceModel hm : insurances) {
-            if (ret == null) { ret = hm; }
+            if (ret == null) {
+                ret = hm;
+            }
 
             if (uuid.equals(hm.getGUID())) {
                 ret = hm;
@@ -1259,7 +1312,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * タブにドキュメントを追加する.
-     * @param doc 追加するドキュメント
+     *
+     * @param doc    追加するドキュメント
      * @param params 追加するドキュメントの情報を保持する NewKarteParams
      */
     public void addChartDocument(ChartDocument doc, NewKarteParams params) {
@@ -1277,7 +1331,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * タブにドキュメントを追加する.
-     * @param doc
+     *
+     * @param doc ChartDocument
      * @param title タブタイトル
      */
     public void addChartDocument(ChartDocument doc, String title) {
@@ -1290,7 +1345,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     /**
      * 新規カルテ用のタブタイトルを作成する.
      * 使ってない.
-     * @param dept
+     *
+     * @param dept Department
      * @param insurance 保険名
      * @return タブタイトル
      */
@@ -1301,11 +1357,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 全てのドキュメントを保存する.
+     *
      * @param dirtyList 未保存ドキュメントのリスト
      */
     private void saveAll(List<UnsavedDocument> dirtyList) {
 
-        if (dirtyList == null || dirtyList.isEmpty()) { return; }
+        if (dirtyList == null || dirtyList.isEmpty()) {
+            return;
+        }
 
         dirtyList.stream().filter(UnsavedDocument::isNeedSave).forEach(undoc -> {
             ChartDocument doc = providers.get(tabbedPane.getTitleAt(undoc.getIndex()));
@@ -1318,10 +1377,11 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * ドキュメントのなかにdirtyのものがあるかどうかを返す.
+     *
      * @return dirtyの時true
      */
-    private java.util.List<UnsavedDocument> dirtyList() {
-        java.util.List<UnsavedDocument> ret = null;
+    private List<UnsavedDocument> dirtyList() {
+        List<UnsavedDocument> ret = null;
         int count = tabbedPane.getTabCount();
         for (int i = 0; i < count; i++) {
             //ChartDocument doc = providers.get(String.valueOf(i));
@@ -1350,7 +1410,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     public void close() {
 
         // この患者の EditorFrame が開いたままなら，閉じる努力をする. EditorFame 保存がキャンセルされたらあきらめる.
-        java.util.List<Chart> editorFrames = new ArrayList<>(EditorFrame.getAllEditorFrames());
+        List<Chart> editorFrames = new ArrayList<>(EditorFrame.getAllEditorFrames());
         if (editorFrames.size() > 0) {
             String patientId = this.getKarte().getPatient().getPatientId();
             for (Chart chart : editorFrames) {
@@ -1368,7 +1428,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         }
         // 未保存ドキュメント（病名等）がある場合はダイアログを表示し
         // 保存するかどうかを確認する
-        java.util.List<UnsavedDocument> dirtyList = dirtyList();
+        List<UnsavedDocument> dirtyList = dirtyList();
 
         if (dirtyList != null && dirtyList.size() > 0) {
             String saveAll = "保存";     // 保存;
@@ -1405,7 +1465,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                     // save
                     saveAll(dirtyList);
                     // DiagnosisDocument が isValidOutcome でなければ，close を中止する
-                    if (!getDiagnosisDocument().isValidOutcome()) { break; }
+                    if (!getDiagnosisDocument().isValidOutcome()) {
+                        break;
+                    }
                     stop();
                     break;
 
@@ -1428,7 +1490,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     public void stop() {
 
         if (providers != null) {
-            for (Iterator<String> iter = providers.keySet().iterator(); iter.hasNext();) {
+            for (Iterator<String> iter = providers.keySet().iterator(); iter.hasNext(); ) {
                 ChartDocument doc = providers.get(iter.next());
                 if (doc != null) {
                     doc.stop();
@@ -1541,11 +1603,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     /**
      * Document が modify用に既に開かれていたら toFront する
      * masuda 先生の docAlreadyOpened のパクリ
+     *
      * @param baseDocumentModel doc
      * @return toFront できたら true
      */
     public boolean toFrontDocumentIfPresent(DocumentModel baseDocumentModel) {
-        if (baseDocumentModel == null || baseDocumentModel.getDocInfo() == null) { return false; }
+        if (baseDocumentModel == null || baseDocumentModel.getDocInfo() == null) {
+            return false;
+        }
         long baseDocPk = baseDocumentModel.getDocInfo().getDocPk();
         List<Chart> editorFrames = EditorFrame.getAllEditorFrames();
         if (!editorFrames.isEmpty()) {
@@ -1566,6 +1631,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     /**
      * NewKarte が既に開かれていたら toFront する.
      * masuda 先生の newKarteAlreadyOpened のパクリ.
+     *
      * @return toFront できたら true
      */
     private boolean toFrontNewKarteIfPresent() {
@@ -1590,19 +1656,25 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * PatientVisitModel のカルテを前に出す static method.
+     *
      * @param pvt PatientVisitModel
      */
     public static void toFront(PatientVisitModel pvt) {
-        if (pvt == null) { return; }
+        if (pvt == null) {
+            return;
+        }
         toFront(pvt.getPatient());
     }
 
     /**
      * PatientModel のカルテを前に出す static method.
+     *
      * @param patient PatientModel
      */
     public static void toFront(PatientModel patient) {
-        if (patient == null) { return; }
+        if (patient == null) {
+            return;
+        }
         long ptId = patient.getId();
         allCharts.stream().filter(chart -> chart.getPatient().getId() == ptId)
                 .findAny().ifPresent(chart -> chart.getFrame().toFront());
@@ -1610,22 +1682,28 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * PatientVisitModel のカルテがあるかどうか調べる static method.
+     * PatientVisitModel のカルテが開いているかどうか調べる static method.
+     *
      * @param pvt PatientVisitModel
-     * @return
+     * @return karte opened or not
      */
     public static boolean isKarteOpened(PatientVisitModel pvt) {
-        if (pvt == null) { return false; }
+        if (pvt == null) {
+            return false;
+        }
         return isKarteOpened(pvt.getPatient());
     }
 
     /**
-     * PatientModel のカルテがあるかどうか調べる static method.
+     * PatientModel のカルテが開いているかどうか調べる static method.
+     *
      * @param patient PatientModel
-     * @return
+     * @return karte opened or not
      */
     public static boolean isKarteOpened(PatientModel patient) {
-        if (patient == null) { return false; }
+        if (patient == null) {
+            return false;
+        }
         long ptId = patient.getId();
 
         return allCharts.stream().anyMatch(chart -> chart.getPatient().getId() == ptId);
