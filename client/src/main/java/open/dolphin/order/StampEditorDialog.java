@@ -1,22 +1,24 @@
 package open.dolphin.order;
 
-import open.dolphin.order.stampeditor.StampEditor;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.*;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.Arrays;
-import javax.swing.*;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.order.stampeditor.StampEditor;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
 
 /**
  * Stamp 編集用の外枠を提供する Dialog.

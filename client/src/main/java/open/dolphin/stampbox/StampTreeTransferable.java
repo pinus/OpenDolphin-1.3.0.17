@@ -1,7 +1,7 @@
 package open.dolphin.stampbox;
 
 import java.awt.datatransfer.*;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Tranferable class of the StampTree.

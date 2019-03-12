@@ -1,12 +1,13 @@
 package open.dolphin.impl.scheam;
 
-import java.io.IOException;
-import java.io.InputStream;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javax.swing.ImageIcon;
 import open.dolphin.infomodel.ExtRefModel;
 import open.dolphin.infomodel.SchemaModel;
+
+import javax.swing.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  *

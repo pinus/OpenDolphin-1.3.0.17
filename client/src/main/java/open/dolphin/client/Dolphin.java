@@ -1,27 +1,9 @@
 package open.dolphin.client;
 
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.print.PageFormat;
-import java.awt.print.PrinterJob;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.prefs.Preferences;
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-
-import open.dolphin.helper.*;
+import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.MenuSupport;
+import open.dolphin.helper.Task;
+import open.dolphin.helper.WindowSupport;
 import open.dolphin.impl.labrcv.LaboTestImporter;
 import open.dolphin.impl.login.LoginDialog;
 import open.dolphin.impl.psearch.PatientSearchImpl;
@@ -37,6 +19,27 @@ import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.SettingForMac;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.print.PageFormat;
+import java.awt.print.PrinterJob;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.prefs.Preferences;
 
 /**
  * アプリケーションのメインウインドウクラス.

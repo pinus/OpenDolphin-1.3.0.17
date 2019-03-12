@@ -1,7 +1,8 @@
 package open.dolphin.stampbox;
 
-import java.util.List;
 import open.dolphin.infomodel.IInfoModel;
+
+import java.util.List;
 
 /**
  * AbstractStampTreeBuilder.

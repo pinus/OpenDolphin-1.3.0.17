@@ -20,10 +20,10 @@
  */
 package open.dolphin.project;
 
-import java.awt.*;
-
-import open.dolphin.client.*;
+import open.dolphin.client.SaveParams;
 import open.dolphin.infomodel.ID;
+
+import java.awt.*;
 
 /**
  * プロジェクトに依存するオブジェクトを生成するファクトリクラス.

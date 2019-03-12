@@ -1,27 +1,25 @@
 package open.dolphin.setting;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.event.ItemEvent;
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.List;
-import java.util.prefs.Preferences;
-import javax.swing.*;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.GridBagBuilder;
+import open.dolphin.helper.PNSPair;
+import open.dolphin.helper.StringTool;
 import open.dolphin.inspector.InspectorCategory;
 import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.helper.PNSPair;
-import open.dolphin.helper.StringTool;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * KarteSettingPanel.

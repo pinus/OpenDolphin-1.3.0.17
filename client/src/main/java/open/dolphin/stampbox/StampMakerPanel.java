@@ -1,22 +1,23 @@
 package open.dolphin.stampbox;
 
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.GUIConst;
+import open.dolphin.delegater.StampDelegater;
+import open.dolphin.helper.Task;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.ModuleInfoBean;
+import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.infomodel.StampModel;
+import open.dolphin.order.StampEditorProxyPanel;
+import open.dolphin.ui.HorizontalPanel;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIConst;
-import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.Task;
-import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.infomodel.StampModel;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.order.StampEditorProxyPanel;
-import open.dolphin.ui.HorizontalPanel;
 
 /**
  * StampMakerPanel.

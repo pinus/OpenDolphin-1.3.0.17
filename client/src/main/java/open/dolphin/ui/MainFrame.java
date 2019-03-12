@@ -1,12 +1,10 @@
 package open.dolphin.ui;
 
-import java.awt.BorderLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
 import open.dolphin.client.GUIConst;
 import org.jboss.logging.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * ３段構造フレーム

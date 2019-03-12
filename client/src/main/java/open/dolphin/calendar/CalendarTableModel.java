@@ -1,12 +1,13 @@
 package open.dolphin.calendar;
 
+import open.dolphin.helper.Holiday;
+import open.dolphin.infomodel.SimpleDate;
+
+import javax.swing.table.AbstractTableModel;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import javax.swing.table.AbstractTableModel;
-import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.helper.Holiday;
 
 /**
  * CalendarTableModel.

@@ -1,9 +1,6 @@
 package open.dolphin.ui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Insets;
+import java.awt.*;
 
 /**
  * グラデーションをもった枠.

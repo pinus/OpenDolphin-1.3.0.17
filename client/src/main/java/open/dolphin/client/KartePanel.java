@@ -1,8 +1,6 @@
 package open.dolphin.client;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
+import javax.swing.*;
 
 /**
  * KartePanel abstract for KarteViewer and KarteEditor.

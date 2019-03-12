@@ -1,7 +1,8 @@
 package open.dolphin.stampbox;
 
-import java.util.List;
 import open.dolphin.helper.StampTreeUtils;
+
+import java.util.List;
 
 /**
  * AspStampBox.

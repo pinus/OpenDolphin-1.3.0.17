@@ -1,9 +1,10 @@
 package open.dolphin.client;
 
-import java.awt.event.MouseEvent;
-import javax.swing.JTable;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
+import open.dolphin.util.ModelUtils;
+
+import javax.swing.*;
+import java.awt.event.MouseEvent;
 
 /**
  * object の hashCode で row が取れる JTable

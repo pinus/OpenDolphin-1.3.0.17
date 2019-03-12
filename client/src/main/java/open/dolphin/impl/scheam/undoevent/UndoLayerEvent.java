@@ -1,11 +1,12 @@
 package open.dolphin.impl.scheam.undoevent;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import open.dolphin.impl.scheam.UndoEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

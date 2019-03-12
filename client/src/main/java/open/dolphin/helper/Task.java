@@ -1,6 +1,9 @@
 package open.dolphin.helper;
 
-import java.awt.Component;
+import open.dolphin.ui.MyProgressMonitor;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -8,10 +11,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import javax.swing.SwingWorker;
-import javax.swing.Timer;
-
-import open.dolphin.ui.MyProgressMonitor;
 
 /**
  * Progress 表示付き Task.

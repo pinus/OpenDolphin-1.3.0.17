@@ -1,12 +1,10 @@
 package open.dolphin.laf;
 
-import java.awt.Color;
+import javax.swing.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JComponent;
-import javax.swing.JList;
-import javax.swing.JTable;
-import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
  *

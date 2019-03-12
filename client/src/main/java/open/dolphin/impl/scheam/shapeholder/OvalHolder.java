@@ -1,10 +1,11 @@
 package open.dolphin.impl.scheam.shapeholder;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
 import open.dolphin.impl.scheam.FillMode;
 import open.dolphin.impl.scheam.ShapeHolderBounds;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Oval を保持する ShapeHolder.

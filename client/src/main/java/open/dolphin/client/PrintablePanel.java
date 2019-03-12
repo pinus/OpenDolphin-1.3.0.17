@@ -1,15 +1,11 @@
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  * PrintablePanel.

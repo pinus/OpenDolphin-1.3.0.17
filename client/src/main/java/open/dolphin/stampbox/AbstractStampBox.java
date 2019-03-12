@@ -1,13 +1,14 @@
 package open.dolphin.stampbox;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import javax.swing.tree.DefaultMutableTreeNode;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.StampTreeBean;
 import open.dolphin.ui.PNSTabbedPane;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * AbstractStampBox.

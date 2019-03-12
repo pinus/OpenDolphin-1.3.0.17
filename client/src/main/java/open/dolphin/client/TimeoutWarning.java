@@ -1,8 +1,7 @@
 package open.dolphin.client;
 
-import java.awt.Component;
-
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.awt.*;
 
 public class TimeoutWarning {
 

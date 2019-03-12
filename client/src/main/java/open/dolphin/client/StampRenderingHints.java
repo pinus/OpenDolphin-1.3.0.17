@@ -1,6 +1,6 @@
 package open.dolphin.client;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * StampRenderingHints.

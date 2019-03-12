@@ -1,11 +1,9 @@
 package open.dolphin.helper;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
 import open.dolphin.infomodel.SimpleDate;
 
-import javax.faces.component.html.HtmlOutputLink;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * 休日かどうか調べる.

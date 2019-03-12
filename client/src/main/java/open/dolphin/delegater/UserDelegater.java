@@ -1,10 +1,10 @@
 package open.dolphin.delegater;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.service.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * UserDelegeter.

@@ -1,17 +1,12 @@
 package open.dolphin.inspector;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import open.dolphin.helper.PNSPair;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
-import open.dolphin.helper.PNSPair;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *

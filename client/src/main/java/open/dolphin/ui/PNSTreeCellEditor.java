@@ -1,15 +1,13 @@
 package open.dolphin.ui;
 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JTree;
-import javax.swing.Timer;
+import open.dolphin.helper.TextComponentUndoManager;
+
+import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
-import open.dolphin.helper.TextComponentUndoManager;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 /**
  * Mac っぽい Border の TreeCellEditor.

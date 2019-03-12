@@ -1,16 +1,16 @@
 package open.dolphin.setting;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import javax.swing.*;
 import open.dolphin.client.ClientContext;
 import open.dolphin.event.ValidListener;
 import open.dolphin.project.Project;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 環境設定ダイアログ.

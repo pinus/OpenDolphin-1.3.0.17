@@ -1,17 +1,11 @@
 package open.dolphin.ui;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.TexturePaint;
-import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.AbstractBorder;
 import open.dolphin.helper.ImageHelper;
+
+import javax.swing.*;
+import javax.swing.border.AbstractBorder;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * 難しい！！　未完成

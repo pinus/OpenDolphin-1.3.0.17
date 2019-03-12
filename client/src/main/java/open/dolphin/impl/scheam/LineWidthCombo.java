@@ -1,6 +1,5 @@
 package open.dolphin.impl.scheam;
 
-import java.util.HashMap;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,6 +13,8 @@ import javafx.util.Callback;
 import open.dolphin.impl.scheam.constant.ShapeIcon;
 import open.dolphin.impl.scheam.widget.PnsComboBox;
 import open.dolphin.impl.scheam.widget.PnsListCell;
+
+import java.util.HashMap;
 
 /**
  * LineWidth を選択する ComboBox.

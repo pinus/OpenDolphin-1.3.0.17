@@ -1,12 +1,19 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Image;
+import open.dolphin.helper.MouseHelper;
+import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.ui.PNSTransferHandler;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
@@ -14,12 +21,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import open.dolphin.helper.MouseHelper;
-import open.dolphin.ui.*;
 
 /**
  * ImagePalette.

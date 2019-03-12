@@ -1,15 +1,9 @@
 package open.dolphin.ui;
 
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.KeyStroke;
-import javax.swing.ProgressMonitor;
 
 /**
  * MyProgressMonitor

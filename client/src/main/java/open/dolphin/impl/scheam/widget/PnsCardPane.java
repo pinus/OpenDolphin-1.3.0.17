@@ -1,9 +1,10 @@
 package open.dolphin.impl.scheam.widget;
 
-import java.util.HashMap;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
+
+import java.util.HashMap;
 
 /**
  * CardLayout 的なもの.

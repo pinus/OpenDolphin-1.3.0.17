@@ -1,18 +1,11 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.StatusPanel;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * WaitingList, PatientSearch, LaboTextImporter で使う共通パネル骨格

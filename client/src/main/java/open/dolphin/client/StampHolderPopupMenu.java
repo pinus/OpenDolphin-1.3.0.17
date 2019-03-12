@@ -1,22 +1,18 @@
 package open.dolphin.client;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.AbstractAction;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
+import open.dolphin.helper.DailyDoseStringTool;
 import open.dolphin.infomodel.BundleMed;
 import open.dolphin.infomodel.ClaimItem;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.ui.Focuser;
-import open.dolphin.helper.DailyDoseStringTool;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * StampHolder を右クリックでいろいろいじる.

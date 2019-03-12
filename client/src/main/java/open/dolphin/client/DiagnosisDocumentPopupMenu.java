@@ -1,17 +1,15 @@
 package open.dolphin.client;
 
-import java.awt.Component;
+import open.dolphin.calendar.CalendarPanel;
+import open.dolphin.infomodel.*;
+import open.dolphin.ui.Focuser;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeSupport;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import javax.swing.BorderFactory;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
-import open.dolphin.calendar.CalendarPanel;
-import open.dolphin.infomodel.*;
-import open.dolphin.ui.Focuser;
 
 /**
  * DiagnosisDocument のポップアップメニューを一手に引き受ける

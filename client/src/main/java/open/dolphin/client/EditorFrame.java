@@ -1,16 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import javax.swing.Action;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
@@ -18,6 +7,14 @@ import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * EditorFrame.

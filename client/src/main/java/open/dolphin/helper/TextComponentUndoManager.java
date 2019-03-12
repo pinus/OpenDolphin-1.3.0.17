@@ -1,11 +1,11 @@
 package open.dolphin.helper;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * JTextComponent に Undo 機能を付ける.<br>

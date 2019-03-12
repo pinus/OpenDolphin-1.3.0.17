@@ -8,12 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import open.dolphin.impl.scheam.helper.ObservableDeque;
 import open.dolphin.impl.scheam.shapeholder.ShapeHolderBase;
-import open.dolphin.impl.scheam.undoevent.UndoClipEvent;
-import open.dolphin.impl.scheam.undoevent.UndoHolderEvent;
-import open.dolphin.impl.scheam.undoevent.UndoLayerEvent;
-import open.dolphin.impl.scheam.undoevent.UndoLineWidthEvent;
-import open.dolphin.impl.scheam.undoevent.UndoRotateEvent;
-import open.dolphin.impl.scheam.undoevent.UndoScaleEvent;
+import open.dolphin.impl.scheam.undoevent.*;
 
 /**
  * UndoManager.

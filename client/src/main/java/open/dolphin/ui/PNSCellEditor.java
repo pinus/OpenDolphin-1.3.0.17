@@ -1,12 +1,13 @@
 package open.dolphin.ui;
 
+import open.dolphin.helper.TextComponentUndoManager;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.text.JTextComponent;
-import open.dolphin.helper.TextComponentUndoManager;
 
 /**
  * Mac っぽいボーダーの CellEditor.

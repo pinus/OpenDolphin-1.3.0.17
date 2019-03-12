@@ -1,6 +1,6 @@
 package open.dolphin.client;
 
-import javax.swing.JCheckBox;
+import javax.swing.*;
 
 /**
  *

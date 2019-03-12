@@ -1,7 +1,5 @@
 package open.dolphin.impl.scheam;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -23,12 +21,15 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javax.swing.ImageIcon;
 import open.dolphin.client.SchemaEditor;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
 import open.dolphin.impl.scheam.shapeholder.ImageHolder;
 import open.dolphin.impl.scheam.widget.PnsStage;
 import open.dolphin.infomodel.SchemaModel;
+
+import javax.swing.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * SchemaEditorImpl.

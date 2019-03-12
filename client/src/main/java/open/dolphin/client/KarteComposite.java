@@ -1,6 +1,6 @@
 package open.dolphin.client;
 
-import javax.swing.ActionMap;
+import javax.swing.*;
 
 /**
  * カルテの構成要素.

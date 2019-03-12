@@ -1,15 +1,17 @@
 package open.dolphin.delegater;
 
-import java.awt.Dimension;
-import java.util.*;
-import javax.swing.ImageIcon;
-
 import open.dolphin.client.ImageEntry;
 import open.dolphin.dto.*;
 import open.dolphin.helper.ImageHelper;
 import open.dolphin.infomodel.*;
 import open.dolphin.service.KarteService;
 import open.dolphin.util.ModelUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * DocumentDelegater.

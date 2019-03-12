@@ -1,16 +1,5 @@
 package open.dolphin.impl.pinfo;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
 import open.dolphin.client.AbstractChartDocument;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.PatientDelegater;
@@ -20,6 +9,16 @@ import open.dolphin.infomodel.PVTPublicInsuranceItemModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSCellEditor;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Documet to show Patient and Health Insurance info.

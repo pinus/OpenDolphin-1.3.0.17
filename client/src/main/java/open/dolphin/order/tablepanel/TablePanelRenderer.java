@@ -1,12 +1,11 @@
 package open.dolphin.order.tablepanel;
 
-import java.awt.Color;
-import java.awt.Component;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import open.dolphin.client.GUIConst;
 import open.dolphin.helper.StringTool;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
 /**
  *

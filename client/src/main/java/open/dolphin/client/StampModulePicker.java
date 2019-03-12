@@ -1,7 +1,5 @@
 package open.dolphin.client;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
@@ -9,6 +7,9 @@ import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.StampModel;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeNode;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * StampTree から ModuleModel を取り出す.

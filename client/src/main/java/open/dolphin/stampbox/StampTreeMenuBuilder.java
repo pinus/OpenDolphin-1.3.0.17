@@ -1,18 +1,12 @@
 package open.dolphin.stampbox;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Pattern;
-import javax.swing.Icon;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.tree.DefaultMutableTreeNode;
 import open.dolphin.client.GUIConst;
 import open.dolphin.infomodel.ModuleInfoBean;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * StampTree から JMenu または JPopupMenu を構築する.

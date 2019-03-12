@@ -1,29 +1,25 @@
 package open.dolphin.impl.login;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Date;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.Task;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.project.DolphinPrincipal;
 import open.dolphin.project.Project;
 import open.dolphin.setting.ProjectSettingDialog;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
+import open.dolphin.util.ModelUtils;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Date;
 
 /**
  * ログインダイアログ　クラス.

@@ -1,11 +1,13 @@
 package open.dolphin.client;
 
-import java.awt.*;
-import java.io.*;
-import java.util.*;
-
-import javax.swing.JLabel;
+import javax.swing.*;
 import javax.swing.text.*;
+import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Enumeration;
 
 /**
  *

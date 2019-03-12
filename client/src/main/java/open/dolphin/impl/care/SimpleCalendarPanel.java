@@ -1,29 +1,29 @@
 package open.dolphin.impl.care;
 
-import java.awt.*;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import javax.swing.*;
 import open.dolphin.calendar.CalendarEvent;
 import open.dolphin.calendar.CalendarListener;
 import open.dolphin.calendar.CalendarTable;
 import open.dolphin.calendar.CalendarTableModel;
-import open.dolphin.client.*;
+import open.dolphin.client.Chart;
+import open.dolphin.client.ImageEntry;
 import open.dolphin.event.ProxyAction;
-import open.dolphin.util.MMLDate;
 import open.dolphin.infomodel.AppointmentModel;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSTransferHandler;
+import open.dolphin.util.MMLDate;
+import open.dolphin.util.ModelUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.List;
+import java.util.*;
 
 /**
  * SimpleCalendarPanel.

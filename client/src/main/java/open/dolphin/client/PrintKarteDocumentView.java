@@ -1,11 +1,14 @@
 package open.dolphin.client;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.print.*;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * カルテをまとめて印刷する

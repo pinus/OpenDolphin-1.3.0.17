@@ -1,15 +1,15 @@
 package open.dolphin.client;
 
-import java.awt.Window;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.helper.StringTool;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * drop された stamp を加工する.

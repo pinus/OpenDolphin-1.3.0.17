@@ -3,11 +3,12 @@ package open.dolphin.ui;
 import com.alderstone.multitouch.mac.touchpad.Finger;
 import com.alderstone.multitouch.mac.touchpad.FingerState;
 import com.alderstone.multitouch.mac.touchpad.TouchpadObservable;
-import java.util.Observable;
-import java.util.Observer;
-import javax.swing.JOptionPane;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * GlulogicMT.jar を使って Magic Trackpad のデバイス状況を調べる.

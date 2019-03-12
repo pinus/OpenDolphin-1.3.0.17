@@ -1,13 +1,14 @@
 package open.dolphin.order.tablepanel;
 
-import java.awt.BorderLayout;
-import java.util.List;
-import javax.swing.*;
 import open.dolphin.delegater.RadiologyDelegater;
 import open.dolphin.infomodel.RadiologyMethodValue;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSBorderFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 /**
  * ItemTablePanel を extend して作った RadiologyTablePanel.

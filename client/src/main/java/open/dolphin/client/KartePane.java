@@ -1,9 +1,34 @@
 package open.dolphin.client;
 
+import javafx.application.Platform;
+import open.dolphin.codehelper.PCodeHelper;
+import open.dolphin.codehelper.SOACodeHelper;
+import open.dolphin.dao.OrcaMasterDao;
+import open.dolphin.delegater.StampDelegater;
+import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ImageHelper;
+import open.dolphin.helper.TextComponentUndoManager;
+import open.dolphin.impl.scheam.SchemaEditorImpl;
+import open.dolphin.infomodel.*;
+import open.dolphin.order.StampEditorDialog;
+import open.dolphin.ui.IMEControl;
+import open.dolphin.ui.sheet.JSheet;
+import org.apache.log4j.Logger;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -14,32 +39,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javafx.application.Platform;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.FileImageInputStream;
-import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.UndoableEditListener;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledEditorKit;
-import open.dolphin.dao.OrcaMasterDao;
-import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.DBTask;
-import open.dolphin.helper.ImageHelper;
-import open.dolphin.helper.TextComponentUndoManager;
-import open.dolphin.impl.scheam.SchemaEditorImpl;
-import open.dolphin.infomodel.*;
-import open.dolphin.order.StampEditorDialog;
-import open.dolphin.ui.IMEControl;
-import open.dolphin.codehelper.PCodeHelper;
-import open.dolphin.codehelper.SOACodeHelper;
-import open.dolphin.ui.sheet.JSheet;
-import org.apache.log4j.Logger;
 
 /**
  * KarteComposite の一つで，内部に JTextPane を１つ保持している.

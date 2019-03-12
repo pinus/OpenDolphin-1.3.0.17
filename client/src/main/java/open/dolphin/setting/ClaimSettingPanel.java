@@ -1,17 +1,16 @@
 package open.dolphin.setting;
 
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionListener;
-import java.util.List;
-import javax.swing.*;
-import open.dolphin.client.*;
-import open.dolphin.dao.OrcaEntry;
-import open.dolphin.dao.OrcaMasterDao;
-import open.dolphin.dao.SqlDaoFactory;
-import open.dolphin.helper.GridBagBuilder;
+import open.dolphin.client.GUIConst;
+import open.dolphin.client.GUIFactory;
+import open.dolphin.client.RegexConstrainedDocument;
 import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.IMEControl;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
 
 /**
  * ClaimSettingPanel.

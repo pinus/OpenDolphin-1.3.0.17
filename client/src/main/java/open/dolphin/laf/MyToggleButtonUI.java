@@ -1,9 +1,8 @@
 package open.dolphin.laf;
 
-import java.awt.Color;
-import javax.swing.AbstractButton;
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
+import java.awt.*;
 
 /**
  *

@@ -1,13 +1,6 @@
 package open.dolphin.impl.scheam.colorchooser;
 
-import java.util.ArrayList;
-import java.util.List;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Slider;
@@ -21,6 +14,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import open.dolphin.impl.scheam.constant.DefaultPresetColor;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 色見本のパレットと opacity のスライダからなる color palette.

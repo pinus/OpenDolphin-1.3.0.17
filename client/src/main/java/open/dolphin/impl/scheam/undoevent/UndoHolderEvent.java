@@ -1,12 +1,13 @@
 package open.dolphin.impl.scheam.undoevent;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.scene.paint.Color;
 import open.dolphin.impl.scheam.FillMode;
 import open.dolphin.impl.scheam.SchemaLayer;
 import open.dolphin.impl.scheam.UndoEvent;
 import open.dolphin.impl.scheam.shapeholder.ShapeHolderBase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

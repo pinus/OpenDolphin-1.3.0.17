@@ -1,29 +1,21 @@
 package open.dolphin.master;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.StringTokenizer;
 import open.dolphin.JsonConverter;
-import open.dolphin.infomodel.DepartmentModel;
-import open.dolphin.infomodel.FacilityModel;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.LicenseModel;
-import open.dolphin.infomodel.RadiologyMethodValue;
-import open.dolphin.infomodel.UserModel;
-import open.dolphin.service.SystemService;
 import open.dolphin.helper.HashUtil;
+import open.dolphin.infomodel.*;
+import open.dolphin.service.SystemService;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.*;
 
 /**
  * Dolphin用のマスタを登録する.

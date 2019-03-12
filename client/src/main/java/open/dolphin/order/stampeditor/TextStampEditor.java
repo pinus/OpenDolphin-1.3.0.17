@@ -1,10 +1,5 @@
 package open.dolphin.order.stampeditor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Insets;
-import javax.swing.*;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.event.ValidListener;
 import open.dolphin.helper.TextComponentUndoManager;
@@ -17,6 +12,9 @@ import open.dolphin.order.IStampEditor;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.MyJScrollPane;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * TextStampEditor.

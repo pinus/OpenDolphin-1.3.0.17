@@ -1,11 +1,9 @@
 package open.dolphin.ui;
 
-import java.awt.AWTEvent;
-import java.awt.Component;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
-import javax.swing.JPopupMenu;
 
 /**
  * Mac の JPopupMenu の問題を回避するため MOUSE_RELEASED or KEY_RELEASED を待ってから popup 表示する.

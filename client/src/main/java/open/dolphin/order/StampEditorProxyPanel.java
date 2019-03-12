@@ -1,13 +1,13 @@
 package open.dolphin.order;
 
-import java.awt.CardLayout;
-import java.awt.Component;
-import java.util.HashMap;
-import javax.swing.JPanel;
 import open.dolphin.event.ValidListener;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.order.stampeditor.StampEditor;
 import open.dolphin.order.stampeditor.TextStampEditor;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
 
 /**
  * 全ての StampEditor を保持可能なパネル

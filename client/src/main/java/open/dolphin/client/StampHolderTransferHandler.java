@@ -1,15 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Window;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.swing.*;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.ClaimConst;
@@ -17,6 +7,15 @@ import open.dolphin.project.Project;
 import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
 import open.dolphin.ui.PNSTransferHandler;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * StampHolderTransferHandler.

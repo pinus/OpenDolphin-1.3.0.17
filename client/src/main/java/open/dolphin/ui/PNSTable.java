@@ -1,7 +1,6 @@
 package open.dolphin.ui;
 
-import javax.swing.JTable;
-import javax.swing.JViewport;
+import javax.swing.*;
 import javax.swing.table.TableModel;
 
 /**

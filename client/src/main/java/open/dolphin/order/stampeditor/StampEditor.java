@@ -1,7 +1,5 @@
 package open.dolphin.order.stampeditor;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ValidListener;
@@ -13,6 +11,8 @@ import open.dolphin.order.tablepanel.DiagnosisTablePanel;
 import open.dolphin.order.tablepanel.ItemTablePanel;
 import open.dolphin.order.tablepanel.RadiologyTablePanel;
 import open.dolphin.order.tablepanel.RecipeTablePanel;
+
+import javax.swing.*;
 
 /**
  * StampEditor.

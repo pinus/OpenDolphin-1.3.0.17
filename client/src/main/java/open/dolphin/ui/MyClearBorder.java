@@ -1,9 +1,7 @@
 package open.dolphin.ui;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Insets;
 import javax.swing.border.AbstractBorder;
+import java.awt.*;
 
 /**
  *

@@ -1,7 +1,23 @@
 package open.dolphin.stampbox;
 
+import open.dolphin.client.*;
+import open.dolphin.delegater.StampDelegater;
+import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.MenuSupport;
+import open.dolphin.helper.WindowSupport;
+import open.dolphin.infomodel.*;
+import open.dolphin.project.Project;
+import open.dolphin.ui.*;
+import open.dolphin.ui.sheet.JSheet;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
@@ -12,32 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import open.dolphin.client.AbstractMainTool;
-import open.dolphin.client.BlockGlass;
-import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIConst;
-import open.dolphin.client.MenuFactory;
-import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.ComponentBoundsManager;
-import open.dolphin.helper.MenuSupport;
-import open.dolphin.helper.WindowSupport;
-import open.dolphin.infomodel.FacilityModel;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.infomodel.PersonalTreeModel;
-import open.dolphin.infomodel.PublishedTreeModel;
-import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.infomodel.StampTreeBean;
-import open.dolphin.project.Project;
-import open.dolphin.ui.*;
-import open.dolphin.ui.sheet.JSheet;
-import org.apache.log4j.Logger;
 
 /**
  * StampBoxPlugin.

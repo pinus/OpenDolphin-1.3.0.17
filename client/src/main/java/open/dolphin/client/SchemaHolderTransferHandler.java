@@ -1,9 +1,12 @@
 package open.dolphin.client;
 
-import java.awt.datatransfer.*;
-import javax.swing.*;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.ui.PNSTransferHandler;
+
+import javax.swing.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 
 /**
  * SchemaHolderTransferHandler

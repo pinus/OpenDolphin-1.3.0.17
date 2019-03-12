@@ -1,10 +1,5 @@
 package open.dolphin.impl.psearch;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import javax.swing.SwingUtilities;
 import open.dolphin.client.ClientContext;
 import open.dolphin.delegater.PatientDelegater;
 import open.dolphin.dto.PatientSearchSpec;
@@ -12,6 +7,12 @@ import open.dolphin.helper.Task;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.table.ObjectReflectTableModel;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 検索タスクの実務をするクラス

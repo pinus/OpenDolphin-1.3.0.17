@@ -1,17 +1,17 @@
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import javax.swing.ImageIcon;
 import open.dolphin.infomodel.DepartmentModel;
 import open.dolphin.infomodel.DiagnosisCategoryModel;
 import open.dolphin.infomodel.DiagnosisOutcomeModel;
 import open.dolphin.infomodel.LicenseModel;
 import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
 
 /**
  * ClientContextStub のインスタンスを static method で参照する.

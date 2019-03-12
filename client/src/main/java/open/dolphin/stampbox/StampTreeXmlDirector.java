@@ -1,8 +1,9 @@
 package open.dolphin.stampbox;
 
-import java.util.*;
-import java.io.*;
-import javax.swing.tree.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Director to build StampTree XML data.

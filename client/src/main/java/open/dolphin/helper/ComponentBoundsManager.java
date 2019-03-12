@@ -1,14 +1,11 @@
 package open.dolphin.helper;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.ComponentListener;
-import java.util.prefs.Preferences;
-
 import open.dolphin.client.ClientContext;
 import org.apache.log4j.Logger;
+
+import java.awt.*;
+import java.awt.event.ComponentListener;
+import java.util.prefs.Preferences;
 
 /**
  * ComponentBoundsManager.

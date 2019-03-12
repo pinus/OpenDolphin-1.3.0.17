@@ -6,7 +6,10 @@
 
 package open.dolphin.impl.lbtest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeSet;
 
 /**
  * １検体につき，テストされた項目の TreeSet を保持するクラス.

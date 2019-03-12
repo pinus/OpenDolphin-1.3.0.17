@@ -1,6 +1,6 @@
 package open.dolphin.helper;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.prefs.Preferences;
 
 /**

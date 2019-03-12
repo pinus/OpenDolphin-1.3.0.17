@@ -1,14 +1,18 @@
 package open.dolphin.impl.labrcv;
 
-import java.awt.datatransfer.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import javax.swing.*;
 import open.dolphin.client.ClientContext;
 import open.dolphin.delegater.LaboDelegater;
 import open.dolphin.infomodel.LaboImportSummary;
+
+import javax.swing.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * LaboTestFileTransferHandler.

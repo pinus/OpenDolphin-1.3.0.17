@@ -1,11 +1,10 @@
 package open.dolphin.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Insets;
+import open.dolphin.client.GUIConst;
+
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-import open.dolphin.client.GUIConst;
+import java.awt.*;
 
 /**
  * Mac っぽいボーダー.

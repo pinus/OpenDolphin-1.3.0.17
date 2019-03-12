@@ -1,10 +1,11 @@
 
 package open.dolphin.impl.psearch;
 
-import java.awt.event.MouseEvent;
-import javax.swing.JTable;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.table.ObjectReflectTableModel;
+
+import javax.swing.*;
+import java.awt.event.MouseEvent;
 
 /**
  *

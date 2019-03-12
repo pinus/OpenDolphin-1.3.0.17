@@ -1,10 +1,12 @@
 package open.dolphin.client;
 
-import java.io.*;
-import java.net.*;
 import javax.swing.*;
 import java.awt.*;
-import java.beans.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Binary resource downloader.

@@ -1,12 +1,11 @@
 package open.dolphin.stampbox;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
-import javax.swing.tree.TreePath;
 
 /**
  * StampTree の DropTargetListener.（StampTree から分離）

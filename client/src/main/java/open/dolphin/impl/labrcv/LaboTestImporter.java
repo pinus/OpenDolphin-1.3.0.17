@@ -1,6 +1,20 @@
 package open.dolphin.impl.labrcv;
 
-import java.awt.Dimension;
+import open.dolphin.client.AbstractMainComponent;
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.GUIConst;
+import open.dolphin.client.MainComponentPanel;
+import open.dolphin.helper.PNSTriple;
+import open.dolphin.infomodel.LaboImportSummary;
+import open.dolphin.infomodel.PatientModel;
+import open.dolphin.table.IndentTableCellRenderer;
+import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.StatusPanel;
+
+import javax.swing.*;
+import javax.swing.table.TableColumn;
+import java.awt.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
@@ -10,24 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JProgressBar;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableColumn;
-import open.dolphin.client.AbstractMainComponent;
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIConst;
-import open.dolphin.client.MainComponentPanel;
-import open.dolphin.infomodel.LaboImportSummary;
-import open.dolphin.infomodel.PatientModel;
-import open.dolphin.table.IndentTableCellRenderer;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.StatusPanel;
-import open.dolphin.helper.PNSTriple;
 
 /**
  * LaboTestImport.

@@ -2,17 +2,11 @@ package open.dolphin.impl.scheam.stateeditor;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import open.dolphin.impl.scheam.FillMode;
-import open.dolphin.impl.scheam.SchemaEditorImpl;
-import open.dolphin.impl.scheam.SchemaEditorProperties;
-import open.dolphin.impl.scheam.SchemaLayer;
-import open.dolphin.impl.scheam.ShapeHolder;
-import open.dolphin.impl.scheam.State;
+import open.dolphin.impl.scheam.*;
 import open.dolphin.impl.scheam.shapeholder.LineHolder;
 import open.dolphin.impl.scheam.shapeholder.ShapeHolderBase;
 

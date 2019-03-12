@@ -1,20 +1,15 @@
 package open.dolphin.ui;
 
-import java.awt.AlphaComposite;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.GUIConst;
+import open.dolphin.helper.ImageHelper;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import javax.swing.JFrame;
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIConst;
-import open.dolphin.helper.ImageHelper;
 
 /**
  * CompletableSearchField.

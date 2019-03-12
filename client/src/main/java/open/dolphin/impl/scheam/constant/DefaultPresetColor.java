@@ -1,11 +1,12 @@
 package open.dolphin.impl.scheam.constant;
 
+import javafx.scene.paint.Color;
+import open.dolphin.impl.scheam.ColorModel;
 import open.dolphin.impl.scheam.FillMode;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javafx.scene.paint.Color;
-import open.dolphin.impl.scheam.ColorModel;
 
 /**
  * プリセット色を作る.

@@ -1,23 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.KeyboardFocusManager;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.util.List;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.JComponent;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JTextPane;
-import javax.swing.TransferHandler;
-import javax.swing.event.MenuEvent;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyledEditorKit;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
@@ -27,6 +9,14 @@ import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
 import open.dolphin.ui.Focuser;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyledEditorKit;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 /**
  * Mediator (MenuSupport) class to control ChartDocument menus.<br>

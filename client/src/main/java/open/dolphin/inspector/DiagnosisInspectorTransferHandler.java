@@ -1,12 +1,12 @@
 package open.dolphin.inspector;
 
-import java.awt.datatransfer.DataFlavor;
-import javax.swing.JComponent;
-import javax.swing.TransferHandler;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.DiagnosisDocument;
 import open.dolphin.client.DiagnosisTransferHandler;
 import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
+
+import javax.swing.*;
+import java.awt.datatransfer.DataFlavor;
 
 /**
  *

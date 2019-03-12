@@ -1,29 +1,32 @@
 package open.dolphin.stampbox;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.dnd.DropTarget;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseEvent;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.tree.*;
 import open.dolphin.client.ClientContext;
 import open.dolphin.delegater.StampDelegater;
+import open.dolphin.helper.GUIDGenerator;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSTreeCellEditor;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.helper.GUIDGenerator;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.*;
+import java.awt.*;
+import java.awt.dnd.DropTarget;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * StampTree.

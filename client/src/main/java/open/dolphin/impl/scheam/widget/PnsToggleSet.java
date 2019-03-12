@@ -1,18 +1,15 @@
 package open.dolphin.impl.scheam.widget;
 
-import java.util.HashMap;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.util.Callback;
+
+import java.util.HashMap;
 
 /**
  * ToggleButton をセットにしたもの.

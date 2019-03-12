@@ -1,6 +1,5 @@
 package open.dolphin.impl.scheam;
 
-import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Pos;
@@ -15,6 +14,8 @@ import javafx.util.Callback;
 import open.dolphin.impl.scheam.constant.DefaultPresetColor;
 import open.dolphin.impl.scheam.widget.PnsComboBox;
 import open.dolphin.impl.scheam.widget.PnsListCell;
+
+import java.util.List;
 
 /**
  * Preset Color を選択するための PnsComboBox.

@@ -2,12 +2,7 @@ package open.dolphin.impl.scheam.colorchooser;
 
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
+import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

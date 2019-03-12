@@ -1,14 +1,9 @@
 package open.dolphin.laf;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComponent;
-import javax.swing.JList;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicListUI;
+import java.awt.*;
 
 /**
  * ストライプな ListUI.

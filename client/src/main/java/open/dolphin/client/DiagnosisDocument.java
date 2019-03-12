@@ -1,27 +1,8 @@
 package open.dolphin.client;
 
-import java.awt.*;
-import java.awt.dnd.*;
-import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.prefs.Preferences;
-import javax.swing.*;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
-
 import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
-import open.dolphin.delegater.BusinessDelegater;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
@@ -37,6 +18,24 @@ import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.DateUtils;
 import open.dolphin.util.MMLDate;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.awt.dnd.*;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.prefs.Preferences;
 
 /**
  * DiagnosisDocument

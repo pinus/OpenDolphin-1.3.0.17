@@ -4,11 +4,7 @@ import javafx.scene.effect.BlendMode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import open.dolphin.impl.scheam.SchemaEditorImpl;
-import open.dolphin.impl.scheam.SchemaLayer;
-import open.dolphin.impl.scheam.ShapeHolder;
-import open.dolphin.impl.scheam.ShapeHolderBounds;
-import open.dolphin.impl.scheam.UndoManager;
+import open.dolphin.impl.scheam.*;
 import open.dolphin.impl.scheam.shapeholder.PolygonHolder;
 
 /**

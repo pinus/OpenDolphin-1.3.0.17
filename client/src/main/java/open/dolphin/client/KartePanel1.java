@@ -6,9 +6,8 @@
 
 package open.dolphin.client;
 
-import java.awt.Container;
-import javax.swing.GroupLayout;
-import javax.swing.JComponent;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *

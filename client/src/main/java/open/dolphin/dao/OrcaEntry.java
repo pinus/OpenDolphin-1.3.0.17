@@ -1,10 +1,11 @@
 package open.dolphin.dao;
 
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
 import open.dolphin.infomodel.ClaimItem;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
+
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 
 /**
  * ORCA のデータベース検索した情報を入れておくクラス

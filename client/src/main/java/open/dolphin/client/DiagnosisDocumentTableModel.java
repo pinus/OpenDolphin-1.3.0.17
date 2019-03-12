@@ -1,14 +1,6 @@
 package open.dolphin.client;
 
-import java.awt.Toolkit;
-import java.beans.PropertyChangeSupport;
-import java.util.Calendar;
-import java.util.Deque;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.DiagnosisCategoryModel;
 import open.dolphin.infomodel.DiagnosisLiteModel;
 import open.dolphin.infomodel.DiagnosisOutcomeModel;
@@ -16,7 +8,11 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.util.MMLDate;
-import open.dolphin.helper.PNSTriple;
+
+import java.awt.*;
+import java.beans.PropertyChangeSupport;
+import java.util.List;
+import java.util.*;
 
 /**
  * DiagnosisDocumentTableModel を独立させて，undo/redo に対応した.

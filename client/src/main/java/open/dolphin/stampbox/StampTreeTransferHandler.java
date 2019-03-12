@@ -1,16 +1,5 @@
 package open.dolphin.stampbox;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import open.dolphin.client.OrderList;
 import open.dolphin.client.OrderListTransferable;
 import open.dolphin.infomodel.IInfoModel;
@@ -18,6 +7,16 @@ import open.dolphin.infomodel.InfoModelTransferable;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.ui.PNSTransferHandler;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 /**
  * StampTreeTransferHandler.<br>

@@ -1,6 +1,21 @@
 package open.dolphin.stampbox;
 
-import java.awt.Component;
+import open.dolphin.client.BlockGlass;
+import open.dolphin.client.GUIConst;
+import open.dolphin.delegater.StampDelegater;
+import open.dolphin.helper.HexBytesTool;
+import open.dolphin.helper.MenuActionManager;
+import open.dolphin.helper.MenuActionManager.MenuAction;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.ModuleInfoBean;
+import open.dolphin.infomodel.StampModel;
+import open.dolphin.project.Project;
+import open.dolphin.ui.sheet.JSheet;
+import open.dolphin.util.ModelUtils;
+import org.jdom2.Element;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
@@ -9,24 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingWorker;
-import open.dolphin.client.BlockGlass;
-import open.dolphin.client.GUIConst;
-import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.MenuActionManager;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.ModelUtils;
-import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.infomodel.StampModel;
-import open.dolphin.project.Project;
-import open.dolphin.helper.HexBytesTool;
-import org.jdom2.Element;
-import open.dolphin.helper.MenuActionManager.MenuAction;
-import open.dolphin.ui.sheet.JSheet;
 
 /**
  * StampBox の特別(gear)メニュー.

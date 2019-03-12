@@ -1,7 +1,5 @@
 package open.dolphin.impl.scheam.constant;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
@@ -10,21 +8,15 @@ import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.FillRule;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.Shape;
+import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import open.dolphin.impl.scheam.helper.SchemaUtils;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ShapeIcons

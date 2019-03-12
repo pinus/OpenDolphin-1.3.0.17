@@ -1,8 +1,8 @@
 package open.dolphin.stampbox;
 
+import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import javax.swing.JComponent;
 
 /**
  * AspStampTreeTransferHandler.

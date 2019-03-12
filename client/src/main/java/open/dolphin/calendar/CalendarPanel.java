@@ -1,29 +1,17 @@
 package open.dolphin.calendar;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Point;
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.GUIConst;
+import open.dolphin.infomodel.SimpleDate;
+
+import javax.swing.*;
+import javax.swing.plaf.LayerUI;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLayer;
-import javax.swing.JPanel;
-import javax.swing.plaf.LayerUI;
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIConst;
-import open.dolphin.infomodel.SimpleDate;
 
 /**
  * CalendarTable にコントローラーを付けたパネル.

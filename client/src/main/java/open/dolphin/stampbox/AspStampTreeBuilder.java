@@ -1,9 +1,12 @@
 package open.dolphin.stampbox;
 
-import java.util.*;
 import open.dolphin.client.ClientContext;
-import org.apache.log4j.Logger;
 import open.dolphin.infomodel.ModuleInfoBean;
+import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * AspStampTreeBuilder.

@@ -1,7 +1,6 @@
 package open.dolphin.ui.sheet;
 
-import javax.swing.JButton;
-import javax.swing.JWindow;
+import javax.swing.*;
 
 /**
  *

@@ -1,11 +1,11 @@
 package open.dolphin.delegater;
 
-import java.util.List;
-
 import open.dolphin.dto.LaboSearchSpec;
 import open.dolphin.infomodel.LaboModuleValue;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.service.LaboService;
+
+import java.util.List;
 
 /**
  * Labo 関連の Delegater クラス.

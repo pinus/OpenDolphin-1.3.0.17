@@ -1,8 +1,7 @@
 package open.dolphin.helper;
 
-import java.awt.MouseInfo;
-import java.awt.Point;
-import javax.swing.ToolTipManager;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * MouseHelper.

@@ -1,19 +1,13 @@
 package open.dolphin.ui;
 
-import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.TransferHandler;
 
 /**
  * drag and drop with transparent visual feed back.

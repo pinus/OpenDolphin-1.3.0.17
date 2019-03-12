@@ -1,11 +1,10 @@
 package open.dolphin.client;
 
-import java.awt.Window;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * チャートドキュメントのルートクラス.

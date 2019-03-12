@@ -1,10 +1,16 @@
 package open.dolphin.inspector;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
+import open.dolphin.client.ChartImpl;
+import open.dolphin.client.ClientContext;
+import open.dolphin.event.BadgeEvent;
+import open.dolphin.event.BadgeListener;
+import open.dolphin.helper.ScriptExecutor;
+import open.dolphin.helper.StringTool;
+import open.dolphin.ui.MyJScrollPane;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -13,20 +19,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListSelectionModel;
-
-import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
-import open.dolphin.event.BadgeEvent;
-import open.dolphin.event.BadgeListener;
-import open.dolphin.helper.ScriptExecutor;
-import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.helper.StringTool;
-import org.apache.log4j.Logger;
 
 /**
  * 関連文書ファイルを表示するクラス.

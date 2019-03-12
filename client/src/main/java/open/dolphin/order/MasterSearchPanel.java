@@ -1,35 +1,31 @@
 package open.dolphin.order;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.event.*;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.prefs.Preferences;
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
 import open.dolphin.client.GUIConst;
 import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.event.OrderListener;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.ComboBoxFactory;
-import open.dolphin.ui.CompletableSearchField;
-import open.dolphin.ui.Focuser;
-import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.StringTool;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.*;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * MasterSearchPanel.

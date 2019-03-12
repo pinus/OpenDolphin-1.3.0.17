@@ -1,7 +1,6 @@
 package open.dolphin.laf;
 
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 
 /**

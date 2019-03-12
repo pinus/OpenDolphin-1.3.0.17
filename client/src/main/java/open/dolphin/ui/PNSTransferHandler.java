@@ -1,13 +1,10 @@
 package open.dolphin.ui;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.image.BufferedImage;
-import javax.swing.JLabel;
-import javax.swing.TransferHandler;
 import open.dolphin.client.ClientContext;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * DragImage の utility 付きの TransferHandler.

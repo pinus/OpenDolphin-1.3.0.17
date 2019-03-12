@@ -1,17 +1,14 @@
 package open.dolphin.impl.scheam.widget;
 
+import javafx.geometry.*;
+import javafx.scene.Node;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Region;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
-import javafx.scene.Node;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Region;
 
 /**
  * Justification する FlowPane.

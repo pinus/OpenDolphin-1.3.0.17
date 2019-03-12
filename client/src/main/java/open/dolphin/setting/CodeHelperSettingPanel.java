@@ -1,14 +1,17 @@
 package open.dolphin.setting;
 
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.GUIConst;
+import open.dolphin.client.GUIFactory;
 import open.dolphin.codehelper.AbstractCodeHelper;
-import java.awt.GridBagConstraints;
-import java.util.prefs.Preferences;
-import javax.swing.*;
-import open.dolphin.client.*;
-import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.ProjectStub;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.prefs.Preferences;
 
 /**
  * コードヘルパー設定パネル.

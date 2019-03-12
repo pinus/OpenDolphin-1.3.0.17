@@ -1,10 +1,9 @@
 package open.dolphin.project;
 
-import java.io.*;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
+import open.dolphin.client.ClientContext;
+import open.dolphin.infomodel.UserModel;
+import open.dolphin.inspector.InspectorCategory;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -12,9 +11,11 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeUtility;
-import open.dolphin.client.ClientContext;
-import open.dolphin.infomodel.UserModel;
-import open.dolphin.inspector.InspectorCategory;
+import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 /**
  * プロジェクト情報管理クラス.

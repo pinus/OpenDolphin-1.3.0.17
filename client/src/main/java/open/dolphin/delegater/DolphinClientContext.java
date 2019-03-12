@@ -1,23 +1,19 @@
 package open.dolphin.delegater;
 
-import java.io.IOException;
-import java.net.URI;
-import javax.websocket.ContainerProvider;
-import javax.websocket.DeploymentException;
-import javax.websocket.Endpoint;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-
 import open.dolphin.JsonConverter;
-import open.dolphin.infomodel.InfoModel;
 import open.dolphin.helper.HashUtil;
+import open.dolphin.infomodel.InfoModel;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
 import org.jboss.resteasy.util.Base64;
+
+import javax.websocket.*;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * DolphinClientContext.

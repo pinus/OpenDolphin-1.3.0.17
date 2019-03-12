@@ -1,18 +1,5 @@
 package open.dolphin.impl.psearch;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.prefs.Preferences;
-import javax.swing.*;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
 import open.dolphin.client.AbstractMainComponent;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.Dolphin;
@@ -22,9 +9,9 @@ import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.KeyBlocker;
+import open.dolphin.helper.PNSTriple;
+import open.dolphin.helper.StringTool;
 import open.dolphin.helper.Task;
-import open.dolphin.util.Gengo;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.table.IndentTableCellRenderer;
@@ -33,9 +20,24 @@ import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.helper.PNSTriple;
-import open.dolphin.helper.StringTool;
+import open.dolphin.util.Gengo;
+import open.dolphin.util.ModelUtils;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * 患者検索.

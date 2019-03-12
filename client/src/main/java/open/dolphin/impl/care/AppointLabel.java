@@ -1,13 +1,12 @@
 package open.dolphin.impl.care;
 
-import java.awt.datatransfer.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.ui.PNSTransferHandler;
+
+import javax.swing.*;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * AppointLabel.

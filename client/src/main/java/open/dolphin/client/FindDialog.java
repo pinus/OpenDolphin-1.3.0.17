@@ -1,20 +1,15 @@
 package open.dolphin.client;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.prefs.Preferences;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.Timer;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.sheet.JSheet;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.prefs.Preferences;
 
 /**
  * FindDialog の JSheet バージョン

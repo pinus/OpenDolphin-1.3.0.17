@@ -1,7 +1,8 @@
 package open.dolphin.stampbox;
 
-import javax.swing.tree.*;
 import open.dolphin.infomodel.ModuleInfoBean;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * StampTree のノードクラス.

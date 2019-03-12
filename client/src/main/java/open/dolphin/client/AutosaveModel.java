@@ -1,22 +1,18 @@
 package open.dolphin.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.awt.Image;
+import open.dolphin.helper.ImageHelper;
+import open.dolphin.infomodel.*;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.text.DefaultStyledDocument;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import javax.swing.ImageIcon;
-import javax.swing.text.DefaultStyledDocument;
-import open.dolphin.helper.ImageHelper;
-import open.dolphin.infomodel.DocumentModel;
-import static open.dolphin.infomodel.IInfoModel.MODULE_PROGRESS_COURSE;
-import static open.dolphin.infomodel.IInfoModel.ROLE_P_SPEC;
-import static open.dolphin.infomodel.IInfoModel.ROLE_SOA_SPEC;
-import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.infomodel.ProgressCourse;
-import open.dolphin.infomodel.SchemaModel;
-import org.apache.log4j.Logger;
+
+import static open.dolphin.infomodel.IInfoModel.*;
 
 /**
  * Model for KarteEditor Autosave.

@@ -1,10 +1,10 @@
 package open.dolphin.setting;
 
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import open.dolphin.client.ClientContext;
 import open.dolphin.project.ProjectStub;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
 
 /**
  * AbstractSettingPanel.

@@ -1,9 +1,10 @@
 package open.dolphin.ui;
 
+import open.dolphin.helper.PNSPair;
+
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.JComboBox;
-import open.dolphin.helper.PNSPair;
 
 /**
  *

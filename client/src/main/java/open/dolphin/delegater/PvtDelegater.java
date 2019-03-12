@@ -1,12 +1,12 @@
 package open.dolphin.delegater;
 
-import java.util.List;
-
 import open.dolphin.dto.PatientVisitSpec;
 import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.service.PvtService;
+
+import java.util.List;
 
 /**
  * PvtDelegater.

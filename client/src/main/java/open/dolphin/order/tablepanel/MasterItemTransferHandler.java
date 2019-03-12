@@ -1,16 +1,15 @@
 package open.dolphin.order.tablepanel;
 
+import open.dolphin.order.MasterItem;
+import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.PNSTransferHandler;
+
+import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
-import open.dolphin.order.MasterItem;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.PNSTransferHandler;
 
 /**
  * MasterItemTransferHandler.

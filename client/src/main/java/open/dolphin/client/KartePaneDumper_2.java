@@ -1,22 +1,19 @@
 package open.dolphin.client;
 
-import java.awt.Color;
+import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.infomodel.SchemaModel;
+import org.apache.log4j.Logger;
+
+import javax.swing.text.*;
+import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Enumeration;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Element;
-import javax.swing.text.StyleConstants;
-import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.infomodel.SchemaModel;
-import org.apache.log4j.Logger;
+import java.util.List;
 
 /**
  * KartePane の dumper.

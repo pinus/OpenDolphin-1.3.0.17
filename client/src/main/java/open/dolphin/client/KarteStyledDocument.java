@@ -1,11 +1,12 @@
 package open.dolphin.client;
 
-import java.util.ArrayList;
-import java.util.List;
+import open.dolphin.project.Project;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
-import open.dolphin.project.Project;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * KartePane の StyledDocument class.

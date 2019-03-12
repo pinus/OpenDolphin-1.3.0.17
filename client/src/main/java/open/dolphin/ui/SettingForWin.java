@@ -1,15 +1,13 @@
 package open.dolphin.ui;
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.util.Enumeration;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.client.Dolphin;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Enumeration;
 
 /**
  *

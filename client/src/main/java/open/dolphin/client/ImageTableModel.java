@@ -1,7 +1,7 @@
 package open.dolphin.client;
 
-import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import java.util.List;
 
 /**
  * ImageTableModel

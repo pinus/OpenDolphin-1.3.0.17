@@ -1,12 +1,13 @@
 package open.dolphin.stampbox;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import java.awt.*;
 
 /**
  * StampTreePanel.

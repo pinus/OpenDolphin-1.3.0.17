@@ -1,23 +1,6 @@
 package open.dolphin.client;
 
 import com.sun.glass.events.KeyEvent;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.InputEvent;
-import java.util.List;
-import java.util.prefs.Preferences;
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.TransferHandler;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.IInfoModel;
@@ -25,6 +8,12 @@ import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
 import open.dolphin.ui.CompletableSearchField;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * ChartImpl と EditorFrame 特有の JToolBar.

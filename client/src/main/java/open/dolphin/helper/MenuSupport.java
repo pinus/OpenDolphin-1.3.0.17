@@ -1,17 +1,16 @@
 package open.dolphin.helper;
 
+import open.dolphin.client.ClientContext;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-
-import open.dolphin.client.ClientContext;
-import org.apache.log4j.Logger;
 
 /**
  * Object に対して順番にリフレクションで method を実行していく.

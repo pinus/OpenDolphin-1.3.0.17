@@ -1,25 +1,16 @@
 package open.dolphin.client;
 
-import java.awt.GridBagConstraints;
+import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.event.ValidListener;
+import open.dolphin.helper.GridBagBuilder;
+import open.dolphin.infomodel.*;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.im.InputSubset;
 import java.util.Date;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.event.ValidListener;
-import open.dolphin.helper.GridBagBuilder;
-import open.dolphin.infomodel.DepartmentModel;
-import open.dolphin.infomodel.FacilityModel;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.LicenseModel;
-import open.dolphin.infomodel.UserModel;
 
 /**
  * AccountInfoPanel.

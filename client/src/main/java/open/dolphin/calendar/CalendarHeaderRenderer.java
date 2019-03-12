@@ -1,11 +1,8 @@
 package open.dolphin.calendar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
 /**
  * CalendarPanel ヘッダーの曜日部分のレンダラ.

@@ -1,9 +1,10 @@
 package open.dolphin.dao;
 
+import org.postgresql.ds.PGPoolingDataSource;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.postgresql.ds.PGPoolingDataSource;
 
 /**
  * SqlDaoBean

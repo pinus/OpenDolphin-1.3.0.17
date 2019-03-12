@@ -1,6 +1,17 @@
 package open.dolphin.client;
 
-import java.awt.Toolkit;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.InfoModelTransferable;
+import open.dolphin.infomodel.ModuleInfoBean;
+import open.dolphin.infomodel.RegisteredDiagnosisModel;
+import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
+import open.dolphin.stampbox.StampTreeNode;
+import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.PNSTransferHandler;
+
+import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
@@ -8,18 +19,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Stream;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.InfoModelTransferable;
-import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.stampbox.StampTreeNode;
-import open.dolphin.ui.PNSTransferHandler;
-import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 
 /**
  * DiagnosisTransferHandler

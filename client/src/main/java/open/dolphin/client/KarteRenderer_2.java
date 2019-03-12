@@ -1,28 +1,22 @@
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.StringTokenizer;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.ProgressCourse;
 import org.apache.log4j.Logger;
-import org.jdom2.Element;
 import org.jdom2.Document;
+import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+
+import javax.swing.text.*;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
+import java.util.*;
 
 /**
  * KarteRenderer_2.

@@ -1,18 +1,12 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
+import open.dolphin.ui.PNSBorderFactory;
+
 import javax.swing.*;
 import javax.swing.event.DocumentListener;
-import open.dolphin.ui.PNSBorderFactory;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
 
 /**
  *

@@ -1,15 +1,16 @@
 package open.dolphin.stampbox;
 
-import java.awt.Component;
-import java.util.List;
-import javax.swing.SwingUtilities;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.project.Project;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import java.awt.*;
+import java.util.List;
 
 /**
  * ORCA StampTree クラス.

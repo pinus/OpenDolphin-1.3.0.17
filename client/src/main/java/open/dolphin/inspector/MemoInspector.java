@@ -1,29 +1,27 @@
 package open.dolphin.inspector;
 
+import open.dolphin.client.ChartImpl;
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.CompositeArea;
+import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ScriptExecutor;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.PatientMemoModel;
+import open.dolphin.project.Project;
+import open.dolphin.ui.IMEControl;
+import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.sheet.JSheet;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Date;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JViewport;
-import javax.swing.border.Border;
-import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.CompositeArea;
-import open.dolphin.delegater.DocumentDelegater;
-import open.dolphin.helper.DBTask;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.PatientMemoModel;
-import open.dolphin.project.Project;
-import open.dolphin.helper.ScriptExecutor;
-import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.sheet.JSheet;
-import org.apache.log4j.Logger;
 
 /**
  * 患者のメモを表示し編集するクラス.

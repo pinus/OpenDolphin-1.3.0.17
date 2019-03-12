@@ -1,14 +1,12 @@
 package open.dolphin.impl.pvt;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTable;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
+
+import javax.swing.*;
 
 /**
  * WaitingListView 互換 JPanel

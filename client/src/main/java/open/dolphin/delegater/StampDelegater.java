@@ -1,10 +1,10 @@
 package open.dolphin.delegater;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import open.dolphin.infomodel.*;
 import open.dolphin.service.StampService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * StampDelegater.

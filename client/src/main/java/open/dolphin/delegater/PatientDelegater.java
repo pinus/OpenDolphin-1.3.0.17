@@ -1,11 +1,11 @@
 package open.dolphin.delegater;
 
-import java.util.List;
-
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.service.PatientService;
+
+import java.util.List;
 
 /**
  * PatientDelegater.

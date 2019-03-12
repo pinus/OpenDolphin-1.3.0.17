@@ -1,13 +1,9 @@
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class GUIConst {
 

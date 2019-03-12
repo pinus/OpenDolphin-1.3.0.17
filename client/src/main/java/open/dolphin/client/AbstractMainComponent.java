@@ -1,15 +1,7 @@
 package open.dolphin.client;
 
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.concurrent.Callable;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTable;
-import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.delegater.PatientDelegater;
+import open.dolphin.delegater.PvtDelegater;
 import open.dolphin.infomodel.KarteState;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
@@ -17,6 +9,12 @@ import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.sheet.JSheet;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.concurrent.Callable;
 
 /**
  * Main Window コンポーネントプラグインの抽象クラス.

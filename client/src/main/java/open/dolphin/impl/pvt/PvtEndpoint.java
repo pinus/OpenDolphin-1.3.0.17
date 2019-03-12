@@ -1,11 +1,12 @@
 package open.dolphin.impl.pvt;
 
+import open.dolphin.JsonConverter;
+import open.dolphin.infomodel.PatientVisitModel;
+
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
-import open.dolphin.JsonConverter;
-import open.dolphin.infomodel.PatientVisitModel;
 
 /**
  *

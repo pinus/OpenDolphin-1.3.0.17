@@ -1,7 +1,8 @@
 package open.dolphin.inspector;
 
-import java.util.EventListener;
 import open.dolphin.infomodel.DocInfoModel;
+
+import java.util.EventListener;
 
 /**
  *

@@ -2,18 +2,10 @@ package open.dolphin.ui;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.client.Dolphin;
-import open.dolphin.laf.MyButtonUI;
-import open.dolphin.laf.MyComboBoxUI;
-import open.dolphin.laf.MyListUI;
-import open.dolphin.laf.MyPasswordFieldUI;
-import open.dolphin.laf.MyTableUI;
-import open.dolphin.laf.MyTextFieldUI;
-import open.dolphin.laf.MyToggleButtonUI;
-import open.dolphin.laf.MyTreeUI;
+import open.dolphin.laf.*;
+
+import javax.swing.*;
 
 /**
  * Mac 用のセッティング.

@@ -1,7 +1,5 @@
 package open.dolphin.impl.scheam.stateeditor;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
@@ -12,6 +10,9 @@ import open.dolphin.impl.scheam.ShapeHolderBounds;
 import open.dolphin.impl.scheam.StateManager;
 import open.dolphin.impl.scheam.shapeholder.NetHolder;
 import open.dolphin.impl.scheam.shapeholder.PenHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 指定された範囲に網を描く StateEditor.

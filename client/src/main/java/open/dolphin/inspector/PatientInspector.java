@@ -1,6 +1,13 @@
 package open.dolphin.inspector;
 
-import java.awt.Font;
+import open.dolphin.client.ChartImpl;
+import open.dolphin.client.ClientContext;
+import open.dolphin.project.Project;
+import open.dolphin.ui.HorizontalPanel;
+import open.dolphin.ui.PNSBadgeTabbedPane;
+
+import javax.swing.*;
+import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -8,14 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
-import open.dolphin.project.Project;
-import open.dolphin.ui.HorizontalPanel;
-import open.dolphin.ui.PNSBadgeTabbedPane;
 
 /**
  * 各々の Inspecter を生成して配置する.

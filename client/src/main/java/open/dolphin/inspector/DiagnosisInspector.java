@@ -1,15 +1,15 @@
 package open.dolphin.inspector;
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.LayoutManager;
-import java.awt.Point;
-import java.awt.RenderingHints;
+import open.dolphin.client.*;
+import open.dolphin.helper.MenuActionManager;
+import open.dolphin.helper.MenuActionManager.MenuAction;
+import open.dolphin.infomodel.RegisteredDiagnosisModel;
+import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSBorder;
+import open.dolphin.util.ModelUtils;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -18,14 +18,6 @@ import java.util.List;
 import java.util.TooManyListenersException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.swing.*;
-import open.dolphin.client.*;
-import open.dolphin.helper.MenuActionManager;
-import open.dolphin.helper.MenuActionManager.MenuAction;
-import open.dolphin.util.ModelUtils;
-import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.PNSBorder;
 
 /**
  * インスペクタに病名を表示するクラス.

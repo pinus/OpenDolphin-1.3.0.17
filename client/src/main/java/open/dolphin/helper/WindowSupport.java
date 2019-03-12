@@ -1,24 +1,18 @@
 package open.dolphin.helper;
 
-import java.awt.Toolkit;
+import open.dolphin.client.GUIConst;
+import open.dolphin.ui.MainFrame;
+
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.KeyStroke;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-
-import open.dolphin.client.GUIConst;
-import open.dolphin.ui.MainFrame;
 
 /**
  * Window Menu をサポートするためのクラス.

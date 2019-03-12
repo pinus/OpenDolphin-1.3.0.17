@@ -1,8 +1,12 @@
 package open.dolphin.client;
 
-import javax.swing.text.*;
-import java.awt.Toolkit;
-import java.util.regex.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
+import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * RegexConstrainedDocument.

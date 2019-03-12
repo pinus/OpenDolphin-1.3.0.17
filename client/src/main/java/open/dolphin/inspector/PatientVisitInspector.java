@@ -1,16 +1,16 @@
 package open.dolphin.inspector;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
 import open.dolphin.calendar.CalendarEvent;
 import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.calendar.CalendarTableModel;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.infomodel.SimpleDate;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * PatientVisitInspector.

@@ -1,10 +1,13 @@
 package open.dolphin.stampbox;
 
-import java.io.*;
-import java.util.*;
 import open.dolphin.client.ClientContext;
 import open.dolphin.infomodel.ModuleInfoBean;
 import org.apache.log4j.Logger;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.LinkedList;
 
 /**
  * StampTree XML builder.

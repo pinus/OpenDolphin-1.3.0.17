@@ -1,13 +1,14 @@
 package open.dolphin.client;
 
-import java.awt.Cursor;
+import open.dolphin.helper.MouseHelper;
+import open.dolphin.ui.Focuser;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import javax.swing.*;
-import open.dolphin.helper.MouseHelper;
-import open.dolphin.ui.Focuser;
 
 /**
  * ComponentHolder.

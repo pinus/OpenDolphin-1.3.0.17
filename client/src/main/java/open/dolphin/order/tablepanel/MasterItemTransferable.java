@@ -1,10 +1,11 @@
 package open.dolphin.order.tablepanel;
 
+import open.dolphin.order.MasterItem;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import open.dolphin.order.MasterItem;
 
 /**
  * マスタアイテム Transferable クラス.

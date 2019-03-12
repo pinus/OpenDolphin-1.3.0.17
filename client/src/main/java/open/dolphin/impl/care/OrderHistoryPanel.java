@@ -1,36 +1,27 @@
 package open.dolphin.impl.care;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import open.dolphin.client.*;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.ModelUtils;
-import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.table.ObjectReflectTableModel;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableColumn;
 import open.dolphin.calendar.CalendarEvent;
+import open.dolphin.client.ClientContext;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.table.IndentTableCellRenderer;
+import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.util.ModelUtils;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
+
+import javax.swing.*;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * オーダ履歴を表示するパネルクラス.

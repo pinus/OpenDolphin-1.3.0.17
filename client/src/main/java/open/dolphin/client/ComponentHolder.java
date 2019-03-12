@@ -1,8 +1,8 @@
 package open.dolphin.client;
 
+import javax.swing.text.Position;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.swing.text.Position;
 
 /**
  * ComponentHolder.

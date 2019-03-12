@@ -1,7 +1,6 @@
 package open.dolphin.stampbox;
 
-import javax.swing.JComponent;
-import javax.swing.TransferHandler;
+import javax.swing.*;
 
 /**
  * StampTreeMenuBuilder に登録する Defalut Listener.

@@ -1,7 +1,8 @@
 package open.dolphin.calendar;
 
-import java.util.EventListener;
 import open.dolphin.infomodel.SimpleDate;
+
+import java.util.EventListener;
 
 /**
  *

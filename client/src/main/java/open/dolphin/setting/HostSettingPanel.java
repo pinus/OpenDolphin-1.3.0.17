@@ -1,9 +1,5 @@
 package open.dolphin.setting;
 
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionListener;
-import java.util.prefs.Preferences;
-import javax.swing.*;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.event.ProxyDocumentListener;
@@ -13,6 +9,11 @@ import open.dolphin.project.DolphinPrincipal;
 import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.IMEControl;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.prefs.Preferences;
 
 /**
  * HostSettingPanel.

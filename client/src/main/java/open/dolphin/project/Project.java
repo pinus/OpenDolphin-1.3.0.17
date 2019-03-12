@@ -1,11 +1,12 @@
 package open.dolphin.project;
 
-import java.awt.Window;
-import java.io.OutputStream;
-import java.util.prefs.Preferences;
 import open.dolphin.client.SaveParams;
 import open.dolphin.infomodel.ID;
 import open.dolphin.infomodel.UserModel;
+
+import java.awt.*;
+import java.io.OutputStream;
+import java.util.prefs.Preferences;
 
 /**
  * プロジェクト情報管理クラス.

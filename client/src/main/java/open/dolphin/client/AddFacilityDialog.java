@@ -1,12 +1,19 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import open.dolphin.JsonConverter;
+import open.dolphin.helper.HashUtil;
+import open.dolphin.helper.Task;
+import open.dolphin.infomodel.UserModel;
+import open.dolphin.project.Project;
+import open.dolphin.service.SystemService;
+import org.apache.log4j.Logger;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+
+import javax.security.auth.login.LoginException;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -15,24 +22,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import javax.security.auth.login.LoginException;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import open.dolphin.JsonConverter;
-import open.dolphin.helper.Task;
-import open.dolphin.infomodel.UserModel;
-import open.dolphin.project.Project;
-import open.dolphin.service.SystemService;
-import open.dolphin.helper.HashUtil;
-import org.apache.log4j.Logger;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 /**
  * 医療機関と管理責任者を登録するクラス.

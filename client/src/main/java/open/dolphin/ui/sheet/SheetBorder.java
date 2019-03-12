@@ -1,17 +1,9 @@
 package open.dolphin.ui.sheet;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.LinearGradientPaint;
-import java.awt.MultipleGradientPaint;
-import java.awt.Paint;
-import java.awt.RadialGradientPaint;
+import javax.swing.border.AbstractBorder;
+import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Rectangle2D;
-import javax.swing.border.AbstractBorder;
 
 /**
  *

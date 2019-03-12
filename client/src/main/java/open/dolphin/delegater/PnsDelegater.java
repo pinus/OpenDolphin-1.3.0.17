@@ -1,10 +1,12 @@
 package open.dolphin.delegater;
 
-import java.util.*;
-
-import open.dolphin.infomodel.*;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.infomodel.ProgressCourse;
 import open.dolphin.service.PnsService;
 import open.dolphin.util.ModelUtils;
+
+import java.util.List;
 
 /**
  * いろいろやってみる delegater.

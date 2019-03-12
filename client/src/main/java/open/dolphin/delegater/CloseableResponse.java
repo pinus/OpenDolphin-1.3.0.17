@@ -5,21 +5,15 @@ package open.dolphin.delegater;
  * https://gist.github.com/taichi/5526601
  * @author taichi SATO
  */
+
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Link.Builder;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Link;
-import javax.ws.rs.core.Link.Builder;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.core.Response;
 
 public class CloseableResponse extends Response implements AutoCloseable {
 

@@ -1,18 +1,13 @@
 package open.dolphin.helper;
 
+import open.dolphin.infomodel.PersonalTreeModel;
+import open.dolphin.infomodel.PublishedTreeModel;
+import open.dolphin.stampbox.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-
-import open.dolphin.stampbox.AbstractStampTreeBuilder;
-import open.dolphin.stampbox.DefaultStampTreeBuilder;
-import open.dolphin.stampbox.DefaultStampTreeXmlBuilder;
-import open.dolphin.stampbox.StampTree;
-import open.dolphin.stampbox.StampTreeDirector;
-import open.dolphin.stampbox.StampTreeXmlDirector;
-import open.dolphin.infomodel.PersonalTreeModel;
-import open.dolphin.infomodel.PublishedTreeModel;
 
 /**
  * StampTreeUtils.

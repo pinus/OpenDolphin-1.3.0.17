@@ -1,17 +1,5 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileFilter;
-import java.util.Comparator;
-import java.util.stream.Stream;
-import javax.swing.JButton;
-import javax.swing.WindowConstants;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.Task;
@@ -20,6 +8,15 @@ import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSTabbedPane;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 /**
  * ImageBox.

@@ -1,29 +1,11 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.BoxView;
-import javax.swing.text.ComponentView;
-import javax.swing.text.DefaultCaret;
-import javax.swing.text.Element;
-import javax.swing.text.IconView;
-import javax.swing.text.LabelView;
-import javax.swing.text.ParagraphView;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledEditorKit;
-import javax.swing.text.View;
-import javax.swing.text.ViewFactory;
 import open.dolphin.inspector.IInspector;
 import open.dolphin.ui.MyJScrollPane;
+
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
 
 /**
  * KartePanel をつくるファクトリー.

@@ -1,11 +1,10 @@
 package open.dolphin.client;
 
-import open.dolphin.inspector.DocumentHistory;
-
 import open.dolphin.infomodel.KarteBean;
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
+import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.StatusPanel;
 

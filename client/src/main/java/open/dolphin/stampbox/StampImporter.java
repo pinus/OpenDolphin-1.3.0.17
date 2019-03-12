@@ -1,34 +1,11 @@
 package open.dolphin.stampbox;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PublishedTreeModel;
@@ -36,8 +13,16 @@ import open.dolphin.infomodel.SubscribedTreeModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.helper.PNSTriple;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * StampImporter.

@@ -1,10 +1,7 @@
 package open.dolphin.ui;
 
-import java.awt.Component;
-import java.awt.Insets;
-import javax.swing.JComponent;
-import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * quaqua で JTabbedPane を隙間無くレイアウトする

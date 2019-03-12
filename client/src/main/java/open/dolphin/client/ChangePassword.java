@@ -1,28 +1,24 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Collection;
-import javax.swing.*;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
-import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.HashUtil;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.DepartmentModel;
 import open.dolphin.infomodel.LicenseModel;
 import open.dolphin.infomodel.RoleModel;
 import open.dolphin.infomodel.UserModel;
-import open.dolphin.project.*;
-import open.dolphin.helper.HashUtil;
+import open.dolphin.project.DolphinPrincipal;
+import open.dolphin.project.Project;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Collection;
 
 /**
  * ChangePasswordPlugin.

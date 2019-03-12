@@ -1,20 +1,14 @@
 package open.dolphin.setting;
 
-import java.awt.GridBagConstraints;
-import java.util.prefs.Preferences;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SwingConstants;
 import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.project.Project;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.prefs.Preferences;
 
 /**
  * Miscellaneous Setting Panel.

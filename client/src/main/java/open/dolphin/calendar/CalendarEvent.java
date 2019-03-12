@@ -1,6 +1,6 @@
 package open.dolphin.calendar;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.stream.Stream;
 
 /**

@@ -1,6 +1,6 @@
 package open.dolphin.client;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  *

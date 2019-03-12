@@ -1,14 +1,13 @@
 package open.dolphin.client;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import javax.swing.ActionMap;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
+import open.dolphin.helper.TextComponentUndoManager;
+
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import open.dolphin.helper.TextComponentUndoManager;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 
 /**
  * CompositeArea.

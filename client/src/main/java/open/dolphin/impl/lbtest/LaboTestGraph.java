@@ -1,10 +1,13 @@
 package open.dolphin.impl.lbtest;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.util.ArrayList;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ComponentListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 /**

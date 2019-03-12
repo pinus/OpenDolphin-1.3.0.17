@@ -1,22 +1,22 @@
 package open.dolphin.order.tablepanel;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.swing.*;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.dao.OrcaEntry;
 import open.dolphin.dao.OrcaMasterDao;
 import open.dolphin.dao.SqlDaoFactory;
+import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.helper.PNSTriple;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * ItemTablePanel を extend して作った DiagnosisTablePanel.

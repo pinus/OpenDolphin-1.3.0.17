@@ -1,22 +1,17 @@
 package open.dolphin.client;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import open.dolphin.JsonConverter;
+import open.dolphin.ui.sheet.JSheet;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.io.*;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import open.dolphin.JsonConverter;
-import open.dolphin.ui.sheet.JSheet;
-import org.apache.log4j.Logger;
 
 /**
  * 編集中の KafrteEditor を定期的に一時保存する.

@@ -1,25 +1,12 @@
 package open.dolphin.client;
 
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import open.dolphin.helper.MenuActionManager;
-import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.MenuActionManager.MenuAction;
+import open.dolphin.helper.MenuSupport;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 
 /**
  * Menu Factory.

@@ -1,28 +1,13 @@
 package open.dolphin.client;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Window;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.ActionMap;
-import javax.swing.Box;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.UnsupportedLookAndFeelException;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.ui.sheet.JSheet;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * カルテ保存時の SaveDialog.

@@ -1,19 +1,11 @@
 package open.dolphin.helper;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBorderFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 /**
  * GridBagLayout の JPanel を作る.

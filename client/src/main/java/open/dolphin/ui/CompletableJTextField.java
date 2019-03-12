@@ -1,37 +1,20 @@
 package open.dolphin.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.prefs.Preferences;
-import java.util.regex.Pattern;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JWindow;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
+import org.apache.commons.lang.StringUtils;
+
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.apache.commons.lang.StringUtils;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 
 /**
  * CompletableJTextField.

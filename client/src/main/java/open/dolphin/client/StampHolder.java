@@ -1,5 +1,21 @@
 package open.dolphin.client;
 
+import open.dolphin.helper.PreferencesUtils;
+import open.dolphin.helper.StringTool;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.order.StampEditorDialog;
+import open.dolphin.project.Project;
+import open.dolphin.ui.PNSBorderFactory;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -10,21 +26,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.text.Position;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.order.StampEditorDialog;
-import open.dolphin.project.Project;
-import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.helper.PreferencesUtils;
-import open.dolphin.helper.StringTool;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
 
 /**
  * KartePane に Component　として挿入されるスタンプを保持するクラス.

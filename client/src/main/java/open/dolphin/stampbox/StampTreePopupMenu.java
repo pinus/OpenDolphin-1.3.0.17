@@ -1,14 +1,13 @@
 package open.dolphin.stampbox;
 
-import java.awt.Toolkit;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
 import open.dolphin.client.GUIConst;
 import open.dolphin.helper.MenuActionManager;
-import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.helper.MenuActionManager.MenuAction;
+import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.ui.sheet.JSheet;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * StampTree に PopupMenu を表示する.

@@ -1,13 +1,21 @@
 package open.dolphin.stampbox;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.Point;
-import java.awt.Toolkit;
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.GUIConst;
+import open.dolphin.client.GUIFactory;
+import open.dolphin.delegater.StampDelegater;
+import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.GridBagBuilder;
+import open.dolphin.helper.StampTreeUtils;
+import open.dolphin.helper.Task;
+import open.dolphin.infomodel.*;
+import open.dolphin.project.Project;
+import open.dolphin.util.ModelUtils;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -16,36 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIConst;
-import open.dolphin.client.GUIFactory;
-import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.ComponentBoundsManager;
-import open.dolphin.helper.GridBagBuilder;
-import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.helper.Task;
-import open.dolphin.infomodel.FacilityModel;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.StampTreeBean;
-import open.dolphin.util.ModelUtils;
-import open.dolphin.infomodel.PersonalTreeModel;
-import open.dolphin.infomodel.PublishedTreeModel;
-import open.dolphin.project.Project;
-import open.dolphin.helper.StampTreeUtils;
-import org.apache.log4j.Logger;
 
 /**
  * StampTreePublisher.

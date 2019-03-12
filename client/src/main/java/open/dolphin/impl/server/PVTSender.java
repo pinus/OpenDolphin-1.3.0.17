@@ -1,12 +1,13 @@
 package open.dolphin.impl.server;
 
+import open.dolphin.client.ClientContext;
+import open.dolphin.delegater.PvtDelegater;
+import open.dolphin.infomodel.PatientVisitModel;
+
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
-import open.dolphin.client.ClientContext;
-import open.dolphin.delegater.PvtDelegater;
-import open.dolphin.infomodel.PatientVisitModel;
 
 /**
  *

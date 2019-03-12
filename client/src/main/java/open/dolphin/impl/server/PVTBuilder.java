@@ -1,13 +1,5 @@
 package open.dolphin.impl.server;
 
-import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import open.dolphin.client.ClientContext;
 import open.dolphin.infomodel.*;
 import org.apache.log4j.Level;
@@ -16,6 +8,15 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
+
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * PVTBuilder

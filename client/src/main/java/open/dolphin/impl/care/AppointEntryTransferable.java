@@ -1,8 +1,9 @@
 package open.dolphin.impl.care;
 
+import open.dolphin.infomodel.AppointmentModel;
+
 import java.awt.datatransfer.*;
 import java.io.IOException;
-import open.dolphin.infomodel.AppointmentModel;
 
 /**
  * AppointEntryTransferable.

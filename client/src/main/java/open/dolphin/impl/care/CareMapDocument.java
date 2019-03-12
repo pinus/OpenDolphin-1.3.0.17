@@ -1,10 +1,5 @@
 package open.dolphin.impl.care;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
 import open.dolphin.calendar.CalendarEvent;
 import open.dolphin.client.*;
 import open.dolphin.delegater.AppointmentDelegater;
@@ -12,14 +7,20 @@ import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.ImageSearchSpec;
 import open.dolphin.dto.ModuleSearchSpec;
 import open.dolphin.helper.DBTask;
+import open.dolphin.helper.PNSPair;
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.helper.PNSPair;
+import open.dolphin.util.ModelUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.util.List;
+import java.util.*;
 
 /**
  * CareMapDocument.

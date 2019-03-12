@@ -1,14 +1,13 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.ui.MyJScrollPane;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * 参照タブ画面を提供する Bridge クラス.

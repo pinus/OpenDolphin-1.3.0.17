@@ -1,14 +1,15 @@
 package open.dolphin.impl.scheam.helper;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
 import javafx.beans.Observable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+
+import java.util.Collection;
+import java.util.Deque;
+import java.util.Iterator;
 
 /**
  * Deque (double ended queue) interface を備えた ObservableList.

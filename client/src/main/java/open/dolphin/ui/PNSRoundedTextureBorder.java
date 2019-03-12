@@ -1,17 +1,12 @@
 package open.dolphin.ui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.TexturePaint;
+import open.dolphin.helper.ImageHelper;
+
+import javax.swing.*;
+import javax.swing.border.AbstractBorder;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
-import javax.swing.border.AbstractBorder;
-import open.dolphin.helper.ImageHelper;
 
 /**
  * イメージを texture で，角丸 fill するボーダ.

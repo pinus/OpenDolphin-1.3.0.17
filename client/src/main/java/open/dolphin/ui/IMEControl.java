@@ -1,8 +1,7 @@
 package open.dolphin.ui;
 
-import java.awt.Component;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Mac で IME on/off を切り替える.

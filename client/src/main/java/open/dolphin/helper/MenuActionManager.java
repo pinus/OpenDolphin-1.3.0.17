@@ -1,5 +1,6 @@
 package open.dolphin.helper;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,10 +8,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.ImageIcon;
-import javax.swing.JMenuItem;
 
 /**
  * {@literal @}MenuAction で action を作っていろいろするクラス.

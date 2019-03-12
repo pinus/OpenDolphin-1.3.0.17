@@ -1,24 +1,19 @@
 package open.dolphin.codehelper;
 
-import java.awt.Rectangle;
+import open.dolphin.client.*;
+import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.stampbox.StampBoxPlugin;
+import open.dolphin.stampbox.StampTree;
+import open.dolphin.stampbox.StampTreeMenuBuilder;
+import open.dolphin.stampbox.StampTreeMenuEvent;
+
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
-import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ChartMediator;
-import open.dolphin.client.DiagnosisDocumentTable;
-import open.dolphin.client.EditorFrame;
-import open.dolphin.client.KartePane;
-import open.dolphin.stampbox.StampBoxPlugin;
-import open.dolphin.stampbox.StampTree;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.stampbox.StampTreeMenuBuilder;
-import open.dolphin.stampbox.StampTreeMenuEvent;
 
 /**
  * KartePane の抽象コードヘルパークラス.

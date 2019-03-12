@@ -1,18 +1,19 @@
 package open.dolphin.client;
 
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
 import javafx.application.Platform;
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.text.Position;
 import open.dolphin.helper.ImageHelper;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.ui.PNSBorderFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.text.Position;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
 
 /**
  * スタンプのデータを保持するコンポーネントで TextPane に挿入される.

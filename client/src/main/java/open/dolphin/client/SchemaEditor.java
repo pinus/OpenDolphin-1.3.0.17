@@ -1,7 +1,8 @@
 package open.dolphin.client;
 
-import java.beans.PropertyChangeListener;
 import open.dolphin.infomodel.SchemaModel;
+
+import java.beans.PropertyChangeListener;
 
 /**
  *

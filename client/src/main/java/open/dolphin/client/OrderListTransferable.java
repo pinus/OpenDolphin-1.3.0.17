@@ -1,7 +1,7 @@
 package open.dolphin.client;
 
 import java.awt.datatransfer.*;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Transferable class of the PTrain.

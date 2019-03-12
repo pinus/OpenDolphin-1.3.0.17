@@ -1,25 +1,20 @@
 package open.dolphin.impl.psearch;
 
-import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Arrays;
-import java.util.List;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JProgressBar;
-import javax.swing.JTable;
 import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.client.MainComponentPanel;
+import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.StatusPanel;
-import open.dolphin.helper.PNSPair;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * PatientSearchView 互換 JPanel.

@@ -1,29 +1,19 @@
 package open.dolphin.inspector;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.util.Objects;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.AbstractBorder;
-import javax.swing.border.Border;
 import open.dolphin.client.ChartImpl;
+import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.Gengo;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.SimpleAddressModel;
-import open.dolphin.util.MMLDate;
-import open.dolphin.helper.StringTool;
+import open.dolphin.util.Gengo;
+import open.dolphin.util.ModelUtils;
+
+import javax.swing.*;
+import javax.swing.border.AbstractBorder;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.util.Objects;
 
 /**
  * BasicInfoInspector.

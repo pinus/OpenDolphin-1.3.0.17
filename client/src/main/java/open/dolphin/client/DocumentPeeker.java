@@ -1,13 +1,14 @@
 package open.dolphin.client;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.PnsDelegater;
 import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.infomodel.KarteBean;
 import open.dolphin.infomodel.PatientVisitModel;
 import org.apache.log4j.Logger;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * ちょっとカルテ内容をチェックして pvt に必要な情報をセットする

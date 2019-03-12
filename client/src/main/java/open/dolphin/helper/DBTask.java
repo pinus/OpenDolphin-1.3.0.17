@@ -1,15 +1,15 @@
 package open.dolphin.helper;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.concurrent.*;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-
 import open.dolphin.client.Chart;
 import open.dolphin.client.ClientContext;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  *

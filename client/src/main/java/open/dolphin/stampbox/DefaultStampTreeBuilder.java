@@ -1,11 +1,12 @@
 package open.dolphin.stampbox;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * StampTree Builder クラス.

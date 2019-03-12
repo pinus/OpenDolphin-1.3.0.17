@@ -1,13 +1,9 @@
 package open.dolphin.impl.pvt;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingConstants;
 import open.dolphin.client.GUIConst;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * 状態ラベルの説明を表示する popup.

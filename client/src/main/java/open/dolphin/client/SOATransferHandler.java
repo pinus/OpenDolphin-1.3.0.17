@@ -1,17 +1,21 @@
 package open.dolphin.client;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.awt.datatransfer.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.text.*;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
+
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.Position;
+import java.awt.datatransfer.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * KartePaneTransferHandler.

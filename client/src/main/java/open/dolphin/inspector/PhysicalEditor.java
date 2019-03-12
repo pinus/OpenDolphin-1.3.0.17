@@ -1,20 +1,5 @@
 package open.dolphin.inspector;
 
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
@@ -25,6 +10,11 @@ import open.dolphin.infomodel.PhysicalModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
+
+import javax.swing.*;
+import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 身長体重データを編集するエディタクラス.

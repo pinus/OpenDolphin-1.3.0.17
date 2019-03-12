@@ -1,13 +1,14 @@
 package open.dolphin.impl.pvt;
 
-import java.awt.event.MouseEvent;
-import java.util.Date;
-import javax.swing.JTable;
 import open.dolphin.infomodel.KarteState;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
+
+import javax.swing.*;
+import java.awt.event.MouseEvent;
+import java.util.Date;
 
 /**
  *

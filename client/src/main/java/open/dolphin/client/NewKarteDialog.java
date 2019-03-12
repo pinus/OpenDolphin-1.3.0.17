@@ -1,14 +1,17 @@
 package open.dolphin.client;
 
+import open.dolphin.infomodel.PVTHealthInsuranceModel;
+import open.dolphin.project.Project;
+import open.dolphin.ui.Focuser;
+import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.ui.sheet.JSheet;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
-import open.dolphin.project.Project;
-import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.infomodel.PVTHealthInsuranceModel;
-import open.dolphin.ui.Focuser;
-import open.dolphin.ui.sheet.JSheet;
 
 /**
  * 新規カルテ作成のダイアログ.

@@ -1,19 +1,14 @@
 package open.dolphin.client;
 
-import java.awt.Graphics;
+import open.dolphin.event.ProxyAction;
+import open.dolphin.infomodel.ClaimItem;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import open.dolphin.event.ProxyAction;
-import open.dolphin.infomodel.ClaimItem;
 
 /**
  * StampHolderPopupMenu 用の，外用部位選択パネル.

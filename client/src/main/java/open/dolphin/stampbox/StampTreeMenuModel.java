@@ -1,8 +1,7 @@
 package open.dolphin.stampbox;
 
+import javax.swing.*;
 import java.util.List;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 /**
  * Stamp からメニューを作って格納するための model.

@@ -1,10 +1,11 @@
 package open.dolphin.inspector;
 
-import java.awt.Color;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
 import open.dolphin.client.ClientContext;
 import open.dolphin.event.BadgeListener;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 
 /**
  * Inspector が持つインターフェース.

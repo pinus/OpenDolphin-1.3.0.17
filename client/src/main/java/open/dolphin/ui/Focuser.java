@@ -1,9 +1,9 @@
 package open.dolphin.ui;
 
-import java.awt.Component;
-import java.awt.KeyboardFocusManager;
-import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Focuser.  Focus request を一元管理する.<br>

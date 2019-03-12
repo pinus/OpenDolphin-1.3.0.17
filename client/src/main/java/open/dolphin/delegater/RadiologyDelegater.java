@@ -1,9 +1,9 @@
 package open.dolphin.delegater;
 
-import java.util.List;
-
 import open.dolphin.infomodel.RadiologyMethodValue;
 import open.dolphin.service.RadiologyService;
+
+import java.util.List;
 
 /**
  * RadiologyDelegater.

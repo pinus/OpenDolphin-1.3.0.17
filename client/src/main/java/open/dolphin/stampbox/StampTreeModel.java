@@ -1,9 +1,10 @@
 package open.dolphin.stampbox;
 
+import open.dolphin.infomodel.ModuleInfoBean;
+
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import open.dolphin.infomodel.ModuleInfoBean;
 
 /**
  * スタンプツリーのモデルクラス.

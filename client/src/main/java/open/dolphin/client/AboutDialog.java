@@ -1,13 +1,11 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Point;
+import open.dolphin.ui.MoreInfoPanel;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
-import open.dolphin.ui.MoreInfoPanel;
 
 /**
  * About dialog.

@@ -1,13 +1,11 @@
 package open.dolphin.client;
 
-import java.awt.print.PageFormat;
-import java.util.HashMap;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.infomodel.PatientVisitModel;
+
+import javax.swing.*;
+import java.awt.print.PageFormat;
+import java.util.HashMap;
 
 /**
  * アプリケーションのメインウインドウインターフェイスクラス.

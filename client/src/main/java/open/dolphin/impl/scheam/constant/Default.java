@@ -1,7 +1,7 @@
 package open.dolphin.impl.scheam.constant;
 
-import open.dolphin.impl.scheam.FillMode;
 import javafx.scene.paint.Color;
+import open.dolphin.impl.scheam.FillMode;
 import open.dolphin.impl.scheam.State;
 
 /**

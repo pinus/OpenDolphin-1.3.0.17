@@ -1,32 +1,28 @@
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
+import open.dolphin.delegater.BusinessDelegater;
+import open.dolphin.delegater.UserDelegater;
+import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.HashUtil;
+import open.dolphin.helper.PNSTriple;
+import open.dolphin.helper.Task;
+import open.dolphin.infomodel.*;
+import open.dolphin.project.Project;
+import open.dolphin.table.IndentTableCellRenderer;
+import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSTabbedPane;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
-import javax.swing.*;
-import open.dolphin.delegater.BusinessDelegater;
-import open.dolphin.delegater.UserDelegater;
-import open.dolphin.helper.ComponentBoundsManager;
-import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.helper.Task;
-import open.dolphin.infomodel.*;
-import open.dolphin.project.Project;
-import open.dolphin.table.*;
-import open.dolphin.ui.MyJScrollPane;
-import open.dolphin.ui.PNSTabbedPane;
-import open.dolphin.helper.HashUtil;
-import open.dolphin.helper.PNSTriple;
-import org.apache.log4j.Logger;
 
 /**
  * AddUserPlugin.

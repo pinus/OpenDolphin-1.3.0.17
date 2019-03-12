@@ -1,20 +1,10 @@
 package open.dolphin.order.tablepanel;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.*;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.table.TableColumn;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
-import open.dolphin.infomodel.BundleDolphin;
-import open.dolphin.infomodel.ClaimItem;
-import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.helper.PNSTriple;
+import open.dolphin.helper.StringTool;
+import open.dolphin.infomodel.*;
 import open.dolphin.order.ClaimConst;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MMLTable;
@@ -25,8 +15,17 @@ import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.helper.PNSTriple;
-import open.dolphin.helper.StringTool;
+
+import javax.swing.*;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * ItemTablePanel.

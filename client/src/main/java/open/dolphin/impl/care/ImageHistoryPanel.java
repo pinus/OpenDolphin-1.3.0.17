@@ -1,18 +1,22 @@
 package open.dolphin.impl.care;
 
-import java.util.*;
-import java.util.List;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.table.*;
-import open.dolphin.client.*;
+import open.dolphin.client.ImageEntry;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.ImageSearchSpec;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.MyJScrollPane;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * ImageHistoryPanel.

@@ -1,15 +1,9 @@
 package open.dolphin.ui;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
 import open.dolphin.client.ClientContext;
 import open.dolphin.event.BadgeEvent;
+
+import java.awt.*;
 
 /**
  * Badge を付けられる PNSTabbedPane.

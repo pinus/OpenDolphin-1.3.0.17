@@ -1,11 +1,9 @@
 package open.dolphin.client;
 
+import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-
-import javax.swing.JComponent;
-import javax.swing.TransferHandler;
 
 /**
  * MouseDragDetecter

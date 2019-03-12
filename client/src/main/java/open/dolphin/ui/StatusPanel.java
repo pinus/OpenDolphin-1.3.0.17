@@ -1,8 +1,7 @@
 package open.dolphin.ui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import javax.swing.JProgressBar;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * 最下段のステータスパネル

@@ -1,13 +1,11 @@
 package open.dolphin.stampbox;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import open.dolphin.client.GUIConst;
 import open.dolphin.ui.PNSBorder;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
 
 /**
  * StampBox をレンダリングするクラス.（StampTree から分離）

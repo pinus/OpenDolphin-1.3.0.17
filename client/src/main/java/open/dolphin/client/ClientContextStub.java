@@ -1,10 +1,17 @@
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Insets;
-import java.awt.Point;
+import open.dolphin.infomodel.DepartmentModel;
+import open.dolphin.infomodel.DiagnosisCategoryModel;
+import open.dolphin.infomodel.DiagnosisOutcomeModel;
+import open.dolphin.infomodel.LicenseModel;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -16,17 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.swing.ImageIcon;
-import javax.swing.UIManager;
-import open.dolphin.infomodel.DepartmentModel;
-import open.dolphin.infomodel.DiagnosisCategoryModel;
-import open.dolphin.infomodel.DiagnosisOutcomeModel;
-import open.dolphin.infomodel.LicenseModel;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.app.VelocityEngine;
 
 /**
  * Dolphin Client のコンテキストクラス.

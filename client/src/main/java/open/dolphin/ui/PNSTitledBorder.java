@@ -1,16 +1,11 @@
 package open.dolphin.ui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-import javax.swing.border.AbstractBorder;
-import javax.swing.border.Border;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
+
+import javax.swing.border.AbstractBorder;
+import javax.swing.border.Border;
+import java.awt.*;
 
 /**
  * PNSTitledBorder.

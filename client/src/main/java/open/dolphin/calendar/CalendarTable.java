@@ -1,16 +1,14 @@
 package open.dolphin.calendar;
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
+import open.dolphin.infomodel.SimpleDate;
+import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.ui.PNSTitledBorder;
+import open.dolphin.util.Gengo;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
@@ -20,20 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.table.DefaultTableCellRenderer;
-
-import open.dolphin.util.Gengo;
-import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.ui.PNSBorderFactory;
-import open.dolphin.ui.PNSTitledBorder;
 
 /**
  * Calendar を表示する JTable.

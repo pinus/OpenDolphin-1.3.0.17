@@ -6,8 +6,6 @@
 
 package open.dolphin.impl.lbtest;
 
-import open.dolphin.client.*;
-
 /**
  *
  * @author  Kazushi Minagawa, Digital Globe, Inc.
