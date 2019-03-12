@@ -249,7 +249,7 @@ public class OrcaServiceDao {
      * 移行病名を調べる. endDate = "99999999" 以外は移行または廃止病名.
      *
      * @param srycds 病名コードのリスト
-     * @return そのうち移行病名になっているののリスト
+     * @return そのうち移行病名になっているののリスト (null にはならない)
      */
     public List<String> findIkouByomei(List<String> srycds) {
         return findDiagnosis(srycds).stream().filter(entry -> !"99999999".equals(entry.getEndDate()))

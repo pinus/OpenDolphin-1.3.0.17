@@ -1,8 +1,5 @@
 package open.dolphin.client;
 
-import open.dolphin.dao.OrcaEntry;
-import open.dolphin.dao.OrcaMasterDao;
-import open.dolphin.dao.SqlDaoFactory;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
@@ -1217,29 +1214,24 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
                 // 病名コードを切り出して（接頭語，接尾語は捨てる）コードのリストを作る
                 // 重複は不要なので，HashSet を使う
-                HashSet<String> codeSet = new HashSet<>();
+                List<String> codeSet = new ArrayList<>();
                 // codes のうち，７桁のものが srycd コード → これを codeSet にためる
                 rdList.stream().map(rd -> rd.getDiagnosisCode().split("\\.")).forEach(codes ->
                         Arrays.stream(codes).filter(code -> code.length() == 7).forEach(codeSet::add));
 
-                //dao 取得
-                OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
+                // codeSet のうち移行病名のリストを取得
+                OrcaDelegater delegater = new OrcaDelegater();
+                List<String> ikouList = delegater.findIkouByomei(codeSet);
 
-                // orca の tbl_byomei から code に対応する DiseaseEntry を取ってくる
-                List<OrcaEntry> entries = dao.getByomeiEntries(codeSet.toArray(new String[0]));
-                for (OrcaEntry entry : entries) {
-                    // DisUseDate が 99999999 でないならば，移行病名または廃止病名
-                    if (!entry.getEndDate().equals("99999999")) {
-                        // 対応する rd の status に移行病名をセット
-                        for (RegisteredDiagnosisModel rd : rdList) {
-                            if (rd.getDiagnosisCode().contains(entry.getCode())) {
-                                rd.setStatus(IKOU_BYOMEI_RECORD);
-                                found = true;
-                            }
+                // ikouList に合致する病名に IKOU_BYOMEI_RECORD をマークする
+                ikouList.stream().forEach(code -> {
+                    rdList.stream().forEach(rd -> {
+                        if (rd.getDiagnosisCode().contains(code)) {
+                            rd.setStatus(IKOU_BYOMEI_RECORD);
                         }
-                    }
-                }
-                return found;
+                    });
+                });
+                return ! ikouList.isEmpty();
             }
 
             @Override
@@ -1251,6 +1243,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                     for (int row : selected) {
                         diagTable.getSelectionModel().setSelectionInterval(row, row);
                     }
+                    // DiagnosisInspector に連絡
+                    diagnosisInspector.update(tableModel);
                 }
             }
         };
