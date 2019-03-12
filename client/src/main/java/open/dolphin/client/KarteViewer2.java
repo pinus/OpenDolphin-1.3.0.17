@@ -1,17 +1,15 @@
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.MouseListener;
-import java.awt.print.PageFormat;
-import java.util.Objects;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.util.ModelUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseListener;
+import java.awt.print.PageFormat;
+import java.util.Objects;
 
 /**
  * 2号カルテを View する ChartDocument.
@@ -289,6 +287,13 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
         return false;
     }
 
+    /**
+     * 順序を DocInfoModel の順序で決める.
+     * firstConfirmDate で並べて，同日の場合は confirmDate の順番に並べる.
+     *
+     * @param other 相手
+     * @return compareTo 値
+     */
     @Override
     public int compareTo(KarteViewer2 other) {
         if (other != null && other.getClass() == this.getClass()) {

@@ -1,19 +1,9 @@
 package open.dolphin.client;
 
 import com.sun.glass.events.KeyEvent;
-
-import java.util.List;
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.prefs.Preferences;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.helper.GUIDGenerator;
+import open.dolphin.helper.PreferencesUtils;
 import open.dolphin.helper.Task;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.impl.care.CareMapDocument;
@@ -31,11 +21,20 @@ import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
 import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
-import open.dolphin.helper.GUIDGenerator;
 import open.dolphin.util.ModelUtils;
-import open.dolphin.helper.PreferencesUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.*;
+import java.util.prefs.Preferences;
 
 /**
  * 2号カルテ，傷病名，検査結果履歴等，患者の総合的データを提供するクラス.
@@ -68,8 +67,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private ChartMediator mediator;
     // State Mgr
     private StateMgr stateMgr;
-    // MML送信 listener
-    private MmlMessageListener mmlListener;
     // このチャートの KarteBean
     private KarteBean karte;
     // GlassPane
@@ -82,7 +79,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private final Preferences prefs;
     public static final String PN_FRAME = "chart.frame";
 
-    // getDiagnosisDocument() に loadDocuments() が終わったことを知らせる lock オブジェクトta
+    // getDiagnosisDocument() に loadDocuments() が終わったことを知らせる lock オブジェクト
     public final boolean[] loadDocumentsDone = {false};
 
     /**
@@ -703,15 +700,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // IME off
         IMEControl.setImeOff(getFrame());
-    }
-
-    /**
-     * MML送信リスナを返す.
-     *
-     * @return MML送信リスナ
-     */
-    public MmlMessageListener getMMLListener() {
-        return mmlListener;
     }
 
     /**

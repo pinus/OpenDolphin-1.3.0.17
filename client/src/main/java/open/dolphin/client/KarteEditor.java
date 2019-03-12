@@ -1,23 +1,26 @@
 package open.dolphin.client;
 
-import java.awt.*;
-import java.awt.print.PageFormat;
-import java.util.*;
-import java.util.prefs.Preferences;
-import javax.swing.*;
-import javax.swing.text.BadLocationException;
-
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.event.CompletionListener;
 import open.dolphin.helper.DBTask;
+import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.DateUtils;
 import open.dolphin.util.ModelUtils;
-import open.dolphin.helper.StringTool;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
+import java.awt.print.PageFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Objects;
+import java.util.prefs.Preferences;
 
 /**
  * 2号カルテクラス.
@@ -358,7 +361,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
      *
      * @return SaveParams
      */
-    private SaveParams composeSaveParams() {
+    private SaveParams getSaveParams() {
         // Title の設定
         String title = StringTool.isEmpty(model.getDocInfo().getTitle()) ?
                 Project.getProjectStub().isUseTop15AsTitle() ?
@@ -420,6 +423,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         return params;
     }
 
+    /**
+     * カルテを保存する.
+     */
     @Override
     public void save() {
 
@@ -430,12 +436,16 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         }
 
         // 保存ダイアログを表示し，パラメータを得る
-        SaveParams params = composeSaveParams();
+        SaveParams params = getSaveParams();
 
         // ダイアログで破棄だった場合はリターンする
         if (params.getSelection() == SaveDialog.DISPOSE) {
             // save される前に EditorFrame に Termination を送って dispose する
             completionListener.completed();
+            return;
+
+        } else if (params.getSelection() == SaveDialog.CANCEL) {
+            // cancel の場合はそのまま帰る
             return;
         }
 

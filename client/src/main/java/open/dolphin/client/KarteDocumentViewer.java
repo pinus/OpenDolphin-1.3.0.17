@@ -1,23 +1,28 @@
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.awt.Frame;
-import java.awt.event.*;
-import java.util.*;
-import java.util.prefs.Preferences;
-import javax.swing.*;
-
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.project.Project;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.sheet.JSheet;
+import open.dolphin.util.ModelUtils;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * KarteDocumentViewer.
@@ -351,8 +356,8 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             }
 
             // 時間軸でソート
-            if (ascending) { Collections.sort(karteList); }
-            else { Collections.sort(karteList, Collections.reverseOrder()); }
+            if (ascending) { karteList.sort(Comparator.naturalOrder()); }
+            else { karteList.sort(Comparator.reverseOrder()); }
         }
 
         if (! karteList.isEmpty()) {

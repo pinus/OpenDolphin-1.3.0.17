@@ -1,18 +1,20 @@
 package open.dolphin.client;
 
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
 import open.dolphin.util.MMLDate;
 import org.apache.log4j.Logger;
 
+import java.util.Comparator;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 /**
  * 最終受診日を調べる: getEntryCollection("visit") なんていいものがあるのを知って大幅に簡略化した
- *    ただ，これは KarteEditor を開いて閉じると，あとは null を返すようになる
- *    なので，ChartImpl が開かれたときにインスタンス作って，後は使い回ししないとダメ
+ * ただ，これは KarteEditor を開いて閉じると，あとは null を返すようになる
+ * なので，ChartImpl が開かれたときにインスタンス作って，後は使い回ししないとダメ
+ * <p>
+ * 今日受診していたら今日の日付，今日受診していない場合は History の最終受診日
+ * 今日受診していても，History の最終受診日を知りたい場合は InHistory を使う
  *
- *    今日受診していたら今日の日付，今日受診していない場合は History の最終受診日
- *    今日受診していても，History の最終受診日を知りたい場合は InHistory を使う
  * @author pns
  */
 public class LastVisit {
@@ -28,7 +30,7 @@ public class LastVisit {
     // 今日の受診を除く最終受診日の時間なし mmlDate 形式 */
     private String lastVisitInHistoryMML = null;
 
-    public LastVisit (Chart context) {
+    public LastVisit(Chart context) {
         this.context = context;
         logger = ClientContext.getBootLogger();
 
@@ -38,25 +40,26 @@ public class LastVisit {
         //System.out.println("LastVisit list=" + list);
         if (list == null || list.isEmpty()) return;
 
-        Collections.sort(list);
-        String mmlDateTime = list.get(list.size()-1);
+        list.sort(Comparator.naturalOrder());
+        String mmlDateTime = list.get(list.size() - 1);
         lastVisitMML = MMLDate.trimTime(mmlDateTime);
         lastVisitGC = MMLDate.getCalendar(mmlDateTime);
 
         // lastVisit が今日かどうか
         String today = MMLDate.getDate();
-        if (today.equals(lastVisitMML)) list.remove(list.size()-1);
+        if (today.equals(lastVisitMML)) list.remove(list.size() - 1);
 
         if (list.isEmpty()) return;
         // 今日の受診より１回前の受診
-        mmlDateTime = list.get(list.size()-1);
+        mmlDateTime = list.get(list.size() - 1);
         lastVisitInHistoryMML = MMLDate.trimTime(mmlDateTime);
         lastVisitInHistoryGC = MMLDate.getCalendar(mmlDateTime);
     }
 
     /**
      * 今日を除いた最終受診日（時間なしの mmlDate 形式：2008-02-01）
-     * @return
+     *
+     * @return ISO_DATE
      */
     public String getLastVisitInHistory() {
         return MMLDate.trimTime(lastVisitInHistoryMML);
@@ -64,14 +67,16 @@ public class LastVisit {
 
     /**
      * 今日を除いた最終受診日（int 配列形式 int[0]=year, int[1]=month(0～11), int[2]=day）
-     * @return
+     *
+     * @return { year, month, day }
      */
     public int[] getLastVisitInHistoryYmd() {
         return MMLDate.getCalendarYMD(lastVisitInHistoryMML);
     }
 
     /**
-     *  今日を除いた最終受診日（GlegorianCaledar 形式）
+     * 今日を除いた最終受診日（GlegorianCaledar 形式）
+     *
      * @return DocumentHistory のテーブル上の最終受診日（GlegorianCaledar 形式）
      */
     public GregorianCalendar getLastVisitInHistoryGc() {
@@ -80,7 +85,8 @@ public class LastVisit {
 
     /**
      * 最終受診日を時間なしの mmlDate 形式（2008-02-01）で返す
-     * @return
+     *
+     * @return ISO_DATE
      */
     public String getLastVisit() {
         return lastVisitMML;
@@ -88,7 +94,8 @@ public class LastVisit {
 
     /**
      * 最終受診日を，int 配列 int[0]=year, int[1]=month, int[2]=day で返す (month は 0-11)
-     * @return
+     *
+     * @return { year, month, day }
      */
     public int[] getLastVisitYmd() {
         return MMLDate.getCalendarYMD(lastVisitMML);
@@ -96,7 +103,8 @@ public class LastVisit {
 
     /**
      * 最終受診日を GlegorianCalendar で返す
-     * @return
+     *
+     * @return GregorianCalendar
      */
     public GregorianCalendar getLastVisitGc() {
         return lastVisitGC;

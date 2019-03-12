@@ -1,29 +1,16 @@
 package open.dolphin.stampbox;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.*;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JList;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextPane;
-import open.dolphin.client.Chart;
-import open.dolphin.client.ChartImpl;
-import open.dolphin.client.DiagnosisDocument;
-import open.dolphin.client.EditorFrame;
-import open.dolphin.client.GUIConst;
-import open.dolphin.client.KartePane;
-import open.dolphin.client.KarteStyledDocument;
+import open.dolphin.client.*;
 import open.dolphin.helper.MouseHelper;
+import open.dolphin.helper.StampTreeUtils;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.inspector.DiagnosisInspector;
-import open.dolphin.helper.StampTreeUtils;
+
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
 
 /**
  * UserStampBox.
@@ -36,27 +23,35 @@ public class UserStampBox extends AbstractStampBox {
 
     private static final String BOX_INFO = "個人用スタンプ箱";
 
-    /** パススタンプのタブ番号 */
+    /**
+     * パススタンプのタブ番号
+     */
     private int pathIndex;
 
-    /** ORCA セットのタブ番号 */
+    /**
+     * ORCA セットのタブ番号
+     */
     private int orcaIndex;
 
-    /** タブの順番をセットする HashMap */
+    /**
+     * タブの順番をセットする HashMap
+     */
     private final HashMap<String, Integer> tabMap = new HashMap<>();
 
-    /** 好みの順番 */
+    /**
+     * 好みの順番
+     */
     private final String[] orderedTabName = {
-        "処 方", "傷病名", "初診・再診", "指導・在宅", "テキスト",
-        "処 置", "手 術", "生体検査", "生理検査", "細菌検査", "検体検査",
-        "注 射", "パ ス", "汎 用", "放射線", "ORCA", "その他"
+            "処 方", "傷病名", "初診・再診", "指導・在宅", "テキスト",
+            "処 置", "手 術", "生体検査", "生理検査", "細菌検査", "検体検査",
+            "注 射", "パ ス", "汎 用", "放射線", "ORCA", "その他"
     };
 
     public UserStampBox() {
         super();
 
         // tabMap に順番情報をセット
-        for (int i=0; i< orderedTabName.length; i++) {
+        for (int i = 0; i < orderedTabName.length; i++) {
             tabMap.put(orderedTabName[i], i);
         }
     }
@@ -75,7 +70,7 @@ public class UserStampBox extends AbstractStampBox {
         StampTreeTransferHandler transferHandler = new StampTreeTransferHandler();
 
         // userTrees を順番に並べ替える
-        Collections.sort(userTrees, Comparator.comparingInt(o -> tabMap.get(o.getTreeName())));
+        userTrees.sort(Comparator.comparingInt(o -> tabMap.get(o.getTreeName())));
 
         // StampBox(TabbedPane) へリスト順に格納する
         // 一つのtabへ一つのtreeが対応
@@ -95,17 +90,22 @@ public class UserStampBox extends AbstractStampBox {
             }
 
             // Stamp を右クリック／ダブルクリックしたときの動作設定
-            stampTree.addMouseListener(new MouseAdapter(){
+            stampTree.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    if (e.isPopupTrigger()) { showPopup(e); }
-                    else if (e.getClickCount() == 2 && ! MouseHelper.mouseMoved()) { directInput(e); }
+                    if (e.isPopupTrigger()) {
+                        showPopup(e);
+                    } else if (e.getClickCount() == 2 && !MouseHelper.mouseMoved()) {
+                        directInput(e);
+                    }
                 }
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     // Windows
-                    if (e.isPopupTrigger()) { showPopup(e); }
+                    if (e.isPopupTrigger()) {
+                        showPopup(e);
+                    }
                 }
 
                 /*
@@ -120,7 +120,7 @@ public class UserStampBox extends AbstractStampBox {
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
                         // 傷病名の popup に，カルテに病名を挿入する特別メニューを加える
                         List<ChartImpl> allCharts = ChartImpl.getAllChart();
-                        if (! allCharts.isEmpty()) {
+                        if (!allCharts.isEmpty()) {
                             popup.insert(new JPopupMenu.Separator(), 0);
                             allCharts.forEach(chart -> popup.insert(new SendDiagnosisAction(chart, stampTree), 0));
                         }
@@ -128,7 +128,7 @@ public class UserStampBox extends AbstractStampBox {
                     } else {
                         // それ以外の popup でも PPane にスタンプを挿入できるようにする
                         List<Chart> allFrames = EditorFrame.getAllEditorFrames();
-                        if (! allFrames.isEmpty()) {
+                        if (!allFrames.isEmpty()) {
                             popup.insert(new JPopupMenu.Separator(), 0);
                             allFrames.forEach(chart -> popup.insert(new SendStampAction(chart, stampTree), 0));
                         }
@@ -142,11 +142,13 @@ public class UserStampBox extends AbstractStampBox {
                  */
                 private void directInput(MouseEvent e) {
                     StampTreeNode selected = stampTree.getSelectedNode();
-                    if (selected == null) { return; }
+                    if (selected == null) {
+                        return;
+                    }
 
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
                         List<ChartImpl> allCharts = ChartImpl.getAllChart();
-                        if (! allCharts.isEmpty()) {
+                        if (!allCharts.isEmpty()) {
                             ChartImpl chart = allCharts.get(0);
                             DiagnosisDocument doc = chart.getDiagnosisDocument();
                             doc.importStampList(getStampList(selected), 0);
@@ -154,7 +156,7 @@ public class UserStampBox extends AbstractStampBox {
 
                     } else {
                         List<Chart> allFrames = EditorFrame.getAllEditorFrames();
-                        if (! allFrames.isEmpty()) {
+                        if (!allFrames.isEmpty()) {
                             Chart frame = allFrames.get(0);
                             KartePane pane = ((EditorFrame) frame).getEditor().getPPane();
                             List<ModuleInfoBean> stampList = getStampList(selected);
@@ -179,7 +181,7 @@ public class UserStampBox extends AbstractStampBox {
                 public void keyPressed(KeyEvent e) {
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
                         List<ChartImpl> allCharts = ChartImpl.getAllChart();
-                        if (! allCharts.isEmpty()) {
+                        if (!allCharts.isEmpty()) {
                             ChartImpl chart = allCharts.get(0);
                             DiagnosisInspector inspector = chart.getDiagnosisInspector();
                             JList<RegisteredDiagnosisModel> diagList = inspector.getList();
@@ -199,6 +201,7 @@ public class UserStampBox extends AbstractStampBox {
 
     /**
      * 引数のタブ番号に対応するStampTreeにエディタから発行があるかどうかを返す.
+     *
      * @param index タブ番号
      * @return エディタから発行がある場合に true
      */
@@ -209,7 +212,8 @@ public class UserStampBox extends AbstractStampBox {
 
     /**
      * StampEditor が無いタブを enable/disable 切換.
-     * @param b
+     *
+     * @param b true=enable
      */
     @Override
     public void setHasNoEditorEnabled(boolean b) {
@@ -224,8 +228,9 @@ public class UserStampBox extends AbstractStampBox {
 
     /**
      * 選択されたスタンプをリストにする.
-     * @param selected
-     * @return
+     *
+     * @param selected selected StampTreeNode
+     * @return List of ModuleInfoBean
      */
     public List<ModuleInfoBean> getStampList(StampTreeNode selected) {
 
@@ -270,8 +275,9 @@ public class UserStampBox extends AbstractStampBox {
 
         /**
          * アクションの名前（メニューに表示される文字列）
-         * @param chart
-         * @return
+         *
+         * @param chart Chart
+         * @return アクションの名前
          */
         public String getName(Chart chart) {
             String id = chart.getKarte().getPatient().getPatientId();
@@ -290,13 +296,15 @@ public class UserStampBox extends AbstractStampBox {
 
         public SendDiagnosisAction(Chart chart, StampTree tree) {
             super(chart, tree);
-            doc = ((ChartImpl)chart).getDiagnosisDocument();
+            doc = ((ChartImpl) chart).getDiagnosisDocument();
         }
 
         @Override
         public void actionPerformed(ActionEvent ev) {
             StampTreeNode selected = tree.getSelectedNode();
-            if (selected == null) { return; }
+            if (selected == null) {
+                return;
+            }
 
             List<ModuleInfoBean> stampList = getStampList(selected);
             doc.importStampList(stampList, 0);
@@ -321,7 +329,9 @@ public class UserStampBox extends AbstractStampBox {
         @Override
         public void actionPerformed(ActionEvent ev) {
             StampTreeNode selected = tree.getSelectedNode();
-            if (selected == null) { return; }
+            if (selected == null) {
+                return;
+            }
 
             List<ModuleInfoBean> stampList = getStampList(selected);
             // caret を最後に送ってから import する

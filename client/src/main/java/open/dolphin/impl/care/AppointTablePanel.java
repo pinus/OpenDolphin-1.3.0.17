@@ -1,17 +1,21 @@
 package open.dolphin.impl.care;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.table.*;
 import open.dolphin.infomodel.AppointmentModel;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.project.Project;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.util.MMLDate;
+import open.dolphin.util.ModelUtils;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * AppointTablePanel.
@@ -23,9 +27,9 @@ import open.dolphin.util.MMLDate;
 public class AppointTablePanel extends JPanel {
     private static final long serialVersionUID = 1013931150179503017L;
 
-    private final String[] COLUMN_NAMES   = { "予約日","内  容","メ   モ" };
-    private final int[] COLUMN_WIDTH      = {90, 90,300};
-    private final int MEMO_COLUMN         = 2;
+    private final String[] COLUMN_NAMES = {"予約日", "内  容", "メ   モ"};
+    private final int[] COLUMN_WIDTH = {90, 90, 300};
+    private final int MEMO_COLUMN = 2;
 
     private CareTableModel tableModel;
     private JTable appointTable;
@@ -52,7 +56,7 @@ public class AppointTablePanel extends JPanel {
 
         // Set the column width
         TableColumn column;
-        for (int i=0; i < COLUMN_WIDTH.length; i++) {
+        for (int i = 0; i < COLUMN_WIDTH.length; i++) {
             column = appointTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(COLUMN_WIDTH[i]);
         }
@@ -61,16 +65,17 @@ public class AppointTablePanel extends JPanel {
                 MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        JPanel cmd = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5,0));
+        JPanel cmd = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         cmd.add(updateBtn);
-        updateBtn.setMargin(new Insets(2,2,2,2));
+        updateBtn.setMargin(new Insets(2, 2, 2, 2));
         this.add(cmd, BorderLayout.NORTH);
         this.add(scroller, BorderLayout.CENTER);
     }
 
     /**
      * 親の ChartDocument を登録する.
-     * @param doc
+     *
+     * @param doc CareMapDocument
      */
     public void setParent(CareMapDocument doc) {
         parent = doc;
@@ -78,7 +83,8 @@ public class AppointTablePanel extends JPanel {
 
     /**
      * AppointmentModel のリストを登録する.
-     * @param list
+     *
+     * @param list list of AppointomentModel
      */
     public void setAppointmentList(List<AppointmentModel> list) {
         tableModel.setObjectList(list);
@@ -86,7 +92,8 @@ public class AppointTablePanel extends JPanel {
 
     /**
      * AppointmentModel を更新して，テーブルの行選択する.
-     * @param appoint
+     *
+     * @param appoint AppointmentModel
      */
     public void updateAppoint(AppointmentModel appoint) {
         tableModel.updateAppoint(appoint);
@@ -97,11 +104,12 @@ public class AppointTablePanel extends JPanel {
 
     /**
      * MmlDate に一致する行を選択する.
-     * @param mmlDate
+     *
+     * @param mmlDate ISO_DATE
      */
     private void findAppoint(String mmlDate) {
-        for (int i=0; i<tableModel.getObjectCount(); i++) {
-            String val = (String)tableModel.getValueAt(i, 0); // date column
+        for (int i = 0; i < tableModel.getObjectCount(); i++) {
+            String val = (String) tableModel.getValueAt(i, 0); // date column
             if (val.equals(mmlDate)) {
                 appointTable.setRowSelectionInterval(i, i);
                 break;
@@ -121,9 +129,10 @@ public class AppointTablePanel extends JPanel {
 
         /**
          * メモ列だけ編集できる.
-         * @param row
-         * @param col
-         * @return
+         *
+         * @param row 行
+         * @param col 列
+         * @return 編集できるかどうか
          */
         @Override
         public boolean isCellEditable(int row, int col) {
@@ -134,7 +143,9 @@ public class AppointTablePanel extends JPanel {
         public Object getValueAt(int row, int col) {
 
             AppointmentModel entry = getObject(row);
-            if (entry == null) { return null; }
+            if (entry == null) {
+                return null;
+            }
 
             String ret = null;
             switch (col) {
@@ -154,14 +165,17 @@ public class AppointTablePanel extends JPanel {
 
         /**
          * メモ列に文字列を入れる.
-         * @param val
-         * @param row
-         * @param col
+         *
+         * @param val 値
+         * @param row 行
+         * @param col 列
          */
         @Override
         public void setValueAt(Object val, int row, int col) {
             String str = (String) val;
-            if (col != MEMO_COLUMN || str == null || str.trim().equals("")) { return; }
+            if (col != MEMO_COLUMN || str == null || str.trim().equals("")) {
+                return;
+            }
 
             AppointmentModel entry = getObject(row);
 
@@ -174,7 +188,7 @@ public class AppointTablePanel extends JPanel {
 
                 fireTableCellUpdated(row, col);
 
-                if (! dirty) {
+                if (!dirty) {
                     dirty = true;
                     parent.setDirty(dirty);
                 }
@@ -183,7 +197,8 @@ public class AppointTablePanel extends JPanel {
 
         /**
          * update AppointmentModel.
-         * @param appoint
+         *
+         * @param appoint AppointmentModel
          */
         public void updateAppoint(AppointmentModel appoint) {
 
@@ -205,28 +220,32 @@ public class AppointTablePanel extends JPanel {
 
         /**
          * ObjectList に entry を加えてソートする.
-         * @param entry
+         *
+         * @param entry AppoitmentModel
          */
         public void addAppointEntry(AppointmentModel entry) {
             addRow(entry);
             // AppointmentModel は日付でソートされる.
-            Collections.sort(getObjectList());
+            getObjectList().sort(Comparator.naturalOrder());
             int index = getObjectCount() - 1;
             fireTableRowsUpdated(0, index);
         }
 
         /**
          * appoint と一致する行を返す. 内容ではなくオブジェクトとして一致するかどうか.
-         * @param appoint
+         *
+         * @param appoint AppointmentModel
          * @return 一致行があれば行数，なければ -1
          */
         private int findAppointEntry(AppointmentModel appoint) {
 
             List<AppointmentModel> appList = getObjectList();
-            if (appList == null) { return -1; }
+            if (appList == null) {
+                return -1;
+            }
 
             int foundRow = -1;
-            for (int i=0; i<appList.size(); i++) {
+            for (int i = 0; i < appList.size(); i++) {
                 if (appoint == appList.get(i)) {
                     foundRow = i;
                     break;
@@ -247,8 +266,8 @@ public class AppointTablePanel extends JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
-                                   boolean isSelected, boolean hasFocus,
-                                   int row, int column) {
+                                                       boolean isSelected, boolean hasFocus,
+                                                       int row, int column) {
             //JLabel c = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             if (isSelected) {
@@ -256,7 +275,7 @@ public class AppointTablePanel extends JPanel {
                     setBackground(table.getSelectionBackground());
                     setForeground(table.getSelectionForeground());
                 } else {
-                    setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                    setBackground((Color) table.getClientProperty("JTable.backgroundOffFocus"));
                     setForeground(table.getForeground());
                 }
             } else {
@@ -287,7 +306,7 @@ public class AppointTablePanel extends JPanel {
                     Color c = parent.getAppointColor(entry.getName());
                     setBackground(c);
                     int bright = c.getBlue() + c.getRed() + c.getGreen();
-                    if (bright > 3*128) {
+                    if (bright > 3 * 128) {
                         setForeground(Color.BLACK);
                     } else {
                         setForeground(Color.WHITE);

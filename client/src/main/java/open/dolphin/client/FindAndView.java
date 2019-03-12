@@ -1,28 +1,24 @@
 package open.dolphin.client;
 
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
+import open.dolphin.ui.sheet.JSheet;
+
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-import open.dolphin.ui.sheet.JSheet;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
- *
  * @author pns thx for masuda sensei
  */
 public class FindAndView {
 
-    private static final Color SELECTED_COLOR = new Color(255,180,66); //カーソルがある部分の色
+    private static final Color SELECTED_COLOR = new Color(255, 180, 66); //カーソルがある部分の色
     private static final String SELECTED_COLOR_HEX = "#FFB442";
-    private static final Color FOUND_COLOR = new Color(243,255,15); //黄色っぽい色
+    private static final Color FOUND_COLOR = new Color(243, 255, 15); //黄色っぽい色
     private static final String FOUND_COLOR_HEX = "#F3FF0F";
     //private static final Color SELECTED_BORDER = new Color(255, 0, 153); //stampHolder の選択色
 
@@ -50,10 +46,11 @@ public class FindAndView {
     /**
      * findFirst 検索対象のパネルをスキャンして，検索結果を positions データベースに入れる.
      * さらに最初に見つかった部分を表示する
-     * @param text
-     * @param soaIsOn
-     * @param pIsOn
-     * @param panel
+     *
+     * @param text    target text
+     * @param soaIsOn include soa or not
+     * @param pIsOn   include p or not
+     * @param panel   target panel
      */
     public void showFirst(String text, boolean soaIsOn, boolean pIsOn, JPanel panel) {
 
@@ -61,7 +58,7 @@ public class FindAndView {
         searchText = text;
         scrollerPanel = panel;
         defaultAttr.addAttribute(StyleConstants.Background,
-                ((KartePanel)panel.getComponent(0)).getSoaTextPane().getBackground());
+                ((KartePanel) panel.getComponent(0)).getSoaTextPane().getBackground());
 
         int kpCount = panel.getComponentCount(); // panel に組み込まれている kartePanel の数
         int kpHeight = 0; // 後でソートするために，scrollerPanel 上の y 座標を記録するとき使う
@@ -69,7 +66,7 @@ public class FindAndView {
         // 前回検索のマーキング全部クリアする
         clearMarking(panel);
 
-        for (int i=0; i<kpCount; i++) {
+        for (int i = 0; i < kpCount; i++) {
             KartePanel kp = (KartePanel) panel.getComponent(i);
             JTextPane soaPane = kp.getSoaTextPane();
             JTextPane pPane = kp.getPTextPane();
@@ -85,7 +82,7 @@ public class FindAndView {
                         int y = kpHeight + soaPane.modelToView(pos).y;
                         foundDataList.addRow(y, true, soaPane, pos, null);
                         // 次の検索
-                        pos = soaPane.getText().indexOf(text, pos+1);
+                        pos = soaPane.getText().indexOf(text, pos + 1);
                     }
                 }
                 // pPane の text, stamp 検索 ----------------------------------------
@@ -99,7 +96,7 @@ public class FindAndView {
                         foundDataList.addRow(y, true, pPane, pos, null);
 
                         // 次の検索
-                        pos = pPane.getText().indexOf(text, pos+1);
+                        pos = pPane.getText().indexOf(text, pos + 1);
                     }
 
                     // 次に stamp 検索
@@ -148,12 +145,14 @@ public class FindAndView {
             showNotFoundDialog("検索", "はみつかりませんでした");
         }
     }
+
     /**
      * 検索結果データベース(positions)を元に見つかった部分を表示する.
-     * @param panel
-     * @param next
+     *
+     * @param panel target panel
+     * @param next  true=次を検索
      */
-    private void show (JPanel panel, boolean next) {
+    private void show(JPanel panel, boolean next) {
         // すでに JSheet が出ている場合は，toFront してリターン
         if (JSheet.isAlreadyShown(scrollerPanel)) {
             SwingUtilities.getWindowAncestor(scrollerPanel).toFront();
@@ -162,7 +161,7 @@ public class FindAndView {
 
         // 検索結果が１つだったらすぐリターン
         if (foundDataList.getRowCount() <= 1) {
-            showNotFoundDialog(next? "次を検索" : "前を検索", "はこれだけです");
+            showNotFoundDialog(next ? "次を検索" : "前を検索", "はこれだけです");
             return;
         }
 
@@ -188,7 +187,7 @@ public class FindAndView {
                     }
                 }
             } else {
-                row --;
+                row--;
                 if (row < 0) {
                     row = foundDataList.getRowCount() - 1;
                     if (showConfirmDialog("文書の最初に戻りました。最後からもう一度検索しますか？") == JOptionPane.NO_OPTION) {
@@ -213,44 +212,54 @@ public class FindAndView {
 
     /**
      * 検索文字列をハイライト表示するための関連メソッド.
-     * @param pane
-     * @param pos
+     *
+     * @param pane JTextPane
+     * @param pos  position
      */
     private void setOnCursorAttr(JTextPane pane, int pos) {
         pane.getStyledDocument().setCharacterAttributes(pos, searchText.length(), onCursorAttr, false);
     }
+
     private void setOnCursorAttr(StampHolder sh) {
         setAttr(sh, FONT_SELECTED);
     }
+
     private void setFoundAttr(JTextPane pane, int pos) {
         pane.getStyledDocument().setCharacterAttributes(pos, searchText.length(), foundAttr, false);
     }
+
     private void setFoundAttr(StampHolder sh) {
         setAttr(sh, FONT_FOUND);
     }
+
     private void setAttr(StampHolder sh, String fontTag) {
         sh.setAttr(searchText, fontTag, FONT_END);
         //sh.repaint();
     }
+
     private void removeAttr(JTextPane pane, int pos) {
         pane.getStyledDocument().setCharacterAttributes(pos, searchText.length(), defaultAttr, false);
     }
+
     private void removeAttr(StampHolder sh) {
         sh.removeAttr();
         //sh.repaint();
     }
-    public void showNext (JPanel panel) {
+
+    public void showNext(JPanel panel) {
         show(panel, true);
     }
-    public void showPrevious (JPanel panel) {
+
+    public void showPrevious(JPanel panel) {
         show(panel, false);
     }
 
     /**
      * 検索してカーソルがある部分をできるだけ画面の中央に表示する.
-     * @param panel
-     * @param pane
-     * @param pos
+     *
+     * @param panel target panel
+     * @param pane  JTextPane
+     * @param pos   position
      */
     private void scrollToCenter(JPanel panel, JTextPane pane, int pos) {
         try {
@@ -263,18 +272,19 @@ public class FindAndView {
             pane.scrollRectToVisible(r);
 
         } catch (BadLocationException ex) {
-            System.out.println(ex);
+            ex.printStackTrace(System.err);
         }
     }
 
     /**
      * マーキングを全てクリアする.
-     * @param panel
+     *
+     * @param panel target panel
      */
     private void clearMarking(JPanel panel) {
         int kpCount = panel.getComponentCount(); // panel に組み込まれている kartePanel の数
 
-        for (int i=0; i<kpCount; i++) {
+        for (int i = 0; i < kpCount; i++) {
             // text
             KartePanel kp = (KartePanel) panel.getComponent(i);
             JTextPane soaPane = kp.getSoaTextPane();
@@ -285,9 +295,11 @@ public class FindAndView {
 
             // stamp
             KarteStyledDocument kd = (KarteStyledDocument) pPane.getStyledDocument();
-            for (int j=0; j<kd.getLength(); j++) {
+            for (int j = 0; j < kd.getLength(); j++) {
                 StampHolder sh = (StampHolder) StyleConstants.getComponent(kd.getCharacterElement(j).getAttributes());
-                if (sh != null) { removeAttr(sh); }
+                if (sh != null) {
+                    removeAttr(sh);
+                }
             }
         }
     }
@@ -300,7 +312,7 @@ public class FindAndView {
     }
 
     private int showConfirmDialog(String message) {
-        return JSheet.showConfirmDialog( scrollerPanel.getParent(),
+        return JSheet.showConfirmDialog(scrollerPanel.getParent(),
                 message,
                 "",
                 JOptionPane.YES_NO_OPTION,
@@ -331,7 +343,7 @@ public class FindAndView {
         }
 
         public void sort() {
-            Collections.sort(list);
+            list.sort(Comparator.naturalOrder());
         }
 
         public int getY(int row) {
@@ -361,7 +373,7 @@ public class FindAndView {
             public int pos;
             public StampHolder stampHolder;
 
-            private Model(int y, boolean isText, JTextPane pane, int pos, StampHolder sh){
+            private Model(int y, boolean isText, JTextPane pane, int pos, StampHolder sh) {
                 this.y = y;
                 this.isText = isText;
                 this.pane = pane;
@@ -372,7 +384,7 @@ public class FindAndView {
             @Override
             public int compareTo(Model o) {
                 int test = o.y;
-                if (test == y){
+                if (test == y) {
                     return 0;
                 } else if (test > y) {
                     return -1;

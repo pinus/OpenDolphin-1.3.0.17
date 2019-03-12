@@ -1,40 +1,29 @@
 package open.dolphin.inspector;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.helper.DBTask;
+import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.infomodel.PhysicalModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.helper.PNSTriple;
+import open.dolphin.util.ModelUtils;
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.*;
 
 /**
  * 身長体重インスペクタクラス.
@@ -53,7 +42,8 @@ public class PhysicalInspector implements IInspector {
 
     /**
      * PhysicalInspectorオブジェクトを生成する.
-     * @param parent
+     *
+     * @param parent PatientInspector
      */
     public PhysicalInspector(PatientInspector parent) {
         context = parent.getContext();
@@ -69,7 +59,7 @@ public class PhysicalInspector implements IInspector {
         view = new PhysicalView();
         view.setName(CATEGORY.name());
 
-        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+        List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" 身長", String.class, "getHeight"),
                 new PNSTriple<>(" 体重", String.class, "getWeight"),
                 new PNSTriple<>(" BMI", String.class, "getBmi"),
@@ -87,7 +77,7 @@ public class PhysicalInspector implements IInspector {
         view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
 
         // 列幅を調整する カット&トライ
-        int[] cellWidth = new int[]{50,50,50,110};
+        int[] cellWidth = new int[]{50, 50, 50, 110};
         for (int i = 0; i < cellWidth.length; i++) {
             TableColumn column = view.getTable().getColumnModel().getColumn(i);
             column.setPreferredWidth(cellWidth[i]);
@@ -97,7 +87,9 @@ public class PhysicalInspector implements IInspector {
         view.getTable().addMouseListener(new MouseAdapter() {
             private void mabeShowPopup(MouseEvent e) {
                 // isReadOnly対応
-                if (context.isReadOnly() || ! e.isPopupTrigger()) { return; }
+                if (context.isReadOnly() || !e.isPopupTrigger()) {
+                    return;
+                }
 
                 JPopupMenu pop = new JPopupMenu();
                 JMenuItem item = new JMenuItem("追加");
@@ -147,6 +139,7 @@ public class PhysicalInspector implements IInspector {
 
     /**
      * レイアウトパネルを返す.
+     *
      * @return レイアウトパネル
      */
     @Override
@@ -166,13 +159,14 @@ public class PhysicalInspector implements IInspector {
 
     /**
      * データ部分までスクロールする.
-     * @param ascending
+     *
+     * @param ascending ascending=true
      */
     private void scroll(boolean ascending) {
 
         int cnt = tableModel.getObjectCount();
         if (cnt > 0) {
-            int row = ascending? cnt - 1 : 0;
+            int row = ascending ? cnt - 1 : 0;
             Rectangle r = view.getTable().getCellRect(row, row, true);
             view.getTable().scrollRectToVisible(r);
         }
@@ -184,11 +178,16 @@ public class PhysicalInspector implements IInspector {
     @Override
     public void update() {
         List<PhysicalModel> list = context.getKarte().getPhysicalEntry();
-        if (list.isEmpty()) { return; }
+        if (list.isEmpty()) {
+            return;
+        }
 
         boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
-        if (asc) { Collections.sort(list); }
-        else { Collections.sort(list, Collections.reverseOrder()); }
+        if (asc) {
+            list.sort(Comparator.naturalOrder());
+        } else {
+            list.sort(Comparator.reverseOrder());
+        }
 
         tableModel.setObjectList(list);
         scroll(asc);
@@ -196,7 +195,8 @@ public class PhysicalInspector implements IInspector {
 
     /**
      * 身長体重データを追加する.
-     * @param model
+     *
+     * @param model PhysicalModel
      */
     public void add(final PhysicalModel model) {
 
@@ -242,7 +242,9 @@ public class PhysicalInspector implements IInspector {
             addList.add(observation);
         }
 
-        if (addList.isEmpty()) { return ; }
+        if (addList.isEmpty()) {
+            return;
+        }
 
         DBTask task = new DBTask<List<Long>>(context) {
 
@@ -280,11 +282,14 @@ public class PhysicalInspector implements IInspector {
 
     /**
      * テーブルで選択した身長体重データを削除する.
-     * @param row
+     *
+     * @param row 削除行
      */
     public void delete(final int row) {
         PhysicalModel model = tableModel.getObject(row);
-        if (model == null) { return; }
+        if (model == null) {
+            return;
+        }
 
         final List<Long> list = new ArrayList<>(2);
 
@@ -328,19 +333,19 @@ public class PhysicalInspector implements IInspector {
 
         @Override
         public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
+                                                       Object value,
+                                                       boolean isSelected,
+                                                       boolean isFocused,
+                                                       int row, int col) {
             Component c = super.getTableCellRendererComponent(table,
                     value,
                     isSelected,
                     isFocused, row, col);
 
             if (isSelected) {
-                if (! table.isFocusOwner()) {
+                if (!table.isFocusOwner()) {
                     c.setForeground(table.getForeground());
-                    c.setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                    c.setBackground((Color) table.getClientProperty("JTable.backgroundOffFocus"));
                 }
             } else {
                 c.setBackground(null);

@@ -1,43 +1,27 @@
 package open.dolphin.ui;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import open.dolphin.client.KartePanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import open.dolphin.client.KartePanel;
 
 /**
  * カルテをスワイプスクロール
- *
- *      viewPos
- *      +---------------+
+ * <p>
+ * viewPos
+ * +---------------+
  * (i-1)|       (i)     |  (i+1)
  * +----+--------+----------+-----
  * |    |<-off   |      |   | KartePanel
  * |    |   set->|      |   |
  * +----+--------+----------+-----
- *      |               |
- *      +---------------+ ViewPort
+ * |               |
+ * +---------------+ ViewPort
  * i=karePageNumber
  *
  * @author pns
@@ -54,7 +38,7 @@ public class KarteScrollPane extends MyJScrollPane {
     // カルテページの先頭の画像を入れるバッファ
     private BufferedImage headImg = null;
     // snapImg と headImg のオフセット
-    private Dimension offset = new Dimension(0,0);
+    private Dimension offset = new Dimension(0, 0);
     // カルテの各ページの先頭位置を保持する
     private List<Point> positionList = null;
     // 表示中のカルテページ番号
@@ -62,24 +46,24 @@ public class KarteScrollPane extends MyJScrollPane {
     // スクロールの方向
     private int direction;
     // 現在の表示位置
-    private Point viewPos = new Point(-1,-1);
+    private Point viewPos = new Point(-1, -1);
     // 表示位置の変化を検出する
     private Point prevViewPos;
     // 表示している区画
     private Rectangle viewRect;
     // viewRect の変化を検出するための変数
-    private Rectangle prevViewRect = new Rectangle(0,0,0,0);
+    private Rectangle prevViewRect = new Rectangle(0, 0, 0, 0);
     // 不透明で塗りつぶすための alpha 値
     private static final AlphaComposite opaque = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f);
     // 影をつけるための半透明の alpha 値
-    private static final AlphaComposite translucent[] = {
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f),
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f),
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.10f),
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.06f),
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.04f),
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.02f),
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.01f),
+    private static final AlphaComposite[] translucent = {
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.10f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.06f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.04f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.02f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.01f),
     };
     // mouse caputure するパネル
     private JPanel mouseCapturePanel = null;
@@ -111,20 +95,25 @@ public class KarteScrollPane extends MyJScrollPane {
     /**
      * paintChildern で描画しておく
      * 後で，MyJScrollPane の paint で，スクロールバーを書いてもらう
-     * @param graphics
+     *
+     * @param graphics Graphics
      */
     @Override
-    protected void paintChildren(Graphics graphics){
+    protected void paintChildren(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
         super.paintChildren(g);
 
         // null check
-        if (viewport.getView() == null) { return; }
+        if (viewport.getView() == null) {
+            return;
+        }
 
         // offset = viewRect の頭から次ページカルテの頭までの距離
-        offset.width = 0; offset.height = 0;
+        offset.width = 0;
+        offset.height = 0;
 
-        block:{
+        block:
+        {
             // カルテの各ページの viewPosition を調べる
             // 表示位置によって動的に変わるので毎回新たに調べなくてはならない
             positionList = getPositionList();
@@ -134,7 +123,9 @@ public class KarteScrollPane extends MyJScrollPane {
                 // 現在の viewport のサイズ
                 viewRect = viewport.getVisibleRect();
                 // スクロールの必要がない場合は帰る
-                if (viewRect.width >= viewport.getView().getWidth()) { break block; }
+                if (viewRect.width >= viewport.getView().getWidth()) {
+                    break block;
+                }
 
                 // 現在の表示位置
                 prevViewPos = viewPos;
@@ -143,7 +134,7 @@ public class KarteScrollPane extends MyJScrollPane {
                 // スクロールに応じて，必要なスナップショットを取る
                 // ページ境界検出
                 int currentPage = 0;
-                for (int i=0; i<positionList.size(); i++) {
+                for (int i = 0; i < positionList.size(); i++) {
                     int x = positionList.get(i).x;
                     if (x > viewPos.x) {
                         if (x < viewPos.x + viewRect.width) {
@@ -154,12 +145,14 @@ public class KarteScrollPane extends MyJScrollPane {
                     }
                 }
                 // ページ境界がなければ，そのまま帰る
-                if (currentPage == 0) { break block; }
+                if (currentPage == 0) {
+                    break block;
+                }
 
                 offset.width = positionList.get(currentPage).x - viewPos.x;
 
                 if (positionList.size() > 1
-                        && (kartePageNumber != currentPage || viewRectChanged() || viewComponentChanged()) ){
+                        && (kartePageNumber != currentPage || viewRectChanged() || viewComponentChanged())) {
 
                     kartePageNumber = currentPage;
                     createBufferedImage();
@@ -184,18 +177,20 @@ public class KarteScrollPane extends MyJScrollPane {
                 g.drawImage(headImg, 0, 0, null);
                 // 素敵な shadow をつける
                 g.setColor(Color.BLACK);
-                for (int i=0; i<translucent.length; i++) {
+                for (int i = 0; i < translucent.length; i++) {
                     g.setComposite(translucent[i]);
-                    g.drawLine(offset.width-i, 0, offset.width-i, viewRect.height);
+                    g.drawLine(offset.width - i, 0, offset.width - i, viewRect.height);
                 }
 
-            // 縦スクロール
-            // 同じコードの繰り返しでかっこわるいけどスピード優先
+                // 縦スクロール
+                // 同じコードの繰り返しでかっこわるいけどスピード優先
             } else if (direction == ScrollBar.VERTICAL) {
                 // 現在の viewport のサイズ
                 viewRect = viewport.getVisibleRect();
                 // スクロールの必要がない場合は帰る
-                if (viewRect.height >= viewport.getView().getHeight()) { break block; }
+                if (viewRect.height >= viewport.getView().getHeight()) {
+                    break block;
+                }
 
                 // 現在の表示位置
                 prevViewPos = viewPos;
@@ -204,26 +199,28 @@ public class KarteScrollPane extends MyJScrollPane {
                 // スクロールに応じて，必要なスナップショットを取る
                 // ページ境界検出
                 int currentPage = 0;
-                for (int i=0; i<positionList.size(); i++) {
+                for (int i = 0; i < positionList.size(); i++) {
                     int y = positionList.get(i).y;
                     // y が viewPos.y を越えたら，ページ境界が入っている可能性あり
                     if (y > viewPos.y) {
                         // viewRect 内に入っていれば，ページ境界あり
                         // ただし，前のページの大きさが viewRect.y より大きかったらスナップ撮らないことにする
                         if (y < viewPos.y + viewRect.height
-                            && (i != 0 && (y - positionList.get(i-1).y) < viewRect.height)) {
-                                currentPage = i;
+                                && (i != 0 && (y - positionList.get(i - 1).y) < viewRect.height)) {
+                            currentPage = i;
                         }
                         break;
                     }
                 }
 
                 // ページ境界がなければ，そのまま帰る
-                if (currentPage == 0) { break block; }
+                if (currentPage == 0) {
+                    break block;
+                }
                 // ページ境界と viewRect の頭との offset
                 offset.height = positionList.get(currentPage).y - viewPos.y;
                 if (positionList.size() > 1
-                        && (kartePageNumber != currentPage || viewRectChanged() || viewComponentChanged()) ){
+                        && (kartePageNumber != currentPage || viewRectChanged() || viewComponentChanged())) {
 
                     kartePageNumber = currentPage;
                     createBufferedImage();
@@ -248,9 +245,9 @@ public class KarteScrollPane extends MyJScrollPane {
                 g.drawImage(headImg, 0, 0, null);
                 // shadow をつける
                 g.setColor(Color.BLACK);
-                for (int i=0; i<translucent.length; i++) {
+                for (int i = 0; i < translucent.length; i++) {
                     g.setComposite(translucent[i]);
-                    g.drawLine(0, offset.height-i-1, viewRect.width, offset.height-i-1);
+                    g.drawLine(0, offset.height - i - 1, viewRect.width, offset.height - i - 1);
                 }
             }
         }
@@ -259,6 +256,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
     /**
      * カルテのサイズ変更があったかどうか
+     *
      * @return
      */
     private boolean viewRectChanged() {
@@ -267,6 +265,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
     /**
      * view component に変化があったかどうか
+     *
      * @return
      */
     private boolean viewComponentChanged() {
@@ -307,6 +306,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
     /**
      * viewport.serViewPosition で使う座標をリストアップする
+     *
      * @return
      */
     private List<Point> getPositionList() {
@@ -315,7 +315,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
         int checksumX = 0, checksumY = 0;
 
-        for(Component c : child.getComponents()) {
+        for (Component c : child.getComponents()) {
             if (c instanceof KartePanel) {
                 Point p = SwingUtilities.convertPoint(c, 0, 0, child);
                 index.add(p);
@@ -327,13 +327,13 @@ public class KarteScrollPane extends MyJScrollPane {
             // これは横スクロール
             direction = ScrollBar.HORIZONTAL;
             // 念のためソートしておく
-            Collections.sort(index, xComparator);
+            index.sort(xComparator);
 
         } else if (checksumY != 0) {
             // これは縦スクロール
             direction = ScrollBar.VERTICAL;
             // 念のためソートしておく
-            Collections.sort(index, yComparator);
+            index.sort(yComparator);
 
         } else {
             direction = ScrollBar.NO_ORIENTATION;
@@ -345,6 +345,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
     /**
      * マウスイベント捕獲のための JPanel を作る
+     *
      * @return
      */
     private JPanel createMouseCapturePanel() {
@@ -368,6 +369,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
         return mouseCapturePanel;
     }
+
     /**
      * マウスイベント捕獲のための JPanel を破棄する
      */
@@ -380,18 +382,19 @@ public class KarteScrollPane extends MyJScrollPane {
 
     /**
      * 捕獲パネルのマウスイベントを，単純に contentPane に pass through する
+     *
      * @param e
      */
     private void passThroughMouseEvent(MouseEvent e) {
         // 捕獲パネルでのマウス座標を，contentPane のマウス座標に変換
-        Point p = SwingUtilities.convertPoint((JPanel)e.getSource(), e.getPoint(), contentPane);
+        Point p = SwingUtilities.convertPoint((JPanel) e.getSource(), e.getPoint(), contentPane);
         // contentPane のマウス場所のコンポネントを得る
         Component target = contentPane.findComponentAt(p);
         // そのコンポネントにイベントを送る
         if (target != null) {
-            target.dispatchEvent(SwingUtilities.convertMouseEvent((JPanel)e.getSource(), e, target));
+            target.dispatchEvent(SwingUtilities.convertMouseEvent((JPanel) e.getSource(), e, target));
             //if (e.getID() != MouseEvent.MOUSE_MOVED) System.out.println("target=" + target.getClass());
-            SwingUtilities.invokeLater(new Runnable(){
+            SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     repaint();
@@ -402,6 +405,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
     /**
      * 見せかけの部分を実体に変換して event dispatch する
+     *
      * @param e
      */
     private void translateMouseEvent(MouseEvent e) {
@@ -416,13 +420,13 @@ public class KarteScrollPane extends MyJScrollPane {
 
         if (target != null) {
             // target 上でのマウスイベントに変換
-            MouseEvent event = SwingUtilities.convertMouseEvent((JPanel)e.getSource(), e, target);
+            MouseEvent event = SwingUtilities.convertMouseEvent((JPanel) e.getSource(), e, target);
             // 実際の位置に変換
             event.translatePoint(head.x - viewPos.x, head.y - viewPos.y);
             // target に対して event 発行
             target.dispatchEvent(event);
             // viewPosition がずれることがあるので補正
-            SwingUtilities.invokeLater(new Runnable(){
+            SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     //viewport.setViewPosition(viewPos);
@@ -438,29 +442,35 @@ public class KarteScrollPane extends MyJScrollPane {
      * viewRect より小さければ前のページの頭 positionsList.get(kartePageNumber-1) になるが，
      * viewRect より大きいと，はみ出した分を補正しなくてはならない
      * residue = はみ出した分 = 見せかけ部分のページの長さ - viewRect
+     *
      * @return
      */
     private Point getHeadPoint() {
         if (positionList == null) {
             System.out.println("KarteScrollPane: positionList is null at getHeadPoint");
-            return new Point(0,0);
+            return new Point(0, 0);
         }
 
-        Point head = new Point(positionList.get(kartePageNumber-1));
+        Point head = new Point(positionList.get(kartePageNumber - 1));
         Point current = new Point(positionList.get(kartePageNumber));
         Point residue = new Point(current.x - head.x - viewRect.width, current.y - head.y - viewRect.height);
-        if (residue.x > 0) { head.x += residue.x; }
-        if (residue.y > 0) { head.y += residue.y; }
+        if (residue.x > 0) {
+            head.x += residue.x;
+        }
+        if (residue.y > 0) {
+            head.y += residue.y;
+        }
         return head;
     }
     //long l;
+
     /**
      * スナップを撮る
      */
     private void snap() {
         //l = System.currentTimeMillis();
 
-        int compCount = ((JComponent)viewport.getView()).getComponentCount();
+        int compCount = ((JComponent) viewport.getView()).getComponentCount();
         if (compCount <= kartePageNumber) {
             System.out.println("---- something is wrong");
             System.out.println("---- kartePageNumber = " + kartePageNumber);
@@ -468,9 +478,9 @@ public class KarteScrollPane extends MyJScrollPane {
             return;
         }
 
-        final JPanel p = (JPanel)((JComponent)viewport.getView()).getComponent(kartePageNumber-1);
-        if (! p.isValid()) {
-            System.out.println("invalid component = " + (kartePageNumber-1));
+        final JPanel p = (JPanel) ((JComponent) viewport.getView()).getComponent(kartePageNumber - 1);
+        if (!p.isValid()) {
+            System.out.println("invalid component = " + (kartePageNumber - 1));
 //            viewport.setViewPosition(getHeadPoint());
 //            viewport.paint(snapImg.getGraphics());
 //            viewport.setViewPosition(viewPos);
@@ -484,6 +494,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
     /**
      * 見せかけの部分にいるかどうか
+     *
      * @param e
      * @return
      */
@@ -500,6 +511,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
         /**
          * 捕獲したマウスイベントを処理する
+         *
          * @param e
          */
         private void processMouseEvent(MouseEvent e) {
@@ -515,12 +527,12 @@ public class KarteScrollPane extends MyJScrollPane {
                 }
                 // マウスでクリックしたときスタンプの選択枠を再描画するに snap 必要
                 if (positionList != null) {
-                    SwingUtilities.invokeLater(new Runnable(){
+                    SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
                             snap();
                         }
-                    } );
+                    });
                 }
 
             } else {
@@ -529,38 +541,46 @@ public class KarteScrollPane extends MyJScrollPane {
                 //System.out.println("dispose: " + e.getID());
             }
         }
+
         // process 必要なイベント
         @Override
         public void mouseClicked(MouseEvent e) {
             //System.out.println("clicked");
             processMouseEvent(e);
         }
+
         @Override
         public void mousePressed(MouseEvent e) {
             //System.out.println("pressed");
             processMouseEvent(e);
         }
+
         @Override
         public void mouseReleased(MouseEvent e) {
             processMouseEvent(e);
         }
+
         @Override
         public void mouseDragged(MouseEvent e) {
             processMouseEvent(e);
         }
+
         // pass through でよいイベント
         @Override
         public void mouseEntered(MouseEvent e) {
             passThroughMouseEvent(e);
         }
+
         @Override
         public void mouseExited(MouseEvent e) {
             passThroughMouseEvent(e);
         }
+
         @Override
         public void mouseMoved(MouseEvent e) {
             passThroughMouseEvent(e);
         }
+
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
             passThroughMouseEvent(e);

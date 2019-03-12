@@ -1,36 +1,29 @@
 package open.dolphin.inspector;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.helper.DBTask;
+import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.AllergyModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.util.ModelUtils;
 import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.project.Project;
 import open.dolphin.table.IndentTableCellRenderer;
 import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.helper.PNSTriple;
+import open.dolphin.util.ModelUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.*;
 
 /**
  * AllergyInspector.
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
@@ -46,7 +39,8 @@ public class AllergyInspector implements IInspector {
 
     /**
      * AllergyInspectorオブジェクトを生成する.
-     * @param parent
+     *
+     * @param parent PatientInspector
      */
     public AllergyInspector(PatientInspector parent) {
         context = parent.getContext();
@@ -66,7 +60,7 @@ public class AllergyInspector implements IInspector {
         table.putClientProperty("Quaqua.Table.style", "striped");
 
         // アレルギーテーブルを設定する
-        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+        List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>("　要 因", String.class, "getFactor"),
                 new PNSTriple<>("　反応程度", String.class, "getSeverity"),
                 new PNSTriple<>("　同定日", String.class, "getIdentifiedDate")
@@ -98,7 +92,9 @@ public class AllergyInspector implements IInspector {
 
             private void mabeShowPopup(MouseEvent e) {
                 //  isReadOnly対応
-                if (context.isReadOnly() || ! e.isPopupTrigger()) { return; }
+                if (context.isReadOnly() || !e.isPopupTrigger()) {
+                    return;
+                }
 
                 JPopupMenu pop = new JPopupMenu();
                 // 追加
@@ -138,7 +134,8 @@ public class AllergyInspector implements IInspector {
 
     /**
      * レイアウトパネルを返す.
-     * @return
+     *
+     * @return JPanel
      */
     @Override
     public JPanel getPanel() {
@@ -177,12 +174,12 @@ public class AllergyInspector implements IInspector {
     @Override
     public void update() {
         List<AllergyModel> list = context.getKarte().getAllergyEntry();
-        if (list != null && ! list.isEmpty()) {
+        if (list != null && !list.isEmpty()) {
             boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
             if (asc) {
-                Collections.sort(list);
+                list.sort(Comparator.naturalOrder());
             } else {
-                Collections.sort(list, Collections.reverseOrder());
+                list.sort(Comparator.reverseOrder());
             }
             tableModel.setObjectList(list);
             scroll(asc);
@@ -191,12 +188,13 @@ public class AllergyInspector implements IInspector {
 
     /**
      * アレルギーデータを追加する.
-     * @param model
+     *
+     * @param model AllergyModel
      */
     public void add(final AllergyModel model) {
 
         // GUI の同定日をTimeStampに変更する
-        Date date = ModelUtils.getDateTimeAsObject(model.getIdentifiedDate()+"T00:00:00");
+        Date date = ModelUtils.getDateTimeAsObject(model.getIdentifiedDate() + "T00:00:00");
 
         final List<ObservationModel> addList = new ArrayList<>(1);
 
@@ -242,13 +240,16 @@ public class AllergyInspector implements IInspector {
 
     /**
      * テーブルで選択したアレルギーを削除する.
-     * @param row
+     *
+     * @param row 削除行
      */
     public void delete(final int row) {
 
         AllergyModel model = tableModel.getObject(row);
 
-        if (model == null) { return; }
+        if (model == null) {
+            return;
+        }
 
         final List<Long> list = new ArrayList<>(1);
         list.add(model.getObservationId());
@@ -257,7 +258,7 @@ public class AllergyInspector implements IInspector {
 
             @Override
             protected Void doInBackground() {
-               // logger.debug("allergy delete doInBackground");
+                // logger.debug("allergy delete doInBackground");
                 DocumentDelegater ddl = new DocumentDelegater();
                 ddl.removeObservations(list);
                 return null;

@@ -1,32 +1,13 @@
 package open.dolphin.inspector;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableColumn;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.DocumentSearchSpec;
 import open.dolphin.helper.DBTask;
+import open.dolphin.helper.PNSPair;
+import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
@@ -35,12 +16,20 @@ import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.ComboBoxFactory;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSCellEditor;
-import open.dolphin.helper.PNSPair;
-import open.dolphin.helper.PNSTriple;
+
+import javax.swing.*;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.List;
+import java.util.*;
 
 /**
  * 文書履歴を取得し，表示するクラス.
- * @author Minagawa,Kazushi
+ *
+ * @author Minagawa, Kazushi
  * @author pns
  */
 public class DocumentHistory implements IInspector {
@@ -51,7 +40,7 @@ public class DocumentHistory implements IInspector {
     //private DocumentHistoryView view;
     private DocumentHistoryPanel view;
     // 抽出期間コンボボックス
-    private JComboBox<PNSPair<String,Integer>> extractionCombo;
+    private JComboBox<PNSPair<String, Integer>> extractionCombo;
     // 件数フィールド
     private JLabel countField;
     // DocumentHistoryUpdate リスナ
@@ -77,7 +66,8 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 文書履歴オブジェクトを生成する.
-     * @param parent
+     *
+     * @param parent PatientInspector
      */
     public DocumentHistory(PatientInspector parent) {
         context = parent.getContext();
@@ -97,7 +87,7 @@ public class DocumentHistory implements IInspector {
         view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 350));
 
         // selectAll (command-A) を横取りするため削除
-        view.getInputMap().remove(KeyStroke.getKeyStroke('A',java.awt.event.InputEvent.META_MASK));
+        view.getInputMap().remove(KeyStroke.getKeyStroke('A', java.awt.event.InputEvent.META_MASK));
 
         // 履歴テーブルのパラメータを取得する
         List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
@@ -118,10 +108,14 @@ public class DocumentHistory implements IInspector {
             @Override
             public void setValueAt(Object value, int row, int col) {
                 // 内容コラム以外，またはデータがない場合は何もしない
-                if (col != 1 || value == null || value.equals("")) { return; }
+                if (col != 1 || value == null || value.equals("")) {
+                    return;
+                }
 
                 DocInfoModel docInfo = getObject(row);
-                if (docInfo == null) { return; }
+                if (docInfo == null) {
+                    return;
+                }
 
                 // 文書タイトルを変更し通知する
                 docInfo.setTitle((String) value);
@@ -167,7 +161,7 @@ public class DocumentHistory implements IInspector {
         // 履歴テーブルで選択された行の文書を表示する
         ListSelectionModel slm = view.getTable().getSelectionModel();
         slm.addListSelectionListener(e -> {
-            if (! e.getValueIsAdjusting()) {
+            if (!e.getValueIsAdjusting()) {
                 JTable table = view.getTable();
                 int[] selectedRows = table.getSelectedRows();
                 if (selectedRows.length > 0) {
@@ -220,7 +214,7 @@ public class DocumentHistory implements IInspector {
     public void selectAll() {
         int r = tableModel.getObjectCount(); //rowCount だとだめ。データがないところも全部選択されてしまう
         ListSelectionModel lsm = view.getTable().getSelectionModel();
-        lsm.setSelectionInterval(0, r-1);
+        lsm.setSelectionInterval(0, r - 1);
     }
 
     /**
@@ -232,7 +226,8 @@ public class DocumentHistory implements IInspector {
 
     /**
      * update listener (from DocumentBridge)
-     * @param listener
+     *
+     * @param listener DocumentHistoryUpdateListener
      */
     public void addDocumentHistoryUpdateListener(DocumentHistoryUpdateListener listener) {
         updateListener = listener;
@@ -240,7 +235,8 @@ public class DocumentHistory implements IInspector {
 
     /**
      * selection listener (from DocumentBridge)
-     * @param listener
+     *
+     * @param listener DocumentHistorySelectionListener
      */
     public void addDocumentHistorySelectionListener(DocumentHistorySelectionListener listener) {
         selectionListener = listener;
@@ -248,6 +244,7 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 選択された文書履歴(複数)を返す.
+     *
      * @return 選択された文書履歴(複数)
      */
     public DocInfoModel[] getSelectedHistories() {
@@ -256,6 +253,7 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 束縛プロパティの選択された文書履歴(複数)を設定する. 通知を行う.
+     *
      * @param newSelected 選択された文書履歴(複数)
      */
     public void setSelectedHistories(DocInfoModel[] newSelected) {
@@ -272,6 +270,7 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 履歴の検索時にテーブルのキー入力をブロックする.
+     *
      * @param busy true の時検索中
      */
     public void blockHistoryTable(boolean busy) {
@@ -308,11 +307,11 @@ public class DocumentHistory implements IInspector {
 
             // 検索パラメータセットのDTOを生成する
             DocumentSearchSpec spec = new DocumentSearchSpec();
-            spec.setKarteId(context.getKarte().getId());	// カルテID
-            spec.setDocType(IInfoModel.DOCTYPE_KARTE);			// 文書タイプ
-            spec.setFromDate(extractionPeriod);			// 抽出期間開始
-            spec.setIncludeModifid(showModified);		// 修正履歴
-            spec.setCode(DocumentSearchSpec.DOCTYPE_SEARCH);	// 検索タイプ
+            spec.setKarteId(context.getKarte().getId());    // カルテID
+            spec.setDocType(IInfoModel.DOCTYPE_KARTE);            // 文書タイプ
+            spec.setFromDate(extractionPeriod);            // 抽出期間開始
+            spec.setIncludeModifid(showModified);        // 修正履歴
+            spec.setCode(DocumentSearchSpec.DOCTYPE_SEARCH);    // 検索タイプ
             spec.setAscending(ascending);
 
             DocInfoTask task = new DocInfoTask(context, spec, new DocumentDelegater());
@@ -324,7 +323,8 @@ public class DocumentHistory implements IInspector {
     /**
      * KarteEditor が編集終了したときはここで更新するようにする.
      * 編集したカルテを必ず選択するため.
-     * @param date
+     *
+     * @param date ISO_DATE
      */
     public void update(String date) {
         // 選択状態にすべきカルテを editDate に入れてから update()
@@ -342,9 +342,9 @@ public class DocumentHistory implements IInspector {
         // ソーティングする
         if (newHistory != null && !newHistory.isEmpty()) {
             if (ascending) {
-                Collections.sort(newHistory);
+                newHistory.sort(Comparator.naturalOrder());
             } else {
-                Collections.sort(newHistory, Collections.reverseOrder());
+                newHistory.sort(Comparator.reverseOrder());
             }
         }
 
@@ -363,7 +363,7 @@ public class DocumentHistory implements IInspector {
         // 束縛プロパティの通知を行う -> DocumetnBridgeImpl
         updateListener.updated(editDate);
 
-        if (newHistory != null && ! newHistory.isEmpty()) {
+        if (newHistory != null && !newHistory.isEmpty()) {
             int historySize = newHistory.size();
             countField.setText(historySize + " 件");
             int fetchCount = historySize > autoFetchCount ? autoFetchCount : historySize;
@@ -380,7 +380,7 @@ public class DocumentHistory implements IInspector {
             selectionModel.setValueIsAdjusting(true);
 
             oldSelection.forEach(oldDate -> {
-                for(int i=0; i<newHistory.size(); i++) {
+                for (int i = 0; i < newHistory.size(); i++) {
                     String date = newHistory.get(i).getFirstConfirmDateTrimTime();
                     if (date.equals(oldDate)) {
                         int row = table.convertRowIndexToView(i);
@@ -394,8 +394,8 @@ public class DocumentHistory implements IInspector {
             // descending なら最初の fetchCount 分
             if (table.getSelectedRowCount() == 0) {
                 // テーブルの最初の行の自動選択を行う
-                int first = ascending? historySize - fetchCount : 0;
-                int last = ascending? historySize - 1 : fetchCount -1;
+                int first = ascending ? historySize - fetchCount : 0;
+                int last = ascending ? historySize - 1 : fetchCount - 1;
                 // 選択
                 selectionModel.addSelectionInterval(first, last);
                 // 選択した行が表示されるようにスクロールする
@@ -420,7 +420,8 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 文書履歴のタイトルを変更する.
-     * @param docInfo
+     *
+     * @param docInfo DocInfoModel
      */
     public void titleChanged(DocInfoModel docInfo) {
         if (docInfo != null && docInfo.getTitle() != null) {
@@ -431,7 +432,8 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 抽出期間を変更し再検索する.
-     * @param e
+     *
+     * @param e ItemEvent
      */
     public void periodChanged(ItemEvent e) {
 
@@ -451,7 +453,8 @@ public class DocumentHistory implements IInspector {
 
     /**
      * レイアウトパネルを返す.
-     * @return
+     *
+     * @return JPanel
      */
     @Override
     public JPanel getPanel() {
@@ -470,7 +473,8 @@ public class DocumentHistory implements IInspector {
 
     /**
      * ChartImpl のフォーカス処理用.
-     * @return
+     *
+     * @return DocumentHistoryTable
      */
     public JTable getDocumentHistoryTable() {
         return view.getTable();
@@ -484,10 +488,12 @@ public class DocumentHistory implements IInspector {
         public void keyTyped(KeyEvent e) {
             e.consume();
         }
+
         @Override
         public void keyPressed(KeyEvent e) {
             e.consume();
         }
+
         @Override
         public void keyReleased(KeyEvent e) {
             e.consume();
@@ -496,6 +502,7 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 検索パラメータの抽出期間を設定する.
+     *
      * @param extractionPeriod 抽出期間
      */
     public void setExtractionPeriod(Date extractionPeriod) {
@@ -505,6 +512,7 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 検索パラメータの抽出期間を返す.
+     *
      * @return 抽出期間
      */
     public Date getExtractionPeriod() {
@@ -513,6 +521,7 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 文書履歴表示の昇順/降順を設定する.
+     *
      * @param ascending 昇順の時 true
      */
     public void setAscending(boolean ascending) {
@@ -522,6 +531,7 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 文書履歴表示の昇順/降順を返す.
+     *
      * @return 昇順の時 true
      */
     public boolean isAscending() {
@@ -530,6 +540,7 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 修正版を表示するかどうかを設定する.
+     *
      * @param showModifyed 表示する時 true
      */
     public void setShowModified(boolean showModifyed) {
@@ -539,6 +550,7 @@ public class DocumentHistory implements IInspector {
 
     /**
      * 修正版を表示するかどうかを返す.
+     *
      * @return 表示する時 true
      */
     public boolean isShowModified() {
