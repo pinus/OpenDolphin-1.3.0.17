@@ -1,9 +1,8 @@
 package open.dolphin.order;
 
 import open.dolphin.client.GUIConst;
-import open.dolphin.dao.OrcaEntry;
-import open.dolphin.dao.OrcaMasterDao;
-import open.dolphin.dao.SqlDaoFactory;
+import open.dolphin.delegater.OrcaDelegater;
+import open.dolphin.dto.OrcaEntry;
 import open.dolphin.event.OrderListener;
 import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.PNSTriple;
@@ -11,6 +10,7 @@ import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.*;
+import open.dolphin.util.ModelUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -30,37 +30,64 @@ import java.util.prefs.Preferences;
 /**
  * MasterSearchPanel.
  * この Panel は OrcaEntry ベース，ItemTablePanel は MasterItem ベース.
+ *
  * @author pns
  */
 public class MasterSearchPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
-    /** Preferences に部分一致の on/off を記録するための key */
+    /**
+     * Preferences に部分一致の on/off を記録するための key
+     */
     private static final String PARTIAL_MATCH = "partialMatch";
 
-    /** キーワードフィールド用の tooltip text */
+    /**
+     * キーワードフィールド用の tooltip text
+     */
     private static final String TOOLTIP_KEYWORD = "漢字が使用できます";
-    /** キーワードフィールドの長さ */
+    /**
+     * キーワードフィールドの長さ
+     */
     private static final int KEYWORD_FIELD_LENGTH = 30;
-    /** この SearchPanel の entity */
+    /**
+     * この SearchPanel の entity
+     */
     private final String entity;
-    /** ItemTablePanel からリスンされる */
+    /**
+     * ItemTablePanel からリスンされる
+     */
     private OrderListener<MasterItem> orderListener;
-    /** キーワードフィールド */
+    /**
+     * キーワードフィールド
+     */
     private CompletableSearchField keywordField;
-    /** 部分一致チェックボックス */
+    /**
+     * 部分一致チェックボックス
+     */
     private JCheckBox partialMatchBox;
-    /** 件数ラベル */
+    /**
+     * 件数ラベル
+     */
     private JLabel countLabel;
-    /** 用法カテゴリ ComboBox */
-    private JComboBox<PNSPair<String,String>> adminCombo;
-    /** 検索結果テーブル */
+    /**
+     * 用法カテゴリ ComboBox
+     */
+    private JComboBox<PNSPair<String, String>> adminCombo;
+    /**
+     * 検索結果テーブル
+     */
     private JTable table;
-    /** 検索結果テーブルの table model */
+    /**
+     * 検索結果テーブルの table model
+     */
     private ObjectReflectTableModel<OrcaEntry> tableModel;
-    /** 20120519 形式の今日の日付 */
+    /**
+     * 20120519 形式の今日の日付
+     */
     private final String todayDate;
-    /** プレファレンス */
+    /**
+     * プレファレンス
+     */
     private final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 
     public MasterSearchPanel(String entity) {
@@ -83,14 +110,15 @@ public class MasterSearchPanel extends JPanel {
 
     /**
      * ItemTablePanel に MasterItem を伝えるリスナ.
-     * @param listener
+     *
+     * @param listener OrderListener
      */
     public void addOrderListener(OrderListener<MasterItem> listener) {
         orderListener = listener;
     }
 
     private void initComponents() {
-        setLayout(new BorderLayout(0,0));
+        setLayout(new BorderLayout(0, 0));
 
         JPanel northPanel = createNorthPanel();
         tableModel = createTableModel();
@@ -105,7 +133,8 @@ public class MasterSearchPanel extends JPanel {
 
     /**
      * キーワードフィールド，部分一致，用法選択コンボ
-     * @return
+     *
+     * @return JPanel
      */
     protected JPanel createNorthPanel() {
         JPanel panel = new JPanel();
@@ -124,7 +153,7 @@ public class MasterSearchPanel extends JPanel {
             } else {
                 key = StringTool.toZenkakuNumber(key);
                 key = StringTool.toZenkakuUpperLower(key);
-                key = key.replaceAll("[-−]","－"); // ダッシュ「−」を EUC に変換可能なコード（0xEFBC8D）に
+                key = key.replaceAll("[-−]", "－"); // ダッシュ「−」を EUC に変換可能なコード（0xEFBC8D）に
             }
 
             if (!key.equals("")) {
@@ -141,7 +170,7 @@ public class MasterSearchPanel extends JPanel {
         keywordField = new CompletableSearchField(KEYWORD_FIELD_LENGTH);
         keywordField.setLabel("マスタ検索");
 
-        keywordField.setMaximumSize(new Dimension(10,22));
+        keywordField.setMaximumSize(new Dimension(10, 22));
         keywordField.setToolTipText(TOOLTIP_KEYWORD);
         keywordField.addActionListener(listener);
         IMEControl.setImeOnIfFocused(keywordField);
@@ -163,7 +192,7 @@ public class MasterSearchPanel extends JPanel {
             }
         });
         // adminCombo は処方のときだけ有効
-        if (! IInfoModel.ENTITY_MED_ORDER.equals(entity)) {
+        if (!IInfoModel.ENTITY_MED_ORDER.equals(entity)) {
             adminCombo.setEnabled(false);
         }
 
@@ -187,7 +216,8 @@ public class MasterSearchPanel extends JPanel {
 
     /**
      * MasterSearchPanel のテーブルモデル.
-     * @return
+     *
+     * @return {@code ObjectReflectTableModel<OrcaEntry>}
      */
     protected ObjectReflectTableModel<OrcaEntry> createTableModel() {
         PNSTriple<String, Class<?>, String> code = new PNSTriple<>(" コード", String.class, "getCode");
@@ -197,15 +227,16 @@ public class MasterSearchPanel extends JPanel {
         PNSTriple<String, Class<?>, String> start = new PNSTriple<>(" 開 始", String.class, "getStartDate");
         PNSTriple<String, Class<?>, String> end = new PNSTriple<>(" 終 了", String.class, "getEndDate");
 
-        PNSTriple<String, Class<?>, String> category = IInfoModel.ENTITY_DIAGNOSIS.equals(entity)?
+        PNSTriple<String, Class<?>, String> category = IInfoModel.ENTITY_DIAGNOSIS.equals(entity) ?
                 new PNSTriple<>(" ICD10", String.class, "getIcd10") : new PNSTriple<>(" 療 区", String.class, "getClaimClassCode");
 
-        return new ObjectReflectTableModel<>( Arrays.asList(code, name, category, unit, ten, start, end) );
+        return new ObjectReflectTableModel<>(Arrays.asList(code, name, category, unit, ten, start, end));
     }
 
     /**
      * MasterSearchPanel のテーブル.
-     * @return
+     *
+     * @return JTable
      */
     protected JTable createTable() {
         int[] width = new int[]{90, 200, 50, 60, 80, 100, 100};
@@ -214,11 +245,13 @@ public class MasterSearchPanel extends JPanel {
         table.putClientProperty("Quaqua.Table.style", "striped");
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowSelectionAllowed(true);
-        table.addMouseListener(new MouseAdapter(){
+        table.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 int viewRow = table.rowAtPoint(e.getPoint());
-                if (viewRow == -1) { return; }
+                if (viewRow == -1) {
+                    return;
+                }
                 table.getSelectionModel().setSelectionInterval(viewRow, viewRow);
                 OrcaEntry o = tableModel.getObject(table.convertRowIndexToModel(viewRow));
                 if (o != null) {
@@ -258,14 +291,16 @@ public class MasterSearchPanel extends JPanel {
                 }
             }
         });
-       // 列幅を設定する
+        // 列幅を設定する
         TableColumn column;
         int len = width.length;
         for (int i = 0; i < len; i++) {
             column = table.getColumnModel().getColumn(i);
             column.setPreferredWidth(width[i]);
             // 名称コラム以外は固定
-            if (i != 1) { column.setMaxWidth(width[i]); }
+            if (i != 1) {
+                column.setMaxWidth(width[i]);
+            }
         }
 
         // レンダラ
@@ -278,19 +313,23 @@ public class MasterSearchPanel extends JPanel {
 
     /**
      * ORCA でキーワードを検索して OrcaEntry を取ってきて table にセットする
-     * @param key
+     *
+     * @param key Keyword
      */
     private void search(String key) {
-        OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
-        tableModel.clear();
+
         // スクロール状態で再検索されたとき，先頭から表示されるようにする
-        ((JComponent)table.getParent()).scrollRectToVisible(new Rectangle(0,0,0,0));
+        tableModel.clear();
+        ((JComponent) table.getParent()).scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+
+        OrcaDelegater delegater = new OrcaDelegater();
 
         if (IInfoModel.ENTITY_DIAGNOSIS.equals(entity)) {
-            tableModel.addRows(dao.getByomeiEntries(key));
-        } else  {
-            tableModel.addRows(dao.getTensuEntries(key));
+            tableModel.addRows(delegater.findDiagnosis(key));
+        } else {
+            tableModel.addRows(delegater.findTensu(key));
         }
+
         countLabel.setText(tableModel.getRowCount() + " 件");
     }
 
@@ -314,7 +353,7 @@ public class MasterSearchPanel extends JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column ) {
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
 
             JLabel comp = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             comp.setBorder(null);
@@ -327,7 +366,7 @@ public class MasterSearchPanel extends JPanel {
                     comp.setBackground(table.getSelectionBackground());
                     comp.setForeground(table.getSelectionForeground());
                 } else {
-                    comp.setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                    comp.setBackground((Color) table.getClientProperty("JTable.backgroundOffFocus"));
                     comp.setForeground(table.getForeground());
                 }
                 // out of date
@@ -345,7 +384,7 @@ public class MasterSearchPanel extends JPanel {
                 }
             }
 
-            String text = (value==null)? "" : String.valueOf(value);
+            String text = (value == null) ? "" : String.valueOf(value);
             text = StringTool.toHankakuNumber(text);
             text = StringTool.toHankakuUpperLower(text);
             text = text.replaceAll("　", " ");
@@ -356,8 +395,10 @@ public class MasterSearchPanel extends JPanel {
 
             // 日付の表示形式
             if (column == START_COL || column == END_COL) {
-                text = OrcaMasterDao.toDolphinDateStr(text);
-                if (text == null) { text = "-"; }
+                text = ModelUtils.toDolphinDateString(text);
+                if (text == null) {
+                    text = "-";
+                }
             }
 
             // 点数コラムは右寄せ
@@ -365,7 +406,7 @@ public class MasterSearchPanel extends JPanel {
                 comp.setText(text + " "); // 偽インデント
                 comp.setHorizontalAlignment(JLabel.RIGHT);
 
-            // それ以外は左寄せ
+                // それ以外は左寄せ
             } else {
                 comp.setText(" " + text); // 偽インデント
                 comp.setHorizontalAlignment(JLabel.LEFT);
@@ -384,11 +425,11 @@ public class MasterSearchPanel extends JPanel {
         // ASCENDING -> DESENDING -> 初期状態 と切り替える
         @Override
         public void toggleSortOrder(int column) {
-            if(column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
+            if (column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
                 List<? extends SortKey> keys = getSortKeys();
-                if(!keys.isEmpty()) {
+                if (!keys.isEmpty()) {
                     SortKey sortKey = keys.get(0);
-                    if(sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {
+                    if (sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {
                         setSortKeys(null);
                         return;
                     }

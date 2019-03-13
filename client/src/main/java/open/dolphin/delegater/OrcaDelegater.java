@@ -118,9 +118,9 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      * TBL_PTBYOMEI を検索して RegisteredDiagnosisModel を作る
      *
      * @param patientId 患者 ID "000001"
-     * @param from Date
-     * @param to Date
-     * @param ascend 昇順=true
+     * @param from      Date
+     * @param to        Date
+     * @param ascend    昇順=true
      * @return List of RegisteredDiagnosisModel
      */
     public List<RegisteredDiagnosisModel> getOrcaDisease(String patientId, LocalDate from, LocalDate to, boolean ascend) {
@@ -146,13 +146,13 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
         String ptName = document.getKarte().getPatient().getFullName();
 
         // 他端末で使用中(90)の場合は，手動でリトライする
-        while("90".equals(apiResult)) {
+        while ("90".equals(apiResult)) {
             logger.info("[" + ptId + "] ORCA busy, waiting for retrial");
 
             String message = String.format("[%s] %s\nORCA で使用中のため送信できませんでした。再送しますか？", ptId, ptName);
 
             if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null,
-                            message, "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
+                    message, "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
                 logger.info("[" + ptId + "] Document NOT sent to ORCA");
                 return Result.ERROR;
             }

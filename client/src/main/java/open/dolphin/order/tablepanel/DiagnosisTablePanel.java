@@ -2,15 +2,15 @@ package open.dolphin.order.tablepanel;
 
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
-import open.dolphin.dao.OrcaEntry;
-import open.dolphin.dao.OrcaMasterDao;
-import open.dolphin.dao.SqlDaoFactory;
+import open.dolphin.delegater.OrcaDelegater;
+import open.dolphin.dto.OrcaEntry;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
 import open.dolphin.table.ObjectReflectTableModel;
+import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +23,7 @@ import java.util.List;
  * オリジナルは RegisteredDiagnosisModel ベースだったが，ItemTablePanel に合わせて MasterItem ベースに変更した.
  * setValue で入ってくるときは必ず１個だが，getValue で出て行くときには複数病名になっている可能性があるため，
  * {@code List<RegisteredDiagnosisModel>} で処理する.
+ *
  * @author pns
  */
 public class DiagnosisTablePanel extends ItemTablePanel {
@@ -33,9 +34,9 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     // 傷病名手入力時につけるコード
     private static final String HAND_CODE = "0000999";
     // 修飾語付き傷病名表示
-    private static final ImageIcon INFO_BUTTON_IMAGE   = GUIConst.ICON_INFORMATION_16;
+    private static final ImageIcon INFO_BUTTON_IMAGE = GUIConst.ICON_INFORMATION_16;
     private static final String LABEL_COMBINED_DIAGNOSIS = "連結した傷病名:";
-    private static final String TOOLTIP_COMBINE  = "テーブルの行を連結して修飾語付きの傷病名にします";
+    private static final String TOOLTIP_COMBINE = "テーブルの行を連結して修飾語付きの傷病名にします";
     // 複合病名を表示するフィールド
     private JTextField combinedDiagnosis;
     // 状態表示ラベル
@@ -62,11 +63,12 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     /**
      * DiagnosisTablePanel の TableModel.
      * 収納されている Object は MasterItem.
-     * @return
+     *
+     * @return {@code ObjectReflectTableModel<MasterItem>}
      */
     @Override
     public ObjectReflectTableModel<MasterItem> createTableModel() {
-        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+        List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" コード", String.class, "getCode"),
                 new PNSTriple<>("　疾患名/修飾語", String.class, "getName"),
                 new PNSTriple<>("　エイリアス", String.class, "getDummy")
@@ -84,7 +86,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                 if (col == 1) {
                     return model != null && HAND_CODE.equals(model.getCode());
 
-                //エリアスカラムは modifier でなければ編集可能
+                    //エリアスカラムは modifier でなければ編集可能
                 } else if (col == 2) {
                     return model != null && (!model.getCode().startsWith(MODIFIER_CODE));
                 }
@@ -93,8 +95,10 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
             @Override
             public void setValueAt(Object o, int row, int col) {
-                if (o == null) { return; }
-                String value = (String)o;
+                if (o == null) {
+                    return;
+                }
+                String value = (String) o;
 
                 MasterItem model = getObject(row);
 
@@ -108,7 +112,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                             model.setCode(HAND_CODE);
                             addRow(model);
 
-                        // 登録されている MasterItem があれば，HAND_CODE に変更する
+                            // 登録されている MasterItem があれば，HAND_CODE に変更する
                         } else {
                             model.setName(value);
                             model.setCode(HAND_CODE);
@@ -128,12 +132,13 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
     /**
      * テーブル下のコンポネントを作る.
-     * @return
+     *
+     * @return JPanel
      */
     @Override
     public JPanel createSouthPanel() {
         combinedDiagnosis = new JTextField(20);
-        combinedDiagnosis.setMaximumSize(new Dimension(10,22));
+        combinedDiagnosis.setMaximumSize(new Dimension(10, 22));
         combinedDiagnosis.setFocusable(false);
         combinedDiagnosis.setEditable(false);
         combinedDiagnosis.setToolTipText(TOOLTIP_COMBINE);
@@ -161,16 +166,22 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
     /**
      * マスタ検索テーブルで選択されたアイテムを編集テーブルへ取り込む.
-     * @param mItem
+     *
+     * @param mItem MasterItem
      */
     @Override
     public void receiveMaster(MasterItem mItem) {
 
-        if (mItem == null) { return; }
+        if (mItem == null) {
+            return;
+        }
 
         // ZZZ コードなら，接頭語（ZZZ1~7）なら頭から挿入
-        if (mItem.getCode().matches("^ZZZ[1-7].*")) { tableModel.insertRow(0, mItem); }
-        else { tableModel.addRow(mItem); }
+        if (mItem.getCode().matches("^ZZZ[1-7].*")) {
+            tableModel.insertRow(0, mItem);
+        } else {
+            tableModel.addRow(mItem);
+        }
 
         // ボタンコントロールと通知
         checkState();
@@ -209,25 +220,32 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     /**
      * diagnosis と alias から "diagnosis,alias" の名前を作る.
      * getValue で使う.
-     * @param diag
-     * @param alias
-     * @return
+     *
+     * @param diag diagnosis
+     * @param alias alias
+     * @return diagnosis,alias
      */
     private String getDiagnosisWithAlias(String diag, String alias) {
-        if (alias == null || alias.equals("")) { return diag; }
-        else { return String.format("%s,%s", diag, alias); }
+        if (StringUtils.isEmpty(alias)) {
+            return diag;
+        } else {
+            return String.format("%s,%s", diag, alias);
+        }
     }
 
     /**
      * "diagnosis,alias" の形の病名から Alias を取り出す.
      * setValue で使う.
-     * @param name
-     * @return
+     *
+     * @param name dianogis,alias
+     * @return alias
      */
     private String getDiagnosisAlias(String name) {
         String ret = null;
         int idx = name.indexOf(',');
-        if (idx > 0) { ret = name.substring(idx+1).trim(); }
+        if (idx > 0) {
+            ret = name.substring(idx + 1).trim();
+        }
         return ret;
     }
 
@@ -236,6 +254,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
      * 受けるのは DiagnosisDocument#propertyChange，StampBoxPlugin.EditorValueListener.
      * alias が設定されている場合は，スタンプに登録されたとき alias　がスタンプ名として採用される.
      * see ModuleInfoBean#toString().
+     *
      * @return {@code ArrayList<RegisteredDiagnosisModel>}
      */
     @Override
@@ -250,6 +269,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
     /**
      * 病名修飾のある場合の getValue.
+     *
      * @return {@code List<RegisteredDiagnosisMode>}
      */
     private Object getValue1() {
@@ -263,7 +283,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
         // テーブルをスキャンする
         for (Object o : tableModel.getObjectList()) {
-            MasterItem mItem = (MasterItem)o;
+            MasterItem mItem = (MasterItem) o;
             String diagCode = mItem.getCode();
 
             if (diagCode.startsWith(MODIFIER_CODE)) {
@@ -281,14 +301,16 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                 alias = mItem.getDummy(); // alias を保存
             }
             // コードを . で連結する
-            if (code.length() > 0) { code.append("."); }
+            if (code.length() > 0) {
+                code.append(".");
+            }
             code.append(diagCode);
             // 名前を連結する
             name.append(mItem.getName());
         }
 
         // 名前とコードを設定する
-        rd.setDiagnosis( getDiagnosisWithAlias(name.toString(), alias) );
+        rd.setDiagnosis(getDiagnosisWithAlias(name.toString(), alias));
         rd.setDiagnosisCode(code.toString());
 
         ret.add(rd);
@@ -297,6 +319,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
     /**
      * 病名修飾のない場合の getValue.
+     *
      * @return {@code List<RegisteredDiagnosisModel>}
      */
     private Object getValue2() {
@@ -305,7 +328,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         tableModel.getObjectList().forEach(mItem -> {
             RegisteredDiagnosisModel rd = new RegisteredDiagnosisModel();
             // 診断にエリアスが指定されている場合，dummy に入っている
-            rd.setDiagnosis( getDiagnosisWithAlias(mItem.getName(), mItem.getDummy()) );
+            rd.setDiagnosis(getDiagnosisWithAlias(mItem.getName(), mItem.getDummy()));
             rd.setDiagnosisCode(mItem.getCode());
             rd.setDiagnosisCodeSystem(mItem.getMasterTableId());
             rd.setCategory(open.dolphin.infomodel.IInfoModel.DEFAULT_DIAGNOSIS_CATEGORY);
@@ -320,18 +343,21 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     /**
      * スタンプから RegisteredDiagnosis を受け取って，MasterItem に変換してセット.
      * ここで受け取る病名は alias を含んでいる可能性がある.
-     * @param o
+     *
+     * @param o RegisteredDiagnosisModel
      */
     @Override
     public void setValue(Object o) {
-        if (o == null) { return; }
+        if (o == null) {
+            return;
+        }
 
         RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) o;
         // . で区切られたコードを分解してコード配列を作る
         final String[] codes = rd.getDiagnosisCode().split("\\.");
-        for (int i = 0; i < codes.length; ++i){
+        for (int i = 0; i < codes.length; ++i) {
             // 修飾語は４桁. コードにZZZを追加する.
-            if (codes[i].length() == 4){
+            if (codes[i].length() == 4) {
                 codes[i] = "ZZZ" + codes[i];
             }
         }
@@ -343,32 +369,35 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         String note = "傷病名を検索しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        Task<List<OrcaEntry>> task = new Task<List<OrcaEntry>>(c, message, note, 30*1000) {
+        Task<List<OrcaEntry>> task = new Task<List<OrcaEntry>>(c, message, note, 30 * 1000) {
             @Override
             protected List<OrcaEntry> doInBackground() {
                 // 傷病名コードからDiseaseEntryを取得
-                OrcaMasterDao dao = SqlDaoFactory.createOrcaMasterDao();
-                return dao.getByomeiEntries(codes);
+                OrcaDelegater delegater = new OrcaDelegater();
+                return delegater.findDiagnosis(Arrays.asList(codes));
             }
+
             @Override
             protected void succeeded(List<OrcaEntry> result) {
-                if (result == null) { return; }
-
-                List<OrcaEntry> deList = result;
+                if (result == null) {
+                    return;
+                }
 
                 // 取得したDiseaseEntryから MasterItem を作成しテーブルに追加
                 // 順番がばらばらで帰ってくるので元の順に並べ替える
                 String codeSystem = ClientContext.getString("mml.codeSystem.diseaseMaster");
 
                 for (String code : codes) {
-                    for (OrcaEntry entry : deList) {
+                    for (OrcaEntry entry : result) {
                         if (code.equals(entry.getCode())) {
                             MasterItem model = new MasterItem();
                             model.setName(entry.getName());
                             model.setCode(entry.getCode());
                             model.setMasterTableId(codeSystem);
                             // alias は dummy を間借りする
-                            if (! entry.getCode().startsWith(MODIFIER_CODE)) { model.setDummy(alias); }
+                            if (!entry.getCode().startsWith(MODIFIER_CODE)) {
+                                model.setDummy(alias);
+                            }
                             tableModel.addRow(model);
                             break;
                         }
@@ -409,7 +438,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         boolean hasModifier = false;
 
         for (Object o : tableModel.getObjectList()) {
-            if (((MasterItem)o).getCode().startsWith("ZZZ")) {
+            if (((MasterItem) o).getCode().startsWith("ZZZ")) {
                 hasModifier = true;
             } else {
                 baseDiagnosisCount++;
