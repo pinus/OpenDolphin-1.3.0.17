@@ -17,6 +17,7 @@ import javax.swing.*;
 /**
  * StampEditor.
  * StampEditorProxyPanel では，これを必要なだけインスタンス化して保持する.
+ *
  * @author pns
  */
 public class StampEditor extends JPanel implements IStampEditor {
@@ -86,7 +87,8 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     /**
      * TablePanel をセットする.
-     * @param tablePanel
+     *
+     * @param tablePanel ItemTablePanel
      */
     public void setTablePanel(ItemTablePanel tablePanel) {
         this.tablePanel = tablePanel;
@@ -94,7 +96,8 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     /**
      * TablePanel を返す.
-     * @return
+     *
+     * @return ItemTablePanel
      */
     public ItemTablePanel getTablePanel() {
         return tablePanel;
@@ -110,7 +113,8 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     /**
      * Entity を TablePanel に伝える.
-     * @param entity
+     *
+     * @param entity Entity
      */
     @Override
     public void setEntity(String entity) {
@@ -120,7 +124,8 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     /**
      * セットされたエンティティーを返す.
-     * @return
+     *
+     * @return Entity
      */
     public String getEntity() {
         return entity;
@@ -128,7 +133,8 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     /**
      * TablePanel からデータを取り出す.
-     * @return
+     *
+     * @return TablePanel のデータ
      */
     @Override
     public Object getValue() {
@@ -137,7 +143,8 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     /**
      * TablePanel にデータをセットする.
-     * @param val
+     *
+     * @param val TablePanel にセットするデータ
      */
     @Override
     public void setValue(Object val) {
@@ -146,7 +153,8 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     /**
      * StampEditorDialog の OK ボタンを制御するためのリスナ.
-     * @param listener
+     *
+     * @param listener Validity listener
      */
     @Override
     public void addValidListener(ValidListener listener) {

@@ -24,14 +24,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * ItemTablePanel.
  * BaseCharge, General, Injection, InstructionCharge, Other, Physiology,
  * Surgery, Test, Treatment の StampEditor で共通して使う TablePanel.
- *
+ * <p>
  * RecipeTablePanel, DiagnosisTablePanel, RadiologyTablePanel は，
  * これをベースに extend して作る.
  * <pre>
@@ -44,8 +44,9 @@ import java.util.List;
  * |  SouthPanel   | stampNameField, deleteButton, clearButton etc
  * +---------------+
  * </pre>
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
- * modified by pns
+ * @author pns
  */
 public class ItemTablePanel extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -66,10 +67,14 @@ public class ItemTablePanel extends JPanel {
 
     // 数量コンボ用のデータを生成する
     private static String[] NUMBER_LIST;
+
     static {
         NUMBER_LIST = new String[31];
-        for (int i = 0; i < 31; i++) { NUMBER_LIST[i] = String.valueOf(i+1); }
+        for (int i = 0; i < 31; i++) {
+            NUMBER_LIST[i] = String.valueOf(i + 1);
+        }
     }
+
     // GUI コンポーネント
     private JTable table;
     private ObjectReflectTableModel<MasterItem> tableModel;
@@ -119,7 +124,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * TableModel を返す.
-     * @return
+     *
+     * @return {@code ObjectReflectTableModel<MasterItem>}
      */
     public ObjectReflectTableModel<MasterItem> createTableModel() {
         // セットテーブルのモデルを生成する
@@ -181,20 +187,24 @@ public class ItemTablePanel extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 int ctrlMask = InputEvent.CTRL_DOWN_MASK;
                 int action = ((e.getModifiersEx() & ctrlMask) == ctrlMask)
-                    ? TransferHandler.COPY
-                    : TransferHandler.MOVE;
-                JTable c = (JTable)e.getSource();
+                        ? TransferHandler.COPY
+                        : TransferHandler.MOVE;
+                JTable c = (JTable) e.getSource();
                 // 非選択状態からいきなりドラッグを開始すると cellEditor が残ってしまう問題の workaround
-                for (int i=1; i<columnWidth.length; i++) {
+                for (int i = 0; i < columnWidth.length; i++) {
                     javax.swing.CellEditor ce = c.getColumnModel().getColumn(i).getCellEditor();
-                    if (ce != null) { ce.stopCellEditing(); }
+                    if (ce != null) {
+                        ce.stopCellEditing();
+                    }
                 }
 
                 TransferHandler handler = c.getTransferHandler();
                 handler.exportAsDrag(c, e, action);
             }
+
             @Override
-            public void mouseMoved(MouseEvent e) {}
+            public void mouseMoved(MouseEvent e) {
+            }
         });
 
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // 選択モード
@@ -223,8 +233,8 @@ public class ItemTablePanel extends JPanel {
 
             // カラム幅を設定する
             column.setPreferredWidth(columnWidth[i]);
-            if (i != 1) {
-                column.setMaxWidth(columnWidth[i]);
+            if (! tableModel.getColumnName(i).contains("診療内容")) {
+                column.setMaxWidth(columnWidth[i]); // 診療内容コラム以外のコラム幅を固定する
             }
         }
 
@@ -233,12 +243,12 @@ public class ItemTablePanel extends JPanel {
 
         // コメントフィールド（メモ）を生成する
         commentField = new JTextField(15);
-        commentField.setMaximumSize(new Dimension(10,22));
+        commentField.setMaximumSize(new Dimension(10, 22));
         IMEControl.setImeOnIfFocused(commentField);
 
         // スタンプ名フィールドを生成する
         stampNameField = new JTextField(20);
-        stampNameField.setMaximumSize(new Dimension(10,22));
+        stampNameField.setMaximumSize(new Dimension(10, 22));
         // stampNameField.setOpaque(true); opaque にすると，色が枠からはみ出す
         //stampNameField.setBackground(new Color(251, 239, 128));  // TODO
         IMEControl.setImeOnIfFocused(stampNameField);
@@ -261,9 +271,11 @@ public class ItemTablePanel extends JPanel {
         clearButton.addActionListener(e -> {
             int ans = JSheet.showOptionDialog(SwingUtilities.getWindowAncestor(table), "クリアしますか？", "",
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null,
-                    new String[] { "はい", "いいえ", "キャンセル" }, "はい");
+                    new String[]{"はい", "いいえ", "キャンセル"}, "はい");
 
-            if (ans == 0) { tableModel.clear(); }
+            if (ans == 0) {
+                tableModel.clear();
+            }
         });
         clearButton.setToolTipText(TOOLTIP_CLEAR_TEXT);
     }
@@ -271,7 +283,8 @@ public class ItemTablePanel extends JPanel {
     /**
      * テーブルを含むパネルを作成.
      * RadiologyTablePanel の RadiologyMethod はここで加える.
-     * @return
+     *
+     * @return テーブルを含む PNSScrollPane
      */
     public JComponent createCenterPanel() {
         // スクローラ
@@ -285,7 +298,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * テーブル下のコンポネントを作る.
-     * @return
+     *
+     * @return テーブル下の JPanel
      */
     public JPanel createSouthPanel() {
         // 南パネルを生成する
@@ -309,7 +323,8 @@ public class ItemTablePanel extends JPanel {
     /**
      * テーブルのコラム幅.
      * これをオーバーライドするとテーブルのコラム幅が変更できる.
-     * @return
+     *
+     * @return TableColumnWidth
      */
     public int[] getTableColumnWidth() {
         return tableColumnWidth;
@@ -317,7 +332,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * テーブルのコラム幅を設定する.
-     * @param columnWidth
+     *
+     * @param columnWidth コラム幅
      */
     public void setTableColumnWidth(int[] columnWidth) {
         this.tableColumnWidth = columnWidth;
@@ -325,7 +341,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * テーブルをセット.
-     * @param table
+     *
+     * @param table JTable
      */
     public void setTable(JTable table) {
         this.table = table;
@@ -333,7 +350,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * テーブルを返す.
-     * @return
+     *
+     * @return JTable
      */
     public JTable getTable() {
         return table;
@@ -341,7 +359,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * テーブルモデルをセットする.
-     * @param tableModel
+     *
+     * @param tableModel ObjectReflectTableModel
      */
     public void setTableModel(ObjectReflectTableModel<MasterItem> tableModel) {
         this.tableModel = tableModel;
@@ -349,7 +368,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * テーブルモデルを返す.
-     * @return
+     *
+     * @return ObjectTableModel
      */
     public ObjectReflectTableModel<MasterItem> getTableModel() {
         return tableModel;
@@ -357,7 +377,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * StampNameField(JTextField) を返す.
-     * @return
+     *
+     * @return StampNameField
      */
     public JTextField getStampNameField() {
         return stampNameField;
@@ -365,7 +386,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * スタンプ名フィールド.
-     * @param stampName
+     *
+     * @param stampName stamp name
      */
     public void setStampName(String stampName) {
         stampNameField.setText(stampName);
@@ -373,7 +395,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * スタンプ名フィールドのテキストを返す.
-     * @return
+     *
+     * @return stamp name
      */
     public String getStampName() {
         return stampNameField.getText();
@@ -381,7 +404,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * コメントフィールドにテキストを設定する.
-     * @param comment
+     *
+     * @param comment テキスト
      */
     public void setComment(String comment) {
         commentField.setText(comment);
@@ -389,7 +413,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * コメントフィールドのテキストを返す.
-     * @return
+     *
+     * @return comment field text
      */
     public String getComment() {
         return commentField.getText();
@@ -397,15 +422,17 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * BundleNumber を numberCombo から調べて返す.
-     * @return
+     *
+     * @return bundle number
      */
     public String getBundleNumber() {
-        return (String)numberCombo.getSelectedItem();
+        return (String) numberCombo.getSelectedItem();
     }
 
     /**
      * BundleNumber を numberCombo にセットする.
-     * @param val
+     *
+     * @param val bundle number
      */
     public void setBundleNumber(String val) {
         numberCombo.setSelectedItem(val);
@@ -421,7 +448,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * 親の StampEditor を返す.
-     * @return
+     *
+     * @return StampEditor
      */
     public IStampEditor getMyParent() {
         return parent;
@@ -429,7 +457,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * 親の StampEditor をセットする.
-     * @param parent
+     *
+     * @param parent StampEditor
      */
     public void setMyParent(IStampEditor parent) {
         this.parent = parent;
@@ -437,7 +466,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * エンティティー（IInfoModel.ENTITY_XXX）を返す.
-     * @return
+     *
+     * @return Entity
      */
     public String getEntity() {
         return entity;
@@ -445,7 +475,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * エンティティー（IInfoModel.ENTITY_XXX）をセットする.
-     * @param val
+     *
+     * @param val Entity
      */
     public void setEntity(String val) {
         entity = val;
@@ -455,7 +486,8 @@ public class ItemTablePanel extends JPanel {
      * Valid model かどうかをセットする.
      * これをセットすると，StampEditor の setValid が呼ばれて，
      * そこで登録されたリスナに伝達される.
-     * @param valid
+     *
+     * @param valid validity
      */
     public void setValid(boolean valid) {
         getMyParent().setValid(valid);
@@ -465,7 +497,8 @@ public class ItemTablePanel extends JPanel {
      * OrderName を返す (ClaimBundle#OrderName).
      * ClaimConst.ClaimsSpec.BASE_CHARGE 等に入っている名前.
      * 処方はここに入ってない.
-     * @return
+     *
+     * @return order name
      */
     public String getOrderName() {
         return orderName;
@@ -473,7 +506,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * OrderName をセットする (ClaimBundle#OrderName).
-     * @param val
+     *
+     * @param val order name
      */
     public void setOrderName(String val) {
         orderName = val;
@@ -481,7 +515,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * ClaimClassCode を返す.
-     * @return
+     *
+     * @return claim class code
      */
     public String getClassCode() {
         return classCode;
@@ -489,7 +524,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * ClaimClassCode をセットする.
-     * @param val
+     *
+     * @param val claim class code
      */
     public void setClassCode(String val) {
         classCode = val;
@@ -497,7 +533,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * ClaimClassCodeSystem を返す（Claim007固定）.
-     * @return
+     *
+     * @return claim class code system
      */
     public String getClassCodeId() {
         return classCodeId;
@@ -505,7 +542,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * ClaimClassCodeSystem をセットする（Claim007固定）.
-     * @param val
+     *
+     * @param val claim class code system
      */
     public void setClassCodeId(String val) {
         classCodeId = val;
@@ -513,7 +551,8 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * ClaimItem.ClassCodeSystem を返す（Claim003固定）.
-     * @return
+     *
+     * @return class code system
      */
     public String getSubClassCodeId() {
         return subclassCodeId;
@@ -521,27 +560,12 @@ public class ItemTablePanel extends JPanel {
 
     /**
      * ClaimItem.ClassCodeSystem をセットする（Claim003固定）.
-     * @param val
+     *
+     * @param val class code system
      */
     public void setSubClassCodeId(String val) {
         subclassCodeId = val;
     }
-
-    /**
-     * 診療行為区分を診療行為アイテムから取得するとき true
-     * @return
-     */
-    //public boolean isFindClaimClassCode() {
-    //    return findClaimClassCode;
-    //}
-
-    /**
-     * 診療行為区分を診療行為アイテムから取得するとき true
-     * @return
-     */
-    //public void setFindClaimClassCode(boolean b) {
-    //    findClaimClassCode = true;
-    //}
 
     /**
      * テーブルをクリアする.
@@ -560,7 +584,9 @@ public class ItemTablePanel extends JPanel {
         if (tableModel.getObject(row) != null) {
             // cell editor が active になった状態で delete すると editor が残るのを防ぐ
             javax.swing.CellEditor ce = table.getCellEditor();
-            if (ce != null) { ce.cancelCellEditing(); }
+            if (ce != null) {
+                ce.cancelCellEditing();
+            }
             tableModel.deleteRow(row);
             // 状態をチェックして，ボタン制御＋parent に伝える
             checkState();
@@ -571,9 +597,12 @@ public class ItemTablePanel extends JPanel {
      * ClaimItem の NumberCode を返す.
      * MasterItem ClassCode（手技，材料，薬剤，用法）の種類で，
      * 手技の場合「材料個数」，それ以外の場合「薬剤投与量１回」を返す.
-     *
+     * <p>
      * Returns Claim004 Number Code 21 材料個数 when subclassCode = 1 11.
      * 薬剤投与量（１回）when subclassCode = 2 -- カスタム.
+     *
+     * @param masterItemClassCode master item class code
+     * @return number code
      */
     private String getNumberCode(int masterItemClassCode) {
         return (masterItemClassCode == 1) ? ClaimConst.ZAIRYO_KOSU : ClaimConst.YAKUZAI_TOYORYO_1KAI;
@@ -582,7 +611,8 @@ public class ItemTablePanel extends JPanel {
     /**
      * マスターテーブルで選択されたアイテムの通知を受け，セットテーブルへ追加する.
      * ItemTablePanel, RadiologyTablePanel 共通.
-     * @param item
+     *
+     * @param item MasterItem
      */
     public void receiveMaster(MasterItem item) {
 
@@ -603,11 +633,11 @@ public class ItemTablePanel extends JPanel {
             // 薬剤：class code = 2
             case ClaimConst.YAKUZAI:
                 String inputNum = "1";
-                if (item.getUnit()!= null) {
+                if (item.getUnit() != null) {
                     String unit = item.getUnit();
                     switch (unit) {
                         case "錠":
-                            inputNum = Project.getPreferences().get("defaultZyozaiNum", "3");
+                            inputNum = Project.getPreferences().get("defaultZyozaiNum", "1");
                             break;
                         case "ｇ":
                             inputNum = Project.getPreferences().get("defaultSanyakuNum", "1.0");
@@ -639,6 +669,7 @@ public class ItemTablePanel extends JPanel {
     /**
      * エディタで編集したスタンプの値を返す.
      * ItemTablePanel, RadiologyTablePanel 共通.
+     *
      * @return スタンプ(ModuleMode = ModuleInfo + InfoModel)
      */
     public Object getValue() {
@@ -665,16 +696,15 @@ public class ItemTablePanel extends JPanel {
         bundle.setOrderName(getOrderName());
 
         // セットテーブルのマスターアイテムを取得する
-        List itemList = tableModel.getObjectList();
+        List<MasterItem> itemList = tableModel.getObjectList();
 
         if (itemList != null) {
 
             // 診療行為があるかどうかのフラグ
             // boolean found = false;
 
-            for (Iterator iter = itemList.iterator(); iter.hasNext(); ) {
+            for (MasterItem mItem : itemList) {
 
-                MasterItem mItem = (MasterItem) iter.next();
                 ClaimItem item = new ClaimItem();
 
                 // 名称，コードを設定する
@@ -690,7 +720,6 @@ public class ItemTablePanel extends JPanel {
                 // 最初に見つかった手技の診療行為コードをCLAIMに設定する
                 // Dolphin Project の決定事項
                 // if (isFindClaimClassCode() && (mItem.getClassCode() == ClaimConst.SYUGI) && (!found)) {
-
                 // classCode が設定されていない場合，MasterItem から classCode を取得する
                 if (classCode == null && (mItem.getClassCode() == ClaimConst.SYUGI)) {
 
@@ -755,7 +784,8 @@ public class ItemTablePanel extends JPanel {
     /**
      * 編集するスタンプの内容を表示する.
      * ItemTablePanel, RadiologyTablePanel 共通
-     * @param theStamp 編集するスタンプ，戻り値は常に新規スタンプである.
+     *
+     * @param theStamp ModuleModel - 編集するスタンプ，戻り値は常に新規スタンプである.
      */
     public void setValue(Object theStamp) {
 
@@ -770,7 +800,7 @@ public class ItemTablePanel extends JPanel {
         }
 
         // 引数で渡された Stamp をキャストする
-        ModuleModel target  = (ModuleModel) theStamp;
+        ModuleModel target = (ModuleModel) theStamp;
 
         // Entityを保存する
         setEntity(target.getModuleInfo().getEntity());
@@ -806,7 +836,11 @@ public class ItemTablePanel extends JPanel {
 
             // 手技・材料・薬品のフラグ
             String val = item.getClassCode();
-            mItem.setClassCode(Integer.parseInt(val));
+            if (Objects.nonNull(val)) {
+                mItem.setClassCode(Integer.parseInt(val));
+            } else {
+                mItem.setClassCode(ClaimConst.SYUGI);
+            }
 
             // Name Code TableId
             mItem.setName(item.getName());
@@ -872,21 +906,28 @@ public class ItemTablePanel extends JPanel {
     // number が正しく入っている必要がある
     private boolean isNumberOk() {
         for (Object i : tableModel.getObjectList()) {
-            MasterItem mItem = (MasterItem)i;
+            MasterItem mItem = (MasterItem) i;
 
             // コードが 84xxxxxxx コメントの場合，number にパラメータを入れるので，number チェックしない
-            if (mItem.getCode().substring(0,2).equals("84")) { return true; }
+            if (mItem.getCode().substring(0, 2).equals("84")) {
+                return true;
+            }
             //System.out.println("---- code= " + mItem.getCode().substring(0,2));
 
             // 手技の場合
             if (mItem.getClassCode() == ClaimConst.SYUGI) {
                 // null "" ok
-                if (mItem.getNumber() == null || mItem.getNumber().equals("")) { continue; }
-                else if (!isNumber(mItem.getNumber())) { return false; }
+                if (mItem.getNumber() == null || mItem.getNumber().equals("")) {
+                    continue;
+                } else if (!isNumber(mItem.getNumber())) {
+                    return false;
+                }
 
             } else {
                 // 医薬品及び器材の場合は数量をチェックする
-                if (!isNumber(mItem.getNumber())) { return false; }
+                if (!isNumber(mItem.getNumber())) {
+                    return false;
+                }
             }
         }
         return true;
@@ -894,12 +935,15 @@ public class ItemTablePanel extends JPanel {
 
     // number かどうか
     private boolean isNumber(String test) {
-        if (test.equals(".")) { return false; }
+        if (test.equals(".")) {
+            return false;
+        }
         try {
-            Float num = Float.parseFloat(test);
-            if (num < 0F || num == 0F) { return false; }
+            float num = Float.parseFloat(test);
+            if (num <= 0F) {
+                return false;
+            }
         } catch (NumberFormatException e) {
-            System.out.println("MedHasItemState.java: " + e);
             return false;
         }
         return true;

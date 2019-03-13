@@ -226,8 +226,9 @@ public class MasterSearchPanel extends JPanel {
         PNSTriple<String, Class<?>, String> start = new PNSTriple<>(" 開 始", String.class, "getStartDate");
         PNSTriple<String, Class<?>, String> end = new PNSTriple<>(" 終 了", String.class, "getEndDate");
 
-        PNSTriple<String, Class<?>, String> category = IInfoModel.ENTITY_DIAGNOSIS.equals(entity) ?
-                new PNSTriple<>(" ICD10", String.class, "getIcd10") : new PNSTriple<>(" 療 区", String.class, "getClaimClassCode");
+        PNSTriple<String, Class<?>, String> category = IInfoModel.ENTITY_DIAGNOSIS.equals(entity)
+                ? new PNSTriple<>(" ICD10", String.class, "getIcd10")
+                : new PNSTriple<>(" 療 区", String.class, "getClaimClassCode");
 
         return new ObjectReflectTableModel<>(Arrays.asList(code, name, category, unit, ten, start, end));
     }
