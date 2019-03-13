@@ -49,17 +49,7 @@ public class ProjectStub implements java.io.Serializable {
     private final boolean DEFAULT_SEND_CLAIM_TMP = false;
     private final boolean DEFAULT_SEND_CLAIM_MODIFY = false;
     private final boolean DEFAULT_SEND_DIAGNOSIS = true;
-    private final String DEFAULT_CLAIM_HOST_NAME = "日医標準レセプト(ORCA)";
-    private final String DEFAULT_CLAIM_ADDRESS = null;
-    private final int DEFAULT_CLAIM_PORT = 8210;
-    private final String DEFAULT_CLAIM_ENCODING = "UTF-8";
-    private final boolean DEFAULT_USE_AS_PVTSERVER = true;
-    // MML
-    private final boolean DEFAULT_SEND_MML = false;
-    private final String DEFAULT_MML_VERSION = "2.3";
-    private final String DEFAULT_MML_ENCODING = "UTF-8";
-    private final String DEFAULT_SEND_MML_ADDRESS = null;
-    private final String DEFAULT_SEND_MML_DIRECTORY = null;
+
     // Update
     private final boolean DEFAULT_USE_PROXY = false;
     private final String DEFAULT_PROXY_HOST = null;
@@ -607,83 +597,6 @@ public class ProjectStub implements java.io.Serializable {
 
     public void setSendDiagnosis(boolean b) {
         prefs.putBoolean(Project.SEND_DIAGNOSIS, b);
-    }
-
-    public String getClaimHostName() {
-        return prefs.get(Project.CLAIM_HOST_NAME, DEFAULT_CLAIM_HOST_NAME);
-    }
-
-    public void setClaimHostName(String b) {
-        prefs.put(Project.CLAIM_HOST_NAME, b);
-    }
-
-    public String getClaimEncoding() {
-        return prefs.get(Project.CLAIM_ENCODING, DEFAULT_CLAIM_ENCODING);
-    }
-
-    public void setClaimEncoding(String val) {
-        prefs.put(Project.CLAIM_ENCODING, val);
-    }
-
-    public String getClaimAddress() {
-        return prefs.get(Project.CLAIM_ADDRESS, DEFAULT_CLAIM_ADDRESS);
-    }
-
-    public void setClaimAddress(String val) {
-        prefs.put(Project.CLAIM_ADDRESS, val);
-    }
-
-    public int getClaimPort() {
-        return prefs.getInt(Project.CLAIM_PORT, DEFAULT_CLAIM_PORT);
-    }
-
-    public void setClaimPort(int val) {
-        prefs.putInt(Project.CLAIM_PORT, val);
-    }
-
-    public void setUseAsPVTServer(boolean b) {
-        prefs.putBoolean(Project.USE_AS_PVT_SERVER, b);
-    }
-
-    public boolean getUseAsPVTServer() {
-        return prefs.getBoolean(Project.USE_AS_PVT_SERVER, DEFAULT_USE_AS_PVTSERVER);
-    }
-
-    public boolean isClaim01() {
-        return prefs.getBoolean(Project.CLAIM01, false);
-    }
-
-    public void setClaim01(boolean b) {
-        prefs.putBoolean(Project.CLAIM01, b);
-    }
-
-    public boolean isUseOrcaApi() {
-        return prefs.getBoolean(Project.ORCA_API, false);
-    }
-
-    public void setUseOrcaApi(boolean b) {
-        prefs.putBoolean(Project.ORCA_API, b);
-    }
-
-    public void setOrcaUserIdPassword(String id, String pass) {
-        prefs.put(Project.ORCA_USR_ID, id);
-        prefs.put(Project.ORCA_PASSWORD, encryptPassword(id, pass));
-    }
-
-    public String getOrcaUserId() {
-        return prefs.get(Project.ORCA_USR_ID, "");
-    }
-
-    public String getOrcaPassword() {
-        return decryptPassword(getOrcaUserId(), prefs.get(Project.ORCA_PASSWORD, ""));
-    }
-
-    public void setOrcaStaffCode(String id) {
-        prefs.put(Project.ORCA_STAFF_CODE, id);
-    }
-
-    public String getOrcaStaffCode() {
-        return prefs.get(Project.ORCA_STAFF_CODE, "");
     }
 
     //

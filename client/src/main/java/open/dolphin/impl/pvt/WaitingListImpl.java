@@ -135,13 +135,10 @@ public class WaitingListImpl extends AbstractMainComponent {
         connect();
         // pvt 定期チェック開始
         restartCheckTimer();
-        // pvt broadcaster 受信待ちスレッド開始
-        // getUserAsPVTServer をリサイクル利用
-        if (Project.getUseAsPVTServer() ) {
-            PvtEndpoint endpoint = new PvtEndpoint();
-            DolphinClientContext.getContext().setEndpoint(endpoint);
-            endpoint.addPvtListener(this::hostPvtReceiver);
-        }
+        // pvt 受信待ち
+        PvtEndpoint endpoint = new PvtEndpoint();
+        DolphinClientContext.getContext().setEndpoint(endpoint);
+        endpoint.addPvtListener(this::hostPvtReceiver);
 
         if (checkInterval == 0) {
             // 定期チェック off の場合 (checkInterval = 0)

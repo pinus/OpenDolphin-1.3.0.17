@@ -3,7 +3,6 @@ package open.dolphin.stampbox;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.project.Project;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
@@ -35,8 +34,6 @@ public class OrcaTree extends StampTree {
     }
 
     public void fetchOrcaInputCd() {
-        String address = Project.getClaimAddress();
-        if (address == null || address.equals("")) { return; }
 
         Component c = SwingUtilities.getWindowAncestor(this);
         String message = MONITOR_TITLE;

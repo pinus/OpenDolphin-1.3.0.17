@@ -25,12 +25,6 @@ public class Project  {
     public static final String FACILITY_ID 		 = "facilityId";
     public static final String SAVE_PASSWORD     = "savepassword";
 
-    // ORCA API
-    public static final String ORCA_API          = "ORCAAPI";
-    public static final String ORCA_USR_ID       = "ORCAUSERID";
-    public static final String ORCA_PASSWORD     = "ORCAPASSWORD";
-    public static final String ORCA_STAFF_CODE   = "ORCASTAFFCODE";
-
     // SERVER
     public static final String HOST_ADDRESS 	 = "hostAddress";
     public static final String HOST_PORT 		 = "hostPort";
@@ -41,13 +35,6 @@ public class Project  {
     public static final String SEND_CLAIM_TMP 	 = "sendClaimTmp";
     public static final String SEND_CLAIM_MODIFY = "sendClaimModify";
     public static final String SEND_DIAGNOSIS 	 = "sendDiagnosis";
-    public static final String CLAIM_HOST_NAME   = "claimHostName";
-    public static final String CLAIM_VERSION 	 = "claimVersion";
-    public static final String CLAIM_ENCODING 	 = "claimEncoding";
-    public static final String CLAIM_ADDRESS 	 = "claimAddress";
-    public static final String CLAIM_PORT 		 = "claimPort";
-    public static final String USE_AS_PVT_SERVER = "useAsPVTServer";
-    public static final String CLAIM01           = "CLAIM01";
 
     // ソフトウェア更新
     public static final String USE_PROXY		 = "useProxy";
@@ -219,50 +206,6 @@ public class Project  {
      */
     public static boolean getSendDiagnosis() {
         return stub.getSendDiagnosis();
-    }
-
-    /**
-     * CLAIM のホスト名を返す.
-     * @return return CLAIM のホスト名
-     */
-    public static String getClaimHostName() {
-        return stub.getClaimHostName();
-    }
-
-    /**
-     * 受付情報を受信するかどうかを返す.
-     * @return 行うとき true
-     */
-    public static boolean getUseAsPVTServer() {
-        return stub.getUseAsPVTServer();
-    }
-
-    public static boolean isClaim01() {
-        return stub.isClaim01();
-    }
-
-    /**
-     * CLAIM ホストの IP アドレスを返す.
-     * @return CLAIM ホストの IP アドレス
-     */
-    public static String getClaimAddress() {
-        return stub.getClaimAddress();
-    }
-
-    /**
-     * CLAIM ホストの診療行為送信先ポート番号を返す.
-     * @return CLAIM ホスト名の診療行為送信先ポート番号
-     */
-    public static int getClaimPort() {
-        return stub.getClaimPort();
-    }
-
-    /**
-     * CLAIM 送信時のXMLエンコーディングを返す.
-     * @return CLAIM エンコーディング
-     */
-    public static String getClaimEncoding() {
-        return stub.getClaimEncoding();
     }
 
     public static String getProxyHost() {

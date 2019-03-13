@@ -89,9 +89,6 @@ public final class ProjectSettingDialog {
         Runnable r = () -> {
             // モデルを得る
             allSettings = new ArrayList<>();
-
-            //allSettings.add(new HostSettingPanel());
-            allSettings.add(new ClaimSettingPanel());
             allSettings.add(new KarteSettingPanel());
             allSettings.add(new CodeHelperSettingPanel());
             allSettings.add(new MiscSettingPanel());
