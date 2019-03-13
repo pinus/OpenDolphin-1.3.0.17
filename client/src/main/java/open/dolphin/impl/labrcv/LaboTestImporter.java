@@ -7,9 +7,9 @@ import open.dolphin.client.MainComponentPanel;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.LaboImportSummary;
 import open.dolphin.infomodel.PatientModel;
-import open.dolphin.table.IndentTableCellRenderer;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.IndentTableCellRenderer;
+import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.StatusPanel;
 
 import javax.swing.*;
@@ -131,7 +131,7 @@ public class LaboTestImporter extends AbstractMainComponent {
             }
         }
         //laboListTable.getTable().setRowHeight(rowHeight);
-        MyJScrollPane scroller = new MyJScrollPane(table);
+        PNSScrollPane scroller = new PNSScrollPane(table);
 
         // Status パネルを生成する
         usp = new JProgressBar();

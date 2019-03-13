@@ -6,7 +6,7 @@ import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
-import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSTransferHandler;
 
 import javax.swing.*;

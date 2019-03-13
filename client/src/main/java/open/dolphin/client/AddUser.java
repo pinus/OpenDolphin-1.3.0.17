@@ -9,9 +9,9 @@ import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
-import open.dolphin.table.IndentTableCellRenderer;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.IndentTableCellRenderer;
+import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.PNSTabbedPane;
 import org.apache.log4j.Logger;
 
@@ -420,9 +420,9 @@ public class AddUser extends AbstractMainTool {
             });
 
             // Layout
-            MyJScrollPane scroller = new MyJScrollPane(table,
-                    MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            PNSScrollPane scroller = new PNSScrollPane(table,
+                    PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
             getButton = new JButton("ユーザリスト");
             getButton.setEnabled(true);

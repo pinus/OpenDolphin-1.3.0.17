@@ -36,11 +36,11 @@ public class PNSBorderFactory {
     }
 
     public static Border createClearBorder() {
-        return new MyClearBorder();
+        return new PNSClearBorder();
     }
 
     public static Border createGroupBoxBorder(Insets borderInsets) {
-        return new ImageBevelBorder(GUIConst.ICON_BORDER_GROUPBOX_18, new Insets(7,7,7,7), borderInsets);
+        return new PNSImageBevelBorder(GUIConst.ICON_BORDER_GROUPBOX_18, new Insets(7,7,7,7), borderInsets);
     }
 
     /**

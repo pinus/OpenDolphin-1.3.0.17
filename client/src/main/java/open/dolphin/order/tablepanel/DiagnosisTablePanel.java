@@ -9,7 +9,7 @@ import open.dolphin.helper.Task;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
-import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;

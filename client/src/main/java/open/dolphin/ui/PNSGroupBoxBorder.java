@@ -11,12 +11,12 @@ import java.awt.image.BufferedImage;
  * 難しい！！　未完成
  * @author pns
  */
-public class MyGroupBoxBorder extends AbstractBorder {
+public class PNSGroupBoxBorder extends AbstractBorder {
 
     private ImageIcon image;
     private Insets insets;
 
-    public MyGroupBoxBorder(ImageIcon image, Insets insets) {
+    public PNSGroupBoxBorder(ImageIcon image, Insets insets) {
         this.image = image;
         this.insets = insets;
     }
@@ -124,9 +124,9 @@ public class MyGroupBoxBorder extends AbstractBorder {
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel p = new JPanel();
-//        ImageIcon icon = new ImageIcon(MyGroupBoxBorder.class.getResource("/open/dolphin/resources/images/borders/16/Frame.titlePane.small.png"));
-        ImageIcon icon = new ImageIcon(MyGroupBoxBorder.class.getResource("/open/dolphin/resources/images/borders/18/GroupBox.png"));
-        p.setBorder(new MyGroupBoxBorder(icon, new Insets(7,7,7,7)));
+//        ImageIcon icon = new ImageIcon(PNSGroupBoxBorder.class.getResource("/open/dolphin/resources/images/borders/16/Frame.titlePane.small.png"));
+        ImageIcon icon = new ImageIcon(PNSGroupBoxBorder.class.getResource("/open/dolphin/resources/images/borders/18/GroupBox.png"));
+        p.setBorder(new PNSGroupBoxBorder(icon, new Insets(7,7,7,7)));
         f.add(p);
         f.setVisible(true);
         f.setBounds(700,100,500,500);

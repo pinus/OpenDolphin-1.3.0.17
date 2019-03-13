@@ -54,7 +54,7 @@ public class PNSTitledBorder extends AbstractBorder {
 
         fontHeight = DEFAULT_FONT_HEIGHT;
 
-        contentBorder = new ImageBevelBorder(GUIConst.ICON_BORDER_GROUPBOX_18, new Insets(7,7,7,7), borderInsets);
+        contentBorder = new PNSImageBevelBorder(GUIConst.ICON_BORDER_GROUPBOX_18, new Insets(7,7,7,7), borderInsets);
     }
 
     @Override

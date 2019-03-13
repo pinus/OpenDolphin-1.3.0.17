@@ -10,13 +10,13 @@ import java.awt.event.MouseEvent;
  * ダブルクリック or shift-クリックで動作する JToggleButton
  * @author pns
  */
-public class MyJToggleButton extends JLabel {
+public class PNSToggleButton extends JLabel {
     private ImageIcon icon;
     private ImageIcon selectedIcon;
     private ActionListener action;
     private boolean isSelected;
 
-    public MyJToggleButton() {
+    public PNSToggleButton() {
         super();
         isSelected = false;
         addMouseListener(new MouseAdapter(){

@@ -183,7 +183,7 @@ public class OrcaServiceApi {
 
                 // 数量の小数点以下処理 (.0 は削除)
                 String dose = med.getMedication_Number(); // 0.5
-                if (dose.endsWith(".0")) {
+                if (Objects.nonNull(dose) && dose.endsWith(".0")) {
                     dose = dose.substring(0, dose.length() - 2);
                 }
                 item.setNumber(dose);
@@ -249,9 +249,11 @@ public class OrcaServiceApi {
         });
 
         // tbl_tensu から単位を検索 (api では取れない)
+        Set<String> srycds = claimItemMap.keySet();
+        if (srycds.isEmpty()) { return ret; }
+
         String tensuSql = "select taniname, srycd from tbl_tensu where hospnum = ? and srycd in (?)";
 
-        Set<String> srycds = claimItemMap.keySet();
         if (srycds.size() > 1) {
             tensuSql = tensuSql.replace("(?)", "(?" + StringUtils.repeat(",?", srycds.size() - 1) + ")");
         }

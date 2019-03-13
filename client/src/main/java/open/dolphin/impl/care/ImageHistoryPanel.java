@@ -6,7 +6,7 @@ import open.dolphin.dto.ImageSearchSpec;
 import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -72,8 +72,8 @@ public class ImageHistoryPanel extends JPanel {
             }
         });
 
-        MyJScrollPane scroller = new MyJScrollPane(table,
-                MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        PNSScrollPane scroller = new PNSScrollPane(table,
+                PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         add(scroller, BorderLayout.CENTER);
     }

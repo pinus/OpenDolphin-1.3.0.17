@@ -1,7 +1,7 @@
 package open.dolphin.order.tablepanel;
 
 import open.dolphin.order.MasterItem;
-import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSTransferHandler;
 
 import javax.swing.*;

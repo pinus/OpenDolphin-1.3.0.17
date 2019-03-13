@@ -11,11 +11,7 @@ import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
-import open.dolphin.table.IndentTableCellRenderer;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.ComboBoxFactory;
-import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.PNSCellEditor;
+import open.dolphin.ui.*;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;

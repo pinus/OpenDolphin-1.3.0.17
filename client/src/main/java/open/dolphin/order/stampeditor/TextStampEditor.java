@@ -11,7 +11,7 @@ import open.dolphin.order.ClaimConst;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.HorizontalPanel;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -68,9 +68,9 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
         headerPanel.add(label);
         headerPanel.add(headerField);
 
-        MyJScrollPane scroller = new MyJScrollPane(textPane);
-        scroller.setVerticalScrollBarPolicy(MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroller.setHorizontalScrollBarPolicy(MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        PNSScrollPane scroller = new PNSScrollPane(textPane);
+        scroller.setVerticalScrollBarPolicy(PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroller.setHorizontalScrollBarPolicy(PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         this.setLayout(new BorderLayout(0, 0));
         this.add(headerPanel, BorderLayout.NORTH);

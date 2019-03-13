@@ -7,7 +7,7 @@ import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.ModelUtils;
 import org.apache.log4j.Logger;
@@ -57,7 +57,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     private JPanel scrollerPanel;
     // scrollerPanel を表示する JScrollPane: DocumentBridgeImpl で作られる
     //private KarteScrollPane scrollPane;
-    private MyJScrollPane scrollPane;
+    private PNSScrollPane scrollPane;
     // 選択された history
     private DocInfoModel[] selectedHistories;
     // 検索用
@@ -239,7 +239,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
      * @param selected 選択された文書情報 DocInfo 配列
      * @param scroller
      */
-    public void showDocuments(DocInfoModel[] selected, final MyJScrollPane scroller) {
+    public void showDocuments(DocInfoModel[] selected, final PNSScrollPane scroller) {
         getContext().showDocument(0);  // Chart のカルテ参照タブの選択
 
         //this.scrollPane = (KarteScrollPane) scroller;

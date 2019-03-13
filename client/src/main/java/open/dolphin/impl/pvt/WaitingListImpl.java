@@ -14,9 +14,9 @@ import open.dolphin.infomodel.KarteState;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.project.Project;
-import open.dolphin.table.IndentTableCellRenderer;
-import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.IMEControl;
+import open.dolphin.ui.IndentTableCellRenderer;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.Gengo;
@@ -111,7 +111,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     private ExecutorService executor;
     // PvtChecker を定期起動するための ExecutorService
     private ScheduledExecutorService schedule;
-
+    // Logger
     private Logger logger;
 
     /**
@@ -164,7 +164,8 @@ public class WaitingListImpl extends AbstractMainComponent {
         preferences = Preferences.userNodeForPackage(this.getClass());
         sexRenderer = preferences.getBoolean("sexRenderer", false);
         ageDisplay = preferences.getBoolean("ageDisplay", true);
-        checkInterval = Project.getPreferences().getInt(Project.PVT_CHECK_INTERVAL, DEFAULT_CHECK_INTERVAL);
+        //checkInterval = Project.getPreferences().getInt(Project.PVT_CHECK_INTERVAL, DEFAULT_CHECK_INTERVAL);
+        checkInterval = 0;
     }
 
     /**
@@ -871,7 +872,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         if (timerHandler != null ) { stopCheckTimer(); }
         // checkInterval = 0 のときはタイマーをスタートさせない
         if (checkInterval == 0) {
-            //logger.info("pvt check timer is off");
+            logger.info("pvt check timer is off");
         } else {
             timerHandler = schedule.scheduleWithFixedDelay(pvtChecker, second, checkInterval, TimeUnit.SECONDS);
             //logger.info("startCheckTimer in " + intervalToNextCheck + " sec");

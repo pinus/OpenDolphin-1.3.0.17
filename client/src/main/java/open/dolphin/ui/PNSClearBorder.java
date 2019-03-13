@@ -7,7 +7,7 @@ import java.awt.*;
  *
  * @author pinus
  */
-public class MyClearBorder extends AbstractBorder {
+public class PNSClearBorder extends AbstractBorder {
     private static final long serialVersionUID = 1L;
 
     @Override

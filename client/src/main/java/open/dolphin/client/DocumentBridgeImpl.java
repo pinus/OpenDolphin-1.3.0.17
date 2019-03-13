@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.inspector.DocumentHistory;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class DocumentBridgeImpl extends AbstractChartDocument {
     // 文書表示クラスのインターフェイス
     private KarteDocumentViewer karteViewer;
     // Scroller
-    private MyJScrollPane scroller;
+    private PNSScrollPane scroller;
     // 何も文書がないときは blank panel を出す
     private JPanel blankPanel;
     // エディタで編集した直後に呼ばれた場合，その日付を入れる
@@ -53,12 +53,12 @@ public class DocumentBridgeImpl extends AbstractChartDocument {
 
     @Override
     public void start() {
-        scroller = new MyJScrollPane();
+        scroller = new PNSScrollPane();
         getUI().setLayout(new BorderLayout());
         getUI().add(scroller, BorderLayout.CENTER);
 
         // スクロールバーを常に表示しないと，スクロールバーが表示されるときにカルテがスクロールバー分伸びて尻切れになることがある
-        scroller.setVerticalScrollBarPolicy(MyJScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scroller.setVerticalScrollBarPolicy(PNSScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         scroller.isPermanentScrollBar = true;
 

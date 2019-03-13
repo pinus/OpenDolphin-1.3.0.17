@@ -8,17 +8,17 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * Subset of ch.randelshofer.quaqua.border.ImageBevelBorder.
+ * Subset of ch.randelshofer.quaqua.border.PNSImageBevelBorder.
  * @author pns
  */
-public class ImageBevelBorder extends AbstractBorder {
+public class PNSImageBevelBorder extends AbstractBorder {
     private static final long serialVersionUID = 1L;
 
     private final BufferedImage image;
     private final Insets borderInsets;
     private final Insets imageInsets;
 
-    public ImageBevelBorder(ImageIcon img, Insets imageInsets, Insets borderInsets) {
+    public PNSImageBevelBorder(ImageIcon img, Insets imageInsets, Insets borderInsets) {
         this.image = ImageHelper.imageToBufferedImage(img);
         this.imageInsets = imageInsets;
         this.borderInsets = borderInsets;

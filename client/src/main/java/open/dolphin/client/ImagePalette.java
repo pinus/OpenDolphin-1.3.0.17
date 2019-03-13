@@ -1,8 +1,8 @@
 package open.dolphin.client;
 
 import open.dolphin.helper.MouseHelper;
-import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.PNSTransferHandler;
 
 import javax.swing.*;
@@ -173,7 +173,7 @@ public class ImagePalette extends JPanel {
         imageTable.setDefaultRenderer(java.lang.Object.class, imageRenderer);
 
         setLayout(new BorderLayout());
-        MyJScrollPane scroller = new MyJScrollPane();
+        PNSScrollPane scroller = new PNSScrollPane();
 
         if (showHeader) {
             scroller.setViewportView(imageTable);

@@ -4,8 +4,8 @@ import open.dolphin.client.*;
 import open.dolphin.helper.MenuActionManager;
 import open.dolphin.helper.MenuActionManager.MenuAction;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSBorder;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.util.ModelUtils;
 
 import javax.swing.*;
@@ -205,7 +205,7 @@ public class DiagnosisInspector implements IInspector {
         diagPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
         diagPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, 100));
 
-        MyJScrollPane scrollPane = new MyJScrollPane(diagList);
+        PNSScrollPane scrollPane = new PNSScrollPane(diagList);
         scrollPane.putClientProperty("JComponent.sizeVariant", "small");
         diagPanel.add(scrollPane);
 

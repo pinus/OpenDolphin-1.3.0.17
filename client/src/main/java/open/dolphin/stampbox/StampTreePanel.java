@@ -1,7 +1,7 @@
 package open.dolphin.stampbox;
 
 import open.dolphin.infomodel.ModuleInfoBean;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.StatusPanel;
 
 import javax.swing.*;
@@ -27,7 +27,7 @@ public class StampTreePanel extends JPanel implements TreeSelectionListener {
     }
 
     private void initComponents() {
-        JScrollPane scroller = new MyJScrollPane(stampTree);
+        JScrollPane scroller = new PNSScrollPane(stampTree);
 
         setLayout(new BorderLayout());
         add(scroller, BorderLayout.CENTER);

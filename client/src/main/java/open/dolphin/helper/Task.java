@@ -1,6 +1,6 @@
 package open.dolphin.helper;
 
-import open.dolphin.ui.MyProgressMonitor;
+import open.dolphin.ui.PNSProgressMonitor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +34,7 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
      */
     private static int INTERVAL = 500;
 
-    private MyProgressMonitor progressMonitor;
+    private PNSProgressMonitor progressMonitor;
     private Timer timer;
     private InputBlocker blocker;
     private int timeout;
@@ -86,7 +86,7 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
 
     private void initialize(Component c, Object message, String note) {
         timer = new Timer(INTERVAL, this);
-        progressMonitor = new MyProgressMonitor(c, message, note, 0, 100);
+        progressMonitor = new PNSProgressMonitor(c, message, note, 0, 100);
         taskList.add(this);
         addPropertyChangeListener(this);
     }

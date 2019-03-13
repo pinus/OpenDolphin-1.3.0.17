@@ -1,4 +1,4 @@
-package open.dolphin.table;
+package open.dolphin.ui;
 
 import open.dolphin.helper.PNSTriple;
 
@@ -12,9 +12,9 @@ import java.util.List;
 /**
  * ObjectReflectTableModel.
  *
- * @author Minagawa,Kazushi
+ * @param <T> Class of item
+ * @author Minagawa, Kazushi
  * @author pns
- * @param <T>
  */
 public class ObjectReflectTableModel<T> extends AbstractTableModel {
     private static final long serialVersionUID = -8280948755982277457L;
@@ -32,15 +32,16 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * {@code PNSTriple<columnName,columnClass,methodName>} から TableModel を生成する.
-     * @param reflectionList
+     *
+     * @param reflectionList ReflectList
      */
-    public ObjectReflectTableModel(List<PNSTriple<String,Class<?>,String>> reflectionList) {
+    public ObjectReflectTableModel(List<PNSTriple<String, Class<?>, String>> reflectionList) {
         columnCount = reflectionList.size();
         columnNames = new String[columnCount];
         columnClasses = new Class<?>[columnCount];
         methodNames = new String[columnCount];
 
-        for (int i=0; i<columnCount; i++) {
+        for (int i = 0; i < columnCount; i++) {
             columnNames[i] = reflectionList.get(i).getFirst();
             columnClasses[i] = reflectionList.get(i).getSecond();
             methodNames[i] = reflectionList.get(i).getThird();
@@ -51,7 +52,8 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      * カラム名から TableModel を生成する.
      * AppointTablePanel, OrderHistoryPanel で使っている.
      * これで作った場合は getValueAt を自前で用意する必要がある.
-     * @param columnNames
+     *
+     * @param columnNames カラム名
      */
     public ObjectReflectTableModel(String[] columnNames) {
         this.columnNames = columnNames;
@@ -60,16 +62,18 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * カラム名を返す.
+     *
      * @param index カラムインデックス
      * @return
      */
     @Override
     public String getColumnName(int index) {
-        return (columnNames != null && index < columnNames.length)? columnNames[index] : null;
+        return (columnNames != null && index < columnNames.length) ? columnNames[index] : null;
     }
 
     /**
      * カラム数を返す.
+     *
      * @return カラム数
      */
     @Override
@@ -79,6 +83,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * 行数を返す.
+     *
      * @return 行数
      */
     @Override
@@ -88,8 +93,9 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * カラムのクラス型を返す.
-     * @param index
-     * @return
+     *
+     * @param index インデックス
+     * @return そのインデックスのクラス
      */
     @Override
     public Class<?> getColumnClass(int index) {
@@ -98,6 +104,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * オブジェクトの値を返す.
+     *
      * @param row 行インデックス
      * @param col 列インデックス
      * @return
@@ -109,8 +116,8 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
         if (object != null && methodNames != null && col < methodNames.length) {
             try {
-                Method targetMethod = object.getClass().getMethod(methodNames[col], (Class[])null);
-                return targetMethod.invoke(object, (Object[])null);
+                Method targetMethod = object.getClass().getMethod(methodNames[col], (Class[]) null);
+                return targetMethod.invoke(object, (Object[]) null);
 
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 System.out.println("ObjectReflectTableModel.java: " + e);
@@ -121,6 +128,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * データリストを設定する.
+     *
      * @param otherList データリスト
      */
     public void setObjectList(List<T> otherList) {
@@ -130,8 +138,9 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * Method 名を帰す
-     * @param index
-     * @return
+     *
+     * @param index インデックス
+     * @return そのインデックスのメソッド名
      */
     public String getMethodName(int index) {
         return methodNames[index];
@@ -139,11 +148,12 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * コンストラクト後にカラム名を変更する.
-     * @param columnName
-     * @param col
+     *
+     * @param columnName カラム名
+     * @param col カラム番号
      */
     public void setColumnName(String columnName, int col) {
-        if (col >=0 && col < columnNames.length) {
+        if (col >= 0 && col < columnNames.length) {
             columnNames[col] = columnName;
             fireTableStructureChanged();
         }
@@ -151,13 +161,14 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * コンストラクト後にメソッドを変更する.
-     * @param methodName
-     * @param col
+     *
+     * @param methodName メソッド名
+     * @param col カラム番号
      */
     public void setMethodName(String methodName, int col) {
-        if (col >=0 && col < methodNames.length) {
+        if (col >= 0 && col < methodNames.length) {
             methodNames[col] = methodName;
-            if(objectList != null) {
+            if (objectList != null) {
                 fireTableDataChanged();
             }
         }
@@ -165,6 +176,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * データリストを返す.
+     *
      * @return データリスト
      */
     public List<T> getObjectList() {
@@ -183,6 +195,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * 指定された行のオブジェクトを返す.
+     *
      * @param index 行インデックス
      * @return オブジェクト
      */
@@ -192,6 +205,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     /**
      * オブジェクト数(=データ数)を返す
+     *
      * @return オブジェクト数
      */
     public int getObjectCount() {
@@ -213,7 +227,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     public void addRow(int index, T item) {
         if (item != null && index > -1 && objectList != null) {
-            if ( (objectList.isEmpty() && index == 0) || (index < objectList.size()) ){
+            if ((objectList.isEmpty() && index == 0) || (index < objectList.size())) {
                 objectList.add(index, item);
                 fireTableRowsInserted(index, index);
             }
@@ -225,7 +239,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     public void moveRow(int from, int to) {
-        if (! isValidRow(from) || ! isValidRow(to) || from == to) {
+        if (!isValidRow(from) || !isValidRow(to) || from == to) {
             return;
         }
         T o = objectList.remove(from);
@@ -285,6 +299,6 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     public boolean isValidRow(int row) {
-        return ( (objectList != null) && (row > -1) && (row < objectList.size()) );
+        return ((objectList != null) && (row > -1) && (row < objectList.size()));
     }
 }

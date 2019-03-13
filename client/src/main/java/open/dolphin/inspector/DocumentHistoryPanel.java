@@ -2,7 +2,7 @@ package open.dolphin.inspector;
 
 import open.dolphin.helper.PNSPair;
 import open.dolphin.ui.ComboBoxFactory;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.StatusPanel;
 
 import javax.swing.*;
@@ -28,7 +28,7 @@ public class DocumentHistoryPanel extends JPanel {
 
         table = new JTable();
         table.putClientProperty("Quaqua.Table.style", "striped");
-        MyJScrollPane scroller = new MyJScrollPane(table);
+        PNSScrollPane scroller = new PNSScrollPane(table);
         scroller.setBorder(BorderFactory.createEmptyBorder());
         scroller.putClientProperty("JComponent.sizeVariant", "small");
 

@@ -10,10 +10,10 @@ import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MMLTable;
 import open.dolphin.order.MasterItem;
 import open.dolphin.project.Project;
-import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSCellEditor;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.sheet.JSheet;
 
 import javax.swing.*;
@@ -275,7 +275,7 @@ public class ItemTablePanel extends JPanel {
      */
     public JComponent createCenterPanel() {
         // スクローラ
-        MyJScrollPane scroller = new MyJScrollPane(table);
+        PNSScrollPane scroller = new PNSScrollPane(table);
         scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //scroller.setPreferredSize(new Dimension(GUIConst.DEFAULT_EDITOR_WIDTH, GUIConst.DEFAULT_EDITOR_HEIGHT));

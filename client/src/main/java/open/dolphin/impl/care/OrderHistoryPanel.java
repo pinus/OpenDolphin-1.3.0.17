@@ -5,9 +5,9 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.SimpleDate;
-import open.dolphin.table.IndentTableCellRenderer;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.IndentTableCellRenderer;
+import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.util.ModelUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -85,14 +85,14 @@ public final class OrderHistoryPanel extends JPanel {
         });
         setColumnWidth(new int[] { 50, 240 });
 
-        MyJScrollPane scroller = new MyJScrollPane(table, MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        PNSScrollPane scroller = new PNSScrollPane(table, PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(scroller, BorderLayout.CENTER);
 
         // 内容表示用 TextArea
         contents = new JLabel();
         contents.setOpaque(true);
         contents.setBackground(Color.white);
-        MyJScrollPane cs = new MyJScrollPane(contents, MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        PNSScrollPane cs = new PNSScrollPane(contents, PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         cs.setPreferredSize(contentSize);
         cs.setMaximumSize(contentSize);
         add(cs, BorderLayout.EAST);

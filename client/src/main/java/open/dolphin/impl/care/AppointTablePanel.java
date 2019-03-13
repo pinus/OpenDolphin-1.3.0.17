@@ -2,9 +2,9 @@ package open.dolphin.impl.care;
 
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.project.Project;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSCellEditor;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.util.MMLDate;
 import open.dolphin.util.ModelUtils;
 
@@ -61,9 +61,9 @@ public class AppointTablePanel extends JPanel {
             column.setPreferredWidth(COLUMN_WIDTH[i]);
         }
 
-        MyJScrollPane scroller = new MyJScrollPane(appointTable,
-                MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        PNSScrollPane scroller = new PNSScrollPane(appointTable,
+                PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         JPanel cmd = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         cmd.add(updateBtn);

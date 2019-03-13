@@ -3,8 +3,8 @@ package open.dolphin.order.tablepanel;
 import open.dolphin.delegater.RadiologyDelegater;
 import open.dolphin.infomodel.RadiologyMethodValue;
 import open.dolphin.order.IStampEditor;
-import open.dolphin.ui.MyJScrollPane;
 import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.ui.PNSScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -77,7 +77,7 @@ public class RadiologyTablePanel extends ItemTablePanel {
                 }
             });
 
-            MyJScrollPane scroller = new MyJScrollPane(methodList,
+            PNSScrollPane scroller = new PNSScrollPane(methodList,
                             JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scroller.isPermanentScrollBar = true;
@@ -96,7 +96,7 @@ public class RadiologyTablePanel extends ItemTablePanel {
                     notifyComment(entry.getMethodName());
                 }
             });
-            scroller = new MyJScrollPane(commentList,
+            scroller = new PNSScrollPane(commentList,
                             JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scroller.isPermanentScrollBar = true;

@@ -1,4 +1,4 @@
-package open.dolphin.table;
+package open.dolphin.ui;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -7,6 +7,7 @@ import java.awt.*;
 /**
  * インデントを付けるレンダラ.
  * 頭にスペースをつける偽インデント.
+ *
  * @author pns
  */
 public class IndentTableCellRenderer extends DefaultTableCellRenderer {
@@ -17,10 +18,6 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
     public static final int WIDE = 10;
     public static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
     public static final Font SMALL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 9);
-    private static final String HTML_FORMAT = "<html>"
-                + "<font color=#%s>"
-                + "<p style=\"white-space:nowrap; text-indent:%dpx\">%s"
-                + "</p></font></html>";
 
     private int indent;
     private Font font;
@@ -41,10 +38,10 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
+                                                   Object value,
+                                                   boolean isSelected,
+                                                   boolean isFocused,
+                                                   int row, int col) {
 
         if (isSelected) {
             Color fore;
@@ -76,7 +73,8 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
 
     /**
      * Show holizontal grid (Retina 対応)
-     * @param graphics
+     *
+     * @param graphics Graphics
      */
     @Override
     public void paint(Graphics graphics) {
@@ -88,17 +86,19 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
         g.dispose();
     }
 
-/*  This is too much time consuming for inertia scrolling
-
+    /**
+     * にせインデント.
+     *
+     * @param text インデントを付けるテキスト
+     * @param indent インデント量
+     * @param color 色
+     * @return インデントを付けたテキスト
+     */
     public static String addIndent(String text, int indent, Color color) {
-        return String.format(HTML_FORMAT,
-                    Integer.toHexString(color.getRGB()).substring(2), // remove alpha
-                    indent,
-                    text);
-    }*/
-
-    public static String addIndent(String text, int indent, Color color) {
-        if (indent >= 10) { return "　" + text; }
-        else { return " " + text; }
+        if (indent >= 10) {
+            return "　" + text;
+        } else {
+            return " " + text;
+        }
     }
 }

@@ -410,9 +410,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         }
 
         // Layout
-        final MyJScrollPane scroller = new MyJScrollPane(diagTable,
-                MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        final PNSScrollPane scroller = new PNSScrollPane(diagTable,
+                PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //scroller.setBorder(BorderFactory.createEmptyBorder());
 
         JPanel p = new JPanel(new BorderLayout(0, 0));

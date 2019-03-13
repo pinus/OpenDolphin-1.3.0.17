@@ -6,7 +6,7 @@ import open.dolphin.infomodel.DiagnosisLiteModel;
 import open.dolphin.infomodel.DiagnosisOutcomeModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.project.Project;
-import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.util.MMLDate;
 
 import java.awt.*;

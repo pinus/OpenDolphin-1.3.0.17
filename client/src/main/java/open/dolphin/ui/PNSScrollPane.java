@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
  * Lion スタイルのスクロールバーも表示する
  * @author pns
  */
-public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMotionListener, MouseWheelListener {
+public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMotionListener, MouseWheelListener {
     private static final long serialVersionUID = 1L;
 
     // MouseWheelEvent 書き換え間隔の情報
@@ -83,15 +83,15 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
     // drop の時に，フィードバックを出すかどうか
     private boolean showDropFeedback = false;
 
-    public MyJScrollPane() {
+    public PNSScrollPane() {
         this(null);
     }
 
-    public MyJScrollPane(Component view) {
+    public PNSScrollPane(Component view) {
         this(view, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
-    public MyJScrollPane(Component view, int v, int h) {
+    public PNSScrollPane(Component view, int v, int h) {
         super(view, v, h);
         setBorder(BorderFactory.createEmptyBorder());
         addMouseWheelListener(this);
@@ -378,7 +378,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
                 }
                 //System.out.println("fading animation thread ends");
             } catch (InterruptedException ex) {
-                System.out.println("MyJScrollPane: " + ex);
+                System.out.println("PNSScrollPane: " + ex);
             }
         }
     }
@@ -604,7 +604,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
     }
 
     /**
-     * この listener は MyJScrollPane とスクロールダミーパネルの両方からイベントを受け取る
+     * この listener は PNSScrollPane とスクロールダミーパネルの両方からイベントを受け取る
      * MyJScrollBar では，WheelEvent の頻度を計測
      * スクロールダミーパネルでは，スクロールフレームの表示をしてから MyJScroppPane にイベントを投げる
      * @param e
@@ -617,7 +617,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
         laptime = now - prevTime;
         prevTime = now;
 
-        // ダミーパネルからの mouse event かどうかを判定，MyJScrollPane に伝達し，フレーム表示をセット
+        // ダミーパネルからの mouse event かどうかを判定，PNSScrollPane に伝達し，フレーム表示をセット
         String panelName = getSourcePanelName(e);
         if (VERTICAL_BAR_PANEL_NAME.equals(panelName) || HORIZONTAL_BAR_PANEL_NAME.equals(panelName)) {
             setShouldShowScrollBarFrame();
@@ -709,7 +709,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
     private class MyScrollBar extends ScrollBar {
         private static final long serialVersionUID = 1L;
 
-        MyJScrollPane context;
+        PNSScrollPane context;
 
         private int scrollUnit;
         private int defaultScrollUnit;
@@ -718,7 +718,7 @@ public class MyJScrollPane extends JScrollPane implements MouseListener, MouseMo
         // この scroll pane を使っている component
         private Component child = null;
 
-        public MyScrollBar(int direction, MyJScrollPane context) {
+        public MyScrollBar(int direction, PNSScrollPane context) {
             super(direction);
             this.context = context;
             this.putClientProperty("JScrollBar.fastWheelScrolling", null);

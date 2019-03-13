@@ -3,7 +3,7 @@ package open.dolphin.impl.pvt;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.StatusPanel;
 
 import javax.swing.*;
@@ -57,7 +57,7 @@ public class WaitingListPanel extends MainComponentPanel {
         MainPanel mainPanel = getMainPanel();
         table = new RowTipsTable();
         table.putClientProperty("Quaqua.Table.style", "striped");
-        MyJScrollPane scroller = new MyJScrollPane(table);
+        PNSScrollPane scroller = new PNSScrollPane(table);
         scroller.isPermanentScrollBar = true;
         mainPanel.add(scroller);
 

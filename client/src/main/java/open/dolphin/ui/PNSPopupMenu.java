@@ -15,7 +15,7 @@ import java.awt.event.MouseEvent;
  * -- java 1.8.0_121 の時点で確認してみたら不要になってた
  * @author pns
  */
-public class MyJPopupMenu extends JPopupMenu {
+public class PNSPopupMenu extends JPopupMenu {
     private static final long serialVersionUID = 1L;
 
     private AWTEventListener listener;
@@ -23,7 +23,7 @@ public class MyJPopupMenu extends JPopupMenu {
     private int x;
     private int y;
 
-    public MyJPopupMenu() {
+    public PNSPopupMenu() {
         super();
         listener = new EventListener();
     }

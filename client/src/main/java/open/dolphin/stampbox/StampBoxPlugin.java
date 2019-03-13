@@ -76,7 +76,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     // mac フラグ
     private final boolean isMac;
     // ロックボタン
-    private MyJToggleButton lockBtn;
+    private PNSToggleButton lockBtn;
     // ExtraMenu(gear) ボタン
     private JButton extraBtn;
     // ExtraMenu を押すと呼ばれる
@@ -427,7 +427,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         });
 
         // ロックボタンを生成する
-        lockBtn = new MyJToggleButton();
+        lockBtn = new PNSToggleButton();
         lockBtn.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         //lockBtn.setIcon(GUIConst.ICON_LOCK_16);
         lockBtn.setIcon(GUIConst.ICON_PADLOCK_CLOSED_16);

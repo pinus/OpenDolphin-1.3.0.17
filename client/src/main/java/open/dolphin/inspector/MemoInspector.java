@@ -10,7 +10,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientMemoModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
@@ -93,7 +93,7 @@ public class MemoInspector implements IInspector {
         AttentiveViewport vport = new AttentiveViewport();
         vport.setView(memoArea);
 
-        MyJScrollPane pane = new MyJScrollPane();
+        PNSScrollPane pane = new PNSScrollPane();
         pane.setViewport(vport);
         pane.putClientProperty("JComponent.sizeVariant", "small");
 

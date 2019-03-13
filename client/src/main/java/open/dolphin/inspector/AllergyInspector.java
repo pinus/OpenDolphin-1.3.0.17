@@ -10,8 +10,8 @@ import open.dolphin.infomodel.AllergyModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.project.Project;
-import open.dolphin.table.IndentTableCellRenderer;
-import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.IndentTableCellRenderer;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.util.ModelUtils;
 
 import javax.swing.*;

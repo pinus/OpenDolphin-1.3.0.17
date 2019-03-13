@@ -8,7 +8,6 @@ import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.table.ObjectReflectTableModel;
 import open.dolphin.ui.*;
 import open.dolphin.util.ModelUtils;
 
@@ -123,7 +122,7 @@ public class MasterSearchPanel extends JPanel {
         JPanel northPanel = createNorthPanel();
         tableModel = createTableModel();
         table = createTable();
-        MyJScrollPane scroller = new MyJScrollPane(table);
+        PNSScrollPane scroller = new PNSScrollPane(table);
         scroller.isPermanentScrollBar = true;
 
         this.setBorder(BorderFactory.createEmptyBorder(0, 1, 0, 1));

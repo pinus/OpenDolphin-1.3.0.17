@@ -6,7 +6,7 @@ import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.StatusPanel;
 
 import javax.swing.*;
@@ -105,7 +105,7 @@ public class PatientSearchPanel extends MainComponentPanel {
 
         table = new AddressTipsTable();
         table.putClientProperty("Quaqua.Table.style", "striped");
-        MyJScrollPane scroller = new MyJScrollPane(table);
+        PNSScrollPane scroller = new PNSScrollPane(table);
         mainPanel.add(scroller);
 
         StatusPanel statusPanel = getStatusPanel();

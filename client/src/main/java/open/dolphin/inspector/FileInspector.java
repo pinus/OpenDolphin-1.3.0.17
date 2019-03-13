@@ -6,7 +6,7 @@ import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.BadgeListener;
 import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.helper.StringTool;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -102,7 +102,7 @@ public class FileInspector implements IInspector {
 
         filePanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
 
-        final MyJScrollPane scrollPane = new MyJScrollPane(list);
+        final PNSScrollPane scrollPane = new PNSScrollPane(list);
         scrollPane.putClientProperty("JComponent.sizeVariant", "small");
         filePanel.add(scrollPane);
     }

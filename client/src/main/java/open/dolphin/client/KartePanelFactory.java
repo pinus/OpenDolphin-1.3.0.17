@@ -1,7 +1,7 @@
 package open.dolphin.client;
 
 import open.dolphin.inspector.IInspector;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -130,15 +130,15 @@ public class KartePanelFactory {
         public EditorPanel() {
             initComponents();
 
-            MyJScrollPane soaScrollPane = new MyJScrollPane();
+            PNSScrollPane soaScrollPane = new PNSScrollPane();
             soaScrollPane.setViewportView(soaTextPane);
-            soaScrollPane.setHorizontalScrollBarPolicy(MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            soaScrollPane.setVerticalScrollBarPolicy(MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            soaScrollPane.setHorizontalScrollBarPolicy(PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            soaScrollPane.setVerticalScrollBarPolicy(PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-            MyJScrollPane pScrollPane = new MyJScrollPane();
+            PNSScrollPane pScrollPane = new PNSScrollPane();
             pScrollPane.setViewportView(pTextPane);
-            pScrollPane.setHorizontalScrollBarPolicy(MyJScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            pScrollPane.setVerticalScrollBarPolicy(MyJScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            pScrollPane.setHorizontalScrollBarPolicy(PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            pScrollPane.setVerticalScrollBarPolicy(PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
             textPanePanel.add(soaScrollPane);
             textPanePanel.add(pScrollPane);

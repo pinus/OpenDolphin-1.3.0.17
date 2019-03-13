@@ -9,7 +9,7 @@ import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MMLTable;
 import open.dolphin.order.MasterItem;
 import open.dolphin.project.Project;
-import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;

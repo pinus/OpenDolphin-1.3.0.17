@@ -12,21 +12,21 @@ import java.util.List;
 
 /**
  * カルテをスワイプスクロール
- * <p>
- * viewPos
- * +---------------+
+ *<pre>
+ *      viewPos
+ *      +---------------+
  * (i-1)|       (i)     |  (i+1)
  * +----+--------+----------+-----
  * |    |<-off   |      |   | KartePanel
  * |    |   set->|      |   |
  * +----+--------+----------+-----
- * |               |
- * +---------------+ ViewPort
+ *      |               |
+ *      +---------------+ ViewPort
  * i=karePageNumber
- *
+ *</pre>
  * @author pns
  */
-public class KarteScrollPane extends MyJScrollPane {
+public class KarteScrollPane extends PNSScrollPane {
     private static final long serialVersionUID = 1L;
 
     // 最初は viewport.getView() を一気に BufferedImage にしようとしたが，カルテが多くなると OutOfMemorryError になってしまった
@@ -94,7 +94,7 @@ public class KarteScrollPane extends MyJScrollPane {
 
     /**
      * paintChildern で描画しておく
-     * 後で，MyJScrollPane の paint で，スクロールバーを書いてもらう
+     * 後で，PNSScrollPane の paint で，スクロールバーを書いてもらう
      *
      * @param graphics Graphics
      */
@@ -358,7 +358,7 @@ public class KarteScrollPane extends MyJScrollPane {
         }
 
         mouseCapturePanel = new JPanel();
-        parentLayer.add(mouseCapturePanel, JLayeredPane.DRAG_LAYER - 1); // MyJScrollPane より一歩下がる
+        parentLayer.add(mouseCapturePanel, JLayeredPane.DRAG_LAYER - 1); // PNSScrollPane より一歩下がる
 
         mouseCapturePanel.setBounds(SwingUtilities.convertRectangle(viewport, viewRect, parentLayer));
         mouseCapturePanel.setOpaque(false);

@@ -2,7 +2,7 @@
 package open.dolphin.impl.psearch;
 
 import open.dolphin.infomodel.PatientModel;
-import open.dolphin.table.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;

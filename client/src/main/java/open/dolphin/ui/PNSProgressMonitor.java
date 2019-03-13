@@ -6,16 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 /**
- * MyProgressMonitor
+ * PNSProgressMonitor
  * ProgressMonitor が，エスケープキーを押してキャンセルした場合 isCanceled() が true にならないのを workaround
  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6357974
  * @author pns
  */
-public class MyProgressMonitor extends ProgressMonitor {
+public class PNSProgressMonitor extends ProgressMonitor {
 
     private boolean isCanceled = false;
 
-    public MyProgressMonitor(Component parentComponent, Object message, String note, int min, int max) {
+    public PNSProgressMonitor(Component parentComponent, Object message, String note, int min, int max) {
         super(parentComponent, message, note, min, max);
     }
 

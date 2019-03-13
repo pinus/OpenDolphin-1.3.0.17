@@ -5,7 +5,7 @@ import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.ui.MainFrame;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.StatusPanel;
 
 import javax.swing.*;
@@ -409,7 +409,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             editor.setContext(EditorFrame.this);
             editor.initialize();
             editor.start();
-            scroller = new MyJScrollPane(editor.getUI());
+            scroller = new PNSScrollPane(editor.getUI());
             scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
             mediator.enableAction(GUIConst.ACTION_NEW_KARTE, false);
             mediator.enableAction(GUIConst.ACTION_NEW_DOCUMENT, false);

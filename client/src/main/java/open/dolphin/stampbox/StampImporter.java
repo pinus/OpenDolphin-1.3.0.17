@@ -11,8 +11,8 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.infomodel.SubscribedTreeModel;
 import open.dolphin.project.Project;
-import open.dolphin.table.ObjectReflectTableModel;
-import open.dolphin.ui.MyJScrollPane;
+import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.ui.PNSScrollPane;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -195,7 +195,7 @@ public class StampImporter {
         flagPanel.add(importedLabel);
         JPanel cmdPanel = GUIFactory.createCommandButtonPanel(new JButton[]{cancelBtn, deleteBtn, importBtn});
         browsePane.add(flagPanel, BorderLayout.NORTH);
-        browsePane.add(new MyJScrollPane(table), BorderLayout.CENTER);
+        browsePane.add(new PNSScrollPane(table), BorderLayout.CENTER);
         browsePane.add(cmdPanel, BorderLayout.SOUTH);
 
         // レンダラを設定する
