@@ -1,9 +1,6 @@
 package open.dolphin.service;
 
-import open.dolphin.dto.ApiResult;
-import open.dolphin.dto.ApiWarning;
-import open.dolphin.dto.DiagnosisSearchSpec;
-import open.dolphin.dto.PatientVisitSpec;
+import open.dolphin.dto.*;
 import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.orca.OrcaUserInfo;
@@ -19,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * OrcaServiceApi.
@@ -640,6 +638,44 @@ public class OrcaServiceApi {
                 });
                 result.setWarningInfo(warnings.toArray(new ApiWarning[0]));
             }
+        }
+        return result;
+    }
+
+    /**
+     * subjectivesv2 で ORCA に症状詳記を送る.
+     *
+     * @param spec SubjectivesSpec
+     * @return ApiResult
+     */
+    public ApiResult sendSubjectives(SubjectivesSpec spec) {
+        Subjectivesmodreq req = new Subjectivesmodreq();
+        req.setPatient_ID(spec.getPatientId());
+        req.setPerform_Date(spec.getPerformDate());
+        req.setDepartment_Code(spec.getDepartmentCode());
+        req.setInsurance_Combination_Number(spec.getInsuranceCombinationNumber());
+        req.setSubjectives_Detail_Record(spec.getCode()); // API で code と record が
+        req.setSubjectives_Code(spec.getRecord());        // 逆に定義されてしまっている
+
+        Subjectivesmodres res = api.post(req, spec.getRequestNumber());
+
+        ApiResult result = new ApiResult();
+
+        result.setDate(res.getInformation_Date());
+        result.setTime(res.getInformation_Time());
+        result.setApiResult(res.getApi_Result());
+        result.setApiResultMessage(res.getApi_Result_Message());
+
+        ApiWarningMessageInformation[] warningInfo = res.getApi_Warning_Message_Information();
+        if (Objects.nonNull(warningInfo)) {
+            List<ApiWarning> warnings = Arrays.stream(warningInfo)
+                    .map(ApiWarningMessageInformation::getApi_Warning_Message)
+                    .map(w -> {
+                        ApiWarning warning = new ApiWarning();
+                        warning.setWarningMessage(w);
+                        return warning;
+                    }).collect(Collectors.toList());
+            result.setWarningInfo(warnings.toArray(new ApiWarning[0]));
         }
         return result;
     }

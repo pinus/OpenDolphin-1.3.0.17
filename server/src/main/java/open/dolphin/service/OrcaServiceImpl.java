@@ -1,9 +1,6 @@
 package open.dolphin.service;
 
-import open.dolphin.dto.ApiResult;
-import open.dolphin.dto.DiagnosisSearchSpec;
-import open.dolphin.dto.OrcaEntry;
-import open.dolphin.dto.PatientVisitSpec;
+import open.dolphin.dto.*;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
@@ -75,4 +72,7 @@ public class OrcaServiceImpl implements OrcaService {
     public ApiResult sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses) {
         return api.sendDiagnoses(diagnoses);
     }
+
+    @Override
+    public ApiResult sendSubjectives(SubjectivesSpec spec) { return api.sendSubjectives(spec); }
 }

@@ -208,19 +208,19 @@ public class ClaimConst {
     }
 
     /**
-     * 詳記区分.
+     * 詳記区分. see {@link open.dolphin.orca.orcaapi.bean.Subjectivesmodreq Subjectivesmodreq}
      */
-    public static HashMap<String, String> SubjectivesDetailRecordMap = new HashMap<>();
+    public static HashMap<String, String> SubjectivesCodeMap = new HashMap<>();
     static {
-        SubjectivesDetailRecordMap.put("主たる疾患の臨床症状", "01");
-        SubjectivesDetailRecordMap.put("主たる疾患の診療・検査所見", "02");
-        SubjectivesDetailRecordMap.put("主な治療行為の必要性", "03");
-        SubjectivesDetailRecordMap.put("主な治療行為の経過", "04");
-        SubjectivesDetailRecordMap.put("治験概要", "50");
-        SubjectivesDetailRecordMap.put("上記以外", "90");
-        SubjectivesDetailRecordMap.put("レセプト摘要欄コメント", "99");
-        SubjectivesDetailRecordMap.put("労災レセプト\"傷病の経過\"", "AA");
-        SubjectivesDetailRecordMap.put("自賠責(第三者行為)レセプト摘要欄コメント", "BB");
+        SubjectivesCodeMap.put("主たる疾患の臨床症状", "01");
+        SubjectivesCodeMap.put("主たる疾患の診療・検査所見", "02");
+        SubjectivesCodeMap.put("主な治療行為の必要性", "03");
+        SubjectivesCodeMap.put("主な治療行為の経過", "04");
+        SubjectivesCodeMap.put("治験概要", "50");
+        SubjectivesCodeMap.put("上記以外", "90");
+        SubjectivesCodeMap.put("レセプト摘要欄コメント", "99");
+        SubjectivesCodeMap.put("労災レセプト\"傷病の経過\"", "AA");
+        SubjectivesCodeMap.put("自賠責(第三者行為)レセプト摘要欄コメント", "BB");
     }
 
     /**

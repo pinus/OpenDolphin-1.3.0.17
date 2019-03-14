@@ -5,6 +5,7 @@ import open.dolphin.codehelper.PCodeHelper;
 import open.dolphin.codehelper.SOACodeHelper;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
+import open.dolphin.dto.SubjectivesSpec;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.ImageHelper;
@@ -37,12 +38,11 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.*;
 import java.util.prefs.Preferences;
 
-import static open.dolphin.orca.ClaimConst.SubjectivesDetailRecordMap;
+import static open.dolphin.orca.ClaimConst.SubjectivesCodeMap;
 
 /**
  * KarteComposite の一つで，内部に JTextPane を１つ保持している.
@@ -514,17 +514,43 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             // 症状詳記メニュー
             JMenu subjMenu = new JMenu("症状詳記送信");
 
-            SubjectivesDetailRecordMap.entrySet().stream().forEach(e -> {
-                JMenuItem item = new JMenuItem(new ProxyAction(e.getKey(), () -> {
-                    System.out.println("KartePane Action : " + e.getValue());
-                    TODO
-                }));
-                subjMenu.add(item);
-            });
+            SubjectivesCodeMap.entrySet().stream()
+                    .sorted(Comparator.comparing(Map.Entry::getValue))
+                    .forEach(entry -> subjMenu.add(new JMenuItem(new ProxyAction(entry.getKey(),
+                            () -> this.sendSubjectivesDetailRecord(entry.getValue(), selectedText)))));
             contextMenu.add(subjMenu);
         }
 
         return contextMenu;
+    }
+
+    /**
+     * 症状詳記を ORCA に書き込む.
+     * @param code 詳記区分番号
+     * @param record 詳記内容
+     */
+    private void sendSubjectivesDetailRecord(String code, String record) {
+
+        Chart chart = parent.getContext();
+        String ptId = chart.getPatient().getPatientId();
+        String insurance = chart.getPatientVisit().getInsuranceUid();
+        String dept = chart.getPatientVisit().getDepartmentCode();
+
+        logger.info("ptid = " + ptId);
+        logger.info("insurance = " + insurance);
+        logger.info("dept = " + dept);
+        logger.info("code = " + code);
+        logger.info("record = " + record);
+??
+        SubjectivesSpec spec = new SubjectivesSpec();
+        spec.setRequestNumber("01"); // 登録
+        spec.setPatientId(ptId);
+        spec.setDepartmentCode(dept);
+        spec.setCode(code);
+        spec.setRecord(record);
+
+        OrcaDelegater delegater = new OrcaDelegater();
+        delegater.sendSubjectives(spec);
     }
 
     private void maybeShowPopup(MouseEvent e) {

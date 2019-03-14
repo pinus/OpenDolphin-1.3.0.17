@@ -1,4 +1,4 @@
-package open.dolphin.master;
+package open.dolphin.project;
 
 import open.dolphin.JsonConverter;
 import open.dolphin.helper.HashUtil;
@@ -311,7 +311,7 @@ public class InitDatabase {
 
     public static void main(String[] args) throws Exception {
         final InitDatabase initDatabase = new InitDatabase();
-        final String usage = "Usage: java -cp OpenDolphin-1.3.0.X.jar open.dolphin.master.InitDatabase id password hostAddress";
+        final String usage = "Usage: java -cp OpenDolphin-1.3.0.X.jar open.dolphin.project.InitDatabase id password hostAddress";
 
         if (args.length == 3) {
             initDatabase.start(args[0], args[1], args[2]);

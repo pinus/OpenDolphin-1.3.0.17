@@ -1,9 +1,6 @@
 package open.dolphin.delegater;
 
-import open.dolphin.dto.ApiResult;
-import open.dolphin.dto.DiagnosisSearchSpec;
-import open.dolphin.dto.OrcaEntry;
-import open.dolphin.dto.PatientVisitSpec;
+import open.dolphin.dto.*;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
@@ -144,23 +141,17 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
         String apiResult = result.getApiResult();
         String ptId = document.getKarte().getPatient().getPatientId();
         String ptName = document.getKarte().getPatient().getFullName();
+        String message = String.format("[%s] %s\nORCA で使用中のため送信できませんでした。再送しますか？", ptId, ptName);
 
         // 他端末で使用中(90)の場合は，手動でリトライする
         while ("90".equals(apiResult)) {
-            logger.info("[" + ptId + "] ORCA busy, waiting for retrial");
-
-            String message = String.format("[%s] %s\nORCA で使用中のため送信できませんでした。再送しますか？", ptId, ptName);
-
             if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null,
                     message, "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
-                logger.info("[" + ptId + "] Document NOT sent to ORCA");
                 return Result.ERROR;
             }
             result = getService().sendDocument(document);
             apiResult = result.getApiResult();
         }
-
-        logger.info("[" + ptId + "] Document sent to ORCA");
         return Result.NO_ERROR;
     }
 
@@ -174,6 +165,30 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
         // 非同期で送信
         Executors.newCachedThreadPool().submit(() -> getService().sendDiagnoses(diagnoses));
         // 再送処理はサーバー側で行う
+        return Result.NO_ERROR;
+    }
+
+    /**
+     * subjectivesv2 で ORCA に症状詳記を送る.
+     *
+     * @param spec SubjectivesSpec
+     * @return ApiResult
+     */
+    public Result sendSubjectives(SubjectivesSpec spec) {
+        ApiResult result = getService().sendSubjectives(spec);
+        String apiResult = result.getApiResult();
+        String ptId = spec.getPatientId();
+        String message = String.format("[%s] ORCA で使用中のため送信できませんでした。再送しますか？", ptId);
+
+        // 他端末で使用中(90)の場合は，手動でリトライする
+        while ("90".equals(apiResult)) {
+            if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null,
+                    message, "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
+                return Result.ERROR;
+            }
+            result = getService().sendSubjectives(spec);
+            apiResult = result.getApiResult();
+        }
         return Result.NO_ERROR;
     }
 }

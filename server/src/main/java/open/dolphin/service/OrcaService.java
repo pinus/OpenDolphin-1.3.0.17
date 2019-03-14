@@ -1,9 +1,6 @@
 package open.dolphin.service;
 
-import open.dolphin.dto.ApiResult;
-import open.dolphin.dto.DiagnosisSearchSpec;
-import open.dolphin.dto.OrcaEntry;
-import open.dolphin.dto.PatientVisitSpec;
+import open.dolphin.dto.*;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
@@ -147,4 +144,14 @@ public interface OrcaService {
     @POST
     @Path("sendDiagnoses")
     public ApiResult sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses);
+
+    /**
+     * subjectivesv2 で ORCA に症状詳記を送る.
+     *
+     * @param spec SubjectivesSpec
+     * @return ApiResult
+     */
+    @POST
+    @Path("sendSubjectives")
+    public ApiResult sendSubjectives(SubjectivesSpec spec);
 }
