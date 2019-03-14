@@ -530,27 +530,25 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      * @param record 詳記内容
      */
     private void sendSubjectivesDetailRecord(String code, String record) {
+        TODO
+        // 1) isEditable false の時に parent が null
+        // 2) JSheet で結果表示
 
         Chart chart = parent.getContext();
         String ptId = chart.getPatient().getPatientId();
         String insurance = chart.getPatientVisit().getInsuranceUid();
         String dept = chart.getPatientVisit().getDepartmentCode();
 
-        logger.info("ptid = " + ptId);
-        logger.info("insurance = " + insurance);
-        logger.info("dept = " + dept);
-        logger.info("code = " + code);
-        logger.info("record = " + record);
-??
         SubjectivesSpec spec = new SubjectivesSpec();
         spec.setRequestNumber("01"); // 登録
         spec.setPatientId(ptId);
         spec.setDepartmentCode(dept);
+        spec.setInsuranceCombinationNumber(insurance);
         spec.setCode(code);
         spec.setRecord(record);
 
         OrcaDelegater delegater = new OrcaDelegater();
-        delegater.sendSubjectives(spec);
+        OrcaDelegater.Result result = delegater.sendSubjectives(spec);
     }
 
     private void maybeShowPopup(MouseEvent e) {
