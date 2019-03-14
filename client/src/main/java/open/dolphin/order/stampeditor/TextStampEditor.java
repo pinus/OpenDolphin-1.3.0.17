@@ -7,7 +7,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.TextStampModel;
-import open.dolphin.order.ClaimConst;
+import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.HorizontalPanel;

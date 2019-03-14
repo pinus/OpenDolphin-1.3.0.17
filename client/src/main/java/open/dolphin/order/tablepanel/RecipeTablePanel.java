@@ -4,9 +4,8 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
-import open.dolphin.order.ClaimConst;
+import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.IStampEditor;
-import open.dolphin.order.MMLTable;
 import open.dolphin.order.MasterItem;
 import open.dolphin.project.Project;
 import open.dolphin.ui.ObjectReflectTableModel;
@@ -407,7 +406,7 @@ public class RecipeTablePanel extends ItemTablePanel {
                         // 作成した薬剤区分コードを bundle にセットする
                         bundle.setClassCode(rCode); // 診療種別区分（３桁の数字）が入る
                         bundle.setClassCodeSystem(ClaimConst.CLASS_CODE_ID);
-                        bundle.setClassName(MMLTable.getClaimClassCodeName(rCode));
+                        bundle.setClassName(ClaimConst.getSrysyukbnName(rCode));
                     }
                     break;
 

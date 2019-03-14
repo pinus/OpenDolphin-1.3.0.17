@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
-import open.dolphin.order.ClaimConst;
+import open.dolphin.orca.ClaimConst;
 import open.dolphin.ui.sheet.JSheet;
 
 import javax.swing.*;

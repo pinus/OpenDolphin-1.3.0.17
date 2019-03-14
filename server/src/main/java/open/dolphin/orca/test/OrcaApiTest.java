@@ -516,8 +516,11 @@ public class OrcaApiTest {
     }
 
     public static void main(String[] argv) {
+        String userDir = System.getProperty("user.dir");
+        System.setProperty("jboss.server.base.dir", userDir);
+
         OrcaApiTest test = new OrcaApiTest();
-        //test.patientgetv2();
+        test.patientgetv2();
         //test.appointmodv2();
         //test.medicalmodv2();
         //test.acceptmodv2();
@@ -541,7 +544,7 @@ public class OrcaApiTest {
         //test.systeminfv2();
         //test.manageusersv2();
         //test.medicalsetv2();
-        test.patientlst6v2();
+        //test.patientlst6v2();
         //test.diseasev3();
         //test.masterlastupdatev3();
         //test.system01dailyv2();

@@ -5,8 +5,10 @@ import open.dolphin.codehelper.PCodeHelper;
 import open.dolphin.codehelper.SOACodeHelper;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.ImageHelper;
+import open.dolphin.helper.StringTool;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
@@ -40,6 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import static open.dolphin.orca.ClaimConst.SubjectivesDetailRecordMap;
+
 /**
  * KarteComposite の一つで，内部に JTextPane を１つ保持している.
  * 保持している JTextPane は，{@link open.dolphin.client.KartePane#setTextPane setTextPane} されるときに
@@ -72,6 +76,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     private StampHolderTransferHandler stampHolderTransferHandler;
     // SchemaHolderのTransferHandler
     private SchemaHolderTransferHandler schemaHolderTransferHandler;
+    // SchemaModel にファイル名を付けるときの Id (インクリメントする)
     private int stampId;
     // Dirty Flag
     private boolean dirty;
@@ -92,8 +97,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     // KartePane の UndoManager
     private final TextComponentUndoManager undoManager;
     private final UndoableEditListener undoListener;
-
-    private final Logger logger = ClientContext.getBootLogger();
+    // ロガー
+    private final Logger logger = Logger.getLogger(KartePane.class);
 
     public KartePane() {
         undoManager = new TextComponentUndoManager();
@@ -491,23 +496,38 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             p.add(l);
             p.add(ccl);
             contextMenu.add(p);
-        } else {
-            contextMenu.addSeparator();
         }
 
-        // PPane の場合はStampMenuを追加する
-        if (getMyRole().equals(IInfoModel.ROLE_P)) {
-            //contextMenu.addSeparator();
-            mediator.addStampMenu(contextMenu, this);
-        } else {
-            // TextMenuを追加する
-            mediator.addTextMenu(contextMenu);
+        if (getTextPane().isEditable()) {
+            if (getMyRole().equals(IInfoModel.ROLE_P)) {
+                // PPane の場合はStampMenuを追加する
+                //contextMenu.addSeparator();
+                mediator.addStampMenu(contextMenu, this);
+            } else {
+                // soaPane の場合は TextMenu を追加する
+                mediator.addTextMenu(contextMenu);
+            }
+        }
+
+        String selectedText = getTextPane().getSelectedText();
+        if (!StringTool.isEmpty(selectedText)) {
+            // 症状詳記メニュー
+            JMenu subjMenu = new JMenu("症状詳記送信");
+
+            SubjectivesDetailRecordMap.entrySet().stream().forEach(e -> {
+                JMenuItem item = new JMenuItem(new ProxyAction(e.getKey(), () -> {
+                    System.out.println("KartePane Action : " + e.getValue());
+                    TODO
+                }));
+                subjMenu.add(item);
+            });
+            contextMenu.add(subjMenu);
         }
 
         return contextMenu;
     }
 
-    private void mabeShowPopup(MouseEvent e) {
+    private void maybeShowPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {
             JPopupMenu contextMenu = createMenus();
             contextMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -516,14 +536,14 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     @Override
     public void mousePressed(MouseEvent e) {
-        mabeShowPopup(e);
+        maybeShowPopup(e);
         // focusable false でもマウスで選択してコピーできるように
         getTextPane().setFocusable(true);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        mabeShowPopup(e);
+        maybeShowPopup(e);
     }
 
     @Override

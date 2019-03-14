@@ -5,7 +5,7 @@ import open.dolphin.infomodel.BundleMed;
 import open.dolphin.infomodel.ClaimItem;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.order.ClaimConst;
+import open.dolphin.orca.ClaimConst;
 import open.dolphin.ui.Focuser;
 
 import javax.swing.*;

@@ -6,7 +6,6 @@ import open.dolphin.dto.OrcaEntry;
 import open.dolphin.dto.PatientVisitSpec;
 import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
-import open.dolphin.orca.MMLTable;
 import open.dolphin.orca.orcadao.OrcaDao;
 import open.dolphin.orca.orcadao.OrcaDbConnection;
 import open.dolphin.orca.orcadao.bean.Inputset;
@@ -555,7 +554,7 @@ public class OrcaServiceDao {
 
         bundle.setClassCode(srysyukbn);
         bundle.setClassCodeSystem(ClaimConst.CLASS_CODE_ID);
-        bundle.setClassName(MMLTable.getClaimClassCodeName(srysyukbn));
+        bundle.setClassName(ClaimConst.getSrysyukbnName(srysyukbn));
         bundle.setBundleNumber("1");
 
         stamp.setModel(bundle);

@@ -4,7 +4,7 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ValidListener;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.order.ClaimConst;
+import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterSearchPanel;
 import open.dolphin.order.tablepanel.DiagnosisTablePanel;

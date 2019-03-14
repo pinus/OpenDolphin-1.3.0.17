@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
+ * ProxyAction.
+ * Action を {@code new ProxyAction("ActionName", () -> action)} と書ける.
  *
  * @author pns
  */

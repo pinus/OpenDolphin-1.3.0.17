@@ -5,9 +5,8 @@ import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
-import open.dolphin.order.ClaimConst;
+import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.IStampEditor;
-import open.dolphin.order.MMLTable;
 import open.dolphin.order.MasterItem;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IMEControl;
@@ -774,7 +773,7 @@ public class ItemTablePanel extends JPanel {
         bundle.setBundleNumber((String) numberCombo.getSelectedItem());
         bundle.setClassCode(classCode); // 診療行為区分（３桁の数字）が入る
         bundle.setClassCodeSystem(classCodeId); // Claim007 固定の値
-        bundle.setClassName(MMLTable.getClaimClassCodeName(classCode)); // 上記テーブルで定義されている診療行為の名称
+        bundle.setClassName(ClaimConst.getSrysyukbnName(classCode)); // 上記テーブルで定義されている診療行為の名称
 
         retModel.setModel(bundle);
 

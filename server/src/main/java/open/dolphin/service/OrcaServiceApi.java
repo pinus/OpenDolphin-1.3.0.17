@@ -6,7 +6,6 @@ import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.dto.PatientVisitSpec;
 import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
-import open.dolphin.orca.MMLTable;
 import open.dolphin.orca.OrcaUserInfo;
 import open.dolphin.orca.orcaapi.OrcaApi;
 import open.dolphin.orca.orcaapi.bean.*;
@@ -167,7 +166,7 @@ public class OrcaServiceApi {
             bundle.setOrderName(orderName);
             bundle.setClassCode(srysyukbn);
             bundle.setClassCodeSystem(ClaimConst.CLASS_CODE_ID);
-            bundle.setClassName(MMLTable.getClaimClassCodeName(srysyukbn)); // 別紙2 診療種区分一覧
+            bundle.setClassName(ClaimConst.getSrysyukbnName(srysyukbn)); // 別紙2 診療種区分一覧
             bundle.setBundleNumber(info.getMedical_Class_Number()); // 14TD
 
             // stamp のひな形完成 (ModuleInfoBean + ClaimBundle)
