@@ -176,6 +176,8 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      */
     public Result sendSubjectives(SubjectivesSpec spec) {
         ApiResult result = getService().sendSubjectives(spec);
+
+        // ここは busy (90) にならないみたい
         String apiResult = result.getApiResult();
         String ptId = spec.getPatientId();
         String message = String.format("[%s] ORCA で使用中のため送信できませんでした。再送しますか？", ptId);
