@@ -154,4 +154,14 @@ public interface OrcaService {
     @POST
     @Path("sendSubjectives")
     public ApiResult sendSubjectives(SubjectivesSpec spec);
+
+    /**
+     * subjectiveslstv2 で ORCA から症状詳記の一覧を得る.
+     *
+     * @param spec SubjectivesSpec
+     * @return ApiResult
+     */
+    @POST
+    @Path("getSubjectives")
+    public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec);
 }

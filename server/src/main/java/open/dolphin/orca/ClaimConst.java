@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 public class ClaimConst {
 
+    public static final String DISEASE_MASTER_TABLE_ID = "ICD10_2001-10-03MEDIS";
     public static final String SUBCLASS_CODE_ID = "Claim003";    // 手技、材料、薬剤区分テーブルID
     public static final String NUMBER_CODE_ID = "Claim004";    // 数量コードテーブルID
     public static final String CLASS_CODE_ID = "Claim007";    // 診療行為区分テーブルID

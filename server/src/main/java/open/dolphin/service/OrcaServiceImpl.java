@@ -75,4 +75,7 @@ public class OrcaServiceImpl implements OrcaService {
 
     @Override
     public ApiResult sendSubjectives(SubjectivesSpec spec) { return api.sendSubjectives(spec); }
+
+    @Override
+    public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec) { return api.getSubjectives(spec); }
 }

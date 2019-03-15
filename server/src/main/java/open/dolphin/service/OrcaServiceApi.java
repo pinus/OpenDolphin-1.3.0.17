@@ -660,7 +660,6 @@ public class OrcaServiceApi {
         Subjectivesmodres res = api.post(req, spec.getRequestNumber());
 
         ApiResult result = new ApiResult();
-
         result.setDate(res.getInformation_Date());
         result.setTime(res.getInformation_Time());
         result.setApiResult(res.getApi_Result());
@@ -678,5 +677,39 @@ public class OrcaServiceApi {
             result.setWarningInfo(warnings.toArray(new ApiWarning[0]));
         }
         return result;
+    }
+
+    /**
+     * subjectiveslstv2 で ORCA から症状詳記を取得する.
+     *
+     * @param spec SubjectivesSpec
+     * @return List of SubjectivesSpec
+     */
+    public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec) {
+        Subjectiveslstreq req = new Subjectiveslstreq();
+        req.setRequest_Number("02"); // 該当詳記を返却
+        req.setPatient_ID(spec.getPatientId());
+        req.setPerform_Date(spec.getPerformDate());
+        req.setDepartment_Code(spec.getDepartmentCode());
+        req.setInsurance_Combination_Number(spec.getInsuranceCombinationNumber());
+        req.setSubjectives_Detail_Record(spec.getCode());
+
+        Subjectiveslstres res = api.post(req);
+
+        List<SubjectivesSpec> ret = new ArrayList<>();
+        if (Objects.nonNull(res.getSubjectives_Information())) {
+            Arrays.stream(res.getSubjectives_Information()).forEach(info -> {
+                SubjectivesSpec s = new SubjectivesSpec();
+                s.setPatientId(res.getPatient_Information().getPatient_ID());
+                s.setPerformDate(res.getPerform_Date());
+                s.setDepartmentCode(info.getDepartment_Code());
+                //s.setInsuranceCombinationNumber(info.getHealthInsurance_Information().getInsurance_Combination_Number());
+                s.setCode(info.getSubjectives_Detail_Record());
+                s.setRecord(info.getSubjectives_Detail_Record_WholeName());
+                ret.add(s);
+            });
+        }
+
+        return ret;
     }
 }

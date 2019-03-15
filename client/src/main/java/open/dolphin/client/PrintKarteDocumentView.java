@@ -113,11 +113,11 @@ public class PrintKarteDocumentView implements Printable {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Footer
-        String headerStr = String.format("[%s] %s (%d/%s)", ptId, ptName, (pageIndex+1), totalPageNumber);
-        int strW = SwingUtilities.computeStringWidth(g2d.getFontMetrics(), headerStr);
+        String footerStr = String.format("[%s] %s (%d/%s)", ptId, ptName, (pageIndex+1), totalPageNumber);
+        int strW = SwingUtilities.computeStringWidth(g2d.getFontMetrics(), footerStr);
         int strX = (int)(pageFormat.getImageableX() + pageFormat.getImageableWidth())/2 - strW/2;
         int strY = (int)(pageFormat.getImageableY() + pageFormat.getImageableHeight()) - g2d.getFontMetrics().getMaxDescent();
-        g2d.drawString(headerStr, strX, strY);
+        g2d.drawString(footerStr, strX, strY);
 
         // image ソースの四隅
         int sx1 = 0;

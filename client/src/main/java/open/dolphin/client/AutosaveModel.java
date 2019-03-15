@@ -16,6 +16,7 @@ import static open.dolphin.infomodel.IInfoModel.*;
 
 /**
  * Model for KarteEditor Autosave.
+ *
  * @author pns
  */
 public class AutosaveModel {
@@ -48,10 +49,11 @@ public class AutosaveModel {
 
     /**
      * KarteEditor を dump して　AutosaveModel を作成する.
-     * @param editor
+     *
+     * @param editor KarteEditor
      */
     public void dump(KarteEditor editor) {
-        documentModel = editor.getModel();
+        documentModel = editor.getDocument();
         patientId = editor.getContext().getKarte().getPatient().getPatientId();
 
         DefaultStyledDocument soa = (DefaultStyledDocument) editor.getSOAPane().getTextPane().getDocument();
@@ -68,7 +70,7 @@ public class AutosaveModel {
             Image image = m.getIcon().getImage();
             int hash = image.hashCode();
 
-            if (! imageHash.contains(hash)) {
+            if (!imageHash.contains(hash)) {
                 // image を byte array に変換
                 m.setJpegByte(ImageHelper.imageToByteArray(image));
                 imageHash.add(hash);

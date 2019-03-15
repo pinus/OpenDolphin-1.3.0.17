@@ -8,6 +8,7 @@ import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.orca.ClaimConst;
 import open.dolphin.ui.*;
 import open.dolphin.util.ModelUtils;
 

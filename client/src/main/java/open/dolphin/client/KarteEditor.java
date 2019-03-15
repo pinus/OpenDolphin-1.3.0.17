@@ -37,8 +37,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private static final Font TIMESTAMP_FONT = new Font("Dialog", Font.PLAIN, TIMESTAMP_FONT_SIZE);
     private static final String DEFAULT_TITLE = "経過記録";
 
-    // このエディタのモデル
-    private DocumentModel model;
     // このエディタを構成するコンポーネント
     private JLabel timeStampLabel;
     // Timestamp
@@ -95,24 +93,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     public void selectAll() {
         //KarteEditor.getInputMap().remove(KeyStroke.getKeyStroke('A',java.awt.event.InputEvent.META_MASK));
         System.out.println("---- selectAll in KarteEditor.java ----");//TODO
-    }
-
-    /**
-     * DocumentModelを返す.
-     *
-     * @return DocumentModel
-     */
-    public DocumentModel getModel() {
-        return model;
-    }
-
-    /**
-     * DocumentModelを設定する.
-     *
-     * @param model DocumentModel
-     */
-    public void setModel(DocumentModel model) {
-        this.model = model;
     }
 
     /**
@@ -252,9 +232,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         soaPane.setParent(this);
         soaPane.setRole(ROLE_SOA);
         soaPane.getTextPane().setTransferHandler(new SOATransferHandler(soaPane));
-        if (model != null) {
+        if (Objects.nonNull(getDocument())) {
             // Schema 画像にファイル名を付けるのために必要
-            String docId = model.getDocInfo().getDocId();
+            String docId = getDocument().getDocInfo().getDocId();
             soaPane.setDocId(docId);
         }
 
@@ -313,16 +293,16 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         String now = ModelUtils.getDateAsFormatString(new Date(), IInfoModel.KARTE_DATE_FORMAT);
 
         if (modify) {
-            String firstConfirm = ModelUtils.getDateAsFormatString(model.getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
+            String firstConfirm = ModelUtils.getDateAsFormatString(getDocument().getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
             timeStamp = String.format("%s%s [%s]", UPDATE_MARK, now, firstConfirm);
         } else {
             timeStamp = now;
         }
 
         // 内容を表示する
-        if (model.getModules() != null) {
+        if (Objects.nonNull(getDocument().getModules())) {
             KarteRenderer_2 renderer = new KarteRenderer_2(soaPane, pPane);
-            renderer.render(model);
+            renderer.render(getDocument());
             soaPane.setLogicalStyle("default");
             pPane.setLogicalStyle("default");
         }
@@ -342,7 +322,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         // Model に設定してある健康保険を選択する
         String selecteIns = Arrays.stream(ins)
                 .filter(i -> Objects.nonNull(i.getGUID()))
-                .filter(i -> i.getGUID().equals(getModel().getDocInfo().getHealthInsuranceGUID()))
+                .filter(i -> i.getGUID().equals(getDocument().getDocInfo().getHealthInsuranceGUID()))
                 .findAny().map(PVTHealthInsuranceModel::toString).orElse(null);
 
         StringBuilder sb = new StringBuilder();
@@ -363,13 +343,13 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
      */
     private SaveParams getSaveParams() {
         // Title の設定
-        String title = StringTool.isEmpty(model.getDocInfo().getTitle()) ?
+        String title = StringTool.isEmpty(getDocument().getDocInfo().getTitle()) ?
                 Project.getProjectStub().isUseTop15AsTitle() ?
                         soaPane.getTitle() : Project.getProjectStub().getDefaultKarteTitle()
-                : model.getDocInfo().getTitle();
+                : getDocument().getDocInfo().getTitle();
 
         // DocInfoModel
-        DocInfoModel docInfo = getModel().getDocInfo();
+        DocInfoModel docInfo = getDocument().getDocInfo();
 
         // sendClaim=true の場合は条件によって sendClaimSave か sendClaimModify かをセットする
         sendClaim = Project.getSendClaim();
@@ -398,7 +378,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         // ダイアログを表示し，アクセス権等の保存時のパラメータを取得する
         SaveParams params = new SaveParams();
         params.setTitle(title);
-        params.setDepartment(model.getDocInfo().getDepartmentDesc());
+        params.setDepartment(getDocument().getDocInfo().getDepartmentDesc());
 
         // 印刷枚数をPreferenceから取得する
         int numPrint = prefs.getInt("karte.print.count", 0);
@@ -460,7 +440,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         composeModel(params);
 
         final DocumentDelegater ddl = new DocumentDelegater();
-        final DocumentModel saveModel = model;
+        final DocumentModel saveModel = getDocument();
         final Chart chart = this.getContext();
 
         DBTask<String> task = new DBTask<String>(chart) {
@@ -496,7 +476,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                     // 今日のカルテをセーブした場合のみ chartState を変更する.
                     // 今日受診していて，過去のカルテを修正しただけなのに診察完了になってしまうのを防ぐ.
 
-                    DocInfoModel docInfo = model.getDocInfo();
+                    DocInfoModel docInfo = saveModel.getDocInfo();
                     String firstConfirmDate = docInfo.getFirstConfirmDateTrimTime(); // ISO_DATE 型式
                     boolean isTodaysKarte = DateUtils.todayToIsoDate().equals(firstConfirmDate);
 
@@ -537,7 +517,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         //
         // DocInfoに値を設定する
         //
-        DocInfoModel docInfo = model.getDocInfo();
+        DocumentModel document = getDocument();
+        DocInfoModel docInfo = document.getDocInfo();
 
         // 現在時刻を ConfirmDate にする
         Date confirmed = new Date();
@@ -637,7 +618,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         // ProgressCourseModule の ModuleInfo を保存しておく
         ModuleInfoBean soaProgressInfo = null;
         ModuleInfoBean pProgressInfo = null;
-        ModuleInfoBean[] progressInfos = model.getModuleInfo(MODULE_PROGRESS_COURSE);
+        ModuleInfoBean[] progressInfos = document.getModuleInfo(MODULE_PROGRESS_COURSE);
 
         if (progressInfos == null) {
             // 存在しない場合は新規に作成する
@@ -667,8 +648,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         // モデルのモジュールをヌルに設定する
         // エディタの画面をダンプして生成したモジュールを設定する
         //
-        model.clearModules();
-        model.clearSchema();
+        document.clearModules();
+        document.clearSchema();
         logger.debug("model.clearModules(), model.clearSchema()");
 
         //
@@ -678,7 +659,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         KarteStyledDocument doc = (KarteStyledDocument) soaPane.getTextPane().getDocument();
 
         dumper.dump(doc);
-        dumper.getModule().forEach(model::addModule);
+        dumper.getModule().forEach(document::addModule);
 
         // ProgressCourse SOA を生成する
         ProgressCourse soaPc = new ProgressCourse();
@@ -686,19 +667,19 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         ModuleModel soaProgressModule = new ModuleModel();
         soaProgressModule.setModuleInfo(soaProgressInfo);
         soaProgressModule.setModel(soaPc);
-        model.addModule(soaProgressModule);
+        document.addModule(soaProgressModule);
 
         //
         // Schema を追加する
         //
-        dumper.getSchema().forEach(model::addSchema);
+        dumper.getSchema().forEach(document::addSchema);
 
         //
         // PPane をダンプし model に追加する
         //
         KarteStyledDocument pdoc = (KarteStyledDocument) pPane.getTextPane().getDocument();
         dumper.dump(pdoc);
-        dumper.getModule().forEach(model::addModule);
+        dumper.getModule().forEach(document::addModule);
 
         // ProgressCourse P を生成する
         ProgressCourse pProgressCourse = new ProgressCourse();
@@ -706,26 +687,26 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         ModuleModel pProgressModule = new ModuleModel();
         pProgressModule.setModuleInfo(pProgressInfo);
         pProgressModule.setModel(pProgressCourse);
-        model.addModule(pProgressModule);
+        document.addModule(pProgressModule);
 
         // FLAGを設定する
         // image があるかどうか
-        boolean flag = model.getSchema() != null;
+        boolean flag = document.getSchema() != null;
         docInfo.setHasImage(flag);
         logger.debug("hasImage = " + flag);
 
         // RP があるかどうか
-        flag = model.getModule(ENTITY_MED_ORDER) != null;
+        flag = document.getModule(ENTITY_MED_ORDER) != null;
         docInfo.setHasRp(flag);
         logger.debug("hasRp = " + flag);
 
         // 処置があるかどうか
-        flag = model.getModule(ENTITY_TREATMENT) != null;
+        flag = document.getModule(ENTITY_TREATMENT) != null;
         docInfo.setHasTreatment(flag);
         logger.debug("hasTreatment = " + flag);
 
         // LaboTest があるかどうか
-        flag = model.getModule(ENTITY_LABO_TEST) != null;
+        flag = document.getModule(ENTITY_LABO_TEST) != null;
         docInfo.setHasLaboTest(flag);
         logger.debug("hasLaboTest = " + flag);
 
@@ -734,12 +715,12 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         //
         // confirmed, firstConfirmed は設定済み
         KarteBean karte = getContext().getKarte();
-        model.setKarte(karte);                          // karte
-        model.setCreator(Project.getUserModel());       // 記録者
-        model.setRecorded(docInfo.getConfirmDate());    // 記録日
+        document.setKarte(karte);                          // karte
+        document.setCreator(Project.getUserModel());       // 記録者
+        document.setRecorded(docInfo.getConfirmDate());    // 記録日
 
         // Moduleとの関係を設定する
-        Collection<ModuleModel> moduleBeans = model.getModules();
+        Collection<ModuleModel> moduleBeans = document.getModules();
         int number = 0;
         int totalSize = 0;
         for (ModuleModel bean : moduleBeans) {
@@ -747,7 +728,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             bean.setId(0L);                             // unsaved-value
             bean.setKarte(karte);                       // Karte
             bean.setCreator(Project.getUserModel());    // 記録者
-            bean.setDocument(model);                    // Document
+            bean.setDocument(document);                    // Document
             bean.setConfirmed(docInfo.getConfirmDate());            // 確定日
             bean.setFirstConfirmed(docInfo.getFirstConfirmDate());  // 適合開始日
             bean.setRecorded(docInfo.getConfirmDate());             // 記録日
@@ -805,13 +786,13 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
         // 画像との関係を設定する
         number = 0;
-        Collection<SchemaModel> imagesimages = model.getSchema();
+        Collection<SchemaModel> imagesimages = document.getSchema();
         if (imagesimages != null && imagesimages.size() > 0) {
             for (SchemaModel bean : imagesimages) {
                 bean.setId(0L);                                         // unsaved
                 bean.setKarte(karte);                                   // Karte
                 bean.setCreator(Project.getUserModel());                // Creator
-                bean.setDocument(model);                                // Document
+                bean.setDocument(document);                                // Document
                 bean.setConfirmed(docInfo.getConfirmDate());            // 確定日
                 bean.setFirstConfirmed(docInfo.getFirstConfirmDate());  // 適合開始日
                 bean.setRecorded(docInfo.getConfirmDate());             // 記録日
@@ -819,7 +800,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 bean.setImageNumber(number);
 
                 ExtRefModel ref = bean.getExtRef();
-                String href = String.format("%s-%d.jpg", model.getDocInfo().getDocId(), number);
+                String href = String.format("%s-%d.jpg", document.getDocInfo().getDocId(), number);
                 ref.setHref(href);
 
                 number++;

@@ -1,37 +1,44 @@
 package open.dolphin.client;
 
+import open.dolphin.infomodel.DocumentModel;
+
 import javax.swing.*;
 
 
 /**
  * チャートドキュメントが実装するインターフェイス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public interface ChartDocument  {
-	
-    public String getTitle();
 
-    public void setTitle(String title);
+    String getTitle();
 
-    public Chart getContext();
+    void setTitle(String title);
 
-    public void setContext(Chart ctx);
+    Chart getContext();
 
-    public JPanel getUI();
+    void setContext(Chart ctx);
 
-    public void start();
+    DocumentModel getDocument();
 
-    public void stop();
+    void setDocument(DocumentModel documentModel);
 
-    public void enter();
+    JPanel getUI();
 
-    public void save();
+    default void start() {}
 
-    public void print();
+    default void stop() {}
 
-    public boolean isDirty();
+    default void enter() {}
 
-    public void setDirty(boolean dirty);
+    default void save() {}
+
+    default void print() {}
+
+    boolean isDirty();
+
+    void setDirty(boolean dirty);
 
 }

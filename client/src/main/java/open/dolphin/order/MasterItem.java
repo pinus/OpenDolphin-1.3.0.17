@@ -3,6 +3,7 @@ package open.dolphin.order;
 /**
  * Class to hold selected master item information.
  * StampEditor の TablePanel の TableModel はこれを Object として保持する.
+ *
  * @author Kazuhi Minagawa, Digital Globe, Inc.
  * @author pns
  */
@@ -14,28 +15,47 @@ public class MasterItem implements java.io.Serializable {
      * SYUGI(手技=0), ZAIRYO(材料=1), YAKUZAI(薬剤=2), ADMIN(用法=3)
      */
     private int classCode;
-    /** 項目名 */
+    /**
+     * 項目名
+     */
     private String name;
-    /** 項目コード */
+    /**
+     * 項目コード
+     */
     private String code;
-    /** コード体系名(ICD10_2001-10-03MEDIS) Diagnosis でしか使ってない */
+    /**
+     * コード体系名(ICD10_2001-10-03MEDIS) Diagnosis でしか使ってない
+     */
     private String masterTableId;
-    /** 数量　１日（回）量 */
+    /**
+     * 数量　１日（回）量
+     */
     private String number;
-    /** 何日（回）分 */
+    /**
+     * 何日（回）分
+     */
     private String bundleNumber;
-    /** 単位 */
+    /**
+     * 単位
+     */
     private String unit;
     /** 医事用病名コード →code に一元化*/
     //private String claimDiseaseCode;
-    /** 診療行為区分(Claim 007)・点数集計先 */
+    /**
+     * 診療行為区分(Claim 007)・点数集計先
+     */
     private String claimClassCode;
-    /** 薬剤の場合の区分 内用1，外用6，注射薬4 */
+    /**
+     * 薬剤の場合の区分 内用1，外用6，注射薬4
+     */
     private String ykzKbn;
-    /** X の表示に使う */
+    /**
+     * X の表示に使う
+     */
     private String dummy;
 
-    public MasterItem() {}
+    public MasterItem() {
+    }
 
     public MasterItem(int classCode, String name, String code) {
         this();
@@ -183,10 +203,11 @@ public class MasterItem implements java.io.Serializable {
     /**
      * 内服薬かどうかは用法のコードで判断する.
      * ykzKbn は stamp の編集の場合はセットされていないので null になっているので使えない.
-     * setValue 時に，ModuleModel#getModel で BundleMed を取り出して，getClassCode() を
+     * setValue 時に，ModuleModel#getDocument で BundleMed を取り出して，getClassCode() を
      * ClaimConst.RECEIPT_CODE_GAIYO/NAIYO と比較して ClaimConst.YKZ_KBN_GAIYO/NAIYO を
      * セットすればいいかもしれないがめんどくさい. 自分専用だからこれでいいのだ.
-     * @return
+     *
+     * @return 内服薬の時 true
      */
     public boolean isNaiyo() {
         return (Integer.valueOf(code) < 1000500);
@@ -194,7 +215,8 @@ public class MasterItem implements java.io.Serializable {
 
     /**
      * 頓用かどうか用法コードで判断
-     * @return
+     *
+     * @return 頓用の時 true
      */
     public boolean isTonyo() {
         return code.startsWith("0010005");

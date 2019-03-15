@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
@@ -8,12 +9,14 @@ import java.awt.*;
 
 /**
  * チャートドキュメントのルートクラス.
+ * KarteDocumentViewer, KarteViewer2, KarteEditor で extend.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public abstract class AbstractChartDocument implements ChartDocument {
 
-    public static String UPDATE_MARK = "Ⓤ";
+    public static final String UPDATE_MARK = "Ⓤ";
 
     private static final String[] CHART_MENUS = {
         GUIConst.ACTION_OPEN_KARTE, GUIConst.ACTION_SAVE, GUIConst.ACTION_DELETE, GUIConst.ACTION_PRINT, GUIConst.ACTION_MODIFY_KARTE,
@@ -23,15 +26,23 @@ public abstract class AbstractChartDocument implements ChartDocument {
         GUIConst.ACTION_FIND_FIRST, GUIConst.ACTION_FIND_NEXT, GUIConst.ACTION_FIND_PREVIOUS, GUIConst.ACTION_SEND_CLAIM
     };
 
+    /**
+     * この ChartDocument を保持する Chart.
+     */
     private Chart chartContext;
+
+    /**
+     * この ChartDocument が保持する DocumentModel.
+     */
+    private DocumentModel documentModel;
+
     private String title;
     private JPanel ui;
     private boolean dirty;
 
-    private final Logger logger;
+    private final Logger logger = Logger.getLogger(AbstractChartDocument.class);
 
     public AbstractChartDocument() {
-        logger = ClientContext.getBootLogger();
         initComponent();
     }
 
@@ -61,10 +72,10 @@ public abstract class AbstractChartDocument implements ChartDocument {
     }
 
     @Override
-    public abstract void start();
+    public DocumentModel getDocument() { return documentModel; }
 
     @Override
-    public abstract void stop();
+    public void setDocument(DocumentModel model) { documentModel = model; }
 
     @Override
     public void enter() {
@@ -82,12 +93,6 @@ public abstract class AbstractChartDocument implements ChartDocument {
     public void setUI(JPanel ui) {
         this.ui = ui;
     }
-
-    @Override
-    public void save() {}
-
-    @Override
-    public void print() {}
 
     @Override
     public boolean isDirty() {

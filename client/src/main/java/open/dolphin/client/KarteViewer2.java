@@ -12,7 +12,7 @@ import java.awt.print.PageFormat;
 import java.util.Objects;
 
 /**
- * 2号カルテを View する ChartDocument.
+ * KarteViewer2. 2号カルテを View する ChartDocument.
  * KartePanel はタイムスタンプ, SoaTextPane, PTextPane を含んだ JPanel. これを KarteDocumentViewer で見る.
  * KartePane は KartePanel の SoaTextPane または PTextPane を含んだ KarteComposite. いろいろな機能を持つ.
  * Viewer で KartePane も生成される.
@@ -32,8 +32,6 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     // 仮保存中のドキュメントを表す文字
     private static final String UNDER_TMP_SAVE = " - 仮保存中";
 
-    // この view のモデル
-    private DocumentModel model;
     // タイムスタンプラベル
     private JLabel timeStampLabel;
     // SOA Pane
@@ -80,7 +78,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     }
 
     /**
-     * ２号カルテで初期化する.
+     * ２号カルテで初期化する. start() から呼ばれる.
      */
     private void initialize() {
 
@@ -101,9 +99,10 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
         soaPane = new KartePane();
         soaPane.setTextPane(kartePanel.getSoaTextPane());
         soaPane.setRole(IInfoModel.ROLE_SOA);
-        if (model != null) {
+        soaPane.setParent(this);
+        if (Objects.nonNull(getDocument())) {
             // Schema 画像にファイル名を付けるのために必要
-            String docId = model.getDocInfo().getDocId();
+            String docId = getDocument().getDocInfo().getDocId();
             soaPane.setDocId(docId);
         }
 
@@ -111,6 +110,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
         pPane = new KartePane();
         pPane.setTextPane(kartePanel.getPTextPane());
         pPane.setRole(IInfoModel.ROLE_P);
+        pPane.setParent(this);
 
         setUI(kartePanel);
     }
@@ -120,25 +120,25 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
      */
     @Override
     public void start() {
-        //
         // Creates GUI
-        //
-        this.initialize();
+        initialize();
+
+        DocumentModel document = getDocument();
 
         // Model を表示する
-        if (model != null) {
+        if (document != null) {
 
             StringBuilder timeStamp = new StringBuilder();
             String dateFormat = IInfoModel.KARTE_DATE_FORMAT;
 
             // time stamp
-            String firstConfirmDate = ModelUtils.getDateAsFormatString(model.getDocInfo().getFirstConfirmDate(), dateFormat);
+            String firstConfirmDate = ModelUtils.getDateAsFormatString(document.getDocInfo().getFirstConfirmDate(), dateFormat);
             timeStamp.append(firstConfirmDate);
 
             // 修正日表示
-            String modifyDate = ModelUtils.getDateAsFormatString(model.getDocInfo().getConfirmDate(), dateFormat);
+            String modifyDate = ModelUtils.getDateAsFormatString(document.getDocInfo().getConfirmDate(), dateFormat);
             boolean showModified = getContext().getDocumentHistory().isShowModified(); // 修正履歴表示モードかどうか
-            String parent = model.getDocInfo().getParentId(); // 親があるかどうか
+            String parent = document.getDocInfo().getParentId(); // 親があるかどうか
 
             if (showModified && Objects.nonNull(parent)) {
                 timeStamp.append(" [");
@@ -147,18 +147,18 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
                 timeStamp.append("]");
             }
 
-            if (model.getDocInfo().getStatus().equals(IInfoModel.STATUS_TMP)) {
+            if (document.getDocInfo().getStatus().equals(IInfoModel.STATUS_TMP)) {
                 timeStamp.append(UNDER_TMP_SAVE); // - 仮保存中
             }
 
             // timeStamp にカルテ作成者を入れる
-            String drName = model.getCreator().getCommonName();
+            String drName = document.getCreator().getCommonName();
             timeStamp.append(" 記載医師: ");
             timeStamp.append(drName);
 
             timeStampLabel.setText(timeStamp.toString());
             KarteRenderer_2 renderer = new KarteRenderer_2(soaPane, pPane);
-            renderer.render(model);
+            renderer.render(document);
         }
 
         // モデル表示後にリスナ等を設定する init(editable, mediator)
@@ -180,10 +180,9 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     }
 
     public String getDocType() {
-        if (model != null) {
-            return model.getDocInfo().getDocType();
-        }
-        return null;
+        return Objects.nonNull(getDocument())
+                ? getDocument().getDocInfo().getDocType()
+                : null;
     }
 
     /**
@@ -220,7 +219,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
         boolean canEdit = !getContext().isReadOnly();
 
         // 仮保存かどうか
-        boolean tmp = model.getDocInfo().getStatus().equals(IInfoModel.STATUS_TMP);
+        boolean tmp = getDocument().getDocInfo().getStatus().equals(IInfoModel.STATUS_TMP);
 
         // 新規カルテ作成が可能な条件
         boolean newOk = canEdit && (!tmp);
@@ -229,24 +228,6 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
         mediator.getAction(GUIConst.ACTION_NEW_KARTE).setEnabled(newOk);        // 新規カルテ
         mediator.getAction(GUIConst.ACTION_PRINT).setEnabled(true);             // 印刷
         mediator.getAction(GUIConst.ACTION_MODIFY_KARTE).setEnabled(canEdit);   // 修正
-    }
-
-    /**
-     * 表示するモデルを設定する.
-     *
-     * @param model 表示するDocumentModel
-     */
-    public void setModel(DocumentModel model) {
-        this.model = model;
-    }
-
-    /**
-     * 表示するモデルを返す.
-     *
-     * @return 表示するDocumentModel
-     */
-    public DocumentModel getModel() {
-        return model;
     }
 
     /**
@@ -275,14 +256,14 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
 
     @Override
     public int hashCode() {
-        return getModel().getDocInfo().getDocId().hashCode() + 72;
+        return getDocument().getDocInfo().getDocId().hashCode() + 72;
     }
 
     @Override
     public boolean equals(Object other) {
         if (other != null && other.getClass() == this.getClass()) {
-            DocInfoModel otheInfo = ((KarteViewer2) other).getModel().getDocInfo();
-            return getModel().getDocInfo().equals(otheInfo);
+            DocInfoModel otheInfo = ((KarteViewer2) other).getDocument().getDocInfo();
+            return getDocument().getDocInfo().equals(otheInfo);
         }
         return false;
     }
@@ -297,8 +278,8 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     @Override
     public int compareTo(KarteViewer2 other) {
         if (other != null && other.getClass() == this.getClass()) {
-            DocInfoModel otheInfo = other.getModel().getDocInfo();
-            return getModel().getDocInfo().compareTo(otheInfo);
+            DocInfoModel otheInfo = other.getDocument().getDocInfo();
+            return getDocument().getDocInfo().compareTo(otheInfo);
         }
         return -1;
     }

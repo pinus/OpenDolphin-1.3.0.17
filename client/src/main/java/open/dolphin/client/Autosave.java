@@ -41,9 +41,10 @@ public class Autosave implements Runnable {
 
     /**
      * pid と doc id から temporary file を作る.
-     * @param patientId
-     * @param docId
-     * @return
+     *
+     * @param patientId PatientId
+     * @param docId     DocID
+     * @return File
      */
     private static File getTemporaryFile(String patientId, String docId) {
         String path = String.format("%s%s-%s.%s", TMP_DIR, patientId, docId, SUFFIX);
@@ -55,7 +56,7 @@ public class Autosave implements Runnable {
      */
     public void start() {
         String patientId = editor.getContext().getPatient().getPatientId();
-        String docId = editor.getModel().getDocInfo().getDocId();
+        String docId = editor.getDocument().getDocInfo().getDocId();
 
         tmpFile = getTemporaryFile(patientId, docId);
         logger.info(tmpFile);
@@ -67,14 +68,15 @@ public class Autosave implements Runnable {
     /**
      * 編集中カルテの記録を終了し, TemporaryFile を消去する.
      */
-    public void stop () {
+    public void stop() {
         executor.shutdown();
         tmpFile.delete();
     }
 
     /**
      * KarteEditor から Dirty 情報を受け取る.
-     * @param newDirty
+     *
+     * @param newDirty new dirty flag
      */
     public void setDirty(boolean newDirty) {
         dirty = newDirty;
@@ -82,7 +84,8 @@ public class Autosave implements Runnable {
 
     /**
      * 保存された Temporary file を読み込んで AutosaveModel を生成する.
-     * @return
+     *
+     * @return list of AutosaveModel
      */
     private static List<AutosaveModel> load() {
 
@@ -93,7 +96,7 @@ public class Autosave implements Runnable {
 
             try (BufferedReader br = new BufferedReader(new FileReader(f))) {
                 String s;
-                while ( (s = br.readLine()) != null) {
+                while ((s = br.readLine()) != null) {
                     str.append(s);
                 }
             } catch (IOException ex) {
@@ -107,7 +110,8 @@ public class Autosave implements Runnable {
 
     /**
      * 保存されていない編集中カルテをチェックして編集するかどうか決める.
-     * @param chart
+     *
+     * @param chart ChartImpl
      */
     public static void checkForTemporaryFile(final ChartImpl chart) {
 
@@ -117,7 +121,9 @@ public class Autosave implements Runnable {
                 .filter(m -> chartPid.equals(m.getPatientId()))
                 .collect(Collectors.toList());
 
-        if (targetModels.isEmpty()) { return; }
+        if (targetModels.isEmpty()) {
+            return;
+        }
 
         SwingUtilities.invokeLater(() -> {
 
@@ -127,7 +133,7 @@ public class Autosave implements Runnable {
             int opt = JSheet.showOptionDialog(chart.getFrame(), message, "保存されていないカルテ",
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, selection, selection[0]);
 
-            switch(opt) {
+            switch (opt) {
                 case JOptionPane.YES_OPTION:
 
                     targetModels.stream().map(a -> {
@@ -136,7 +142,7 @@ public class Autosave implements Runnable {
 
                     }).forEach(m -> {
                         KarteEditor editor = chart.createEditor();
-                        editor.setModel(m);
+                        editor.setDocument(m);
 
                         editor.setEditable(true);
                         editor.setModify(true);
@@ -155,7 +161,7 @@ public class Autosave implements Runnable {
 
                     targetModels.stream()
                             .map(a -> getTemporaryFile(a.getPatientId(), a.getDocumentModel().getDocInfo().getDocId()))
-                            .forEach(f -> f.delete());
+                            .forEach(File::delete);
                     break;
             }
         });

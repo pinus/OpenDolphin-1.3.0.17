@@ -237,7 +237,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     /**
      * DocumentBridgeImpl から呼ばれる.
      * @param selected 選択された文書情報 DocInfo 配列
-     * @param scroller
+     * @param scroller PNSScrollPane
      */
     public void showDocuments(DocInfoModel[] selected, final PNSScrollPane scroller) {
         getContext().showDocument(0);  // Chart のカルテ参照タブの選択
@@ -259,7 +259,6 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     /**
      * データベースで検索した KarteModelを Viewer で表示する.
      * KarteTask から呼ばれる
-     * @param models KarteModel
      * @param models List of DocumentModel
      */
     private void addKarteViewer(List<DocumentModel> models) {
@@ -270,7 +269,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             // karteList にあって選択リストにないものは除去リストに入れる
             for (KarteViewer2 viewer : karteList) {
                 boolean found = false;
-                String id1 = viewer.getModel().getDocInfo().getDocId();
+                String id1 = viewer.getDocument().getDocInfo().getDocId();
                 for (DocInfoModel selectedDocInfo : selectedHistories) {
                     String id2 = selectedDocInfo.getDocId();
                     if (id1.equals(id2)) {
@@ -294,7 +293,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                 // 重複チェック
                 boolean duplicated = false;
                 for (KarteViewer2 viewer : karteList) {
-                    String viewerId = viewer.getModel().getDocInfo().getDocId();
+                    String viewerId = viewer.getDocument().getDocInfo().getDocId();
                     if (docId.equals(viewerId)) {
                         duplicated = true;
                         break;
@@ -325,7 +324,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                 final KarteViewer2 karteViewer = new KarteViewer2();
 
                 karteViewer.setContext(getContext());
-                karteViewer.setModel(karteModel);
+                karteViewer.setDocument(karteModel);
                 karteViewer.setAvoidEnter(true);
 
                 // このコールでモデルのレンダリングが開始される
@@ -385,7 +384,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         }
 
         ChartImpl chart = (ChartImpl) getContext();
-        DocumentModel baseDocumentModel = getBaseKarte().getModel();
+        DocumentModel baseDocumentModel = getBaseKarte().getDocument();
 
         // すでに修正中の document があれば toFront するだけで帰る
         if (chart.toFrontDocumentIfPresent(baseDocumentModel)) { return; }
@@ -396,7 +395,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
 
         DocumentModel editModel = chart.getKarteModelToEdit(baseDocumentModel);
         KarteEditor editor = chart.createEditor();
-        editor.setModel(editModel);
+        editor.setDocument(editModel);
         editor.setEditable(true);
         editor.setModify(true);
 
@@ -428,10 +427,8 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             //kv.panel2.setBorder(BorderFactory.createEmptyBorder());
             KartePane kp = kv.getSOAPane();
             kp.getTextPane().setBackground(Color.WHITE);
-            if (kv instanceof KarteViewer2) {
-                kp = kv.getPPane();
-                kp.getTextPane().setBackground(Color.WHITE);
-            }
+            kp = kv.getPPane();
+            kp.getTextPane().setBackground(Color.WHITE);
         });
 
         // 患者名を取得
@@ -448,10 +445,8 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             }
             KartePane kp = kv.getSOAPane();
             kp.getTextPane().setBackground(KartePane.UNEDITABLE_COLOR);
-            if (kv instanceof KarteViewer2) {
-                kp = kv.getPPane();
-                kp.getTextPane().setBackground(KartePane.UNEDITABLE_COLOR);
-            }
+            kp = kv.getPPane();
+            kp.getTextPane().setBackground(KartePane.UNEDITABLE_COLOR);
         });
     }
 
@@ -545,7 +540,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         //
         // 削除する status = 'D'
         //
-        long deletePk = delete.getModel().getId();
+        long deletePk = delete.getDocument().getId();
         DocumentDelegater ddl = new DocumentDelegater();
         DeleteTask task = new DeleteTask(getContext(), deletePk, ddl);
         task.execute();
@@ -571,7 +566,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                 boolean found = false;
                 String id1 = selectedDocInfo.getDocId();
                 for (KarteViewer2 viewer : karteList) {
-                    String id2 = viewer.getModel().getDocInfo().getDocId();
+                    String id2 = viewer.getDocument().getDocInfo().getDocId();
                     if (id1.equals(id2)) {
                         found = true;
                         break;
@@ -649,7 +644,7 @@ l = System.currentTimeMillis();
                 boolean found = false;
                 String id1 = selectedDocInfo.getDocId();
                 for (KarteViewer viewer : karteList) {
-                    String id2 = viewer.getModel().getDocInfo().getDocId();
+                    String id2 = viewer.getDocument().getDocInfo().getDocId();
                     if (id1.equals(id2)) {
                         found = true;
                         break;
@@ -847,8 +842,8 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
             boolean tmpKarte = false;
             KarteViewer2 base = getBaseKarte();
             if (base != null) {
-                String state = base.getModel().getDocInfo().getStatus();
-                String confirmDate = base.getModel().getDocInfo().getConfirmDateTrimTime();
+                String state = base.getDocument().getDocInfo().getStatus();
+                String confirmDate = base.getDocument().getDocInfo().getConfirmDateTrimTime();
 
                 // もし今日のカルテが一時保存なら新規カルテは作らない
                 if (state.equals(IInfoModel.STATUS_TMP) && todayDateAsString.equals(confirmDate)) {
@@ -888,11 +883,11 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
         } else {
             // claim を送るのはカルテだけ
             // getBaseKarte() は選択カルテを返す
-            String docType = getBaseKarte().getModel().getDocInfo().getDocType();
+            String docType = getBaseKarte().getDocument().getDocInfo().getDocType();
             if (!IInfoModel.DOCTYPE_KARTE.equals(docType)) { return; }
 
             ChartImpl chart = (ChartImpl) getContext();
-            DocumentModel model = chart.getKarteModelToEdit(getBaseKarte().getModel());
+            DocumentModel model = chart.getKarteModelToEdit(getBaseKarte().getDocument());
             model.setKarte(getContext().getKarte());
             model.getDocInfo().setConfirmDate(new Date());
             model.setCreator(Project.getUserModel());       // 送信者

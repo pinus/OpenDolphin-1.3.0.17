@@ -20,12 +20,16 @@ import java.util.List;
  * EditorFrame.
  * ChartImpl と同じく Chart interface をもつ. ChartImpl は realChart にセットされる.
  * EditorFrame Object は JFrame ではなく，実 Frame は WindowSupport で作る.
+ *
  * @author Kazushi Minagawa
  */
 public class EditorFrame extends AbstractMainTool implements Chart {
 
     // このクラスの２つのモード（状態）でメニューの制御に使用する
-    public enum EditorMode {BROWSER, EDITOR};
+    public enum EditorMode {
+        BROWSER, EDITOR
+    }
+
     // 全インスタンスを保持するリスト
     private static final List<Chart> allEditorFrames = new ArrayList<>(3);
     // このフレームの実のコンテキストチャート
@@ -57,28 +61,29 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 全インスタンスを保持するリストを返す static method.
+     *
      * @return 全インスタンスを保持するリスト
      */
     public static List<Chart> getAllEditorFrames() {
         return Collections.unmodifiableList(allEditorFrames);
     }
 
-    public KarteEditor getEditor(){
+    public KarteEditor getEditor() {
         return editor;
     }
 
     private DocumentModel getDocumentModel() {
         DocumentModel docModel = null;
-        if (mode == null){
+        if (mode == null) {
             return null;
         }
 
         switch (mode) {
             case BROWSER:
-                docModel = view.getModel();
+                docModel = view.getDocument();
                 break;
             case EDITOR:
-                docModel = editor.getModel();
+                docModel = editor.getDocument();
                 break;
         }
         return docModel;
@@ -87,7 +92,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     public String getDocInfoStatus() {
         DocumentModel docModel = getDocumentModel();
         String ret = null;
-        if (docModel != null){
+        if (docModel != null) {
             ret = docModel.getDocInfo().getStatus();
         }
         return ret;
@@ -112,6 +117,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * ChartImpl コンテキストを設定する.
+     *
      * @param chartCtx ChartImpl コンテキスト
      */
     public void setChart(Chart chartCtx) {
@@ -125,6 +131,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 表示する KarteViewer オブジェクトを設定する.
+     *
      * @param view 表示する KarteView
      */
     public void setKarteViewer(KarteViewer2 view) {
@@ -133,6 +140,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 編集する KarteEditor オブジェクトを設定する.
+     *
      * @param editor 編集する KarteEditor
      */
     public void setKarteEditor(KarteEditor editor) {
@@ -141,6 +149,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 患者モデルを返す.
+     *
      * @return 患者モデル
      */
     @Override
@@ -150,6 +159,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 対象としている KarteBean オブジェクトを返す.
+     *
      * @return KarteBean オブジェクト
      */
     @Override
@@ -159,6 +169,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 対象となる KarteBean オブジェクトを設定する.
+     *
      * @param karte KarteBean オブジェクト
      */
     @Override
@@ -168,6 +179,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 来院情報を返す.
+     *
      * @return 来院情報
      */
     @Override
@@ -177,6 +189,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 来院情報を設定する.
+     *
      * @param model 来院情報モデル
      */
     @Override
@@ -186,6 +199,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * Chart state を返す.
+     *
      * @return Chart の state 属性
      */
     @Override
@@ -195,6 +209,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * Chart state を設定する.
+     *
      * @param state Chart の state
      */
     @Override
@@ -204,6 +219,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * ReadOnly かどうかを返す.
+     *
      * @return readOnly の時 true
      */
     @Override
@@ -213,7 +229,8 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * ReadOnly 属性を設定する.
-     * @param b
+     *
+     * @param b readonly=true
      */
     @Override
     public void setReadOnly(boolean b) {
@@ -222,6 +239,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * このオブジェクトの JFrame を返す.
+     *
      * @return JFrame オブジェクト
      */
     @Override
@@ -231,6 +249,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * StatusPanel を返す.
+     *
      * @return StatusPanel
      */
     @Override
@@ -240,6 +259,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * StatusPanel を設定する.
+     *
      * @param statusPanel StatusPanel オブジェクト
      */
     @Override
@@ -249,6 +269,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * ChartMediator を返す.
+     *
      * @return ChartMediator
      */
     @Override
@@ -258,14 +279,15 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * Menu アクションを制御する.
-     * @param name
-     * @param enabled
+     *
+     * @param name action name to enable
+     * @param enable enable
      */
     @Override
-    public void enabledAction(String name, boolean enabled) {
+    public void enabledAction(String name, boolean enable) {
         Action action = mediator.getAction(name);
         if (action != null) {
-            action.setEnabled(enabled);
+            action.setEnabled(enable);
         } else {
             Toolkit.getDefaultToolkit().beep();
         }
@@ -273,6 +295,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * DocumentHistory を返す.
+     *
      * @return DocumentHistory
      */
     @Override
@@ -282,6 +305,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 引数のタブ番号にあるドキュメントを表示する.
+     *
      * @param index 表示するドキュメントのタブ番号
      */
     @Override
@@ -291,11 +315,12 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * dirty かどうかを返す.
-     * @return dirty の時 true
+     *
+     * @return EDITOR モードでかつ dirty の時 true
      */
     @Override
     public boolean isDirty() {
-        return (mode == EditorMode.EDITOR) ? editor.isDirty() : false;
+        return (mode == EditorMode.EDITOR) && editor.isDirty();
     }
 
     @Override
@@ -303,7 +328,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         return realChart.getHealthInsurances();
     }
 
-   @Override
+    @Override
     public PVTHealthInsuranceModel getHealthInsuranceToApply(String uuid) {
         return realChart.getHealthInsuranceToApply(uuid);
     }
@@ -338,27 +363,34 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
         // FocusTraversalPolicy
         // Stamp を cut したときに，余計なフォーカス移動が起こらないようにする
-        frame.setFocusTraversalPolicy(new FocusTraversalPolicy(){
+        frame.setFocusTraversalPolicy(new FocusTraversalPolicy() {
             @Override
             public Component getDefaultComponent(Container aContainer) {
                 // 最初にフォーカスを取る component
                 return editor.getSOAPane().getTextPane();
             }
+
             @Override
             public Component getComponentAfter(Container aContainer, Component aComponent) {
                 // 余計な focus 移動を行わない
                 return aComponent;
             }
+
             @Override
             public Component getComponentBefore(Container aContainer, Component aComponent) {
                 // 余計な focus 移動を行わない
                 return aComponent;
             }
-            @Override
-            public Component getFirstComponent(Container aContainer) { return null; }
 
             @Override
-            public Component getLastComponent(Container aContainer) { return null; }
+            public Component getFirstComponent(Container aContainer) {
+                return null;
+            }
+
+            @Override
+            public Component getLastComponent(Container aContainer) {
+                return null;
+            }
         });
 
         frame.removeStatusPanel();
@@ -367,7 +399,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         statusPanel.add("", "message");
 
         MainFrame.MainPanel mainPanel = frame.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(0,0));
+        mainPanel.setLayout(new BorderLayout(0, 0));
         MainFrame.CommandPanel comPanel = frame.getCommandPanel();
 
         //content = new JPanel(new BorderLayout());
@@ -427,14 +459,17 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             public void windowClosing(WindowEvent e) {
                 close();
             }
+
             @Override
             public void windowOpened(WindowEvent e) {
                 allEditorFrames.add(0, EditorFrame.this);
             }
+
             @Override
             public void windowClosed(WindowEvent e) {
                 allEditorFrames.remove(EditorFrame.this);
             }
+
             @Override
             public void windowActivated(WindowEvent e) {
                 // allEditorFrames の順番処理，新しいものをトップに置く
@@ -448,8 +483,8 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         frame.setGlassPane(blockGlass);
 
         // Frame の大きさをストレージからロードする
-        Point defaultLocation = new Point(5,20);
-        Dimension defaultSize = new Dimension(724,740);
+        Point defaultLocation = new Point(5, 20);
+        Dimension defaultSize = new Dimension(724, 740);
 
         ComponentBoundsManager manager = new ComponentBoundsManager(frame, defaultLocation, defaultSize, this);
         manager.revertToPreferenceBounds();
@@ -459,9 +494,9 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         // 先頭を表示
         SwingUtilities.invokeLater(() -> {
             if (view != null) {
-                view.getUI().scrollRectToVisible(new Rectangle(0,0,view.getUI().getWidth(), 50));
+                view.getUI().scrollRectToVisible(new Rectangle(0, 0, view.getUI().getWidth(), 50));
             } else if (editor != null) {
-                editor.getUI().scrollRectToVisible(new Rectangle(0,0,editor.getUI().getWidth(), 50));
+                editor.getUI().scrollRectToVisible(new Rectangle(0, 0, editor.getUI().getWidth(), 50));
             }
         });
     }
@@ -490,24 +525,32 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             } else {
                 stop();
             }
-        } else { stop(); }
+        } else {
+            stop();
+        }
     }
 
     /**
      * PatientVisitModel の EditorFrame を前に出す
-     * @param pvt
+     *
+     * @param pvt PatientVisitModel
      */
     public static void toFront(PatientVisitModel pvt) {
-        if (pvt == null) { return; }
+        if (pvt == null) {
+            return;
+        }
         toFront(pvt.getPatient());
     }
 
     /**
      * PatientModel の EditorFrame を前に出す
-     * @param patient
+     *
+     * @param patient PatientModel
      */
     public static void toFront(PatientModel patient) {
-        if (patient == null) { return; }
+        if (patient == null) {
+            return;
+        }
         long ptId = patient.getId();
         for (Chart chart : allEditorFrames) {
             long id = chart.getPatient().getId();

@@ -30,6 +30,7 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -38,6 +39,9 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.*;
 import java.util.prefs.Preferences;
@@ -473,7 +477,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         return getTextPane();
     }
 
-    protected JPopupMenu createMenus() {
+    protected JPopupMenu createMenus(MouseEvent mouseEvent) {
 
         final JPopupMenu contextMenu = new JPopupMenu();
 
@@ -513,11 +517,26 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         if (!StringTool.isEmpty(selectedText)) {
             // 症状詳記メニュー
             JMenu subjMenu = new JMenu("症状詳記送信");
-
+            // subjMenu に詳記メニューを追加
             SubjectivesCodeMap.entrySet().stream()
                     .sorted(Comparator.comparing(Map.Entry::getValue))
                     .forEach(entry -> subjMenu.add(new JMenuItem(new ProxyAction(entry.getKey(),
-                            () -> this.sendSubjectivesDetailRecord(entry.getValue(), selectedText)))));
+                            () -> this.sendSubjectivesDetailRecord("01", entry.getValue(), selectedText)))));
+            // 詳記メニュー contextMenu に登録
+            contextMenu.add(subjMenu);
+        }
+
+        // Option キーで詳記削除メニューを出す
+        if ((mouseEvent.getModifiers() & KeyEvent.ALT_MASK) != 0) {
+            JMenu subjMenu = new JMenu("症状詳記削除");
+            // 症状詳記情報を取得してメニューを作る
+            OrcaDelegater delegater = new OrcaDelegater();
+            SubjectivesSpec spec = prepareSubjectivesSpec();
+            List<SubjectivesSpec> res = delegater.getSubjectives(spec);
+            res.stream()
+                    .filter(s -> Objects.nonNull(s.getRecord()))
+                    .forEach(s -> subjMenu.add(new JMenuItem(new ProxyAction(s.getRecord(),
+                        () -> this.sendSubjectivesDetailRecord("02", s.getCode(), "")))));
             contextMenu.add(subjMenu);
         }
 
@@ -525,35 +544,79 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
-     * 症状詳記を ORCA に書き込む.
+     * 症状詳記を ORCA に登録／削除する.
+     *
+     * @param request 01:登録, 02:削除
      * @param code 詳記区分番号
      * @param record 詳記内容
      */
-    private void sendSubjectivesDetailRecord(String code, String record) {
-        TODO
-        // 1) isEditable false の時に parent が null
-        // 2) JSheet で結果表示
+    private void sendSubjectivesDetailRecord(String request, String code, String record) {
 
-        Chart chart = parent.getContext();
-        String ptId = chart.getPatient().getPatientId();
-        String insurance = chart.getPatientVisit().getInsuranceUid();
-        String dept = chart.getPatientVisit().getDepartmentCode();
-
-        SubjectivesSpec spec = new SubjectivesSpec();
-        spec.setRequestNumber("01"); // 登録
-        spec.setPatientId(ptId);
-        spec.setDepartmentCode(dept);
-        spec.setInsuranceCombinationNumber(insurance);
+        SubjectivesSpec spec = prepareSubjectivesSpec();
+        spec.setRequestNumber(request);
         spec.setCode(code);
         spec.setRecord(record);
 
         OrcaDelegater delegater = new OrcaDelegater();
         OrcaDelegater.Result result = delegater.sendSubjectives(spec);
+
+        Window w = SwingUtilities.getWindowAncestor(parent.getUI());
+        if (JSheet.isAlreadyShown(w)) {
+            w.toFront();
+        } else {
+            String message;
+            int messageType;
+
+            if ("01".equals(request)) { // 登録
+                if (result.equals(OrcaDelegater.Result.NO_ERROR)) {
+                    message = "病状詳記を ORCA に送信しました";
+                    messageType = JOptionPane.PLAIN_MESSAGE;
+                } else {
+                    message = "病状詳記を送信できませんでした";
+                    messageType = JOptionPane.ERROR_MESSAGE;
+                }
+            } else { // 削除
+                if (result.equals(OrcaDelegater.Result.NO_ERROR)) {
+                    message = "病状詳記を削除しました";
+                    messageType = JOptionPane.PLAIN_MESSAGE;
+                } else {
+                    message = "病状詳記を削除できませんでした";
+                    messageType = JOptionPane.ERROR_MESSAGE;
+                }
+            }
+            JSheet.showMessageDialog(w, message, "", messageType);
+        }
+    }
+
+    /**
+     * SubjectivesSpec (症状詳記 DTO) のひな形を作る.
+     *
+     * @return SubjectivesSpec のひな形
+     */
+    private SubjectivesSpec prepareSubjectivesSpec() {
+        // parent は KarteEditor or KarteViewer2
+        DocumentModel document = parent.getDocument();
+
+        String ptId = parent.getContext().getPatient().getPatientId();
+        String insurance = document.getDocInfo().getHealthInsuranceGUID();
+        String dept = document.getDocInfo().getDepartment();
+
+        LocalDate firstConfirmDate = document.getDocInfo().getFirstConfirmDate()
+                .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        String date = firstConfirmDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+        SubjectivesSpec spec = new SubjectivesSpec();
+        spec.setPerformDate(date);
+        spec.setPatientId(ptId);
+        spec.setDepartmentCode(dept);
+        spec.setInsuranceCombinationNumber(insurance);
+
+        return spec;
     }
 
     private void maybeShowPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {
-            JPopupMenu contextMenu = createMenus();
+            JPopupMenu contextMenu = createMenus(e);
             contextMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }
@@ -677,7 +740,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         if (stamp != null) {
             // text stamp がここに入った時の対策（新規カルテにテキストスタンプ挿入するときここに来る）
             if (stamp.getModuleInfo().getEntity().equals(IInfoModel.ENTITY_TEXT)) {
-                //insertTextStamp(stamp.getModel().toString()); ←これだとキャレット位置がおかしくなる
+                //insertTextStamp(stamp.getDocument().toString()); ←これだとキャレット位置がおかしくなる
                 insertFreeString(stamp.getModel().toString(), null);
                 return;
             }
@@ -830,7 +893,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         DBTask<List<StampModel>> task = new DBTask<List<StampModel>>(parent.getContext()) {
 
             @Override
-            protected List<StampModel> doInBackground() throws Exception {
+            protected List<StampModel> doInBackground() {
                 List<StampModel> list = sdl.getStamp(addList);
                 return list;
             }
@@ -884,7 +947,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         DBTask<List<StampModel>> task = new DBTask<List<StampModel>>(parent.getContext()) {
 
             @Override
-            protected List<StampModel> doInBackground() throws Exception {
+            protected List<StampModel> doInBackground() {
                 List<StampModel> list = sdl.getStamp(addList);
                 return list;
             }

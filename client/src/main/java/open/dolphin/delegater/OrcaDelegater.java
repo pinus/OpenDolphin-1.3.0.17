@@ -191,4 +191,14 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
         }
         return Result.NO_ERROR;
     }
+
+    /**
+     * subjectiveslstv2 で ORCA から症状詳記の一覧を得る.
+     *
+     * @param spec SubjectivesSpec
+     * @return ApiResult
+     */
+    public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec) {
+        return getService().getSubjectives(spec);
+    }
 }

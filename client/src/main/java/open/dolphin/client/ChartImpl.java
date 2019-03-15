@@ -933,7 +933,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             editModel = getKarteModelToEdit(params);
         } else {
             logger.debug("copy new is selected");
-            editModel = getKarteModelToEdit(base.getModel(), params);
+            editModel = getKarteModelToEdit(base.getDocument(), params);
         }
 
         //
@@ -952,7 +952,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         }
 
         editor = createEditor();
-        editor.setModel(editModel);
+        editor.setDocument(editModel);
         editor.setEditable(true);
 
         if (params.isOpenFrame()) {
