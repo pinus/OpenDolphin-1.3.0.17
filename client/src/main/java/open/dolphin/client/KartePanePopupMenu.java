@@ -122,6 +122,9 @@ public class KartePanePopupMenu extends JPopupMenu {
         spec.setCode(code);
         spec.setRecord(record);
 
+        String codeText = SubjectivesCodeMap.entrySet().stream()
+                .filter(e -> e.getValue().equals(code)).map(Map.Entry::getKey).findAny().orElse("");
+
         OrcaDelegater delegater = new OrcaDelegater();
         OrcaDelegater.Result result = delegater.sendSubjectives(spec);
 
@@ -149,7 +152,7 @@ public class KartePanePopupMenu extends JPopupMenu {
                     messageType = JOptionPane.ERROR_MESSAGE;
                 }
             }
-            JSheet.showMessageDialog(w, message, "", messageType);
+            JSheet.showMessageDialog(w,  message + "\n(" + codeText + ")", "", messageType);
         }
     }
 
