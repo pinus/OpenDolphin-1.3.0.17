@@ -10,7 +10,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
- * ColorChooserLabel
+ * ColorChooserComp.
  *
  * @author Minagawa,Kazushi
  */
@@ -34,9 +34,6 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
 
     private int index = -1;
 
-    /**
-     * Creates a new progress panel with default values
-     */
     public ColorChooserComp() {
         colorStart = ClientContext.getColorArray("color.set.default.start");
         colors = ClientContext.getColorArray("color.set.default.end");
@@ -48,9 +45,6 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 
-    /**
-     * Creates a new progress panel with default values
-     */
     public ColorChooserComp(Dimension size, Color[] colors) {
         this.size = size;
         this.colors = colors;

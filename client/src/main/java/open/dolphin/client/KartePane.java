@@ -5,11 +5,8 @@ import open.dolphin.codehelper.PCodeHelper;
 import open.dolphin.codehelper.SOACodeHelper;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
-import open.dolphin.dto.SubjectivesSpec;
-import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.ImageHelper;
-import open.dolphin.helper.StringTool;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
@@ -25,12 +22,9 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -39,14 +33,10 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.*;
 import java.util.prefs.Preferences;
-
-import static open.dolphin.orca.ClaimConst.SubjectivesCodeMap;
 
 /**
  * KarteComposite の一つで，内部に JTextPane を１つ保持している.
@@ -477,160 +467,23 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         return getTextPane();
     }
 
-    protected JPopupMenu createMenus(MouseEvent mouseEvent) {
-
-        final JPopupMenu contextMenu = new JPopupMenu();
-
-        // cut, copy, paste メニューを追加する
-        contextMenu.add(mediator.getAction(GUIConst.ACTION_CUT));
-        contextMenu.add(mediator.getAction(GUIConst.ACTION_COPY));
-        contextMenu.add(mediator.getAction(GUIConst.ACTION_PASTE));
-
-        // テキストカラーメニューを追加する
-        if (getTextPane().isEditable()) {
-            ColorChooserComp ccl = new ColorChooserComp();
-            ccl.addPropertyChangeListener(ColorChooserComp.SELECTED_COLOR, e -> {
-                Color selected = (Color) e.getNewValue();
-                Action action = new StyledEditorKit.ForegroundAction("selected", selected);
-                action.actionPerformed(new ActionEvent(getTextPane(), ActionEvent.ACTION_PERFORMED, "foreground"));
-                contextMenu.setVisible(false);
-            });
-            JLabel l = new JLabel("  カラー:");
-            JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-            p.add(l);
-            p.add(ccl);
-            contextMenu.add(p);
-        }
-
-        if (getTextPane().isEditable()) {
-            if (getMyRole().equals(IInfoModel.ROLE_P)) {
-                // PPane の場合はStampMenuを追加する
-                //contextMenu.addSeparator();
-                mediator.addStampMenu(contextMenu, this);
-            } else {
-                // soaPane の場合は TextMenu を追加する
-                mediator.addTextMenu(contextMenu);
-            }
-        }
-
-        String selectedText = getTextPane().getSelectedText();
-        if (!StringTool.isEmpty(selectedText)) {
-            // 症状詳記メニュー
-            JMenu subjMenu = new JMenu("症状詳記送信");
-            // subjMenu に詳記メニューを追加
-            SubjectivesCodeMap.entrySet().stream()
-                    .sorted(Comparator.comparing(Map.Entry::getValue))
-                    .forEach(entry -> subjMenu.add(new JMenuItem(new ProxyAction(entry.getKey(),
-                            () -> this.sendSubjectivesDetailRecord("01", entry.getValue(), selectedText)))));
-            // 詳記メニュー contextMenu に登録
-            contextMenu.add(subjMenu);
-        }
-
-        // Option キーで詳記削除メニューを出す
-        if ((mouseEvent.getModifiers() & KeyEvent.ALT_MASK) != 0) {
-            JMenu subjMenu = new JMenu("症状詳記削除");
-            // 症状詳記情報を取得してメニューを作る
-            OrcaDelegater delegater = new OrcaDelegater();
-            SubjectivesSpec spec = prepareSubjectivesSpec();
-            List<SubjectivesSpec> res = delegater.getSubjectives(spec);
-            res.stream()
-                    .filter(s -> Objects.nonNull(s.getRecord()))
-                    .forEach(s -> subjMenu.add(new JMenuItem(new ProxyAction(s.getRecord(),
-                        () -> this.sendSubjectivesDetailRecord("02", s.getCode(), "")))));
-            contextMenu.add(subjMenu);
-        }
-
-        return contextMenu;
-    }
-
-    /**
-     * 症状詳記を ORCA に登録／削除する.
-     *
-     * @param request 01:登録, 02:削除
-     * @param code 詳記区分番号
-     * @param record 詳記内容
-     */
-    private void sendSubjectivesDetailRecord(String request, String code, String record) {
-
-        SubjectivesSpec spec = prepareSubjectivesSpec();
-        spec.setRequestNumber(request);
-        spec.setCode(code);
-        spec.setRecord(record);
-
-        OrcaDelegater delegater = new OrcaDelegater();
-        OrcaDelegater.Result result = delegater.sendSubjectives(spec);
-
-        Window w = SwingUtilities.getWindowAncestor(parent.getUI());
-        if (JSheet.isAlreadyShown(w)) {
-            w.toFront();
-        } else {
-            String message;
-            int messageType;
-
-            if ("01".equals(request)) { // 登録
-                if (result.equals(OrcaDelegater.Result.NO_ERROR)) {
-                    message = "病状詳記を ORCA に送信しました";
-                    messageType = JOptionPane.PLAIN_MESSAGE;
-                } else {
-                    message = "病状詳記を送信できませんでした";
-                    messageType = JOptionPane.ERROR_MESSAGE;
-                }
-            } else { // 削除
-                if (result.equals(OrcaDelegater.Result.NO_ERROR)) {
-                    message = "病状詳記を削除しました";
-                    messageType = JOptionPane.PLAIN_MESSAGE;
-                } else {
-                    message = "病状詳記を削除できませんでした";
-                    messageType = JOptionPane.ERROR_MESSAGE;
-                }
-            }
-            JSheet.showMessageDialog(w, message, "", messageType);
-        }
-    }
-
-    /**
-     * SubjectivesSpec (症状詳記 DTO) のひな形を作る.
-     *
-     * @return SubjectivesSpec のひな形
-     */
-    private SubjectivesSpec prepareSubjectivesSpec() {
-        // parent は KarteEditor or KarteViewer2
-        DocumentModel document = parent.getDocument();
-
-        String ptId = parent.getContext().getPatient().getPatientId();
-        String insurance = document.getDocInfo().getHealthInsuranceGUID();
-        String dept = document.getDocInfo().getDepartment();
-
-        LocalDate firstConfirmDate = document.getDocInfo().getFirstConfirmDate()
-                .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        String date = firstConfirmDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
-
-        SubjectivesSpec spec = new SubjectivesSpec();
-        spec.setPerformDate(date);
-        spec.setPatientId(ptId);
-        spec.setDepartmentCode(dept);
-        spec.setInsuranceCombinationNumber(insurance);
-
-        return spec;
-    }
-
-    private void maybeShowPopup(MouseEvent e) {
+    private void showPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {
-            JPopupMenu contextMenu = createMenus(e);
+            KartePanePopupMenu contextMenu = new KartePanePopupMenu(this, e.getModifiers());
             contextMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        maybeShowPopup(e);
+        showPopup(e);
         // focusable false でもマウスで選択してコピーできるように
         getTextPane().setFocusable(true);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        maybeShowPopup(e);
+        showPopup(e);
     }
 
     @Override

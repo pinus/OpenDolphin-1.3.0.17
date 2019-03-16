@@ -10,14 +10,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * {@literal @}MenuAction で action を作っていろいろするクラス.
+ * {@code @MenuAction} で action を作っていろいろするクラス.
  *
  * @author pns
  */
 public class MenuActionManager {
 
     /**
-     * {@literal @}MenuAction を付けたメソッドが Action で呼ばれる.
+     * {@code @MenuAction} を付けたメソッドが Action で呼ばれる.
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -31,9 +31,9 @@ public class MenuActionManager {
     }
 
     /**
-     * メソッド名をキーとする ActionMap を作成する
+     * メソッド名をキーとする ActionMap を作成する.
      *
-     * @param obj {@literal @}MenuAction を付けたインスタンス
+     * @param obj {@code @MenuAction} を付けたインスタンス
      * @return ActionMap
      */
     public static ActionMap getActionMap(final Object obj) {
@@ -91,7 +91,7 @@ public class MenuActionManager {
      * @param key キー
      * @param name 名前
      * @param icon アイコン
-     * @return
+     * @return JMenuItem
      */
     public JMenuItem getMenuItem(String key, String name, ImageIcon icon) {
         return getMenuItem(actionMap, key, name, icon);
@@ -100,7 +100,7 @@ public class MenuActionManager {
     /**
      * 生成した ActionMap を返す.
      *
-     * @return
+     * @return ActionMap
      */
     public ActionMap getActionMap() {
         return actionMap;
