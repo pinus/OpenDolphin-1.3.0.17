@@ -455,7 +455,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 if (ddl.isNoError()) {
                     if (sendClaim) {
                         OrcaDelegater delegater = new OrcaDelegater();
-                        delegater.send(saveModel);
+                        delegater.sendDocument(saveModel);
                     }
                 } else {
                     ret = ddl.getErrorMessage();

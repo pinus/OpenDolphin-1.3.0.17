@@ -555,7 +555,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         private JProgressBar progressBar;
 
         @Override
-        protected Integer doInBackground() throws Exception {
+        protected Integer doInBackground() {
             progressBar = getContext().getStatusPanel().getProgressBar();
 
             // 選択リストにあって 現在の karteList にないものは追加する
@@ -625,108 +625,6 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         }
     }
 
-/* multi-thread server access test
- * database access は早くなるが，chunk が大きくなってしまって意味なし
-    private class KarteTask extends SwingWorker<Integer, List<DocumentModel>> {
-        private final int FRACTION = 10;
-        private DocInfoModel[] savedSelectedHistories;
-        private JProgressBar progressBar;
-long l;
-        @Override
-        protected Integer doInBackground() throws Exception {
-            progressBar = getContext().getStatusPanel().getProgressBar();
-l = System.currentTimeMillis();
-            // 選択リストにあって 現在の karteList にないものは追加する
-            List<DocInfoModel> added = new ArrayList<DocInfoModel>(); // 追加されたもの
-            //for (DocInfoModel selectedDocInfo : selectedDocInfoList) {
-            savedSelectedHistories = selectedHistories;
-            for (DocInfoModel selectedDocInfo : selectedHistories) {
-                boolean found = false;
-                String id1 = selectedDocInfo.getDocId();
-                for (KarteViewer viewer : karteList) {
-                    String id2 = viewer.getDocument().getDocInfo().getDocId();
-                    if (id1.equals(id2)) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (! found) {
-                    added.add(selectedDocInfo);
-                }
-            }
-
-            if (! added.isEmpty()) {
-                progressBar.setMaximum(added.size());
-
-                int count = 0;
-
-                // multi thread server access test
-                List<Future<List<DocumentModel>>> future = new ArrayList<Future<List<DocumentModel>>>();
-                // 4 threads for 4 cpus ??
-                ExecutorService executor = Executors.newFixedThreadPool(4);
-
-                boolean hasNext = true;
-                while (hasNext) {
-                    final List<Long> pkList = new ArrayList<Long>(FRACTION);
-                    for (int i = 0; i<FRACTION; i++) {
-                        pkList.add(added.get(count++).getDocPk());
-                        if (count >= added.size()) {
-                            hasNext = false;
-                            break;
-                        }
-                    }
-                    // add delegater tasks to futures
-                    Callable<List<DocumentModel>> callable = new Callable<List<DocumentModel>>() {
-                        @Override
-                        public List<DocumentModel> call() throws Exception {
-                            DocumentDelegater ddl = new DocumentDelegater();
-                            return ddl.getDocuments(pkList);
-                        }
-                    };
-                    Future<List<DocumentModel>> f = executor.submit(callable);
-                    future.add(f);
-                }
-                // get results from futures
-                for(int i=0; i<future.size(); i++) {
-                    // 途中で選択が変わったり，ウインドウが閉じられている可能性がある
-                    if (savedSelectedHistories == selectedHistories
-                            && getContext().getFrame().isVisible()) {
-
-                        List<DocumentModel> dm = future.get(i).get(10,TimeUnit.SECONDS);
-logger.info("*** future get done: i = " + i);
-                        publish(dm);
-                        progressBar.setValue((i+1)*FRACTION);
-
-                    } else {
-                        logger.info("selection has changed");
-                        break;
-                    }
-                }
-
-            } else {
-                // removed 処理のために空の addKarteViewer 呼ぶ必要有り
-                addKarteViewer(new ArrayList<DocumentModel>(1));
-            }
-            return added.size();
-        }
-        @Override
-        protected void done() {
-            progressBar.setValue(0);
-            // リスト先頭のカルテを選択状態に
-            if (! karteList.isEmpty()) { setSelectedKarte(karteList.get(0)); }
-logger.info("*** laptime = " + (System.currentTimeMillis()-l));
-        }
-
-        @Override
-        protected void process(List<List<DocumentModel>> chunks) {
-            //logger.info("process published chunks");
-            for (List<DocumentModel> dm : chunks) {
-                addKarteViewer(dm);
-            }
-        }
-    }
-*/
-
     /**
      * カルテの削除タスククラス.
      */
@@ -742,7 +640,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
         }
 
         @Override
-        protected Boolean doInBackground() throws Exception {
+        protected Boolean doInBackground() {
             logger.debug("DeleteTask started");
             ddl.deleteDocument(docPk);
             return ddl.isNoError();
@@ -793,7 +691,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
      * State Interface.
      */
     private interface BrowserState {
-        public void enter();
+        void enter();
     }
 
     /**
@@ -893,7 +791,7 @@ logger.info("*** laptime = " + (System.currentTimeMillis()-l));
             model.setCreator(Project.getUserModel());       // 送信者
 
             OrcaDelegater delegater = new OrcaDelegater();
-            OrcaDelegater.Result result = delegater.send(model);
+            OrcaDelegater.Result result = delegater.sendDocument(model);
 
             if (result.equals(OrcaDelegater.Result.NO_ERROR)) {
                 message = "ORCA に送信しました";

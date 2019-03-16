@@ -35,7 +35,7 @@ import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
 /**
- * DiagnosisDocument
+ * DiagnosisDocument.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
@@ -991,16 +991,13 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 endDate = sdf.parse(end);
             }
         } catch (ParseException e) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("日付のフォーマットが正しくありません\n疾患名：");
-            sb.append(rd.getDiagnosisName());
-            sb.append("\n");
-            sb.append("「yyyy-MM-dd」の形式で入力してください。");
-            sb.append("\n");
-            sb.append("右クリックでカレンダが使用できます。");
+            String message = "日付のフォーマットが正しくありません\n" +
+                    "疾患名：" + rd.getDiagnosisName() + "\n" +
+                    "「yyyy-MM-dd」の形式で入力してください。\n" +
+                    "右クリックでカレンダが使用できます。";
             JSheet.showMessageDialog(
                     getContext().getFrame(),
-                    sb.toString(),
+                    message,
                     ClientContext.getFrameTitle("病名チェック"),
                     JOptionPane.ERROR_MESSAGE);
             formatOk = false;
@@ -1011,12 +1008,10 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         }
 
         if (endDate != null && endDate.before(startDate)) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("「").append(rd.getDiagnosisName());
-            sb.append("」の終了日が開始日以前になっています。");
+            String message = String.format("「%s」の終了日が開始日以前になっています.", rd.getDiagnosisName());
             JSheet.showMessageDialog(
                     getContext().getFrame(),
-                    sb.toString(),
+                    message,
                     ClientContext.getFrameTitle("病名チェック"),
                     JOptionPane.ERROR_MESSAGE);
             return false;
@@ -1227,14 +1222,12 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 List<String> ikouList = delegater.findIkouByomei(codeSet);
 
                 // ikouList に合致する病名に IKOU_BYOMEI_RECORD をマークする
-                ikouList.stream().forEach(code -> {
-                    rdList.stream().forEach(rd -> {
-                        if (rd.getDiagnosisCode().contains(code)) {
-                            rd.setStatus(IKOU_BYOMEI_RECORD);
-                        }
-                    });
-                });
-                return ! ikouList.isEmpty();
+                ikouList.stream().forEach(code ->
+                    rdList.stream()
+                            .filter(rd -> rd.getDiagnosisCode().contains(code))
+                            .forEach(rd -> rd.setStatus(IKOU_BYOMEI_RECORD))
+                );
+                return !ikouList.isEmpty();
             }
 
             @Override
@@ -1366,7 +1359,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 sendList.addAll(addedDiagnosis);
                 if (!sendList.isEmpty()) {
                     OrcaDelegater delegater = new OrcaDelegater();
-                    delegater.send(sendList);
+                    delegater.sendDiagnoses(sendList);
                 }
             }
             return result;
@@ -1610,7 +1603,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         if (!diagList.isEmpty()) {
             OrcaDelegater delegater = new OrcaDelegater();
-            delegater.send(diagList);
+            delegater.sendDiagnoses(diagList);
             message = diagList.size() + " 件を ORCA に送信しました";
 
         } else {

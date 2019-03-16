@@ -136,7 +136,7 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      * @param document DocumentModel
      * @return ApiResult
      */
-    public Result send(DocumentModel document) {
+    public Result sendDocument(DocumentModel document) {
         ApiResult result = getService().sendDocument(document);
         String apiResult = result.getApiResult();
         String ptId = document.getKarte().getPatient().getPatientId();
@@ -161,7 +161,7 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      * @param diagnoses List of RegisteredDiagnosisModel
      * @return ApiResult
      */
-    public Result send(List<RegisteredDiagnosisModel> diagnoses) {
+    public Result sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses) {
         // 非同期で送信
         Executors.newCachedThreadPool().submit(() -> getService().sendDiagnoses(diagnoses));
         // 再送処理はサーバー側で行う

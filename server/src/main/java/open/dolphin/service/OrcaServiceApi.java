@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * OrcaServiceApi.
@@ -561,9 +560,9 @@ public class OrcaServiceApi {
 
             String category = rd.getCategory();
             if ("mainDiagnosis".equals(category)) {
-                diseaseInfo.setDisease_Category("PD");
+                diseaseInfo.setDisease_Category("PD"); // category
             } else if ("suspectedDiagnosis".equals(category)) {
-                diseaseInfo.setDisease_Category("S");
+                diseaseInfo.setDisease_SuspectedFlag("S"); // suspected flag
             }
             diseaseInfos.add(diseaseInfo);
         });
@@ -667,14 +666,14 @@ public class OrcaServiceApi {
 
         ApiWarningMessageInformation[] warningInfo = res.getApi_Warning_Message_Information();
         if (Objects.nonNull(warningInfo)) {
-            List<ApiWarning> warnings = Arrays.stream(warningInfo)
+            ApiWarning[] warnings = Arrays.stream(warningInfo)
                     .map(ApiWarningMessageInformation::getApi_Warning_Message)
                     .map(w -> {
                         ApiWarning warning = new ApiWarning();
                         warning.setWarningMessage(w);
                         return warning;
-                    }).collect(Collectors.toList());
-            result.setWarningInfo(warnings.toArray(new ApiWarning[0]));
+                    }).toArray(ApiWarning[]::new);
+            result.setWarningInfo(warnings);
         }
         return result;
     }
