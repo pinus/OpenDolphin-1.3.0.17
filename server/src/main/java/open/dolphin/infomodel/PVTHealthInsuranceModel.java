@@ -3,10 +3,10 @@ package open.dolphin.infomodel;
 /**
  * Health-Insurance class to be parsed.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  * Modified by Mirror-I corp for adding 'PvtPublicInsuranceItem' and related function to store/get PvtPublicInsuranceItem name
  */
-public class PVTHealthInsuranceModel extends InfoModel  {
+public class PVTHealthInsuranceModel extends InfoModel {
     private static final long serialVersionUID = 6119471803755585233L;
 
     private String uuid;
@@ -169,21 +169,15 @@ public class PVTHealthInsuranceModel extends InfoModel  {
 
         StringBuilder buf = new StringBuilder();
 
-        if (insuranceNumber != null && insuranceClass != null ) {
+        if (insuranceNumber != null && insuranceClass != null) {
             buf.append(insuranceNumber);
             buf.append("  ");
             buf.append(insuranceClass);
-        }
-
-        else if (insuranceNumber != null) {
+        } else if (insuranceNumber != null) {
             buf.append(insuranceNumber);
-        }
-
-        else if (insuranceClass != null) {
+        } else if (insuranceClass != null) {
             buf.append(insuranceClass);
-        }
-
-        else {
+        } else {
             buf.append("自費");
         }
 

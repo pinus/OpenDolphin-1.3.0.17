@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * medicalres.
+ *
  * @author pns
  */
 public class Medicalres {
@@ -82,6 +83,7 @@ public class Medicalres {
 
     /**
      * 実施日 (例: 2014-10-17)
+     *
      * @return the Information_Date
      */
     public String getInformation_Date() {
@@ -90,6 +92,7 @@ public class Medicalres {
 
     /**
      * 実施日 (例: 2014-10-17)
+     *
      * @param Information_Date the Information_Date to set
      */
     public void setInformation_Date(String Information_Date) {
@@ -98,6 +101,7 @@ public class Medicalres {
 
     /**
      * 実施時間 (例: 14:15:00)
+     *
      * @return the Information_Time
      */
     public String getInformation_Time() {
@@ -106,6 +110,7 @@ public class Medicalres {
 
     /**
      * 実施時間 (例: 14:15:00)
+     *
      * @param Information_Time the Information_Time to set
      */
     public void setInformation_Time(String Information_Time) {
@@ -114,6 +119,7 @@ public class Medicalres {
 
     /**
      * 結果コード (例: 00)
+     *
      * @return the Api_Result
      */
     public String getApi_Result() {
@@ -122,6 +128,7 @@ public class Medicalres {
 
     /**
      * 結果コード (例: 00)
+     *
      * @param Api_Result the Api_Result to set
      */
     public void setApi_Result(String Api_Result) {
@@ -130,6 +137,7 @@ public class Medicalres {
 
     /**
      * 結果メッセージ (例: 登録処理終了)
+     *
      * @return the Api_Result_Message
      */
     public String getApi_Result_Message() {
@@ -138,6 +146,7 @@ public class Medicalres {
 
     /**
      * 結果メッセージ (例: 登録処理終了)
+     *
      * @param Api_Result_Message the Api_Result_Message to set
      */
     public void setApi_Result_Message(String Api_Result_Message) {
@@ -146,6 +155,7 @@ public class Medicalres {
 
     /**
      * レスポンスキー情報 (例: MedicalInfo)
+     *
      * @return the Reskey
      */
     public String getReskey() {
@@ -154,6 +164,7 @@ public class Medicalres {
 
     /**
      * レスポンスキー情報 (例: MedicalInfo)
+     *
      * @param Reskey the Reskey to set
      */
     public void setReskey(String Reskey) {
@@ -162,6 +173,7 @@ public class Medicalres {
 
     /**
      * 診療日 (例: 2014-10-17)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -170,6 +182,7 @@ public class Medicalres {
 
     /**
      * 診療日 (例: 2014-10-17)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -178,6 +191,7 @@ public class Medicalres {
 
     /**
      * 診療時間 (例: 14:10:12)
+     *
      * @return the Perform_Time
      */
     public String getPerform_Time() {
@@ -186,6 +200,7 @@ public class Medicalres {
 
     /**
      * 診療時間 (例: 14:10:12)
+     *
      * @param Perform_Time the Perform_Time to set
      */
     public void setPerform_Time(String Perform_Time) {
@@ -194,6 +209,7 @@ public class Medicalres {
 
     /**
      *   (例: 64d3e23a-40b5-4aa8-90d4-ab7fd48a2322 )
+     *
      * @return the Medical_Uid
      */
     public String getMedical_Uid() {
@@ -202,6 +218,7 @@ public class Medicalres {
 
     /**
      *   (例: 64d3e23a-40b5-4aa8-90d4-ab7fd48a2322 )
+     *
      * @param Medical_Uid the Medical_Uid to set
      */
     public void setMedical_Uid(String Medical_Uid) {
@@ -210,6 +227,7 @@ public class Medicalres {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -218,6 +236,7 @@ public class Medicalres {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -226,6 +245,7 @@ public class Medicalres {
 
     /**
      * 診療科名称 (例: 内科)
+     *
      * @return the Department_Name
      */
     public String getDepartment_Name() {
@@ -234,6 +254,7 @@ public class Medicalres {
 
     /**
      * 診療科名称 (例: 内科)
+     *
      * @param Department_Name the Department_Name to set
      */
     public void setDepartment_Name(String Department_Name) {
@@ -242,6 +263,7 @@ public class Medicalres {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @return the Physician_Code
      */
     public String getPhysician_Code() {
@@ -250,6 +272,7 @@ public class Medicalres {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @param Physician_Code the Physician_Code to set
      */
     public void setPhysician_Code(String Physician_Code) {
@@ -258,6 +281,7 @@ public class Medicalres {
 
     /**
      * ドクター名 (例: 日本　一)
+     *
      * @return the Physician_WholeName
      */
     public String getPhysician_WholeName() {
@@ -266,6 +290,7 @@ public class Medicalres {
 
     /**
      * ドクター名 (例: 日本　一)
+     *
      * @param Physician_WholeName the Physician_WholeName to set
      */
     public void setPhysician_WholeName(String Physician_WholeName) {
@@ -274,6 +299,7 @@ public class Medicalres {
 
     /**
      * 患者情報 (例:  )
+     *
      * @return the Patient_Information
      */
     public PatientInformation2 getPatient_Information() {
@@ -282,6 +308,7 @@ public class Medicalres {
 
     /**
      * 患者情報 (例:  )
+     *
      * @param Patient_Information the Patient_Information to set
      */
     public void setPatient_Information(PatientInformation2 Patient_Information) {
@@ -290,6 +317,7 @@ public class Medicalres {
 
     /**
      * 診療行為登録結果 (例:  )
+     *
      * @return the Medical_Message_Information
      */
     public MedicalMessageInformation getMedical_Message_Information() {
@@ -298,6 +326,7 @@ public class Medicalres {
 
     /**
      * 診療行為登録結果 (例:  )
+     *
      * @param Medical_Message_Information the Medical_Message_Information to set
      */
     public void setMedical_Message_Information(MedicalMessageInformation Medical_Message_Information) {
@@ -306,6 +335,7 @@ public class Medicalres {
 
     /**
      * 病名登録結果 (例:  )
+     *
      * @return the Disease_Message_Information
      */
     public DiseaseMessageInformation getDisease_Message_Information() {
@@ -314,6 +344,7 @@ public class Medicalres {
 
     /**
      * 病名登録結果 (例:  )
+     *
      * @param Disease_Message_Information the Disease_Message_Information to set
      */
     public void setDisease_Message_Information(DiseaseMessageInformation Disease_Message_Information) {

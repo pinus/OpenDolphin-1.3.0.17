@@ -7,24 +7,24 @@ import java.util.stream.Stream;
 /**
  * BundleDolphin.
  *
- * @author  Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class BundleDolphin extends ClaimBundle {
     private static final long serialVersionUID = -8747202550129389855L;
 
     private String orderName;
 
-    public void setOrderName(String orderName) {
-        this.orderName = orderName;
-    }
-
     public String getOrderName() {
         return orderName;
     }
 
+    public void setOrderName(String orderName) {
+        this.orderName = orderName;
+    }
+
     // Velocity で使っているので消したらだめ!
     public String getItemNames() {
-        return getClaimItem() == null? null :
+        return getClaimItem() == null ? null :
                 Stream.of(getClaimItem()).map(ClaimItem::getName).collect(Collectors.joining(","));
     }
 
@@ -38,7 +38,9 @@ public class BundleDolphin extends ClaimBundle {
 
         // Print bundleNumber
         String num = getBundleNumber();
-        if (num != null && !"1".equals(num)) { sj.add(String.format("X %s", num)); }
+        if (num != null && !"1".equals(num)) {
+            sj.add(String.format("X %s", num));
+        }
 
         addMemo(sj);
 
@@ -51,9 +53,9 @@ public class BundleDolphin extends ClaimBundle {
         if (items != null) {
             Stream.of(items).forEachOrdered(item -> {
                 // Print item name, number, and unit
-                String name = item.getName() == null? "" : item.getName();
-                String num = item.getNumber() == null? "" : item.getNumber();
-                String unit = item.getUnit() == null? "" : item.getUnit();
+                String name = item.getName() == null ? "" : item.getName();
+                String num = item.getNumber() == null ? "" : item.getNumber();
+                String unit = item.getUnit() == null ? "" : item.getUnit();
                 sj.add(String.format("・%s %s%s", name, num, unit));
             });
         }
@@ -63,10 +65,14 @@ public class BundleDolphin extends ClaimBundle {
     void addMemo(StringJoiner sj) {
         // Print admMemo
         String adminMemo = getAdminMemo();
-        if (adminMemo != null) { sj.add(adminMemo); }
+        if (adminMemo != null) {
+            sj.add(adminMemo);
+        }
 
         // Print bundleMemo
         String bundleMemo = getMemo();
-        if (bundleMemo != null) { sj.add(bundleMemo); }
+        if (bundleMemo != null) {
+            sj.add(bundleMemo);
+        }
     }
 }

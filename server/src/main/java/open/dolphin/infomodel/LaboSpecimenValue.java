@@ -10,7 +10,7 @@ import java.util.Collection;
 /**
  * LaboSpecimenValue.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 @Entity
 @Table(name = "d_labo_specimen")
@@ -18,11 +18,12 @@ import java.util.Collection;
 public class LaboSpecimenValue extends InfoModel {
     private static final long serialVersionUID = -7010436187772562514L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @ManyToOne
-    @JoinColumn(name="module_id", nullable=false)
+    @JoinColumn(name = "module_id", nullable = false)
     private LaboModuleValue laboModule;
 
     private String specimenName;
@@ -31,7 +32,7 @@ public class LaboSpecimenValue extends InfoModel {
 
     private String specimenCodeId;
 
-    @OneToMany(mappedBy="laboSpecimen", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "laboSpecimen", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Collection<LaboItemValue> laboItems;
 
     public long getId() {

@@ -28,14 +28,14 @@ public class ModuleModel extends KarteEntryBean<ModuleModel> {
     private IInfoModel model;
 
     @Lob
-    @Field(index=Index.YES)                         // hibernate search
+    @Field(index = Index.YES)                         // hibernate search
     @FieldBridge(impl = ModuleModelBridge.class)    // hibernate search
     @Analyzer(impl = CJKAnalyzer.class)             // hibernate search
-    @Column(nullable=false)
+    @Column(nullable = false)
     private byte[] beanBytes;
 
     @ManyToOne
-    @JoinColumn(name="doc_id", nullable=false)
+    @JoinColumn(name = "doc_id", nullable = false)
     private DocumentModel document;
 
     public ModuleModel() {
@@ -50,20 +50,20 @@ public class ModuleModel extends KarteEntryBean<ModuleModel> {
         this.document = document;
     }
 
-    public void setModuleInfo(ModuleInfoBean moduleInfo) {
-        this.moduleInfo = moduleInfo;
-    }
-
     public ModuleInfoBean getModuleInfo() {
         return moduleInfo;
     }
 
-    public void setModel(IInfoModel model) {
-        this.model = model;
+    public void setModuleInfo(ModuleInfoBean moduleInfo) {
+        this.moduleInfo = moduleInfo;
     }
 
     public IInfoModel getModel() {
         return model;
+    }
+
+    public void setModel(IInfoModel model) {
+        this.model = model;
     }
 
     public byte[] getBeanBytes() {

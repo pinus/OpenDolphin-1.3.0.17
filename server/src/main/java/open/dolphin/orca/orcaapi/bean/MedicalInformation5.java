@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi.bean;
 /**
  * Medical_Information. 診療行為登録関係.
  * for system01dailyres.
+ *
  * @author pns
  */
 public class MedicalInformation5 {

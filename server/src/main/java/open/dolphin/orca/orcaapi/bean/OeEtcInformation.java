@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Oe_Etc_Information. その他自費情報
+ *
  * @author pns
  */
 public class OeEtcInformation {
@@ -27,6 +28,7 @@ public class OeEtcInformation {
 
     /**
      * その他自費（非課税分）合計金額(ゼロは非表示） (例: 1000)
+     *
      * @return the Oe_Etc_Ttl_Money_Non_Taxable
      */
     public String getOe_Etc_Ttl_Money_Non_Taxable() {
@@ -35,6 +37,7 @@ public class OeEtcInformation {
 
     /**
      * その他自費（非課税分）合計金額(ゼロは非表示） (例: 1000)
+     *
      * @param Oe_Etc_Ttl_Money_Non_Taxable the Oe_Etc_Ttl_Money_Non_Taxable to set
      */
     public void setOe_Etc_Ttl_Money_Non_Taxable(String Oe_Etc_Ttl_Money_Non_Taxable) {
@@ -43,6 +46,7 @@ public class OeEtcInformation {
 
     /**
      * その他自費（課税分）合計金額(ゼロは非表示） (例: 1080)
+     *
      * @return the Oe_Etc_Ttl_Money_Taxable
      */
     public String getOe_Etc_Ttl_Money_Taxable() {
@@ -51,6 +55,7 @@ public class OeEtcInformation {
 
     /**
      * その他自費（課税分）合計金額(ゼロは非表示） (例: 1080)
+     *
      * @param Oe_Etc_Ttl_Money_Taxable the Oe_Etc_Ttl_Money_Taxable to set
      */
     public void setOe_Etc_Ttl_Money_Taxable(String Oe_Etc_Ttl_Money_Taxable) {
@@ -59,6 +64,7 @@ public class OeEtcInformation {
 
     /**
      * その他自費（課税分）合計金額消費税再掲(ゼロは非表示） (例: 80)
+     *
      * @return the Tax_In_Oe_Etc_Ttl_Money_Taxable
      */
     public String getTax_In_Oe_Etc_Ttl_Money_Taxable() {
@@ -67,6 +73,7 @@ public class OeEtcInformation {
 
     /**
      * その他自費（課税分）合計金額消費税再掲(ゼロは非表示） (例: 80)
+     *
      * @param Tax_In_Oe_Etc_Ttl_Money_Taxable the Tax_In_Oe_Etc_Ttl_Money_Taxable to set
      */
     public void setTax_In_Oe_Etc_Ttl_Money_Taxable(String Tax_In_Oe_Etc_Ttl_Money_Taxable) {
@@ -75,6 +82,7 @@ public class OeEtcInformation {
 
     /**
      * その他自費詳細（繰り返し10） (例: )
+     *
      * @return the Oe_Etc_Detail
      */
     public OeEtcDetail[] getOe_Etc_Detail() {
@@ -83,6 +91,7 @@ public class OeEtcInformation {
 
     /**
      * その他自費詳細（繰り返し10） (例: )
+     *
      * @param Oe_Etc_Detail the Oe_Etc_Detail to set
      */
     public void setOe_Etc_Detail(OeEtcDetail[] Oe_Etc_Detail) {

@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * diseaseres.
+ *
  * @author pns
  */
 public class Diseaseres {
@@ -72,6 +73,7 @@ public class Diseaseres {
 
     /**
      * 処理日付 (例: 2017-05-18)
+     *
      * @return the Information_Date
      */
     public String getInformation_Date() {
@@ -80,6 +82,7 @@ public class Diseaseres {
 
     /**
      * 処理日付 (例: 2017-05-18)
+     *
      * @param Information_Date the Information_Date to set
      */
     public void setInformation_Date(String Information_Date) {
@@ -88,6 +91,7 @@ public class Diseaseres {
 
     /**
      * 処理時間 (例: 14:35:31)
+     *
      * @return the Information_Time
      */
     public String getInformation_Time() {
@@ -96,6 +100,7 @@ public class Diseaseres {
 
     /**
      * 処理時間 (例: 14:35:31)
+     *
      * @param Information_Time the Information_Time to set
      */
     public void setInformation_Time(String Information_Time) {
@@ -104,6 +109,7 @@ public class Diseaseres {
 
     /**
      * 処理区分 (例: 000)
+     *
      * @return the Api_Result
      */
     public String getApi_Result() {
@@ -112,6 +118,7 @@ public class Diseaseres {
 
     /**
      * 処理区分 (例: 000)
+     *
      * @param Api_Result the Api_Result to set
      */
     public void setApi_Result(String Api_Result) {
@@ -120,6 +127,7 @@ public class Diseaseres {
 
     /**
      * 処理メッセージ (例: 処理実施終了)
+     *
      * @return the Api_Result_Message
      */
     public String getApi_Result_Message() {
@@ -128,6 +136,7 @@ public class Diseaseres {
 
     /**
      * 処理メッセージ (例: 処理実施終了)
+     *
      * @param Api_Result_Message the Api_Result_Message to set
      */
     public void setApi_Result_Message(String Api_Result_Message) {
@@ -136,6 +145,7 @@ public class Diseaseres {
 
     /**
      *   (例: Acceptance_Info)
+     *
      * @return the Reskey
      */
     public String getReskey() {
@@ -144,6 +154,7 @@ public class Diseaseres {
 
     /**
      *   (例: Acceptance_Info)
+     *
      * @param Reskey the Reskey to set
      */
     public void setReskey(String Reskey) {
@@ -152,6 +163,7 @@ public class Diseaseres {
 
     /**
      * 実施日付 (例: 2017-05-18)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -160,6 +172,7 @@ public class Diseaseres {
 
     /**
      * 実施日付 (例: 2017-05-18)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -168,6 +181,7 @@ public class Diseaseres {
 
     /**
      * 実施時間 (例: 01:01:01)
+     *
      * @return the Perform_Time
      */
     public String getPerform_Time() {
@@ -176,6 +190,7 @@ public class Diseaseres {
 
     /**
      * 実施時間 (例: 01:01:01)
+     *
      * @param Perform_Time the Perform_Time to set
      */
     public void setPerform_Time(String Perform_Time) {
@@ -184,6 +199,7 @@ public class Diseaseres {
 
     /**
      * 診療科コード (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -192,6 +208,7 @@ public class Diseaseres {
 
     /**
      * 診療科コード (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -200,6 +217,7 @@ public class Diseaseres {
 
     /**
      * 診療科名 (例: 内科)
+     *
      * @return the Department_Name
      */
     public String getDepartment_Name() {
@@ -208,6 +226,7 @@ public class Diseaseres {
 
     /**
      * 診療科名 (例: 内科)
+     *
      * @param Department_Name the Department_Name to set
      */
     public void setDepartment_Name(String Department_Name) {
@@ -216,6 +235,7 @@ public class Diseaseres {
 
     /**
      * 患者番号 (例: 00126)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -224,6 +244,7 @@ public class Diseaseres {
 
     /**
      * 患者番号 (例: 00126)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -232,6 +253,7 @@ public class Diseaseres {
 
     /**
      * 基準月（空白時はシステム日の属する月） (例: 2017-05)
+     *
      * @return the Base_Month
      */
     public String getBase_Month() {
@@ -240,6 +262,7 @@ public class Diseaseres {
 
     /**
      * 基準月（空白時はシステム日の属する月） (例: 2017-05)
+     *
      * @param Base_Month the Base_Month to set
      */
     public void setBase_Month(String Base_Month) {
@@ -248,6 +271,7 @@ public class Diseaseres {
 
     /**
      * 病名登録結果(繰り返し　５０) (例:  )
+     *
      * @return the Disease_Message_Information
      */
     public DiseaseMessageInformation[] getDisease_Message_Information() {
@@ -256,6 +280,7 @@ public class Diseaseres {
 
     /**
      * 病名登録結果(繰り返し　５０) (例:  )
+     *
      * @param Disease_Message_Information the Disease_Message_Information to set
      */
     public void setDisease_Message_Information(DiseaseMessageInformation[] Disease_Message_Information) {
@@ -264,6 +289,7 @@ public class Diseaseres {
 
     /**
      * 不一致病名情報 (例:  )
+     *
      * @return the Disease_Unmatch_Information
      */
     public DiseaseUnmatchInformation getDisease_Unmatch_Information() {
@@ -272,6 +298,7 @@ public class Diseaseres {
 
     /**
      * 不一致病名情報 (例:  )
+     *
      * @param Disease_Unmatch_Information the Disease_Unmatch_Information to set
      */
     public void setDisease_Unmatch_Information(DiseaseUnmatchInformation Disease_Unmatch_Information) {

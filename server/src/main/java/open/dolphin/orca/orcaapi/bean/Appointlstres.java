@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * appointlstres.
+ *
  * @author pns
  */
 public class Appointlstres {
@@ -42,6 +43,7 @@ public class Appointlstres {
 
     /**
      * 実施日 (例: 2011-03-13)
+     *
      * @return the Information_Date
      */
     public String getInformation_Date() {
@@ -50,6 +52,7 @@ public class Appointlstres {
 
     /**
      * 実施日 (例: 2011-03-13)
+     *
      * @param Information_Date the Information_Date to set
      */
     public void setInformation_Date(String Information_Date) {
@@ -58,6 +61,7 @@ public class Appointlstres {
 
     /**
      * 実施時間 (例: 10:50:00)
+     *
      * @return the Information_Time
      */
     public String getInformation_Time() {
@@ -66,6 +70,7 @@ public class Appointlstres {
 
     /**
      * 実施時間 (例: 10:50:00)
+     *
      * @param Information_Time the Information_Time to set
      */
     public void setInformation_Time(String Information_Time) {
@@ -74,6 +79,7 @@ public class Appointlstres {
 
     /**
      * 結果コード（ゼロ以外エラー） (例: 00)
+     *
      * @return the Api_Result
      */
     public String getApi_Result() {
@@ -82,6 +88,7 @@ public class Appointlstres {
 
     /**
      * 結果コード（ゼロ以外エラー） (例: 00)
+     *
      * @param Api_Result the Api_Result to set
      */
     public void setApi_Result(String Api_Result) {
@@ -90,6 +97,7 @@ public class Appointlstres {
 
     /**
      * エラーメッセージ (例: 処理終了)
+     *
      * @return the Api_Result_Message
      */
     public String getApi_Result_Message() {
@@ -98,6 +106,7 @@ public class Appointlstres {
 
     /**
      * エラーメッセージ (例: 処理終了)
+     *
      * @param Api_Result_Message the Api_Result_Message to set
      */
     public void setApi_Result_Message(String Api_Result_Message) {
@@ -106,6 +115,7 @@ public class Appointlstres {
 
     /**
      *   (例: PatientInfo)
+     *
      * @return the Reskey
      */
     public String getReskey() {
@@ -114,6 +124,7 @@ public class Appointlstres {
 
     /**
      *   (例: PatientInfo)
+     *
      * @param Reskey the Reskey to set
      */
     public void setReskey(String Reskey) {
@@ -122,6 +133,7 @@ public class Appointlstres {
 
     /**
      * 予約日 (例: 2011-03-15)
+     *
      * @return the Appointment_Date
      */
     public String getAppointment_Date() {
@@ -130,6 +142,7 @@ public class Appointlstres {
 
     /**
      * 予約日 (例: 2011-03-15)
+     *
      * @param Appointment_Date the Appointment_Date to set
      */
     public void setAppointment_Date(String Appointment_Date) {
@@ -138,6 +151,7 @@ public class Appointlstres {
 
     /**
      * 予約情報(繰り返し500) (例:  )
+     *
      * @return the Appointlst_Information
      */
     public AppointlstInformation[] getAppointlst_Information() {
@@ -146,6 +160,7 @@ public class Appointlstres {
 
     /**
      * 予約情報(繰り返し500) (例:  )
+     *
      * @param Appointlst_Information the Appointlst_Information to set
      */
     public void setAppointlst_Information(AppointlstInformation[] Appointlst_Information) {

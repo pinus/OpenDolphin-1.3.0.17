@@ -10,11 +10,11 @@ public class ProgressCourse extends InfoModel {
 
     private String freeText;
 
-    public void setFreeText(String freeText) {
-        this.freeText = freeText;
-    }
-
     public String getFreeText() {
         return freeText;
+    }
+
+    public void setFreeText(String freeText) {
+        this.freeText = freeText;
     }
 }

@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 /**
  * AccessRightModel.
  *
- * @author  Kazushi Minagawa
+ * @author Kazushi Minagawa
  */
 public class AccessRightModel extends InfoModel {
     private static final long serialVersionUID = -90888255738195101L;
@@ -39,27 +39,27 @@ public class AccessRightModel extends InfoModel {
         endDate = val;
     }
 
-    public void setLicenseeCode(String licenseeCode) {
-        this.licenseeCode = licenseeCode;
-    }
-
     public String getLicenseeCode() {
         return licenseeCode;
     }
 
-    public void setLicenseeName(String licenseeName) {
-        this.licenseeName = licenseeName;
+    public void setLicenseeCode(String licenseeCode) {
+        this.licenseeCode = licenseeCode;
     }
 
     public String getLicenseeName() {
         return licenseeName;
     }
 
-    public void setLicenseeCodeType(String licenseeCodeType) {
-        this.licenseeCodeType = licenseeCodeType;
+    public void setLicenseeName(String licenseeName) {
+        this.licenseeName = licenseeName;
     }
 
     public String getLicenseeCodeType() {
         return licenseeCodeType;
+    }
+
+    public void setLicenseeCodeType(String licenseeCodeType) {
+        this.licenseeCodeType = licenseeCodeType;
     }
 }

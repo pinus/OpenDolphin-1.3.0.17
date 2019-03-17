@@ -15,39 +15,57 @@ import javax.persistence.Transient;
 public class ModuleInfoBean extends InfoModel implements Comparable<ModuleInfoBean> {
     private static final long serialVersionUID = -3011774071100921454L;
 
-    /** Module 名: StampTree、 オーダ履歴当に表示する名前 */
-    @Column(nullable=false)
+    /**
+     * Module 名: StampTree、 オーダ履歴当に表示する名前
+     */
+    @Column(nullable = false)
     private String name;
 
-    /** SOA または P の役割 */
-    @Column(nullable=false)
+    /**
+     * SOA または P の役割
+     */
+    @Column(nullable = false)
     private String role;
 
-    /** ドキュメントに出現する順番 */
-    @Column(nullable=false)
+    /**
+     * ドキュメントに出現する順番
+     */
+    @Column(nullable = false)
     private int stampNumber;
 
-    /** 情報の実体名 */
-    @Column(nullable=false)
+    /**
+     * 情報の実体名
+     */
+    @Column(nullable = false)
     private String entity;
 
-    /** 編集可能かどうか */
+    /**
+     * 編集可能かどうか
+     */
     @Transient
     private boolean editable = true;
 
-    /** ASP 提供か */
+    /**
+     * ASP 提供か
+     */
     @Transient
     private boolean asp;
 
-    /** DB 保存されている場合、そのキー */
+    /**
+     * DB 保存されている場合、そのキー
+     */
     @Transient
     private String stampId;
 
-    /** Memo の内容説明 */
+    /**
+     * Memo の内容説明
+     */
     @Transient
     private String memo;
 
-    /** 折り返し表示するかどうか */
+    /**
+     * 折り返し表示するかどうか
+     */
     @Transient
     private boolean turnIn;
 
@@ -103,42 +121,43 @@ public class ModuleInfoBean extends InfoModel implements Comparable<ModuleInfoBe
         this.memo = memo;
     }
 
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
-
     public boolean isEditable() {
         return editable;
     }
 
-    public void setTurnIn(boolean turnIn) {
-        this.turnIn = turnIn;
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     public boolean isTurnIn() {
         return turnIn;
     }
 
+    public void setTurnIn(boolean turnIn) {
+        this.turnIn = turnIn;
+    }
+
     @Override
     public String toString() {
         // 病名でエイリアスがあればそれを返す
         if (ENTITY_DIAGNOSIS.equals(entity)) {
-            String alias =  ModelUtils.getDiagnosisAlias(name);
+            String alias = ModelUtils.getDiagnosisAlias(name);
             return alias != null ? alias : name;
         }
         return name;
-    }
-
-    public void setStampNumber(int stampNumber) {
-        this.stampNumber = stampNumber;
     }
 
     public int getStampNumber() {
         return stampNumber;
     }
 
+    public void setStampNumber(int stampNumber) {
+        this.stampNumber = stampNumber;
+    }
+
     /**
      * スタンプ番号で比較する.
+     *
      * @param other 比較対象の ModuleInfoBean
      * @return 比較値
      */

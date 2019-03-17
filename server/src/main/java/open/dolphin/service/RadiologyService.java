@@ -22,7 +22,6 @@ import java.util.List;
 public interface RadiologyService {
 
     /**
-     *
      * @param from
      * @return 該当マスタのコレクション
      */
@@ -31,7 +30,6 @@ public interface RadiologyService {
     public List<RadiologyMethodValue> getRadiologyMethod(String from);
 
     /**
-     *
      * @param hierarchyCode
      * @return 該当マスタのコレクション
      */

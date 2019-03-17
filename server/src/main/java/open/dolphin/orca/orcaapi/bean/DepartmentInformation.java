@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Department_Information. 診療科情報(繰り返し100)
+ *
  * @author pns
  */
 public class DepartmentInformation {
@@ -37,6 +38,7 @@ public class DepartmentInformation {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @return the Code
      */
     public String getCode() {
@@ -45,6 +47,7 @@ public class DepartmentInformation {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @param Code the Code to set
      */
     public void setCode(String Code) {
@@ -53,6 +56,7 @@ public class DepartmentInformation {
 
     /**
      * 診療科名称 (例: 内科)
+     *
      * @return the WholeName
      */
     public String getWholeName() {
@@ -61,6 +65,7 @@ public class DepartmentInformation {
 
     /**
      * 診療科名称 (例: 内科)
+     *
      * @param WholeName the WholeName to set
      */
     public void setWholeName(String WholeName) {
@@ -69,6 +74,7 @@ public class DepartmentInformation {
 
     /**
      * 短縮名称1 (例: 内科)
+     *
      * @return the Name1
      */
     public String getName1() {
@@ -77,6 +83,7 @@ public class DepartmentInformation {
 
     /**
      * 短縮名称1 (例: 内科)
+     *
      * @param Name1 the Name1 to set
      */
     public void setName1(String Name1) {
@@ -85,6 +92,7 @@ public class DepartmentInformation {
 
     /**
      * 短縮名称2 (例: 内科)
+     *
      * @return the Name2
      */
     public String getName2() {
@@ -93,6 +101,7 @@ public class DepartmentInformation {
 
     /**
      * 短縮名称2 (例: 内科)
+     *
      * @param Name2 the Name2 to set
      */
     public void setName2(String Name2) {
@@ -101,6 +110,7 @@ public class DepartmentInformation {
 
     /**
      * 短縮名称3 (例: 内)
+     *
      * @return the Name3
      */
     public String getName3() {
@@ -109,6 +119,7 @@ public class DepartmentInformation {
 
     /**
      * 短縮名称3 (例: 内)
+     *
      * @param Name3 the Name3 to set
      */
     public void setName3(String Name3) {
@@ -117,6 +128,7 @@ public class DepartmentInformation {
 
     /**
      * レセ電診療科 (例: 01)
+     *
      * @return the Receipt_Code
      */
     public String getReceipt_Code() {
@@ -125,6 +137,7 @@ public class DepartmentInformation {
 
     /**
      * レセ電診療科 (例: 01)
+     *
      * @param Receipt_Code the Receipt_Code to set
      */
     public void setReceipt_Code(String Receipt_Code) {

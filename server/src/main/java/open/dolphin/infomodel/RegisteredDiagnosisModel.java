@@ -15,7 +15,7 @@ public class RegisteredDiagnosisModel extends KarteEntryBean<RegisteredDiagnosis
     private static final long serialVersionUID = 8449675831667704574L;
 
     // 疾患名
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String diagnosis;
 
     // 疾患コード
@@ -43,6 +43,10 @@ public class RegisteredDiagnosisModel extends KarteEntryBean<RegisteredDiagnosis
 
     @Transient
     private UserLiteModel userLiteModel;
+
+    private static String[] splitDiagnosis(String diagnosis) {
+        return (diagnosis == null) ? null : diagnosis.split("\\s*,\\s*");
+    }
 
     public boolean isValidMML() {
         return getDiagnosis() != null;
@@ -225,10 +229,6 @@ public class RegisteredDiagnosisModel extends KarteEntryBean<RegisteredDiagnosis
         this.userLiteModel = userLiteModel;
     }
 
-    private static String[] splitDiagnosis(String diagnosis) {
-        return (diagnosis == null)? null : diagnosis.split("\\s*,\\s*");
-    }
-
     public String getDiagnosisName() {
         String[] splits = splitDiagnosis(this.diagnosis);
         return (splits != null && splits.length == 2 && splits[0] != null) ? splits[0] : this.diagnosis;
@@ -241,18 +241,21 @@ public class RegisteredDiagnosisModel extends KarteEntryBean<RegisteredDiagnosis
 
     public String getAliasOrName() {
         String alias = getDiagnosisAlias();
-        return (alias == null)? this.diagnosis : alias;
+        return (alias == null) ? this.diagnosis : alias;
     }
 
     /**
      * RegisteredDiagnosisModel の equal 判定.
+     *
      * @param obj 比較対象
      * @return 判定結果
      */
     @Override
     public boolean equals(Object obj) {
         // obj が RegisteredDiagnosisModel でなければ not equal
-        if (! (obj instanceof RegisteredDiagnosisModel)) { return false; }
+        if (!(obj instanceof RegisteredDiagnosisModel)) {
+            return false;
+        }
 
         RegisteredDiagnosisModel target = (RegisteredDiagnosisModel) obj;
 

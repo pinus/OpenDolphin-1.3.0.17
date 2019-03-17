@@ -9,18 +9,19 @@ import javax.persistence.*;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 @Entity
-@Table(name="d_subscribed_tree")
+@Table(name = "d_subscribed_tree")
 public class SubscribedTreeModel extends InfoModel {
     private static final long serialVersionUID = -881452344593635871L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserModel user;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private long treeId;
 
     public long getId() {

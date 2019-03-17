@@ -20,6 +20,7 @@ import java.util.List;
 public interface SystemService {
     /**
      * 施設と管理者情報を登録する。
+     *
      * @param user 施設管理者
      */
     @POST
@@ -28,6 +29,7 @@ public interface SystemService {
 
     /**
      * 放射線メソッドマスタを登録する。
+     *
      * @param c
      */
     @POST
@@ -36,6 +38,7 @@ public interface SystemService {
 
     /**
      * 通信を確認する。
+     *
      * @return Hello, OpenDolphin! 文字列
      */
     @GET

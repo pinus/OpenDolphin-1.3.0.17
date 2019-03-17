@@ -8,6 +8,7 @@ import java.net.URI;
 
 /**
  * OrcaApi.
+ *
  * @author pns
  */
 public class OrcaApi {
@@ -16,10 +17,12 @@ public class OrcaApi {
     private final OrcaHostInfo hostInfo = OrcaHostInfo.getInstance();
     private final OrcaApiHandler handler = OrcaApiHandler.getInstance();
 
-    private OrcaApi() { }
+    private OrcaApi() {
+    }
 
     /**
      * OrcaApi のインスタンス.
+     *
      * @return OrcaApi
      */
     public static OrcaApi getInstance() {
@@ -28,6 +31,7 @@ public class OrcaApi {
 
     /**
      * 患者基本情報の取得.
+     *
      * @param id 患者 id
      * @return PatientInfores
      */
@@ -39,8 +43,9 @@ public class OrcaApi {
 
     /**
      * 予約.
+     *
      * @param appointreq Appointreq
-     * @param classNum class=01(予約受付), class=02(予約取消)
+     * @param classNum   class=01(予約受付), class=02(予約取消)
      * @return Appointres
      */
     public Appointres post(Appointreq appointreq, String classNum) {
@@ -54,8 +59,9 @@ public class OrcaApi {
 
     /**
      * 中途終了データ作成.
+     *
      * @param medicalreq Medicalreq
-     * @param classNum class=01(登録), class=02(削除), class=03(変更), class=04(外来追加)
+     * @param classNum   class=01(登録), class=02(削除), class=03(変更), class=04(外来追加)
      * @return Medicalres
      */
     public Medicalres post(Medicalreq medicalreq, String classNum) {
@@ -69,6 +75,7 @@ public class OrcaApi {
 
     /**
      * 受付.
+     *
      * @param acceptreq Acceptreq
      * @return Accreptres
      */
@@ -83,8 +90,9 @@ public class OrcaApi {
 
     /**
      * 指定された日付の受付一覧返却.
+     *
      * @param acceptreq Acceptreq
-     * @param classNum class=01(会計待ち対象), class=02(会計済み対象), class=03(全受付対象)
+     * @param classNum  class=01(会計待ち対象), class=02(会計済み対象), class=03(全受付対象)
      * @return Acceptlstres
      */
     public Acceptlstres post(Acceptlstreq acceptreq, String classNum) {
@@ -98,6 +106,7 @@ public class OrcaApi {
 
     /**
      * 予約一覧. class=01(予約一覧取得)
+     *
      * @param appointreq Appointlstreq
      * @return Appointlstres
      */
@@ -112,8 +121,9 @@ public class OrcaApi {
 
     /**
      * 点数マスタ情報登録.
+     *
      * @param medicationreq Medicationreq
-     * @param classNum class=01(登録処理), class=02(削除処理), class=03(終了日設定処理), class=04(期間変更処理)
+     * @param classNum      class=01(登録処理), class=02(削除処理), class=03(終了日設定処理), class=04(期間変更処理)
      * @return Medicationres
      */
     public Medicationres post(Medicationreq medicationreq, String classNum) {
@@ -127,10 +137,10 @@ public class OrcaApi {
 
     /**
      * 患者番号一覧の取得.
+     *
      * @param patientlst1req Patientlst1req
-     * @param classNum
-     * class=01(新規・更新対象) ※患者番号テーブルの更新日・登録日が、開始日〜終了日の範囲内であれば対象とします。
-     * class=02 (新規対象) ※患者番号テーブルの登録日が、開始日〜終了日の範囲内であれば対象とします。期間内に新規登録した患者のみ対象となります。
+     * @param classNum       class=01(新規・更新対象) ※患者番号テーブルの更新日・登録日が、開始日〜終了日の範囲内であれば対象とします。
+     *                       class=02 (新規対象) ※患者番号テーブルの登録日が、開始日〜終了日の範囲内であれば対象とします。期間内に新規登録した患者のみ対象となります。
      * @return Patientlst1res
      */
     public Patientlst1res post(Patientlst1req patientlst1req, String classNum) {
@@ -144,6 +154,7 @@ public class OrcaApi {
 
     /**
      * 複数の患者情報取得.
+     *
      * @param patientlst2req Patientlst2req
      * @return Patientlst2res
      */
@@ -158,6 +169,7 @@ public class OrcaApi {
 
     /**
      * 患者情報取得 (氏名検索).
+     *
      * @param patientlst3req Patientlst3req
      * @return Patientlst2res
      */
@@ -172,6 +184,7 @@ public class OrcaApi {
 
     /**
      * システム管理情報の取得. (診療科コード一覧/ドクター・職員コード一覧/医療機関基本情報)
+     *
      * @param system01managereq System01managereq
      * @return System01Manageres (contains either Departmentres/Physicianres/System1001res)
      */
@@ -190,12 +203,12 @@ public class OrcaApi {
 
     /**
      * 診療情報の返却.
+     *
      * @param medicalgetreq Medicalgetreq
-     * @param classNum
-     *  class=01(受診履歴一覧取得)※診療年月の受診履歴日の取得
-     *  class=02(診療行為剤内容詳細取得)※診療日付と診療科の診療行為内容の剤内容を取得
-     *  class=03(診療月診療コード情報取得)※診療年月の診療行為内容の診療コード内容を取得
-     *  class=04(診療区分別剤点数取得)(xml2のみ)※診療年月の剤点数を算定日・診療区分順に取得
+     * @param classNum      class=01(受診履歴一覧取得)※診療年月の受診履歴日の取得
+     *                      class=02(診療行為剤内容詳細取得)※診療日付と診療科の診療行為内容の剤内容を取得
+     *                      class=03(診療月診療コード情報取得)※診療年月の診療行為内容の診療コード内容を取得
+     *                      class=04(診療区分別剤点数取得)(xml2のみ)※診療年月の剤点数を算定日・診療区分順に取得
      * @return Medicalgetres (contains either medicalget01res/02res/03res/04res)
      */
     public Medicalgetres post(Medicalgetreq medicalgetreq, String classNum) {
@@ -215,6 +228,7 @@ public class OrcaApi {
 
     /**
      * 患者病名情報の取得.
+     *
      * @param diseaseInforeq DiseaseInforeq
      * @return DiseaseInfores
      */
@@ -229,8 +243,9 @@ public class OrcaApi {
 
     /**
      * 患者登録.
+     *
      * @param patientmodreq Patientmodreq
-     * @param classNum class=01(患者登録), class=02(患者情報更新), class=03(患者情報削除), class=04(保険情報追加)
+     * @param classNum      class=01(患者登録), class=02(患者情報更新), class=03(患者情報削除), class=04(保険情報追加)
      * @return Patientmodres
      */
     public Patientmodres post(Patientmodreq patientmodreq, String classNum) {
@@ -244,6 +259,7 @@ public class OrcaApi {
 
     /**
      * 患者予約情報.
+     *
      * @param appointlst2req Appointlst2req
      * @return Appointlst2res
      */
@@ -258,6 +274,7 @@ public class OrcaApi {
 
     /**
      * 請求金額返却.
+     *
      * @param acsimulatereq Acsimulatereq
      * @return Acsimulateres
      */
@@ -272,7 +289,8 @@ public class OrcaApi {
 
     /**
      * 症状詳記.
-     * @param subReq Subjectivemodreq
+     *
+     * @param subReq   Subjectivemodreq
      * @param classNum class=01(症状詳記登録), class=02(症状詳記削除)
      * @return Subjectivemodres
      */
@@ -288,6 +306,7 @@ public class OrcaApi {
     /**
      * 受診日指定による来院患者一覧.
      * (01:来院日一覧/02:来院年月一覧)
+     *
      * @param visitptlstreq Visitptlstreq
      * @return Visitptlstres contains either visitptlst01res/02res
      */
@@ -305,6 +324,7 @@ public class OrcaApi {
 
     /**
      * 中途終了患者情報一覧.
+     *
      * @param tmedicalgetreq Tmedicalgetreq
      * @return Tmedicalgetres
      */
@@ -319,6 +339,7 @@ public class OrcaApi {
 
     /**
      * 保険者一覧情報.
+     *
      * @param insprogetreq Insprogetreq
      * @return Insprogetres
      */
@@ -333,6 +354,7 @@ public class OrcaApi {
 
     /**
      * 収納情報返却.
+     *
      * @param incomeinfreq 中身はPrivateObjects
      * @return PrivateObjects
      */
@@ -347,6 +369,7 @@ public class OrcaApi {
 
     /**
      * システム情報.
+     *
      * @param systeminfreq 中身はPrivateObjects
      * @return PrivateObjects
      */
@@ -361,6 +384,7 @@ public class OrcaApi {
 
     /**
      * ユーザー管理情報.
+     *
      * @param manageusersreq Manageusersreq
      * @return Manageusersres
      */
@@ -375,6 +399,7 @@ public class OrcaApi {
 
     /**
      * セット登録.
+     *
      * @param medicalsetreq Medicalsetreq
      * @return Medicalsetres
      */
@@ -389,6 +414,7 @@ public class OrcaApi {
 
     /**
      * 全保険組合せ一覧取得.
+     *
      * @param patientlst6req Patientlst6req
      * @return Patientlst6res
      */
@@ -403,6 +429,7 @@ public class OrcaApi {
 
     /**
      * 患者病名登録２.
+     *
      * @param diseasereq Diseasereq
      * @return Diseaseres
      */
@@ -417,6 +444,7 @@ public class OrcaApi {
 
     /**
      * マスタデータ最終更新日取得.
+     *
      * @param masterreq Masterlastupdatev3req
      * @return Masterlastupdatev3res
      */
@@ -431,6 +459,7 @@ public class OrcaApi {
 
     /**
      * 基本情報取得.
+     *
      * @param system01dailyreq System01dailyreq
      * @return System01dailyres
      */
@@ -445,6 +474,7 @@ public class OrcaApi {
 
     /**
      * 患者メモ取得.
+     *
      * @param patientlst7req Patientlst7req
      * @return Patientlst7res
      */
@@ -459,6 +489,7 @@ public class OrcaApi {
 
     /**
      * 初診算定日登録.
+     *
      * @param medicalv2req3 Medicalv2req3
      * @return Medicalv2res3
      */
@@ -473,6 +504,7 @@ public class OrcaApi {
 
     /**
      * 薬剤併用禁忌チェック.
+     *
      * @param contraindicationCheckreq ContraindicationCheckreq
      * @return ContraindicationCheckres
      */
@@ -487,6 +519,7 @@ public class OrcaApi {
 
     /**
      * 保険・公費一覧取得.
+     *
      * @param insuranceinfreq Insuranceinfreq
      * @return Insuranceinfres
      */
@@ -501,6 +534,7 @@ public class OrcaApi {
 
     /**
      * 症状詳記情報取得.
+     *
      * @param subjectiveslstreq Subjectiveslstreq
      * @return Subjectiveslstres
      */
@@ -515,6 +549,7 @@ public class OrcaApi {
 
     /**
      * Orca に Request を POST して Response を得る.
+     *
      * @param url URL
      * @param req Request
      * @return Response
@@ -529,6 +564,7 @@ public class OrcaApi {
 
     /**
      * patientlst6v2 専用 request.
+     *
      * @param url URL
      * @param req Request
      * @return Response2
@@ -543,6 +579,7 @@ public class OrcaApi {
 
     /**
      * Orca から GET で Response を得る.
+     *
      * @param url URL
      * @return Response
      */

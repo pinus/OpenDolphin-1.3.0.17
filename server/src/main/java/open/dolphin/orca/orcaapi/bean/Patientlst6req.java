@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * patientlst6req.
+ *
  * @author pns
  */
 public class Patientlst6req {
@@ -32,6 +33,7 @@ public class Patientlst6req {
 
     /**
      * 処理区分 (例: 01)
+     *
      * @return the Reqest_Number
      */
     public String getReqest_Number() {
@@ -40,6 +42,7 @@ public class Patientlst6req {
 
     /**
      * 処理区分 (例: 01)
+     *
      * @param Reqest_Number the Reqest_Number to set
      */
     public void setReqest_Number(String Reqest_Number) {
@@ -48,6 +51,7 @@ public class Patientlst6req {
 
     /**
      * 患者番号 (例: 166)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -56,6 +60,7 @@ public class Patientlst6req {
 
     /**
      * 患者番号 (例: 166)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -64,6 +69,7 @@ public class Patientlst6req {
 
     /**
      * 基準日 (例:  )
+     *
      * @return the Base_Date
      */
     public String getBase_Date() {
@@ -72,6 +78,7 @@ public class Patientlst6req {
 
     /**
      * 基準日 (例:  )
+     *
      * @param Base_Date the Base_Date to set
      */
     public void setBase_Date(String Base_Date) {
@@ -80,6 +87,7 @@ public class Patientlst6req {
 
     /**
      * 開始年月 (例:  )
+     *
      * @return the Start_Date
      */
     public String getStart_Date() {
@@ -88,6 +96,7 @@ public class Patientlst6req {
 
     /**
      * 開始年月 (例:  )
+     *
      * @param Start_Date the Start_Date to set
      */
     public void setStart_Date(String Start_Date) {
@@ -96,6 +105,7 @@ public class Patientlst6req {
 
     /**
      * 終了年月 (例:  )
+     *
      * @return the End_Date
      */
     public String getEnd_Date() {
@@ -104,6 +114,7 @@ public class Patientlst6req {
 
     /**
      * 終了年月 (例:  )
+     *
      * @param End_Date the End_Date to set
      */
     public void setEnd_Date(String End_Date) {

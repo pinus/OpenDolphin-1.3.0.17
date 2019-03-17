@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Insurance_Information.
+ *
  * @author pns
  */
 public class InsuranceInformation {

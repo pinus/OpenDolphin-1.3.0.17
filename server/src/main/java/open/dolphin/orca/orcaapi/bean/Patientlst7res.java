@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * patientlst7res.
+ *
  * @author pns
  */
 public class Patientlst7res {
@@ -26,7 +27,7 @@ public class Patientlst7res {
     private String Api_Result_Message;
 
     /**
-     *  (例: )
+     * (例: )
      */
     private String Reskey;
 

@@ -7,27 +7,26 @@ import java.util.List;
 /**
  * PatientSearchSpec.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class PatientSearchSpec implements Serializable {
-    private static final long serialVersionUID = -3192512318678902328L;
-
-    public static final int ALL_SEARCH        = 0;
-    public static final int ID_SEARCH         = 1;
-    public static final int NAME_SEARCH       = 2;
-    public static final int KANA_SEARCH       = 3;
-    public static final int ROMAN_SEARCH      = 4;
-    public static final int TELEPHONE_SEARCH  = 5;
-    public static final int ZIPCODE_SEARCH    = 6;
-    public static final int ADDRESS_SEARCH    = 7;
-    public static final int EMAIL_SEARCH      = 8;
-    public static final int OTHERID_SEARCH    = 9;
+    public static final int ALL_SEARCH = 0;
+    public static final int ID_SEARCH = 1;
+    public static final int NAME_SEARCH = 2;
+    public static final int KANA_SEARCH = 3;
+    public static final int ROMAN_SEARCH = 4;
+    public static final int TELEPHONE_SEARCH = 5;
+    public static final int ZIPCODE_SEARCH = 6;
+    public static final int ADDRESS_SEARCH = 7;
+    public static final int EMAIL_SEARCH = 8;
+    public static final int OTHERID_SEARCH = 9;
     //public static final int DIGIT_SEARCH      = 10;
-    public static final int DATE_SEARCH       = 11;
-    public static final int BIRTHDAY_SEARCH   = 12;
-    public static final int MEMO_SEARCH       = 13;
-    public static final int FULL_TEXT_SEARCH  = 14;
-
+    public static final int DATE_SEARCH = 11;
+    public static final int BIRTHDAY_SEARCH = 12;
+    public static final int MEMO_SEARCH = 13;
+    public static final int FULL_TEXT_SEARCH = 14;
+    private static final long serialVersionUID = -3192512318678902328L;
+    private final List<Long> narrowingIds = new ArrayList<>();
     private int code;
     private String patientId;
     private String name;
@@ -41,7 +40,6 @@ public class PatientSearchSpec implements Serializable {
     private String date;
     private String birthday;
     private String searchText;
-    private final List<Long> narrowingIds = new ArrayList<>();
 
     public void setNarrowingIds(List<Long> list) {
         narrowingIds.clear();
@@ -52,28 +50,32 @@ public class PatientSearchSpec implements Serializable {
         return narrowingIds;
     }
 
-    public void setSearchText(String text) {
-        this.searchText = text;
-    }
-
     public String getSearchText() {
         return searchText;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setSearchText(String text) {
+        this.searchText = text;
     }
 
     public String getBirthday() {
         return birthday;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public int getCode() {
         return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getPatientId() {
+        return patientId;
     }
 
     public void setPatientId(String patientId) {
@@ -85,8 +87,8 @@ public class PatientSearchSpec implements Serializable {
         }
     }
 
-    public String getPatientId() {
-        return patientId;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
@@ -98,71 +100,67 @@ public class PatientSearchSpec implements Serializable {
         }
     }
 
-    public String getName() {
-        return name;
+    public String getTelephone() {
+        return telephone;
     }
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public String getZipCode() {
+        return zipCode;
     }
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 
-    public String getZipCode() {
-        return zipCode;
+    public String getAddress() {
+        return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public String getAddress() {
-        return address;
+    public String getEmail() {
+        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getEmail() {
-        return email;
+    public String getOtherId() {
+        return otherId;
     }
 
     public void setOtherId(String otherId) {
         this.otherId = otherId;
     }
 
-    public String getOtherId() {
-        return otherId;
+    public String getOtherIdClass() {
+        return otherIdClass;
     }
 
     public void setOtherIdClass(String otherIdClass) {
         this.otherIdClass = otherIdClass;
     }
 
-    public String getOtherIdClass() {
-        return otherIdClass;
+    public String getOtherIdCodeSys() {
+        return otherIdCodeSys;
     }
 
     public void setOtherIdCodeSys(String otherIdCodeSys) {
         this.otherIdCodeSys = otherIdCodeSys;
     }
 
-    public String getOtherIdCodeSys() {
-        return otherIdCodeSys;
+    public String getDate() {
+        return date;
     }
 
     public void setDate(String date) {
-            this.date = date;
-    }
-
-    public String getDate() {
-        return date;
+        this.date = date;
     }
 }

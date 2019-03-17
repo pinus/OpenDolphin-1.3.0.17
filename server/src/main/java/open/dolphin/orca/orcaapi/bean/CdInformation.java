@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Cd_Information. 負担額情報
+ *
  * @author pns
  */
 public class CdInformation {
@@ -87,6 +88,7 @@ public class CdInformation {
 
     /**
      * 請求金額 (例: 340)
+     *
      * @return the Ac_Money
      */
     public String getAc_Money() {
@@ -95,6 +97,7 @@ public class CdInformation {
 
     /**
      * 請求金額 (例: 340)
+     *
      * @param Ac_Money the Ac_Money to set
      */
     public void setAc_Money(String Ac_Money) {
@@ -103,6 +106,7 @@ public class CdInformation {
 
     /**
      * 保険適用金額　負担金額（円）の保険分 (例: 0)
+     *
      * @return the Ai_Money
      */
     public String getAi_Money() {
@@ -111,6 +115,7 @@ public class CdInformation {
 
     /**
      * 保険適用金額　負担金額（円）の保険分 (例: 0)
+     *
      * @param Ai_Money the Ai_Money to set
      */
     public void setAi_Money(String Ai_Money) {
@@ -119,6 +124,7 @@ public class CdInformation {
 
     /**
      * 自費金額　負担金額（円）の自費分+その他自費のその他計の合計 (例: 0)
+     *
      * @return the Oe_Money
      */
     public String getOe_Money() {
@@ -127,6 +133,7 @@ public class CdInformation {
 
     /**
      * 自費金額　負担金額（円）の自費分+その他自費のその他計の合計 (例: 0)
+     *
      * @param Oe_Money the Oe_Money to set
      */
     public void setOe_Money(String Oe_Money) {
@@ -135,6 +142,7 @@ public class CdInformation {
 
     /**
      * 薬剤一部負担金（ゼロは非表示） (例: )
+     *
      * @return the Dg_Smoney
      */
     public String getDg_Smoney() {
@@ -143,6 +151,7 @@ public class CdInformation {
 
     /**
      * 薬剤一部負担金（ゼロは非表示） (例: )
+     *
      * @param Dg_Smoney the Dg_Smoney to set
      */
     public void setDg_Smoney(String Dg_Smoney) {
@@ -151,6 +160,7 @@ public class CdInformation {
 
     /**
      * 老人一部負担金（ゼロは非表示） (例: )
+     *
      * @return the Om_Smoney
      */
     public String getOm_Smoney() {
@@ -159,6 +169,7 @@ public class CdInformation {
 
     /**
      * 老人一部負担金（ゼロは非表示） (例: )
+     *
      * @param Om_Smoney the Om_Smoney to set
      */
     public void setOm_Smoney(String Om_Smoney) {
@@ -167,6 +178,7 @@ public class CdInformation {
 
     /**
      * 公費一部負担金（ゼロは非表示） (例: 340)
+     *
      * @return the Pi_Smoney
      */
     public String getPi_Smoney() {
@@ -175,6 +187,7 @@ public class CdInformation {
 
     /**
      * 公費一部負担金（ゼロは非表示） (例: 340)
+     *
      * @param Pi_Smoney the Pi_Smoney to set
      */
     public void setPi_Smoney(String Pi_Smoney) {
@@ -183,6 +196,7 @@ public class CdInformation {
 
     /**
      * 労災合計金額　労災自賠責保険適用分（円）の集計値（初診+再診+指導+その他）（ゼロは非表示） (例: )
+     *
      * @return the Lsi_Total_Money
      */
     public String getLsi_Total_Money() {
@@ -191,6 +205,7 @@ public class CdInformation {
 
     /**
      * 労災合計金額　労災自賠責保険適用分（円）の集計値（初診+再診+指導+その他）（ゼロは非表示） (例: )
+     *
      * @param Lsi_Total_Money the Lsi_Total_Money to set
      */
     public void setLsi_Total_Money(String Lsi_Total_Money) {
@@ -199,6 +214,7 @@ public class CdInformation {
 
     /**
      * 請求金額消費税再掲（ゼロは非表示） (例: 960)
+     *
      * @return the Tax_In_Ac_Money
      */
     public String getTax_In_Ac_Money() {
@@ -207,6 +223,7 @@ public class CdInformation {
 
     /**
      * 請求金額消費税再掲（ゼロは非表示） (例: 960)
+     *
      * @param Tax_In_Ac_Money the Tax_In_Ac_Money to set
      */
     public void setTax_In_Ac_Money(String Tax_In_Ac_Money) {
@@ -215,6 +232,7 @@ public class CdInformation {
 
     /**
      * 入金額 (例: 0)
+     *
      * @return the Ic_Money
      */
     public String getIc_Money() {
@@ -223,6 +241,7 @@ public class CdInformation {
 
     /**
      * 入金額 (例: 0)
+     *
      * @param Ic_Money the Ic_Money to set
      */
     public void setIc_Money(String Ic_Money) {
@@ -231,6 +250,7 @@ public class CdInformation {
 
     /**
      * 食事・生活療養負担金（外来またはゼロは非表示）（食事療養負担金＋生活療養負担金） (例: )
+     *
      * @return the Ml_Smoney
      */
     public String getMl_Smoney() {
@@ -239,6 +259,7 @@ public class CdInformation {
 
     /**
      * 食事・生活療養負担金（外来またはゼロは非表示）（食事療養負担金＋生活療養負担金） (例: )
+     *
      * @param Ml_Smoney the Ml_Smoney to set
      */
     public void setMl_Smoney(String Ml_Smoney) {
@@ -247,6 +268,7 @@ public class CdInformation {
 
     /**
      * 食事療養負担金（外来またはゼロは非表示） (例: 5460)
+     *
      * @return the Meal_Smoney
      */
     public String getMeal_Smoney() {
@@ -255,6 +277,7 @@ public class CdInformation {
 
     /**
      * 食事療養負担金（外来またはゼロは非表示） (例: 5460)
+     *
      * @param Meal_Smoney the Meal_Smoney to set
      */
     public void setMeal_Smoney(String Meal_Smoney) {
@@ -263,6 +286,7 @@ public class CdInformation {
 
     /**
      * 生活療養負担金（外来またはゼロは非表示） (例: )
+     *
      * @return the Living_Smoney
      */
     public String getLiving_Smoney() {
@@ -271,6 +295,7 @@ public class CdInformation {
 
     /**
      * 生活療養負担金（外来またはゼロは非表示） (例: )
+     *
      * @param Living_Smoney the Living_Smoney to set
      */
     public void setLiving_Smoney(String Living_Smoney) {
@@ -279,6 +304,7 @@ public class CdInformation {
 
     /**
      * 保険適用金額内労災診察等合計金額（ゼロは非表示。患者が負担する場合編集）　労災自賠責保険適用分（円）の 集計値　（初診＋再診＋指導＋その他） (例: )
+     *
      * @return the Lsi_Total_Money_In_Ai_Money
      */
     public String getLsi_Total_Money_In_Ai_Money() {
@@ -287,6 +313,7 @@ public class CdInformation {
 
     /**
      * 保険適用金額内労災診察等合計金額（ゼロは非表示。患者が負担する場合編集）　労災自賠責保険適用分（円）の 集計値　（初診＋再診＋指導＋その他） (例: )
+     *
      * @param Lsi_Total_Money_In_Ai_Money the Lsi_Total_Money_In_Ai_Money to set
      */
     public void setLsi_Total_Money_In_Ai_Money(String Lsi_Total_Money_In_Ai_Money) {
@@ -295,6 +322,7 @@ public class CdInformation {
 
     /**
      * 減免金額（ゼロは非表示） (例: )
+     *
      * @return the Dis_Money
      */
     public String getDis_Money() {
@@ -303,6 +331,7 @@ public class CdInformation {
 
     /**
      * 減免金額（ゼロは非表示） (例: )
+     *
      * @param Dis_Money the Dis_Money to set
      */
     public void setDis_Money(String Dis_Money) {
@@ -311,6 +340,7 @@ public class CdInformation {
 
     /**
      * 調整金１（ゼロは非表示） (例: )
+     *
      * @return the Ad_Money1
      */
     public String getAd_Money1() {
@@ -319,6 +349,7 @@ public class CdInformation {
 
     /**
      * 調整金１（ゼロは非表示） (例: )
+     *
      * @param Ad_Money1 the Ad_Money1 to set
      */
     public void setAd_Money1(String Ad_Money1) {
@@ -327,6 +358,7 @@ public class CdInformation {
 
     /**
      * 調整金２（ゼロは非表示） (例: )
+     *
      * @return the Ad_Money2
      */
     public String getAd_Money2() {
@@ -335,6 +367,7 @@ public class CdInformation {
 
     /**
      * 調整金２（ゼロは非表示） (例: )
+     *
      * @param Ad_Money2 the Ad_Money2 to set
      */
     public void setAd_Money2(String Ad_Money2) {

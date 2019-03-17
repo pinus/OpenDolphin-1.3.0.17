@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Appointlst_Infomation. 予約情報(繰り返し500)
+ *
  * @author pns
  */
 public class AppointlstInformation {
@@ -67,6 +68,7 @@ public class AppointlstInformation {
 
     /**
      * 予約日 (例: 2012-12-22)
+     *
      * @return the Appointment_Date
      */
     public String getAppointment_Date() {
@@ -75,6 +77,7 @@ public class AppointlstInformation {
 
     /**
      * 予約日 (例: 2012-12-22)
+     *
      * @param Appointment_Date the Appointment_Date to set
      */
     public void setAppointment_Date(String Appointment_Date) {
@@ -83,6 +86,7 @@ public class AppointlstInformation {
 
     /**
      * 予約時間 (例: 15:30:00)
+     *
      * @return the Appointment_Time
      */
     public String getAppointment_Time() {
@@ -91,6 +95,7 @@ public class AppointlstInformation {
 
     /**
      * 予約時間 (例: 15:30:00)
+     *
      * @param Appointment_Time the Appointment_Time to set
      */
     public void setAppointment_Time(String Appointment_Time) {
@@ -99,6 +104,7 @@ public class AppointlstInformation {
 
     /**
      * 診療内容区分※３(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断、07:予防注射、99:該当なし) (例: 01)
+     *
      * @return the Medical_Information
      */
     public String getMedical_Information() {
@@ -107,6 +113,7 @@ public class AppointlstInformation {
 
     /**
      * 診療内容区分※３(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断、07:予防注射、99:該当なし) (例: 01)
+     *
      * @param Medical_Information the Medical_Information to set
      */
     public void setMedical_Information(String Medical_Information) {
@@ -115,6 +122,7 @@ public class AppointlstInformation {
 
     /**
      * 診療内容名称 (例: 診察１)
+     *
      * @return the Medical_Information_WholeName
      */
     public String getMedical_Information_WholeName() {
@@ -123,6 +131,7 @@ public class AppointlstInformation {
 
     /**
      * 診療内容名称 (例: 診察１)
+     *
      * @param Medical_Information_WholeName the Medical_Information_WholeName to set
      */
     public void setMedical_Information_WholeName(String Medical_Information_WholeName) {
@@ -131,6 +140,7 @@ public class AppointlstInformation {
 
     /**
      * 予約診療科コード※４(01:内科) (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -139,6 +149,7 @@ public class AppointlstInformation {
 
     /**
      * 予約診療科コード※４(01:内科) (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -147,6 +158,7 @@ public class AppointlstInformation {
 
     /**
      * 予約診療科名称 (例: 内科)
+     *
      * @return the Department_WholeName
      */
     public String getDepartment_WholeName() {
@@ -155,6 +167,7 @@ public class AppointlstInformation {
 
     /**
      * 予約診療科名称 (例: 内科)
+     *
      * @param Department_WholeName the Department_WholeName to set
      */
     public void setDepartment_WholeName(String Department_WholeName) {
@@ -163,6 +176,7 @@ public class AppointlstInformation {
 
     /**
      * 予約ドクタコード (例: 10001)
+     *
      * @return the Physician_Code
      */
     public String getPhysician_Code() {
@@ -171,6 +185,7 @@ public class AppointlstInformation {
 
     /**
      * 予約ドクタコード (例: 10001)
+     *
      * @param Physician_Code the Physician_Code to set
      */
     public void setPhysician_Code(String Physician_Code) {
@@ -179,6 +194,7 @@ public class AppointlstInformation {
 
     /**
      * 予約ドクター名 (例: 日本　一)
+     *
      * @return the Physician_WholeName
      */
     public String getPhysician_WholeName() {
@@ -187,6 +203,7 @@ public class AppointlstInformation {
 
     /**
      * 予約ドクター名 (例: 日本　一)
+     *
      * @param Physician_WholeName the Physician_WholeName to set
      */
     public void setPhysician_WholeName(String Physician_WholeName) {
@@ -195,6 +212,7 @@ public class AppointlstInformation {
 
     /**
      * 来院情報(1:来院済) (例:  )
+     *
      * @return the Visit_Information
      */
     public String getVisit_Information() {
@@ -203,6 +221,7 @@ public class AppointlstInformation {
 
     /**
      * 来院情報(1:来院済) (例:  )
+     *
      * @param Visit_Information the Visit_Information to set
      */
     public void setVisit_Information(String Visit_Information) {
@@ -211,6 +230,7 @@ public class AppointlstInformation {
 
     /**
      * 予約ID (例: 02)
+     *
      * @return the Appointment_Id
      */
     public String getAppointment_Id() {
@@ -219,6 +239,7 @@ public class AppointlstInformation {
 
     /**
      * 予約ID (例: 02)
+     *
      * @param Appointment_Id the Appointment_Id to set
      */
     public void setAppointment_Id(String Appointment_Id) {
@@ -227,6 +248,7 @@ public class AppointlstInformation {
 
     /**
      * 患者情報 (例:  )
+     *
      * @return the Patient_Information
      */
     public PatientInformation getPatient_Information() {
@@ -235,6 +257,7 @@ public class AppointlstInformation {
 
     /**
      * 患者情報 (例:  )
+     *
      * @param Patient_Information the Patient_Information to set
      */
     public void setPatient_Information(PatientInformation Patient_Information) {
@@ -243,6 +266,7 @@ public class AppointlstInformation {
 
     /**
      * 予約メモ内容 (例: 予約メモテスト)
+     *
      * @return the Appointment_Note
      */
     public String getAppointment_Note() {
@@ -251,6 +275,7 @@ public class AppointlstInformation {
 
     /**
      * 予約メモ内容 (例: 予約メモテスト)
+     *
      * @param Appointment_Note the Appointment_Note to set
      */
     public void setAppointment_Note(String Appointment_Note) {

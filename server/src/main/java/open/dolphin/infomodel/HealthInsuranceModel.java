@@ -5,22 +5,23 @@ import javax.persistence.*;
 /**
  * HealthInsuranceModel.
  *
- * @author Minagawa,kazushi
+ * @author Minagawa, kazushi
  */
 @Entity
 @Table(name = "d_health_insurance")
-public class HealthInsuranceModel extends InfoModel  {
+public class HealthInsuranceModel extends InfoModel {
     private static final long serialVersionUID = 3064687655700962022L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Lob
-    @Column(nullable=false)
+    @Column(nullable = false)
     private byte[] beanBytes;
 
     @ManyToOne
-    @JoinColumn(name="patient_id", nullable=false)
+    @JoinColumn(name = "patient_id", nullable = false)
     private PatientModel patient;
 
     public long getId() {
@@ -31,12 +32,12 @@ public class HealthInsuranceModel extends InfoModel  {
         this.id = id;
     }
 
-    public void setBeanBytes(byte[] beanBytes) {
-        this.beanBytes = beanBytes;
-    }
-
     public byte[] getBeanBytes() {
         return beanBytes;
+    }
+
+    public void setBeanBytes(byte[] beanBytes) {
+        this.beanBytes = beanBytes;
     }
 
     public PatientModel getPatient() {

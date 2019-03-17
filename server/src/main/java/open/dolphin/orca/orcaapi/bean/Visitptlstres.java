@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi.bean;
 /**
  * Visitptlstres.
  * contains response to visitptlstreq (either visitptlst01res/02res)
+ *
  * @author pns
  */
 public class Visitptlstres {

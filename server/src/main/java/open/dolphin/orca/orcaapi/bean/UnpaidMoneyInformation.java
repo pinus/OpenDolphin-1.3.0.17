@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Unpaid_Money_Information. 個別の未収金情報（繰り返し　５０）（診療日の新しい順）
+ *
  * @author pns
  */
 public class UnpaidMoneyInformation {
@@ -27,6 +28,7 @@ public class UnpaidMoneyInformation {
 
     /**
      * 診療日 (例: )
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -35,6 +37,7 @@ public class UnpaidMoneyInformation {
 
     /**
      * 診療日 (例: )
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -43,6 +46,7 @@ public class UnpaidMoneyInformation {
 
     /**
      * 入外区分（1：入院、2：入院外） (例: )
+     *
      * @return the InOut
      */
     public String getInOut() {
@@ -51,6 +55,7 @@ public class UnpaidMoneyInformation {
 
     /**
      * 入外区分（1：入院、2：入院外） (例: )
+     *
      * @param InOut the InOut to set
      */
     public void setInOut(String InOut) {
@@ -59,6 +64,7 @@ public class UnpaidMoneyInformation {
 
     /**
      * 伝票番号 (例: )
+     *
      * @return the Invoice_Number
      */
     public String getInvoice_Number() {
@@ -67,6 +73,7 @@ public class UnpaidMoneyInformation {
 
     /**
      * 伝票番号 (例: )
+     *
      * @param Invoice_Number the Invoice_Number to set
      */
     public void setInvoice_Number(String Invoice_Number) {
@@ -75,6 +82,7 @@ public class UnpaidMoneyInformation {
 
     /**
      * 未収金額 (例: )
+     *
      * @return the Unpaid_Money
      */
     public String getUnpaid_Money() {
@@ -83,6 +91,7 @@ public class UnpaidMoneyInformation {
 
     /**
      * 未収金額 (例: )
+     *
      * @param Unpaid_Money the Unpaid_Money to set
      */
     public void setUnpaid_Money(String Unpaid_Money) {

@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Menu_Item_Name_Information. メニュー項目名称情報（繰り返し　最大５０）
+ *
  * @author pns
  */
 public class MenuItemNameInformation {

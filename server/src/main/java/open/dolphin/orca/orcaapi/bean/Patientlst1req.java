@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * patientlst1req.
+ *
  * @author pns
  */
 public class Patientlst1req {
@@ -22,6 +23,7 @@ public class Patientlst1req {
 
     /**
      * 開始日 (例: 2014-05-01)
+     *
      * @return the Base_StartDate
      */
     public String getBase_StartDate() {
@@ -30,6 +32,7 @@ public class Patientlst1req {
 
     /**
      * 開始日 (例: 2014-05-01)
+     *
      * @param Base_StartDate the Base_StartDate to set
      */
     public void setBase_StartDate(String Base_StartDate) {
@@ -38,6 +41,7 @@ public class Patientlst1req {
 
     /**
      * 終了日 (例: 2014-07-01)
+     *
      * @return the Base_EndDate
      */
     public String getBase_EndDate() {
@@ -46,6 +50,7 @@ public class Patientlst1req {
 
     /**
      * 終了日 (例: 2014-07-01)
+     *
      * @param Base_EndDate the Base_EndDate to set
      */
     public void setBase_EndDate(String Base_EndDate) {
@@ -54,6 +59,7 @@ public class Patientlst1req {
 
     /**
      * テスト患者区分 (例: 1) １:テスト患者対象外
+     *
      * @return the Contain_TestPatient_Flag
      */
     public String getContain_TestPatient_Flag() {
@@ -62,6 +68,7 @@ public class Patientlst1req {
 
     /**
      * テスト患者区分 (例: 1) １:テスト患者対象外
+     *
      * @param Contain_TestPatient_Flag the Contain_TestPatient_Flag to set
      */
     public void setContain_TestPatient_Flag(String Contain_TestPatient_Flag) {

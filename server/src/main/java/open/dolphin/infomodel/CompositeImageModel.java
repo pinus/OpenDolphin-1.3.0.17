@@ -13,19 +13,19 @@ import javax.swing.*;
 public class CompositeImageModel extends KarteEntryBean<CompositeImageModel> {
     private static final long serialVersionUID = 1L;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String contentType;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String medicalRole;
 
     @Transient
     private String medicalRoleTableId;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String href;
 
     @Transient
@@ -36,10 +36,10 @@ public class CompositeImageModel extends KarteEntryBean<CompositeImageModel> {
 
     // ASP の場合 length をとる
     @Lob
-    @Column(nullable=false, length=1048576)
+    @Column(nullable = false, length = 1048576)
     private byte[] jpegByte;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private long compositor;
 
     public String getContentType() {

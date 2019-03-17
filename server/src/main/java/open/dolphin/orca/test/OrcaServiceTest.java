@@ -21,12 +21,17 @@ public class OrcaServiceTest {
 
     private long wrap;
 
+    public static void main(String[] argv) throws ReflectiveOperationException {
+        OrcaServiceTest test = new OrcaServiceTest();
+        test.executeTest();
+    }
+
     // api 316 msec, dao 42 msec
     private void getWksryact(Object orcaService) throws ReflectiveOperationException {
         PatientVisitSpec spec = new PatientVisitSpec();
         spec.setPatientId("000001");
         spec.setDate("2019-02-16");
-        Wksryact wksryact = (Wksryact) invoke(orcaService, "getWksryact", spec );
+        Wksryact wksryact = (Wksryact) invoke(orcaService, "getWksryact", spec);
 
         System.out.println("Medical_Uid = " + wksryact.getMedicalUid());
         System.out.println("Medical_Mode = " + wksryact.getMedicalMode());
@@ -104,18 +109,17 @@ public class OrcaServiceTest {
 
     private void sendDoc(Object orcaService) {
         DocumentModel doc = SampleDocument.getDocumentModel("SampleDocumentModel.json");
-        ApiResult result = ((OrcaServiceApi)orcaService).sendDocument(doc);
+        ApiResult result = ((OrcaServiceApi) orcaService).sendDocument(doc);
 
         System.out.println(JsonConverter.toJson(result));
     }
 
     private void sendDiag(Object orcaService) {
         List<RegisteredDiagnosisModel> diagnoses = SampleDocument.getRegisteredDiagnosisModel("SampleRegisteredDiagnosisModels.json");
-        ApiResult result = ((OrcaServiceApi)orcaService).sendDiagnoses(diagnoses);
+        ApiResult result = ((OrcaServiceApi) orcaService).sendDiagnoses(diagnoses);
 
         System.out.println(JsonConverter.toJson(result));
     }
-
 
     private void executeTest() throws ReflectiveOperationException {
         OrcaServiceApi api = new OrcaServiceApi();
@@ -128,18 +132,14 @@ public class OrcaServiceTest {
         //getSyskanri(api); wrap = showWrap(wrap);
         //getSyskanri(dao); wrap = showWrap(wrap);
         //findTensu(dao); wrap = showWrap(wrap);
-        findDiagnosis(dao); wrap = showWrap(wrap);
+        findDiagnosis(dao);
+        wrap = showWrap(wrap);
         //getOrcaInputCdList(api); wrap = showWrap(wrap);
         //getOrcaInputCdList(dao); wrap = showWrap(wrap);
         //getOrcaDisease(api); wrap = showWrap(wrap);
         //getOrcaDisease(dao); wrap = showWrap(wrap);
         //sendDoc(api); wrap = showWrap(wrap);
         //sendDiag(api); wrap = showWrap(wrap);
-    }
-
-    public static void main(String[] argv) throws ReflectiveOperationException {
-        OrcaServiceTest test = new OrcaServiceTest();
-        test.executeTest();
     }
 
     private Object invoke(Object obj, String methodName, Object param) throws ReflectiveOperationException {

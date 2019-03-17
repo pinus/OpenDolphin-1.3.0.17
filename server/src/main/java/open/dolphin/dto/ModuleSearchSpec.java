@@ -6,12 +6,11 @@ import java.util.Date;
 /**
  * ModuleSearchSpec.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class ModuleSearchSpec implements Serializable {
+    public static final int ENTITY_SEARCH = 0;
     private static final long serialVersionUID = 4550131751936543011L;
-
-    public static final int ENTITY_SEARCH         = 0;
     private int code;
     private long karteId;
     private String patientId;
@@ -20,12 +19,12 @@ public class ModuleSearchSpec implements Serializable {
     private Date[] toDate;
     private String status;
 
-    public void setCode(int code) {
-        this.code = code;
-    }
-
     public int getCode() {
         return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public long getKarteId() {
@@ -36,43 +35,43 @@ public class ModuleSearchSpec implements Serializable {
         this.karteId = karteId;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
     public String getPatientId() {
         return patientId;
     }
 
-    public void setFromDate(Date[] fromDate) {
-        this.fromDate = fromDate;
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     public Date[] getFromDate() {
         return fromDate;
     }
 
-    public void setToDate(Date[] toDate) {
-        this.toDate = toDate;
+    public void setFromDate(Date[] fromDate) {
+        this.fromDate = fromDate;
     }
 
     public Date[] getToDate() {
         return toDate;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setToDate(Date[] toDate) {
+        this.toDate = toDate;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setEntity(String entity) {
-        this.entity = entity;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getEntity() {
         return entity;
+    }
+
+    public void setEntity(String entity) {
+        this.entity = entity;
     }
 }

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * LaboSearchSpec.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class LaboSearchSpec implements Serializable {
     private static final long serialVersionUID = 2201738793947138141L;
@@ -14,27 +14,27 @@ public class LaboSearchSpec implements Serializable {
     private String fromDate;
     private String toDate;
 
-    public void setKarteId(long patientId) {
-        this.karteId = patientId;
-    }
-
     public long getKarteId() {
         return karteId;
     }
 
-    public void setFromDate(String fromDate) {
-        this.fromDate = fromDate;
+    public void setKarteId(long patientId) {
+        this.karteId = patientId;
     }
 
     public String getFromDate() {
         return fromDate;
     }
 
-    public void setToDate(String toDate) {
-        this.toDate = toDate;
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
     }
 
     public String getToDate() {
         return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
     }
 }

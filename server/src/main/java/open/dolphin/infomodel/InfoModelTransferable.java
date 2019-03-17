@@ -8,14 +8,16 @@ import java.awt.datatransfer.Transferable;
 /**
  * Transferable class of the IInfoModel.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class InfoModelTransferable implements Transferable, ClipboardOwner {
 
-    /** Data Flavor of this class */
+    /**
+     * Data Flavor of this class
+     */
     public static final DataFlavor infoModelFlavor = new DataFlavor(open.dolphin.infomodel.IInfoModel.class, "Info Model");
 
-    private static final DataFlavor[] flavors = { InfoModelTransferable.infoModelFlavor };
+    private static final DataFlavor[] flavors = {InfoModelTransferable.infoModelFlavor};
 
     private final IInfoModel model;
 
@@ -25,17 +27,17 @@ public final class InfoModelTransferable implements Transferable, ClipboardOwner
 
     @Override
     public synchronized DataFlavor[] getTransferDataFlavors() {
-    	return flavors;
+        return flavors;
     }
 
     @Override
-    public boolean isDataFlavorSupported( DataFlavor flavor ) {
-    	return flavor.equals(infoModelFlavor);
+    public boolean isDataFlavorSupported(DataFlavor flavor) {
+        return flavor.equals(infoModelFlavor);
     }
 
     @Override
     public synchronized Object getTransferData(DataFlavor flavor) {
-        return (flavor.equals(infoModelFlavor))? model : null;
+        return (flavor.equals(infoModelFlavor)) ? model : null;
     }
 
     @Override

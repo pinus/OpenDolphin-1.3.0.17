@@ -42,11 +42,10 @@ import java.util.Map;
 @DependsOn({"OrcaHostInfo", "OrcaUserInfo"})
 @RunAs("user")
 public class PvtClient {
+    private final Logger logger = Logger.getLogger(PvtClient.class);
     private PushApi pushApi;
     private Response subscriptionRes;
     private PvtBuilder pvtBuilder;
-    private final Logger logger = Logger.getLogger(PvtClient.class);
-
     @Inject
     private PvtService pvtService;
 
@@ -88,7 +87,7 @@ public class PvtClient {
                 // 受付通知: mode = add / modify / delete
                 if (event.equals(SubscriptionEvent.ACCEPT.eventName())) {
                     DummyHeader.set();
-                    switch(body.getPatient_Mode()) {
+                    switch (body.getPatient_Mode()) {
                         case "delete":
                             String ptId = body.getPatient_ID(); // 患者番号 002906
                             PatientModel patientModel = patientService.getPatient(ptId);
@@ -117,7 +116,8 @@ public class PvtClient {
         private static DummyHeader dummyHeader = new DummyHeader();
         private static String header;
 
-        private DummyHeader() { }
+        private DummyHeader() {
+        }
 
         public static void set() {
             String str = IInfoModel.DEFAULT_FACILITY_OID + InfoModel.COMPOSITE_KEY_MAKER
@@ -128,24 +128,53 @@ public class PvtClient {
         }
 
         @Override
-        public List<String> getRequestHeader(String s) { return null; }
+        public List<String> getRequestHeader(String s) {
+            return null;
+        }
+
         @Override
-        public String getHeaderString(String s) { return header; }
+        public String getHeaderString(String s) {
+            return header;
+        }
+
         @Override
-        public MultivaluedMap<String, String> getRequestHeaders() { return null; }
+        public MultivaluedMap<String, String> getRequestHeaders() {
+            return null;
+        }
+
         @Override
-        public List<MediaType> getAcceptableMediaTypes() { return null; }
+        public List<MediaType> getAcceptableMediaTypes() {
+            return null;
+        }
+
         @Override
-        public List<Locale> getAcceptableLanguages() { return null; }
+        public List<Locale> getAcceptableLanguages() {
+            return null;
+        }
+
         @Override
-        public MediaType getMediaType() { return null; }
+        public MediaType getMediaType() {
+            return null;
+        }
+
         @Override
-        public Locale getLanguage() { return null; }
+        public Locale getLanguage() {
+            return null;
+        }
+
         @Override
-        public Map<String, Cookie> getCookies() { return null; }
+        public Map<String, Cookie> getCookies() {
+            return null;
+        }
+
         @Override
-        public Date getDate() { return null; }
+        public Date getDate() {
+            return null;
+        }
+
         @Override
-        public int getLength() { return 0; }
+        public int getLength() {
+            return 0;
+        }
     }
 }

@@ -13,7 +13,8 @@ import java.util.Date;
 public class PhenomenonModel extends InfoModel {
     private static final long serialVersionUID = -5238918766376204524L;
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     // 患者ID、UserId、施設ID等
@@ -23,7 +24,7 @@ public class PhenomenonModel extends InfoModel {
     @Column(nullable = false)
     private String phenomenon;
 
-    @Column(name="c_value", nullable = false)
+    @Column(name = "c_value", nullable = false)
     private String value;
 
     private String valueDesc;

@@ -2,10 +2,11 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Contact_Information. 連絡先情報
+ *
  * @author pns
  */
 public class ContactInformation {
-   /**
+    /**
      * 連絡先名称 (例: 日医　太郎)
      */
     private String WholeName;
@@ -42,6 +43,7 @@ public class ContactInformation {
 
     /**
      * 連絡先名称 (例: 日医　太郎)
+     *
      * @return the WholeName
      */
     public String getWholeName() {
@@ -50,6 +52,7 @@ public class ContactInformation {
 
     /**
      * 連絡先名称 (例: 日医　太郎)
+     *
      * @param WholeName the WholeName to set
      */
     public void setWholeName(String WholeName) {
@@ -58,6 +61,7 @@ public class ContactInformation {
 
     /**
      * 続柄 (例: 本人)
+     *
      * @return the Relationship
      */
     public String getRelationship() {
@@ -66,6 +70,7 @@ public class ContactInformation {
 
     /**
      * 続柄 (例: 本人)
+     *
      * @param Relationship the Relationship to set
      */
     public void setRelationship(String Relationship) {
@@ -74,6 +79,7 @@ public class ContactInformation {
 
     /**
      * 郵便番号 (例: 1130021)
+     *
      * @return the Address_ZipCode
      */
     public String getAddress_ZipCode() {
@@ -82,6 +88,7 @@ public class ContactInformation {
 
     /**
      * 郵便番号 (例: 1130021)
+     *
      * @param Address_ZipCode the Address_ZipCode to set
      */
     public void setAddress_ZipCode(String Address_ZipCode) {
@@ -90,6 +97,7 @@ public class ContactInformation {
 
     /**
      * 住所 (例: 東京都文京区本駒込)
+     *
      * @return the WholeAddress1
      */
     public String getWholeAddress1() {
@@ -98,6 +106,7 @@ public class ContactInformation {
 
     /**
      * 住所 (例: 東京都文京区本駒込)
+     *
      * @param WholeAddress1 the WholeAddress1 to set
      */
     public void setWholeAddress1(String WholeAddress1) {
@@ -106,6 +115,7 @@ public class ContactInformation {
 
     /**
      * 番地番号 (例: ６−１６−３)
+     *
      * @return the WholeAddress2
      */
     public String getWholeAddress2() {
@@ -114,6 +124,7 @@ public class ContactInformation {
 
     /**
      * 番地番号 (例: ６−１６−３)
+     *
      * @param WholeAddress2 the WholeAddress2 to set
      */
     public void setWholeAddress2(String WholeAddress2) {
@@ -122,6 +133,7 @@ public class ContactInformation {
 
     /**
      * 電話番号（昼） (例: 03-3333-2222)
+     *
      * @return the PhoneNumber1
      */
     public String getPhoneNumber1() {
@@ -130,6 +142,7 @@ public class ContactInformation {
 
     /**
      * 電話番号（昼） (例: 03-3333-2222)
+     *
      * @param PhoneNumber1 the PhoneNumber1 to set
      */
     public void setPhoneNumber1(String PhoneNumber1) {
@@ -138,6 +151,7 @@ public class ContactInformation {
 
     /**
      * 電話番号（夜） (例: 03-3333-1133)
+     *
      * @return the PhoneNumber2
      */
     public String getPhoneNumber2() {
@@ -146,6 +160,7 @@ public class ContactInformation {
 
     /**
      * 電話番号（夜） (例: 03-3333-1133)
+     *
      * @param PhoneNumber2 the PhoneNumber2 to set
      */
     public void setPhoneNumber2(String PhoneNumber2) {

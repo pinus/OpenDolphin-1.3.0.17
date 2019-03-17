@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * insuranceinfres.
+ *
  * @author pns
  */
 public class Insuranceinfres {
@@ -26,12 +27,12 @@ public class Insuranceinfres {
     private String Api_Result_Message;
 
     /**
-     *  (例: )
+     * (例: )
      */
     private String Reskey;
 
     /**
-     *  (例: )
+     * (例: )
      */
     private InsuranceInformation Insurance_Information;
 

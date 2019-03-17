@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * System01dailyreq.
+ *
  * @author pns
  */
 public class System01dailyreq {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Websocket 接続時の command / response
+ *
  * @author pns
  */
 public class Command {
@@ -32,6 +33,7 @@ public class Command {
 
     /**
      * コマンド.
+     *
      * @return the command
      */
     public String getCommand() {
@@ -40,6 +42,7 @@ public class Command {
 
     /**
      * コマンド.
+     *
      * @param command the command to set
      */
     public void setCommand(String command) {
@@ -48,6 +51,7 @@ public class Command {
 
     /**
      * 購読リクエスト ID
+     *
      * @return the reqId
      */
     public String getReqId() {
@@ -56,6 +60,7 @@ public class Command {
 
     /**
      * 購読リクエスト ID
+     *
      * @param reqId the reqId to set
      */
     public void setReqId(String reqId) {
@@ -64,6 +69,7 @@ public class Command {
 
     /**
      * 購読者 ID
+     *
      * @return the subId
      */
     public String getSubId() {
@@ -72,6 +78,7 @@ public class Command {
 
     /**
      * 購読者 ID
+     *
      * @param subId the subId to set
      */
     public void setSubId(String subId) {
@@ -80,6 +87,7 @@ public class Command {
 
     /**
      * 購読するイベント名.
+     *
      * @return the event
      */
     public String getEvent() {
@@ -88,6 +96,7 @@ public class Command {
 
     /**
      * 購読するイベント名.
+     *
      * @param event the event to set
      */
     public void setEvent(String event) {

@@ -55,6 +55,27 @@ public class ClaimConst {
      * entity をキーとした entity の名称マップ.
      */
     public static final HashMap<String, String> EntityNameMap = new HashMap<>();
+    /**
+     * entity をキーとした，SearchCode（srysyukbn 番号範囲）のマップ.
+     */
+    public static final HashMap<String, String> SearchCodeMap = new HashMap<>();
+    /**
+     * entity をキーとした，ClaimClassCode (Claim 007) のマップ.
+     */
+    public static final HashMap<String, String> ClaimClassCodeMap = new HashMap<>();
+    /**
+     * 診療種別区分 (srysyukbn) のマップ.
+     */
+    private static final HashMap<String, String> SrysyukbnMap = new HashMap<>();
+    /**
+     * 診療科名をキーとした診療科コードマップ.
+     */
+    private static final HashMap<String, String> DepartmentCodeMap = new HashMap<>();
+    /**
+     * 詳記区分. see {@link open.dolphin.orca.orcaapi.bean.Subjectivesmodreq Subjectivesmodreq}
+     */
+    public static HashMap<String, String> SubjectivesCodeMap = new HashMap<>();
+
     static {
         EntityNameMap.put(IInfoModel.ENTITY_BACTERIA_ORDER, IInfoModel.TABNAME_BACTERIA);
         EntityNameMap.put(IInfoModel.ENTITY_BASE_CHARGE_ORDER, IInfoModel.TABNAME_BASE_CHARGE);
@@ -72,10 +93,6 @@ public class ClaimConst {
         EntityNameMap.put(IInfoModel.ENTITY_TREATMENT, IInfoModel.TABNAME_TREATMENT);
     }
 
-    /**
-     * entity をキーとした，SearchCode（srysyukbn 番号範囲）のマップ.
-     */
-    public static final HashMap<String, String> SearchCodeMap = new HashMap<>();
     static {
         SearchCodeMap.put(IInfoModel.ENTITY_BACTERIA_ORDER, "600-699");
         SearchCodeMap.put(IInfoModel.ENTITY_BASE_CHARGE_ORDER, "110-125");
@@ -93,10 +110,6 @@ public class ClaimConst {
         SearchCodeMap.put(IInfoModel.ENTITY_TREATMENT, "400-499");
     }
 
-    /**
-     * entity をキーとした，ClaimClassCode (Claim 007) のマップ.
-     */
-    public static final HashMap<String, String> ClaimClassCodeMap = new HashMap<>();
     static {
         ClaimClassCodeMap.put(IInfoModel.ENTITY_BACTERIA_ORDER, "600");
         ClaimClassCodeMap.put(IInfoModel.ENTITY_BASE_CHARGE_ORDER, null);
@@ -114,10 +127,6 @@ public class ClaimConst {
         ClaimClassCodeMap.put(IInfoModel.ENTITY_TREATMENT, "400");
     }
 
-    /**
-     * 診療種別区分 (srysyukbn) のマップ.
-     */
-    private static final HashMap<String, String> SrysyukbnMap = new HashMap<>();
     static {
         SrysyukbnMap.put("110", "初診");
         SrysyukbnMap.put("120", "再診(再診)");
@@ -158,16 +167,12 @@ public class ClaimConst {
         SrysyukbnMap.put("920", "入院(特定入院料・その他)");
         SrysyukbnMap.put("970", "入院(食事療養)");
         SrysyukbnMap.put("971", "入院(標準負担額)");
-        SrysyukbnMap.put("980","コメント（処方せん備考）");
-        SrysyukbnMap.put("990","コメント");
-        SrysyukbnMap.put("991","コメント（摘要欄下部表示）");
+        SrysyukbnMap.put("980", "コメント（処方せん備考）");
+        SrysyukbnMap.put("990", "コメント");
+        SrysyukbnMap.put("991", "コメント（摘要欄下部表示）");
     }
 
-    /**
-     * 診療科名をキーとした診療科コードマップ.
-     */
-    private static final HashMap<String, String> DepartmentCodeMap = new HashMap<>();
-    static{
+    static {
         DepartmentCodeMap.put("内科", "01");
         DepartmentCodeMap.put("精神科", "02");
         DepartmentCodeMap.put("神経科", "03");
@@ -208,10 +213,6 @@ public class ClaimConst {
         DepartmentCodeMap.put("鍼灸", "A1");
     }
 
-    /**
-     * 詳記区分. see {@link open.dolphin.orca.orcaapi.bean.Subjectivesmodreq Subjectivesmodreq}
-     */
-    public static HashMap<String, String> SubjectivesCodeMap = new HashMap<>();
     static {
         SubjectivesCodeMap.put("主たる疾患の臨床症状", "01");
         SubjectivesCodeMap.put("主たる疾患の診療・検査所見", "02");
@@ -262,6 +263,7 @@ public class ClaimConst {
 
     /**
      * 診療科名のコードを返す.
+     *
      * @param departmentName 診療科名
      * @return 診療科コード
      */

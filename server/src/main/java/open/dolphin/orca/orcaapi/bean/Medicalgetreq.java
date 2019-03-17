@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * medicalgetreq.
+ *
  * @author pns
  */
 public class Medicalgetreq {
@@ -32,6 +33,7 @@ public class Medicalgetreq {
 
     /**
      * 入外区分(I：入院) (例: I)
+     *
      * @return the InOut
      */
     public String getInOut() {
@@ -40,6 +42,7 @@ public class Medicalgetreq {
 
     /**
      * 入外区分(I：入院) (例: I)
+     *
      * @param InOut the InOut to set
      */
     public void setInOut(String InOut) {
@@ -48,6 +51,7 @@ public class Medicalgetreq {
 
     /**
      * 患者番号 (例: 12)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -56,6 +60,7 @@ public class Medicalgetreq {
 
     /**
      * 患者番号 (例: 12)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -64,6 +69,7 @@ public class Medicalgetreq {
 
     /**
      * 診療日 (例: 2014-01-06)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -72,6 +78,7 @@ public class Medicalgetreq {
 
     /**
      * 診療日 (例: 2014-01-06)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -80,6 +87,7 @@ public class Medicalgetreq {
 
     /**
      * 月数 (例: 12)
+     *
      * @return the For_Months
      */
     public String getFor_Months() {
@@ -88,6 +96,7 @@ public class Medicalgetreq {
 
     /**
      * 月数 (例: 12)
+     *
      * @param For_Months the For_Months to set
      */
     public void setFor_Months(String For_Months) {
@@ -96,6 +105,7 @@ public class Medicalgetreq {
 
     /**
      * 診療情報 (例:  )
+     *
      * @return the Medical_Information
      */
     public MedicalInformation3 getMedical_Information() {
@@ -104,6 +114,7 @@ public class Medicalgetreq {
 
     /**
      * 診療情報 (例:  )
+     *
      * @param Medical_Information the Medical_Information to set
      */
     public void setMedical_Information(MedicalInformation3 Medical_Information) {

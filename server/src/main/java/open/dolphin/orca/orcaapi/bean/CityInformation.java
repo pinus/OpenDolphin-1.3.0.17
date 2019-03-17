@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * City_Information. 所在地郡市区情報
+ *
  * @author pns
  */
 public class CityInformation {
@@ -36,6 +37,7 @@ public class CityInformation {
 
     /**
      * 郡市区コード (例: 2)
+     *
      * @return the C_Class
      */
     public String getC_Class() {
@@ -44,6 +46,7 @@ public class CityInformation {
 
     /**
      * 郡市区コード (例: 2)
+     *
      * @param C_Class the C_Class to set
      */
     public void setC_Class(String C_Class) {
@@ -52,6 +55,7 @@ public class CityInformation {
 
     /**
      * 郡市の区分 (例: 市)
+     *
      * @return the C_Class_Name
      */
     public String getC_Class_Name() {
@@ -60,6 +64,7 @@ public class CityInformation {
 
     /**
      * 郡市の区分 (例: 市)
+     *
      * @param C_Class_Name the C_Class_Name to set
      */
     public void setC_Class_Name(String C_Class_Name) {

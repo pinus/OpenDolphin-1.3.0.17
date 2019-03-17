@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 /**
  * ID.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ID extends InfoModel {
     private static final long serialVersionUID = -5070888481802856042L;
@@ -26,19 +26,19 @@ public class ID extends InfoModel {
         id = val;
     }
 
-    public void setIdType(String idType) {
-        this.idType = idType;
-    }
-
     public String getIdType() {
         return idType;
     }
 
-    public void setIdTypeTableId(String idTypeTableId) {
-        this.idTypeTableId = idTypeTableId;
+    public void setIdType(String idType) {
+        this.idType = idType;
     }
 
     public String getIdTypeTableId() {
         return idTypeTableId;
+    }
+
+    public void setIdTypeTableId(String idTypeTableId) {
+        this.idTypeTableId = idTypeTableId;
     }
 }

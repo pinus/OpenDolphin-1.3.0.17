@@ -5,14 +5,15 @@ import javax.persistence.*;
 /**
  * RadiologyMethodValue.
  *
- * @author Minagawa,kazushi
+ * @author Minagawa, kazushi
  */
 @Entity
 @Table(name = "d_radiology_method")
 public class RadiologyMethodValue extends InfoModel {
     private static final long serialVersionUID = -710424383733112788L;
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private String hierarchyCode1;

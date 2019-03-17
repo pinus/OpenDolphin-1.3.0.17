@@ -24,21 +24,22 @@ import java.util.*;
 /**
  * Security Filter
  * Authorization Header pattern : "facilityId:username;password"
- *
+ * <p>
  * http://howtodoinjava.com/2013/07/25/jax-rs-2-0-resteasy-3-0-2-final-security-tutorial/
+ *
  * @author pns
  */
 @Provider
 public class SecurityFilter implements ContainerRequestFilter {
-    @PersistenceContext(unitName = "DolphinPU")
-    private EntityManager em;
-
     private static final String AUTHORIZATION_PROPERTY = "Authorization";
     private static final String AUTHENTICATION_SCHEME = "Basic";
-    private static final ServerResponse ACCESS_DENIED = new ServerResponse("Access denied", 401, new Headers<>());;
-    private static final ServerResponse ACCESS_FORBIDDEN = new ServerResponse("Access forbidden", 403, new Headers<>());;
+    private static final ServerResponse ACCESS_DENIED = new ServerResponse("Access denied", 401, new Headers<>());
+    private static final ServerResponse ACCESS_FORBIDDEN = new ServerResponse("Access forbidden", 403, new Headers<>());
 
-    private final static Map<String,Long> cachedUserMap = new HashMap<>();
+    private final static Map<String, Long> cachedUserMap = new HashMap<>();
+
+    @PersistenceContext(unitName = "DolphinPU")
+    private EntityManager em;
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -49,10 +50,10 @@ public class SecurityFilter implements ContainerRequestFilter {
         // Method permissions override the permissions specified on the entire bean class
         AnnotatedElement target = method.isAnnotationPresent(PermitAll.class)
                 || method.isAnnotationPresent(DenyAll.class)
-                || method.isAnnotationPresent(RolesAllowed.class)?
+                || method.isAnnotationPresent(RolesAllowed.class) ?
                 method : clazz;
 
-        if (! target.isAnnotationPresent(PermitAll.class)) {
+        if (!target.isAnnotationPresent(PermitAll.class)) {
             // Access denied for all
             if (target.isAnnotationPresent(DenyAll.class)) {
                 requestContext.abortWith(ACCESS_FORBIDDEN);
@@ -65,7 +66,7 @@ public class SecurityFilter implements ContainerRequestFilter {
                 Set<String> roles = new HashSet<>(Arrays.asList(rolesAnnotation.value()));
 
                 // Get request headers
-                final MultivaluedMap<String,String> headers = requestContext.getHeaders();
+                final MultivaluedMap<String, String> headers = requestContext.getHeaders();
 
                 // Fetch authorization header
                 final List<String> authorization = headers.get(AUTHORIZATION_PROPERTY);
@@ -89,7 +90,7 @@ public class SecurityFilter implements ContainerRequestFilter {
                 final String password = split[1];
 
                 // is user valid?
-                if (! isUserAllowed(userId, password, roles)) {
+                if (!isUserAllowed(userId, password, roles)) {
                     requestContext.abortWith(ACCESS_DENIED);
                 }
             }
@@ -99,16 +100,19 @@ public class SecurityFilter implements ContainerRequestFilter {
 
     /**
      * Check if user is authorized or not.
+     *
      * @param userId
      * @param password
      * @param roles
      * @return
      */
-    public boolean isUserAllowed(final String userId, final String password, final Set<String>roles) {
+    public boolean isUserAllowed(final String userId, final String password, final Set<String> roles) {
 
         //Step 1. Fetch user and password from database and match them with argument
         UserModel validUser = getValidUserModel(userId, password);
-        if (validUser == null) { return false; }
+        if (validUser == null) {
+            return false;
+        }
 
         //Step 2. Verify user role
         return validUser.getRoles().stream().anyMatch(roleModel -> roles.contains(roleModel.getRole()));
@@ -116,6 +120,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 
     /**
      * Fetch password-matched valid UserModel for authentication.
+     *
      * @param userId
      * @param password
      * @return valid UserModel if present, return null if not.
@@ -132,17 +137,21 @@ public class SecurityFilter implements ContainerRequestFilter {
         if (pk == null || user == null) {
 
             List<UserModel> fetched = em.createQuery("select u from UserModel u where u.userId = :uid", UserModel.class)
-                .setParameter("uid", userId).getResultList();
+                    .setParameter("uid", userId).getResultList();
 
             // user not found
-            if (fetched.size() != 1) { return null; }
+            if (fetched.size() != 1) {
+                return null;
+            }
             // user found
             user = fetched.get(0);
             // cache pk
             cachedUserMap.put(user.getUserId(), user.getId());
         }
         // check password
-        if (! user.getPassword().equals(password)) { return null; }
+        if (!user.getPassword().equals(password)) {
+            return null;
+        }
 
         return user;
     }

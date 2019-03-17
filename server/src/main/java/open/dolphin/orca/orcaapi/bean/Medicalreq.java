@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * medicalreq.
+ *
  * @author pns
  */
 public class Medicalreq {
@@ -37,6 +38,7 @@ public class Medicalreq {
 
     /**
      * 入外区分(I:入院、それ以外:入院外) (例:  )
+     *
      * @return the InOut
      */
     public String getInOut() {
@@ -45,6 +47,7 @@ public class Medicalreq {
 
     /**
      * 入外区分(I:入院、それ以外:入院外) (例:  )
+     *
      * @param InOut the InOut to set
      */
     public void setInOut(String InOut) {
@@ -53,6 +56,7 @@ public class Medicalreq {
 
     /**
      * 患者番号 (例: 17)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -61,6 +65,7 @@ public class Medicalreq {
 
     /**
      * 患者番号 (例: 17)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -69,6 +74,7 @@ public class Medicalreq {
 
     /**
      * 診療日 (例: 2014-10-17)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -77,6 +83,7 @@ public class Medicalreq {
 
     /**
      * 診療日 (例: 2014-10-17)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -85,6 +92,7 @@ public class Medicalreq {
 
     /**
      * 診療時間 (例: 14:10:12)
+     *
      * @return the Perform_Time
      */
     public String getPerform_Time() {
@@ -93,6 +101,7 @@ public class Medicalreq {
 
     /**
      * 診療時間 (例: 14:10:12)
+     *
      * @param Perform_Time the Perform_Time to set
      */
     public void setPerform_Time(String Perform_Time) {
@@ -101,6 +110,7 @@ public class Medicalreq {
 
     /**
      *   (例:  )
+     *
      * @return the Medical_Uid
      */
     public String getMedical_Uid() {
@@ -109,6 +119,7 @@ public class Medicalreq {
 
     /**
      *   (例:  )
+     *
      * @param Medical_Uid the Medical_Uid to set
      */
     public void setMedical_Uid(String Medical_Uid) {
@@ -117,6 +128,7 @@ public class Medicalreq {
 
     /**
      * 診療情報 (例:  )
+     *
      * @return the Diagnosis_Information
      */
     public DiagnosisInformation getDiagnosis_Information() {
@@ -125,6 +137,7 @@ public class Medicalreq {
 
     /**
      * 診療情報 (例:  )
+     *
      * @param Diagnosis_Information the Diagnosis_Information to set
      */
     public void setDiagnosis_Information(DiagnosisInformation Diagnosis_Information) {

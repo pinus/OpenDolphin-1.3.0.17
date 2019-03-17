@@ -25,6 +25,7 @@ public interface PatientService {
 
     /**
      * 患者オブジェクトを取得する.
+     *
      * @param spec PatientSearchSpec 検索仕様
      * @return 患者オブジェクトの Collection
      */
@@ -34,6 +35,7 @@ public interface PatientService {
 
     /**
      * 健康保険情報を取得する.
+     *
      * @param patientPk PatientModel's primary key
      * @return List of PVTHealthInsuranceModel
      */
@@ -53,6 +55,7 @@ public interface PatientService {
 
     /**
      * 患者を登録する.
+     *
      * @param patient PatientModel
      * @return データベース Primary Key
      */
@@ -62,6 +65,7 @@ public interface PatientService {
 
     /**
      * 患者情報を更新する.
+     *
      * @param patient 更新する「患者オブジェクト
      * @return 更新数
      */

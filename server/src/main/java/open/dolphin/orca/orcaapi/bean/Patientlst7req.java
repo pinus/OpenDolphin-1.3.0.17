@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * patientlst7req.
+ *
  * @author pns
  */
 public class Patientlst7req {

@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * contraindication_checkreq.
+ *
  * @author pns
  */
 public class ContraindicationCheckreq {

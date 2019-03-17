@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Master_Last_Update_Information. マスタ最終更新日情報リクエストのマスタIDが設定されていない場合に設定（ 繰り返し20）
+ *
  * @author pns
  */
 public class MasterLastUpdateInformation {

@@ -7,14 +7,12 @@ import java.util.Date;
 /**
  * ImageSearchSpec.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class ImageSearchSpec implements Serializable {
+    public static final int ID_SEARCH = 0;
+    public static final int PATIENT_SEARCH = 1;
     private static final long serialVersionUID = 1306931621795428447L;
-
-    public static final int ID_SEARCH          = 0;
-    public static final int PATIENT_SEARCH     = 1;
-
     private int code;
     private long karteId;
     private long id;
@@ -25,14 +23,13 @@ public class ImageSearchSpec implements Serializable {
     private Dimension iconSize;
     private String status;
 
-    public void setCode(int code) {
-        this.code = code;
-    }
-
     public int getCode() {
         return code;
     }
 
+    public void setCode(int code) {
+        this.code = code;
+    }
 
     public long getKarteId() {
         return karteId;
@@ -42,59 +39,59 @@ public class ImageSearchSpec implements Serializable {
         this.karteId = karteId;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
     public String getPatientId() {
         return patientId;
     }
 
-    public void setMedicalRole(String medicalRole) {
-        this.medicalRole = medicalRole;
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     public String getMedicalRole() {
         return medicalRole;
     }
 
-    public void setFromDate(Date[] fromDate) {
-        this.fromDate = fromDate;
+    public void setMedicalRole(String medicalRole) {
+        this.medicalRole = medicalRole;
     }
 
     public Date[] getFromDate() {
         return fromDate;
     }
 
-    public void setToDate(Date[] toDate) {
-        this.toDate = toDate;
+    public void setFromDate(Date[] fromDate) {
+        this.fromDate = fromDate;
     }
 
     public Date[] getToDate() {
         return toDate;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setToDate(Date[] toDate) {
+        this.toDate = toDate;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setIconSize(Dimension iconSize) {
-        this.iconSize = iconSize;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Dimension getIconSize() {
         return iconSize;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setIconSize(Dimension iconSize) {
+        this.iconSize = iconSize;
     }
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

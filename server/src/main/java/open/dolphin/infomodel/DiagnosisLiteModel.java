@@ -136,19 +136,20 @@ public class DiagnosisLiteModel {
 
     public boolean equals(RegisteredDiagnosisModel other) {
         return equals(other.getDiagnosisCode(), diagnosisCode) &&
-            equals(other.getCategory(), category) &&
-            equals(other.getOutcome(), outcome) &&
-            equals(other.getStartDate(), startDate) &&
-            equals(other.getEndDate(), endDate);
+                equals(other.getCategory(), category) &&
+                equals(other.getOutcome(), outcome) &&
+                equals(other.getStartDate(), startDate) &&
+                equals(other.getEndDate(), endDate);
     }
 
     /**
      * 両方 null なら等しいと判定する equals.
+     *
      * @param s1 文字列1
      * @param s2 文字列2
      * @return 判定結果
      */
     private boolean equals(String s1, String s2) {
-        return (s1 == null)? s2 == null : s1.equals(s2);
+        return (s1 == null) ? s2 == null : s1.equals(s2);
     }
 }

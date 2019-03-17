@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * User_Information. ユーザー情報
+ *
  * @author pns
  */
 public class UserInformation {
@@ -82,6 +83,7 @@ public class UserInformation {
 
     /**
      * ユーザーID (例: taro)
+     *
      * @return the User_Id
      */
     public String getUser_Id() {
@@ -90,6 +92,7 @@ public class UserInformation {
 
     /**
      * ユーザーID (例: taro)
+     *
      * @param User_Id the User_Id to set
      */
     public void setUser_Id(String User_Id) {
@@ -98,6 +101,7 @@ public class UserInformation {
 
     /**
      * システム管理[1010職員情報]職員番号 (例: 0001)
+     *
      * @return the User_Number
      */
     public String getUser_Number() {
@@ -106,6 +110,7 @@ public class UserInformation {
 
     /**
      * システム管理[1010職員情報]職員番号 (例: 0001)
+     *
      * @param User_Number the User_Number to set
      */
     public void setUser_Number(String User_Number) {
@@ -114,6 +119,7 @@ public class UserInformation {
 
     /**
      * ユーザーパスワード (例: taropassword)
+     *
      * @return the User_Password
      */
     public String getUser_Password() {
@@ -122,6 +128,7 @@ public class UserInformation {
 
     /**
      * ユーザーパスワード (例: taropassword)
+     *
      * @param User_Password the User_Password to set
      */
     public void setUser_Password(String User_Password) {
@@ -130,6 +137,7 @@ public class UserInformation {
 
     /**
      * システム管理の職員区分[1010職員情報] (例: 1)
+     *
      * @return the Group_Number
      */
     public String getGroup_Number() {
@@ -138,6 +146,7 @@ public class UserInformation {
 
     /**
      * システム管理の職員区分[1010職員情報] (例: 1)
+     *
      * @param Group_Number the Group_Number to set
      */
     public void setGroup_Number(String Group_Number) {
@@ -146,6 +155,7 @@ public class UserInformation {
 
     /**
      * ユーザー氏名 (例: 日医　太郎)
+     *
      * @return the Full_Name
      */
     public String getFull_Name() {
@@ -154,6 +164,7 @@ public class UserInformation {
 
     /**
      * ユーザー氏名 (例: 日医　太郎)
+     *
      * @param Full_Name the Full_Name to set
      */
     public void setFull_Name(String Full_Name) {
@@ -162,6 +173,7 @@ public class UserInformation {
 
     /**
      * ユーザーカナ氏名 (例: ニチイ　タロウ)
+     *
      * @return the Kana_Name
      */
     public String getKana_Name() {
@@ -170,6 +182,7 @@ public class UserInformation {
 
     /**
      * ユーザーカナ氏名 (例: ニチイ　タロウ)
+     *
      * @param Kana_Name the Kana_Name to set
      */
     public void setKana_Name(String Kana_Name) {
@@ -178,6 +191,7 @@ public class UserInformation {
 
     /**
      * 新しいユーザーID (例: jiro)
+     *
      * @return the New_User_Id
      */
     public String getNew_User_Id() {
@@ -186,6 +200,7 @@ public class UserInformation {
 
     /**
      * 新しいユーザーID (例: jiro)
+     *
      * @param New_User_Id the New_User_Id to set
      */
     public void setNew_User_Id(String New_User_Id) {
@@ -194,6 +209,7 @@ public class UserInformation {
 
     /**
      * 新しいユーザーパスワード (例: jiropassword)
+     *
      * @return the New_User_Password
      */
     public String getNew_User_Password() {
@@ -202,6 +218,7 @@ public class UserInformation {
 
     /**
      * 新しいユーザーパスワード (例: jiropassword)
+     *
      * @param New_User_Password the New_User_Password to set
      */
     public void setNew_User_Password(String New_User_Password) {
@@ -210,6 +227,7 @@ public class UserInformation {
 
     /**
      * 新しいユーザー氏名 (例: 日医　次郎)
+     *
      * @return the New_Full_Name
      */
     public String getNew_Full_Name() {
@@ -218,6 +236,7 @@ public class UserInformation {
 
     /**
      * 新しいユーザー氏名 (例: 日医　次郎)
+     *
      * @param New_Full_Name the New_Full_Name to set
      */
     public void setNew_Full_Name(String New_Full_Name) {
@@ -226,6 +245,7 @@ public class UserInformation {
 
     /**
      * 新しいユーザーカナ氏名 (例: ニチイ　ジロウ)
+     *
      * @return the New_Kana_Name
      */
     public String getNew_Kana_Name() {
@@ -234,6 +254,7 @@ public class UserInformation {
 
     /**
      * 新しいユーザーカナ氏名 (例: ニチイ　ジロウ)
+     *
      * @param New_Kana_Name the New_Kana_Name to set
      */
     public void setNew_Kana_Name(String New_Kana_Name) {
@@ -242,6 +263,7 @@ public class UserInformation {
 
     /**
      * 医療機関識別番号 (例: )
+     *
      * @return the Hospital_Id_Number
      */
     public String getHospital_Id_Number() {
@@ -250,6 +272,7 @@ public class UserInformation {
 
     /**
      * 医療機関識別番号 (例: )
+     *
      * @param Hospital_Id_Number the Hospital_Id_Number to set
      */
     public void setHospital_Id_Number(String Hospital_Id_Number) {
@@ -258,6 +281,7 @@ public class UserInformation {
 
     /**
      * システム管理[1010職員情報]有効開始日 (例: 2015-09-01)
+     *
      * @return the Start_Date
      */
     public String getStart_Date() {
@@ -266,6 +290,7 @@ public class UserInformation {
 
     /**
      * システム管理[1010職員情報]有効開始日 (例: 2015-09-01)
+     *
      * @param Start_Date the Start_Date to set
      */
     public void setStart_Date(String Start_Date) {
@@ -274,6 +299,7 @@ public class UserInformation {
 
     /**
      * システム管理[1010職員情報]有効終了日 (例: 2016-08-31)
+     *
      * @return the Expiry_Date
      */
     public String getExpiry_Date() {
@@ -282,6 +308,7 @@ public class UserInformation {
 
     /**
      * システム管理[1010職員情報]有効終了日 (例: 2016-08-31)
+     *
      * @param Expiry_Date the Expiry_Date to set
      */
     public void setExpiry_Date(String Expiry_Date) {

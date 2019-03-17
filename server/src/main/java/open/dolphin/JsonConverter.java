@@ -14,6 +14,7 @@ import java.io.IOException;
 
 /**
  * Jackson ObjectMapper
+ *
  * @author pns
  */
 @Provider
@@ -35,43 +36,50 @@ public class JsonConverter implements ContextResolver<ObjectMapper> {
         mapper.registerModule(hbm);
     }
 
-    public JsonConverter() throws Exception {
+    public JsonConverter() {
         System.out.println("JsonConverter: ObjectMapper configured.");
     }
 
     /**
-     * Provides ObjectMapper for resteasy
-     * @param type
-     * @return
-     */
-    @Override
-    public ObjectMapper getContext(Class<?> type) {
-        return mapper;
-    }
-
-    /**
      * Utility method to test converter
+     *
      * @param obj
      * @return
      */
     public static String toJson(Object obj) {
-        try { return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj); }
-
-        catch (IOException ex) { ex.printStackTrace(System.err); }
+        try {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
         return null;
     }
 
     /**
      * Utility method to test converter
+     *
      * @param <T>
      * @param json
      * @param clazz
      * @return
      */
     public static <T> T fromJson(String json, Class<T> clazz) {
-        try { return mapper.readValue(json, clazz); }
-
-        catch (IOException ex) { ex.printStackTrace(System.err); }
+        try {
+            return mapper.readValue(json, clazz);
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
         return null;
+    }
+
+    /**
+     * Provides ObjectMapper for resteasy
+     *
+     * @param type
+     * @return
+     */
+    @Override
+    public ObjectMapper getContext(Class<?> type) {
+        return mapper;
     }
 }

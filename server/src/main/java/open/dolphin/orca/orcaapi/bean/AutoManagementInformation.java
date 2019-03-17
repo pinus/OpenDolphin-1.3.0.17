@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Auto_Management_Information. 管理料等自動算定情報（繰り返し　３）
+ *
  * @author pns
  */
 public class AutoManagementInformation {

@@ -18,12 +18,13 @@ import java.util.stream.Collectors;
  * @author pns
  */
 @Stateless
-public class  PvtServiceImpl extends DolphinService implements PvtService {
+public class PvtServiceImpl extends DolphinService implements PvtService {
     private static final long serialVersionUID = -3889943133781444449L;
     private final Logger logger = Logger.getLogger(PvtServiceImpl.class);
 
     /**
      * 患者来院情報を登録する.
+     *
      * @param pvt PatientVisitModel
      * @return 登録個数 1
      */
@@ -40,17 +41,17 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
         try {
             // 存在しなければ catch に落ちる
             existPatient = em.createQuery("select p from PatientModel p where p.facilityId = :fid and p.patientId = :pid", PatientModel.class)
-                .setParameter("fid", facilityId)
-                .setParameter("pid", pvtPatient.getPatientId()).getSingleResult();
+                    .setParameter("fid", facilityId)
+                    .setParameter("pid", pvtPatient.getPatientId()).getSingleResult();
 
             // 健康保険情報を更新する
             Collection<HealthInsuranceModel> ins = pvtPatient.getHealthInsurances();
 
-            if (ins != null && ! ins.isEmpty()) {
+            if (ins != null && !ins.isEmpty()) {
 
                 // 健康保険を更新する
                 List<HealthInsuranceModel> old = em.createQuery("select h from HealthInsuranceModel h where h.patient.id = :pk", HealthInsuranceModel.class)
-                    .setParameter("pk", existPatient.getId()).getResultList();
+                        .setParameter("pk", existPatient.getId()).getResultList();
 
                 // 現在の保険情報を削除する
                 old.forEach(em::remove);
@@ -115,13 +116,13 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
         // 同じ pvtDate の pvt がすでに登録されていないかどうかチェック
         // pvtDate が違えば，同じ patient id でも新たな pvt と判断する
         List<PatientVisitModel> result = em.createQuery(
-            "select p from PatientVisitModel p where p.facilityId = :fid and p.patient.patientId = :pid and p.pvtDate = :date", PatientVisitModel.class)
-            .setParameter("fid", pvt.getFacilityId())
-            .setParameter("pid", pvt.getPatientId())
-            .setParameter("date", pvt.getPvtDate())
-            .getResultList();
+                "select p from PatientVisitModel p where p.facilityId = :fid and p.patient.patientId = :pid and p.pvtDate = :date", PatientVisitModel.class)
+                .setParameter("fid", pvt.getFacilityId())
+                .setParameter("pid", pvt.getPatientId())
+                .setParameter("date", pvt.getPvtDate())
+                .getResultList();
 
-        if (! result.isEmpty()) {
+        if (!result.isEmpty()) {
             // 重複がある場合は既存の id をコピーして新しい pvt にすげ替える
             PatientVisitModel exist = result.get(0);
             pvt.setId(exist.getId());
@@ -134,18 +135,20 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
 
     /**
      * トータル病名数 - addPvt で使う.
+     *
      * @param patientPk PatientModel pk
      * @return 病名数
      */
     private int getByomeiCount(long patientPk) {
         return em.createQuery(
-            "select r from RegisteredDiagnosisModel r where r.karte.id = (select k.id from KarteBean k where k.patient.id = :pk)", RegisteredDiagnosisModel.class)
-            .setParameter("pk", patientPk)
-            .getResultList().size();
+                "select r from RegisteredDiagnosisModel r where r.karte.id = (select k.id from KarteBean k where k.patient.id = :pk)", RegisteredDiagnosisModel.class)
+                .setParameter("pk", patientPk)
+                .getResultList().size();
     }
 
     /**
      * 今日の病名数 - addPvt で使う.
+     *
      * @param patientPk PatientModel pk
      * @return 病名数
      */
@@ -156,14 +159,15 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
         yesterday.set(Calendar.HOUR_OF_DAY, 23);
 
         return em.createQuery(
-            "select r from RegisteredDiagnosisModel r where r.karte.id = (select k.id from KarteBean k where k.patient.id = :pk) and r.started >= :fromDate", RegisteredDiagnosisModel.class)
-            .setParameter("pk", patientPk)
-            .setParameter("fromDate", yesterday.getTime())
-            .getResultList().size();
+                "select r from RegisteredDiagnosisModel r where r.karte.id = (select k.id from KarteBean k where k.patient.id = :pk) and r.started >= :fromDate", RegisteredDiagnosisModel.class)
+                .setParameter("pk", patientPk)
+                .setParameter("fromDate", yesterday.getTime())
+                .getResultList().size();
     }
 
     /**
      * 既存の pvt を update する.
+     *
      * @param pvt PatientVisitModel
      * @return アップデートした数 1
      */
@@ -175,6 +179,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
 
     /**
      * 施設の患者来院情報を取得する.
+     *
      * @param spec 検索仕様 DTO オブジェクト
      * @return 来院情報の Collection
      */
@@ -183,7 +188,9 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
         //System.out.println("getPvt start at " + new Date());
 
         String date = spec.getDate();
-        if (!date.endsWith("%")) { date += "%"; }
+        if (!date.endsWith("%")) {
+            date += "%";
+        }
         int index = date.indexOf('%');
 
         Date theDate = ModelUtils.getDateAsObject(date.substring(0, index));
@@ -196,10 +203,10 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
 
         // PatientVisitModel を施設 ID で検索する
         List<PatientVisitModel> result = em.createQuery(
-            "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate >= :date order by p.pvtDate", PatientVisitModel.class)
-            .setFirstResult(firstResult)
-            .setParameter("fid", fid)
-            .setParameter("date", date).getResultList();
+                "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate >= :date order by p.pvtDate", PatientVisitModel.class)
+                .setFirstResult(firstResult)
+                .setParameter("fid", fid)
+                .setParameter("date", date).getResultList();
 
         // 患者の基本データを取得する
         // 来院情報と患者は ManyToOne の関係である
@@ -210,7 +217,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
                         "select a from AppointmentModel a where a.date = :date and a.karte.id = (select k.id from KarteBean k where k.patient.id = :pk)", AppointmentModel.class)
                         .setParameter("pk", patient.getId())
                         .setParameter("date", theDate).getResultList();
-                if (! c.isEmpty()) {
+                if (!c.isEmpty()) {
                     AppointmentModel appo = c.get(0);
                     pvt.setAppointment(appo.getName());
                 }
@@ -222,6 +229,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
 
     /**
      * 受付情報を削除する.
+     *
      * @param id PatientVisitModel の primary key
      * @return 削除件数
      */
@@ -238,6 +246,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
 
     /**
      * pvt state だけスピーディーにとってくる.
+     *
      * @return State 番号のリスト
      */
     @Override
@@ -246,9 +255,9 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
         String fid = getCallersFacilityId();
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         List<PatientVisitModel> result = em.createQuery(
-            "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate >= :date order by p.pvtDate", PatientVisitModel.class)
-            .setParameter("fid", fid)
-            .setParameter("date", date).getResultList();
+                "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate >= :date order by p.pvtDate", PatientVisitModel.class)
+                .setParameter("fid", fid)
+                .setParameter("date", date).getResultList();
 
         return result.stream().map(pvt -> {
             PvtStateSpec spec = new PvtStateSpec();
@@ -259,8 +268,10 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
             return spec;
         }).collect(Collectors.toList());
     }
+
     /**
      * pk の PatientVisitModel の state を取ってくる.
+     *
      * @param pk PatientVisitModel の pk
      * @return state
      */
@@ -272,6 +283,7 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
 
     /**
      * 引数の PatientModel をもつ今日の PatientVisitModel があれば取ってくる.
+     *
      * @param patient PatientModel
      * @return みつかった PatientVisitModel. ないばあいは null.
      */
@@ -280,11 +292,11 @@ public class  PvtServiceImpl extends DolphinService implements PvtService {
         String fid = getCallersFacilityId();
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         List<PatientVisitModel> result = em.createQuery(
-            "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate >= :date and p.patient = :patient", PatientVisitModel.class)
-            .setParameter("fid", fid)
-            .setParameter("date", date)
-            .setParameter("patient", patient).getResultList();
+                "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate >= :date and p.patient = :patient", PatientVisitModel.class)
+                .setParameter("fid", fid)
+                .setParameter("date", date)
+                .setParameter("patient", patient).getResultList();
 
-        return result.isEmpty()? null : result.get(0);
+        return result.isEmpty() ? null : result.get(0);
     }
 }

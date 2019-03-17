@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * acsimulatereq.
+ *
  * @author pns
  */
 public class Acsimulatereq {
@@ -27,6 +28,7 @@ public class Acsimulatereq {
 
     /**
      * 患者番号 (例: 3999)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -35,6 +37,7 @@ public class Acsimulatereq {
 
     /**
      * 患者番号 (例: 3999)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -43,6 +46,7 @@ public class Acsimulatereq {
 
     /**
      * 診療年月日 (例: 2012-12-27)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -51,6 +55,7 @@ public class Acsimulatereq {
 
     /**
      * 診療年月日 (例: 2012-12-27)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -59,6 +64,7 @@ public class Acsimulatereq {
 
     /**
      * 時間外区分 (例: 1)
+     *
      * @return the Time_Class
      */
     public String getTime_Class() {
@@ -67,6 +73,7 @@ public class Acsimulatereq {
 
     /**
      * 時間外区分 (例: 1)
+     *
      * @param Time_Class the Time_Class to set
      */
     public void setTime_Class(String Time_Class) {
@@ -75,6 +82,7 @@ public class Acsimulatereq {
 
     /**
      * 診療情報 (例: )
+     *
      * @return the Diagnosis_Information
      */
     public DiagnosisInformation getDiagnosis_Information() {
@@ -83,6 +91,7 @@ public class Acsimulatereq {
 
     /**
      * 診療情報 (例: )
+     *
      * @param Diagnosis_Information the Diagnosis_Information to set
      */
     public void setDiagnosis_Information(DiagnosisInformation Diagnosis_Information) {

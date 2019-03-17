@@ -15,28 +15,28 @@ public class DiagnosisCategoryModel extends InfoModel {
     private String diagnosisCategoryDesc;
     private String diagnosisCategoryCodeSys;
 
-    public void setDiagnosisCategory(String category) {
-        this.diagnosisCategory = category;
-    }
-
     public String getDiagnosisCategory() {
         return diagnosisCategory;
     }
 
-    public void setDiagnosisCategoryDesc(String categoryDesc) {
-        this.diagnosisCategoryDesc = categoryDesc;
+    public void setDiagnosisCategory(String category) {
+        this.diagnosisCategory = category;
     }
 
     public String getDiagnosisCategoryDesc() {
         return diagnosisCategoryDesc;
     }
 
-    public void setDiagnosisCategoryCodeSys(String categoryCodeSys) {
-        this.diagnosisCategoryCodeSys = categoryCodeSys;
+    public void setDiagnosisCategoryDesc(String categoryDesc) {
+        this.diagnosisCategoryDesc = categoryDesc;
     }
 
     public String getDiagnosisCategoryCodeSys() {
         return diagnosisCategoryCodeSys;
+    }
+
+    public void setDiagnosisCategoryCodeSys(String categoryCodeSys) {
+        this.diagnosisCategoryCodeSys = categoryCodeSys;
     }
 
     @Override

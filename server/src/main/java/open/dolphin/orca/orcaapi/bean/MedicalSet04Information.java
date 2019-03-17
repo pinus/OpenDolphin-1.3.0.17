@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Medical_Set04_Information. 診療行為請求確認設定
+ *
  * @author pns
  */
 public class MedicalSet04Information {

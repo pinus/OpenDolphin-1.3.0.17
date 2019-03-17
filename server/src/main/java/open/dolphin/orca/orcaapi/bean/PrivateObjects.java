@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * private_objects1.
+ *
  * @author pns
  */
 public class PrivateObjects {
@@ -35,7 +36,7 @@ public class PrivateObjects {
      */
     private String Perform_Year;
 
-        /**
+    /**
      * 実施日 (例: 2013-12-11)
      */
     private String Information_Date;
@@ -112,6 +113,7 @@ public class PrivateObjects {
 
     /**
      * リクエスト日 (例: 2014-10-23)
+     *
      * @return the Request_Date
      */
     public String getRequest_Date() {
@@ -120,6 +122,7 @@ public class PrivateObjects {
 
     /**
      * リクエスト日 (例: 2014-10-23)
+     *
      * @param Request_Date the Request_Date to set
      */
     public void setRequest_Date(String Request_Date) {
@@ -128,6 +131,7 @@ public class PrivateObjects {
 
     /**
      * リクエスト時間(時:分:秒) (例: 16:52:00)
+     *
      * @return the Request_Time
      */
     public String getRequest_Time() {
@@ -136,6 +140,7 @@ public class PrivateObjects {
 
     /**
      * リクエスト時間(時:分:秒) (例: 16:52:00)
+     *
      * @param Request_Time the Request_Time to set
      */
     public void setRequest_Time(String Request_Time) {
@@ -144,6 +149,7 @@ public class PrivateObjects {
 
     /**
      * 患者番号 (例: 12)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -152,6 +158,7 @@ public class PrivateObjects {
 
     /**
      * 患者番号 (例: 12)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -160,6 +167,7 @@ public class PrivateObjects {
 
     /**
      * 診療日 (例: 2013-10-10)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -168,6 +176,7 @@ public class PrivateObjects {
 
     /**
      * 診療日 (例: 2013-10-10)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -176,6 +185,7 @@ public class PrivateObjects {
 
     /**
      * 診療月 (例: 2013-10)
+     *
      * @return the Perform_Month
      */
     public String getPerform_Month() {
@@ -184,6 +194,7 @@ public class PrivateObjects {
 
     /**
      * 診療月 (例: 2013-10)
+     *
      * @param Perform_Month the Perform_Month to set
      */
     public void setPerform_Month(String Perform_Month) {
@@ -192,6 +203,7 @@ public class PrivateObjects {
 
     /**
      * 診療年 (例: 2013)
+     *
      * @return the Perform_Year
      */
     public String getPerform_Year() {
@@ -200,6 +212,7 @@ public class PrivateObjects {
 
     /**
      * 診療年 (例: 2013)
+     *
      * @param Perform_Year the Perform_Year to set
      */
     public void setPerform_Year(String Perform_Year) {
@@ -208,6 +221,7 @@ public class PrivateObjects {
 
     /**
      * 実施日 (例: 2013-12-11)
+     *
      * @return the Information_Date
      */
     public String getInformation_Date() {
@@ -216,6 +230,7 @@ public class PrivateObjects {
 
     /**
      * 実施日 (例: 2013-12-11)
+     *
      * @param Information_Date the Information_Date to set
      */
     public void setInformation_Date(String Information_Date) {
@@ -224,6 +239,7 @@ public class PrivateObjects {
 
     /**
      * 実施時間 (例: 12:21:52)
+     *
      * @return the Information_Time
      */
     public String getInformation_Time() {
@@ -232,6 +248,7 @@ public class PrivateObjects {
 
     /**
      * 実施時間 (例: 12:21:52)
+     *
      * @param Information_Time the Information_Time to set
      */
     public void setInformation_Time(String Information_Time) {
@@ -240,6 +257,7 @@ public class PrivateObjects {
 
     /**
      * 結果コード (例: 0000)
+     *
      * @return the Api_Result
      */
     public String getApi_Result() {
@@ -248,6 +266,7 @@ public class PrivateObjects {
 
     /**
      * 結果コード (例: 0000)
+     *
      * @param Api_Result the Api_Result to set
      */
     public void setApi_Result(String Api_Result) {
@@ -256,6 +275,7 @@ public class PrivateObjects {
 
     /**
      * 結果メッセージ (例: 処理終了)
+     *
      * @return the Api_Result_Message
      */
     public String getApi_Result_Message() {
@@ -264,6 +284,7 @@ public class PrivateObjects {
 
     /**
      * 結果メッセージ (例: 処理終了)
+     *
      * @param Api_Result_Message the Api_Result_Message to set
      */
     public void setApi_Result_Message(String Api_Result_Message) {
@@ -272,6 +293,7 @@ public class PrivateObjects {
 
     /**
      * 患者情報 (例: )
+     *
      * @return the Patient_Information
      */
     public PatientInformation getPatient_Information() {
@@ -280,6 +302,7 @@ public class PrivateObjects {
 
     /**
      * 患者情報 (例: )
+     *
      * @param Patient_Information the Patient_Information to set
      */
     public void setPatient_Information(PatientInformation Patient_Information) {
@@ -288,6 +311,7 @@ public class PrivateObjects {
 
     /**
      * 請求情報オーバーフラグ (例: false)
+     *
      * @return the Income_Information_Overflow
      */
     public String getIncome_Information_Overflow() {
@@ -296,6 +320,7 @@ public class PrivateObjects {
 
     /**
      * 請求情報オーバーフラグ (例: false)
+     *
      * @param Income_Information_Overflow the Income_Information_Overflow to set
      */
     public void setIncome_Information_Overflow(String Income_Information_Overflow) {
@@ -304,6 +329,7 @@ public class PrivateObjects {
 
     /**
      * 請求情報（繰り返し　２００）（並び順は診療日の古い順） (例: )
+     *
      * @return the Income_Information
      */
     public IncomeInformation[] getIncome_Information() {
@@ -312,6 +338,7 @@ public class PrivateObjects {
 
     /**
      * 請求情報（繰り返し　２００）（並び順は診療日の古い順） (例: )
+     *
      * @param Income_Information the Income_Information to set
      */
     public void setIncome_Information(IncomeInformation[] Income_Information) {
@@ -320,6 +347,7 @@ public class PrivateObjects {
 
     /**
      * 保険組合せ詳細（繰り返し　２０） (例: )
+     *
      * @return the Insurance_Information
      */
     public HealthInsuranceInformation[] getInsurance_Information() {
@@ -328,6 +356,7 @@ public class PrivateObjects {
 
     /**
      * 保険組合せ詳細（繰り返し　２０） (例: )
+     *
      * @param Insurance_Information the Insurance_Information to set
      */
     public void setInsurance_Information(HealthInsuranceInformation[] Insurance_Information) {
@@ -336,6 +365,7 @@ public class PrivateObjects {
 
     /**
      * 未収金額合計（０件の場合は非表示） (例: )
+     *
      * @return the Unpaid_Money_Total
      */
     public String getUnpaid_Money_Total() {
@@ -344,6 +374,7 @@ public class PrivateObjects {
 
     /**
      * 未収金額合計（０件の場合は非表示） (例: )
+     *
      * @param Unpaid_Money_Total the Unpaid_Money_Total to set
      */
     public void setUnpaid_Money_Total(String Unpaid_Money_Total) {
@@ -352,6 +383,7 @@ public class PrivateObjects {
 
     /**
      * 未収金情報オーバーフラグ（０件：非表示、１〜５０件：false、５０件超：true） (例: )
+     *
      * @return the Unpaid_Money_Information_Overflow
      */
     public String getUnpaid_Money_Information_Overflow() {
@@ -360,6 +392,7 @@ public class PrivateObjects {
 
     /**
      * 未収金情報オーバーフラグ（０件：非表示、１〜５０件：false、５０件超：true） (例: )
+     *
      * @param Unpaid_Money_Information_Overflow the Unpaid_Money_Information_Overflow to set
      */
     public void setUnpaid_Money_Information_Overflow(String Unpaid_Money_Information_Overflow) {
@@ -368,6 +401,7 @@ public class PrivateObjects {
 
     /**
      * 個別の未収金情報（繰り返し　５０）（診療日の新しい順） (例: )
+     *
      * @return the Unpaid_Money_Information
      */
     public UnpaidMoneyInformation[] getUnpaid_Money_Information() {
@@ -376,6 +410,7 @@ public class PrivateObjects {
 
     /**
      * 個別の未収金情報（繰り返し　５０）（診療日の新しい順） (例: )
+     *
      * @param Unpaid_Money_Information the Unpaid_Money_Information to set
      */
     public void setUnpaid_Money_Information(UnpaidMoneyInformation[] Unpaid_Money_Information) {
@@ -384,6 +419,7 @@ public class PrivateObjects {
 
     /**
      * 日レセバージョン((M96)マスタ更新管理一覧画面のDB管理情報ORCAver) (例: 040700-1)
+     *
      * @return the Jma_Receipt_Version
      */
     public String getJma_Receipt_Version() {
@@ -392,6 +428,7 @@ public class PrivateObjects {
 
     /**
      * 日レセバージョン((M96)マスタ更新管理一覧画面のDB管理情報ORCAver) (例: 040700-1)
+     *
      * @param Jma_Receipt_Version the Jma_Receipt_Version to set
      */
     public void setJma_Receipt_Version(String Jma_Receipt_Version) {
@@ -400,6 +437,7 @@ public class PrivateObjects {
 
     /**
      * データベース情報 (例:  )
+     *
      * @return the Database_Information
      */
     public DatabaseInformation getDatabase_Information() {
@@ -408,6 +446,7 @@ public class PrivateObjects {
 
     /**
      * データベース情報 (例:  )
+     *
      * @param Database_Information the Database_Information to set
      */
     public void setDatabase_Information(DatabaseInformation Database_Information) {
@@ -416,6 +455,7 @@ public class PrivateObjects {
 
     /**
      * マスタ更新情報 (例:  )
+     *
      * @return the Master_Update_Information
      */
     public MasterUpdateInformation getMaster_Update_Information() {
@@ -424,6 +464,7 @@ public class PrivateObjects {
 
     /**
      * マスタ更新情報 (例:  )
+     *
      * @param Master_Update_Information the Master_Update_Information to set
      */
     public void setMaster_Update_Information(MasterUpdateInformation Master_Update_Information) {
@@ -432,6 +473,7 @@ public class PrivateObjects {
 
     /**
      * プログラム更新情報(繰り返し10) (例:  )
+     *
      * @return the Program_Update_Information
      */
     public ProgramUpdateInformation[] getProgram_Update_Information() {
@@ -440,6 +482,7 @@ public class PrivateObjects {
 
     /**
      * プログラム更新情報(繰り返し10) (例:  )
+     *
      * @param Program_Update_Information the Program_Update_Information to set
      */
     public void setProgram_Update_Information(ProgramUpdateInformation[] Program_Update_Information) {

@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi.bean;
 /**
  * patientlst6res.
  * patientlst2res との違いは Patient_Information が配列かどうか.
+ *
  * @author pns
  */
 public class Patientlst6res {
@@ -43,6 +44,7 @@ public class Patientlst6res {
 
     /**
      * 実施日 (例: 2017-04-28)
+     *
      * @return the Information_Date
      */
     public String getInformation_Date() {
@@ -51,6 +53,7 @@ public class Patientlst6res {
 
     /**
      * 実施日 (例: 2017-04-28)
+     *
      * @param Information_Date the Information_Date to set
      */
     public void setInformation_Date(String Information_Date) {
@@ -59,6 +62,7 @@ public class Patientlst6res {
 
     /**
      * 実施時間 (例: 15:24:45)
+     *
      * @return the Information_Time
      */
     public String getInformation_Time() {
@@ -67,6 +71,7 @@ public class Patientlst6res {
 
     /**
      * 実施時間 (例: 15:24:45)
+     *
      * @param Information_Time the Information_Time to set
      */
     public void setInformation_Time(String Information_Time) {
@@ -75,6 +80,7 @@ public class Patientlst6res {
 
     /**
      * エラーコード (例: 000)
+     *
      * @return the Api_Result
      */
     public String getApi_Result() {
@@ -83,6 +89,7 @@ public class Patientlst6res {
 
     /**
      * エラーコード (例: 000)
+     *
      * @param Api_Result the Api_Result to set
      */
     public void setApi_Result(String Api_Result) {
@@ -91,6 +98,7 @@ public class Patientlst6res {
 
     /**
      * エラーメッセージ (例: 処理終了)
+     *
      * @return the Api_Result_Message
      */
     public String getApi_Result_Message() {
@@ -99,6 +107,7 @@ public class Patientlst6res {
 
     /**
      * エラーメッセージ (例: 処理終了)
+     *
      * @param Api_Result_Message the Api_Result_Message to set
      */
     public void setApi_Result_Message(String Api_Result_Message) {
@@ -107,6 +116,7 @@ public class Patientlst6res {
 
     /**
      *   (例: PatientInfo)
+     *
      * @return the Reskey
      */
     public String getReskey() {
@@ -115,6 +125,7 @@ public class Patientlst6res {
 
     /**
      *   (例: PatientInfo)
+     *
      * @param Reskey the Reskey to set
      */
     public void setReskey(String Reskey) {
@@ -123,6 +134,7 @@ public class Patientlst6res {
 
     /**
      * 患者情報 (例:  )
+     *
      * @return the Patient_Information
      */
     public PatientInformation getPatient_Information() {
@@ -131,6 +143,7 @@ public class Patientlst6res {
 
     /**
      * 患者情報 (例:  )
+     *
      * @param Patient_Information the Patient_Information to set
      */
     public void setPatient_Information(PatientInformation Patient_Information) {
@@ -139,6 +152,7 @@ public class Patientlst6res {
 
     /**
      * 保険組合せ情報 (例: 繰り返し)
+     *
      * @return the HealthInsurance_Information
      */
     public HealthInsuranceInformation[] getHealthInsurance_Information() {
@@ -147,6 +161,7 @@ public class Patientlst6res {
 
     /**
      * 保険組合せ情報 (例: 繰り返し)
+     *
      * @param HealthInsurance_Information the HealthInsurance_Information to set
      */
     public void setHealthInsurance_Information(HealthInsuranceInformation[] HealthInsurance_Information) {

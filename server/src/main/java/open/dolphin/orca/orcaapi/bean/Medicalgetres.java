@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi.bean;
 /**
  * Medicalgetres.
  * contains response to medicalgetreq (either medicalget01res/02res/03res/04res)
+ *
  * @author pns
  */
 public class Medicalgetres {

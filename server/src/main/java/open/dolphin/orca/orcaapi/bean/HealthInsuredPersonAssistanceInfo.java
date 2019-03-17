@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * HealthInsuredPerson_Assistance_Info. 補助区分情報※2（繰り返し30）
+ *
  * @author pns
  */
 public class HealthInsuredPersonAssistanceInfo {

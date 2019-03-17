@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Individual_Number. 個人番号情報（繰り返し　２０）
+ *
  * @author pns
  */
 public class IndividualNumber {
@@ -29,6 +30,7 @@ public class IndividualNumber {
 
     /**
      * Id_key (例:  )
+     *
      * @param In_Id the In_Id to set
      */
     public void setIn_Id(String In_Id) {
@@ -37,6 +39,7 @@ public class IndividualNumber {
 
     /**
      * 個人番号 (例:  )
+     *
      * @return the In_Number
      */
     public String getIn_Number() {
@@ -45,6 +48,7 @@ public class IndividualNumber {
 
     /**
      * 個人番号 (例:  )
+     *
      * @param In_Number the In_Number to set
      */
     public void setIn_Number(String In_Number) {
@@ -53,6 +57,7 @@ public class IndividualNumber {
 
     /**
      * 備考（説明） (例:  )
+     *
      * @return the In_Description
      */
     public String getIn_Description() {
@@ -61,6 +66,7 @@ public class IndividualNumber {
 
     /**
      * 備考（説明） (例:  )
+     *
      * @param In_Description the In_Description to set
      */
     public void setIn_Description(String In_Description) {

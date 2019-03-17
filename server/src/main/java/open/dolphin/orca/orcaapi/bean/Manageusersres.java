@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * manageusersres.
+ *
  * @author pns
  */
 public class Manageusersres {
@@ -47,6 +48,7 @@ public class Manageusersres {
 
     /**
      * 実施日 (例: 2015-09-01)
+     *
      * @return the Information_Date
      */
     public String getInformation_Date() {
@@ -55,6 +57,7 @@ public class Manageusersres {
 
     /**
      * 実施日 (例: 2015-09-01)
+     *
      * @param Information_Date the Information_Date to set
      */
     public void setInformation_Date(String Information_Date) {
@@ -63,6 +66,7 @@ public class Manageusersres {
 
     /**
      * 実施時間 (例: 17:32:34)
+     *
      * @return the Information_Time
      */
     public String getInformation_Time() {
@@ -71,6 +75,7 @@ public class Manageusersres {
 
     /**
      * 実施時間 (例: 17:32:34)
+     *
      * @param Information_Time the Information_Time to set
      */
     public void setInformation_Time(String Information_Time) {
@@ -79,6 +84,7 @@ public class Manageusersres {
 
     /**
      * 結果コード（ゼロ以外エラー） (例: 0000)
+     *
      * @return the Api_Result
      */
     public String getApi_Result() {
@@ -87,6 +93,7 @@ public class Manageusersres {
 
     /**
      * 結果コード（ゼロ以外エラー） (例: 0000)
+     *
      * @param Api_Result the Api_Result to set
      */
     public void setApi_Result(String Api_Result) {
@@ -95,6 +102,7 @@ public class Manageusersres {
 
     /**
      * エラーメッセージ (例: 処理終了)
+     *
      * @return the Api_Result_Message
      */
     public String getApi_Result_Message() {
@@ -103,6 +111,7 @@ public class Manageusersres {
 
     /**
      * エラーメッセージ (例: 処理終了)
+     *
      * @param Api_Result_Message the Api_Result_Message to set
      */
     public void setApi_Result_Message(String Api_Result_Message) {
@@ -111,6 +120,7 @@ public class Manageusersres {
 
     /**
      * リクエスト番号 (例: 01)
+     *
      * @return the Request_Number
      */
     public String getRequest_Number() {
@@ -119,6 +129,7 @@ public class Manageusersres {
 
     /**
      * リクエスト番号 (例: 01)
+     *
      * @param Request_Number the Request_Number to set
      */
     public void setRequest_Number(String Request_Number) {
@@ -127,6 +138,7 @@ public class Manageusersres {
 
     /**
      * リクエストの基準日 (例: 2015-09-01)
+     *
      * @return the Base_Date
      */
     public String getBase_Date() {
@@ -135,6 +147,7 @@ public class Manageusersres {
 
     /**
      * リクエストの基準日 (例: 2015-09-01)
+     *
      * @param Base_Date the Base_Date to set
      */
     public void setBase_Date(String Base_Date) {
@@ -143,6 +156,7 @@ public class Manageusersres {
 
     /**
      * ユーザー情報（繰り返し最大６００件） (例: )
+     *
      * @return the User_Information
      */
     public UserInformation[] getUser_Information() {
@@ -151,6 +165,7 @@ public class Manageusersres {
 
     /**
      * ユーザー情報（繰り返し最大６００件） (例: )
+     *
      * @param User_Information the User_Information to set
      */
     public void setUser_Information(UserInformation[] User_Information) {

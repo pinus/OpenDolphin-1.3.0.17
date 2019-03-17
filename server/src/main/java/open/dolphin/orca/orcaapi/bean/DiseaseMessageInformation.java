@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Disease_Message_Information. 病名登録結果
+ *
  * @author pns
  */
 public class DiseaseMessageInformation {
@@ -22,6 +23,7 @@ public class DiseaseMessageInformation {
 
     /**
      * 病名結果コード (例: 02)
+     *
      * @return the Disease_Result
      */
     public String getDisease_Result() {
@@ -30,6 +32,7 @@ public class DiseaseMessageInformation {
 
     /**
      * 病名結果コード (例: 02)
+     *
      * @param Disease_Result the Disease_Result to set
      */
     public void setDisease_Result(String Disease_Result) {
@@ -38,6 +41,7 @@ public class DiseaseMessageInformation {
 
     /**
      * 病名結果メッセージ (例: 警告がある病名が存在します)
+     *
      * @return the Disease_Result_Message
      */
     public String getDisease_Result_Message() {
@@ -46,6 +50,7 @@ public class DiseaseMessageInformation {
 
     /**
      * 病名結果メッセージ (例: 警告がある病名が存在します)
+     *
      * @param Disease_Result_Message the Disease_Result_Message to set
      */
     public void setDisease_Result_Message(String Disease_Result_Message) {
@@ -54,6 +59,7 @@ public class DiseaseMessageInformation {
 
     /**
      * 病名警告情報（繰り返し50） (例:  )
+     *
      * @return the Disease_Warning_Info
      */
     public DiseaseWarningInfo[] getDisease_Warning_Info() {
@@ -62,6 +68,7 @@ public class DiseaseMessageInformation {
 
     /**
      * 病名警告情報（繰り返し50） (例:  )
+     *
      * @param Disease_Warning_Info the Disease_Warning_Info to set
      */
     public void setDisease_Warning_Info(DiseaseWarningInfo[] Disease_Warning_Info) {

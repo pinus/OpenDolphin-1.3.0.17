@@ -21,6 +21,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * User 個人の StampTree を保存/更新する.
+     *
      * @param model 保存する StampTree
      * @return id
      */
@@ -36,6 +37,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * User個人の Tree を取得する.
+     *
      * @param userPk userId(DB key)
      * @return User 個人の Tree
      */
@@ -44,7 +46,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
         // パーソナルツリーを取得する
         try {
             PersonalTreeModel tree = em.createQuery("select s from PersonalTreeModel s where s.user.id=:userPk", PersonalTreeModel.class)
-                .setParameter("userPk", userPk).getSingleResult();
+                    .setParameter("userPk", userPk).getSingleResult();
 
             // treeBytes をいじるので detach
             em.detach(tree);
@@ -63,6 +65,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * サブスクライブしている Tree (内容は PublishedTreeModel) の List を取得する.
+     *
      * @param userPk userId(DB key)
      * @return サブスクライブしている PublishedTree のリスト
      */
@@ -71,7 +74,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
         // ユーザがサブスクライブしている StampTree のリストを取得する
         List<SubscribedTreeModel> subscribedList = em.createQuery("select s from SubscribedTreeModel s where s.user.id=:userPk", SubscribedTreeModel.class)
-            .setParameter("userPk", userPk).getResultList();
+                .setParameter("userPk", userPk).getResultList();
 
         return subscribedList.stream().map(subscribed -> {
             // サブスクライブリストから公開 Tree を取得する
@@ -96,6 +99,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * 個人用の Tree を公開する.
+     *
      * @param model PublishedTreeModel
      * @return 公開数 1
      */
@@ -110,6 +114,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * 公開したTreeを削除する.
+     *
      * @param model PersonalTreeModel
      * @return 削除した数
      */
@@ -128,6 +133,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * 公開されているStampTreeのリストを取得する.
+     *
      * @return ローカル及びパブリック Tree のリスト
      */
     @Override
@@ -140,11 +146,11 @@ public class StampServiceImpl extends DolphinService implements StampService {
         // local に公開されている Tree を取得する
         // publishType = 施設 ID
         ret.addAll(em.createQuery("select p from PublishedTreeModel p where p.publishType=:fid", PublishedTreeModel.class)
-            .setParameter("fid", fid).getResultList());
+                .setParameter("fid", fid).getResultList());
 
         // パブリック Tree を取得する
         ret.addAll(em.createQuery("select p from PublishedTreeModel p where p.publishType='global'", PublishedTreeModel.class)
-            .getResultList());
+                .getResultList());
 
         ret.forEach(published -> {
             // treeBytes をいじるので detach する
@@ -160,6 +166,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * 公開 Tree をサブスクライブする.
+     *
      * @param addList サブスクライブする SubscribedTreeModel の List
      * @return サブスクライブされた SubscribedTreeModel pk の List
      */
@@ -173,6 +180,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * 公開 Tree を unsubscribe する.
+     *
      * @param removeList unsubscribe する SubscribedTreeModel のリスト
      * @return unsubscribe した数
      */
@@ -180,8 +188,8 @@ public class StampServiceImpl extends DolphinService implements StampService {
     public int unsubscribeTreeList(List<SubscribedTreeModel> removeList) {
         removeList.forEach(model -> {
             SubscribedTreeModel remove = em.createQuery("select s from SubscribedTreeModel s where s.user.id=:userPk and s.treeId=:treeId", SubscribedTreeModel.class)
-                .setParameter("userPk", model.getUser().getId())
-                .setParameter("treeId", model.getTreeId()).getSingleResult();
+                    .setParameter("userPk", model.getUser().getId())
+                    .setParameter("treeId", model.getTreeId()).getSingleResult();
             em.remove(remove);
         });
         return removeList.size();
@@ -189,6 +197,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * Stampを保存する.
+     *
      * @param model StampModel
      * @return 保存した StampModel の ID (String)
      */
@@ -202,6 +211,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * Stampを保存する.
+     *
      * @param list StampModel list
      * @return 保存した StampModel の ID (String) リスト
      */
@@ -212,6 +222,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * Stampを取得する.
+     *
      * @param stampId 取得する StampModel の id
      * @return StampModel
      */
@@ -228,6 +239,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * Stampを取得する.
+     *
      * @param ids 取得する StampModel の id リスト
      * @return StampModel
      */
@@ -238,6 +250,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * Stampを削除する.
+     *
      * @param stampId 削除する StampModel の id
      * @return 削除件数 1 or 0
      */
@@ -255,6 +268,7 @@ public class StampServiceImpl extends DolphinService implements StampService {
 
     /**
      * Stampを削除する.
+     *
      * @param ids 削除する StampModel の id List
      * @return 削除件数
      */

@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * patientmodreq.
+ *
  * @author pns
  */
 public class Patientmodreq {
@@ -124,6 +125,7 @@ public class Patientmodreq {
 
     /**
      * 変更キー (例: 2)
+     *
      * @return the Mod_Key
      */
     public String getMod_Key() {
@@ -132,6 +134,7 @@ public class Patientmodreq {
 
     /**
      * 変更キー (例: 2)
+     *
      * @param Mod_Key the Mod_Key to set
      */
     public void setMod_Key(String Mod_Key) {
@@ -140,6 +143,7 @@ public class Patientmodreq {
 
     /**
      * 患者番号 (例: ＊)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -148,6 +152,7 @@ public class Patientmodreq {
 
     /**
      * 患者番号 (例: ＊)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -156,6 +161,7 @@ public class Patientmodreq {
 
     /**
      * 患者氏名 (例: 日医　太郎)
+     *
      * @return the WholeName
      */
     public String getWholeName() {
@@ -164,6 +170,7 @@ public class Patientmodreq {
 
     /**
      * 患者氏名 (例: 日医　太郎)
+     *
      * @param WholeName the WholeName to set
      */
     public void setWholeName(String WholeName) {
@@ -172,6 +179,7 @@ public class Patientmodreq {
 
     /**
      * 患者カナ氏名 (例: ニチイ　タロウ)
+     *
      * @return the WholeName_inKana
      */
     public String getWholeName_inKana() {
@@ -180,6 +188,7 @@ public class Patientmodreq {
 
     /**
      * 患者カナ氏名 (例: ニチイ　タロウ)
+     *
      * @param WholeName_inKana the WholeName_inKana to set
      */
     public void setWholeName_inKana(String WholeName_inKana) {
@@ -188,6 +197,7 @@ public class Patientmodreq {
 
     /**
      * 生年月日 (例: 1970-01-01)
+     *
      * @return the BirthDate
      */
     public String getBirthDate() {
@@ -196,6 +206,7 @@ public class Patientmodreq {
 
     /**
      * 生年月日 (例: 1970-01-01)
+     *
      * @param BirthDate the BirthDate to set
      */
     public void setBirthDate(String BirthDate) {
@@ -204,6 +215,7 @@ public class Patientmodreq {
 
     /**
      * 性別(1:男、2:女) (例: 1)
+     *
      * @return the Sex
      */
     public String getSex() {
@@ -212,6 +224,7 @@ public class Patientmodreq {
 
     /**
      * 性別(1:男、2:女) (例: 1)
+     *
      * @param Sex the Sex to set
      */
     public void setSex(String Sex) {
@@ -220,6 +233,7 @@ public class Patientmodreq {
 
     /**
      * 世帯主名 (例: 日医　太郎)
+     *
      * @return the HouseHolder_WholeName
      */
     public String getHouseHolder_WholeName() {
@@ -228,6 +242,7 @@ public class Patientmodreq {
 
     /**
      * 世帯主名 (例: 日医　太郎)
+     *
      * @param HouseHolder_WholeName the HouseHolder_WholeName to set
      */
     public void setHouseHolder_WholeName(String HouseHolder_WholeName) {
@@ -236,6 +251,7 @@ public class Patientmodreq {
 
     /**
      * 続柄 (例: 本人)
+     *
      * @return the Relationship
      */
     public String getRelationship() {
@@ -244,6 +260,7 @@ public class Patientmodreq {
 
     /**
      * 続柄 (例: 本人)
+     *
      * @param Relationship the Relationship to set
      */
     public void setRelationship(String Relationship) {
@@ -252,6 +269,7 @@ public class Patientmodreq {
 
     /**
      * 職業 (例: 会社員)
+     *
      * @return the Occupation
      */
     public String getOccupation() {
@@ -260,6 +278,7 @@ public class Patientmodreq {
 
     /**
      * 職業 (例: 会社員)
+     *
      * @param Occupation the Occupation to set
      */
     public void setOccupation(String Occupation) {
@@ -268,6 +287,7 @@ public class Patientmodreq {
 
     /**
      * 携帯番号 (例: 09011112222)
+     *
      * @return the CellularNumber
      */
     public String getCellularNumber() {
@@ -276,6 +296,7 @@ public class Patientmodreq {
 
     /**
      * 携帯番号 (例: 09011112222)
+     *
      * @param CellularNumber the CellularNumber to set
      */
     public void setCellularNumber(String CellularNumber) {
@@ -284,6 +305,7 @@ public class Patientmodreq {
 
     /**
      * FAX番号 (例: 03-0011-2233)
+     *
      * @return the FaxNumber
      */
     public String getFaxNumber() {
@@ -292,6 +314,7 @@ public class Patientmodreq {
 
     /**
      * FAX番号 (例: 03-0011-2233)
+     *
      * @param FaxNumber the FaxNumber to set
      */
     public void setFaxNumber(String FaxNumber) {
@@ -300,6 +323,7 @@ public class Patientmodreq {
 
     /**
      * 電子メールアドレス (例: test@tt.dot.jp)
+     *
      * @return the EmailAddress
      */
     public String getEmailAddress() {
@@ -308,6 +332,7 @@ public class Patientmodreq {
 
     /**
      * 電子メールアドレス (例: test@tt.dot.jp)
+     *
      * @param EmailAddress the EmailAddress to set
      */
     public void setEmailAddress(String EmailAddress) {
@@ -316,6 +341,7 @@ public class Patientmodreq {
 
     /**
      * 自宅情報 (例:  )
+     *
      * @return the Home_Address_Information
      */
     public HomeAddressInformation getHome_Address_Information() {
@@ -324,6 +350,7 @@ public class Patientmodreq {
 
     /**
      * 自宅情報 (例:  )
+     *
      * @param Home_Address_Information the Home_Address_Information to set
      */
     public void setHome_Address_Information(HomeAddressInformation Home_Address_Information) {
@@ -332,6 +359,7 @@ public class Patientmodreq {
 
     /**
      * 勤務先情報 (例:  )
+     *
      * @return the WorkPlace_Information
      */
     public WorkplaceInformation getWorkPlace_Information() {
@@ -340,6 +368,7 @@ public class Patientmodreq {
 
     /**
      * 勤務先情報 (例:  )
+     *
      * @param WorkPlace_Information the WorkPlace_Information to set
      */
     public void setWorkPlace_Information(WorkplaceInformation WorkPlace_Information) {
@@ -348,6 +377,7 @@ public class Patientmodreq {
 
     /**
      * 禁忌１ (例: 状態)
+     *
      * @return the Contraindication1
      */
     public String getContraindication1() {
@@ -356,6 +386,7 @@ public class Patientmodreq {
 
     /**
      * 禁忌１ (例: 状態)
+     *
      * @param Contraindication1 the Contraindication1 to set
      */
     public void setContraindication1(String Contraindication1) {
@@ -364,6 +395,7 @@ public class Patientmodreq {
 
     /**
      * 禁忌２ (例:  )
+     *
      * @return the Contraindication2
      */
     public String getContraindication2() {
@@ -372,6 +404,7 @@ public class Patientmodreq {
 
     /**
      * 禁忌２ (例:  )
+     *
      * @param Contraindication2 the Contraindication2 to set
      */
     public void setContraindication2(String Contraindication2) {
@@ -380,6 +413,7 @@ public class Patientmodreq {
 
     /**
      * アレルギー１ (例: アレルギ)
+     *
      * @return the Allergy1
      */
     public String getAllergy1() {
@@ -388,6 +422,7 @@ public class Patientmodreq {
 
     /**
      * アレルギー１ (例: アレルギ)
+     *
      * @param Allergy1 the Allergy1 to set
      */
     public void setAllergy1(String Allergy1) {
@@ -396,6 +431,7 @@ public class Patientmodreq {
 
     /**
      * アレルギー２ (例:  )
+     *
      * @return the Allergy2
      */
     public String getAllergy2() {
@@ -404,6 +440,7 @@ public class Patientmodreq {
 
     /**
      * アレルギー２ (例:  )
+     *
      * @param Allergy2 the Allergy2 to set
      */
     public void setAllergy2(String Allergy2) {
@@ -412,6 +449,7 @@ public class Patientmodreq {
 
     /**
      * 感染症１ (例: 感染症)
+     *
      * @return the Infection1
      */
     public String getInfection1() {
@@ -420,6 +458,7 @@ public class Patientmodreq {
 
     /**
      * 感染症１ (例: 感染症)
+     *
      * @param Infection1 the Infection1 to set
      */
     public void setInfection1(String Infection1) {
@@ -428,6 +467,7 @@ public class Patientmodreq {
 
     /**
      * 感染症２ (例:  )
+     *
      * @return the Infection2
      */
     public String getInfection2() {
@@ -436,6 +476,7 @@ public class Patientmodreq {
 
     /**
      * 感染症２ (例:  )
+     *
      * @param Infection2 the Infection2 to set
      */
     public void setInfection2(String Infection2) {
@@ -444,6 +485,7 @@ public class Patientmodreq {
 
     /**
      * コメント１ (例: コメント)
+     *
      * @return the Comment1
      */
     public String getComment1() {
@@ -452,6 +494,7 @@ public class Patientmodreq {
 
     /**
      * コメント１ (例: コメント)
+     *
      * @param Comment1 the Comment1 to set
      */
     public void setComment1(String Comment1) {
@@ -460,6 +503,7 @@ public class Patientmodreq {
 
     /**
      * コメント２ (例:  )
+     *
      * @return the Comment2
      */
     public String getComment2() {
@@ -468,6 +512,7 @@ public class Patientmodreq {
 
     /**
      * コメント２ (例:  )
+     *
      * @param Comment2 the Comment2 to set
      */
     public void setComment2(String Comment2) {
@@ -476,6 +521,7 @@ public class Patientmodreq {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @return the HealthInsurance_Information
      */
     public HealthInsuranceInformation getHealthInsurance_Information() {
@@ -484,6 +530,7 @@ public class Patientmodreq {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @param HealthInsurance_Information the HealthInsurance_Information to set
      */
     public void setHealthInsurance_Information(HealthInsuranceInformation HealthInsurance_Information) {

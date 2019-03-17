@@ -16,12 +16,12 @@ public class RadiologyServiceImpl extends DolphinService implements RadiologySer
     @Override
     public List<RadiologyMethodValue> getRadiologyMethod(String from) {
         return em.createQuery("select r from RadiologyMethodValue r where r.hierarchyCode1 >= :hc1 order by r.hierarchyCode1", RadiologyMethodValue.class)
-            .setParameter("hc1", from).getResultList();
+                .setParameter("hc1", from).getResultList();
     }
 
     @Override
     public List<RadiologyMethodValue> getRadiologyComment(String hierarchyCode2) {
         return em.createQuery("select r from RadiologyMethodValue r where r.hierarchyCode2 like :hc2 order by r.hierarchyCode2", RadiologyMethodValue.class)
-            .setParameter("hc2", hierarchyCode2).getResultList();
+                .setParameter("hc2", hierarchyCode2).getResultList();
     }
 }

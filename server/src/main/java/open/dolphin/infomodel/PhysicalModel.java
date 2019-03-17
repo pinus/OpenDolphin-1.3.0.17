@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 /**
  * PhysicalModel.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class PhysicalModel extends InfoModel implements Comparable<PhysicalModel> {
     private static final long serialVersionUID = 5923780180643179995L;
@@ -46,6 +46,7 @@ public class PhysicalModel extends InfoModel implements Comparable<PhysicalModel
     public String getHeight() {
         return height;
     }
+
     public void setHeight(String value) {
         height = value;
     }
@@ -68,12 +69,12 @@ public class PhysicalModel extends InfoModel implements Comparable<PhysicalModel
         memo = value;
     }
 
-    public void setWeight(String severity) {
-        this.weight = severity;
-    }
-
     public String getWeight() {
         return weight;
+    }
+
+    public void setWeight(String severity) {
+        this.weight = severity;
     }
 
     public String getBmi() {
@@ -84,12 +85,12 @@ public class PhysicalModel extends InfoModel implements Comparable<PhysicalModel
         if (height != null && weight != null) {
             float fw = Float.parseFloat(weight);
             float fh = Float.parseFloat(height);
-            float bmif = (10000f*fw) / (fh*fh);
+            float bmif = (10000f * fw) / (fh * fh);
             String bmiS = String.valueOf(bmif);
             int index = bmiS.indexOf('.');
             int len = bmiS.length();
-            if (index >0 && (index + 2 < len)) {
-                bmiS = bmiS.substring(0,index+2);
+            if (index > 0 && (index + 2 < len)) {
+                bmiS = bmiS.substring(0, index + 2);
             }
             return bmiS;
         }
@@ -98,7 +99,7 @@ public class PhysicalModel extends InfoModel implements Comparable<PhysicalModel
 
     public String getStandardWeight() {
         if (getHeight() == null) {
-            return  null;
+            return null;
         }
         try {
             float h = Float.parseFloat(getHeight());
@@ -107,7 +108,7 @@ public class PhysicalModel extends InfoModel implements Comparable<PhysicalModel
             String stWS = String.valueOf(stW);
             int index = stWS.indexOf('.');
             if (index > 0) {
-                stWS = stWS.substring(0, index +2);
+                stWS = stWS.substring(0, index + 2);
             }
             return stWS;
 

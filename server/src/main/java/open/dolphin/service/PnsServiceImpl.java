@@ -27,6 +27,7 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
 
     /**
      * patient_id から，今日のカルテ内容の module のリストを返す.　カルテがなければ null
+     *
      * @param patientId PatientModel の pk
      * @return List of ModuleModel
      */
@@ -35,14 +36,14 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
         try {
 
             Long karteId = em.createQuery("select k.id from KarteBean k where k.patient.id = :patientId", Long.class)
-                .setParameter("patientId", patientId).getSingleResult();
+                    .setParameter("patientId", patientId).getSingleResult();
 
             GregorianCalendar today = new GregorianCalendar();
             today.set(Calendar.HOUR_OF_DAY, 0);
 
             List<Long> docIdList = em.createQuery("select d.id from DocumentModel d where d.karte.id = :karteId and (d.status ='F' or d.status='T') and d.started >= :fromDate", Long.class)
-                .setParameter("karteId", karteId)
-                .setParameter("fromDate", today.getTime()).getResultList();
+                    .setParameter("karteId", karteId)
+                    .setParameter("fromDate", today.getTime()).getResultList();
 
             if (docIdList.isEmpty()) {
                 return null;
@@ -51,7 +52,7 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
                 Long docId = docIdList.get(0);
                 // m.document で DocumentModel がとれて，document.id で doc_id がとれる
                 List<ModuleModel> modules = em.createQuery("select m from ModuleModel m where m.document.id = :id", ModuleModel.class)
-                    .setParameter("id", docId).getResultList();
+                        .setParameter("id", docId).getResultList();
 
                 // beanBytes を変換して新しいモデルにして返す
                 return modules.stream().map(src -> {
@@ -71,8 +72,8 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
     /**
      * hibernate search のインデックスを作る.
      * standalone.xml のトランザクション default-timeout 変更必要
-     *  ex) 4 hrs = 14400 secs
-     *      coordinator-environment default-timeout="14400"
+     * ex) 4 hrs = 14400 secs
+     * coordinator-environment default-timeout="14400"
      */
     @Override
     public void makeInitialIndex() {

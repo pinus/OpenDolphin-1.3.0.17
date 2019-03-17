@@ -15,51 +15,51 @@ public class PatientLiteModel extends InfoModel {
     private String genderCodeSys;
     private String birthday;    // yyyy-mm-dd
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
     public String getPatientId() {
         return patientId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getGender() {
         return gender;
     }
 
-    public void setGenderDesc(String genderDesc) {
-        this.genderDesc = genderDesc;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getGenderDesc() {
         return genderDesc;
     }
 
-    public void setGenderCodeSys(String genderCodeSys) {
-        this.genderCodeSys = genderCodeSys;
+    public void setGenderDesc(String genderDesc) {
+        this.genderDesc = genderDesc;
     }
 
     public String getGenderCodeSys() {
         return genderCodeSys;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setGenderCodeSys(String genderCodeSys) {
+        this.genderCodeSys = genderCodeSys;
     }
 
     public String getBirthday() {
         return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }

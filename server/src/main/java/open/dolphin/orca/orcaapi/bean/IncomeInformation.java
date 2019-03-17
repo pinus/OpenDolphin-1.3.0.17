@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Income_Information. 請求情報（繰り返し　２００）（並び順は診療日の古い順）
+ *
  * @author pns
  */
 public class IncomeInformation {
@@ -117,6 +118,7 @@ public class IncomeInformation {
 
     /**
      * 外来：診療日/入院：請求開始日 (例: 2013-10-01)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -125,6 +127,7 @@ public class IncomeInformation {
 
     /**
      * 外来：診療日/入院：請求開始日 (例: 2013-10-01)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -133,6 +136,7 @@ public class IncomeInformation {
 
     /**
      * 請求終了日（入院のみ。外来は非表示） (例: )
+     *
      * @return the Perform_End_Date
      */
     public String getPerform_End_Date() {
@@ -141,6 +145,7 @@ public class IncomeInformation {
 
     /**
      * 請求終了日（入院のみ。外来は非表示） (例: )
+     *
      * @param Perform_End_Date the Perform_End_Date to set
      */
     public void setPerform_End_Date(String Perform_End_Date) {
@@ -149,6 +154,7 @@ public class IncomeInformation {
 
     /**
      * 伝票発行日 (例: 2013-12-15)
+     *
      * @return the IssuedDate
      */
     public String getIssuedDate() {
@@ -157,6 +163,7 @@ public class IncomeInformation {
 
     /**
      * 伝票発行日 (例: 2013-12-15)
+     *
      * @param IssuedDate the IssuedDate to set
      */
     public void setIssuedDate(String IssuedDate) {
@@ -165,6 +172,7 @@ public class IncomeInformation {
 
     /**
      * 入外区分（1：入院、2：入院外） (例: 1)
+     *
      * @return the InOut
      */
     public String getInOut() {
@@ -173,6 +181,7 @@ public class IncomeInformation {
 
     /**
      * 入外区分（1：入院、2：入院外） (例: 1)
+     *
      * @param InOut the InOut to set
      */
     public void setInOut(String InOut) {
@@ -181,6 +190,7 @@ public class IncomeInformation {
 
     /**
      * 伝票番号 (例: 0000053)
+     *
      * @return the Invoice_Number
      */
     public String getInvoice_Number() {
@@ -189,6 +199,7 @@ public class IncomeInformation {
 
     /**
      * 伝票番号 (例: 0000053)
+     *
      * @param Invoice_Number the Invoice_Number to set
      */
     public void setInvoice_Number(String Invoice_Number) {
@@ -197,6 +208,7 @@ public class IncomeInformation {
 
     /**
      * 保険組合せ番号 (例: 0002)
+     *
      * @return the Insurance_Combination_Number
      */
     public String getInsurance_Combination_Number() {
@@ -205,6 +217,7 @@ public class IncomeInformation {
 
     /**
      * 保険組合せ番号 (例: 0002)
+     *
      * @param Insurance_Combination_Number the Insurance_Combination_Number to set
      */
     public void setInsurance_Combination_Number(String Insurance_Combination_Number) {
@@ -213,6 +226,7 @@ public class IncomeInformation {
 
     /**
      * 負担割合（%） (例: 0)
+     *
      * @return the Rate_Cd
      */
     public String getRate_Cd() {
@@ -221,6 +235,7 @@ public class IncomeInformation {
 
     /**
      * 負担割合（%） (例: 0)
+     *
      * @param Rate_Cd the Rate_Cd to set
      */
     public void setRate_Cd(String Rate_Cd) {
@@ -229,6 +244,7 @@ public class IncomeInformation {
 
     /**
      * 診療科コード (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -237,6 +253,7 @@ public class IncomeInformation {
 
     /**
      * 診療科コード (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -245,6 +262,7 @@ public class IncomeInformation {
 
     /**
      * 診療科名称 (例: 内科)
+     *
      * @return the Department_Name
      */
     public String getDepartment_Name() {
@@ -253,6 +271,7 @@ public class IncomeInformation {
 
     /**
      * 診療科名称 (例: 内科)
+     *
      * @param Department_Name the Department_Name to set
      */
     public void setDepartment_Name(String Department_Name) {
@@ -261,6 +280,7 @@ public class IncomeInformation {
 
     /**
      * 負担額情報 (例: )
+     *
      * @return the Cd_Information
      */
     public CdInformation getCd_Information() {
@@ -269,6 +289,7 @@ public class IncomeInformation {
 
     /**
      * 負担額情報 (例: )
+     *
      * @param Cd_Information the Cd_Information to set
      */
     public void setCd_Information(CdInformation Cd_Information) {
@@ -277,6 +298,7 @@ public class IncomeInformation {
 
     /**
      * 請求点数 (例: )
+     *
      * @return the Ac_Point_Information
      */
     public AcPointInformation getAc_Point_Information() {
@@ -285,6 +307,7 @@ public class IncomeInformation {
 
     /**
      * 請求点数 (例: )
+     *
      * @param Ac_Point_Information the Ac_Point_Information to set
      */
     public void setAc_Point_Information(AcPointInformation Ac_Point_Information) {
@@ -293,6 +316,7 @@ public class IncomeInformation {
 
     /**
      * その他自費情報 (例: )
+     *
      * @return the Oe_Etc_Information
      */
     public OeEtcInformation getOe_Etc_Information() {
@@ -301,6 +325,7 @@ public class IncomeInformation {
 
     /**
      * その他自費情報 (例: )
+     *
      * @param Oe_Etc_Information the Oe_Etc_Information to set
      */
     public void setOe_Etc_Information(OeEtcInformation Oe_Etc_Information) {
@@ -309,6 +334,7 @@ public class IncomeInformation {
 
     /**
      * 労災自賠責保険適用分（円） (例: )
+     *
      * @return the Lsi_Information
      */
     public LsiInformation getLsi_Information() {
@@ -317,6 +343,7 @@ public class IncomeInformation {
 
     /**
      * 労災自賠責保険適用分（円） (例: )
+     *
      * @param Lsi_Information the Lsi_Information to set
      */
     public void setLsi_Information(LsiInformation Lsi_Information) {
@@ -325,6 +352,7 @@ public class IncomeInformation {
 
     /**
      * 食事・生活療養費（外来は非表示）（食事療養費＋生活療養費＋食事療養費（自費）＋生活療養費（自費）） (例: )
+     *
      * @return the Ml_Cost
      */
     public String getMl_Cost() {
@@ -333,6 +361,7 @@ public class IncomeInformation {
 
     /**
      * 食事・生活療養費（外来は非表示）（食事療養費＋生活療養費＋食事療養費（自費）＋生活療養費（自費）） (例: )
+     *
      * @param Ml_Cost the Ml_Cost to set
      */
     public void setMl_Cost(String Ml_Cost) {
@@ -341,6 +370,7 @@ public class IncomeInformation {
 
     /**
      * 食事療養費（外来またはゼロは非表示） (例: 19200)
+     *
      * @return the Meal_Cost
      */
     public String getMeal_Cost() {
@@ -349,6 +379,7 @@ public class IncomeInformation {
 
     /**
      * 食事療養費（外来またはゼロは非表示） (例: 19200)
+     *
      * @param Meal_Cost the Meal_Cost to set
      */
     public void setMeal_Cost(String Meal_Cost) {
@@ -357,6 +388,7 @@ public class IncomeInformation {
 
     /**
      * 生活療養費（外来またはゼロは非表示） (例: )
+     *
      * @return the Living_Cost
      */
     public String getLiving_Cost() {
@@ -365,6 +397,7 @@ public class IncomeInformation {
 
     /**
      * 生活療養費（外来またはゼロは非表示） (例: )
+     *
      * @param Living_Cost the Living_Cost to set
      */
     public void setLiving_Cost(String Living_Cost) {
@@ -373,6 +406,7 @@ public class IncomeInformation {
 
     /**
      * 食事療養費（自費）（外来またはゼロは非表示） (例: )
+     *
      * @return the Oe_Meal_Cost
      */
     public String getOe_Meal_Cost() {
@@ -381,6 +415,7 @@ public class IncomeInformation {
 
     /**
      * 食事療養費（自費）（外来またはゼロは非表示） (例: )
+     *
      * @param Oe_Meal_Cost the Oe_Meal_Cost to set
      */
     public void setOe_Meal_Cost(String Oe_Meal_Cost) {
@@ -389,6 +424,7 @@ public class IncomeInformation {
 
     /**
      * 生活療養費（自費）（外来またはゼロは非表示） (例: )
+     *
      * @return the Oe_Meal_Smoney
      */
     public String getOe_Meal_Smoney() {
@@ -397,6 +433,7 @@ public class IncomeInformation {
 
     /**
      * 生活療養費（自費）（外来またはゼロは非表示） (例: )
+     *
      * @param Oe_Meal_Smoney the Oe_Meal_Smoney to set
      */
     public void setOe_Meal_Smoney(String Oe_Meal_Smoney) {
@@ -405,6 +442,7 @@ public class IncomeInformation {
 
     /**
      * 食事療養負担金（自費）（外来またはゼロは非表示） (例: )
+     *
      * @return the Oe_Living_Cost
      */
     public String getOe_Living_Cost() {
@@ -413,6 +451,7 @@ public class IncomeInformation {
 
     /**
      * 食事療養負担金（自費）（外来またはゼロは非表示） (例: )
+     *
      * @param Oe_Living_Cost the Oe_Living_Cost to set
      */
     public void setOe_Living_Cost(String Oe_Living_Cost) {
@@ -421,6 +460,7 @@ public class IncomeInformation {
 
     /**
      * 生活療養負担金（自費）（外来またはゼロは非表示） (例: )
+     *
      * @return the Oe_Living_Smoney
      */
     public String getOe_Living_Smoney() {
@@ -429,6 +469,7 @@ public class IncomeInformation {
 
     /**
      * 生活療養負担金（自費）（外来またはゼロは非表示） (例: )
+     *
      * @param Oe_Living_Smoney the Oe_Living_Smoney to set
      */
     public void setOe_Living_Smoney(String Oe_Living_Smoney) {
@@ -437,6 +478,7 @@ public class IncomeInformation {
 
     /**
      * 室料差額（外来またはゼロは非表示） (例: 10800)
+     *
      * @return the Room_Charge
      */
     public String getRoom_Charge() {
@@ -445,6 +487,7 @@ public class IncomeInformation {
 
     /**
      * 室料差額（外来またはゼロは非表示） (例: 10800)
+     *
      * @param Room_Charge the Room_Charge to set
      */
     public void setRoom_Charge(String Room_Charge) {
@@ -453,6 +496,7 @@ public class IncomeInformation {
 
     /**
      * 室料差額消費税再掲（外来またはゼロは非表示） (例: 800)
+     *
      * @return the Tax_In_Room_Charge
      */
     public String getTax_In_Room_Charge() {
@@ -461,6 +505,7 @@ public class IncomeInformation {
 
     /**
      * 室料差額消費税再掲（外来またはゼロは非表示） (例: 800)
+     *
      * @param Tax_In_Room_Charge the Tax_In_Room_Charge to set
      */
     public void setTax_In_Room_Charge(String Tax_In_Room_Charge) {

@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * subjectivesmodreq.
+ *
  * @author pns
  */
 public class Subjectivesmodreq {
@@ -65,6 +66,7 @@ public class Subjectivesmodreq {
 
     /**
      * 入外区分（I:入院、それ以外:入院外） (例: I)
+     *
      * @return the InOut
      */
     public String getInOut() {
@@ -73,6 +75,7 @@ public class Subjectivesmodreq {
 
     /**
      * 入外区分（I:入院、それ以外:入院外） (例: I)
+     *
      * @param InOut the InOut to set
      */
     public void setInOut(String InOut) {
@@ -81,6 +84,7 @@ public class Subjectivesmodreq {
 
     /**
      * 患者番号 (例: 12)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -89,6 +93,7 @@ public class Subjectivesmodreq {
 
     /**
      * 患者番号 (例: 12)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -97,6 +102,7 @@ public class Subjectivesmodreq {
 
     /**
      * 診療年月 (例: 2012-12)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -105,6 +111,7 @@ public class Subjectivesmodreq {
 
     /**
      * 診療年月 (例: 2012-12)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -113,6 +120,7 @@ public class Subjectivesmodreq {
 
     /**
      * 診療科コード※１（01:内科) (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -121,6 +129,7 @@ public class Subjectivesmodreq {
 
     /**
      * 診療科コード※１（01:内科) (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -129,6 +138,7 @@ public class Subjectivesmodreq {
 
     /**
      * 保険組合せ番号 (例: 0002)
+     *
      * @return the Insurance_Combination_Number
      */
     public String getInsurance_Combination_Number() {
@@ -137,6 +147,7 @@ public class Subjectivesmodreq {
 
     /**
      * 保険組合せ番号 (例: 0002)
+     *
      * @param Insurance_Combination_Number the Insurance_Combination_Number to set
      */
     public void setInsurance_Combination_Number(String Insurance_Combination_Number) {
@@ -145,6 +156,7 @@ public class Subjectivesmodreq {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @return the HealthInsurance_Information
      */
     public HealthInsuranceInformation getHealthInsurance_Information() {
@@ -153,6 +165,7 @@ public class Subjectivesmodreq {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @param HealthInsurance_Information the HealthInsurance_Information to set
      */
     public void setHealthInsurance_Information(HealthInsuranceInformation HealthInsurance_Information) {
@@ -179,6 +192,7 @@ public class Subjectivesmodreq {
      * AA 　労災レセプト「傷病の経過」 労災レセプトの傷病の経過欄に記載します。
      * BB 　自賠責（第三者行為）レセプト摘要欄コメン ト 自賠責（第三者行為）レセプトのみ記載します。
      * </pre>
+     *
      * @return the Subjectives_Detail_Record
      */
     public String getSubjectives_Detail_Record() {
@@ -205,6 +219,7 @@ public class Subjectivesmodreq {
      * AA 　労災レセプト「傷病の経過」 労災レセプトの傷病の経過欄に記載します。
      * BB 　自賠責（第三者行為）レセプト摘要欄コメン ト 自賠責（第三者行為）レセプトのみ記載します。
      * </pre>
+     *
      * @param Subjectives_Detail_Record the Subjectives_Detail_Record to set
      */
     public void setSubjectives_Detail_Record(String Subjectives_Detail_Record) {
@@ -213,6 +228,7 @@ public class Subjectivesmodreq {
 
     /**
      * 症状詳記内容 (例: その他コメント)
+     *
      * @return the Subjectives_Code
      */
     public String getSubjectives_Code() {
@@ -221,6 +237,7 @@ public class Subjectivesmodreq {
 
     /**
      * 症状詳記内容 (例: その他コメント)
+     *
      * @param Subjectives_Code the Subjectives_Code to set
      */
     public void setSubjectives_Code(String Subjectives_Code) {

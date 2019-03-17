@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Medical_Set02_Information. 診療行為自動算定設定(初期)項目名を変更(2018-09-25)
+ *
  * @author pns
  */
 public class MedicalSet02Information {

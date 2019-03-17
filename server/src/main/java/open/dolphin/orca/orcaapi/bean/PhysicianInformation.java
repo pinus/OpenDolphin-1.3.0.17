@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Physician_Information. ドクター情報(繰り返し100)
+ *
  * @author pns
  */
 public class PhysicianInformation {
@@ -57,6 +58,7 @@ public class PhysicianInformation {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @return the Code
      */
     public String getCode() {
@@ -65,6 +67,7 @@ public class PhysicianInformation {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @param Code the Code to set
      */
     public void setCode(String Code) {
@@ -73,6 +76,7 @@ public class PhysicianInformation {
 
     /**
      * 氏名 (例: 日本　一)
+     *
      * @return the WholeName
      */
     public String getWholeName() {
@@ -81,6 +85,7 @@ public class PhysicianInformation {
 
     /**
      * 氏名 (例: 日本　一)
+     *
      * @param WholeName the WholeName to set
      */
     public void setWholeName(String WholeName) {
@@ -89,6 +94,7 @@ public class PhysicianInformation {
 
     /**
      * カナ氏名 (例: ニホン　ハジメ)
+     *
      * @return the WholeName_inKana
      */
     public String getWholeName_inKana() {
@@ -97,6 +103,7 @@ public class PhysicianInformation {
 
     /**
      * カナ氏名 (例: ニホン　ハジメ)
+     *
      * @param WholeName_inKana the WholeName_inKana to set
      */
     public void setWholeName_inKana(String WholeName_inKana) {
@@ -105,6 +112,7 @@ public class PhysicianInformation {
 
     /**
      * 医療登録番号 (例: ISEKI001)
+     *
      * @return the Physician_Permission_Id
      */
     public String getPhysician_Permission_Id() {
@@ -113,6 +121,7 @@ public class PhysicianInformation {
 
     /**
      * 医療登録番号 (例: ISEKI001)
+     *
      * @param Physician_Permission_Id the Physician_Permission_Id to set
      */
     public void setPhysician_Permission_Id(String Physician_Permission_Id) {
@@ -121,6 +130,7 @@ public class PhysicianInformation {
 
     /**
      * 麻薬施用者免許証番号 (例: 001234)
+     *
      * @return the Drug_Permission_Id
      */
     public String getDrug_Permission_Id() {
@@ -129,6 +139,7 @@ public class PhysicianInformation {
 
     /**
      * 麻薬施用者免許証番号 (例: 001234)
+     *
      * @param Drug_Permission_Id the Drug_Permission_Id to set
      */
     public void setDrug_Permission_Id(String Drug_Permission_Id) {
@@ -137,6 +148,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード1 (例: 01)
+     *
      * @return the Department_Code1
      */
     public String getDepartment_Code1() {
@@ -145,6 +157,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード1 (例: 01)
+     *
      * @param Department_Code1 the Department_Code1 to set
      */
     public void setDepartment_Code1(String Department_Code1) {
@@ -153,6 +166,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード2 (例: 02)
+     *
      * @return the Department_Code2
      */
     public String getDepartment_Code2() {
@@ -161,6 +175,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード2 (例: 02)
+     *
      * @param Department_Code2 the Department_Code2 to set
      */
     public void setDepartment_Code2(String Department_Code2) {
@@ -169,6 +184,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード3 (例:  )
+     *
      * @return the Department_Code3
      */
     public String getDepartment_Code3() {
@@ -177,6 +193,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード3 (例:  )
+     *
      * @param Department_Code3 the Department_Code3 to set
      */
     public void setDepartment_Code3(String Department_Code3) {
@@ -185,6 +202,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード4 (例:  )
+     *
      * @return the Department_Code4
      */
     public String getDepartment_Code4() {
@@ -193,6 +211,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード4 (例:  )
+     *
      * @param Department_Code4 the Department_Code4 to set
      */
     public void setDepartment_Code4(String Department_Code4) {
@@ -201,6 +220,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード5 (例:  )
+     *
      * @return the Department_Code5
      */
     public String getDepartment_Code5() {
@@ -209,6 +229,7 @@ public class PhysicianInformation {
 
     /**
      * 専門科コード5 (例:  )
+     *
      * @param Department_Code5 the Department_Code5 to set
      */
     public void setDepartment_Code5(String Department_Code5) {

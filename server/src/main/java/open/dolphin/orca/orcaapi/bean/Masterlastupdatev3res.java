@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * masterlastupdatev3reS.
+ *
  * @author pns
  */
 public class Masterlastupdatev3res {

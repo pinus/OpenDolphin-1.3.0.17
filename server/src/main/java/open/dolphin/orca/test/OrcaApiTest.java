@@ -10,12 +10,51 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- *
  * @author pns
  */
 public class OrcaApiTest {
 
     private final OrcaApi api = OrcaApi.getInstance();
+
+    public static void main(String[] argv) {
+        String userDir = System.getProperty("user.dir");
+        System.setProperty("jboss.server.base.dir", userDir);
+
+        OrcaApiTest test = new OrcaApiTest();
+        test.patientgetv2();
+        //test.appointmodv2();
+        //test.medicalmodv2();
+        //test.acceptmodv2();
+        //test.acceptlstacceptlstv2();
+        //test.appointlstv2();
+        //test.medicationmodv2();
+        //test.patientlst1v2();
+        //test.patientlst2v2();
+        //test.patientlst3v2();
+        //test.system01lstv2();
+        //test.medicalgetv2();
+        //test.diseasegetv2();
+        //test.patientmodv2();
+        //test.appointlst2v2();
+        //test.acsimulatev2();;
+        //test.subjectivesv2();
+        //test.visitptlstv2();
+        //test.tmedicalgetv2();
+        //test.insprogetv2();
+        //test.incomeinfv2();
+        //test.systeminfv2();
+        //test.manageusersv2();
+        //test.medicalsetv2();
+        //test.patientlst6v2();
+        //test.diseasev3();
+        //test.masterlastupdatev3();
+        //test.system01dailyv2();
+        //test.patientlst7v2();
+        //test.medicalmodv23();
+        //test.contraindicationcheckv2();
+        //test.insuranceinf1v2();
+        //test.subjectiveslstv2();
+    }
 
     private void patientgetv2() {
         System.out.println("患者基本情報");
@@ -50,12 +89,12 @@ public class OrcaApiTest {
         MedicalInformation medicalInformation = new MedicalInformation();
         medicalInformation.setMedical_Class("110");
         medicalInformation.setMedical_Class_Number("1");
-        medicalInformation.setMedication_info(new MedicationInfo[] { mi1, mi2 });
+        medicalInformation.setMedication_info(new MedicationInfo[]{mi1, mi2});
 
         DiagnosisInformation di = new DiagnosisInformation();
         di.setDepartment_Code("19");
         di.setPhysician_Code("10001");
-        di.setMedical_Information(new MedicalInformation[] { medicalInformation });
+        di.setMedical_Information(new MedicalInformation[]{medicalInformation});
 
         Medicalreq req = new Medicalreq();
         req.setPatient_ID("000001");
@@ -116,7 +155,7 @@ public class OrcaApiTest {
         req.setMedication_Name("朝夕　錠から");
         req.setStartDate("2014-07-01");
         req.setEndDate("9999-12-31");
-        req.setComment_Information(new CommentInformation[] { com });
+        req.setComment_Information(new CommentInformation[]{com});
         req.setMedication_Category("2");
         req.setCommercialName("機材商品名称");
         req.setSpecific_Equipment_Code("700590000");
@@ -147,7 +186,7 @@ public class OrcaApiTest {
         pt2.setPatient_ID("000002");
 
         Patientlst2req req = new Patientlst2req();
-        req.setPatient_ID_Information(new PatientIdInformation[] { pt1, pt2 });
+        req.setPatient_ID_Information(new PatientIdInformation[]{pt1, pt2});
 
         Patientlst2res res = api.post(req);
 
@@ -270,7 +309,7 @@ public class OrcaApiTest {
 
         DiagnosisInformation di = new DiagnosisInformation();
         di.setDepartment_Code("19");
-        di.setMedical_Information(new MedicalInformation[] { mi });
+        di.setMedical_Information(new MedicalInformation[]{mi});
 
         Acsimulatereq req = new Acsimulatereq();
         req.setPatient_ID("000001");
@@ -350,7 +389,7 @@ public class OrcaApiTest {
         System.out.println("システム状態の取得");
 
         Date date = new Date();
-        SimpleDateFormat d =new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat t = new SimpleDateFormat("kk:mm:ss");
 
         Systeminfreq req = new Systeminfreq();
@@ -407,7 +446,7 @@ public class OrcaApiTest {
 
         DiseaseInformation disInfo = new DiseaseInformation();
         disInfo.setDisease_StartDate("2017-12-19");
-        disInfo.setDisease_Single(new DiseaseSingle[] { s1, s2 });
+        disInfo.setDisease_Single(new DiseaseSingle[]{s1, s2});
 
         DiagnosisInformation diagInfo = new DiagnosisInformation();
         diagInfo.setDepartment_Code("19");
@@ -415,7 +454,7 @@ public class OrcaApiTest {
         Diseasereq req = new Diseasereq();
         req.setPatient_ID("000001");
         req.setDiagnosis_Information(diagInfo);
-        req.setDisease_Information(new DiseaseInformation[] { disInfo });
+        req.setDisease_Information(new DiseaseInformation[]{disInfo});
 
         Diseaseres res = api.post(req);
 
@@ -476,7 +515,7 @@ public class OrcaApiTest {
 
         MedicalInformation6 mi = new MedicalInformation6();
         mi.setMedication_Code("611120055");
-        MedicalInformation6[] mis = { mi };
+        MedicalInformation6[] mis = {mi};
 
         ContraindicationCheckreq req = new ContraindicationCheckreq();
         req.setRequest_Number("01"); //固定
@@ -513,45 +552,5 @@ public class OrcaApiTest {
         Subjectiveslstres res = api.post(req);
 
         System.out.println(JsonConverter.toJson(res));
-    }
-
-    public static void main(String[] argv) {
-        String userDir = System.getProperty("user.dir");
-        System.setProperty("jboss.server.base.dir", userDir);
-
-        OrcaApiTest test = new OrcaApiTest();
-        test.patientgetv2();
-        //test.appointmodv2();
-        //test.medicalmodv2();
-        //test.acceptmodv2();
-        //test.acceptlstacceptlstv2();
-        //test.appointlstv2();
-        //test.medicationmodv2();
-        //test.patientlst1v2();
-        //test.patientlst2v2();
-        //test.patientlst3v2();
-        //test.system01lstv2();
-        //test.medicalgetv2();
-        //test.diseasegetv2();
-        //test.patientmodv2();
-        //test.appointlst2v2();
-        //test.acsimulatev2();;
-        //test.subjectivesv2();
-        //test.visitptlstv2();
-        //test.tmedicalgetv2();
-        //test.insprogetv2();
-        //test.incomeinfv2();
-        //test.systeminfv2();
-        //test.manageusersv2();
-        //test.medicalsetv2();
-        //test.patientlst6v2();
-        //test.diseasev3();
-        //test.masterlastupdatev3();
-        //test.system01dailyv2();
-        //test.patientlst7v2();
-        //test.medicalmodv23();
-        //test.contraindicationcheckv2();
-        //test.insuranceinf1v2();
-        //test.subjectiveslstv2();
     }
 }

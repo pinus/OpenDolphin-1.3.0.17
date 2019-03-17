@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * OrcaService Implementation Bridge.
+ *
  * @author pns
  */
 public class OrcaServiceImpl implements OrcaService {
@@ -25,7 +26,9 @@ public class OrcaServiceImpl implements OrcaService {
     }
 
     @Override
-    public boolean existsOrcaWorkingData(String ptId) { return api.existsOrcaWorkingData(ptId); }
+    public boolean existsOrcaWorkingData(String ptId) {
+        return api.existsOrcaWorkingData(ptId);
+    }
 
     @Override
     public List<Syskanri> getSyskanri() {
@@ -33,7 +36,9 @@ public class OrcaServiceImpl implements OrcaService {
     }
 
     @Override
-    public List<OrcaEntry> findTensu(String keyword) { return dao.findTensu(keyword); }
+    public List<OrcaEntry> findTensu(String keyword) {
+        return dao.findTensu(keyword);
+    }
 
     @Override
     public List<OrcaEntry> findDiagnosisByKeyword(String keyword) {
@@ -66,7 +71,9 @@ public class OrcaServiceImpl implements OrcaService {
     }
 
     @Override
-    public ApiResult sendDocument(DocumentModel document) { return api.sendDocument(document); }
+    public ApiResult sendDocument(DocumentModel document) {
+        return api.sendDocument(document);
+    }
 
     @Override
     public ApiResult sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses) {
@@ -74,8 +81,12 @@ public class OrcaServiceImpl implements OrcaService {
     }
 
     @Override
-    public ApiResult sendSubjectives(SubjectivesSpec spec) { return api.sendSubjectives(spec); }
+    public ApiResult sendSubjectives(SubjectivesSpec spec) {
+        return api.sendSubjectives(spec);
+    }
 
     @Override
-    public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec) { return api.getSubjectives(spec); }
+    public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec) {
+        return api.getSubjectives(spec);
+    }
 }

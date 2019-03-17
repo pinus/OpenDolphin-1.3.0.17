@@ -14,7 +14,7 @@ public class KarteBeanSpec {
 
     public long getPatientPk() {
         return patientPk;
-}
+    }
 
     public void setPatientPk(long patientPk) {
         this.patientPk = patientPk;

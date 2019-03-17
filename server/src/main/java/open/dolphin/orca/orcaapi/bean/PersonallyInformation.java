@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Personally_Information. 患者個別情報
+ *
  * @author pns
  */
 public class PersonallyInformation {

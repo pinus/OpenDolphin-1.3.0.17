@@ -11,29 +11,32 @@ import java.util.Date;
 /**
  * UserModel.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 @Entity
-@Table(name="d_users")
+@Table(name = "d_users")
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
-public class UserModel extends InfoModel  {
+public class UserModel extends InfoModel {
     private static final long serialVersionUID = 1646664434908470285L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    /** composite businnes key */
-    @Column(nullable=false, unique=true)
+    /**
+     * composite businnes key
+     */
+    @Column(nullable = false, unique = true)
     private String userId;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String password;
 
     private String sirName;
 
     private String givenName;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String commonName;
 
     @Embedded
@@ -42,23 +45,23 @@ public class UserModel extends InfoModel  {
     @Embedded
     private DepartmentModel departmentModel;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String memberType;
 
     private String memo;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Temporal(value = TemporalType.DATE)
     private Date registeredDate;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String email;
 
     @ManyToOne
-    @JoinColumn(name="facility_id", nullable=false)
+    @JoinColumn(name = "facility_id", nullable = false)
     private FacilityModel facilityModel;
 
-    @OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<RoleModel> roles;
 
     public long getId() {
@@ -69,81 +72,81 @@ public class UserModel extends InfoModel  {
         this.id = id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public String getUserId() {
         return userId;
     }
 
-    public String idAsLocal() {
-        int index = userId.indexOf(COMPOSITE_KEY_MAKER);
-        return userId.substring(index+1);
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String idAsLocal() {
+        int index = userId.indexOf(COMPOSITE_KEY_MAKER);
+        return userId.substring(index + 1);
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setSirName(String sirName) {
-        this.sirName = sirName;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getSirName() {
         return sirName;
     }
 
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
+    public void setSirName(String sirName) {
+        this.sirName = sirName;
     }
 
     public String getGivenName() {
         return givenName;
     }
 
-    public void setCommonName(String commonName) {
-        this.commonName = commonName;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
     }
 
     public String getCommonName() {
         return commonName;
     }
 
-    public void setLicenseModel(LicenseModel licenseValue) {
-        this.licenseModel = licenseValue;
+    public void setCommonName(String commonName) {
+        this.commonName = commonName;
     }
 
     public LicenseModel getLicenseModel() {
         return licenseModel;
     }
 
-    public void setFacilityModel(FacilityModel facility) {
-        this.facilityModel = facility;
+    public void setLicenseModel(LicenseModel licenseValue) {
+        this.licenseModel = licenseValue;
     }
 
     public FacilityModel getFacilityModel() {
         return facilityModel;
     }
 
-    public void setDepartmentModel(DepartmentModel departmentValue) {
-        this.departmentModel = departmentValue;
+    public void setFacilityModel(FacilityModel facility) {
+        this.facilityModel = facility;
     }
 
     public DepartmentModel getDepartmentModel() {
         return departmentModel;
     }
 
-    public void setRoles(Collection<RoleModel> roles) {
-        this.roles = roles;
+    public void setDepartmentModel(DepartmentModel departmentValue) {
+        this.departmentModel = departmentValue;
     }
 
     public Collection<RoleModel> getRoles() {
         return roles;
+    }
+
+    public void setRoles(Collection<RoleModel> roles) {
+        this.roles = roles;
     }
 
     public void addRole(RoleModel value) {
@@ -167,36 +170,36 @@ public class UserModel extends InfoModel  {
         return model;
     }
 
-    public void setMemberType(String memberType) {
-        this.memberType = memberType;
-    }
-
     public String getMemberType() {
         return memberType;
     }
 
-    public void setMemo(String memo) {
-        this.memo = memo;
+    public void setMemberType(String memberType) {
+        this.memberType = memberType;
     }
 
     public String getMemo() {
         return memo;
     }
 
-    public void setRegisteredDate(Date registeredDate) {
-        this.registeredDate = registeredDate;
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     public Date getRegisteredDate() {
         return registeredDate;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setRegisteredDate(Date registeredDate) {
+        this.registeredDate = registeredDate;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

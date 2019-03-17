@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Lsi_Information. 労災自賠責保険適用分（円）
+ *
  * @author pns
  */
 public class LsiInformation {
@@ -27,6 +28,7 @@ public class LsiInformation {
 
     /**
      * 初診(ゼロは非表示） (例: )
+     *
      * @return the Lsi_Fv_Money
      */
     public String getLsi_Fv_Money() {
@@ -35,6 +37,7 @@ public class LsiInformation {
 
     /**
      * 初診(ゼロは非表示） (例: )
+     *
      * @param Lsi_Fv_Money the Lsi_Fv_Money to set
      */
     public void setLsi_Fv_Money(String Lsi_Fv_Money) {
@@ -43,6 +46,7 @@ public class LsiInformation {
 
     /**
      * 再診(ゼロは非表示） (例: )
+     *
      * @return the Lsi_Sv_Money
      */
     public String getLsi_Sv_Money() {
@@ -51,6 +55,7 @@ public class LsiInformation {
 
     /**
      * 再診(ゼロは非表示） (例: )
+     *
      * @param Lsi_Sv_Money the Lsi_Sv_Money to set
      */
     public void setLsi_Sv_Money(String Lsi_Sv_Money) {
@@ -59,6 +64,7 @@ public class LsiInformation {
 
     /**
      * 指導(ゼロは非表示） (例: )
+     *
      * @return the Lsi_Mm_Money
      */
     public String getLsi_Mm_Money() {
@@ -67,6 +73,7 @@ public class LsiInformation {
 
     /**
      * 指導(ゼロは非表示） (例: )
+     *
      * @param Lsi_Mm_Money the Lsi_Mm_Money to set
      */
     public void setLsi_Mm_Money(String Lsi_Mm_Money) {
@@ -75,6 +82,7 @@ public class LsiInformation {
 
     /**
      * その他(ゼロは非表示） (例: )
+     *
      * @return the Lsi_Other_Money
      */
     public String getLsi_Other_Money() {
@@ -83,6 +91,7 @@ public class LsiInformation {
 
     /**
      * その他(ゼロは非表示） (例: )
+     *
      * @param Lsi_Other_Money the Lsi_Other_Money to set
      */
     public void setLsi_Other_Money(String Lsi_Other_Money) {

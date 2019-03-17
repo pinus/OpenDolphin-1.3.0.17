@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * patientlst2req.
+ *
  * @author pns
  */
 public class Patientlst2req {
@@ -12,6 +13,7 @@ public class Patientlst2req {
 
     /**
      * 患者番号情報(繰り返し100) (例:  )
+     *
      * @return the Patient_ID_Information
      */
     public PatientIdInformation[] getPatient_ID_Information() {
@@ -20,6 +22,7 @@ public class Patientlst2req {
 
     /**
      * 患者番号情報(繰り返し100) (例:  )
+     *
      * @param Patient_ID_Information the Patient_ID_Information to set
      */
     public void setPatient_ID_Information(PatientIdInformation[] Patient_ID_Information) {

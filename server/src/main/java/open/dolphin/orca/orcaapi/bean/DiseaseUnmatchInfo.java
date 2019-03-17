@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Disease_Unmatch_Info. 不一致病名一覧(繰り返し　５０)
+ *
  * @author pns
  */
 public class DiseaseUnmatchInfo {
@@ -107,6 +108,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 一連病名コード (例: 5609002)
+     *
      * @return the Disease_Code
      */
     public String getDisease_Code() {
@@ -115,6 +117,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 一連病名コード (例: 5609002)
+     *
      * @param Disease_Code the Disease_Code to set
      */
     public void setDisease_Code(String Disease_Code) {
@@ -123,6 +126,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 一連病名 (例: 亜イレウス)
+     *
      * @return the Disease_Name
      */
     public String getDisease_Name() {
@@ -131,6 +135,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 一連病名 (例: 亜イレウス)
+     *
      * @param Disease_Name the Disease_Name to set
      */
     public void setDisease_Name(String Disease_Name) {
@@ -139,6 +144,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 補足コメント名称 (例:  )
+     *
      * @return the Disease_Supplement_Name
      */
     public String getDisease_Supplement_Name() {
@@ -147,6 +153,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 補足コメント名称 (例:  )
+     *
      * @param Disease_Supplement_Name the Disease_Supplement_Name to set
      */
     public void setDisease_Supplement_Name(String Disease_Supplement_Name) {
@@ -155,6 +162,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 補足コメントコード情報(繰り返し　３) (例: ZZZ2056)
+     *
      * @return the Disease_Supplement_Single
      */
     public DiseaseSupplementSingle[] getDisease_Supplement_Single() {
@@ -163,6 +171,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 補足コメントコード情報(繰り返し　３) (例: ZZZ2056)
+     *
      * @param Disease_Supplement_Single the Disease_Supplement_Single to set
      */
     public void setDisease_Supplement_Single(DiseaseSupplementSingle[] Disease_Supplement_Single) {
@@ -171,6 +180,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 入外区分（Ｉ：入院、Ｏ：入院外、空白：入外） (例:  )
+     *
      * @return the Disease_InOut
      */
     public String getDisease_InOut() {
@@ -179,6 +189,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 入外区分（Ｉ：入院、Ｏ：入院外、空白：入外） (例:  )
+     *
      * @param Disease_InOut the Disease_InOut to set
      */
     public void setDisease_InOut(String Disease_InOut) {
@@ -187,6 +198,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 主病フラグ（PD：主疾患） (例:  )
+     *
      * @return the Disease_Category
      */
     public String getDisease_Category() {
@@ -195,6 +207,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 主病フラグ（PD：主疾患） (例:  )
+     *
      * @param Disease_Category the Disease_Category to set
      */
     public void setDisease_Category(String Disease_Category) {
@@ -203,6 +216,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 疑いフラグ (例:  )
+     *
      * @return the Disease_SuspectedFlag
      */
     public String getDisease_SuspectedFlag() {
@@ -211,6 +225,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 疑いフラグ (例:  )
+     *
      * @param Disease_SuspectedFlag the Disease_SuspectedFlag to set
      */
     public void setDisease_SuspectedFlag(String Disease_SuspectedFlag) {
@@ -219,6 +234,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 開始日 (例: 2015-01-15)
+     *
      * @return the Disease_StartDate
      */
     public String getDisease_StartDate() {
@@ -227,6 +243,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 開始日 (例: 2015-01-15)
+     *
      * @param Disease_StartDate the Disease_StartDate to set
      */
     public void setDisease_StartDate(String Disease_StartDate) {
@@ -235,6 +252,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 転帰日 (例:  )
+     *
      * @return the Disease_EndDate
      */
     public String getDisease_EndDate() {
@@ -243,6 +261,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 転帰日 (例:  )
+     *
      * @param Disease_EndDate the Disease_EndDate to set
      */
     public void setDisease_EndDate(String Disease_EndDate) {
@@ -251,6 +270,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 転帰区分 (例:  )
+     *
      * @return the Disease_OutCome
      */
     public String getDisease_OutCome() {
@@ -259,6 +279,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 転帰区分 (例:  )
+     *
      * @param Disease_OutCome the Disease_OutCome to set
      */
     public void setDisease_OutCome(String Disease_OutCome) {
@@ -267,6 +288,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * カルテ病名 (例:  )
+     *
      * @return the Disease_Karte_Name
      */
     public String getDisease_Karte_Name() {
@@ -275,6 +297,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * カルテ病名 (例:  )
+     *
      * @param Disease_Karte_Name the Disease_Karte_Name to set
      */
     public void setDisease_Karte_Name(String Disease_Karte_Name) {
@@ -283,6 +306,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 疾患区分 (例:  )
+     *
      * @return the Disease_Class
      */
     public String getDisease_Class() {
@@ -291,6 +315,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 疾患区分 (例:  )
+     *
      * @param Disease_Class the Disease_Class to set
      */
     public void setDisease_Class(String Disease_Class) {
@@ -299,6 +324,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 保険組合せ番号 (例:  )
+     *
      * @return the Insurance_Combination_Number
      */
     public String getInsurance_Combination_Number() {
@@ -307,6 +333,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 保険組合せ番号 (例:  )
+     *
      * @param Insurance_Combination_Number the Insurance_Combination_Number to set
      */
     public void setInsurance_Combination_Number(String Insurance_Combination_Number) {
@@ -315,6 +342,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * レセプト表示 (例:  )
+     *
      * @return the Disease_Receipt_Print
      */
     public String getDisease_Receipt_Print() {
@@ -323,6 +351,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * レセプト表示 (例:  )
+     *
      * @param Disease_Receipt_Print the Disease_Receipt_Print to set
      */
     public void setDisease_Receipt_Print(String Disease_Receipt_Print) {
@@ -331,6 +360,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * レセプト表示期間 (例:  )
+     *
      * @return the Disease_Receipt_Print_Period
      */
     public String getDisease_Receipt_Print_Period() {
@@ -339,6 +369,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * レセプト表示期間 (例:  )
+     *
      * @param Disease_Receipt_Print_Period the Disease_Receipt_Print_Period to set
      */
     public void setDisease_Receipt_Print_Period(String Disease_Receipt_Print_Period) {
@@ -347,6 +378,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 保険病名 (例:  )
+     *
      * @return the Insurance_Disease
      */
     public String getInsurance_Disease() {
@@ -355,6 +387,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 保険病名 (例:  )
+     *
      * @param Insurance_Disease the Insurance_Disease to set
      */
     public void setInsurance_Disease(String Insurance_Disease) {
@@ -363,6 +396,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 退院証明書 (例:  )
+     *
      * @return the Discharge_Certificate
      */
     public String getDischarge_Certificate() {
@@ -371,6 +405,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 退院証明書 (例:  )
+     *
      * @param Discharge_Certificate the Discharge_Certificate to set
      */
     public void setDischarge_Certificate(String Discharge_Certificate) {
@@ -379,6 +414,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 原疾患区分 (例:  )
+     *
      * @return the Main_Disease_Class
      */
     public String getMain_Disease_Class() {
@@ -387,6 +423,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 原疾患区分 (例:  )
+     *
      * @param Main_Disease_Class the Main_Disease_Class to set
      */
     public void setMain_Disease_Class(String Main_Disease_Class) {
@@ -395,6 +432,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 合併症区分 (例:  )
+     *
      * @return the Sub_Disease_Class
      */
     public String getSub_Disease_Class() {
@@ -403,6 +441,7 @@ public class DiseaseUnmatchInfo {
 
     /**
      * 合併症区分 (例:  )
+     *
      * @param Sub_Disease_Class the Sub_Disease_Class to set
      */
     public void setSub_Disease_Class(String Sub_Disease_Class) {

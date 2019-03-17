@@ -17,6 +17,7 @@ public class LaboServiceImpl extends DolphinService implements LaboService {
 
     /**
      * LaboModuleを保存する.
+     *
      * @param laboModuleValue LaboModuleValue
      */
     @Override
@@ -28,12 +29,12 @@ public class LaboServiceImpl extends DolphinService implements LaboService {
 
         // 施設IDと LaboModule の患者IDで 患者を取得する
         PatientModel exist = em.createQuery("select p from PatientModel p where p.facilityId = :fid and p.patientId = :pid", PatientModel.class)
-            .setParameter("fid", facilityId)
-            .setParameter("pid", laboModuleValue.getPatientId()).getSingleResult();
+                .setParameter("fid", facilityId)
+                .setParameter("pid", laboModuleValue.getPatientId()).getSingleResult();
 
         // 患者のカルテを取得する
         KarteBean karte = em.createQuery("select k from KarteBean k where k.patient.id = :pk", KarteBean.class)
-            .setParameter("pk", exist.getId()).getSingleResult();
+                .setParameter("pk", exist.getId()).getSingleResult();
 
         // laboModuleとカルテの関係を設定する
         laboModuleValue.setKarte(karte);
@@ -47,6 +48,7 @@ public class LaboServiceImpl extends DolphinService implements LaboService {
 
     /**
      * 患者の検体検査モジュールを取得する.
+     *
      * @param spec LaboSearchSpec 検索仕様
      * @return LaboModuleValue の List
      */
@@ -57,9 +59,9 @@ public class LaboServiceImpl extends DolphinService implements LaboService {
 
         // 即時フェッチではない
         List<LaboModuleValue> modules = em.createQuery("select l from LaboModuleValue l where l.karte.id = :karteId and l.sampleTime between :sampleFrom and :sampleTo", LaboModuleValue.class)
-            .setParameter("karteId", karteId)
-            .setParameter("sampleFrom", spec.getFromDate())
-            .setParameter("sampleTo", spec.getToDate()).getResultList();
+                .setParameter("karteId", karteId)
+                .setParameter("sampleFrom", spec.getFromDate())
+                .setParameter("sampleTo", spec.getToDate()).getResultList();
 
         modules.forEach(module -> {
             List<LaboSpecimenValue> specimens = em.createQuery("select l from LaboSpecimenValue l where l.laboModule.id = :moduleId", LaboSpecimenValue.class)

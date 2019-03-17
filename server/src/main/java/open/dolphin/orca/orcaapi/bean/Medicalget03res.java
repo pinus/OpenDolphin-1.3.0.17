@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * medicalget03res.
+ *
  * @author pns
  */
 public class Medicalget03res {
@@ -41,13 +42,14 @@ public class Medicalget03res {
     private String Perform_Date;
 
     /**
-     * 診療行為情報（繰り返し　４００） (例:  )　
+     * 診療行為情報（繰り返し　４００） (例:  )
      * MedicalInfo と Medical_List_Information が混乱している
      */
     private MedicationInfo[] Medical_List_Information;
 
     /**
      * 実施日 (例: 2015-08-18)
+     *
      * @return the Information_Date
      */
     public String getInformation_Date() {
@@ -56,6 +58,7 @@ public class Medicalget03res {
 
     /**
      * 実施日 (例: 2015-08-18)
+     *
      * @param Information_Date the Information_Date to set
      */
     public void setInformation_Date(String Information_Date) {
@@ -64,6 +67,7 @@ public class Medicalget03res {
 
     /**
      * 実施時間 (例: 19:15:16)
+     *
      * @return the Information_Time
      */
     public String getInformation_Time() {
@@ -72,6 +76,7 @@ public class Medicalget03res {
 
     /**
      * 実施時間 (例: 19:15:16)
+     *
      * @param Information_Time the Information_Time to set
      */
     public void setInformation_Time(String Information_Time) {
@@ -80,6 +85,7 @@ public class Medicalget03res {
 
     /**
      * エラーコード (例: 00)
+     *
      * @return the Api_Result
      */
     public String getApi_Result() {
@@ -88,6 +94,7 @@ public class Medicalget03res {
 
     /**
      * エラーコード (例: 00)
+     *
      * @param Api_Result the Api_Result to set
      */
     public void setApi_Result(String Api_Result) {
@@ -96,6 +103,7 @@ public class Medicalget03res {
 
     /**
      * メッセージ (例: 処理終了)
+     *
      * @return the Api_Result_Message
      */
     public String getApi_Result_Message() {
@@ -104,6 +112,7 @@ public class Medicalget03res {
 
     /**
      * メッセージ (例: 処理終了)
+     *
      * @param Api_Result_Message the Api_Result_Message to set
      */
     public void setApi_Result_Message(String Api_Result_Message) {
@@ -112,6 +121,7 @@ public class Medicalget03res {
 
     /**
      *   (例: MedicalInfo)
+     *
      * @return the Reskey
      */
     public String getReskey() {
@@ -120,6 +130,7 @@ public class Medicalget03res {
 
     /**
      *   (例: MedicalInfo)
+     *
      * @param Reskey the Reskey to set
      */
     public void setReskey(String Reskey) {
@@ -128,6 +139,7 @@ public class Medicalget03res {
 
     /**
      * 患者情報 (例:  )
+     *
      * @return the Patient_Information
      */
     public PatientInformation getPatient_Information() {
@@ -136,6 +148,7 @@ public class Medicalget03res {
 
     /**
      * 患者情報 (例:  )
+     *
      * @param Patient_Information the Patient_Information to set
      */
     public void setPatient_Information(PatientInformation Patient_Information) {
@@ -144,6 +157,7 @@ public class Medicalget03res {
 
     /**
      * 診療年月 (例: 2015-08)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -152,6 +166,7 @@ public class Medicalget03res {
 
     /**
      * 診療年月 (例: 2015-08)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -159,8 +174,9 @@ public class Medicalget03res {
     }
 
     /**
-     * 診療行為情報（繰り返し　４００） (例:  )　
+     * 診療行為情報（繰り返し　４００） (例:  )
      * MedicalInfo と Medical_List_Information が混乱している
+     *
      * @return the Medical_List_Information
      */
     public MedicationInfo[] getMedical_List_Information() {
@@ -168,8 +184,9 @@ public class Medicalget03res {
     }
 
     /**
-     * 診療行為情報（繰り返し　４００） (例:  )　
+     * 診療行為情報（繰り返し　４００） (例:  )
      * MedicalInfo と Medical_List_Information が混乱している
+     *
      * @param Medical_List_Information the Medical_List_Information to set
      */
     public void setMedical_List_Information(MedicationInfo[] Medical_List_Information) {

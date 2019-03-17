@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * insprogetreq.
+ *
  * @author pns
  */
 public class Insprogetreq {
@@ -17,6 +18,7 @@ public class Insprogetreq {
 
     /**
      * 保険者番号 (例: 138057)
+     *
      * @return the InsuranceProvider_Number
      */
     public String getInsuranceProvider_Number() {
@@ -25,6 +27,7 @@ public class Insprogetreq {
 
     /**
      * 保険者番号 (例: 138057)
+     *
      * @param InsuranceProvider_Number the InsuranceProvider_Number to set
      */
     public void setInsuranceProvider_Number(String InsuranceProvider_Number) {
@@ -33,6 +36,7 @@ public class Insprogetreq {
 
     /**
      * 保険番号 (例: 060)
+     *
      * @return the Insurance_Number
      */
     public String getInsurance_Number() {
@@ -41,6 +45,7 @@ public class Insprogetreq {
 
     /**
      * 保険番号 (例: 060)
+     *
      * @param Insurance_Number the Insurance_Number to set
      */
     public void setInsurance_Number(String Insurance_Number) {

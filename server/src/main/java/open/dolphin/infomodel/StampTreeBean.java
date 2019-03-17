@@ -13,54 +13,55 @@ public abstract class StampTreeBean extends InfoModel {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserModel user;
 
     // TreeSetの名称
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String name;
 
     // OID or Public
     // OID の時は施設用
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String publishType;
 
     // Treeのカテゴリ
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String category;
 
     // 団体名等
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String partyName;
 
     // URL
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String url;
 
     // 説明
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String description;
 
     // 公開した日
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Temporal(value = TemporalType.DATE)
     private Date publishedDate;
 
     @Transient
     private String treeXml;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Lob
     private byte[] treeBytes;
 
     // 更新した日
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Temporal(value = TemporalType.DATE)
     private Date lastUpdated;
 
+    public abstract long getId();
+
     // PersonalTreeModel, PublishedTreeModel のそれぞれで実装する
     public abstract void setId(long id);
-    public abstract long getId();
 
     public UserModel getUser() {
         return user;

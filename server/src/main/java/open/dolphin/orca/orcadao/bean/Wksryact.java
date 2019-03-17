@@ -24,6 +24,7 @@ public class Wksryact {
 
     /**
      * API登録のUID.
+     *
      * @return medicalUid
      */
     public String getMedicalUid() {
@@ -32,6 +33,7 @@ public class Wksryact {
 
     /**
      * API登録のUID.
+     *
      * @param medicalUid to set
      */
     public void setMedicalUid(String medicalUid) {
@@ -41,6 +43,7 @@ public class Wksryact {
     /**
      * 展開区分.
      * （1:展開中、0:以外）
+     *
      * @return medicalMode
      */
     public String getMedicalMode() {
@@ -50,6 +53,7 @@ public class Wksryact {
     /**
      * 展開区分.
      * （1:展開中、0:以外）
+     *
      * @param medicalMode to set
      */
     public void setMedicalMode(String medicalMode) {
@@ -59,6 +63,7 @@ public class Wksryact {
     /**
      * 登録区分.
      * （1:中途終了登録分、0:以外）
+     *
      * @return medicalMode2
      */
     public String getMedicalMode2() {
@@ -68,6 +73,7 @@ public class Wksryact {
     /**
      * 登録区分.
      * （1:中途終了登録分、0:以外）
+     *
      * @param medicalMode2 to set
      */
     public void setMedicalMode2(String medicalMode2) {

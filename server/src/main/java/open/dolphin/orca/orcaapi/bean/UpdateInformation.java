@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Update_Information. 更新日情報リクエストのマスタIDが設定されている場合に設定（繰り返し5）
+ *
  * @author pns
  */
 public class UpdateInformation {

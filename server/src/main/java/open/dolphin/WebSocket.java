@@ -13,10 +13,15 @@ import java.util.List;
 
 /**
  * WebSocket with authorization.
+ *
  * @author pns
  */
 @ServerEndpoint("/ws/{uid}/{password}")
 public class WebSocket {
+    // one session corresponds to one client
+    private static final List<Session> sessions = new ArrayList<>();
+    // logger
+    private final Logger logger = Logger.getLogger(WebSocket.class);
     /**
      * Websocket endpoints running in the Java EE platform must have full dependency injection support as described in the CDI specification.
      * Websocket implementations part of the Java EE platform are required to support field, method, and constructor injection using
@@ -25,13 +30,9 @@ public class WebSocket {
     @Inject
     private SecurityFilter securityFilter;
 
-    // one session corresponds to one client
-    private static final List<Session> sessions = new ArrayList<>();
-    // logger
-    private final Logger logger = Logger.getLogger(WebSocket.class);
-
     /**
      * 保持中の session の List を返す
+     *
      * @return List of Session
      */
     public static List<Session> getSessions() {

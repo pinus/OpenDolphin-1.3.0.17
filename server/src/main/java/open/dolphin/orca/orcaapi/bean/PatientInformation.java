@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Patient_Information. 患者基本情報
+ *
  * @author pns
  */
 public class PatientInformation {

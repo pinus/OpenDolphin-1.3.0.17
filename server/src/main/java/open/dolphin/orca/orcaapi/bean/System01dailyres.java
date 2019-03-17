@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * system01dailyres.
+ *
  * @author pns
  */
 public class System01dailyres {
@@ -26,7 +27,7 @@ public class System01dailyres {
     private String Api_Result_Message;
 
     /**
-     *  (例: )
+     * (例: )
      */
     private String Reskey;
 

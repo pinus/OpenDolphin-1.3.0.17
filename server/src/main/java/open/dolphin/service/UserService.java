@@ -21,6 +21,7 @@ import java.util.List;
 public interface UserService {
     /**
      * 施設管理者が院内Userを登録する。
+     *
      * @param add 登録するUserModel
      * @return 追加件数
      */
@@ -31,6 +32,7 @@ public interface UserService {
 
     /**
      * Userを検索する。
+     *
      * @param userId 検索するユーザの複合キー
      * @return 該当するUser
      */
@@ -41,6 +43,7 @@ public interface UserService {
 
     /**
      * 施設内の全Userを取得する。
+     *
      * @return 施設内ユーザリスト
      */
     @POST
@@ -50,6 +53,7 @@ public interface UserService {
 
     /**
      * User情報(パスワード等)を更新する。
+     *
      * @param userModel 更新するUserModel
      * @return 更新件数
      */
@@ -60,6 +64,7 @@ public interface UserService {
 
     /**
      * Userを削除する。
+     *
      * @param removeId 削除するユーザのId
      * @return 削除件数
      */
@@ -70,6 +75,7 @@ public interface UserService {
 
     /**
      * 施設情報を更新する。
+     *
      * @param userModel 更新する UserModel
      * @return
      */

@@ -13,8 +13,8 @@ import java.util.Date;
 /**
  * KarteEntryBean.
  *
- * @author Minagawa,Kazushi
  * @param <T> type of objects compared to
+ * @author Minagawa, Kazushi
  */
 @MappedSuperclass
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
@@ -22,21 +22,22 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
 
     private static final long serialVersionUID = -9126237924533456842L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date confirmed;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date started;
 
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date ended;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date recorded;
 
@@ -44,16 +45,16 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
 
     private String linkRelation;
 
-    @Column(length=1, nullable=false)
+    @Column(length = 1, nullable = false)
     private String status;
 
     @ManyToOne
-    @JoinColumn(name="creator_id", nullable=false)
+    @JoinColumn(name = "creator_id", nullable = false)
     private UserModel creator;
 
     @IndexedEmbedded            // hibernate search
     @ManyToOne
-    @JoinColumn(name="karte_id", nullable=false)
+    @JoinColumn(name = "karte_id", nullable = false)
     private KarteBean karte;
 
     public long getId() {
@@ -146,15 +147,22 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) { return true; }
-        if (obj == null) { return false; }
-        if (getClass() != obj.getClass()) {return false; }
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         final KarteEntryBean other = (KarteEntryBean) obj;
         return (id == other.getId());
     }
 
     /**
      * 適合開始日と確定日で比較する.
+     *
      * @param other 比較対象
      * @return Comparable の比較値
      */
@@ -177,14 +185,22 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
     private int compareDate(Date date1, Date date2) {
         if (date1 == null) {
             // 両方 null なら等しい
-            if (date2 == null) { return 0; }
+            if (date2 == null) {
+                return 0;
+            }
             // null は最上位
-            else { return 1; }
+            else {
+                return 1;
+            }
         } else {
             // null は最上位
-            if (date2 == null) { return -1; }
+            if (date2 == null) {
+                return -1;
+            }
             // date1 != null && date2 != null の場合
-            else { return date1.compareTo(date2); }
+            else {
+                return date1.compareTo(date2);
+            }
         }
     }
 

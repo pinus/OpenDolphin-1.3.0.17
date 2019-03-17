@@ -35,35 +35,35 @@ public class PatientVisitSpec implements Serializable {
         this.appodateTo = appodateTo;
     }
 
-    public void setPatientVisit(PatientVisitModel patientVisitValue) {
-        this.patientVisit = patientVisitValue;
-    }
-
     public PatientVisitModel getPatientVisit() {
         return patientVisit;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setPatientVisit(PatientVisitModel patientVisitValue) {
+        this.patientVisit = patientVisitValue;
     }
 
     public String getDate() {
         return date;
     }
 
-    public void setSkipCount(int skipCount) {
-        this.skipCount = skipCount;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public int getSkipCount() {
         return skipCount;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
+    public void setSkipCount(int skipCount) {
+        this.skipCount = skipCount;
     }
 
     public String getPatientId() {
         return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 }

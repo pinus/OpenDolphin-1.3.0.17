@@ -65,52 +65,19 @@ public class OrcaHostInfo {
         while (true) {
             try {
                 URLConnection con = uri.toURL().openConnection();
-                try(InputStream in = con.getInputStream()) {}
+                try (InputStream in = con.getInputStream()) {
+                }
                 logger.info("ORCA server responded.");
                 break;
 
             } catch (IOException ex) {
                 logger.info(ex.getMessage() + ", retrying: " + ++retry);
-                try { Thread.sleep(5000); } catch (InterruptedException e) {}
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                }
             }
         }
-    }
-
-    /**
-     * ORCA_HOST_INFO_FILE から読み取った情報を入れるクラス.
-     */
-    private static class HostData {
-        /**
-         * ORCA のアドレス. ポート番号は含まない.
-         */
-        private String host = "orca";
-        /**
-         * ORCA 用の userId.
-         */
-        private String userId = "ormaster";
-        /**
-         * ORCA 用の userId の password.
-         */
-        private String password = "ormaster";
-        /**
-         * JMARI コード.
-         */
-        private String jmari = "JPN000000000000";
-        /**
-         * JDBC 接続用 user name.
-         */
-        private String jdbcUserId = "orca";
-        /**
-         * JDBC 接続用パスワード.
-         */
-        private String jdbcPassword = "";
-
-        public String getHost() { return host; }
-        public String getUserId() { return userId; }
-        public String getPassword() { return password; }
-        public String getJmari() { return jmari; }
-        public String getJdbcUserId() { return jdbcUserId; }
-        public String getJdbcPassword() { return jdbcPassword; }
     }
 
     /**
@@ -204,5 +171,59 @@ public class OrcaHostInfo {
         p.setProperty("user", hostData.getJdbcUserId());
         p.setProperty("password", hostData.getJdbcPassword());
         return p;
+    }
+
+    /**
+     * ORCA_HOST_INFO_FILE から読み取った情報を入れるクラス.
+     */
+    private static class HostData {
+        /**
+         * ORCA のアドレス. ポート番号は含まない.
+         */
+        private String host = "orca";
+        /**
+         * ORCA 用の userId.
+         */
+        private String userId = "ormaster";
+        /**
+         * ORCA 用の userId の password.
+         */
+        private String password = "ormaster";
+        /**
+         * JMARI コード.
+         */
+        private String jmari = "JPN000000000000";
+        /**
+         * JDBC 接続用 user name.
+         */
+        private String jdbcUserId = "orca";
+        /**
+         * JDBC 接続用パスワード.
+         */
+        private String jdbcPassword = "";
+
+        public String getHost() {
+            return host;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public String getJmari() {
+            return jmari;
+        }
+
+        public String getJdbcUserId() {
+            return jdbcUserId;
+        }
+
+        public String getJdbcPassword() {
+            return jdbcPassword;
+        }
     }
 }

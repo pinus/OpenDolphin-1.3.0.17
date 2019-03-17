@@ -11,29 +11,34 @@ import java.util.Collection;
 /**
  * PatientModel.
  *
- * @author Minagawa,kazushi
+ * @author Minagawa, kazushi
  */
 @Entity
 @Table(name = "d_patient")
 public class PatientModel extends InfoModel {
     private static final long serialVersionUID = 2863696294817965234L;
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    /** 施設ID */
-    @Column(nullable=false)
+    /**
+     * 施設ID
+     */
+    @Column(nullable = false)
     private String facilityId;
 
-    /** 施設内の患者ID */
-    @Column(nullable=false)
+    /**
+     * 施設内の患者ID
+     */
+    @Column(nullable = false)
     private String patientId;
 
     private String familyName;
 
     private String givenName;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String fullName;
 
     private String kanaFamilyName;
@@ -48,7 +53,7 @@ public class PatientModel extends InfoModel {
 
     private String romanName;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String gender;
 
     private String genderDesc;
@@ -89,7 +94,7 @@ public class PatientModel extends InfoModel {
     private String email;
 
     @JsonIgnore
-    @OneToMany(mappedBy="patient", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "patient", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Collection<HealthInsuranceModel> healthInsurances;
 
     @Transient
@@ -140,96 +145,92 @@ public class PatientModel extends InfoModel {
         this.facilityId = facilityId;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
     public String getPatientId() {
         return patientId;
     }
 
-    public void setFamilyName(String sirName) {
-        this.familyName = sirName;
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     public String getFamilyName() {
         return familyName;
     }
 
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
+    public void setFamilyName(String sirName) {
+        this.familyName = sirName;
     }
 
     public String getGivenName() {
         return givenName;
     }
 
-    public void setFullName(String name) {
-        this.fullName = name;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
     }
 
     public String getFullName() {
         return fullName;
     }
 
-    public void setKanaFamilyName(String kanaSirName) {
-        this.kanaFamilyName = kanaSirName;
+    public void setFullName(String name) {
+        this.fullName = name;
     }
 
     public String getKanaFamilyName() {
         return kanaFamilyName;
     }
 
-    public void setKanaGivenName(String kanaGivenName) {
-        this.kanaGivenName = kanaGivenName;
+    public void setKanaFamilyName(String kanaSirName) {
+        this.kanaFamilyName = kanaSirName;
     }
 
     public String getKanaGivenName() {
         return kanaGivenName;
     }
 
-    public void setKanaName(String kanaName) {
-        this.kanaName = kanaName;
+    public void setKanaGivenName(String kanaGivenName) {
+        this.kanaGivenName = kanaGivenName;
     }
 
     public String getKanaName() {
         return kanaName;
     }
 
-    public void setRomanFamilyName(String romanSirName) {
-        this.romanFamilyName = romanSirName;
+    public void setKanaName(String kanaName) {
+        this.kanaName = kanaName;
     }
 
     public String getRomanFamilyName() {
         return romanFamilyName;
     }
 
-    public void setRomanGivenName(String romanGivenName) {
-        this.romanGivenName = romanGivenName;
+    public void setRomanFamilyName(String romanSirName) {
+        this.romanFamilyName = romanSirName;
     }
 
     public String getRomanGivenName() {
         return romanGivenName;
     }
 
-    public void setRomanName(String romanName) {
-        this.romanName = romanName;
+    public void setRomanGivenName(String romanGivenName) {
+        this.romanGivenName = romanGivenName;
     }
 
     public String getRomanName() {
         return romanName;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setRomanName(String romanName) {
+        this.romanName = romanName;
     }
 
     public String getGender() {
         return gender;
     }
 
-    public void setGenderDesc(String genderDesc) {
-        this.genderDesc = genderDesc;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getGenderDesc() {
@@ -238,88 +239,92 @@ public class PatientModel extends InfoModel {
                 : ModelUtils.getGenderDesc(gender);
     }
 
-    public void setGenderCodeSys(String genderCodeSys) {
-        this.genderCodeSys = genderCodeSys;
+    public void setGenderDesc(String genderDesc) {
+        this.genderDesc = genderDesc;
     }
 
     public String getGenderCodeSys() {
         return genderCodeSys;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setGenderCodeSys(String genderCodeSys) {
+        this.genderCodeSys = genderCodeSys;
     }
 
     public String getBirthday() {
         return birthday;
     }
 
-    public String getAgeBirthday() {
-        return ModelUtils.getAgeBirthday(birthday);
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
+    public String getAgeBirthday() {
+        return ModelUtils.getAgeBirthday(birthday);
     }
 
     public String getNationality() {
         return nationality;
     }
 
-    public void setNationalityDesc(String nationalityDesc) {
-        this.nationalityDesc = nationalityDesc;
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 
     public String getNationalityDesc() {
         return nationalityDesc;
     }
 
-    public void setNationalityCodeSys(String nationalityCodeSys) {
-        this.nationalityCodeSys = nationalityCodeSys;
+    public void setNationalityDesc(String nationalityDesc) {
+        this.nationalityDesc = nationalityDesc;
     }
 
     public String getNationalityCodeSys() {
         return nationalityCodeSys;
     }
 
-    public void setMaritalStatus(String maritalStatus) {
-        this.maritalStatus = maritalStatus;
+    public void setNationalityCodeSys(String nationalityCodeSys) {
+        this.nationalityCodeSys = nationalityCodeSys;
     }
 
     public String getMaritalStatus() {
         return maritalStatus;
     }
 
-    public void setMaritalStatusDesc(String maritalStatusDesc) {
-        this.maritalStatusDesc = maritalStatusDesc;
+    public void setMaritalStatus(String maritalStatus) {
+        this.maritalStatus = maritalStatus;
     }
 
     public String getMaritalStatusDesc() {
         return maritalStatusDesc;
     }
 
-    public void setMaritalStatusCodeSys(String maritalStatusCodeSys) {
-        this.maritalStatusCodeSys = maritalStatusCodeSys;
+    public void setMaritalStatusDesc(String maritalStatusDesc) {
+        this.maritalStatusDesc = maritalStatusDesc;
     }
 
     public String getMaritalStatusCodeSys() {
         return maritalStatusCodeSys;
     }
 
-    public void setJpegPhoto(byte[] jpegPhoto) {
-        this.jpegPhoto = jpegPhoto;
+    public void setMaritalStatusCodeSys(String maritalStatusCodeSys) {
+        this.maritalStatusCodeSys = maritalStatusCodeSys;
     }
 
     public byte[] getJpegPhoto() {
         return jpegPhoto;
     }
 
-    public void setMemo(String memo) {
-        this.memo = memo;
+    public void setJpegPhoto(byte[] jpegPhoto) {
+        this.jpegPhoto = jpegPhoto;
     }
 
     public String getMemo() {
         return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     public SimpleAddressModel getAddress() {
@@ -331,11 +336,11 @@ public class PatientModel extends InfoModel {
     }
 
     public String contactZipCode() {
-        return (address!=null) ? address.getZipCode() : null;
+        return (address != null) ? address.getZipCode() : null;
     }
 
     public String contactAddress() {
-        return (address!=null) ? address.getAddress() : null;
+        return (address != null) ? address.getAddress() : null;
     }
 
     public String getTelephone() {
@@ -362,13 +367,13 @@ public class PatientModel extends InfoModel {
         this.email = email;
     }
 
+    public Collection<HealthInsuranceModel> getHealthInsurances() {
+        return healthInsurances;
+    }
+
     public void setHealthInsurances(
             Collection<HealthInsuranceModel> healthInsurances) {
         this.healthInsurances = healthInsurances;
-    }
-
-    public Collection<HealthInsuranceModel> getHealthInsurances() {
-        return healthInsurances;
     }
 
     public void addHealthInsurance(HealthInsuranceModel value) {
@@ -389,7 +394,7 @@ public class PatientModel extends InfoModel {
 
     public void addPvtHealthInsurance(PVTHealthInsuranceModel model) {
         if (pvtHealthInsurances == null) {
-            pvtHealthInsurances =  new ArrayList<>(2);
+            pvtHealthInsurances = new ArrayList<>(2);
         }
         pvtHealthInsurances.add(model);
     }
@@ -450,9 +455,15 @@ public class PatientModel extends InfoModel {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) { return true; }
-        if (obj == null) { return false; }
-        if (getClass() != obj.getClass()) { return false; }
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         PatientModel other = (PatientModel) obj;
         return (id == other.getId());
     }

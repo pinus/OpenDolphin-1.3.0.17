@@ -17,11 +17,11 @@ public class SchemaModel extends KarteEntryBean<SchemaModel> {
     private ExtRefModel extRef;
 
     @Lob
-    @Column(nullable=false)
+    @Column(nullable = false)
     private byte[] jpegByte;
 
     @ManyToOne
-    @JoinColumn(name="doc_id", nullable=false)
+    @JoinColumn(name = "doc_id", nullable = false)
     private DocumentModel document;
 
     // Compatible props
@@ -34,7 +34,9 @@ public class SchemaModel extends KarteEntryBean<SchemaModel> {
     @Transient
     private int imageNumber;
 
-    public ExtRefModel getExtRef() { return extRef; }
+    public ExtRefModel getExtRef() {
+        return extRef;
+    }
 
     public void setExtRef(ExtRefModel val) {
         extRef = val;
@@ -80,14 +82,17 @@ public class SchemaModel extends KarteEntryBean<SchemaModel> {
         fileName = val;
     }
 
-    public IInfoModel getModel() { return getExtRef(); }
+    public IInfoModel getModel() {
+        return getExtRef();
+    }
 
     public void setModel(IInfoModel val) {
-        setExtRef((ExtRefModel)val);
+        setExtRef((ExtRefModel) val);
     }
 
     /**
      * 確定日及びイメージ番号で比較する.
+     *
      * @param other 比較対象
      * @return 比較結果
      */

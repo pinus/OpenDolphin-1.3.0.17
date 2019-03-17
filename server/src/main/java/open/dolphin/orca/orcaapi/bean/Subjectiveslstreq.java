@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * subjectiveslstreq.
+ *
  * @author pns
  */
 public class Subjectiveslstreq {

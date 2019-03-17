@@ -21,6 +21,7 @@ public class Syskanri {
 
     /**
      * 職員コード.
+     *
      * @return code
      */
     public String getCode() {
@@ -29,6 +30,7 @@ public class Syskanri {
 
     /**
      * 職員コード.
+     *
      * @param code to set
      */
     public void setCode(String code) {
@@ -37,6 +39,7 @@ public class Syskanri {
 
     /**
      * 職員名 (漢字).
+     *
      * @return wholeName
      */
     public String getWholeName() {
@@ -45,6 +48,7 @@ public class Syskanri {
 
     /**
      * 職員名 (漢字).
+     *
      * @param wholeName to set
      */
     public void setWholeName(String wholeName) {
@@ -53,6 +57,7 @@ public class Syskanri {
 
     /**
      * 職員名 (カナ).
+     *
      * @return kanaName
      */
     public String getKanaName() {
@@ -61,6 +66,7 @@ public class Syskanri {
 
     /**
      * 職員名 (カナ).
+     *
      * @param kanaName to set
      */
     public void setKanaName(String kanaName) {

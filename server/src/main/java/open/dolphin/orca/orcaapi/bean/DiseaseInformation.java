@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Disease_Information. 病名情報(繰り返し50)
+ *
  * @author pns
  */
 public class DiseaseInformation {
@@ -148,6 +149,7 @@ public class DiseaseInformation {
 
     /**
      * 診療科コード　※１(01:内科) (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -156,6 +158,7 @@ public class DiseaseInformation {
 
     /**
      * 診療科コード　※１(01:内科) (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -164,6 +167,7 @@ public class DiseaseInformation {
 
     /**
      * 一連病名コード (例: 8830052)
+     *
      * @return the Disease_Code
      */
     public String getDisease_Code() {
@@ -172,6 +176,7 @@ public class DiseaseInformation {
 
     /**
      * 一連病名コード (例: 8830052)
+     *
      * @param Disease_Code the Disease_Code to set
      */
     public void setDisease_Code(String Disease_Code) {
@@ -180,6 +185,7 @@ public class DiseaseInformation {
 
     /**
      * 入外区分(O:外来、I:入院)(半角大文字) (例:  )
+     *
      * @return the Disease_InOut
      */
     public String getDisease_InOut() {
@@ -188,6 +194,7 @@ public class DiseaseInformation {
 
     /**
      * 入外区分(O:外来、I:入院)(半角大文字) (例:  )
+     *
      * @param Disease_InOut the Disease_InOut to set
      */
     public void setDisease_InOut(String Disease_InOut) {
@@ -196,6 +203,7 @@ public class DiseaseInformation {
 
     /**
      * 一連病名名称(全角40文字まで) (例: ACバイパス術後機械的合併症)
+     *
      * @return the Disease_Name
      */
     public String getDisease_Name() {
@@ -204,6 +212,7 @@ public class DiseaseInformation {
 
     /**
      * 一連病名名称(全角40文字まで) (例: ACバイパス術後機械的合併症)
+     *
      * @param Disease_Name the Disease_Name to set
      */
     public void setDisease_Name(String Disease_Name) {
@@ -212,6 +221,7 @@ public class DiseaseInformation {
 
     /**
      * 単独病名情報(繰り返し6) (例:  )
+     *
      * @return the Disease_Single
      */
     public DiseaseSingle[] getDisease_Single() {
@@ -220,6 +230,7 @@ public class DiseaseInformation {
 
     /**
      * 単独病名情報(繰り返し6) (例:  )
+     *
      * @param Disease_Single the Disease_Single to set
      */
     public void setDisease_Single(DiseaseSingle[] Disease_Single) {
@@ -228,6 +239,7 @@ public class DiseaseInformation {
 
     /**
      * 病名補足コメント情報 (例:  )
+     *
      * @return the Disease_Supplement
      */
     public DiseaseSupplement getDisease_Supplement() {
@@ -236,6 +248,7 @@ public class DiseaseInformation {
 
     /**
      * 病名補足コメント情報 (例:  )
+     *
      * @param Disease_Supplement the Disease_Supplement to set
      */
     public void setDisease_Supplement(DiseaseSupplement Disease_Supplement) {
@@ -244,6 +257,7 @@ public class DiseaseInformation {
 
     /**
      * 主病フラグ（PD:主病名） (例:  )
+     *
      * @return the Disease_Category
      */
     public String getDisease_Category() {
@@ -252,6 +266,7 @@ public class DiseaseInformation {
 
     /**
      * 主病フラグ（PD:主病名） (例:  )
+     *
      * @param Disease_Category the Disease_Category to set
      */
     public void setDisease_Category(String Disease_Category) {
@@ -260,6 +275,7 @@ public class DiseaseInformation {
 
     /**
      * 疑いフラグ (例: S)
+     *
      * @return the Disease_SuspectedFlag
      */
     public String getDisease_SuspectedFlag() {
@@ -268,6 +284,7 @@ public class DiseaseInformation {
 
     /**
      * 疑いフラグ (例: S)
+     *
      * @param Disease_SuspectedFlag the Disease_SuspectedFlag to set
      */
     public void setDisease_SuspectedFlag(String Disease_SuspectedFlag) {
@@ -276,6 +293,7 @@ public class DiseaseInformation {
 
     /**
      * 病名開始日 (例: 2010-11-23)
+     *
      * @return the Disease_StartDate
      */
     public String getDisease_StartDate() {
@@ -284,6 +302,7 @@ public class DiseaseInformation {
 
     /**
      * 病名開始日 (例: 2010-11-23)
+     *
      * @param Disease_StartDate the Disease_StartDate to set
      */
     public void setDisease_StartDate(String Disease_StartDate) {
@@ -292,6 +311,7 @@ public class DiseaseInformation {
 
     /**
      * 転帰日 (例: 2010-11-24)
+     *
      * @return the Disease_EndDate
      */
     public String getDisease_EndDate() {
@@ -300,6 +320,7 @@ public class DiseaseInformation {
 
     /**
      * 転帰日 (例: 2010-11-24)
+     *
      * @param Disease_EndDate the Disease_EndDate to set
      */
     public void setDisease_EndDate(String Disease_EndDate) {
@@ -319,6 +340,7 @@ public class DiseaseInformation {
      * <tr><td>W</td><td>悪化</td><td>３（中止）</td></tr>
      * <tr><td>上記以外</td><td></td><td>１（治ゆ）</td></tr>
      * </table>
+     *
      * @return the Disease_OutCome
      */
     public String getDisease_OutCome() {
@@ -338,6 +360,7 @@ public class DiseaseInformation {
      * <tr><td>W</td><td>悪化</td><td>３（中止）</td></tr>
      * <tr><td>上記以外</td><td></td><td>１（治ゆ）</td></tr>
      * </table>
+     *
      * @param Disease_OutCome the Disease_OutCome to set
      */
     public void setDisease_OutCome(String Disease_OutCome) {
@@ -346,6 +369,7 @@ public class DiseaseInformation {
 
     /**
      * 保険区分(１：医保(自費)以外、１以外：医保(自費)) (例: 1)
+     *
      * @return the Disease_Insurance_Class
      */
     public String getDisease_Insurance_Class() {
@@ -354,6 +378,7 @@ public class DiseaseInformation {
 
     /**
      * 保険区分(１：医保(自費)以外、１以外：医保(自費)) (例: 1)
+     *
      * @param Disease_Insurance_Class the Disease_Insurance_Class to set
      */
     public void setDisease_Insurance_Class(String Disease_Insurance_Class) {
@@ -362,6 +387,7 @@ public class DiseaseInformation {
 
     /**
      * 補足コメント情報 (例:  )
+     *
      * @return the Disease_Supplement_Name
      */
     public String getDisease_Supplement_Name() {
@@ -370,6 +396,7 @@ public class DiseaseInformation {
 
     /**
      * 補足コメント情報 (例:  )
+     *
      * @param Disease_Supplement_Name the Disease_Supplement_Name to set
      */
     public void setDisease_Supplement_Name(String Disease_Supplement_Name) {
@@ -378,6 +405,7 @@ public class DiseaseInformation {
 
     /**
      * 補足コメントコード情報(繰り返し　３) (例:  )
+     *
      * @return the Disease_Supplement_Single
      */
     public DiseaseSupplementSingle[] getDisease_Supplement_Single() {
@@ -386,6 +414,7 @@ public class DiseaseInformation {
 
     /**
      * 補足コメントコード情報(繰り返し　３) (例:  )
+     *
      * @param Disease_Supplement_Single the Disease_Supplement_Single to set
      */
     public void setDisease_Supplement_Single(DiseaseSupplementSingle[] Disease_Supplement_Single) {
@@ -394,6 +423,7 @@ public class DiseaseInformation {
 
     /**
      * カルテ病名 (例:  )
+     *
      * @return the Disease_Karte_Name
      */
     public String getDisease_Karte_Name() {
@@ -402,6 +432,7 @@ public class DiseaseInformation {
 
     /**
      * カルテ病名 (例:  )
+     *
      * @param Disease_Karte_Name the Disease_Karte_Name to set
      */
     public void setDisease_Karte_Name(String Disease_Karte_Name) {
@@ -410,6 +441,7 @@ public class DiseaseInformation {
 
     /**
      * 疾患区分（０３：皮膚科特定疾患指導管理料（１）、０４：皮膚科特定疾患指導管理料（２）、０５：:特定疾患療養管理料、０７：てんかん指導料、０８：特定疾患療養管理料又はてんかん指導料、０９：難病外来指導管理料） (例: Auto)
+     *
      * @return the Disease_Class
      */
     public String getDisease_Class() {
@@ -418,6 +450,7 @@ public class DiseaseInformation {
 
     /**
      * 疾患区分（０３：皮膚科特定疾患指導管理料（１）、０４：皮膚科特定疾患指導管理料（２）、０５：:特定疾患療養管理料、０７：てんかん指導料、０８：特定疾患療養管理料又はてんかん指導料、０９：難病外来指導管理料） (例: Auto)
+     *
      * @param Disease_Class the Disease_Class to set
      */
     public void setDisease_Class(String Disease_Class) {
@@ -426,6 +459,7 @@ public class DiseaseInformation {
 
     /**
      * 保険組合せ番号 (例: 0003)
+     *
      * @return the Insurance_Combination_Number
      */
     public String getInsurance_Combination_Number() {
@@ -434,6 +468,7 @@ public class DiseaseInformation {
 
     /**
      * 保険組合せ番号 (例: 0003)
+     *
      * @param Insurance_Combination_Number the Insurance_Combination_Number to set
      */
     public void setInsurance_Combination_Number(String Insurance_Combination_Number) {
@@ -442,6 +477,7 @@ public class DiseaseInformation {
 
     /**
      * レセプト表示（１：表示しない） (例: 1)
+     *
      * @return the Disease_Receipt_Print
      */
     public String getDisease_Receipt_Print() {
@@ -450,6 +486,7 @@ public class DiseaseInformation {
 
     /**
      * レセプト表示（１：表示しない） (例: 1)
+     *
      * @param Disease_Receipt_Print the Disease_Receipt_Print to set
      */
     public void setDisease_Receipt_Print(String Disease_Receipt_Print) {
@@ -458,6 +495,7 @@ public class DiseaseInformation {
 
     /**
      * レセプト表示期間（００～９９） (例: 99)
+     *
      * @return the Disease_Receipt_Print_Period
      */
     public String getDisease_Receipt_Print_Period() {
@@ -466,6 +504,7 @@ public class DiseaseInformation {
 
     /**
      * レセプト表示期間（００～９９） (例: 99)
+     *
      * @param Disease_Receipt_Print_Period the Disease_Receipt_Print_Period to set
      */
     public void setDisease_Receipt_Print_Period(String Disease_Receipt_Print_Period) {
@@ -474,6 +513,7 @@ public class DiseaseInformation {
 
     /**
      * 保険病名（１：保険病名） (例: 1)
+     *
      * @return the Insurance_Disease
      */
     public String getInsurance_Disease() {
@@ -482,6 +522,7 @@ public class DiseaseInformation {
 
     /**
      * 保険病名（１：保険病名） (例: 1)
+     *
      * @param Insurance_Disease the Insurance_Disease to set
      */
     public void setInsurance_Disease(String Insurance_Disease) {
@@ -490,6 +531,7 @@ public class DiseaseInformation {
 
     /**
      * 退院証明書（空白または０：記載しない、１：記載する） (例: 0)
+     *
      * @return the Discharge_Certificate
      */
     public String getDischarge_Certificate() {
@@ -498,6 +540,7 @@ public class DiseaseInformation {
 
     /**
      * 退院証明書（空白または０：記載しない、１：記載する） (例: 0)
+     *
      * @param Discharge_Certificate the Discharge_Certificate to set
      */
     public void setDischarge_Certificate(String Discharge_Certificate) {
@@ -506,6 +549,7 @@ public class DiseaseInformation {
 
     /**
      * 原疾患区分（０１：原疾患ア、０２：原疾患イ、０３：原疾患ウ、０４：原疾患エ、０５：原疾患オ） (例: 02)
+     *
      * @return the Main_Disease_Class
      */
     public String getMain_Disease_Class() {
@@ -514,6 +558,7 @@ public class DiseaseInformation {
 
     /**
      * 原疾患区分（０１：原疾患ア、０２：原疾患イ、０３：原疾患ウ、０４：原疾患エ、０５：原疾患オ） (例: 02)
+     *
      * @param Main_Disease_Class the Main_Disease_Class to set
      */
     public void setMain_Disease_Class(String Main_Disease_Class) {
@@ -522,6 +567,7 @@ public class DiseaseInformation {
 
     /**
      * 合併症区分（０１：アの合併症、０２：イの合併症、０３：ウの合併症、０４：エの合併症、０５：オの合併 症） (例: 03)
+     *
      * @return the Sub_Disease_Class
      */
     public String getSub_Disease_Class() {
@@ -530,6 +576,7 @@ public class DiseaseInformation {
 
     /**
      * 合併症区分（０１：アの合併症、０２：イの合併症、０３：ウの合併症、０４：エの合併症、０５：オの合併 症） (例: 03)
+     *
      * @param Sub_Disease_Class the Sub_Disease_Class to set
      */
     public void setSub_Disease_Class(String Sub_Disease_Class) {
@@ -538,6 +585,7 @@ public class DiseaseInformation {
 
     /**
      * 分類番号（主） (例:  )
+     *
      * @return the Classification_Number_Mater
      */
     public String getClassification_Number_Mater() {
@@ -546,6 +594,7 @@ public class DiseaseInformation {
 
     /**
      * 分類番号（主） (例:  )
+     *
      * @param Classification_Number_Mater the Classification_Number_Mater to set
      */
     public void setClassification_Number_Mater(String Classification_Number_Mater) {
@@ -554,6 +603,7 @@ public class DiseaseInformation {
 
     /**
      * 分類番号（従） (例:  )
+     *
      * @return the Classification_Number_Servant
      */
     public String getClassification_Number_Servant() {
@@ -562,6 +612,7 @@ public class DiseaseInformation {
 
     /**
      * 分類番号（従） (例:  )
+     *
      * @param Classification_Number_Servant the Classification_Number_Servant to set
      */
     public void setClassification_Number_Servant(String Classification_Number_Servant) {

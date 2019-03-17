@@ -4,6 +4,7 @@ import open.dolphin.orca.pushapi.SubscriptionEvent;
 
 /**
  * Subscribe Command.
+ *
  * @author pns
  */
 public final class Subscribe extends Command {

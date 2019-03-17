@@ -6,16 +6,14 @@ import java.util.Date;
 /**
  * DocumentSearchSpec.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class DocumentSearchSpec implements Serializable {
-    private static final long serialVersionUID = 8297575731862377052L;
-
     public static final int DOCTYPE_SEARCH = 0;
     public static final int PURPOSE_SEARCH = 1;
     public static final int CREATOR_SEARCH = 2;
     public static final int LICENSE_SEARCH = 3;
-
+    private static final long serialVersionUID = 8297575731862377052L;
     private int code;
     private long karteId;
     private int docId;

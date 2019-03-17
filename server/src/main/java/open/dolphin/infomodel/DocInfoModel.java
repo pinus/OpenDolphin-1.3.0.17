@@ -14,8 +14,7 @@ import java.util.StringTokenizer;
  * DocInfoModel.
  * DocumentModel に Embed される
  *
- * @author Minagawa,kazushi
- *
+ * @author Minagawa, kazushi
  */
 @Embeddable
 public class DocInfoModel extends InfoModel implements Comparable<DocInfoModel> {
@@ -27,16 +26,16 @@ public class DocInfoModel extends InfoModel implements Comparable<DocInfoModel> 
     @Transient
     private long parentPk;  // 親文書の primary key
 
-    @Column(nullable=false, length=32)
+    @Column(nullable = false, length = 32)
     private String docId;   // 文書 ID
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String docType; // 文書タイプ
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String purpose; // = recode
 
     @Transient
@@ -114,92 +113,92 @@ public class DocInfoModel extends InfoModel implements Comparable<DocInfoModel> 
         this.parentPk = parentPk;
     }
 
-    public void setDocId(String docId) {
-        this.docId = docId;
-    }
-
     public String getDocId() {
         return docId;
     }
 
-    public void setDocType(String docType) {
-        this.docType = docType;
+    public void setDocId(String docId) {
+        this.docId = docId;
     }
 
     public String getDocType() {
         return docType;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setDocType(String docType) {
+        this.docType = docType;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getPurpose() {
         return purpose;
     }
 
-    public void setPurposeDesc(String purposeDesc) {
-        this.purposeDesc = purposeDesc;
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
     }
 
     public String getPurposeDesc() {
         return purposeDesc;
     }
 
-    public void setPurposeCodeSys(String purposeCodeSys) {
-        this.purposeCodeSys = purposeCodeSys;
+    public void setPurposeDesc(String purposeDesc) {
+        this.purposeDesc = purposeDesc;
     }
 
     public String getPurposeCodeSys() {
         return purposeCodeSys;
     }
 
-    public void setFirstConfirmDate(Date firstConfirmDate) {
-        this.firstConfirmDate = firstConfirmDate;
+    public void setPurposeCodeSys(String purposeCodeSys) {
+        this.purposeCodeSys = purposeCodeSys;
     }
 
     public Date getFirstConfirmDate() {
         return firstConfirmDate;
     }
 
-    public String getFirstConfirmDateTrimTime() {
-        return ModelUtils.getDateAsString(getFirstConfirmDate());
+    public void setFirstConfirmDate(Date firstConfirmDate) {
+        this.firstConfirmDate = firstConfirmDate;
     }
 
-    public void setConfirmDate(Date confirmDate) {
-        this.confirmDate = confirmDate;
+    public String getFirstConfirmDateTrimTime() {
+        return ModelUtils.getDateAsString(getFirstConfirmDate());
     }
 
     public Date getConfirmDate() {
         return confirmDate;
     }
 
-    public String getConfirmDateTrimTime() {
-        return ModelUtils.getDateAsString(getConfirmDate());
+    public void setConfirmDate(Date confirmDate) {
+        this.confirmDate = confirmDate;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public String getConfirmDateTrimTime() {
+        return ModelUtils.getDateAsString(getConfirmDate());
     }
 
     public String getDepartment() {
         return department;
     }
 
-    public void setDepartmentDesc(String departmentDesc) {
-        this.departmentDesc = departmentDesc;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     public String getDepartmentDesc() {
         return departmentDesc;
+    }
+
+    public void setDepartmentDesc(String departmentDesc) {
+        this.departmentDesc = departmentDesc;
     }
 
     public String getDepartmentName() {
@@ -250,132 +249,132 @@ public class DocInfoModel extends InfoModel implements Comparable<DocInfoModel> 
         return ret;
     }
 
-    public void setDepartmentCodeSys(String departmentCodeSys) {
-        this.departmentCodeSys = departmentCodeSys;
-    }
-
     public String getDepartmentCodeSys() {
         return departmentCodeSys;
     }
 
-    public void setHealthInsurance(String healthInsurance) {
-        this.healthInsurance = healthInsurance;
+    public void setDepartmentCodeSys(String departmentCodeSys) {
+        this.departmentCodeSys = departmentCodeSys;
     }
 
     public String getHealthInsurance() {
         return healthInsurance;
     }
 
-    public void setHealthInsuranceDesc(String healthInsuranceDesc) {
-        this.healthInsuranceDesc = healthInsuranceDesc;
+    public void setHealthInsurance(String healthInsurance) {
+        this.healthInsurance = healthInsurance;
     }
 
     public String getHealthInsuranceDesc() {
         return healthInsuranceDesc;
     }
 
-    public void setHealthInsuranceCodeSys(String healthInsuranceCodeSys) {
-        this.healthInsuranceCodeSys = healthInsuranceCodeSys;
+    public void setHealthInsuranceDesc(String healthInsuranceDesc) {
+        this.healthInsuranceDesc = healthInsuranceDesc;
     }
 
     public String getHealthInsuranceCodeSys() {
         return healthInsuranceCodeSys;
     }
 
-    public void setHealthInsuranceGUID(String healthInsuranceGUID) {
-        this.healthInsuranceGUID = healthInsuranceGUID;
+    public void setHealthInsuranceCodeSys(String healthInsuranceCodeSys) {
+        this.healthInsuranceCodeSys = healthInsuranceCodeSys;
     }
 
     public String getHealthInsuranceGUID() {
         return healthInsuranceGUID;
     }
 
-    public void setHasMark(boolean hasMark) {
-        this.hasMark = hasMark;
+    public void setHealthInsuranceGUID(String healthInsuranceGUID) {
+        this.healthInsuranceGUID = healthInsuranceGUID;
     }
 
     public boolean isHasMark() {
         return hasMark;
     }
 
-    public void setHasImage(boolean hasImage) {
-        this.hasImage = hasImage;
+    public void setHasMark(boolean hasMark) {
+        this.hasMark = hasMark;
     }
 
     public boolean isHasImage() {
         return hasImage;
     }
 
-    public void setHasRp(boolean hasRp) {
-        this.hasRp = hasRp;
+    public void setHasImage(boolean hasImage) {
+        this.hasImage = hasImage;
     }
 
     public boolean isHasRp() {
         return hasRp;
     }
 
-    public void setHasTreatment(boolean hasTreatment) {
-        this.hasTreatment = hasTreatment;
+    public void setHasRp(boolean hasRp) {
+        this.hasRp = hasRp;
     }
 
     public boolean isHasTreatment() {
         return hasTreatment;
     }
 
-    public void setHasLaboTest(boolean hasLaboTest) {
-        this.hasLaboTest = hasLaboTest;
+    public void setHasTreatment(boolean hasTreatment) {
+        this.hasTreatment = hasTreatment;
     }
 
     public boolean isHasLaboTest() {
         return hasLaboTest;
     }
 
-    public void setVersionNumber(String version) {
-        this.versionNumber = version;
+    public void setHasLaboTest(boolean hasLaboTest) {
+        this.hasLaboTest = hasLaboTest;
     }
 
     public String getVersionNumber() {
         return versionNumber;
     }
 
-    public void setVersionNotes(String versionNotes) {
-        this.versionNotes = versionNotes;
+    public void setVersionNumber(String version) {
+        this.versionNumber = version;
     }
 
     public String getVersionNotes() {
         return versionNotes;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setVersionNotes(String versionNotes) {
+        this.versionNotes = versionNotes;
     }
 
     public String getParentId() {
         return parentId;
     }
 
-    public void setParentIdRelation(String parentIdRelation) {
-        this.parentIdRelation = parentIdRelation;
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 
     public String getParentIdRelation() {
         return parentIdRelation;
     }
 
-    public void setParentIdDesc(String relationDesc) {
-        this.parentIdDesc = relationDesc;
+    public void setParentIdRelation(String parentIdRelation) {
+        this.parentIdRelation = parentIdRelation;
     }
 
     public String getParentIdDesc() {
         return parentIdDesc;
     }
 
-    public void setParentIdCodeSys(String relationCodeSys) {
-        this.parentIdCodeSys = relationCodeSys;
+    public void setParentIdDesc(String relationDesc) {
+        this.parentIdDesc = relationDesc;
     }
 
     public String getParentIdCodeSys() {
         return parentIdCodeSys;
+    }
+
+    public void setParentIdCodeSys(String relationCodeSys) {
+        this.parentIdCodeSys = relationCodeSys;
     }
 
     public Collection<AccessRightModel> getAccessRights() {
@@ -393,17 +392,17 @@ public class DocInfoModel extends InfoModel implements Comparable<DocInfoModel> 
         accessRights.add(accessRight);
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getStatus() {
         return status;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public int hashCode() {
-        return ((docId == null)? "".hashCode() : docId.hashCode()) + 11;
+        return ((docId == null) ? "".hashCode() : docId.hashCode()) + 11;
     }
 
     @Override

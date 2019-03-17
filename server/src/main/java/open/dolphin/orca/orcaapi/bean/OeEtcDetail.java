@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Oe_Etc_Detail[10]. その他自費詳細
+ *
  * @author pns
  */
 public class OeEtcDetail {
@@ -27,6 +28,7 @@ public class OeEtcDetail {
 
     /**
      * 番号 (例: 1)
+     *
      * @return the Oe_Etc_Number
      */
     public String getOe_Etc_Number() {
@@ -35,6 +37,7 @@ public class OeEtcDetail {
 
     /**
      * 番号 (例: 1)
+     *
      * @param Oe_Etc_Number the Oe_Etc_Number to set
      */
     public void setOe_Etc_Number(String Oe_Etc_Number) {
@@ -43,6 +46,7 @@ public class OeEtcDetail {
 
     /**
      * 項目名 (例: 文書料)
+     *
      * @return the Oe_Etc_Name
      */
     public String getOe_Etc_Name() {
@@ -51,6 +55,7 @@ public class OeEtcDetail {
 
     /**
      * 項目名 (例: 文書料)
+     *
      * @param Oe_Etc_Name the Oe_Etc_Name to set
      */
     public void setOe_Etc_Name(String Oe_Etc_Name) {
@@ -59,6 +64,7 @@ public class OeEtcDetail {
 
     /**
      * 非課税金額(ゼロは非表示） (例: 1000)
+     *
      * @return the Oe_Etc_Money_Non_Taxable
      */
     public String getOe_Etc_Money_Non_Taxable() {
@@ -67,6 +73,7 @@ public class OeEtcDetail {
 
     /**
      * 非課税金額(ゼロは非表示） (例: 1000)
+     *
      * @param Oe_Etc_Money_Non_Taxable the Oe_Etc_Money_Non_Taxable to set
      */
     public void setOe_Etc_Money_Non_Taxable(String Oe_Etc_Money_Non_Taxable) {
@@ -75,6 +82,7 @@ public class OeEtcDetail {
 
     /**
      * 課税金額(ゼロは非表示） (例: 1080)
+     *
      * @return the Oe_Etc_Money_Taxable
      */
     public String getOe_Etc_Money_Taxable() {
@@ -83,6 +91,7 @@ public class OeEtcDetail {
 
     /**
      * 課税金額(ゼロは非表示） (例: 1080)
+     *
      * @param Oe_Etc_Money_Taxable the Oe_Etc_Money_Taxable to set
      */
     public void setOe_Etc_Money_Taxable(String Oe_Etc_Money_Taxable) {

@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Care_Information. 介護情報
+ *
  * @author pns
  */
 public class CareInformation {
@@ -22,6 +23,7 @@ public class CareInformation {
 
     /**
      * 介護保険情報（繰り返し　１０） (例:  )
+     *
      * @return the Insurance
      */
     public Insurance[] getInsurance() {
@@ -30,6 +32,7 @@ public class CareInformation {
 
     /**
      * 介護保険情報（繰り返し　１０） (例:  )
+     *
      * @param Insurance the Insurance to set
      */
     public void setInsurance(Insurance[] Insurance) {
@@ -38,6 +41,7 @@ public class CareInformation {
 
     /**
      * 介護認定情報（繰り返し　５０） (例:  )
+     *
      * @return the Certification
      */
     public Certification[] getCertification() {
@@ -46,6 +50,7 @@ public class CareInformation {
 
     /**
      * 介護認定情報（繰り返し　５０） (例:  )
+     *
      * @param Certification the Certification to set
      */
     public void setCertification(Certification[] Certification) {
@@ -54,6 +59,7 @@ public class CareInformation {
 
     /**
      * 地域包括診療対象疾病（繰り返し　４） (例:  )
+     *
      * @return the Community_Disease
      */
     public CommunityDisease[] getCommunity_Disease() {
@@ -62,6 +68,7 @@ public class CareInformation {
 
     /**
      * 地域包括診療対象疾病（繰り返し　４） (例:  )
+     *
      * @param Community_Disease the Community_Disease to set
      */
     public void setCommunity_Disease(CommunityDisease[] Community_Disease) {

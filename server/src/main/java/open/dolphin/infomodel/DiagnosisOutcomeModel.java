@@ -20,27 +20,27 @@ public class DiagnosisOutcomeModel extends InfoModel {
         return getOutcomeDesc();
     }
 
-    public void setOutcome(String outcome) {
-        this.outcome = outcome;
-    }
-
     public String getOutcome() {
         return outcome;
     }
 
-    public void setOutcomeDesc(String outcomeDesc) {
-        this.outcomeDesc = outcomeDesc;
+    public void setOutcome(String outcome) {
+        this.outcome = outcome;
     }
 
     public String getOutcomeDesc() {
         return outcomeDesc;
     }
 
-    public void setOutcomeCodeSys(String outcomeCodeSys) {
-        this.outcomeCodeSys = outcomeCodeSys;
+    public void setOutcomeDesc(String outcomeDesc) {
+        this.outcomeDesc = outcomeDesc;
     }
 
     public String getOutcomeCodeSys() {
         return outcomeCodeSys;
+    }
+
+    public void setOutcomeCodeSys(String outcomeCodeSys) {
+        this.outcomeCodeSys = outcomeCodeSys;
     }
 }

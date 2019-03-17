@@ -5,20 +5,21 @@ import javax.persistence.*;
 /**
  * Digital Globe OID.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 @Entity
-@Table(name="d_oid")
+@Table(name = "d_oid")
 public class DgOid extends InfoModel {
     private static final long serialVersionUID = -1825623503728483560L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String baseOid;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private int nextNumber;
 
     public long getId() {

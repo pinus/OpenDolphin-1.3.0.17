@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Accept_Information. 受付情報※3
+ *
  * @author pns
  */
 public class AcceptInformation {

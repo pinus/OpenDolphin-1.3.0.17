@@ -2,7 +2,7 @@ package open.dolphin.dto;
 
 /**
  * PvtStateSpec.
- * 
+ *
  * @author pns
  */
 public class PvtStateSpec {

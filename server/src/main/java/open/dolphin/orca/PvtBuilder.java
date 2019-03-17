@@ -20,8 +20,8 @@ import java.util.Objects;
  */
 public class PvtBuilder {
 
-    private PatientVisitModel pvtModel;
     private final Logger logger = Logger.getLogger(PvtBuilder.class);
+    private PatientVisitModel pvtModel;
 
     /**
      * できあがった PatientVisitModel を返す.

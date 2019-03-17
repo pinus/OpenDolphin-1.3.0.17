@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * medicalsetres.
+ *
  * @author pns
  */
 public class Medicalsetres {
@@ -26,7 +27,7 @@ public class Medicalsetres {
     private String Api_Result_Message;
 
     /**
-     *  (例: MedicalInfo)
+     * (例: MedicalInfo)
      */
     private String Reskey;
 
@@ -67,6 +68,7 @@ public class Medicalsetres {
 
     /**
      * 実施日 (例: 2015-12-08)
+     *
      * @return the Information_Date
      */
     public String getInformation_Date() {
@@ -75,6 +77,7 @@ public class Medicalsetres {
 
     /**
      * 実施日 (例: 2015-12-08)
+     *
      * @param Information_Date the Information_Date to set
      */
     public void setInformation_Date(String Information_Date) {
@@ -83,6 +86,7 @@ public class Medicalsetres {
 
     /**
      * 実施時間 (例: 15:15:43)
+     *
      * @return the Information_Time
      */
     public String getInformation_Time() {
@@ -91,6 +95,7 @@ public class Medicalsetres {
 
     /**
      * 実施時間 (例: 15:15:43)
+     *
      * @param Information_Time the Information_Time to set
      */
     public void setInformation_Time(String Information_Time) {
@@ -99,6 +104,7 @@ public class Medicalsetres {
 
     /**
      * 結果コード（ゼロ以外エラー） (例: E21)
+     *
      * @return the Api_Result
      */
     public String getApi_Result() {
@@ -107,6 +113,7 @@ public class Medicalsetres {
 
     /**
      * 結果コード（ゼロ以外エラー） (例: E21)
+     *
      * @param Api_Result the Api_Result to set
      */
     public void setApi_Result(String Api_Result) {
@@ -115,6 +122,7 @@ public class Medicalsetres {
 
     /**
      * エラーメッセージ (例: セット内容に誤りがあります。)
+     *
      * @return the Api_Result_Message
      */
     public String getApi_Result_Message() {
@@ -123,6 +131,7 @@ public class Medicalsetres {
 
     /**
      * エラーメッセージ (例: セット内容に誤りがあります。)
+     *
      * @param Api_Result_Message the Api_Result_Message to set
      */
     public void setApi_Result_Message(String Api_Result_Message) {
@@ -131,6 +140,7 @@ public class Medicalsetres {
 
     /**
      * (例: MedicalInfo)
+     *
      * @return the Reskey
      */
     public String getReskey() {
@@ -139,6 +149,7 @@ public class Medicalsetres {
 
     /**
      * (例: MedicalInfo)
+     *
      * @param Reskey the Reskey to set
      */
     public void setReskey(String Reskey) {
@@ -147,6 +158,7 @@ public class Medicalsetres {
 
     /**
      * 基準日 (例: 2015-12-08)
+     *
      * @return the Base_Date
      */
     public String getBase_Date() {
@@ -155,6 +167,7 @@ public class Medicalsetres {
 
     /**
      * 基準日 (例: 2015-12-08)
+     *
      * @param Base_Date the Base_Date to set
      */
     public void setBase_Date(String Base_Date) {
@@ -163,6 +176,7 @@ public class Medicalsetres {
 
     /**
      * セットコード (例: PAI004)
+     *
      * @return the Set_Code
      */
     public String getSet_Code() {
@@ -171,6 +185,7 @@ public class Medicalsetres {
 
     /**
      * セットコード (例: PAI004)
+     *
      * @param Set_Code the Set_Code to set
      */
     public void setSet_Code(String Set_Code) {
@@ -179,6 +194,7 @@ public class Medicalsetres {
 
     /**
      * セット名称 (例: APIセット３)
+     *
      * @return the Set_Code_Name
      */
     public String getSet_Code_Name() {
@@ -187,6 +203,7 @@ public class Medicalsetres {
 
     /**
      * セット名称 (例: APIセット３)
+     *
      * @param Set_Code_Name the Set_Code_Name to set
      */
     public void setSet_Code_Name(String Set_Code_Name) {
@@ -195,6 +212,7 @@ public class Medicalsetres {
 
     /**
      * 開始日付 (例: 2013-04-01)
+     *
      * @return the Start_Date
      */
     public String getStart_Date() {
@@ -203,6 +221,7 @@ public class Medicalsetres {
 
     /**
      * 開始日付 (例: 2013-04-01)
+     *
      * @param Start_Date the Start_Date to set
      */
     public void setStart_Date(String Start_Date) {
@@ -211,6 +230,7 @@ public class Medicalsetres {
 
     /**
      * 終了日付 (例: 9999-12-31)
+     *
      * @return the Ende_Date
      */
     public String getEnde_Date() {
@@ -219,6 +239,7 @@ public class Medicalsetres {
 
     /**
      * 終了日付 (例: 9999-12-31)
+     *
      * @param Ende_Date the Ende_Date to set
      */
     public void setEnde_Date(String Ende_Date) {
@@ -227,6 +248,7 @@ public class Medicalsetres {
 
     /**
      * 診療行為登録内容 (例: )
+     *
      * @return the Medical_Information
      */
     public MedicalInformation4 getMedical_Information() {
@@ -235,6 +257,7 @@ public class Medicalsetres {
 
     /**
      * 診療行為登録内容 (例: )
+     *
      * @param Medical_Information the Medical_Information to set
      */
     public void setMedical_Information(MedicalInformation4 Medical_Information) {
@@ -243,6 +266,7 @@ public class Medicalsetres {
 
     /**
      * メッセージ内容 (例: )
+     *
      * @return the Medical_Message_Information
      */
     public MedicalMessageInformation getMedical_Message_Information() {
@@ -251,6 +275,7 @@ public class Medicalsetres {
 
     /**
      * メッセージ内容 (例: )
+     *
      * @param Medical_Message_Information the Medical_Message_Information to set
      */
     public void setMedical_Message_Information(MedicalMessageInformation Medical_Message_Information) {

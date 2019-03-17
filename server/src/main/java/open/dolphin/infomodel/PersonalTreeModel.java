@@ -9,11 +9,12 @@ import javax.persistence.*;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 @Entity
-@Table(name="d_stamp_tree")
+@Table(name = "d_stamp_tree")
 public class PersonalTreeModel extends StampTreeBean {
     private static final long serialVersionUID = 4158667207942678250L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     // 公開しているtreeのエンティティ

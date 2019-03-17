@@ -31,12 +31,11 @@ import java.util.stream.Collectors;
  */
 public class OrcaServiceDao {
 
-    private OrcaDao dao = OrcaDao.getInstance();
-    private Logger logger = Logger.getLogger(OrcaServiceApi.class);
-
     // ORCA 形式の今日の日付
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
     String today = dtf.format(LocalDate.now());
+    private OrcaDao dao = OrcaDao.getInstance();
+    private Logger logger = Logger.getLogger(OrcaServiceApi.class);
 
     /**
      * 中途終了患者情報.
@@ -145,8 +144,12 @@ public class OrcaServiceDao {
                 tensu.setYkzkbn(rs.getString(15)); // ykzkbn
 
                 // 日付のフォーマット確認
-                if (!tensu.getStartDate().matches("[0-9]*")) { tensu.setStartDate("00000000"); }
-                if (!tensu.getEndDate().matches("[0-9]*")) { tensu.setEndDate("99999999"); }
+                if (!tensu.getStartDate().matches("[0-9]*")) {
+                    tensu.setStartDate("00000000");
+                }
+                if (!tensu.getEndDate().matches("[0-9]*")) {
+                    tensu.setEndDate("99999999");
+                }
 
                 if (today.compareTo(tensu.getEndDate()) <= 0) {
                     ret.add(tensu);
@@ -197,7 +200,9 @@ public class OrcaServiceDao {
     public List<OrcaEntry> findDiagnosis(List<String> srycds) {
 
         List<OrcaEntry> ret = new ArrayList<>();
-        if (srycds.isEmpty()) { return ret; } // 空の場合
+        if (srycds.isEmpty()) {
+            return ret;
+        } // 空の場合
 
         String sql = "select byomeicd, byomei, byomeikana, syusaiymd, haisiymd, icd10_1 from tbl_byomei "
                 + "where byomeicd in (?) order by icd10_1, byomeicd";
@@ -207,7 +212,9 @@ public class OrcaServiceDao {
         }
 
         OrcaDbConnection con = dao.getConnection(rs -> ret.addAll(createOrcaEntry(rs)));
-        for (int i = 0; i < srycds.size(); i++) { con.setParam(i + 1, srycds.get(i)); }
+        for (int i = 0; i < srycds.size(); i++) {
+            con.setParam(i + 1, srycds.get(i));
+        }
         con.executeQuery(sql);
 
         return ret;
@@ -234,8 +241,12 @@ public class OrcaServiceDao {
             diag.setIcd10(rs.getString(6)); // icd10_1
 
             // 日付のフォーマット確認
-            if (!diag.getStartDate().matches("[0-9]*")) { diag.setStartDate("00000000"); }
-            if (!diag.getEndDate().matches("[0-9]*")) { diag.setEndDate("99999999"); }
+            if (!diag.getStartDate().matches("[0-9]*")) {
+                diag.setStartDate("00000000");
+            }
+            if (!diag.getEndDate().matches("[0-9]*")) {
+                diag.setEndDate("99999999");
+            }
 
             if (today.compareTo(diag.getEndDate()) <= 0) {
                 ret.add(diag);

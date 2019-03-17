@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * medicalsetreq.
+ *
  * @author pns
  */
 public class Medicalsetreq {
@@ -47,6 +48,7 @@ public class Medicalsetreq {
 
     /**
      * リクエスト番号　01：新規登録　02：削除　03：最終終了日更新　04：セット内容取得 (例: 01)
+     *
      * @return the Request_Number
      */
     public String getRequest_Number() {
@@ -55,6 +57,7 @@ public class Medicalsetreq {
 
     /**
      * リクエスト番号　01：新規登録　02：削除　03：最終終了日更新　04：セット内容取得 (例: 01)
+     *
      * @param Request_Number the Request_Number to set
      */
     public void setRequest_Number(String Request_Number) {
@@ -63,6 +66,7 @@ public class Medicalsetreq {
 
     /**
      * 基準日 (例: )
+     *
      * @return the Base_Date
      */
     public String getBase_Date() {
@@ -71,6 +75,7 @@ public class Medicalsetreq {
 
     /**
      * 基準日 (例: )
+     *
      * @param Base_Date the Base_Date to set
      */
     public void setBase_Date(String Base_Date) {
@@ -79,6 +84,7 @@ public class Medicalsetreq {
 
     /**
      * セットコード (例: PAI004)
+     *
      * @return the Set_Code
      */
     public String getSet_Code() {
@@ -87,6 +93,7 @@ public class Medicalsetreq {
 
     /**
      * セットコード (例: PAI004)
+     *
      * @param Set_Code the Set_Code to set
      */
     public void setSet_Code(String Set_Code) {
@@ -95,6 +102,7 @@ public class Medicalsetreq {
 
     /**
      * セット名称 (例: APIセット３)
+     *
      * @return the Set_Code_Name
      */
     public String getSet_Code_Name() {
@@ -103,6 +111,7 @@ public class Medicalsetreq {
 
     /**
      * セット名称 (例: APIセット３)
+     *
      * @param Set_Code_Name the Set_Code_Name to set
      */
     public void setSet_Code_Name(String Set_Code_Name) {
@@ -111,6 +120,7 @@ public class Medicalsetreq {
 
     /**
      * 開始日付 (例: 2013-04-01)
+     *
      * @return the Start_Date
      */
     public String getStart_Date() {
@@ -119,6 +129,7 @@ public class Medicalsetreq {
 
     /**
      * 開始日付 (例: 2013-04-01)
+     *
      * @param Start_Date the Start_Date to set
      */
     public void setStart_Date(String Start_Date) {
@@ -127,6 +138,7 @@ public class Medicalsetreq {
 
     /**
      * 終了日付 (例: 9999-12-31)
+     *
      * @return the Ende_Date
      */
     public String getEnde_Date() {
@@ -135,6 +147,7 @@ public class Medicalsetreq {
 
     /**
      * 終了日付 (例: 9999-12-31)
+     *
      * @param Ende_Date the Ende_Date to set
      */
     public void setEnde_Date(String Ende_Date) {
@@ -143,6 +156,7 @@ public class Medicalsetreq {
 
     /**
      * 入外区分（I：入院分） (例: I)
+     *
      * @return the InOut
      */
     public String getInOut() {
@@ -151,6 +165,7 @@ public class Medicalsetreq {
 
     /**
      * 入外区分（I：入院分） (例: I)
+     *
      * @param InOut the InOut to set
      */
     public void setInOut(String InOut) {
@@ -159,6 +174,7 @@ public class Medicalsetreq {
 
     /**
      * 診療行為情報 (例: )
+     *
      * @return the Medical_Information
      */
     public MedicalInformation4 getMedical_Information() {
@@ -167,6 +183,7 @@ public class Medicalsetreq {
 
     /**
      * 診療行為情報 (例: )
+     *
      * @param Medical_Information the Medical_Information to set
      */
     public void setMedical_Information(MedicalInformation4 Medical_Information) {

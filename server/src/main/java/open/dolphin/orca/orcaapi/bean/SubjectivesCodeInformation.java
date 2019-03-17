@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Subjectives_Code_Information. 症状詳記コメント(※2 数値チェックを行う)
+ *
  * @author pns
  */
 public class SubjectivesCodeInformation {

@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Subjectives_Information. 症状詳記リスト（繰り返し50）
+ *
  * @author pns
  */
 public class SubjectivesInformation {

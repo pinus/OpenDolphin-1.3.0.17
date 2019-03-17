@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Medical_Info. 診療行為剤内容（繰り返し　４０）
+ *
  * @author pns
  */
 public class MedicalInfo {
@@ -57,6 +58,7 @@ public class MedicalInfo {
 
     /**
      * 診療種別区分 (例: 960)
+     *
      * @return the Medical_Class
      */
     public String getMedical_Class() {
@@ -65,6 +67,7 @@ public class MedicalInfo {
 
     /**
      * 診療種別区分 (例: 960)
+     *
      * @param Medical_Class the Medical_Class to set
      */
     public void setMedical_Class(String Medical_Class) {
@@ -73,6 +76,7 @@ public class MedicalInfo {
 
     /**
      * 診療種別区分名称 (例: 保険外（消費税あり）)
+     *
      * @return the Medical_Class_Name
      */
     public String getMedical_Class_Name() {
@@ -81,6 +85,7 @@ public class MedicalInfo {
 
     /**
      * 診療種別区分名称 (例: 保険外（消費税あり）)
+     *
      * @param Medical_Class_Name the Medical_Class_Name to set
      */
     public void setMedical_Class_Name(String Medical_Class_Name) {
@@ -89,6 +94,7 @@ public class MedicalInfo {
 
     /**
      * 回数 (例: 1)
+     *
      * @return the Medical_Class_Number
      */
     public String getMedical_Class_Number() {
@@ -97,6 +103,7 @@ public class MedicalInfo {
 
     /**
      * 回数 (例: 1)
+     *
      * @param Medical_Class_Number the Medical_Class_Number to set
      */
     public void setMedical_Class_Number(String Medical_Class_Number) {
@@ -105,6 +112,7 @@ public class MedicalInfo {
 
     /**
      * 診療剤明細（繰り返し　４０） (例: )
+     *
      * @return the Medication_Info
      */
     public MedicationInfo[] getMedication_Info() {
@@ -113,6 +121,7 @@ public class MedicalInfo {
 
     /**
      * 診療剤明細（繰り返し　４０） (例: )
+     *
      * @param Medication_Info the Medication_Info to set
      */
     public void setMedication_Info(MedicationInfo[] Medication_Info) {

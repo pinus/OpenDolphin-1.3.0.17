@@ -17,6 +17,7 @@ import java.util.List;
 public class SystemServiceImpl extends DolphinService implements SystemService {
     /**
      * 施設と管理者情報を登録する.
+     *
      * @param user 施設管理者
      */
     @Override
@@ -31,8 +32,8 @@ public class SystemServiceImpl extends DolphinService implements SystemService {
 
         try {
             em.createQuery("select f from FacilityModel f where f.facilityId = :fid")
-            .setParameter("fid", facilityId)
-            .getSingleResult();
+                    .setParameter("fid", facilityId)
+                    .getSingleResult();
 
             // すでに存在している場合は例外をスローする
             throw new EntityExistsException();
@@ -81,6 +82,7 @@ public class SystemServiceImpl extends DolphinService implements SystemService {
 
     /**
      * 放射線メソッドマスタを登録する.
+     *
      * @param c List of RadiologyMethodValue
      */
     @Override

@@ -7,25 +7,25 @@ import javax.persistence.Transient;
 /**
  * 外部参照要素クラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 @Embeddable
 public class ExtRefModel extends InfoModel {
     private static final long serialVersionUID = -3408876454565957708L;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String contentType;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String medicalRole;
 
     @Transient
     private String medicalRoleTableId;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String href;
 
     public String getContentType() {
@@ -52,19 +52,19 @@ public class ExtRefModel extends InfoModel {
         href = value;
     }
 
-    public void setMedicalRole(String medicalRole) {
-        this.medicalRole = medicalRole;
-    }
-
     public String getMedicalRole() {
         return medicalRole;
     }
 
-    public void setMedicalRoleTableId(String medicalRoleTableId) {
-        this.medicalRoleTableId = medicalRoleTableId;
+    public void setMedicalRole(String medicalRole) {
+        this.medicalRole = medicalRole;
     }
 
     public String getMedicalRoleTableId() {
         return medicalRoleTableId;
+    }
+
+    public void setMedicalRoleTableId(String medicalRoleTableId) {
+        this.medicalRoleTableId = medicalRoleTableId;
     }
 }

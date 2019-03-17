@@ -11,6 +11,7 @@ public class Inputset {
 
     /**
      * セットコード.
+     *
      * @return inputCd
      */
     public String getInputCd() {
@@ -19,6 +20,7 @@ public class Inputset {
 
     /**
      * セットコード.
+     *
      * @param inputCd to set
      */
     public void setInputCd(String inputCd) {
@@ -27,6 +29,7 @@ public class Inputset {
 
     /**
      * 数量1.
+     *
      * @return suryo1
      */
     public float getSuryo1() {
@@ -35,6 +38,7 @@ public class Inputset {
 
     /**
      * 数量1.
+     *
      * @param suryo1 to set
      */
     public void setSuryo1(float suryo1) {
@@ -43,6 +47,7 @@ public class Inputset {
 
     /**
      * 回数.
+     *
      * @return kaisu
      */
     public int getKaisu() {
@@ -51,6 +56,7 @@ public class Inputset {
 
     /**
      * 回数.
+     *
      * @param kaisu to set
      */
     public void setKaisu(int kaisu) {
@@ -59,6 +65,7 @@ public class Inputset {
 
     /**
      * 入力コメント.
+     *
      * @return comment
      */
     public String getComment() {
@@ -67,6 +74,7 @@ public class Inputset {
 
     /**
      * 入力コメント.
+     *
      * @param comment to set
      */
     public void setComment(String comment) {

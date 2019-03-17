@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi.bean;
 /**
  * Medical_Information. 診療情報.
  * for medicalgetres.
+ *
  * @author pns
  */
 public class MedicalInformation3 {
@@ -38,6 +39,7 @@ public class MedicalInformation3 {
 
     /**
      * 診療科コード　※３(01:内科) (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -46,6 +48,7 @@ public class MedicalInformation3 {
 
     /**
      * 診療科コード　※３(01:内科) (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -54,6 +57,7 @@ public class MedicalInformation3 {
 
     /**
      * 連番 (例: 2)
+     *
      * @return the Sequential_Number
      */
     public String getSequential_Number() {
@@ -62,6 +66,7 @@ public class MedicalInformation3 {
 
     /**
      * 連番 (例: 2)
+     *
      * @param Sequential_Number the Sequential_Number to set
      */
     public void setSequential_Number(String Sequential_Number) {
@@ -70,6 +75,7 @@ public class MedicalInformation3 {
 
     /**
      * 保険組合せ番号 (例: 0002)
+     *
      * @return the Insurance_Combination_Number
      */
     public String getInsurance_Combination_Number() {
@@ -78,6 +84,7 @@ public class MedicalInformation3 {
 
     /**
      * 保険組合せ番号 (例: 0002)
+     *
      * @param Insurance_Combination_Number the Insurance_Combination_Number to set
      */
     public void setInsurance_Combination_Number(String Insurance_Combination_Number) {
@@ -86,6 +93,7 @@ public class MedicalInformation3 {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @return the HealthInsurance_Information
      */
     public HealthInsuranceInformation getHealthInsurance_Information() {
@@ -94,6 +102,7 @@ public class MedicalInformation3 {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @param HealthInsurance_Information the HealthInsurance_Information to set
      */
     public void setHealthInsurance_Information(HealthInsuranceInformation HealthInsurance_Information) {
@@ -102,6 +111,7 @@ public class MedicalInformation3 {
 
     /**
      * 伝票番号 (例:  )
+     *
      * @return the Invoice_Number
      */
     public String getInvoice_Number() {
@@ -110,6 +120,7 @@ public class MedicalInformation3 {
 
     /**
      * 伝票番号 (例:  )
+     *
      * @param Invoice_Number the Invoice_Number to set
      */
     public void setInvoice_Number(String Invoice_Number) {

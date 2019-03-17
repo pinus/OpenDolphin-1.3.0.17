@@ -23,18 +23,6 @@ public enum Gengo {
         this.kanji = kanji;
     }
 
-    public String alphabet() {
-        return alphabet;
-    }
-
-    public String halfKanji() {
-        return halfKanji;
-    }
-
-    public String kanji() {
-        return kanji;
-    }
-
     /**
      * ISO_DATE -> 元号変換.
      *
@@ -233,5 +221,17 @@ public enum Gengo {
      */
     public static String toSeireki(String gengoDate) {
         return gengoToIsoDate(gengoDate);
+    }
+
+    public String alphabet() {
+        return alphabet;
+    }
+
+    public String halfKanji() {
+        return halfKanji;
+    }
+
+    public String kanji() {
+        return kanji;
     }
 }

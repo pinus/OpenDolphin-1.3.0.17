@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 /**
  * UserLiteModel.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class UserLiteModel extends InfoModel {
     private static final long serialVersionUID = 6256812305377957756L;
@@ -12,27 +12,27 @@ public class UserLiteModel extends InfoModel {
     private String commonName;
     private LicenseModel licenseModel;
 
-    public void setUserId(String creatorId) {
-        this.userId = creatorId;
-    }
-
     public String getUserId() {
         return userId;
     }
 
-    public void setCommonName(String name) {
-        this.commonName = name;
+    public void setUserId(String creatorId) {
+        this.userId = creatorId;
     }
 
     public String getCommonName() {
         return commonName;
     }
 
-    public void setLicenseModel(LicenseModel licenseModel) {
-        this.licenseModel = licenseModel;
+    public void setCommonName(String name) {
+        this.commonName = name;
     }
 
     public LicenseModel getLicenseModel() {
         return licenseModel;
+    }
+
+    public void setLicenseModel(LicenseModel licenseModel) {
+        this.licenseModel = licenseModel;
     }
 }

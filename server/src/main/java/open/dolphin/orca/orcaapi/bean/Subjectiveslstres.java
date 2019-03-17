@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * subjectiveslstres.
+ *
  * @author pns
  */
 public class Subjectiveslstres {
@@ -26,7 +27,7 @@ public class Subjectiveslstres {
     private String Api_Result_Message;
 
     /**
-     *  (例: )
+     * (例: )
      */
     private String Reskey;
 

@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Home_Address_Information. 自宅住所情報
+ *
  * @author pns
  */
 public class HomeAddressInformation {
@@ -37,6 +38,7 @@ public class HomeAddressInformation {
 
     /**
      * 郵便番号 (例: 1130021)
+     *
      * @return the Address_ZipCode
      */
     public String getAddress_ZipCode() {
@@ -45,6 +47,7 @@ public class HomeAddressInformation {
 
     /**
      * 郵便番号 (例: 1130021)
+     *
      * @param Address_ZipCode the Address_ZipCode to set
      */
     public void setAddress_ZipCode(String Address_ZipCode) {
@@ -53,6 +56,7 @@ public class HomeAddressInformation {
 
     /**
      * 住所1 (例: 東京都文京区本駒込)
+     *
      * @return the WholeAddress1
      */
     public String getWholeAddress1() {
@@ -61,6 +65,7 @@ public class HomeAddressInformation {
 
     /**
      * 住所1 (例: 東京都文京区本駒込)
+     *
      * @param WholeAddress1 the WholeAddress1 to set
      */
     public void setWholeAddress1(String WholeAddress1) {
@@ -69,6 +74,7 @@ public class HomeAddressInformation {
 
     /**
      * 住所2 (例: ６−１６−３)
+     *
      * @return the WholeAddress2
      */
     public String getWholeAddress2() {
@@ -77,6 +83,7 @@ public class HomeAddressInformation {
 
     /**
      * 住所2 (例: ６−１６−３)
+     *
      * @param WholeAddress2 the WholeAddress2 to set
      */
     public void setWholeAddress2(String WholeAddress2) {
@@ -85,6 +92,7 @@ public class HomeAddressInformation {
 
     /**
      * 自宅電話番号 (例: 03-3333-2222)
+     *
      * @return the PhoneNumber1
      */
     public String getPhoneNumber1() {
@@ -93,6 +101,7 @@ public class HomeAddressInformation {
 
     /**
      * 自宅電話番号 (例: 03-3333-2222)
+     *
      * @param PhoneNumber1 the PhoneNumber1 to set
      */
     public void setPhoneNumber1(String PhoneNumber1) {
@@ -101,6 +110,7 @@ public class HomeAddressInformation {
 
     /**
      * 連絡先電話番号 (例: 03-3333-1133)
+     *
      * @return the PhoneNumber2
      */
     public String getPhoneNumber2() {
@@ -109,6 +119,7 @@ public class HomeAddressInformation {
 
     /**
      * 連絡先電話番号 (例: 03-3333-1133)
+     *
      * @param PhoneNumber2 the PhoneNumber2 to set
      */
     public void setPhoneNumber2(String PhoneNumber2) {

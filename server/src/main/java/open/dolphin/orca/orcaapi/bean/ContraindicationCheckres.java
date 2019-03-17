@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * contraindication_checkres.
+ *
  * @author pns
  */
 public class ContraindicationCheckres {
@@ -26,7 +27,7 @@ public class ContraindicationCheckres {
     private String Api_Result_Message;
 
     /**
-     *  (例: )
+     * (例: )
      */
     private String Reskey;
 

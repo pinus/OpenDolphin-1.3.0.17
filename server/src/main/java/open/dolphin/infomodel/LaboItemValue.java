@@ -8,7 +8,7 @@ import javax.persistence.*;
 /**
  * LaboItemValue.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 @Entity
 @Table(name = "d_labo_item")
@@ -16,11 +16,12 @@ import javax.persistence.*;
 public class LaboItemValue extends InfoModel {
     private static final long serialVersionUID = -6582278876758760228L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @ManyToOne
-    @JoinColumn(name="specimen_id", nullable=false)
+    @JoinColumn(name = "specimen_id", nullable = false)
     private LaboSpecimenValue laboSpecimen;
 
     private String itemName;

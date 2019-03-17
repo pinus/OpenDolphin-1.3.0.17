@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
  * license = doctor, dentist, nurse, assistantNurse, lab, rad, pharmacist, pt, ot, psy, cps, nutritionist, dentalHygienist, dentalTechnician, clinicalEngineer, careManager, other, acupuncturist, patient
  * licenseCodeSys = MML0026
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 @Embeddable
 public class LicenseModel extends InfoModel {
@@ -20,28 +20,28 @@ public class LicenseModel extends InfoModel {
 
     private String licenseCodeSys;
 
-    public void setLicense(String license) {
-        this.license = license;
-    }
-
     public String getLicense() {
         return license;
     }
 
-    public void setLicenseDesc(String licenseDesc) {
-        this.licenseDesc = licenseDesc;
+    public void setLicense(String license) {
+        this.license = license;
     }
 
     public String getLicenseDesc() {
         return licenseDesc;
     }
 
-    public void setLicenseCodeSys(String licenseCodeSys) {
-        this.licenseCodeSys = licenseCodeSys;
+    public void setLicenseDesc(String licenseDesc) {
+        this.licenseDesc = licenseDesc;
     }
 
     public String getLicenseCodeSys() {
         return licenseCodeSys;
+    }
+
+    public void setLicenseCodeSys(String licenseCodeSys) {
+        this.licenseCodeSys = licenseCodeSys;
     }
 
     @Override

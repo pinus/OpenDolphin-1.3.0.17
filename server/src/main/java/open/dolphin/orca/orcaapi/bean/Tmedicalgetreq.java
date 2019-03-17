@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * tmedicalgetreq.
+ *
  * @author pns
  */
 public class Tmedicalgetreq {
@@ -27,6 +28,7 @@ public class Tmedicalgetreq {
 
     /**
      * 診療日 (例: 2013-10-02)
+     *
      * @return the Perform_Date
      */
     public String getPerform_Date() {
@@ -35,6 +37,7 @@ public class Tmedicalgetreq {
 
     /**
      * 診療日 (例: 2013-10-02)
+     *
      * @param Perform_Date the Perform_Date to set
      */
     public void setPerform_Date(String Perform_Date) {
@@ -43,6 +46,7 @@ public class Tmedicalgetreq {
 
     /**
      * 入院外来区分（1:入院中、2:入院外） (例: 2)
+     *
      * @return the InOut
      */
     public String getInOut() {
@@ -51,6 +55,7 @@ public class Tmedicalgetreq {
 
     /**
      * 入院外来区分（1:入院中、2:入院外） (例: 2)
+     *
      * @param InOut the InOut to set
      */
     public void setInOut(String InOut) {
@@ -59,6 +64,7 @@ public class Tmedicalgetreq {
 
     /**
      * 診療科コード（01:内科） (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -67,6 +73,7 @@ public class Tmedicalgetreq {
 
     /**
      * 診療科コード（01:内科） (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -75,6 +82,7 @@ public class Tmedicalgetreq {
 
     /**
      * 患者番号 (例: 12)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -83,6 +91,7 @@ public class Tmedicalgetreq {
 
     /**
      * 患者番号 (例: 12)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {

@@ -20,6 +20,7 @@ public class UserServiceImpl extends DolphinService implements UserService {
 
     /**
      * 施設管理者が院内 User を登録する.
+     *
      * @param add 登録する User
      * @return 登録した User 数 1
      */
@@ -37,13 +38,14 @@ public class UserServiceImpl extends DolphinService implements UserService {
 
     /**
      * User を検索する.
+     *
      * @param userId 検索するユーザの複合キー
      * @return 該当する User
      */
     @Override
     public UserModel getUser(String userId) {
         UserModel user = em.createQuery("select u from UserModel u where u.userId = :uid", UserModel.class)
-            .setParameter("uid", userId).getSingleResult();
+                .setParameter("uid", userId).getSingleResult();
 
         if (user.getMemberType() != null && user.getMemberType().equals("EXPIRED")) {
             throw new SecurityException("Expired User");
@@ -60,7 +62,7 @@ public class UserServiceImpl extends DolphinService implements UserService {
     @Override
     public List<UserModel> getAllUser() {
         List<UserModel> results = em.createQuery("select u from UserModel u where u.userId like :fid", UserModel.class)
-            .setParameter("fid", getCallersFacilityId()+"%").getResultList();
+                .setParameter("fid", getCallersFacilityId() + "%").getResultList();
 
         return results.stream()
                 .filter(user -> (user != null && user.getMemberType() != null && (!user.getMemberType().equals("EXPIRED")))).collect(Collectors.toList());
@@ -68,6 +70,7 @@ public class UserServiceImpl extends DolphinService implements UserService {
 
     /**
      * User 情報(パスワード等)を更新する.
+     *
      * @param update 更新する UserModel
      * @return 更新したユーザの数 1
      */
@@ -83,6 +86,7 @@ public class UserServiceImpl extends DolphinService implements UserService {
 
     /**
      * User を削除する.
+     *
      * @param removeId 削除するユーザの Id
      * @return 削除したユーザの数 1
      */
@@ -94,28 +98,28 @@ public class UserServiceImpl extends DolphinService implements UserService {
 
         // Stamp を削除する
         List<StampModel> stamps = em.createQuery("select s from StampModel s where s.userId = :pk", StampModel.class)
-            .setParameter("pk", removePk).getResultList();
+                .setParameter("pk", removePk).getResultList();
         for (StampModel stamp : stamps) {
             em.remove(stamp);
         }
 
         // Subscribed Tree を削除する
         List<SubscribedTreeModel> subscribedTrees = em.createQuery("select s from SubscribedTreeModel s where s.user.id = :pk", SubscribedTreeModel.class)
-            .setParameter("pk", removePk).getResultList();
+                .setParameter("pk", removePk).getResultList();
         for (SubscribedTreeModel tree : subscribedTrees) {
             em.remove(tree);
         }
 
         // PublishedTree を削除する
         List<PublishedTreeModel> publishedTrees = em.createQuery("select p from PublishedTreeModel p where p.user.id = :pk", PublishedTreeModel.class)
-            .setParameter("pk", removePk).getResultList();
+                .setParameter("pk", removePk).getResultList();
         for (PublishedTreeModel tree : publishedTrees) {
             em.remove(tree);
         }
 
         // PersonalTree を削除する
         PersonalTreeModel stampTree = em.createQuery("select s from PersonalTreeModel s where s.user.id = :pk", PersonalTreeModel.class)
-            .setParameter("pk", removePk).getSingleResult();
+                .setParameter("pk", removePk).getSingleResult();
         em.remove(stampTree);
 
         // ユーザを削除する
@@ -132,46 +136,58 @@ public class UserServiceImpl extends DolphinService implements UserService {
             // Document, Module, Image (Cascade)
             List<DocumentModel> documents =
                     em.createQuery("select d from DocumentModel d where d.creator.id = :removeId", DocumentModel.class)
-                    .setParameter("removeId", removePk).getResultList();
+                            .setParameter("removeId", removePk).getResultList();
             System.out.println(documents.size() + " 件のドキュメントを削除します。");
 
             // Document を削除すれば ModuleとImageはカスケード削除される
-            for (DocumentModel document : documents) { em.remove(document); }
+            for (DocumentModel document : documents) {
+                em.remove(document);
+            }
 
             // Diagnosis
             List<RegisteredDiagnosisModel> rds =
                     em.createQuery("select d from RegisteredDiagnosisModel d where d.creator.id = :removeId", RegisteredDiagnosisModel.class)
-                    .setParameter("removeId", removePk).getResultList();
+                            .setParameter("removeId", removePk).getResultList();
             System.out.println(rds.size() + " 件の傷病名を削除します。");
-            for (RegisteredDiagnosisModel rd : rds) { em.remove(rd); }
+            for (RegisteredDiagnosisModel rd : rds) {
+                em.remove(rd);
+            }
 
             // Observation
             List<ObservationModel> observations =
                     em.createQuery("select o from ObservationModel o where o.creator.id = :removeId", ObservationModel.class)
-                    .setParameter("removeId", removePk).getResultList();
+                            .setParameter("removeId", removePk).getResultList();
             System.out.println(observations.size() + " 件の観測を削除します。");
-            for (ObservationModel observation : observations) { em.remove(observation); }
+            for (ObservationModel observation : observations) {
+                em.remove(observation);
+            }
 
             // 患者メモ
             List<PatientMemoModel> memos =
                     em.createQuery("select o from PatientMemoModel o where o.creator.id = :removeId", PatientMemoModel.class)
-                    .setParameter("removeId", removePk).getResultList();
+                            .setParameter("removeId", removePk).getResultList();
             System.out.println(memos.size() + " 件の患者メモを削除します。");
-            for (PatientMemoModel memo : memos) { em.remove(memo); }
+            for (PatientMemoModel memo : memos) {
+                em.remove(memo);
+            }
 
             // 予約
             List<AppointmentModel> appos =
                     em.createQuery("select o from AppointmentModel o where o.creator.id = :removeId", AppointmentModel.class)
-                    .setParameter("removeId", removePk).getResultList();
+                            .setParameter("removeId", removePk).getResultList();
             System.out.println(appos.size() + " 件の予約を削除します。");
-            for (AppointmentModel appo : appos) { em.remove(appo); }
+            for (AppointmentModel appo : appos) {
+                em.remove(appo);
+            }
 
             // ラボ
             List<LaboModuleValue> labos =
                     em.createQuery("select o from LaboModuleValue o where o.creator.id = :removeId", LaboModuleValue.class)
-                    .setParameter("removeId", removePk).getResultList();
+                            .setParameter("removeId", removePk).getResultList();
             System.out.println(labos.size() + " 件のラボを削除します。");
-            for (LaboModuleValue lb : labos) { em.remove(lb); }
+            for (LaboModuleValue lb : labos) {
+                em.remove(lb);
+            }
 
             // UserModel 削除
             em.remove(remove);
@@ -182,6 +198,7 @@ public class UserServiceImpl extends DolphinService implements UserService {
 
     /**
      * 施設情報を更新する.
+     *
      * @param update 更新する User
      * @return 更新した User 数 1
      */
@@ -192,7 +209,7 @@ public class UserServiceImpl extends DolphinService implements UserService {
         FacilityModel current = em.find(FacilityModel.class, updateFacility.getId());
         updateFacility.setMemberType(current.getMemberType());
         updateFacility.setRegisteredDate(current.getRegisteredDate());
-        em.merge(updateFacility );
+        em.merge(updateFacility);
         return 1;
     }
 }

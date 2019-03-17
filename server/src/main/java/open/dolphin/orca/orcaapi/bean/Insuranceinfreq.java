@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * insuranceinfreq.
+ *
  * @author pns
  */
 public class Insuranceinfreq {

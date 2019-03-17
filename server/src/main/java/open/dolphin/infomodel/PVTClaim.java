@@ -7,7 +7,7 @@ import java.util.StringJoiner;
 /**
  * Simple Claim　Class used for PVT.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  * Modified by Mirror-I corp for adding 'claimDeptName' and related function to store/get Department name
  */
 public class PVTClaim extends InfoModel {
@@ -107,26 +107,42 @@ public class PVTClaim extends InfoModel {
 
         StringJoiner sj = new StringJoiner("\n");
 
-        if (claimStatus != null) { sj.add("ClaimStatus: " + claimStatus); }
-        if (claimRegistTime != null) { sj.add("ClaimRegistTime: " + claimRegistTime); }
-        if (claimAdmitFlag != null) { sj.add("ClaimAdmitFlag: " + claimAdmitFlag); }
+        if (claimStatus != null) {
+            sj.add("ClaimStatus: " + claimStatus);
+        }
+        if (claimRegistTime != null) {
+            sj.add("ClaimRegistTime: " + claimRegistTime);
+        }
+        if (claimAdmitFlag != null) {
+            sj.add("ClaimAdmitFlag: " + claimAdmitFlag);
+        }
         // Mirror-I start
-        if (claimDeptName != null) { sj.add("ClaimDeptName: " + claimDeptName); }
+        if (claimDeptName != null) {
+            sj.add("ClaimDeptName: " + claimDeptName);
+        }
         // Mirror-I end
-        if (claimAppName != null) { claimAppName.forEach(n -> sj.add("ClaimAppName: " + n)); }
-        if (claimAppMemo != null) { sj.add("ClaimAppointMemo: " + claimAppMemo); }
-        if (claimItemCode != null) { sj.add("ClaimItemCode: " + claimItemCode); }
-        if (claimItemName != null) { sj.add("ClaimItemName: " + claimItemName); }
+        if (claimAppName != null) {
+            claimAppName.forEach(n -> sj.add("ClaimAppName: " + n));
+        }
+        if (claimAppMemo != null) {
+            sj.add("ClaimAppointMemo: " + claimAppMemo);
+        }
+        if (claimItemCode != null) {
+            sj.add("ClaimItemCode: " + claimItemCode);
+        }
+        if (claimItemName != null) {
+            sj.add("ClaimItemName: " + claimItemName);
+        }
 
         return sj.toString();
     }
 
-    public void setInsuranceUid(String insuranceUid) {
-        this.insuranceUid = insuranceUid;
-    }
-
     public String getInsuranceUid() {
         return insuranceUid;
+    }
+
+    public void setInsuranceUid(String insuranceUid) {
+        this.insuranceUid = insuranceUid;
     }
 
     public String getJmariCode() {

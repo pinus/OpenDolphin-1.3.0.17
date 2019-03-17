@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi.bean;
 /**
  * System01Manageres.
  * contains response to system01_managereq (either departmentres/physicianres/system1001res)
+ *
  * @author pns
  */
 public class System01Manageres {

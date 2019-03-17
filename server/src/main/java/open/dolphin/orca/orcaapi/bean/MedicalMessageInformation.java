@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Medical_Message_Information. 診療行為登録結果
+ *
  * @author pns
  */
 public class MedicalMessageInformation {
@@ -27,6 +28,7 @@ public class MedicalMessageInformation {
 
     /**
      * 診療行為結果コード (例: 03)
+     *
      * @return the Medical_Result
      */
     public String getMedical_Result() {
@@ -35,6 +37,7 @@ public class MedicalMessageInformation {
 
     /**
      * 診療行為結果コード (例: 03)
+     *
      * @param Medical_Result the Medical_Result to set
      */
     public void setMedical_Result(String Medical_Result) {
@@ -43,6 +46,7 @@ public class MedicalMessageInformation {
 
     /**
      * 診療行為結果メッセージ (例: 既に同日の診療データが登録されています)
+     *
      * @return the Medical_Result_Message
      */
     public String getMedical_Result_Message() {
@@ -51,6 +55,7 @@ public class MedicalMessageInformation {
 
     /**
      * 診療行為結果メッセージ (例: 既に同日の診療データが登録されています)
+     *
      * @param Medical_Result_Message the Medical_Result_Message to set
      */
     public void setMedical_Result_Message(String Medical_Result_Message) {
@@ -59,6 +64,7 @@ public class MedicalMessageInformation {
 
     /**
      * 診療行為警告情報（繰り返し50） (例:  )
+     *
      * @return the Medical_Warning_Info
      */
     public MedicalWarningInfo[] getMedical_Warning_Info() {
@@ -67,6 +73,7 @@ public class MedicalMessageInformation {
 
     /**
      * 診療行為警告情報（繰り返し50） (例:  )
+     *
      * @param Medical_Warning_Info the Medical_Warning_Info to set
      */
     public void setMedical_Warning_Info(MedicalWarningInfo[] Medical_Warning_Info) {
@@ -75,6 +82,7 @@ public class MedicalMessageInformation {
 
     /**
      * エラーメッセージ内容（繰り返し　５０） (例: )
+     *
      * @return the Medical_Message_Info
      */
     public MedicalMessageInfo[] getMedical_Message_Info() {
@@ -83,6 +91,7 @@ public class MedicalMessageInformation {
 
     /**
      * エラーメッセージ内容（繰り返し　５０） (例: )
+     *
      * @param Medical_Message_Info the Medical_Message_Info to set
      */
     public void setMedical_Message_Info(MedicalMessageInfo[] Medical_Message_Info) {

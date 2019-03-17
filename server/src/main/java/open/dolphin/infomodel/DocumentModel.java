@@ -12,10 +12,9 @@ import java.util.stream.Collectors;
 /**
  * DocumentModel.
  *
- * @author Minagawa,Kazushi
- *
+ * @author Minagawa, Kazushi
  */
-@Indexed(index="document")      // hibernate search
+@Indexed(index = "document")      // hibernate search
 @Entity
 @Table(name = "d_document")
 public class DocumentModel extends KarteEntryBean<DocumentModel> {
@@ -25,10 +24,10 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
     private DocInfoModel docInfo;
 
     @IndexedEmbedded        // hibernate search
-    @OneToMany(mappedBy="document", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "document", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Collection<ModuleModel> modules;
 
-    @OneToMany(mappedBy="document", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "document", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Collection<SchemaModel> schema;
 
     public DocumentModel() {
@@ -60,6 +59,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * 文書情報を返す.
+     *
      * @return 文書情報 DocInfoModel
      */
     public DocInfoModel getDocInfo() {
@@ -68,6 +68,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * 文書情報を設定する.
+     *
      * @param docInfo 文書情報 DocInfoModel
      */
     public void setDocInfo(DocInfoModel docInfo) {
@@ -76,6 +77,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * SchemaModel の Collection を返す.
+     *
      * @return Collection of SchemaModel
      */
     public Collection<SchemaModel> getSchema() {
@@ -84,6 +86,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * SchemaModel の Collection を設定する.
+     *
      * @param images Collection of SchemaModel
      */
     public void setSchema(Collection<SchemaModel> images) {
@@ -92,6 +95,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * SchemaModel を追加する.
+     *
      * @param model SchemaModel
      */
     public void addSchema(SchemaModel model) {
@@ -113,6 +117,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
     /**
      * index 番目の SchemaModel を取り出す.
      * Collection の実体は ArrayList
+     *
      * @param index 取り出す index
      * @return 取り出された SchemaModel. ない場合は null.
      */
@@ -131,6 +136,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * ModuleModel の Collection を返す.
+     *
      * @return Collection of ModuleModel
      */
     public Collection<ModuleModel> getModules() {
@@ -139,6 +145,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * ModuleModel の Collection を設定する.
+     *
      * @param modules Collection of ModuleModel
      */
     public void setModules(Collection<ModuleModel> modules) {
@@ -147,6 +154,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * ModuleModel を追加する.
+     *
      * @param addModule ModuleModel
      */
     public void addModule(ModuleModel addModule) {
@@ -167,6 +175,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * 引数のエンティティを持つ ModuleModel を返す.
+     *
      * @param entityName エンティティの名前
      * @return 該当するモジュールモデル. ない場合は null.
      */
@@ -184,6 +193,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
 
     /**
      * 引数のエンティティ名を持つ ModuleInfoBean を返す.
+     *
      * @param entityName エンティティの名前
      * @return モジュール情報 ModuleInfoBean. なければ null.
      */
@@ -196,8 +206,8 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
                     .filter(moduleInfo -> moduleInfo.getEntity().equals(entityName))
                     .collect(Collectors.toList());
 
-            if (! list.isEmpty()) {
-                return list.toArray(new ModuleInfoBean[list.size()]);
+            if (!list.isEmpty()) {
+                return list.toArray(new ModuleInfoBean[0]);
             }
         }
         return null;

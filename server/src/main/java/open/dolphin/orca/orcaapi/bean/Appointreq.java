@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * appointreq.
+ *
  * @author pns
  */
 public class Appointreq {
@@ -62,6 +63,7 @@ public class Appointreq {
 
     /**
      * 患者番号 (例: 00012)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -70,6 +72,7 @@ public class Appointreq {
 
     /**
      * 患者番号 (例: 00012)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -78,6 +81,7 @@ public class Appointreq {
 
     /**
      * 予約氏名(患者氏名) (例: 日医　太郎)
+     *
      * @return the WholeName
      */
     public String getWholeName() {
@@ -86,6 +90,7 @@ public class Appointreq {
 
     /**
      * 予約氏名(患者氏名) (例: 日医　太郎)
+     *
      * @param WholeName the WholeName to set
      */
     public void setWholeName(String WholeName) {
@@ -94,6 +99,7 @@ public class Appointreq {
 
     /**
      * カナ氏名 (例: ニチイ　タロウ)
+     *
      * @return the WholeName_inKana
      */
     public String getWholeName_inKana() {
@@ -102,6 +108,7 @@ public class Appointreq {
 
     /**
      * カナ氏名 (例: ニチイ　タロウ)
+     *
      * @param WholeName_inKana the WholeName_inKana to set
      */
     public void setWholeName_inKana(String WholeName_inKana) {
@@ -110,6 +117,7 @@ public class Appointreq {
 
     /**
      * 予約日 (例: 2014-07-02)
+     *
      * @return the Appointment_Date
      */
     public String getAppointment_Date() {
@@ -118,6 +126,7 @@ public class Appointreq {
 
     /**
      * 予約日 (例: 2014-07-02)
+     *
      * @param Appointment_Date the Appointment_Date to set
      */
     public void setAppointment_Date(String Appointment_Date) {
@@ -126,6 +135,7 @@ public class Appointreq {
 
     /**
      * 予約時間 (例: 12:10:00)
+     *
      * @return the Appointment_Time
      */
     public String getAppointment_Time() {
@@ -134,6 +144,7 @@ public class Appointreq {
 
     /**
      * 予約時間 (例: 12:10:00)
+     *
      * @param Appointment_Time the Appointment_Time to set
      */
     public void setAppointment_Time(String Appointment_Time) {
@@ -142,6 +153,7 @@ public class Appointreq {
 
     /**
      * 予約ID (例:  )
+     *
      * @return the Appointment_Id
      */
     public String getAppointment_Id() {
@@ -150,6 +162,7 @@ public class Appointreq {
 
     /**
      * 予約ID (例:  )
+     *
      * @param Appointment_Id the Appointment_Id to set
      */
     public void setAppointment_Id(String Appointment_Id) {
@@ -158,6 +171,7 @@ public class Appointreq {
 
     /**
      * 診療科コード※４(01:内科) (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -166,6 +180,7 @@ public class Appointreq {
 
     /**
      * 診療科コード※４(01:内科) (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -174,6 +189,7 @@ public class Appointreq {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @return the Physician_Code
      */
     public String getPhysician_Code() {
@@ -182,6 +198,7 @@ public class Appointreq {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @param Physician_Code the Physician_Code to set
      */
     public void setPhysician_Code(String Physician_Code) {
@@ -190,6 +207,7 @@ public class Appointreq {
 
     /**
      * 診療内容区分※５(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断 、07:予防注射、99:該当なし) (例: 01)
+     *
      * @return the Medical_Information
      */
     public String getMedical_Information() {
@@ -198,6 +216,7 @@ public class Appointreq {
 
     /**
      * 診療内容区分※５(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断 、07:予防注射、99:該当なし) (例: 01)
+     *
      * @param Medical_Information the Medical_Information to set
      */
     public void setMedical_Information(String Medical_Information) {
@@ -206,6 +225,7 @@ public class Appointreq {
 
     /**
      * 予約内容区分(01:患者による予約、02:医師による予約) (例: 01)
+     *
      * @return the Appointment_Information
      */
     public String getAppointment_Information() {
@@ -214,6 +234,7 @@ public class Appointreq {
 
     /**
      * 予約内容区分(01:患者による予約、02:医師による予約) (例: 01)
+     *
      * @param Appointment_Information the Appointment_Information to set
      */
     public void setAppointment_Information(String Appointment_Information) {
@@ -222,6 +243,7 @@ public class Appointreq {
 
     /**
      * 予約メモ内容 (例: 予約めもです)
+     *
      * @return the Appointment_Note
      */
     public String getAppointment_Note() {
@@ -230,6 +252,7 @@ public class Appointreq {
 
     /**
      * 予約メモ内容 (例: 予約めもです)
+     *
      * @param Appointment_Note the Appointment_Note to set
      */
     public void setAppointment_Note(String Appointment_Note) {

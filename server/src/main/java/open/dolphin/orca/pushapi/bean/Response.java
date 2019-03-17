@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * PushAPI から返ってくる Response.
+ *
  * @author pns
  */
 public class Response extends Command {
@@ -37,6 +38,7 @@ public class Response extends Command {
 
     /**
      * エラーとなったコマンド.
+     *
      * @return the cause
      */
     public String getCause() {
@@ -51,6 +53,7 @@ public class Response extends Command {
      * <tr><td>INVALID_PARAMS</td><td>パラメータが不正</td></tr>
      * <tr><td>PARSE_ERROR</td><td>受け取ったJSONのパースエラー</td></tr>
      * </table>
+     *
      * @return the code
      */
     public String getCode() {
@@ -59,6 +62,7 @@ public class Response extends Command {
 
     /**
      * エラーの理由.
+     *
      * @return the reason
      */
     public String getReason() {
@@ -67,6 +71,7 @@ public class Response extends Command {
 
     /**
      * エラーの理由.
+     *
      * @param reason エラーの理由
      */
     public void setReason(String reason) {
@@ -75,6 +80,7 @@ public class Response extends Command {
 
     /**
      * データ.
+     *
      * @return the data
      */
     public Data getData() {

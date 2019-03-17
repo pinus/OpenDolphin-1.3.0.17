@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Ac_Money_Rounding_No_Reduction_Information. 請求額端数区分（減免無）情報
+ *
  * @author pns
  */
 public class AcMoneyRoundingNoReductionInformation {

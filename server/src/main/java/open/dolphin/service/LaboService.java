@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
- *
  * @author pns
  */
 @Path("labo")
@@ -24,6 +23,7 @@ public interface LaboService {
 
     /**
      * LaboModuleを保存する。
+     *
      * @param laboModuleValue LaboModuleValue
      * @return
      */
@@ -33,6 +33,7 @@ public interface LaboService {
 
     /**
      * 患者の検体検査モジュールを取得する。
+     *
      * @param spec LaboSearchSpec 検索仕様
      * @return laboModule の Collection
      */

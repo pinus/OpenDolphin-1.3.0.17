@@ -7,31 +7,52 @@ package open.dolphin.infomodel;
  * @author pns
  */
 public class KarteState {
-    private KarteState() {}
-
-    /** 診察未終了で閉じている状態 */
-    public static final int CLOSE_NONE          = 0;
-    /** 診察が終了し閉じている状態  */
-    public static final int CLOSE_SAVE          = 1;
-    /** 診察未終了でオープンしている状態 */
-    public static final int OPEN_NONE           = 2;
-    /** 診察が終了しオープンしている状態 */
-    public static final int OPEN_SAVE           = 3;
-    /** 診察が終了でカルテ未記載でオープンの状態 */
-    public static final int OPEN_UNFINISHED     = 4;
-    /** 診察が終了でカルテ未記載で閉じている状態 */
-    public static final int CLOSE_UNFINISHED    = 5;
-    /** 仮保存でオープンしている状態 */
-    public static final int OPEN_TEMP           = 6;
-    /** 仮保存で閉じている状態 */
-    public static final int CLOSE_TEMP          = 7;
-    /** 受付キャンセル */
-    public static final int CANCEL_PVT          = -1;
-    /** ReadOnly */
-    public static final int READ_ONLY           = -2;
+    /**
+     * 診察未終了で閉じている状態
+     */
+    public static final int CLOSE_NONE = 0;
+    /**
+     * 診察が終了し閉じている状態
+     */
+    public static final int CLOSE_SAVE = 1;
+    /**
+     * 診察未終了でオープンしている状態
+     */
+    public static final int OPEN_NONE = 2;
+    /**
+     * 診察が終了しオープンしている状態
+     */
+    public static final int OPEN_SAVE = 3;
+    /**
+     * 診察が終了でカルテ未記載でオープンの状態
+     */
+    public static final int OPEN_UNFINISHED = 4;
+    /**
+     * 診察が終了でカルテ未記載で閉じている状態
+     */
+    public static final int CLOSE_UNFINISHED = 5;
+    /**
+     * 仮保存でオープンしている状態
+     */
+    public static final int OPEN_TEMP = 6;
+    /**
+     * 仮保存で閉じている状態
+     */
+    public static final int CLOSE_TEMP = 7;
+    /**
+     * 受付キャンセル
+     */
+    public static final int CANCEL_PVT = -1;
+    /**
+     * ReadOnly
+     */
+    public static final int READ_ONLY = -2;
+    private KarteState() {
+    }
 
     /**
      * OPEN かどうかを判定.
+     *
      * @param state 判定される state
      * @return 判定結果
      */
@@ -42,6 +63,7 @@ public class KarteState {
 
     /**
      * CLOSE かどうかを判定.
+     *
      * @param state 判定される state
      * @return 判定結果
      */
@@ -52,6 +74,7 @@ public class KarteState {
 
     /**
      * NONE かどうかを判定.
+     *
      * @param state 判定される state
      * @return 判定結果
      */
@@ -61,6 +84,7 @@ public class KarteState {
 
     /**
      * CLOSE を OPEN に変換.
+     *
      * @param state 判定される state
      * @return 判定結果
      */
@@ -75,6 +99,7 @@ public class KarteState {
 
     /**
      * OPEN を CLOSE に変換 〜単純バージョン.
+     *
      * @param state 変換する state
      * @return 変換された state
      */
@@ -90,7 +115,8 @@ public class KarteState {
     /**
      * OPEN を CLOSE に変換 〜SAVE/UNFINISHED 判定バージョン.
      * カルテが未記載の場合は CLOSE_UNFINISHED にする.
-     * @param state 変換する state
+     *
+     * @param state   変換する state
      * @param isEmpty カルテが未記載かどうかのフラグ
      * @return 変換された state
      */
@@ -99,7 +125,7 @@ public class KarteState {
         if (state == OPEN_TEMP) return CLOSE_TEMP;
 
         if (state == OPEN_SAVE || state == OPEN_UNFINISHED) {
-            return (isEmpty)? CLOSE_UNFINISHED: CLOSE_SAVE;
+            return (isEmpty) ? CLOSE_UNFINISHED : CLOSE_SAVE;
         }
         return state;
     }

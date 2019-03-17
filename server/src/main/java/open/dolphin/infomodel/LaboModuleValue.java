@@ -6,7 +6,6 @@ import java.util.Collection;
 
 /**
  * LaboModuleValue.
- *
  */
 @Entity
 @Table(name = "d_labo_module")
@@ -14,7 +13,7 @@ public class LaboModuleValue extends KarteEntryBean<LaboModuleValue> {
     private static final long serialVersionUID = 582445940772745523L;
 
     // MMLのUID
-    @Column(nullable=false, unique=true, length=32)
+    @Column(nullable = false, unique = true, length = 32)
     private String docId;
 
     @Transient
@@ -58,7 +57,7 @@ public class LaboModuleValue extends KarteEntryBean<LaboModuleValue> {
 
     private String laboratoryCenterCodeId;
 
-    @OneToMany(mappedBy="laboModule", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "laboModule", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Collection<LaboSpecimenValue> laboSpecimens;
 
     public String getDocId() {
@@ -238,6 +237,7 @@ public class LaboModuleValue extends KarteEntryBean<LaboModuleValue> {
 
     /**
      * サンプルタイムで比較する.
+     *
      * @param other 比較対象
      * @return 比較値
      */

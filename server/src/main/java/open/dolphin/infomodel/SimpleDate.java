@@ -19,19 +19,6 @@ public class SimpleDate extends InfoModel implements Comparable<SimpleDate> {
 
     private String eventCode;
 
-    public static SimpleDate mmlDateToSimpleDate(String mmlDate) {
-        // mmlDate = YYYY-MM-DDThh:mm:ss
-        int year = Integer.parseInt(mmlDate.substring(0, 4));
-        int month = Integer.parseInt(mmlDate.substring(5, 7)) - 1; // for
-        // Calendar
-        int date = Integer.parseInt(mmlDate.substring(8, 10));
-        return new SimpleDate(year, month, date);
-    }
-
-    public static String simpleDateToMmldate(SimpleDate sd) {
-        return String.format("%d-%02d-%02d", sd.getYear(), sd.getMonth()+1, sd.getDay());
-    }
-
     public SimpleDate(int year, int month, int day) {
         this.year = year;
         this.month = month;
@@ -46,28 +33,41 @@ public class SimpleDate extends InfoModel implements Comparable<SimpleDate> {
         this(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH), gc.get(Calendar.DAY_OF_MONTH));
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public static SimpleDate mmlDateToSimpleDate(String mmlDate) {
+        // mmlDate = YYYY-MM-DDThh:mm:ss
+        int year = Integer.parseInt(mmlDate.substring(0, 4));
+        int month = Integer.parseInt(mmlDate.substring(5, 7)) - 1; // for
+        // Calendar
+        int date = Integer.parseInt(mmlDate.substring(8, 10));
+        return new SimpleDate(year, month, date);
+    }
+
+    public static String simpleDateToMmldate(SimpleDate sd) {
+        return String.format("%d-%02d-%02d", sd.getYear(), sd.getMonth() + 1, sd.getDay());
     }
 
     public int getYear() {
         return year;
     }
 
-    public void setMonth(int month) {
-        this.month = month;
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public int getMonth() {
         return month;
     }
 
-    public void setDay(int day) {
-        this.day = day;
+    public void setMonth(int month) {
+        this.month = month;
     }
 
     public int getDay() {
         return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
     }
 
     public boolean equalDate(int year, int month, int day) {
@@ -79,12 +79,12 @@ public class SimpleDate extends InfoModel implements Comparable<SimpleDate> {
         return String.valueOf(day);
     }
 
-    public void setEventCode(String c) {
-        this.eventCode = c;
-    }
-
     public String getEventCode() {
         return eventCode;
+    }
+
+    public void setEventCode(String c) {
+        this.eventCode = c;
     }
 
     @Override

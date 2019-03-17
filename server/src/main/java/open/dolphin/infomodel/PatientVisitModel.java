@@ -16,69 +16,83 @@ import java.util.StringTokenizer;
 @Entity
 @EntityListeners(PatientVisitModelListener.class)
 @Table(name = "d_patient_visit")
-public class PatientVisitModel extends InfoModel  {
-    private static final long serialVersionUID = 7049490761810599245L;
-
+public class PatientVisitModel extends InfoModel {
     public static final DataFlavor PVT_FLAVOR =
             new DataFlavor(open.dolphin.infomodel.PatientVisitModel.class, "Patient Visit");
-
     public static final DataFlavor[] flavors = {PVT_FLAVOR};
-
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    private static final long serialVersionUID = 7049490761810599245L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    /** 患者 */
+    /**
+     * 患者
+     */
     @ManyToOne
-    @JoinColumn(name="patient_id", nullable=false)
+    @JoinColumn(name = "patient_id", nullable = false)
     private PatientModel patient;
 
-    /** 施設ID  */
-    @Column(nullable=false)
+    /**
+     * 施設ID
+     */
+    @Column(nullable = false)
     private String facilityId;
 
-    /** 受付リスト上の番号 */
+    /**
+     * 受付リスト上の番号
+     */
     @Transient
     private int number;
 
-    /** 来院時間 */
-    @Column(nullable=false)
+    /**
+     * 来院時間
+     */
+    @Column(nullable = false)
     private String pvtDate;
 
-    /** 予約 */
+    /**
+     * 予約
+     */
     @Transient
     private String appointment;
 
-    /** 診療科 */
+    /**
+     * 診療科
+     */
     private String department;
 
-    /** 終了フラグ */
+    /**
+     * 終了フラグ
+     */
     private int status;
 
-    /** 健康保険GUID 2006-05-01 */
+    /**
+     * 健康保険GUID 2006-05-01
+     */
     private String insuranceUid;
 
-    /** 今まで付いた病名の総数 */
-    @Column(nullable=false)
+    /**
+     * 今まで付いた病名の総数
+     */
+    @Column(nullable = false)
     private int byomeiCount;
 
-    /** 今日付いた病名の数 */
-    @Column(nullable=false)
+    /**
+     * 今日付いた病名の数
+     */
+    @Column(nullable = false)
     private int byomeiCountToday;
 
-    /** カルテ記載があるかどうか */
+    /**
+     * カルテ記載があるかどうか
+     */
     @Transient
     private boolean karteEmpty;
 
-    /** ORCA から送られる「診療内容」 */
+    /**
+     * ORCA から送られる「診療内容」
+     */
     private String memo;
-
-    public void setByomeiCount(int bc) {
-        byomeiCount = bc;
-    }
-
-    public void setByomeiCountToday(int bct) {
-        byomeiCountToday = bct;
-    }
 
     public boolean isShoshin() {
         return (byomeiCount == byomeiCountToday);
@@ -88,28 +102,36 @@ public class PatientVisitModel extends InfoModel  {
         return (byomeiCount != 0);
     }
 
-    public void setKarteEmpty(boolean k) {
-        karteEmpty = k;
-    }
-
     public boolean isKarteEmpty() {
         return karteEmpty;
+    }
+
+    public void setKarteEmpty(boolean k) {
+        karteEmpty = k;
     }
 
     public int getByomeiCount() {
         return byomeiCount;
     }
 
+    public void setByomeiCount(int bc) {
+        byomeiCount = bc;
+    }
+
     public int getByomeiCountToday() {
         return byomeiCountToday;
     }
 
-    public void setMemo(String val) {
-        memo = val;
+    public void setByomeiCountToday(int bct) {
+        byomeiCountToday = bct;
     }
 
     public String getMemo() {
         return memo;
+    }
+
+    public void setMemo(String val) {
+        memo = val;
     }
 
     public long getId() {
@@ -136,20 +158,20 @@ public class PatientVisitModel extends InfoModel  {
         this.facilityId = facilityId;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
     public int getNumber() {
         return number;
     }
 
-    public void setPvtDate(String time) {
-        this.pvtDate = time;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getPvtDate() {
         return pvtDate;
+    }
+
+    public void setPvtDate(String time) {
+        this.pvtDate = time;
     }
 
     public String getPvtDateTrimTime() {
@@ -168,14 +190,14 @@ public class PatientVisitModel extends InfoModel  {
         this.appointment = appointment;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
     public String getDepartment() {
         // 1.3 までの暫定
         String[] tokens = tokenizeDept(department);
         return tokens[0];
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     public String getDepartmentCode() {
@@ -225,12 +247,12 @@ public class PatientVisitModel extends InfoModel  {
         return ret;
     }
 
-    public void setState(int state) {
-        this.status = state;
-    }
-
     public int getState() {
         return status;
+    }
+
+    public void setState(int state) {
+        this.status = state;
     }
 
     public String getPatientId() {
@@ -257,12 +279,12 @@ public class PatientVisitModel extends InfoModel  {
         return ModelUtils.getAge(getPatient().getBirthday());
     }
 
-    public void setInsuranceUid(String insuranceUid) {
-        this.insuranceUid = insuranceUid;
-    }
-
     public String getInsuranceUid() {
         return insuranceUid;
+    }
+
+    public void setInsuranceUid(String insuranceUid) {
+        this.insuranceUid = insuranceUid;
     }
 
     /////////////////// Transferable 処理 //////////////////////////

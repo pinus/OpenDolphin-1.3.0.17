@@ -7,10 +7,10 @@ import javax.persistence.*;
 /**
  * StampModel.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 @Entity
-@Table(name="d_stamp")
+@Table(name = "d_stamp")
 public class StampModel extends InfoModel {
     private static final long serialVersionUID = 7588591951375345379L;
 
@@ -18,13 +18,13 @@ public class StampModel extends InfoModel {
     private String id;
 
     // UserPK
-    @Column(nullable=false)
+    @Column(nullable = false)
     private long userId;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String entity;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Lob
     private byte[] stampBytes;
 
@@ -32,36 +32,36 @@ public class StampModel extends InfoModel {
     @Transient
     private IInfoModel stamp;
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getId() {
         return id;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public long getUserId() {
         return userId;
     }
 
-    public void setEntity(String entity) {
-        this.entity = entity;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getEntity() {
         return entity;
     }
 
-    public void setStampBytes(byte[] stampBytes) {
-        this.stampBytes = stampBytes;
+    public void setEntity(String entity) {
+        this.entity = entity;
     }
 
     public byte[] getStampBytes() {
         return stampBytes;
+    }
+
+    public void setStampBytes(byte[] stampBytes) {
+        this.stampBytes = stampBytes;
     }
 
     public IInfoModel getStamp() {
@@ -74,7 +74,7 @@ public class StampModel extends InfoModel {
 
     @Override
     public int hashCode() {
-        return (id == null)? "".hashCode() : id.hashCode();
+        return (id == null) ? "".hashCode() : id.hashCode();
     }
 
     @Override

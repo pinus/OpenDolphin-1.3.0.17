@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * medicalv2req3.
+ *
  * @author pns
  */
 public class Medicalv2req3 {

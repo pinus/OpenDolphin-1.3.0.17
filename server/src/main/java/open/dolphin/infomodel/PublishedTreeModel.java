@@ -11,7 +11,7 @@ import javax.persistence.Transient;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 @Entity
-@Table(name="d_published_tree")
+@Table(name = "d_published_tree")
 public class PublishedTreeModel extends StampTreeBean {
     private static final long serialVersionUID = -1402248987372246092L;
 

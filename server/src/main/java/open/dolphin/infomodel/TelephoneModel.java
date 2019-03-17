@@ -3,9 +3,9 @@ package open.dolphin.infomodel;
 /**
  * TelephoneModel.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
-public class TelephoneModel  extends InfoModel {
+public class TelephoneModel extends InfoModel {
     private static final long serialVersionUID = -3520256828672499135L;
 
     private String telephoneType;
@@ -26,75 +26,75 @@ public class TelephoneModel  extends InfoModel {
 
     private String memo;
 
-    public void setTelephoneType(String telephoneClass) {
-        this.telephoneType = telephoneClass;
-    }
-
     public String getTelephoneType() {
         return telephoneType;
     }
 
-    public void setTelephoneTypeDesc(String telephoneClassDesc) {
-        this.telephoneTypeDesc = telephoneClassDesc;
+    public void setTelephoneType(String telephoneClass) {
+        this.telephoneType = telephoneClass;
     }
 
     public String getTelephoneTypeDesc() {
         return telephoneTypeDesc;
     }
 
-    public void setTelephoneTypeCodeSys(String telephoneClassCodeSys) {
-        this.telephoneTypeCodeSys = telephoneClassCodeSys;
+    public void setTelephoneTypeDesc(String telephoneClassDesc) {
+        this.telephoneTypeDesc = telephoneClassDesc;
     }
 
     public String getTelephoneTypeCodeSys() {
         return telephoneTypeCodeSys;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setTelephoneTypeCodeSys(String telephoneClassCodeSys) {
+        this.telephoneTypeCodeSys = telephoneClassCodeSys;
     }
 
     public String getCountry() {
         return country;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getArea() {
         return area;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setArea(String area) {
+        this.area = area;
     }
 
     public String getCity() {
         return city;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getNumber() {
         return number;
     }
 
-    public void setExtension(String extension) {
-        this.extension = extension;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getExtension() {
         return extension;
     }
 
-    public void setMemo(String memo) {
-        this.memo = memo;
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     public String getMemo() {
         return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

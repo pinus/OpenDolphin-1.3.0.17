@@ -8,25 +8,26 @@ import javax.persistence.*;
 /**
  * RoleModel.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 @Entity
-@Table(name="d_roles")
+@Table(name = "d_roles")
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
-public class RoleModel extends InfoModel  {
-    private static final long serialVersionUID =  8116489464515271217L;
+public class RoleModel extends InfoModel {
+    private static final long serialVersionUID = 8116489464515271217L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name="user_id", nullable=false)
+    @Column(name = "user_id", nullable = false)
     private String userId;
 
-    @Column(name="c_role", nullable=false)
+    @Column(name = "c_role", nullable = false)
     private String role;
 
     @ManyToOne
-    @JoinColumn(name="c_user", nullable=false)
+    @JoinColumn(name = "c_user", nullable = false)
     private UserModel user;
 
     public long getId() {

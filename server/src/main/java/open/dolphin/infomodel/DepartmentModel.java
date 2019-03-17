@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
  * 31 麻酔科, 32 人工透析科, 33 心療内科, 34 アレルギー, 35 リウマチ, 36 リハビリ, A1 鍼灸
  * departmentCodeSys=MML0028
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 @Embeddable
 public class DepartmentModel extends InfoModel {
@@ -21,28 +21,28 @@ public class DepartmentModel extends InfoModel {
     private String departmentDesc;
     private String departmentCodeSys;
 
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
     public String getDepartment() {
         return department;
     }
 
-    public void setDepartmentDesc(String departmentDesc) {
-        this.departmentDesc = departmentDesc;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     public String getDepartmentDesc() {
         return departmentDesc;
     }
 
-    public void setDepartmentCodeSys(String departmentCodeSys) {
-        this.departmentCodeSys = departmentCodeSys;
+    public void setDepartmentDesc(String departmentDesc) {
+        this.departmentDesc = departmentDesc;
     }
 
     public String getDepartmentCodeSys() {
         return departmentCodeSys;
+    }
+
+    public void setDepartmentCodeSys(String departmentCodeSys) {
+        this.departmentCodeSys = departmentCodeSys;
     }
 
     @Override

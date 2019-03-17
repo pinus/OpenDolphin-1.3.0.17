@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Liability_Office_Information. 事業所情報
+ *
  * @author pns
  */
 public class LiabilityOfficeInformation {
@@ -22,6 +23,7 @@ public class LiabilityOfficeInformation {
 
     /**
      * 事業所名称 (例: オルカ建設)
+     *
      * @return the L_WholeName
      */
     public String getL_WholeName() {
@@ -30,6 +32,7 @@ public class LiabilityOfficeInformation {
 
     /**
      * 事業所名称 (例: オルカ建設)
+     *
      * @param L_WholeName the L_WholeName to set
      */
     public void setL_WholeName(String L_WholeName) {
@@ -38,6 +41,7 @@ public class LiabilityOfficeInformation {
 
     /**
      * 所在地都道府県情報 (例:  )
+     *
      * @return the Prefecture_Information
      */
     public PrefectureInformation getPrefecture_Information() {
@@ -46,6 +50,7 @@ public class LiabilityOfficeInformation {
 
     /**
      * 所在地都道府県情報 (例:  )
+     *
      * @param Prefecture_Information the Prefecture_Information to set
      */
     public void setPrefecture_Information(PrefectureInformation Prefecture_Information) {
@@ -54,6 +59,7 @@ public class LiabilityOfficeInformation {
 
     /**
      * 所在地郡市区情報 (例:  )
+     *
      * @return the City_Information
      */
     public CityInformation getCity_Information() {
@@ -62,6 +68,7 @@ public class LiabilityOfficeInformation {
 
     /**
      * 所在地郡市区情報 (例:  )
+     *
      * @param City_Information the City_Information to set
      */
     public void setCity_Information(CityInformation City_Information) {

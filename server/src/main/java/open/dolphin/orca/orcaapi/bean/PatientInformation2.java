@@ -4,6 +4,7 @@ package open.dolphin.orca.orcaapi.bean;
  * Patient_Information2. Medicalres 用の患者情報.
  * PatientInfores の PatientInformation とは
  * HealthInsuranceInformation が配列で返ってくるか単独で返ってくるかが違う.
+ *
  * @author pns
  */
 public class PatientInformation2 {
@@ -54,6 +55,7 @@ public class PatientInformation2 {
 
     /**
      * 患者番号 (例: 000017)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -62,6 +64,7 @@ public class PatientInformation2 {
 
     /**
      * 患者番号 (例: 000017)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -70,6 +73,7 @@ public class PatientInformation2 {
 
     /**
      * 患者氏名(漢字) (例: 日医　太郎)
+     *
      * @return the WholeName
      */
     public String getWholeName() {
@@ -78,6 +82,7 @@ public class PatientInformation2 {
 
     /**
      * 患者氏名(漢字) (例: 日医　太郎)
+     *
      * @param WholeName the WholeName to set
      */
     public void setWholeName(String WholeName) {
@@ -86,6 +91,7 @@ public class PatientInformation2 {
 
     /**
      * 患者氏名(カナ) (例: ニチイ　タロウ)
+     *
      * @return the WholeName_inKana
      */
     public String getWholeName_inKana() {
@@ -94,6 +100,7 @@ public class PatientInformation2 {
 
     /**
      * 患者氏名(カナ) (例: ニチイ　タロウ)
+     *
      * @param WholeName_inKana the WholeName_inKana to set
      */
     public void setWholeName_inKana(String WholeName_inKana) {
@@ -102,6 +109,7 @@ public class PatientInformation2 {
 
     /**
      * 生年月日 (例: 1970-01-01)
+     *
      * @return the BirthDate
      */
     public String getBirthDate() {
@@ -110,6 +118,7 @@ public class PatientInformation2 {
 
     /**
      * 生年月日 (例: 1970-01-01)
+     *
      * @param BirthDate the BirthDate to set
      */
     public void setBirthDate(String BirthDate) {
@@ -118,6 +127,7 @@ public class PatientInformation2 {
 
     /**
      * 性別(1:男性、2:女性) (例: 1)
+     *
      * @return the Sex
      */
     public String getSex() {
@@ -126,6 +136,7 @@ public class PatientInformation2 {
 
     /**
      * 性別(1:男性、2:女性) (例: 1)
+     *
      * @param Sex the Sex to set
      */
     public void setSex(String Sex) {
@@ -134,6 +145,7 @@ public class PatientInformation2 {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @return the HealthInsurance_Information
      */
     public HealthInsuranceInformation getHealthInsurance_Information() {
@@ -142,6 +154,7 @@ public class PatientInformation2 {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @param HealthInsurance_Information the HealthInsurance_Information to set
      */
     public void setHealthInsurance_Information(HealthInsuranceInformation HealthInsurance_Information) {
@@ -150,6 +163,7 @@ public class PatientInformation2 {
 
     /**
      * 割引率　割引率+円（％） (例: )
+     *
      * @return the Dis_Rate
      */
     public String getDis_Rate() {
@@ -158,6 +172,7 @@ public class PatientInformation2 {
 
     /**
      * 割引率　割引率+円（％） (例: )
+     *
      * @param Dis_Rate the Dis_Rate to set
      */
     public void setDis_Rate(String Dis_Rate) {
@@ -166,6 +181,7 @@ public class PatientInformation2 {
 
     /**
      * 負担額情報 (例: )
+     *
      * @return the Cd_Information
      */
     public CdInformation getCd_Information() {
@@ -174,6 +190,7 @@ public class PatientInformation2 {
 
     /**
      * 負担額情報 (例: )
+     *
      * @param Cd_Information the Cd_Information to set
      */
     public void setCd_Information(CdInformation Cd_Information) {
@@ -182,6 +199,7 @@ public class PatientInformation2 {
 
     /**
      * 請求点数 (例: )
+     *
      * @return the Ac_Point_Information
      */
     public AcPointInformation getAc_Point_Information() {
@@ -190,6 +208,7 @@ public class PatientInformation2 {
 
     /**
      * 請求点数 (例: )
+     *
      * @param Ac_Point_Information the Ac_Point_Information to set
      */
     public void setAc_Point_Information(AcPointInformation Ac_Point_Information) {

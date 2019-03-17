@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * WorkPlace_Information. 勤務先情報
+ *
  * @author pns
  */
 public class WorkplaceInformation {
@@ -32,6 +33,7 @@ public class WorkplaceInformation {
 
     /**
      * 勤務先名 (例: てすと　株式会社)
+     *
      * @return the WholeName
      */
     public String getWholeName() {
@@ -40,6 +42,7 @@ public class WorkplaceInformation {
 
     /**
      * 勤務先名 (例: てすと　株式会社)
+     *
      * @param WholeName the WholeName to set
      */
     public void setWholeName(String WholeName) {
@@ -48,6 +51,7 @@ public class WorkplaceInformation {
 
     /**
      * 郵便番号 (例: 1130022)
+     *
      * @return the Address_ZipCode
      */
     public String getAddress_ZipCode() {
@@ -56,6 +60,7 @@ public class WorkplaceInformation {
 
     /**
      * 郵便番号 (例: 1130022)
+     *
      * @param Address_ZipCode the Address_ZipCode to set
      */
     public void setAddress_ZipCode(String Address_ZipCode) {
@@ -64,6 +69,7 @@ public class WorkplaceInformation {
 
     /**
      * 住所 (例: 東京都文京区本駒込)
+     *
      * @return the WholeAddress1
      */
     public String getWholeAddress1() {
@@ -72,6 +78,7 @@ public class WorkplaceInformation {
 
     /**
      * 住所 (例: 東京都文京区本駒込)
+     *
      * @param WholeAddress1 the WholeAddress1 to set
      */
     public void setWholeAddress1(String WholeAddress1) {
@@ -80,6 +87,7 @@ public class WorkplaceInformation {
 
     /**
      * 番地番号 (例: ５−１２−１１)
+     *
      * @return the WholeAddress2
      */
     public String getWholeAddress2() {
@@ -88,6 +96,7 @@ public class WorkplaceInformation {
 
     /**
      * 番地番号 (例: ５−１２−１１)
+     *
      * @param WholeAddress2 the WholeAddress2 to set
      */
     public void setWholeAddress2(String WholeAddress2) {
@@ -96,6 +105,7 @@ public class WorkplaceInformation {
 
     /**
      * 電話番号 (例: 03-3333-2211)
+     *
      * @return the PhoneNumber
      */
     public String getPhoneNumber() {
@@ -104,6 +114,7 @@ public class WorkplaceInformation {
 
     /**
      * 電話番号 (例: 03-3333-2211)
+     *
      * @param PhoneNumber the PhoneNumber to set
      */
     public void setPhoneNumber(String PhoneNumber) {

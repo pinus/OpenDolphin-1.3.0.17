@@ -25,6 +25,7 @@ public interface KarteService {
     /**
      * カルテの基礎的な情報をまとめて返す.
      * これはクライイントがカルテをオープンする時、なるべく通信トラフィックを少なくするための手段である.
+     *
      * @param spec PatientModel の primary key と from date をセットして呼ぶ
      * @return 基礎的な情報をフェッチした KarteBean
      */
@@ -34,6 +35,7 @@ public interface KarteService {
 
     /**
      * KarteId から 関連する AllergyModel のリストを返す.
+     *
      * @param karteId
      * @return
      */
@@ -43,6 +45,7 @@ public interface KarteService {
 
     /**
      * KarteId から関連する PhysicalModel のリストを返す.
+     *
      * @param karteId
      * @return
      */
@@ -52,6 +55,7 @@ public interface KarteService {
 
     /**
      * PatientId, fromDate から関連する PatientVisitModel.pvtDate のリストを返す.
+     *
      * @param spec
      * @return
      */
@@ -61,6 +65,7 @@ public interface KarteService {
 
     /**
      * KarteId から関連する PatientMemoModel を返す.
+     *
      * @param karteId
      * @return
      */
@@ -70,6 +75,7 @@ public interface KarteService {
 
     /**
      * 文書履歴エントリを取得する.
+     *
      * @param spec KarteBean の primary key と from date をセットして呼ぶ
      * @return DocInfo のコレクション
      */
@@ -79,6 +85,7 @@ public interface KarteService {
 
     /**
      * 文書(DocumentModel Object)を取得する.
+     *
      * @param ids DocumentModel の pkコレクション
      * @return DocumentModelのコレクション
      */
@@ -88,6 +95,7 @@ public interface KarteService {
 
     /**
      * ドキュメント DocumentModel オブジェクトを保存する.
+     *
      * @param document 追加するDocumentModel オブジェクト
      * @return 追加した数
      */
@@ -97,6 +105,7 @@ public interface KarteService {
 
     /**
      * ドキュメントを論理削除する.
+     *
      * @param pk 論理削除するドキュメントの primary key
      * @return 削除した件数
      */
@@ -106,6 +115,7 @@ public interface KarteService {
 
     /**
      * ドキュメントのタイトルを変更する.
+     *
      * @param spec
      * @return 変更した件数
      */
@@ -115,6 +125,7 @@ public interface KarteService {
 
     /**
      * ModuleModelエントリを取得する.
+     *
      * @param spec モジュール検索仕様
      * @return ModuleModelリストのリスト
      */
@@ -124,6 +135,7 @@ public interface KarteService {
 
     /**
      * SchemaModelエントリを取得する.
+     *
      * @param spec
      * @return SchemaModelエントリの配列
      */
@@ -133,6 +145,7 @@ public interface KarteService {
 
     /**
      * 画像を取得する.
+     *
      * @param id SchemaModel Id
      * @return SchemaModel
      */
@@ -142,6 +155,7 @@ public interface KarteService {
 
     /**
      * 傷病名リストを取得する.
+     *
      * @param spec 検索仕様
      * @return 傷病名のリスト
      */
@@ -151,6 +165,7 @@ public interface KarteService {
 
     /**
      * 傷病名を追加する.
+     *
      * @param addList 追加する傷病名のリスト
      * @return idのリスト
      */
@@ -160,6 +175,7 @@ public interface KarteService {
 
     /**
      * 傷病名を更新する.
+     *
      * @param updateList
      * @return 更新数
      */
@@ -169,6 +185,7 @@ public interface KarteService {
 
     /**
      * 傷病名を削除する.
+     *
      * @param removeList 削除する傷病名のidリスト
      * @return 削除数
      */
@@ -178,6 +195,7 @@ public interface KarteService {
 
     /**
      * Observationを取得する.
+     *
      * @param spec 検索仕様
      * @return Observationのリスト
      */
@@ -187,6 +205,7 @@ public interface KarteService {
 
     /**
      * Observationを追加する.
+     *
      * @param observations 追加するObservationのリスト
      * @return 追加したObservationのIdリスト
      */
@@ -196,6 +215,7 @@ public interface KarteService {
 
     /**
      * Observationを更新する.
+     *
      * @param observations 更新するObservationのリスト
      * @return 更新した数
      */
@@ -205,6 +225,7 @@ public interface KarteService {
 
     /**
      * Observationを削除する.
+     *
      * @param observations 削除するObservationのリスト
      * @return 削除した数
      */
@@ -214,6 +235,7 @@ public interface KarteService {
 
     /**
      * 患者メモを更新する.
+     *
      * @param memo 更新するメモ
      * @return
      */
@@ -223,6 +245,7 @@ public interface KarteService {
 
     /**
      * 予約を保存、更新、削除する.
+     *
      * @param spec 予約情報の DTO
      * @return
      */
@@ -232,6 +255,7 @@ public interface KarteService {
 
     /**
      * 予約を検索する.
+     *
      * @param spec 検索仕様
      * @return 予約の Collection
      */

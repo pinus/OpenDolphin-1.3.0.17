@@ -165,6 +165,7 @@ public class Request {
 
     /**
      * API 予約. https://www.orca.med.or.jp/receipt/tec/api/appointmod.html
+     *
      * @return the appointreq
      */
     public Appointreq getAppointreq() {
@@ -173,6 +174,7 @@ public class Request {
 
     /**
      * API 予約. https://www.orca.med.or.jp/receipt/tec/api/appointmod.html
+     *
      * @param appointreq the appointreq to set
      */
     public void setAppointreq(Appointreq appointreq) {
@@ -181,6 +183,7 @@ public class Request {
 
     /**
      * 中途終了データ作成. https://www.orca.med.or.jp/receipt/tec/api/medicalmod.html
+     *
      * @return the medicalreq
      */
     public Medicalreq getMedicalreq() {
@@ -189,6 +192,7 @@ public class Request {
 
     /**
      * 中途終了データ作成. https://www.orca.med.or.jp/receipt/tec/api/medicalmod.html
+     *
      * @param medicalreq the medicalreq to set
      */
     public void setMedicalreq(Medicalreq medicalreq) {
@@ -197,6 +201,7 @@ public class Request {
 
     /**
      * API 受付. https://www.orca.med.or.jp/receipt/tec/api/acceptmod.html
+     *
      * @return the acceptreq
      */
     public Acceptreq getAcceptreq() {
@@ -205,6 +210,7 @@ public class Request {
 
     /**
      * API 受付. https://www.orca.med.or.jp/receipt/tec/api/acceptmod.html
+     *
      * @param acceptreq the acceptreq to set
      */
     public void setAcceptreq(Acceptreq acceptreq) {
@@ -213,6 +219,7 @@ public class Request {
 
     /**
      * 指定された日付の受付一覧返却. https://www.orca.med.or.jp/receipt/tec/api/acceptancelst.html
+     *
      * @return the acceptlstreq
      */
     public Acceptlstreq getAcceptlstreq() {
@@ -221,6 +228,7 @@ public class Request {
 
     /**
      * 指定された日付の受付一覧返却. https://www.orca.med.or.jp/receipt/tec/api/acceptancelst.html
+     *
      * @param acceptlstreq the acceptlstreq to set
      */
     public void setAcceptlstreq(Acceptlstreq acceptlstreq) {
@@ -229,6 +237,7 @@ public class Request {
 
     /**
      * 予約一覧. https://www.orca.med.or.jp/receipt/tec/api/appointlst.html
+     *
      * @return the appointlstreq
      */
     public Appointlstreq getAppointlstreq() {
@@ -237,6 +246,7 @@ public class Request {
 
     /**
      * 予約一覧. https://www.orca.med.or.jp/receipt/tec/api/appointlst.html
+     *
      * @param appointlstreq the appointlstreq to set
      */
     public void setAppointlstreq(Appointlstreq appointlstreq) {
@@ -245,6 +255,7 @@ public class Request {
 
     /**
      * 点数マスタ情報登録. https://www.orca.med.or.jp/receipt/tec/api/medicatonmod.html
+     *
      * @return the medicationreq
      */
     public Medicationreq getMedicationreq() {
@@ -253,6 +264,7 @@ public class Request {
 
     /**
      * 点数マスタ情報登録. https://www.orca.med.or.jp/receipt/tec/api/medicatonmod.html
+     *
      * @param medicationreq the medicationreq to set
      */
     public void setMedicationreq(Medicationreq medicationreq) {
@@ -261,6 +273,7 @@ public class Request {
 
     /**
      * 患者番号一覧の取得. https://www.orca.med.or.jp/receipt/tec/api/patientidlist.html
+     *
      * @return the patientlst1req
      */
     public Patientlst1req getPatientlst1req() {
@@ -269,6 +282,7 @@ public class Request {
 
     /**
      * 患者番号一覧の取得. https://www.orca.med.or.jp/receipt/tec/api/patientidlist.html
+     *
      * @param patientlst1req the patientlst1req to set
      */
     public void setPatientlst1req(Patientlst1req patientlst1req) {
@@ -277,6 +291,7 @@ public class Request {
 
     /**
      * 複数の患者情報取得. https://www.orca.med.or.jp/receipt/tec/api/patientlist.html
+     *
      * @return the patientlst2req
      */
     public Patientlst2req getPatientlst2req() {
@@ -285,6 +300,7 @@ public class Request {
 
     /**
      * 複数の患者情報取得. https://www.orca.med.or.jp/receipt/tec/api/patientlist.html
+     *
      * @param patientlst2req the patientlst2req to set
      */
     public void setPatientlst2req(Patientlst2req patientlst2req) {
@@ -293,6 +309,7 @@ public class Request {
 
     /**
      * 患者情報取得(氏名検索). https://www.orca.med.or.jp/receipt/tec/api/patientshimei.html
+     *
      * @return the patientlst3req
      */
     public Patientlst3req getPatientlst3req() {
@@ -301,6 +318,7 @@ public class Request {
 
     /**
      * 患者情報取得(氏名検索). https://www.orca.med.or.jp/receipt/tec/api/patientshimei.html
+     *
      * @param patientlst3req the patientlst3req to set
      */
     public void setPatientlst3req(Patientlst3req patientlst3req) {
@@ -309,6 +327,7 @@ public class Request {
 
     /**
      * システム管理情報の取得. https://www.orca.med.or.jp/receipt/tec/api/systemkanri.html
+     *
      * @return the system01_managereq
      */
     public System01Managereq getSystem01_managereq() {
@@ -317,6 +336,7 @@ public class Request {
 
     /**
      * システム管理情報の取得. https://www.orca.med.or.jp/receipt/tec/api/systemkanri.html
+     *
      * @param system01_managereq the system01_managereq to set
      */
     public void setSystem01_managereq(System01Managereq system01_managereq) {
@@ -325,6 +345,7 @@ public class Request {
 
     /**
      * 診療情報の返却. https://www.orca.med.or.jp/receipt/tec/api/medicalinfo.html
+     *
      * @return the medicalgetreq
      */
     public Medicalgetreq getMedicalgetreq() {
@@ -333,6 +354,7 @@ public class Request {
 
     /**
      * 診療情報の返却. https://www.orca.med.or.jp/receipt/tec/api/medicalinfo.html
+     *
      * @param medicalgetreq the medicalgetreq to set
      */
     public void setMedicalgetreq(Medicalgetreq medicalgetreq) {
@@ -341,6 +363,7 @@ public class Request {
 
     /**
      * 患者病名情報の返却. http://www.orca.med.or.jp/receipt/tec/api/disease.html
+     *
      * @return the disease_inforeq
      */
     public DiseaseInforeq getDisease_inforeq() {
@@ -349,6 +372,7 @@ public class Request {
 
     /**
      * 患者病名情報の返却. http://www.orca.med.or.jp/receipt/tec/api/disease.html
+     *
      * @param disease_inforeq the disease_inforeq to set
      */
     public void setDisease_inforeq(DiseaseInforeq disease_inforeq) {
@@ -357,6 +381,7 @@ public class Request {
 
     /**
      * API 患者登録. https://www.orca.med.or.jp/receipt/tec/api/patientmod.html
+     *
      * @return the patientmodreq
      */
     public Patientmodreq getPatientmodreq() {
@@ -365,6 +390,7 @@ public class Request {
 
     /**
      * API 患者登録. https://www.orca.med.or.jp/receipt/tec/api/patientmod.html
+     *
      * @param patientmodreq the patientmodreq to set
      */
     public void setPatientmodreq(Patientmodreq patientmodreq) {
@@ -373,6 +399,7 @@ public class Request {
 
     /**
      * API 患者予約情報. https://www.orca.med.or.jp/receipt/tec/api/appointlst2.html
+     *
      * @return the appointlst2req
      */
     public Appointlst2req getAppointlst2req() {
@@ -381,6 +408,7 @@ public class Request {
 
     /**
      * API 患者予約情報. https://www.orca.med.or.jp/receipt/tec/api/appointlst2.html
+     *
      * @param appointlst2req the appointlst2req to set
      */
     public void setAppointlst2req(Appointlst2req appointlst2req) {
@@ -389,6 +417,7 @@ public class Request {
 
     /**
      * API 請求金額返却. https://www.orca.med.or.jp/receipt/tec/api/acsimulate.html
+     *
      * @return the acsimulatereq
      */
     public Acsimulatereq getAcsimulatereq() {
@@ -397,6 +426,7 @@ public class Request {
 
     /**
      * API 請求金額返却. https://www.orca.med.or.jp/receipt/tec/api/acsimulate.html
+     *
      * @param acsimulatereq the acsimulatereq to set
      */
     public void setAcsimulatereq(Acsimulatereq acsimulatereq) {
@@ -405,6 +435,7 @@ public class Request {
 
     /**
      * API 症状詳記. https://www.orca.med.or.jp/receipt/tec/api/subjectives.html
+     *
      * @return the subjectivesmodreq
      */
     public Subjectivesmodreq getSubjectivesmodreq() {
@@ -413,6 +444,7 @@ public class Request {
 
     /**
      * API 症状詳記. https://www.orca.med.or.jp/receipt/tec/api/subjectives.html
+     *
      * @param subjectivesmodreq the subjectivesmodreq to set
      */
     public void setSubjectivesmodreq(Subjectivesmodreq subjectivesmodreq) {
@@ -421,6 +453,7 @@ public class Request {
 
     /**
      * 受診日指定による来院患者一覧. https://www.orca.med.or.jp/receipt/tec/api/visitpatient.html
+     *
      * @return the visitptlstreq
      */
     public Visitptlstreq getVisitptlstreq() {
@@ -429,6 +462,7 @@ public class Request {
 
     /**
      * 受診日指定による来院患者一覧. https://www.orca.med.or.jp/receipt/tec/api/visitpatient.html
+     *
      * @param visitptlstreq the visitptlstreq to set
      */
     public void setVisitptlstreq(Visitptlstreq visitptlstreq) {
@@ -437,6 +471,7 @@ public class Request {
 
     /**
      * 中途終了患者情報一覧. https://www.orca.med.or.jp/receipt/tec/api/medicaltemp.html
+     *
      * @return the tmedicalgetreq
      */
     public Tmedicalgetreq getTmedicalgetreq() {
@@ -445,6 +480,7 @@ public class Request {
 
     /**
      * 中途終了患者情報一覧. https://www.orca.med.or.jp/receipt/tec/api/medicaltemp.html
+     *
      * @param tmedicalgetreq the tmedicalgetreq to set
      */
     public void setTmedicalgetreq(Tmedicalgetreq tmedicalgetreq) {
@@ -453,6 +489,7 @@ public class Request {
 
     /**
      * 保険者一覧情報. https://www.orca.med.or.jp/receipt/tec/api/insuranceinfo.html
+     *
      * @return the insprogetreq
      */
     public Insprogetreq getInsprogetreq() {
@@ -461,6 +498,7 @@ public class Request {
 
     /**
      * 保険者一覧情報. https://www.orca.med.or.jp/receipt/tec/api/insuranceinfo.html
+     *
      * @param insprogetreq the insprogetreq to set
      */
     public void setInsprogetreq(Insprogetreq insprogetreq) {
@@ -471,6 +509,7 @@ public class Request {
      * API 収納情報返却, システム情報.
      * https://www.orca.med.or.jp/receipt/tec/api/shunou.html
      * https://www.orca.med.or.jp/receipt/tec/api/systemstate.html
+     *
      * @return the private_objects
      */
     public PrivateObjects getPrivate_objects() {
@@ -481,6 +520,7 @@ public class Request {
      * API 収納情報返却, システム情報.
      * https://www.orca.med.or.jp/receipt/tec/api/shunou.html
      * https://www.orca.med.or.jp/receipt/tec/api/systemstate.html
+     *
      * @param private_objects the private_objects to set
      */
     public void setPrivate_objects(PrivateObjects private_objects) {
@@ -489,6 +529,7 @@ public class Request {
 
     /**
      * ユーザー管理情報. https://www.orca.med.or.jp/receipt/tec/api/userkanri.html
+     *
      * @return the manageusersreq
      */
     public Manageusersreq getManageusersreq() {
@@ -497,6 +538,7 @@ public class Request {
 
     /**
      * ユーザー管理情報. https://www.orca.med.or.jp/receipt/tec/api/userkanri.html
+     *
      * @param manageusersreq the manageusersreq to set
      */
     public void setManageusersreq(Manageusersreq manageusersreq) {
@@ -505,6 +547,7 @@ public class Request {
 
     /**
      * セット登録. https://www.orca.med.or.jp/receipt/tec/api/setcode.html
+     *
      * @return the medicalsetreq
      */
     public Medicalsetreq getMedicalsetreq() {
@@ -513,6 +556,7 @@ public class Request {
 
     /**
      * セット登録. https://www.orca.med.or.jp/receipt/tec/api/setcode.html
+     *
      * @param medicalsetreq the medicalsetreq to set
      */
     public void setMedicalsetreq(Medicalsetreq medicalsetreq) {
@@ -521,6 +565,7 @@ public class Request {
 
     /**
      * 全保険組合せ一覧取得. https://www.orca.med.or.jp/receipt/tec/api/insurancecombi.html
+     *
      * @return the patientlst6req
      */
     public Patientlst6req getPatientlst6req() {
@@ -529,6 +574,7 @@ public class Request {
 
     /**
      * 全保険組合せ一覧取得. https://www.orca.med.or.jp/receipt/tec/api/insurancecombi.html
+     *
      * @param patientlst6req the patientlst6req to set
      */
     public void setPatientlst6req(Patientlst6req patientlst6req) {
@@ -537,6 +583,7 @@ public class Request {
 
     /**
      * 患者病名登録２. https://www.orca.med.or.jp/receipt/tec/api/diseasemod2.html
+     *
      * @return the diseasereq
      */
     public Diseasereq getDiseasereq() {
@@ -545,6 +592,7 @@ public class Request {
 
     /**
      * 患者病名登録２. https://www.orca.med.or.jp/receipt/tec/api/diseasemod2.html
+     *
      * @param diseasereq the diseasereq to set
      */
     public void setDiseasereq(Diseasereq diseasereq) {
@@ -553,6 +601,7 @@ public class Request {
 
     /**
      * マスタデータ最終更新日取得. http://www.orca.med.or.jp/receipt/tec/api/master_last_update.html
+     *
      * @return masterlastupdatev3eq
      */
     public Masterlastupdatev3req getMasterlastupdatev3eq() {
@@ -561,14 +610,7 @@ public class Request {
 
     /**
      * マスタデータ最終更新日取得. http://www.orca.med.or.jp/receipt/tec/api/master_last_update.html
-     * @param masterlastupdatev3req to set
-     */
-    public void setMasterlastupdatev3req(Masterlastupdatev3req masterlastupdatev3req) {
-        this.masterlastupdatev3req = masterlastupdatev3req;
-    }
-
-    /**
-     * マスタデータ最終更新日取得. http://www.orca.med.or.jp/receipt/tec/api/master_last_update.html
+     *
      * @return masterlastupdatev3req
      */
     public Masterlastupdatev3req getMasterlastupdatev3req() {
@@ -576,7 +618,17 @@ public class Request {
     }
 
     /**
+     * マスタデータ最終更新日取得. http://www.orca.med.or.jp/receipt/tec/api/master_last_update.html
+     *
+     * @param masterlastupdatev3req to set
+     */
+    public void setMasterlastupdatev3req(Masterlastupdatev3req masterlastupdatev3req) {
+        this.masterlastupdatev3req = masterlastupdatev3req;
+    }
+
+    /**
      * 基本情報取得. http://www.orca.med.or.jp/receipt/tec/api/system_daily.html
+     *
      * @return system01_dailyreq
      */
     public System01dailyreq getSystem01_dailyreq() {
@@ -585,6 +637,7 @@ public class Request {
 
     /**
      * 基本情報取得. http://www.orca.med.or.jp/receipt/tec/api/system_daily.html
+     *
      * @param system01_dailyreq to set
      */
     public void setSystem01_dailyreq(System01dailyreq system01_dailyreq) {
@@ -593,6 +646,7 @@ public class Request {
 
     /**
      * 患者メモ取得. http://www.orca.med.or.jp/receipt/tec/api/patient_memo_list.html
+     *
      * @return patientlst7req
      */
     public Patientlst7req getPatientlst7req() {
@@ -601,6 +655,7 @@ public class Request {
 
     /**
      * 患者メモ取得. http://www.orca.med.or.jp/receipt/tec/api/patient_memo_list.html
+     *
      * @param patientlst7req to set
      */
     public void setPatientlst7req(Patientlst7req patientlst7req) {
@@ -609,6 +664,7 @@ public class Request {
 
     /**
      * 初診算定日登録. http://www.orca.med.or.jp/receipt/tec/api/first_calculation_date.html
+     *
      * @return medicalv2req3
      */
     public Medicalv2req3 getMedicalv2req3() {
@@ -617,6 +673,7 @@ public class Request {
 
     /**
      * 初診算定日登録. http://www.orca.med.or.jp/receipt/tec/api/first_calculation_date.html
+     *
      * @param medicalv2req3 to set
      */
     public void setMedicalv2req3(Medicalv2req3 medicalv2req3) {
@@ -625,6 +682,7 @@ public class Request {
 
     /**
      * 薬剤併用禁忌チェック. http://www.orca.med.or.jp/receipt/tec/api/contraindication_check.html
+     *
      * @return contraindication_checkreq
      */
     public ContraindicationCheckreq getContraindication_checkreq() {
@@ -633,6 +691,7 @@ public class Request {
 
     /**
      * 薬剤併用禁忌チェック. http://www.orca.med.or.jp/receipt/tec/api/contraindication_check.html
+     *
      * @param contraindication_checkreq to set
      */
     public void setContraindication_checkreq(ContraindicationCheckreq contraindication_checkreq) {
@@ -641,6 +700,7 @@ public class Request {
 
     /**
      * 保険・公費一覧取得. http://www.orca.med.or.jp/receipt/tec/api/insurance_list.html
+     *
      * @return insuranceinfreq
      */
     public Insuranceinfreq getInsuranceinfreq() {
@@ -649,6 +709,7 @@ public class Request {
 
     /**
      * 保険・公費一覧取得. http://www.orca.med.or.jp/receipt/tec/api/insurance_list.html
+     *
      * @param insuranceinfreq to set
      */
     public void setInsuranceinfreq(Insuranceinfreq insuranceinfreq) {
@@ -657,6 +718,7 @@ public class Request {
 
     /**
      * 症状詳記情報取得. http://www.orca.med.or.jp/receipt/tec/api/subjectiveslst.html
+     *
      * @return subjectiveslstreq
      */
     public Subjectiveslstreq getSubjectiveslstreq() {
@@ -665,6 +727,7 @@ public class Request {
 
     /**
      * 症状詳記情報取得. http://www.orca.med.or.jp/receipt/tec/api/subjectiveslst.html
+     *
      * @param subjectiveslstreq to set
      */
     public void setSubjectiveslstreq(Subjectiveslstreq subjectiveslstreq) {

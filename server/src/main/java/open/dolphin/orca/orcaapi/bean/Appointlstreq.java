@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * appointlstreq.
+ *
  * @author pns
  */
 public class Appointlstreq {
@@ -22,6 +23,7 @@ public class Appointlstreq {
 
     /**
      * 予約日 (例: 2011-03-15)
+     *
      * @return the Appointment_Date
      */
     public String getAppointment_Date() {
@@ -30,6 +32,7 @@ public class Appointlstreq {
 
     /**
      * 予約日 (例: 2011-03-15)
+     *
      * @param Appointment_Date the Appointment_Date to set
      */
     public void setAppointment_Date(String Appointment_Date) {
@@ -38,6 +41,7 @@ public class Appointlstreq {
 
     /**
      * 診療内容区分※１(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断、07:予防注射、99:該当なし) (例: 01)
+     *
      * @return the Medical_Information
      */
     public String getMedical_Information() {
@@ -46,6 +50,7 @@ public class Appointlstreq {
 
     /**
      * 診療内容区分※１(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断、07:予防注射、99:該当なし) (例: 01)
+     *
      * @param Medical_Information the Medical_Information to set
      */
     public void setMedical_Information(String Medical_Information) {
@@ -54,6 +59,7 @@ public class Appointlstreq {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @return the Physician_Code
      */
     public String getPhysician_Code() {
@@ -62,6 +68,7 @@ public class Appointlstreq {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @param Physician_Code the Physician_Code to set
      */
     public void setPhysician_Code(String Physician_Code) {

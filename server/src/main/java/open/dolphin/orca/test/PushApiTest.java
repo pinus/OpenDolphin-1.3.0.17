@@ -6,6 +6,11 @@ public class PushApiTest {
     public PushApiTest() {
     }
 
+    public static void main(String[] argv) {
+        PushApiTest test = new PushApiTest();
+        test.start();
+    }
+
     private synchronized void start() {
         PvtClient client = new PvtClient();
         client.subscribe();
@@ -14,10 +19,5 @@ public class PushApiTest {
         } catch (InterruptedException e) {
             e.printStackTrace(System.err);
         }
-    }
-
-    public static void main(String[] argv) {
-        PushApiTest test = new PushApiTest();
-        test.start();
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * KarteBean.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 @Entity
 @Table(name = "d_karte")
@@ -19,15 +19,16 @@ import java.util.List;
 public class KarteBean extends InfoModel {
     private static final long serialVersionUID = 4658519288418950016L;
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @IndexedEmbedded
     @ManyToOne
-    @JoinColumn(name="patient_id", nullable=false)
+    @JoinColumn(name = "patient_id", nullable = false)
     private PatientModel patient;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Temporal(value = TemporalType.DATE)
     private Date created;
 

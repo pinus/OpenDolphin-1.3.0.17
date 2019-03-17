@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * LaboImportSummary.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class LaboImportSummary implements Serializable {
 

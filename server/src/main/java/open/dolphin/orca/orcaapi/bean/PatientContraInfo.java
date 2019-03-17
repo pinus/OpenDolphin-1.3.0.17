@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Patient_Contra_Info. 患者禁忌薬剤情報（繰り返し　１００）
+ *
  * @author pns
  */
 public class PatientContraInfo {

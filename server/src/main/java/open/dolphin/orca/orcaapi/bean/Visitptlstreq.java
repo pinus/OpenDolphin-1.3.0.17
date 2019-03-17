@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * visitptlstreq.
+ *
  * @author pns
  */
 public class Visitptlstreq {
@@ -23,6 +24,7 @@ public class Visitptlstreq {
 
     /**
      * リクエスト番号 (例: 01)
+     *
      * @return the Request_Number
      */
     public String getRequest_Number() {
@@ -31,6 +33,7 @@ public class Visitptlstreq {
 
     /**
      * リクエスト番号 (例: 01)
+     *
      * @param Request_Number the Request_Number to set
      */
     public void setRequest_Number(String Request_Number) {
@@ -39,6 +42,7 @@ public class Visitptlstreq {
 
     /**
      * 来院日付 (例: 2003-01-14)
+     *
      * @return the Visit_Date
      */
     public String getVisit_Date() {
@@ -47,6 +51,7 @@ public class Visitptlstreq {
 
     /**
      * 来院日付 (例: 2003-01-14)
+     *
      * @param Visit_Date the Visit_Date to set
      */
     public void setVisit_Date(String Visit_Date) {
@@ -55,6 +60,7 @@ public class Visitptlstreq {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -63,6 +69,7 @@ public class Visitptlstreq {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {

@@ -60,7 +60,9 @@ public class OrcaServiceApi {
         }
         // bug? Perform_Date を本日以外で指定した場合, その日の中途データがあっても Mode2 = 0 が返る.
         // 中途データがなければ null が返るので，0 が返ってきたということは即ち中途データがあるということである.
-        if (Objects.nonNull(wksryact.getMedicalMode2())) { wksryact.setMedicalMode2("1"); }
+        if (Objects.nonNull(wksryact.getMedicalMode2())) {
+            wksryact.setMedicalMode2("1");
+        }
 
         return wksryact;
     }
@@ -246,7 +248,9 @@ public class OrcaServiceApi {
 
         // tbl_tensu から単位を検索 (api では取れない)
         Set<String> srycds = claimItemMap.keySet();
-        if (srycds.isEmpty()) { return ret; }
+        if (srycds.isEmpty()) {
+            return ret;
+        }
 
         String tensuSql = "select taniname, srycd from tbl_tensu where hospnum = ? and srycd in (?)";
 
@@ -587,11 +591,14 @@ public class OrcaServiceApi {
         int maxRetry = 100;
         long wait = 15000; // 15秒毎に100回=25分
 
-        while("90".equals(apiResult) && retryCounter < maxRetry) {
+        while ("90".equals(apiResult) && retryCounter < maxRetry) {
             retryCounter++;
             logger.info("[" + ptId + "] busy, waiting for retrial: " + retryCounter);
 
-            try{Thread.sleep(wait);}catch(Exception e){}
+            try {
+                Thread.sleep(wait);
+            } catch (Exception e) {
+            }
 
             result = postDiagnosis(req);
             apiResult = result.getApiResult();

@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Diagnosis_Information. 診療情報
+ *
  * @author pns
  */
 public class DiagnosisInformation {
@@ -37,6 +38,7 @@ public class DiagnosisInformation {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -45,6 +47,7 @@ public class DiagnosisInformation {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -53,6 +56,7 @@ public class DiagnosisInformation {
 
     /**
      * ドクタコード (例: 10001)
+     *
      * @return the Physician_Code
      */
     public String getPhysician_Code() {
@@ -61,6 +65,7 @@ public class DiagnosisInformation {
 
     /**
      * ドクタコード (例: 10001)
+     *
      * @param Physician_Code the Physician_Code to set
      */
     public void setPhysician_Code(String Physician_Code) {
@@ -69,6 +74,7 @@ public class DiagnosisInformation {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @return the HealthInsurance_Information
      */
     public HealthInsuranceInformation getHealthInsurance_Information() {
@@ -77,6 +83,7 @@ public class DiagnosisInformation {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @param HealthInsurance_Information the HealthInsurance_Information to set
      */
     public void setHealthInsurance_Information(HealthInsuranceInformation HealthInsurance_Information) {
@@ -85,6 +92,7 @@ public class DiagnosisInformation {
 
     /**
      * 診療行為情報(繰り返し40) (例:  )
+     *
      * @return the Medical_Information
      */
     public MedicalInformation[] getMedical_Information() {
@@ -93,6 +101,7 @@ public class DiagnosisInformation {
 
     /**
      * 診療行為情報(繰り返し40) (例:  )
+     *
      * @param Medical_Information the Medical_Information to set
      */
     public void setMedical_Information(MedicalInformation[] Medical_Information) {
@@ -101,6 +110,7 @@ public class DiagnosisInformation {
 
     /**
      * 病名情報(繰り返し50) (例:  )
+     *
      * @return the Disease_Information
      */
     public DiseaseInformation[] getDisease_Information() {
@@ -109,6 +119,7 @@ public class DiagnosisInformation {
 
     /**
      * 病名情報(繰り返し50) (例:  )
+     *
      * @param Disease_Information the Disease_Information to set
      */
     public void setDisease_Information(DiseaseInformation[] Disease_Information) {
@@ -117,6 +128,7 @@ public class DiagnosisInformation {
 
     /**
      * 保険組合せ番号 (例: )
+     *
      * @return the Combination_Number
      */
     public String getCombination_Number() {
@@ -125,6 +137,7 @@ public class DiagnosisInformation {
 
     /**
      * 保険組合せ番号 (例: )
+     *
      * @param Combination_Number the Combination_Number to set
      */
     public void setCombination_Number(String Combination_Number) {

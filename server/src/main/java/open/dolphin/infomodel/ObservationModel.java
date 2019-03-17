@@ -20,7 +20,7 @@ public class ObservationModel extends KarteEntryBean<ObservationModel> {
     @Column(nullable = false)
     private String phenomenon;
 
-    @Column(name="c_value")
+    @Column(name = "c_value")
     private String value;
 
     private String unit;

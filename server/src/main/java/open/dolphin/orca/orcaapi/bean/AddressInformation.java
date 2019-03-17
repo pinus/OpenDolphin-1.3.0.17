@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * Address_Information. 連絡先・広告情報
+ *
  * @author pns
  */
 public class AddressInformation {
@@ -37,6 +38,7 @@ public class AddressInformation {
 
     /**
      * 所在地 (例: 東京都文京区本駒込２−２８−１０)
+     *
      * @return the WholeAddress
      */
     public String getWholeAddress() {
@@ -45,6 +47,7 @@ public class AddressInformation {
 
     /**
      * 所在地 (例: 東京都文京区本駒込２−２８−１０)
+     *
      * @param WholeAddress the WholeAddress to set
      */
     public void setWholeAddress(String WholeAddress) {
@@ -53,6 +56,7 @@ public class AddressInformation {
 
     /**
      * 郵便番号 (例: 1130021)
+     *
      * @return the Address_ZipCode
      */
     public String getAddress_ZipCode() {
@@ -61,6 +65,7 @@ public class AddressInformation {
 
     /**
      * 郵便番号 (例: 1130021)
+     *
      * @param Address_ZipCode the Address_ZipCode to set
      */
     public void setAddress_ZipCode(String Address_ZipCode) {
@@ -69,6 +74,7 @@ public class AddressInformation {
 
     /**
      * 電話番号 (例: 03-3333-0001)
+     *
      * @return the PhoneNumber
      */
     public String getPhoneNumber() {
@@ -77,6 +83,7 @@ public class AddressInformation {
 
     /**
      * 電話番号 (例: 03-3333-0001)
+     *
      * @param PhoneNumber the PhoneNumber to set
      */
     public void setPhoneNumber(String PhoneNumber) {
@@ -85,6 +92,7 @@ public class AddressInformation {
 
     /**
      * FAX番号 (例: 03-3333-0002)
+     *
      * @return the FaxNumber
      */
     public String getFaxNumber() {
@@ -93,6 +101,7 @@ public class AddressInformation {
 
     /**
      * FAX番号 (例: 03-3333-0002)
+     *
      * @param FaxNumber the FaxNumber to set
      */
     public void setFaxNumber(String FaxNumber) {
@@ -101,6 +110,7 @@ public class AddressInformation {
 
     /**
      * eメールアドレス (例: test@orca.ne.jp)
+     *
      * @return the E_mail_Address
      */
     public String getE_mail_Address() {
@@ -109,6 +119,7 @@ public class AddressInformation {
 
     /**
      * eメールアドレス (例: test@orca.ne.jp)
+     *
      * @param E_mail_Address the E_mail_Address to set
      */
     public void setE_mail_Address(String E_mail_Address) {
@@ -117,6 +128,7 @@ public class AddressInformation {
 
     /**
      * ホームページアドレス (例: http://www.orca.med.or.jp/)
+     *
      * @return the Homepage_Address
      */
     public String getHomepage_Address() {
@@ -125,6 +137,7 @@ public class AddressInformation {
 
     /**
      * ホームページアドレス (例: http://www.orca.med.or.jp/)
+     *
      * @param Homepage_Address the Homepage_Address to set
      */
     public void setHomepage_Address(String Homepage_Address) {

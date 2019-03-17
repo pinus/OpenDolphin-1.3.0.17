@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi.bean;
 /**
  * Medical_Information. チェック薬剤情報（繰り返し30）.
  * for contraindicationcheckres.
+ *
  * @author pns
  */
 public class MedicalInformation6 {

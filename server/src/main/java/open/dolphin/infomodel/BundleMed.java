@@ -19,7 +19,9 @@ public class BundleMed extends BundleDolphin {
         addClaimItems(sj);
 
         String adminString = getAdminDisplayString();
-        if (adminString != null) { sj.add(adminString); }
+        if (adminString != null) {
+            sj.add(adminString);
+        }
 
         addMemo(sj);
 
@@ -28,6 +30,7 @@ public class BundleMed extends BundleDolphin {
 
     /**
      * スタンプに表示される文字列を返す. Velocity で使うので public でないとだめ.
+     *
      * @return スタンプの用法に表示される文字列
      */
     public String getAdminDisplayString() {

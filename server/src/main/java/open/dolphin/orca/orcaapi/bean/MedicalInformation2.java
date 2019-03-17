@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi.bean;
 /**
  * Medical_Information. 医療機関基本情報.
  * for system1001res.
+ *
  * @author pns
  */
 public class MedicalInformation2 {
@@ -294,6 +295,7 @@ public class MedicalInformation2 {
 
     /**
      * 都道府県番号 (例: 32)
+     *
      * @return the Prefectures_Number
      */
     public String getPrefectures_Number() {
@@ -302,6 +304,7 @@ public class MedicalInformation2 {
 
     /**
      * 都道府県番号 (例: 32)
+     *
      * @param Prefectures_Number the Prefectures_Number to set
      */
     public void setPrefectures_Number(String Prefectures_Number) {
@@ -310,6 +313,7 @@ public class MedicalInformation2 {
 
     /**
      * 点数表(1：医科) (例: 1)
+     *
      * @return the Point_list
      */
     public String getPoint_list() {
@@ -318,6 +322,7 @@ public class MedicalInformation2 {
 
     /**
      * 点数表(1：医科) (例: 1)
+     *
      * @param Point_list the Point_list to set
      */
     public void setPoint_list(String Point_list) {
@@ -326,6 +331,7 @@ public class MedicalInformation2 {
 
     /**
      * 医療機関コード (例: 1234567)
+     *
      * @return the Institution_Code
      */
     public String getInstitution_Code() {
@@ -334,6 +340,7 @@ public class MedicalInformation2 {
 
     /**
      * 医療機関コード (例: 1234567)
+     *
      * @param Institution_Code the Institution_Code to set
      */
     public void setInstitution_Code(String Institution_Code) {
@@ -342,6 +349,7 @@ public class MedicalInformation2 {
 
     /**
      * 医療機関種別(1：病院、2：診療所) (例: 1)
+     *
      * @return the Institution_Speciation
      */
     public String getInstitution_Speciation() {
@@ -350,6 +358,7 @@ public class MedicalInformation2 {
 
     /**
      * 医療機関種別(1：病院、2：診療所) (例: 1)
+     *
      * @param Institution_Speciation the Institution_Speciation to set
      */
     public void setInstitution_Speciation(String Institution_Speciation) {
@@ -358,6 +367,7 @@ public class MedicalInformation2 {
 
     /**
      * 医療機関ID (例: JPN000000000000)
+     *
      * @return the Institution_Id
      */
     public String getInstitution_Id() {
@@ -366,6 +376,7 @@ public class MedicalInformation2 {
 
     /**
      * 医療機関ID (例: JPN000000000000)
+     *
      * @param Institution_Id the Institution_Id to set
      */
     public void setInstitution_Id(String Institution_Id) {
@@ -374,6 +385,7 @@ public class MedicalInformation2 {
 
     /**
      * 医療機関名称 (例: 医療法人　オルカ)
+     *
      * @return the Institution_WholeName
      */
     public String getInstitution_WholeName() {
@@ -382,6 +394,7 @@ public class MedicalInformation2 {
 
     /**
      * 医療機関名称 (例: 医療法人　オルカ)
+     *
      * @param Institution_WholeName the Institution_WholeName to set
      */
     public void setInstitution_WholeName(String Institution_WholeName) {
@@ -390,6 +403,7 @@ public class MedicalInformation2 {
 
     /**
      * 開設者名称 (例: 日本　一)
+     *
      * @return the Establisher_WholeName
      */
     public String getEstablisher_WholeName() {
@@ -398,6 +412,7 @@ public class MedicalInformation2 {
 
     /**
      * 開設者名称 (例: 日本　一)
+     *
      * @param Establisher_WholeName the Establisher_WholeName to set
      */
     public void setEstablisher_WholeName(String Establisher_WholeName) {
@@ -406,6 +421,7 @@ public class MedicalInformation2 {
 
     /**
      * 管理者名称 (例: 日本　一)
+     *
      * @return the Administrator_WholeName
      */
     public String getAdministrator_WholeName() {
@@ -414,6 +430,7 @@ public class MedicalInformation2 {
 
     /**
      * 管理者名称 (例: 日本　一)
+     *
      * @param Administrator_WholeName the Administrator_WholeName to set
      */
     public void setAdministrator_WholeName(String Administrator_WholeName) {
@@ -422,6 +439,7 @@ public class MedicalInformation2 {
 
     /**
      * 連絡先・広告情報 (例:  )
+     *
      * @return the Address_Information
      */
     public AddressInformation getAddress_Information() {
@@ -430,6 +448,7 @@ public class MedicalInformation2 {
 
     /**
      * 連絡先・広告情報 (例:  )
+     *
      * @param Address_Information the Address_Information to set
      */
     public void setAddress_Information(AddressInformation Address_Information) {

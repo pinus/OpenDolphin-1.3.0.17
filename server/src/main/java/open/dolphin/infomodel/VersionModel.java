@@ -25,9 +25,9 @@ public class VersionModel extends InfoModel {
     public void setVersionNumber(String vn) {
         int index = vn.indexOf('.');
         try {
-            if (index >=0 ) {
+            if (index >= 0) {
                 String n = vn.substring(0, index);
-                String r = vn.substring(index+1);
+                String r = vn.substring(index + 1);
                 number = Integer.parseInt(n);
                 revision = Integer.parseInt(r);
             } else {
@@ -46,11 +46,11 @@ public class VersionModel extends InfoModel {
         revision++;
     }
 
-    public void setReleaseNote(String releaseNote) {
-        this.releaseNote = releaseNote;
-    }
-
     public String getReleaseNote() {
         return releaseNote;
+    }
+
+    public void setReleaseNote(String releaseNote) {
+        this.releaseNote = releaseNote;
     }
 }

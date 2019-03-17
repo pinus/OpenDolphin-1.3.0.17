@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * PublicInsurance_Information. 公費情報(繰り返し4)
+ *
  * @author pns
  */
 public class PublicinsuranceInformation {
@@ -71,6 +72,7 @@ public class PublicinsuranceInformation {
      * 公費の種類 (例: 019).
      * ※２：一箇所でも設定されていれば、一致する保険組合せが対象に設定されます.
      * 公費単独の場合は、主保険情報は設定する必要はありません。
+     *
      * @return the PublicInsurance_Class
      */
     public String getPublicInsurance_Class() {
@@ -81,6 +83,7 @@ public class PublicinsuranceInformation {
      * 公費の種類 (例: 019).
      * ※２：一箇所でも設定されていれば、一致する保険組合せが対象に設定されます.
      * 公費単独の場合は、主保険情報は設定する必要はありません。
+     *
      * @param PublicInsurance_Class the PublicInsurance_Class to set
      */
     public void setPublicInsurance_Class(String PublicInsurance_Class) {
@@ -89,6 +92,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 公費の制度名称 (例: 原爆一般)
+     *
      * @return the PublicInsurance_Name
      */
     public String getPublicInsurance_Name() {
@@ -97,6 +101,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 公費の制度名称 (例: 原爆一般)
+     *
      * @param PublicInsurance_Name the PublicInsurance_Name to set
      */
     public void setPublicInsurance_Name(String PublicInsurance_Name) {
@@ -105,6 +110,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 負担者番号 (例: 19113760)
+     *
      * @return the PublicInsurer_Number
      */
     public String getPublicInsurer_Number() {
@@ -113,6 +119,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 負担者番号 (例: 19113760)
+     *
      * @param PublicInsurer_Number the PublicInsurer_Number to set
      */
     public void setPublicInsurer_Number(String PublicInsurer_Number) {
@@ -121,6 +128,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 受給者番号 (例: 1234566)
+     *
      * @return the PublicInsuredPerson_Number
      */
     public String getPublicInsuredPerson_Number() {
@@ -129,6 +137,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 受給者番号 (例: 1234566)
+     *
      * @param PublicInsuredPerson_Number the PublicInsuredPerson_Number to set
      */
     public void setPublicInsuredPerson_Number(String PublicInsuredPerson_Number) {
@@ -137,6 +146,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 入院ー負担率（割） (例: 0.00)
+     *
      * @return the Rate_Admission
      */
     public String getRate_Admission() {
@@ -145,6 +155,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 入院ー負担率（割） (例: 0.00)
+     *
      * @param Rate_Admission the Rate_Admission to set
      */
     public void setRate_Admission(String Rate_Admission) {
@@ -153,6 +164,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 入院ー固定額 (例: 0)
+     *
      * @return the Money_Admission
      */
     public String getMoney_Admission() {
@@ -161,6 +173,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 入院ー固定額 (例: 0)
+     *
      * @param Money_Admission the Money_Admission to set
      */
     public void setMoney_Admission(String Money_Admission) {
@@ -169,6 +182,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 外来ー負担率（割） (例: 0.00)
+     *
      * @return the Rate_Outpatient
      */
     public String getRate_Outpatient() {
@@ -177,6 +191,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 外来ー負担率（割） (例: 0.00)
+     *
      * @param Rate_Outpatient the Rate_Outpatient to set
      */
     public void setRate_Outpatient(String Rate_Outpatient) {
@@ -185,6 +200,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 外来ー固定額 (例: 0)
+     *
      * @return the Money_Outpatient
      */
     public String getMoney_Outpatient() {
@@ -193,6 +209,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 外来ー固定額 (例: 0)
+     *
      * @param Money_Outpatient the Money_Outpatient to set
      */
     public void setMoney_Outpatient(String Money_Outpatient) {
@@ -201,6 +218,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 適用開始日 (例: 2010-05-01)
+     *
      * @return the Certificate_IssuedDate
      */
     public String getCertificate_IssuedDate() {
@@ -209,6 +227,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 適用開始日 (例: 2010-05-01)
+     *
      * @param Certificate_IssuedDate the Certificate_IssuedDate to set
      */
     public void setCertificate_IssuedDate(String Certificate_IssuedDate) {
@@ -217,6 +236,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 適用終了日 (例: 9999-12-31)
+     *
      * @return the Certificate_ExpiredDate
      */
     public String getCertificate_ExpiredDate() {
@@ -225,6 +245,7 @@ public class PublicinsuranceInformation {
 
     /**
      * 適用終了日 (例: 9999-12-31)
+     *
      * @param Certificate_ExpiredDate the Certificate_ExpiredDate to set
      */
     public void setCertificate_ExpiredDate(String Certificate_ExpiredDate) {

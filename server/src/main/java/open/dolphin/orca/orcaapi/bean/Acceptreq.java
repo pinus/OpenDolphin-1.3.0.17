@@ -2,6 +2,7 @@ package open.dolphin.orca.orcaapi.bean;
 
 /**
  * acceptreq.
+ *
  * @author pns
  */
 public class Acceptreq {
@@ -103,6 +104,7 @@ public class Acceptreq {
      * 診療科から診療内容も送信内容で更新します。保険組合せ情報は受付登録時と同様の処理とします。
      * (保険組合せ情報の設定がなければ、自動設定します。)
      * </pre>
+     *
      * @return the Request_Number
      */
     public String getRequest_Number() {
@@ -134,6 +136,7 @@ public class Acceptreq {
      * 診療科から診療内容も送信内容で更新します。保険組合せ情報は受付登録時と同様の処理とします。
      * (保険組合せ情報の設定がなければ、自動設定します。)
      * </pre>
+     *
      * @param Request_Number the Request_Number to set
      */
     public void setRequest_Number(String Request_Number) {
@@ -142,6 +145,7 @@ public class Acceptreq {
 
     /**
      * 患者番号 (例: 00012)
+     *
      * @return the Patient_ID
      */
     public String getPatient_ID() {
@@ -150,6 +154,7 @@ public class Acceptreq {
 
     /**
      * 患者番号 (例: 00012)
+     *
      * @param Patient_ID the Patient_ID to set
      */
     public void setPatient_ID(String Patient_ID) {
@@ -158,6 +163,7 @@ public class Acceptreq {
 
     /**
      * 患者氏名 (例: 日医　太郎)
+     *
      * @return the WholeName
      */
     public String getWholeName() {
@@ -166,6 +172,7 @@ public class Acceptreq {
 
     /**
      * 患者氏名 (例: 日医　太郎)
+     *
      * @param WholeName the WholeName to set
      */
     public void setWholeName(String WholeName) {
@@ -174,6 +181,7 @@ public class Acceptreq {
 
     /**
      * 受付日 (例: 2011-03-15)
+     *
      * @return the Acceptance_Date
      */
     public String getAcceptance_Date() {
@@ -182,6 +190,7 @@ public class Acceptreq {
 
     /**
      * 受付日 (例: 2011-03-15)
+     *
      * @param Acceptance_Date the Acceptance_Date to set
      */
     public void setAcceptance_Date(String Acceptance_Date) {
@@ -190,6 +199,7 @@ public class Acceptreq {
 
     /**
      * 受付時間 (例: 15:30:00)
+     *
      * @return the Acceptance_Time
      */
     public String getAcceptance_Time() {
@@ -198,6 +208,7 @@ public class Acceptreq {
 
     /**
      * 受付時間 (例: 15:30:00)
+     *
      * @param Acceptance_Time the Acceptance_Time to set
      */
     public void setAcceptance_Time(String Acceptance_Time) {
@@ -206,6 +217,7 @@ public class Acceptreq {
 
     /**
      * 受付ID (例:  )
+     *
      * @return the Acceptance_Id
      */
     public String getAcceptance_Id() {
@@ -214,6 +226,7 @@ public class Acceptreq {
 
     /**
      * 受付ID (例:  )
+     *
      * @param Acceptance_Id the Acceptance_Id to set
      */
     public void setAcceptance_Id(String Acceptance_Id) {
@@ -222,6 +235,7 @@ public class Acceptreq {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @return the Department_Code
      */
     public String getDepartment_Code() {
@@ -230,6 +244,7 @@ public class Acceptreq {
 
     /**
      * 診療科コード※１(01:内科) (例: 01)
+     *
      * @param Department_Code the Department_Code to set
      */
     public void setDepartment_Code(String Department_Code) {
@@ -238,6 +253,7 @@ public class Acceptreq {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @return the Physician_Code
      */
     public String getPhysician_Code() {
@@ -246,6 +262,7 @@ public class Acceptreq {
 
     /**
      * ドクターコード (例: 10001)
+     *
      * @param Physician_Code the Physician_Code to set
      */
     public void setPhysician_Code(String Physician_Code) {
@@ -254,6 +271,7 @@ public class Acceptreq {
 
     /**
      * 診療内容区分※２(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断 、07:予防注射、99:該当なし) (例: 01)
+     *
      * @return the Medical_Information
      */
     public String getMedical_Information() {
@@ -262,6 +280,7 @@ public class Acceptreq {
 
     /**
      * 診療内容区分※２(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断 、07:予防注射、99:該当なし) (例: 01)
+     *
      * @param Medical_Information the Medical_Information to set
      */
     public void setMedical_Information(String Medical_Information) {
@@ -270,6 +289,7 @@ public class Acceptreq {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @return the HealthInsurance_Information
      */
     public HealthInsuranceInformation getHealthInsurance_Information() {
@@ -278,6 +298,7 @@ public class Acceptreq {
 
     /**
      * 保険組合せ情報 (例:  )
+     *
      * @param HealthInsurance_Information the HealthInsurance_Information to set
      */
     public void setHealthInsurance_Information(HealthInsuranceInformation HealthInsurance_Information) {
