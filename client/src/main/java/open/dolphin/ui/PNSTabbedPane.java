@@ -1,5 +1,7 @@
 package open.dolphin.ui;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -14,40 +16,75 @@ import java.util.List;
 
 /**
  * JTabbedPane 的な何か.
+ *
  * @author pns
  */
 public class PNSTabbedPane extends JPanel implements ChangeListener {
     private static final long serialVersionUID = 1L;
-    /** タブ切り替えボタン格納パネル */
+    /**
+     * タブ切り替えボタン格納パネル
+     */
     private ButtonPanel buttonPanel;
-    /** ボタンパネルのフォント */
+    /**
+     * ボタンパネルのフォント
+     */
     private Font buttonPanelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 13);
-    /** 切り替えボタンを入れておくリスト */
+    /**
+     * 切り替えボタンを入れておくリスト
+     */
     private List<TabButton> buttonList;
-    /** 切り替えボタン格納パネルのレイアウト */
+    /**
+     * 切り替えボタン格納パネルのレイアウト
+     */
     private RightJustifiedFlowLayout buttonLayout;
-    /** コンテント表示パネル */
+    /**
+     * コンテント表示パネル
+     */
     private JPanel contentPanel;
-    /** コンテントを切り替えるためのカードレイアウト */
+    /**
+     * コンテントを切り替えるためのカードレイアウト
+     */
     private CardLayout card;
-    /** タブ切り替えボタンのボタングループ */
+    /**
+     * タブ切り替えボタンのボタングループ
+     */
     private ButtonGroup buttonGroup;
-    /** ButtonPanel 部分に何かを加えたりするためのフックパネル */
+    /**
+     * ButtonPanel 部分に何かを加えたりするためのフックパネル
+     */
     private JPanel accessoryPanel;
-    /** セレクションモデル */
+    /**
+     * セレクションモデル
+     */
     private DefaultSingleSelectionModel selectionModel;
-    /** タブの総数 */
+    /**
+     * タブの総数
+     */
     private int tabCount = 0;
-    /** １行の最低タブ数 */
+    /**
+     * １行の最低タブ数
+     */
     private static final int MIN_TAB_PER_LINE = 3;
-    /** タブの場所　上か下か */
+    /**
+     * タブの場所　上か下か
+     */
     private int tabPlacement = JTabbedPane.TOP;
-    /** ChangeListener */
+    /**
+     * ChangeListener
+     */
     private final List<ChangeListener> listeners = new ArrayList<>();
-    /** 親の Window */
+    /**
+     * 親の Window
+     */
     private Window parent = null;
-    /** Application が foreground かどうか */
+    /**
+     * Application が foreground かどうか
+     */
     private boolean appForeground = true;
+    /**
+     * Logger
+     */
+    private Logger logger = Logger.getLogger(PNSTabbedPane.class);
 
     public PNSTabbedPane() {
         initComponents();
@@ -56,7 +93,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     /**
      * 組み込まれるときに addNotify が呼ばれるのを利用して parent を登録する.
      */
-     @Override
+    @Override
     public void addNotify() {
         super.addNotify();
 
@@ -66,14 +103,19 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             // ButtonPanel がうまく repaint されないことがある
             parent.addWindowListener(new WindowAdapter() {
                 @Override
-                public void windowActivated(WindowEvent e) { buttonPanel.repaint(); }
+                public void windowActivated(WindowEvent e) {
+                    buttonPanel.repaint();
+                }
+
                 @Override
-                public void windowDeactivated(WindowEvent e) {buttonPanel.repaint(); }
+                public void windowDeactivated(WindowEvent e) {
+                    buttonPanel.repaint();
+                }
             });
 
             // AppForegroundListener
             com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
-            app.addAppEventListener(new com.apple.eawt.AppForegroundListener(){
+            app.addAppEventListener(new com.apple.eawt.AppForegroundListener() {
                 @Override
                 public void appRaisedToForeground(com.apple.eawt.AppEvent.AppForegroundEvent afe) {
                     appForeground = true;
@@ -105,7 +147,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
         // 内容表示パネル作成
         contentPanel = new JPanel();
-        card = new CardLayout(0,0);
+        card = new CardLayout(0, 0);
         contentPanel.setLayout(card);
 
         // ボタングループの設定
@@ -113,7 +155,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         buttonList = new ArrayList<>();
 
         // 全体のレイアウト
-        setLayout(new BorderLayout(0,0));
+        setLayout(new BorderLayout(0, 0));
         add(accessoryPanel, BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
     }
@@ -121,6 +163,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     /**
      * ButtonPanel を入れる Container.
      * BorderLayout にしてある.
+     *
      * @return
      */
     public JPanel getAccessoryPanel() {
@@ -129,8 +172,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * タブにコンポネントを加える.
-     * @param name
-     * @param c
+     *
+     * @param name タブ名
+     * @param c    Component
      */
     public void addTab(String name, Component c) {
         TabButton button = new TabButton(name, tabCount);
@@ -140,14 +184,17 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         buttonGroup.add(button);
         buttonList.add(button);
 
-        if (tabCount == 0) { selectionModel.setSelectedIndex(0); }
+        if (tabCount == 0) {
+            selectionModel.setSelectedIndex(0);
+        }
         tabCount++;
     }
 
     /**
      * index の card に component をセットする.
-     * @param index
-     * @param c
+     *
+     * @param index index
+     * @param c     Component
      */
     public void setComponentAt(int index, Component c) {
         contentPanel.remove(index);
@@ -161,8 +208,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * index の component を返す.
-     * @param index
-     * @return
+     *
+     * @param index index
+     * @return Component
      */
     public Component getComponentAt(int index) {
         return contentPanel.getComponent(index);
@@ -170,8 +218,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * index のボタンの title を返す.
-     * @param index
-     * @return
+     *
+     * @param index index
+     * @return ボタン名
      */
     public String getTitleAt(int index) {
         TabButton button = (TabButton) buttonPanel.getComponent(index);
@@ -180,8 +229,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * index のボタンの title を設定する.
-     * @param index
-     * @param title
+     *
+     * @param index index
+     * @param title ボタン名を設定
      */
     public void setTitleAt(int index, String title) {
         TabButton button = (TabButton) buttonPanel.getComponent(index);
@@ -190,7 +240,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * ボタンパネルを上につけるか，下につけるか.
-     * @param tabPlacement
+     *
+     * @param tabPlacement ボタン位置
      */
     public void setTabPlacement(int tabPlacement) {
         if (this.tabPlacement != tabPlacement) {
@@ -210,8 +261,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * index のボタンに ToolTipText をつける.
-     * @param index
-     * @param text
+     *
+     * @param index index
+     * @param text  ToolTipText
      */
     public void setToolTipTextAt(int index, String text) {
         buttonList.get(index).setToolTipText(text);
@@ -219,15 +271,19 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * index のタブを選択する.
-     * @param index
+     *
+     * @param index index
      */
     public void setSelectedIndex(int index) {
-        if (buttonList.get(index).isEnabled()) { selectionModel.setSelectedIndex(index); }
+        if (buttonList.get(index).isEnabled()) {
+            selectionModel.setSelectedIndex(index);
+        }
     }
 
     /**
      * 選択されている index を返す.
-     * @return
+     *
+     * @return selected index
      */
     public int getSelectedIndex() {
         return selectionModel.getSelectedIndex();
@@ -235,15 +291,17 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * タブの総数を返す.
-     * @return
+     *
+     * @return total tab count
      */
     public int getTabCount() {
         return tabCount;
     }
 
     /**
-     * 表示されている component を返す.
-     * @return
+     * 表示されている Component を返す.
+     *
+     * @return selected Component
      */
     public Component getSelectedComponent() {
         return contentPanel.getComponent(selectionModel.getSelectedIndex());
@@ -251,7 +309,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * ChangeListener を登録する.
-     * @param listener
+     *
+     * @param listener ChangeListener
      */
     public void addChangeListener(ChangeListener listener) {
         listeners.add(listener);
@@ -259,8 +318,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * index のタブが使用可能であるかどうかを設定.
-     * @param index
-     * @param isEnabled
+     *
+     * @param index     index
+     * @param isEnabled enabled or not
      */
     public void setEnabledAt(int index, boolean isEnabled) {
         buttonList.get(index).setEnabled(isEnabled);
@@ -268,12 +328,13 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * text をタイトルに持つタブ番号を返す. ない場合は -1 を返す.
-     * @param title
-     * @return
+     *
+     * @param title タイトル
+     * @return index
      */
     public int indexOfTab(String title) {
         int ret = -1;
-        for(int i=0; i< tabCount; i++) {
+        for (int i = 0; i < tabCount; i++) {
             if (buttonList.get(i).getText().equals(title)) {
                 ret = i;
                 break;
@@ -284,7 +345,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * index のタブを削除する.
-     * @param index
+     *
+     * @param index index
      */
     public void removeTabAt(int index) {
         buttonGroup.remove(buttonList.get(index));
@@ -298,7 +360,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * ボタンレイアウトの水平方向の隙間.
-     * @param hgap
+     *
+     * @param hgap holizontal gap
      */
     public void setButtonHgap(int hgap) {
         buttonLayout.setHgap(hgap);
@@ -306,7 +369,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * ボタンレイアウトの垂直方向の隙間.
-     * @param vgap
+     *
+     * @param vgap vertical gpg
      */
     public void setButtonVgap(int vgap) {
         buttonLayout.setVgap(vgap);
@@ -314,7 +378,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * selection model が変更されると呼ばれる.
-     * @param e
+     *
+     * @param e ChangeEvent
      */
     @Override
     public void stateChanged(ChangeEvent e) {
@@ -327,7 +392,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * ボタンパネルの回りの余白を設定する.
-     * @param d
+     *
+     * @param d dimension of padding
      */
     public void setButtonPanelPadding(Dimension d) {
         buttonPanel.setPadding(d);
@@ -335,7 +401,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * ボタンパネルの回りの余白を返す.
-     * @return
+     *
+     * @return dmension of padding
      */
     public Dimension getButtonPanelPadding() {
         return buttonPanel.getPadding();
@@ -343,7 +410,8 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * ボタンパネルのフォントをセットする.
-     * @param font
+     *
+     * @param font Font
      */
     public void setButtonPanelFont(Font font) {
         buttonPanelFont = font;
@@ -354,7 +422,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      */
     private class ButtonPanel extends HorizontalPanel {
         private static final long serialVersionUID = 1L;
-        private Dimension padding = new Dimension(0,0);
+        private Dimension padding = new Dimension(0, 0);
 
         public ButtonPanel() {
         }
@@ -376,15 +444,17 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * ButtonBanel 描画装飾フック用.
-     * @param g
+     *
+     * @param g Graphics
      */
     public void paintButtonPanel(Graphics g) {
     }
 
     /**
      * n 番目のボタンの右上のコーナーの座標を返す.
-     * @param n
-     * @return
+     *
+     * @param n button number
+     * @return coordinate at upper-right
      */
     public Point getButtonTopRightCornerLocation(int n) {
         TabButton button = buttonList.get(n);
@@ -395,11 +465,12 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     /**
      * ButtonPanel のバックグランド色を設定する.
-     * @param b
+     *
+     * @param background background color
      */
-    public void setButtonPanelBackground(Color b) {
+    public void setButtonPanelBackground(Color background) {
         buttonPanel.setOpaque(true);
-        buttonPanel.setBackground(b);
+        buttonPanel.setBackground(background);
     }
 
     /**
@@ -408,17 +479,17 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     private class TabButton extends JToggleButton implements ActionListener {
         private static final long serialVersionUID = 1L;
 
-        private final Color INACTIVE_FRAME = new Color(219,219,219);
-        private final Color INACTIVE_FILL_SELECTED = new Color(227,227,227);
-        private final Color INACTIVE_FILL = new Color(246,246,246);
-        private final Color ACTIVE_FRAME = new Color(175,175,175);
-        private final Color ACTIVE_SEPARATOR = new Color(218,218,218);
-        private final Color ACTIVE_FRAME_SELECTED = new Color(91,91,91);
-        private final Color ACTIVE_SEPARATOR_SELECTED = new Color(91,91,91);
-        private final Color ACTIVE_FILL = new Color(240,240,240);
-        private final Color ACTIVE_FILL_SELECTED = new Color(100,100,100);
-        private final Color INACTIVE_TEXT = new Color(180,180,180);
-        private final Color INACTIVE_TEXT_SELECTED = new Color(50,50,50);
+        private final Color INACTIVE_FRAME = new Color(219, 219, 219);
+        private final Color INACTIVE_FILL_SELECTED = new Color(227, 227, 227);
+        private final Color INACTIVE_FILL = new Color(246, 246, 246);
+        private final Color ACTIVE_FRAME = new Color(175, 175, 175);
+        private final Color ACTIVE_SEPARATOR = new Color(218, 218, 218);
+        private final Color ACTIVE_FRAME_SELECTED = new Color(91, 91, 91);
+        private final Color ACTIVE_SEPARATOR_SELECTED = new Color(91, 91, 91);
+        private final Color ACTIVE_FILL = new Color(240, 240, 240);
+        private final Color ACTIVE_FILL_SELECTED = new Color(100, 100, 100);
+        private final Color INACTIVE_TEXT = new Color(180, 180, 180);
+        private final Color INACTIVE_TEXT_SELECTED = new Color(50, 50, 50);
 
         private String name;
         private int index;
@@ -429,7 +500,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         public boolean isLeftEnd;
 
         // レイアウトマネージャーでボタンの大きさを調節する時使う
-        public Dimension margin = new Dimension(0,0); // no quaqua
+        public Dimension margin = new Dimension(0, 0); // no quaqua
         //public Dimension margin = new Dimension(0,-2); // quaqua 8.0
         //public Dimension margin = new Dimension(0,4); // quaqua 7.2
 
@@ -438,6 +509,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             this.index = index;
             initComponent();
         }
+
         private void initComponent() {
             setName(name);
             addActionListener(this);
@@ -445,10 +517,11 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             setBorderPainted(false);
             setFont(buttonPanelFont);
 
-            float w = ((float)name.length()*buttonPanelFont.getSize()) * 1.3f;
-            int h = buttonPanelFont.getSize()*2;
-            setPreferredSize(new Dimension((int)w, h));
+            float w = ((float) name.length() * buttonPanelFont.getSize()) * 1.3f;
+            int h = buttonPanelFont.getSize() * 2;
+            setPreferredSize(new Dimension((int) w, h));
         }
+
         @Override
         public final void setName(String name) {
             super.setName(name);
@@ -459,16 +532,19 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         public final void setIndex(int index) {
             this.index = index;
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             selectionModel.setSelectedIndex(index);
         }
+
         @Override
         public Dimension getPreferredSize() {
             Dimension d = super.getPreferredSize();
-            d.setSize(d.width+margin.width, d.height+margin.height);
+            d.setSize(d.width + margin.width, d.height + margin.height);
             return d;
         }
+
         @Override
         public void paintComponent(Graphics graphics) {
             //super.paintComponent(graphics);
@@ -485,7 +561,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
                 } else {
                     renderButton(g, w, h, ACTIVE_FRAME, ACTIVE_FILL);
-               }
+                }
 
             } else {
                 if (this.isSelected()) {
@@ -505,19 +581,19 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             if (parent.isActive() && appForeground) {
                 if (this.isSelected()) {
                     g.setColor(Color.WHITE);
-                } else{
+                } else {
                     g.setColor(Color.BLACK);
                 }
 
             } else {
                 if (this.isSelected()) {
                     g.setColor(INACTIVE_TEXT_SELECTED);
-                } else{
+                } else {
                     g.setColor(INACTIVE_TEXT);
                 }
             }
 
-            g.drawString(name, (w-strWidth)/2, (h+fm.getHeight())/2-fm.getDescent());
+            g.drawString(name, (w - strWidth) / 2, (h + fm.getHeight()) / 2 - fm.getDescent());
 
             g.dispose();
         }
@@ -528,42 +604,46 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                 // fill
                 int r = 6;
                 g.setColor(fillColor);
-                g.fillRoundRect(0, 0, w, h, r*2, r*2); // 全体を角丸で塗って
-                g.fillRect(w-r, 0, r, h); // 右端を四角く塗り直す
+                g.fillRoundRect(0, 0, w, h, r * 2, r * 2); // 全体を角丸で塗って
+                g.fillRect(w - r, 0, r, h); // 右端を四角く塗り直す
                 // frame
                 g.setColor(frameColor);
-                g.drawLine(r, 0, w-1, 0); // 上
-                g.drawLine(0, r, 0, h-r-1); // 左
-                g.drawArc(0, 0, r*2, r*2, 90, 90); // 左上 12時から反時計 90度
-                g.drawArc(0, h-r*2-1, r*2, r*2, 180, 90);
-                g.drawLine(r, h-1, w-1, h-1); // 下
+                g.drawLine(r, 0, w - 1, 0); // 上
+                g.drawLine(0, r, 0, h - r - 1); // 左
+                g.drawArc(0, 0, r * 2, r * 2, 90, 90); // 左上 12時から反時計 90度
+                g.drawArc(0, h - r * 2 - 1, r * 2, r * 2, 180, 90);
+                g.drawLine(r, h - 1, w - 1, h - 1); // 下
 
             } else if (this.isRightEnd && isTop && isBottom) {
                 // 右端のボタンの角を取る
                 // fill
                 int r = 6;
                 g.setColor(fillColor);
-                g.fillRoundRect(0, 0, w-1, h, r*2, r*2); // 右端のボタンは 1ドット狭い
+                g.fillRoundRect(0, 0, w - 1, h, r * 2, r * 2); // 右端のボタンは 1ドット狭い
                 g.fillRect(0, 0, r, h);
                 // frame
                 g.setColor(frameColor);
-                g.drawLine(0, 0, w-r-1, 0); // 上
-                g.drawLine(0, 0, 0, h-1); // 左
-                g.drawArc(w-1-r*2, 0, r*2, r*2, 0, 90); // 右上 3時から反時計 90度
-                g.drawArc(w-1-r*2, h-r*2-1, r*2, r*2, 0, -90); // 右下 3時から時計回り90度
-                g.drawLine(0, h-1, w-1-r, h-1); // 下
-                g.drawLine(w-1, r, w-1, h-1-r); // 右
+                g.drawLine(0, 0, w - r - 1, 0); // 上
+                g.drawLine(0, 0, 0, h - 1); // 左
+                g.drawArc(w - 1 - r * 2, 0, r * 2, r * 2, 0, 90); // 右上 3時から反時計 90度
+                g.drawArc(w - 1 - r * 2, h - r * 2 - 1, r * 2, r * 2, 0, -90); // 右下 3時から時計回り90度
+                g.drawLine(0, h - 1, w - 1 - r, h - 1); // 下
+                g.drawLine(w - 1, r, w - 1, h - 1 - r); // 右
 
-            } else  {
+            } else {
                 // fill
                 g.setColor(fillColor);
                 g.fillRect(0, 0, w, h);
                 // frame
                 g.setColor(frameColor);
-                g.drawLine(0, 0, w-1, 0); // 上
-                g.drawLine(0, 0, 0, h-1); // 左
-                if (this.isBottom || buttonLayout.getVgap() != 0) { g.drawLine(0, h-1, w-1, h-1); } // 下
-                if (this.isRightEnd || buttonLayout.getHgap() != 0) { g.drawLine(w-1, 0, w-1, h-1); } // 右
+                g.drawLine(0, 0, w - 1, 0); // 上
+                g.drawLine(0, 0, 0, h - 1); // 左
+                if (this.isBottom || buttonLayout.getVgap() != 0) {
+                    g.drawLine(0, h - 1, w - 1, h - 1);
+                } // 下
+                if (this.isRightEnd || buttonLayout.getHgap() != 0) {
+                    g.drawLine(w - 1, 0, w - 1, h - 1);
+                } // 右
             }
         }
     }
@@ -575,115 +655,124 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         private static final long serialVersionUID = 1L;
 
         public RightJustifiedFlowLayout() {
-            super(FlowLayout.CENTER,0,0);
+            super(FlowLayout.CENTER, 0, 0);
         }
 
         @Override
         public Dimension preferredLayoutSize(Container buttonPanel) {
-            Dimension padding = ((ButtonPanel)buttonPanel).getPadding();
+            synchronized (buttonPanel.getTreeLock()) {
+                Dimension padding = ((ButtonPanel) buttonPanel).getPadding();
 
-            int width = PNSTabbedPane.this.getWidth() - padding.width;
-            if (width <= 0) { return new Dimension(1,1); }
-
-            int hgap = this.getHgap();
-            int vgap = this.getVgap();
-            int buttonCount = buttonPanel.getComponentCount();
-            int tempWidth   = 0;
-            int tempHeight  = 0;
-            int totalHeight = 0;
-
-            int lineCount = 1;
-
-            int maxButtonWidth = 0;
-            int tempButtonCount = 0;
-            // wrap した場合の各行のボタン数
-            List<Integer> buttonCountAtLine = new ArrayList<>(10);
-
-            // 行数を計算
-            for(int i=0; i< buttonCount; i++) {
-                TabButton button = (TabButton) buttonPanel.getComponent(i);
-                button.margin.width = 0;
-                Dimension b = button.getPreferredSize();
-
-                tempWidth += hgap;
-                // 次のボタンを加えたらはみ出す場合の処理
-                if (tempWidth + b.width > width) {
-                    totalHeight += tempHeight;
-                    tempHeight = 0;
-                    tempWidth = 0;
-                    buttonCountAtLine.add(tempButtonCount);
-                    lineCount++;
-                    tempButtonCount = 0;
+                int width = PNSTabbedPane.this.getWidth() - padding.width;
+                if (width <= 0 || !buttonPanel.isValid()) {
+                    return new Dimension(1, 1);
                 }
-                tempHeight = Math.max(tempHeight, b.height);
-                tempWidth += b.width;
+                //logger.info("width=" + width + " container=" + buttonPanel);
 
-                maxButtonWidth = Math.max(maxButtonWidth, b.width);
-                tempButtonCount++;
-            }
-            totalHeight += tempHeight + (lineCount+1)*vgap;
-            buttonCountAtLine.add(tempButtonCount);
+                int hgap = this.getHgap();
+                int vgap = this.getVgap();
+                int buttonCount = buttonPanel.getComponentCount();
+                int tempWidth = 0;
+                int tempHeight = 0;
+                int totalHeight = 0;
 
-            // １行だったら
-            if (lineCount == 1) {
-                for(int i=0; i< buttonCount; i++) {
+                int lineCount = 1;
+
+                int maxButtonWidth = 0;
+                int tempButtonCount = 0;
+                // wrap した場合の各行のボタン数
+                List<Integer> buttonCountAtLine = new ArrayList<>(10);
+
+                // 行数を計算
+                for (int i = 0; i < buttonCount; i++) {
                     TabButton button = (TabButton) buttonPanel.getComponent(i);
-                    //ボタンの長さをできるだけそろえる
-                    //button.margin.width = (maxButtonWidth - button.getPreferredSize().width);
-                    button.isTop = true;
-                    button.isBottom = true;
-                    button.isRightEnd = (i == buttonCount -1);
-                    button.isLeftEnd = (i == 0);
+                    button.margin.width = 0;
+                    Dimension b = button.getPreferredSize();
+
+                    tempWidth += hgap;
+                    // 次のボタンを加えたらはみ出す場合の処理
+                    if (tempWidth + b.width > width) {
+                        totalHeight += tempHeight;
+                        tempHeight = 0;
+                        tempWidth = 0;
+                        buttonCountAtLine.add(tempButtonCount);
+                        lineCount++;
+                        tempButtonCount = 0;
+                    }
+                    tempHeight = Math.max(tempHeight, b.height);
+                    tempWidth += b.width;
+
+                    maxButtonWidth = Math.max(maxButtonWidth, b.width);
+                    tempButtonCount++;
                 }
-            } else {
-            // ２行以上だったら right justification する
+                totalHeight += tempHeight + (lineCount + 1) * vgap;
+                buttonCountAtLine.add(tempButtonCount);
 
-                if (tempButtonCount < MIN_TAB_PER_LINE) {
-                    //　再配分
-                    float n = (float)buttonCount / lineCount;
-                    float residue = 0;
-                    int assigned = 0;
+                // １行だったら
+                if (lineCount == 1) {
+                    for (int i = 0; i < buttonCount; i++) {
+                        TabButton button = (TabButton) buttonPanel.getComponent(i);
+                        //ボタンの長さをできるだけそろえる
+                        //button.margin.width = (maxButtonWidth - button.getPreferredSize().width);
+                        button.isTop = true;
+                        button.isBottom = true;
+                        button.isRightEnd = (i == buttonCount - 1);
+                        button.isLeftEnd = (i == 0);
+                    }
+                } else {
+                    // ２行以上だったら right justification する
 
-                    for(int i=0; i< lineCount - 1; i++) {
-                        residue += (n - (int)n);
-                        if (residue >= 1.0f) {
-                            residue -= 1.0f;
-                            buttonCountAtLine.set(i, (int)n + 1);
-                            assigned += ((int)n + 1);
-                        } else {
-                            buttonCountAtLine.set(i, (int)n);
-                            assigned += (int)n;
+                    if (tempButtonCount < MIN_TAB_PER_LINE) {
+                        //　再配分
+                        float n = (float) buttonCount / lineCount;
+                        float residue = 0;
+                        int assigned = 0;
+
+                        for (int i = 0; i < lineCount - 1; i++) {
+                            residue += (n - (int) n);
+                            if (residue >= 1.0f) {
+                                residue -= 1.0f;
+                                buttonCountAtLine.set(i, (int) n + 1);
+                                assigned += ((int) n + 1);
+                            } else {
+                                buttonCountAtLine.set(i, (int) n);
+                                assigned += (int) n;
+                            }
                         }
-                    }
-                    buttonCountAtLine.set(lineCount - 1, buttonCount - assigned);
-                }
-
-                int offset = 0;
-                for(int line=0; line< lineCount; line++) {
-                    int bc = buttonCountAtLine.get(line);
-                    if (bc == 0) { continue; }
-                    // 隙間を測る
-                    int gap = hgap; // hgap の数はボタンよりも１つ多い
-                    for(int i=0; i< bc; i++) {
-                        TabButton b = (TabButton) buttonPanel.getComponent(i + offset);
-                        gap += (b.getPreferredSize().width + hgap);
-                        b.isBottom = (line == lineCount - 1 || vgap != 0);
-                        b.isRightEnd = (i == bc - 1 || hgap != 0);
-                    }
-                    gap = width - gap;
-                    // gap に応じて margin 調節
-                    int delta = gap / bc;
-                    for(int i=0; i< bc; i++) {
-                        TabButton b = (TabButton) buttonPanel.getComponent(i + offset);
-                        b.margin.width = delta;
-                        gap -= delta;
-                        if (i == bc - 1) { b.margin.width += gap; }
+                        buttonCountAtLine.set(lineCount - 1, buttonCount - assigned);
                     }
 
-                    offset += buttonCountAtLine.get(line);
+                    int offset = 0;
+                    for (int line = 0; line < lineCount; line++) {
+                        int bc = buttonCountAtLine.get(line);
+                        if (bc == 0) {
+                            continue;
+                        }
+                        // 隙間を測る
+                        int gap = hgap; // hgap の数はボタンよりも１つ多い
+                        for (int i = 0; i < bc; i++) {
+                            TabButton b = (TabButton) buttonPanel.getComponent(i + offset);
+                            gap += (b.getPreferredSize().width + hgap);
+                            b.isBottom = (line == lineCount - 1 || vgap != 0);
+                            b.isRightEnd = (i == bc - 1 || hgap != 0);
+                        }
+                        gap = width - gap;
+                        // gap に応じて margin 調節
+                        int delta = gap / bc;
+                        for (int i = 0; i < bc; i++) {
+                            TabButton b = (TabButton) buttonPanel.getComponent(i + offset);
+                            b.margin.width = delta;
+                            gap -= delta;
+                            if (i == bc - 1) {
+                                b.margin.width += gap;
+                            }
+                        }
+
+                        offset += buttonCountAtLine.get(line);
+                    }
                 }
+                return new Dimension(width, totalHeight + padding.height);
             }
-            return new Dimension(width, totalHeight + padding.height);
         }
     }
 
@@ -712,7 +801,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     private static void testPattern1() {
         MainFrame f = new MainFrame("", false, false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(600,800);
+        f.setSize(600, 800);
 
         JPanel mainComponentPanel_1 = createMainPanel();
         JPanel mainComponentPanel_2 = createMainPanel();
@@ -741,7 +830,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     private static JPanel createMainPanel() {
         JPanel mainComponentPanel = new JPanel();
-        mainComponentPanel.setLayout(new BorderLayout(0,0));
+        mainComponentPanel.setLayout(new BorderLayout(0, 0));
 
         HorizontalPanel commandPanel = new HorizontalPanel();
         commandPanel.setPanelHeight(36);
@@ -759,7 +848,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         statusPanel.add("END");
         statusPanel.setMargin(8);
 
-        JTable table = new JTable(50,10);
+        JTable table = new JTable(50, 10);
         table.setGridColor(Color.gray);
 
         mainComponentPanel.add(commandPanel, BorderLayout.NORTH);
@@ -786,7 +875,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     private static void testPattern2() {
         MainFrame f = new MainFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(800,600);
+        f.setSize(800, 600);
 
         MainFrame.CommandPanel commandPanel = f.getCommandPanel();
         commandPanel.setPanelHeight(56);
@@ -805,11 +894,12 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         statusPanel.setMargin(8);
 
         MainFrame.MainPanel mainPanel = f.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(1,1));
+        mainPanel.setLayout(new BorderLayout(1, 1));
 
         JPanel p = new JPanel(new BorderLayout());
         JPanel p1 = new JPanel() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void paintComponent(Graphics grahics) {
                 super.paintComponent(grahics);
@@ -819,10 +909,10 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                 g.dispose();
             }
         };
-        p1.setPreferredSize(new Dimension(200,100));
+        p1.setPreferredSize(new Dimension(200, 100));
         p1.setBorder(BorderFactory.createTitledBorder("PANEL1"));
         JPanel p2 = new JPanel();
-        p2.setPreferredSize(new Dimension(200,100));
+        p2.setPreferredSize(new Dimension(200, 100));
         p2.setBorder(BorderFactory.createTitledBorder("PANEL2"));
         p.add(p1, BorderLayout.NORTH);
         p.add(p2, BorderLayout.CENTER);
@@ -830,7 +920,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         PNSTabbedPane tab = new PNSTabbedPane();
         tab.setButtonVgap(4);
         tab.addTab("カルテ", new JTextPane());
-        JTable table = new JTable(50,10);
+        JTable table = new JTable(50, 10);
         table.setGridColor(Color.gray);
         tab.addTab("病名", table);
 
@@ -853,7 +943,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * |---------------|
      * | TabPanel out  |
      * +---------------+
-     *
      */
     private static void testPattern3() {
         MainFrame f = new MainFrame();
@@ -869,18 +958,18 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         commandPanel.add(new JButton("END"));
 
         // 内側のタブ
-        String[] tabStr = {"細菌検査", "注 射", "処 方","初診・再診","指導・在宅",
-            "処 置","手 術","放射線","検体検査","生体検査","傷病名","テキスト","パ ス","ORCA","汎 用","その他"};
+        String[] tabStr = {"細菌検査", "注 射", "処 方", "初診・再診", "指導・在宅",
+                "処 置", "手 術", "放射線", "検体検査", "生体検査", "傷病名", "テキスト", "パ ス", "ORCA", "汎 用", "その他"};
         PNSTabbedPane tabIn1 = createTreeTabPane(tabStr);
-        final String[] tabStr2 = {"細菌検査", "処 方","初診・再診","指導・在宅",
-            "処 置","手 術","放射線","検体検査","生体検査","傷病名","テキスト","パ ス","ORCA","汎 用","その他"};
+        final String[] tabStr2 = {"細菌検査", "処 方", "初診・再診", "指導・在宅",
+                "処 置", "手 術", "放射線", "検体検査", "生体検査", "傷病名", "テキスト", "パ ス", "ORCA", "汎 用", "その他"};
         final PNSTabbedPane tabIn2 = createTreeTabPane(tabStr2);
 
         // 遅延生成テスト
         tabIn2.addChangeListener(e -> {
             System.out.println("stateChanged");
             int index = tabIn2.getSelectedIndex();
-            tabIn2.setComponentAt(index, new JLabel(String.valueOf(index) + ":" + tabStr2[index]));
+            tabIn2.setComponentAt(index, new JLabel(index + ":" + tabStr2[index]));
         });
 
         // 外側の tabbed pane
@@ -895,7 +984,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
         // main panel に tab を格納
         MainFrame.MainPanel mainPanel = f.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(0,0));
+        mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(tabOut, BorderLayout.CENTER);
 
         f.pack();
@@ -906,7 +995,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         // 内側の tabbed pane
         PNSTabbedPane tab = new PNSTabbedPane();
         // ボタンパネルの余白設定
-        tab.setButtonPanelPadding(new Dimension(4,4));
+        tab.setButtonPanelPadding(new Dimension(4, 4));
         // status panel を inner tab に設定
         StatusPanel statusPanel = new StatusPanel();
         tab.add(statusPanel, BorderLayout.SOUTH);
@@ -915,7 +1004,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
         JTree[] panes = new JTree[tabStr.length];
 
-        for (int i=0; i<tabStr.length; i++) {
+        for (int i = 0; i < tabStr.length; i++) {
             DefaultMutableTreeNode root = new DefaultMutableTreeNode(tabStr[i]);
             DefaultMutableTreeNode swing = new DefaultMutableTreeNode("Swing");
             DefaultMutableTreeNode java2d = new DefaultMutableTreeNode("Java2D");
@@ -936,7 +1025,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             root.add(javamail);
 
             panes[i] = new JTree(root);
-            panes[i].setPreferredSize(new Dimension(500,700));
+            panes[i].setPreferredSize(new Dimension(500, 700));
             tab.addTab(tabStr[i], panes[i]);
         }
 

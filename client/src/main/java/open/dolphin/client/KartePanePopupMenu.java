@@ -112,8 +112,8 @@ public class KartePanePopupMenu extends JPopupMenu {
      * 症状詳記を ORCA に登録／削除する.
      *
      * @param request 01:登録, 02:削除
-     * @param code 詳記区分番号
-     * @param record 詳記内容
+     * @param code    詳記区分番号
+     * @param record  詳記内容
      */
     private void sendSubjectivesDetailRecord(String request, String code, String record) {
 
@@ -152,7 +152,7 @@ public class KartePanePopupMenu extends JPopupMenu {
                     messageType = JOptionPane.ERROR_MESSAGE;
                 }
             }
-            JSheet.showMessageDialog(w,  message + "\n(" + codeText + ")", "", messageType);
+            JSheet.showMessageDialog(w, message + "\n(" + codeText + ")", "", messageType);
         }
     }
 
