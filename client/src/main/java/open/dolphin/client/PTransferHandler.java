@@ -19,7 +19,8 @@ import java.util.List;
 
 /**
  * KartePaneTransferHandler
- * @author Minagawa,Kazushi
+ *
+ * @author Minagawa, Kazushi
  */
 public class PTransferHandler extends TransferHandler {
 
@@ -75,7 +76,7 @@ public class PTransferHandler extends TransferHandler {
             } else if (tr.isDataFlavorSupported(stringFlavor)) {
                 String str = (String) tr.getTransferData(stringFlavor);
                 tc.replaceSelection(str);
-                shouldRemove = tc == source ? true : false;
+                shouldRemove = (tc == source);
                 return true;
             }
         } catch (UnsupportedFlavorException ufe) {
@@ -123,9 +124,9 @@ public class PTransferHandler extends TransferHandler {
     @Override
     protected void exportDone(JComponent c, Transferable data, int action) {
         JTextComponent tc = (JTextComponent) c;
-        if (tc.isEditable() && (shouldRemove == true) && (action == MOVE)) {
+        if (tc.isEditable() && (shouldRemove) && (action == MOVE)) {
             if ((p0 != null) && (p1 != null)
-            && (p0.getOffset() != p1.getOffset())) {
+                    && (p0.getOffset() != p1.getOffset())) {
                 try {
                     tc.getDocument().remove(p0.getOffset(),
                             p1.getOffset() - p0.getOffset());
@@ -143,11 +144,7 @@ public class PTransferHandler extends TransferHandler {
      */
     @Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {
-        JTextPane tc = (JTextPane) c;
-        if (tc.isEditable() && hasFlavor(flavors)) {
-            return true;
-        }
-        return false;
+        return ((JTextPane) c).isEditable() && hasFlavor(flavors);
     }
 
     /**
@@ -174,6 +171,7 @@ public class PTransferHandler extends TransferHandler {
 
     /**
      * DropされたModuleInfo(StampInfo)をインポートする.
+     *
      * @param tr Transferable
      * @return 成功した時 true
      */
@@ -207,7 +205,7 @@ public class PTransferHandler extends TransferHandler {
                 if (node.isLeaf()) {
                     ModuleInfoBean stampInfo = node.getStampInfo();
                     role = stampInfo.getStampRole();
-                    if (stampInfo.isSerialized() && (role.equals(IInfoModel.ROLE_P) || (role.equals(IInfoModel.ROLE_TEXT))) ) {
+                    if (stampInfo.isSerialized() && (role.equals(IInfoModel.ROLE_P) || (role.equals(IInfoModel.ROLE_TEXT)))) {
                         addList.add(stampInfo);
                     }
                 }
@@ -238,6 +236,7 @@ public class PTransferHandler extends TransferHandler {
     /**
      * DropされたStamp(ModuleModel)をインポートする.
      * カルテに実体化された stamp が drop された場合
+     *
      * @param tr Transferable
      * @return インポートに成功した時 true
      */

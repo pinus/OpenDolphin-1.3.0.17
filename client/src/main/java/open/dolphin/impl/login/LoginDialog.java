@@ -57,6 +57,7 @@ public class LoginDialog {
 
     /**
      * ログイン状態リスナーを登録する.
+     *
      * @param listener LoginListener
      */
     public void addLoginListener(LoginListener listener) {
@@ -126,7 +127,7 @@ public class LoginDialog {
         // LoginTask を生成する
         int maxEstimation = ClientContext.getInt("task.default.maxEstimation");
         int delay = ClientContext.getInt("task.default.delay");
-        int lengthOfTask = maxEstimation / delay;	// タスクの長さ = 最大予想時間 / 割り込み間隔
+        int lengthOfTask = maxEstimation / delay;    // タスクの長さ = 最大予想時間 / 割り込み間隔
 
         String message = "ログイン";
         String note = "認証中...";
@@ -201,34 +202,9 @@ public class LoginDialog {
         task.execute();
     }
 
-    private class Blocker implements Task.InputBlocker {
-
-        @Override
-        public void block() {
-            blockGlass.block();
-            view.getUserIdField().setEnabled(false);
-            view.getPasswordField().setEnabled(false);
-            view.getSettingBtn().setEnabled(false);
-            view.getLoginBtn().setEnabled(false);
-            view.getCancelBtn().setEnabled(false);
-            view.getProgressBar().setIndeterminate(true);
-        }
-
-        @Override
-        public void unblock() {
-            blockGlass.unblock();
-            view.getUserIdField().setEnabled(true);
-            view.getPasswordField().setEnabled(true);
-            view.getSettingBtn().setEnabled(true);
-            view.getLoginBtn().setEnabled(true);
-            view.getCancelBtn().setEnabled(true);
-            view.getProgressBar().setIndeterminate(false);
-            view.getProgressBar().setValue(0);
-        }
-    }
-
     /**
      * 警告メッセージを表示する.
+     *
      * @param msg 表示するメッセージ
      */
     private void showMessageDialog(String msg) {
@@ -243,6 +219,7 @@ public class LoginDialog {
 
     /**
      * ログインダイアログを終了する.
+     *
      * @param result LoginState
      */
     private void notifyClose(LoginState result) {
@@ -360,7 +337,6 @@ public class LoginDialog {
         Project.getProjectStub().setSavePassword(view.getSavePasswordCbx().isSelected());
     }
 
-
     /**
      * 設定ボタンがおされた時，設定画面を開始する.
      */
@@ -377,6 +353,7 @@ public class LoginDialog {
     /**
      * 設定ダイアログから通知を受ける.
      * 有効なプロジェクトでればユーザIDをフィールドに設定しパスワードフィールドにフォーカスする.
+     *
      * @param valid Validity
      **/
     public void setNewParams(Boolean valid) {
@@ -407,17 +384,43 @@ public class LoginDialog {
      * ログインボタンの enable/disable を制御する.
      */
     public void checkButtons() {
-            boolean userEmpty = view.getUserIdField().getText().length() == 0;
-            boolean passwdEmpty = view.getPasswordField().getPassword().length == 0;
-            boolean newOKState = !userEmpty && !passwdEmpty;
+        boolean userEmpty = view.getUserIdField().getText().length() == 0;
+        boolean passwdEmpty = view.getPasswordField().getPassword().length == 0;
+        boolean newOKState = !userEmpty && !passwdEmpty;
 
-            if (newOKState != okState) {
-                view.getLoginBtn().setEnabled(newOKState);
-                okState = newOKState;
-            }
+        if (newOKState != okState) {
+            view.getLoginBtn().setEnabled(newOKState);
+            okState = newOKState;
+        }
     }
 
     private void requestFocus(Component c) {
         Focuser.requestFocus(c);
+    }
+
+    private class Blocker implements Task.InputBlocker {
+
+        @Override
+        public void block() {
+            blockGlass.block();
+            view.getUserIdField().setEnabled(false);
+            view.getPasswordField().setEnabled(false);
+            view.getSettingBtn().setEnabled(false);
+            view.getLoginBtn().setEnabled(false);
+            view.getCancelBtn().setEnabled(false);
+            view.getProgressBar().setIndeterminate(true);
+        }
+
+        @Override
+        public void unblock() {
+            blockGlass.unblock();
+            view.getUserIdField().setEnabled(true);
+            view.getPasswordField().setEnabled(true);
+            view.getSettingBtn().setEnabled(true);
+            view.getLoginBtn().setEnabled(true);
+            view.getCancelBtn().setEnabled(true);
+            view.getProgressBar().setIndeterminate(false);
+            view.getProgressBar().setValue(0);
+        }
     }
 }

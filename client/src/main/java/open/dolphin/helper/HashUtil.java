@@ -5,7 +5,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class HashUtil {
@@ -23,7 +22,7 @@ public class HashUtil {
                 else
                     buf.append((char) ('a' + (halfbyte - 10)));
                 halfbyte = data[i] & 0x0F;
-            } while(two_halfs++ < 1);
+            } while (two_halfs++ < 1);
         }
         return buf.toString();
     }

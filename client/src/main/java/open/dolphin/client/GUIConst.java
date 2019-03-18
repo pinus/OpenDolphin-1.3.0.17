@@ -110,26 +110,26 @@ public class GUIConst {
     //
     public static final int DEFAULT_CMP_V_SPACE = 11;
 
-    public static final int DEFAULT_STAMP_EDITOR_WIDTH  = 700;
+    public static final int DEFAULT_STAMP_EDITOR_WIDTH = 700;
     public static final int DEFAULT_STAMP_EDITOR_HEIGHT = 690;
     public static final Dimension DEFAULT_STAMP_EDITOR_SIZE = new Dimension(DEFAULT_STAMP_EDITOR_WIDTH, DEFAULT_STAMP_EDITOR_HEIGHT);
 
-    public static final int DEFAULT_EDITOR_WIDTH 	= 680;  //724
-    public static final int DEFAULT_EDITOR_HEIGHT 	= 256;  //230
+    public static final int DEFAULT_EDITOR_WIDTH = 680;  //724
+    public static final int DEFAULT_EDITOR_HEIGHT = 256;  //230
 
     // ウインドウメニューのメニューバー内の位置
     public static final int DEFAULT_WINDOWMENU_POSITION = 5;
 
     // JList，JTable のデフォルト row height
-    public static final int DEFAULT_LIST_ROW_HEIGHT = ClientContext.isWin()? 16 : 18;
-    public static final int DEFAULT_TABLE_ROW_HEIGHT = ClientContext.isWin()? 16 : 18;
+    public static final int DEFAULT_LIST_ROW_HEIGHT = ClientContext.isWin() ? 16 : 18;
+    public static final int DEFAULT_TABLE_ROW_HEIGHT = ClientContext.isWin() ? 16 : 18;
 
     // レンダラのインデント用のボーダー
     public static final Border RENDERER_BORDER_NARROW = BorderFactory.createEmptyBorder(0, 6, 0, 6);
     public static final Border RENDERER_BORDER_WIDE = BorderFactory.createEmptyBorder(0, 12, 0, 12);
 
     // パネルの default background
-    public static final Color PANEL_BACKGROUND = new Color(246,246,246);
+    public static final Color PANEL_BACKGROUND = new Color(246, 246, 246);
 
     //
     // アイコンはここで集中管理
@@ -220,7 +220,7 @@ public class GUIConst {
     public static final ImageIcon ICON_MD_EJECT_16 = ClientContext.getImageIcon("bw/16x16/MD-eject.png");
 
 
-//  fugue series ----------------------
+    //  fugue series ----------------------
     // 受付リストのアイコン
     public static final ImageIcon ICON_BOOK_OPEN_BOOKMARK_16 = ClientContext.getImageIcon("fugue/16x16/book-open-bookmark.png");
     public static final ImageIcon ICON_BOOK_OPEN_16 = ClientContext.getImageIcon("fugue/16x16/book-open.png");
@@ -278,7 +278,7 @@ public class GUIConst {
     // スタンプ箱からスタンプをカルテに送る
     //public static final ImageIcon ICON_ARROW1_LEFT_16 = ClientContext.getImageIcon("fugue/16x16/arrow-135.png");
 
-//  tango series ---------------------
+    //  tango series ---------------------
     //public static final ImageIcon ICON_SYSTEM_SEARCH_16 = ClientContext.getImageIcon("tango/16x16/actions/system-search.png");
     //public static final ImageIcon ICON_SYSTEM_SEARCH_22 = ClientContext.getImageIcon("tango/22x22/actions/system-search.png");
     public static final ImageIcon ICON_DOCUMENT_SAVE_22 = ClientContext.getImageIcon("tango/22x22/actions/document-save.png");
@@ -357,6 +357,7 @@ public class GUIConst {
     // RegionView の背景
     public static final ImageIcon ICON_BODY = ClientContext.getImageIcon("body.png");
     public static final BufferedImage IMAGE_BODY;
+
     static {
         IMAGE_BODY = new BufferedImage(ICON_BODY.getIconWidth(), ICON_BODY.getIconHeight(), BufferedImage.TYPE_INT_BGR);
         Graphics2D g = IMAGE_BODY.createGraphics();

@@ -21,39 +21,36 @@ import java.util.prefs.Preferences;
  */
 public final class NewKarteDialog {
 
-    private static final String OPEN_ANOTHER        = "別ウィンドウで編集";
-    private static final String ADD_TO_TAB          = "タブパネルへ追加";
-    private static final String EMPTY_NEW           = "空白の新規カルテ";
-    private static final String APPLY_RP            = "前回処方を適用";
-    private static final String ALL_COPY            = "全てコピー";
-    private static final String DEPARTMENT          =  "診療科:";
-    private static final String SELECT_INS          =  "保険選択";
-    private static final String LAST_CREATE_MODE    = "newKarteDialog.lastCreateMode";
-    private static final String FRAME_MEMORY        = "newKarteDialog.openFrame";
-
+    private static final String OPEN_ANOTHER = "別ウィンドウで編集";
+    private static final String ADD_TO_TAB = "タブパネルへ追加";
+    private static final String EMPTY_NEW = "空白の新規カルテ";
+    private static final String APPLY_RP = "前回処方を適用";
+    private static final String ALL_COPY = "全てコピー";
+    private static final String DEPARTMENT = "診療科:";
+    private static final String SELECT_INS = "保険選択";
+    private static final String LAST_CREATE_MODE = "newKarteDialog.lastCreateMode";
+    private static final String FRAME_MEMORY = "newKarteDialog.openFrame";
+    private final Preferences prefs;
+    private final Frame parentFrame;
+    private final String title;
+    private final JPanel content;
     private NewKarteParams params;
-
     // GUI components
     private JButton okButton;
     private JButton cancelButton;
     private JRadioButton emptyNew;
     private JRadioButton applyRp;       // 前回処方を適用
-    private JRadioButton allCopy;	// 全てコピー
+    private JRadioButton allCopy;    // 全てコピー
     private JList<PVTHealthInsuranceModel> insuranceList;
     private JLabel departmentLabel;
-    private JRadioButton addToTab;	// タブパネルへ追加
-    private JRadioButton openAnother;	// 別 Window へ表示
-
-    private final Preferences prefs;
-
-    private final Frame parentFrame;
-    private final String title;
-    private final JPanel content;
+    private JRadioButton addToTab;    // タブパネルへ追加
+    private JRadioButton openAnother;    // 別 Window へ表示
     private JSheet dialog;
     private Object value;
 
     /**
      * Creates new NewKarteDialog.
+     *
      * @param parentFrame
      * @param title
      */
@@ -94,9 +91,9 @@ public final class NewKarteDialog {
         JPanel rpPanel = new JPanel();
         rpPanel.setLayout(new BoxLayout(rpPanel, BoxLayout.X_AXIS));
         rpPanel.add(applyRp);
-        rpPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        rpPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         rpPanel.add(allCopy);
-        rpPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        rpPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         rpPanel.add(emptyNew);
         rpPanel.add(Box.createHorizontalGlue());
 
@@ -108,18 +105,18 @@ public final class NewKarteDialog {
         JPanel openPanel = new JPanel();
         openPanel.setLayout(new BoxLayout(openPanel, BoxLayout.X_AXIS));
         openPanel.add(openAnother);
-        openPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        openPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         openPanel.add(addToTab);
         openPanel.add(Box.createHorizontalGlue());
 
         // ok
-        String buttonText =  (String) UIManager.get("OptionPane.okButtonText");
+        String buttonText = (String) UIManager.get("OptionPane.okButtonText");
         okButton = new JButton(buttonText);
         okButton.addActionListener(e -> doOk());
         okButton.setEnabled(false);
 
         // Cancel Button
-        buttonText =  (String)UIManager.get("OptionPane.cancelButtonText");
+        buttonText = (String) UIManager.get("OptionPane.cancelButtonText");
         cancelButton = new JButton(buttonText);
         cancelButton.addActionListener(e -> doCancel());
 
@@ -136,6 +133,44 @@ public final class NewKarteDialog {
         panel.add(Box.createVerticalStrut(11));
 
         return panel;
+    }
+
+    public void start() {
+
+        Object[] options = new Object[]{okButton, cancelButton};
+
+        JOptionPane jop = new JOptionPane(
+                content,
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                options,
+                okButton);
+
+        // すでに JSheet が出ている場合は，toFront してリターン
+        if (JSheet.isAlreadyShown(parentFrame)) {
+            parentFrame.toFront();
+            return;
+        }
+
+        dialog = JSheet.createDialog(jop, parentFrame);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                Focuser.requestFocus(insuranceList);
+            }
+        });
+        dialog.addSheetListener(se -> {
+            // Escape キーを押したときだけここに入る
+            if (se.getOption() == JOptionPane.CLOSED_OPTION) {
+                cancelButton.doClick();
+            }
+        });
+        dialog.setVisible(true);
+    }
+
+    public Object getValue() {
+        return value;
     }
 
     public void setValue(Object o) {
@@ -220,42 +255,6 @@ public final class NewKarteDialog {
         }
     }
 
-    public void start() {
-
-        Object[] options = new Object[]{okButton, cancelButton};
-
-        JOptionPane jop = new JOptionPane(
-                content,
-                JOptionPane.PLAIN_MESSAGE,
-                JOptionPane.DEFAULT_OPTION,
-                null,
-                options,
-                okButton);
-
-        // すでに JSheet が出ている場合は，toFront してリターン
-        if (JSheet.isAlreadyShown(parentFrame)) {
-            parentFrame.toFront();
-            return;
-        }
-
-        dialog = JSheet.createDialog(jop, parentFrame);
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                Focuser.requestFocus(insuranceList);
-            }
-        });
-        dialog.addSheetListener(se -> {
-            // Escape キーを押したときだけここに入る
-            if (se.getOption() == JOptionPane.CLOSED_OPTION) { cancelButton.doClick(); }
-        });
-        dialog.setVisible(true);
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
     private void setDepartment(String dept) {
         if (dept != null) {
             String[] depts = dept.split("\\s*,\\s*");
@@ -272,8 +271,8 @@ public final class NewKarteDialog {
         //
         if (o != null && o.length > 0) {
             int index = params.getInitialSelectedInsurance();
-            if (index >=0 && index < o.length) {
-                insuranceList.getSelectionModel().setSelectionInterval(index,index);
+            if (index >= 0 && index < o.length) {
+                insuranceList.getSelectionModel().setSelectionInterval(index, index);
             }
         }
     }
@@ -310,10 +309,11 @@ public final class NewKarteDialog {
 
     /**
      * 保険選択に応じてボタン処理をする.
+     *
      * @param adjusting
      */
     public void insuranceSelectionChanged(boolean adjusting) {
-        if (adjusting == false) {
+        if (!adjusting) {
             Object o = insuranceList.getSelectedValue();
             okButton.setEnabled(o != null);
         }
@@ -338,7 +338,7 @@ public final class NewKarteDialog {
      */
     public void memoryFrame() {
         boolean openFrame = openAnother.isSelected();
-        prefs.putBoolean(FRAME_MEMORY,openFrame);
+        prefs.putBoolean(FRAME_MEMORY, openFrame);
         Preferences gpref = Project.getPreferences();
         gpref.putBoolean(Project.KARTE_PLACE_MODE, openFrame);
     }

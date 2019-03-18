@@ -22,6 +22,7 @@ public class ColorFillIcon implements Icon {
 
     /**
      * Creates new ColorFillIcon.
+     *
      * @param fill
      * @param width
      * @param height
@@ -41,6 +42,7 @@ public class ColorFillIcon implements Icon {
 
     /**
      * Creates new ColorFillIcon.
+     *
      * @param fill
      * @param size
      */
@@ -50,6 +52,7 @@ public class ColorFillIcon implements Icon {
 
     /**
      * Creates new ColorFillIcon.
+     *
      * @param fill
      */
     public ColorFillIcon(Color fill) {
@@ -78,11 +81,11 @@ public class ColorFillIcon implements Icon {
     public void paintIcon(Component comp, Graphics g, int x, int y) {
         Color c = g.getColor();
 
-        if(borderSize > 0) {
+        if (borderSize > 0) {
             g.setColor(shadow);
             for (int i = 0; i < borderSize; i++) {
                 g.drawRect(x + i, y + i,
-                           width - 2 * i - 1, height - 2 * i -1);
+                        width - 2 * i - 1, height - 2 * i - 1);
             }
         }
 

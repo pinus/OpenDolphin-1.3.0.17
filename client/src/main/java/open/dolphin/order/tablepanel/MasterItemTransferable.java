@@ -9,12 +9,13 @@ import java.io.IOException;
 
 /**
  * マスタアイテム Transferable クラス.
+ *
  * @author kazm
  */
 public class MasterItemTransferable implements Transferable {
 
     public static final DataFlavor masterItemFlavor = new DataFlavor(MasterItem.class, "MasterItem");
-    private static final DataFlavor[] flavors = { masterItemFlavor };
+    private static final DataFlavor[] flavors = {masterItemFlavor};
     private final MasterItem masterItem;
 
     public MasterItemTransferable(MasterItem masterItem) {

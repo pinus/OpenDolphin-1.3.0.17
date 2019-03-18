@@ -3,8 +3,7 @@ package open.dolphin.stampbox;
 /**
  * TreeInfo.
  *
- * @author Minagawa,Kazushi
- *
+ * @author Minagawa, Kazushi
  */
 public class TreeInfo {
 

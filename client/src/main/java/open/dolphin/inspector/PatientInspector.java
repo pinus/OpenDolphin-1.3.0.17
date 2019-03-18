@@ -18,26 +18,28 @@ import java.util.stream.Stream;
 
 /**
  * 各々の Inspecter を生成して配置する.
+ *
  * @author kazm
  * @author pns
  */
 public class PatientInspector {
 
     public static int TOP_STRUT = 3;
+    // 全インスペクタを入れる map
+    private final HashMap<String, IInspector> inspectorMap = new HashMap<>();
+    // Context このインスペクタの親コンテキスト
+    private final ChartImpl context;
     // 個々のインスペクタ
     // 患者基本情報 (固定インスペクタ)
     private BasicInfoInspector basicInfoInspector;
-    // 全インスペクタを入れる map
-    private final HashMap<String, IInspector> inspectorMap = new HashMap<>();
     // DocumentHistory インスペクタを格納するタブペイン. ６個目以降のインスペクタはここに追加される.
     private PNSBadgeTabbedPane tabbedPane;
     // このクラスのコンテナパネル
     private JPanel container;
-    // Context このインスペクタの親コンテキスト
-    private final ChartImpl context;
 
     /**
      * 患者インスペクタクラスを生成する.
+     *
      * @param chart インスペクタの親コンテキスト
      */
     public PatientInspector(ChartImpl chart) {
@@ -50,16 +52,18 @@ public class PatientInspector {
         // Preference に保存されているインスペクタの順番を読み込む.
         // 文書履歴は必ずこの中に入っている.
         String[] prefName = {
-            Project.getPreferences().get("topInspector", InspectorCategory.メモ.name()),        //0"メモ"
-            Project.getPreferences().get("secondInspector", InspectorCategory.病名.name()),     //5"病名"
-            Project.getPreferences().get("thirdInspector", InspectorCategory.カレンダー.name()), //1"カレンダ"
-            Project.getPreferences().get("forthInspector", InspectorCategory.文書履歴.name()),   //2"文書履歴"
-            Project.getPreferences().get("fifthInspector", InspectorCategory.アレルギー.name()),  //3"アレルギー"
+                Project.getPreferences().get("topInspector", InspectorCategory.メモ.name()),        //0"メモ"
+                Project.getPreferences().get("secondInspector", InspectorCategory.病名.name()),     //5"病名"
+                Project.getPreferences().get("thirdInspector", InspectorCategory.カレンダー.name()), //1"カレンダ"
+                Project.getPreferences().get("forthInspector", InspectorCategory.文書履歴.name()),   //2"文書履歴"
+                Project.getPreferences().get("fifthInspector", InspectorCategory.アレルギー.name()),  //3"アレルギー"
         };
 
         // タブパネル
         tabbedPane = new PNSBadgeTabbedPane();
-        if (ClientContext.isWin()) { tabbedPane.setButtonPanelFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10)); }
+        if (ClientContext.isWin()) {
+            tabbedPane.setButtonPanelFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+        }
         tabbedPane.setBorder(new InspectorBorder(null));
         tabbedPane.setButtonPanelBackground(IInspector.BACKGROUND);
 
@@ -80,24 +84,24 @@ public class PatientInspector {
         Stream.of(InspectorCategory.values())
                 .map(c -> c.clazz()).filter(Objects::nonNull).forEach(clazz -> {
             try {
-                    // インスペクタを生成する
-                    Constructor<? extends IInspector> c = clazz.getConstructor(PatientInspector.class);
-                    IInspector ins = c.newInstance(PatientInspector.this);
-                    inspectorMap.put(ins.getName(), ins);
+                // インスペクタを生成する
+                Constructor<? extends IInspector> c = clazz.getConstructor(PatientInspector.class);
+                IInspector ins = c.newInstance(PatientInspector.this);
+                inspectorMap.put(ins.getName(), ins);
 
-                    // pref インスペクタかどうか分類
-                    boolean isPref = false;
+                // pref インスペクタかどうか分類
+                boolean isPref = false;
 
-                    for (int i=0; i<prefName.length; i++) {
-                        if (prefName[i].equals(ins.getName())) {
-                            prefInspector[i] = ins;
-                            isPref = true;
-                            break;
-                        }
+                for (int i = 0; i < prefName.length; i++) {
+                    if (prefName[i].equals(ins.getName())) {
+                        prefInspector[i] = ins;
+                        isPref = true;
+                        break;
                     }
-                    if (! isPref) {
-                        otherInspectors.add(ins);
-                    }
+                }
+                if (!isPref) {
+                    otherInspectors.add(ins);
+                }
 
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException | InstantiationException ex) {
@@ -107,7 +111,9 @@ public class PatientInspector {
 
         // 分類したインスペクタをレイアウトしていく
         for (IInspector pref : prefInspector) {
-            if (pref == null) { continue; }
+            if (pref == null) {
+                continue;
+            }
 
             // 文書履歴だけは必ず Tab に入れる.
             if (pref.getName().equals(InspectorCategory.文書履歴.name())) {
@@ -125,7 +131,7 @@ public class PatientInspector {
         // その他のインスペクタをタブに収納
         otherInspectors.forEach(ins -> {
             tabbedPane.addTab(ins.getTitle(), ins.getPanel());
-            ins.addBadgeListener(tabbedPane::setBadge, tabbedPane.getTabCount()-1);
+            ins.addBadgeListener(tabbedPane::setBadge, tabbedPane.getTabCount() - 1);
         });
 
         // update
@@ -141,6 +147,7 @@ public class PatientInspector {
 
     /**
      * ChartImpl を返す.
+     *
      * @return
      */
     public ChartImpl getContext() {
@@ -149,6 +156,7 @@ public class PatientInspector {
 
     /**
      * 基本情報インスペクタを返す.
+     *
      * @return 基本情報インスペクタ
      */
     public BasicInfoInspector getBasicInfoInspector() {
@@ -157,6 +165,7 @@ public class PatientInspector {
 
     /**
      * 来院歴インスペクタを返す.
+     *
      * @return 来院歴インスペクタ
      */
     public PatientVisitInspector getPatientVisitInspector() {
@@ -165,6 +174,7 @@ public class PatientInspector {
 
     /**
      * 患者メモインスペクタを返す.
+     *
      * @return 患者メモインスペクタ
      */
     public MemoInspector getMemoInspector() {
@@ -173,6 +183,7 @@ public class PatientInspector {
 
     /**
      * 文書履歴インスペクタを返す.
+     *
      * @return 文書履歴インスペクタ
      */
     public DocumentHistory getDocumentHistory() {
@@ -181,6 +192,7 @@ public class PatientInspector {
 
     /**
      * 病名インスペクタを返す.
+     *
      * @return
      */
     public DiagnosisInspector getDiagnosisInspector() {
@@ -189,6 +201,7 @@ public class PatientInspector {
 
     /**
      * 関連文書インスペクタを返す.
+     *
      * @return
      */
     public FileInspector getFileInspector() {
@@ -197,6 +210,7 @@ public class PatientInspector {
 
     /**
      * レイアウトのためにインスペクタのコンテナパネルを返す.
+     *
      * @return インスペクタのコンテナパネル
      */
     public JPanel getPanel() {

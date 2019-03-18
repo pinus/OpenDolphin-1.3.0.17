@@ -65,13 +65,6 @@ public class MasterItem implements java.io.Serializable {
     }
 
     /**
-     * @param classCode The classCode to set.
-     */
-    public void setClassCode(int classCode) {
-        this.classCode = classCode;
-    }
-
-    /**
      * @return Returns the classCode.
      */
     public int getClassCode() {
@@ -79,10 +72,10 @@ public class MasterItem implements java.io.Serializable {
     }
 
     /**
-     * @param name The name to set.
+     * @param classCode The classCode to set.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setClassCode(int classCode) {
+        this.classCode = classCode;
     }
 
     /**
@@ -93,10 +86,10 @@ public class MasterItem implements java.io.Serializable {
     }
 
     /**
-     * @param code The code to set.
+     * @param name The name to set.
      */
-    public void setCode(String code) {
-        this.code = code;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -107,10 +100,10 @@ public class MasterItem implements java.io.Serializable {
     }
 
     /**
-     * @param masterTableId The masterTableId to set.
+     * @param code The code to set.
      */
-    public void setMasterTableId(String masterTableId) {
-        this.masterTableId = masterTableId;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /**
@@ -121,10 +114,10 @@ public class MasterItem implements java.io.Serializable {
     }
 
     /**
-     * @param number The number to set.
+     * @param masterTableId The masterTableId to set.
      */
-    public void setNumber(String number) {
-        this.number = number;
+    public void setMasterTableId(String masterTableId) {
+        this.masterTableId = masterTableId;
     }
 
     /**
@@ -135,10 +128,10 @@ public class MasterItem implements java.io.Serializable {
     }
 
     /**
-     * @param unit The unit to set.
+     * @param number The number to set.
      */
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     /**
@@ -146,6 +139,13 @@ public class MasterItem implements java.io.Serializable {
      */
     public String getUnit() {
         return unit;
+    }
+
+    /**
+     * @param unit The unit to set.
+     */
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     /**
@@ -163,17 +163,17 @@ public class MasterItem implements java.io.Serializable {
     //}
 
     /**
-     * @param claimClassCode The claimClassCode to set.
-     */
-    public void setClaimClassCode(String claimClassCode) {
-        this.claimClassCode = claimClassCode;
-    }
-
-    /**
      * @return Returns the claimClassCode.
      */
     public String getClaimClassCode() {
         return claimClassCode;
+    }
+
+    /**
+     * @param claimClassCode The claimClassCode to set.
+     */
+    public void setClaimClassCode(String claimClassCode) {
+        this.claimClassCode = claimClassCode;
     }
 
     public String getYkzKbn() {

@@ -10,36 +10,29 @@ import java.util.List;
 
 /**
  * プリセット色を作る.
+ *
  * @author pns
  */
 public class DefaultPresetColor {
-    /** 色系列の seeds */
+    /**
+     * 色系列の seeds
+     */
     private static final String[] COLOR_SEEDS = {
-        // red
-        "#FF0000", "#E01000", "#C02000",
-        // brown
-        "#885500", "#663300",
-        // purple
-        "#A000A0", "#700050",
+            // red
+            "#FF0000", "#E01000", "#C02000",
+            // brown
+            "#885500", "#663300",
+            // purple
+            "#A000A0", "#700050",
     };
 
-    /** seeds から作成する variation の数 */
+    /**
+     * seeds から作成する variation の数
+     */
     private static final int VARIATIONS = 8;
-
-    /** Color Series の名前 */
-    public static enum Series {
-        Red(0), DeepRed(VARIATIONS), DeeperRed(VARIATIONS*2), Brown(VARIATIONS*3),
-        DeepBrown(VARIATIONS*4), Purple(VARIATIONS*5), DeepPurple(VARIATIONS*6),
-        Gray(VARIATIONS*7);
-
-        private final int offset;
-        private Series(int o) {
-            offset = o;
-        }
-        public int getOffset() { return offset; }
-    }
-
-    /** seeds から計算して作った色を入れる配列 */
+    /**
+     * seeds から計算して作った色を入れる配列
+     */
     private static final List<Color> colorList = new ArrayList<>();
 
     /**  色配列を seeds から計算して作る */
@@ -51,26 +44,30 @@ public class DefaultPresetColor {
             double saturation = src.getSaturation();
             double brightness = src.getBrightness();
 
-            for (int i=0; i<VARIATIONS; i++) {
+            for (int i = 0; i < VARIATIONS; i++) {
                 colorList.add(Color.hsb(hue, saturation, brightness));
                 saturation *= 0.80;
                 brightness += (1.0 - brightness) / 10;
             }
         }
         // gray scale は別に作る
-        for (int i=0; i<VARIATIONS; i++) {
-            double brightness = Math.pow((double)i / (double)(VARIATIONS), 0.7);
+        for (int i = 0; i < VARIATIONS; i++) {
+            double brightness = Math.pow((double) i / (double) (VARIATIONS), 0.7);
             colorList.add(Color.hsb(0, 0, brightness));
         }
     }
 
-    private DefaultPresetColor() {}
+    private DefaultPresetColor() {
+    }
 
-    public static List<Color> getColorList() { return Collections.unmodifiableList(colorList); }
+    public static List<Color> getColorList() {
+        return Collections.unmodifiableList(colorList);
+    }
 
     /**
      * Satulation, Brightness を少しずつ変えた Color Series を作る.
      * Opacity 情報は入っていない.
+     *
      * @param series
      * @param fillMode
      * @return
@@ -79,7 +76,7 @@ public class DefaultPresetColor {
         List<ColorModel> list = new ArrayList<>();
 
         if (fillMode.equals(FillMode.Fill)) {
-            for (int i=0; i<VARIATIONS; i++) {
+            for (int i = 0; i < VARIATIONS; i++) {
                 ColorModel m = new ColorModel();
                 m.setFillColor(colorList.get(i + series.getOffset()));
 
@@ -92,7 +89,7 @@ public class DefaultPresetColor {
             }
 
         } else if (fillMode.equals(FillMode.Line)) {
-            for (int i=0; i<VARIATIONS; i++) {
+            for (int i = 0; i < VARIATIONS; i++) {
                 ColorModel m = new ColorModel();
                 m.setFillColor(colorList.get(i + series.getOffset()));
                 m.setLineColor(colorList.get(i + series.getOffset()));
@@ -111,6 +108,7 @@ public class DefaultPresetColor {
      * 特別な Color Series.
      * 0: 枠が赤で中が茶色
      * 1: 枠が赤で中が紫
+     *
      * @param n
      * @return
      */
@@ -119,7 +117,7 @@ public class DefaultPresetColor {
 
         switch (n) {
             case 0:
-                for (int i=0; i<VARIATIONS; i++) {
+                for (int i = 0; i < VARIATIONS; i++) {
                     ColorModel m = new ColorModel();
                     m.setFillColor(colorList.get(i + Series.DeepRed.getOffset()));
 
@@ -133,7 +131,7 @@ public class DefaultPresetColor {
                 break;
 
             case 1:
-                for (int i=0; i<VARIATIONS; i++) {
+                for (int i = 0; i < VARIATIONS; i++) {
                     ColorModel m = new ColorModel();
                     m.setFillColor(colorList.get(i + Series.Brown.getOffset()));
 
@@ -147,7 +145,7 @@ public class DefaultPresetColor {
                 break;
 
             case 2:
-                for (int i=0; i<VARIATIONS; i++) {
+                for (int i = 0; i < VARIATIONS; i++) {
                     ColorModel m = new ColorModel();
                     m.setFillColor(colorList.get(i + Series.Purple.getOffset()));
 
@@ -163,5 +161,24 @@ public class DefaultPresetColor {
         }
 
         return list;
+    }
+
+    /**
+     * Color Series の名前
+     */
+    public static enum Series {
+        Red(0), DeepRed(VARIATIONS), DeeperRed(VARIATIONS * 2), Brown(VARIATIONS * 3),
+        DeepBrown(VARIATIONS * 4), Purple(VARIATIONS * 5), DeepPurple(VARIATIONS * 6),
+        Gray(VARIATIONS * 7);
+
+        private final int offset;
+
+        private Series(int o) {
+            offset = o;
+        }
+
+        public int getOffset() {
+            return offset;
+        }
     }
 }

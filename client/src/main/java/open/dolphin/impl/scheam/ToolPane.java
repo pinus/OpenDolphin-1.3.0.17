@@ -12,10 +12,13 @@ import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
  * Tool を載せる pane
+ *
  * @author pns
  */
 public class ToolPane extends HBox {
-    /** ツールボタンの高さ */
+    /**
+     * ツールボタンの高さ
+     */
     private final static double BUTTON_HEIGHT = 22;
 
     public ToolPane(SchemaEditorImpl context) {
@@ -29,22 +32,28 @@ public class ToolPane extends HBox {
         // FillMode Toggle Set
         FillModeToggle fillModeToggle = new FillModeToggle();
         fillModeToggle.getItems().addAll(FillMode.values());
-        fillModeToggle.setPrefWidth(32*3+2);
+        fillModeToggle.setPrefWidth(32 * 3 + 2);
         fillModeToggle.setAllButtonWidth(32);
         fillModeToggle.setAllButtonHeight(BUTTON_HEIGHT);
         fillModeToggle.selectedItemProperty().bindBidirectional(properties.fillModeProperty());
 
         // Line Width Combo
         LineWidthCombo lineWidthCombo = new LineWidthCombo();
-        lineWidthCombo.setPrefHeight(BUTTON_HEIGHT); lineWidthCombo.setMinHeight(BUTTON_HEIGHT); lineWidthCombo.setMaxHeight(BUTTON_HEIGHT);
+        lineWidthCombo.setPrefHeight(BUTTON_HEIGHT);
+        lineWidthCombo.setMinHeight(BUTTON_HEIGHT);
+        lineWidthCombo.setMaxHeight(BUTTON_HEIGHT);
         lineWidthCombo.selectionPropertyProxy().bindBidirectional(properties.lineWidthProperty());
 
         // Preset Color Combo
         final PresetColorCombo presetColorCombo = new PresetColorCombo();
-        presetColorCombo.setPrefHeight(BUTTON_HEIGHT); lineWidthCombo.setMinHeight(BUTTON_HEIGHT); lineWidthCombo.setMaxHeight(BUTTON_HEIGHT);
+        presetColorCombo.setPrefHeight(BUTTON_HEIGHT);
+        lineWidthCombo.setMinHeight(BUTTON_HEIGHT);
+        lineWidthCombo.setMaxHeight(BUTTON_HEIGHT);
         presetColorCombo.selectionProxyProperty().addListener((ObservableValue<? extends ColorModel> ov, ColorModel t, ColorModel m) -> {
             // 下でつけるリスナで invalidate されると null でここに来る
-            if (m == null) { return; }
+            if (m == null) {
+                return;
+            }
 
             properties.valueChangingProperty().set(true);
 
@@ -62,7 +71,7 @@ public class ToolPane extends HBox {
 
         // ColorModel 関連の PropertyChange があったら， PresetColorCombo を invalidate する
         for (Property p : properties.getPropertiesRelatedToColorModel()) {
-            p.addListener( o -> presetColorCombo.selectionProxyProperty().set(null));
+            p.addListener(o -> presetColorCombo.selectionProxyProperty().set(null));
         }
 
         // State Toggle Set
@@ -75,26 +84,32 @@ public class ToolPane extends HBox {
         // undo / redo / clear ボタンの処理
         UndoManager manager = context.getUndoManager();
         manager.undoQueueSizeProperty().addListener((ObservableValue<? extends Number> o, Number ov, Number nv) -> {
-            if ((int)nv == 0) { stateToggle.setDisable(State.Undo, true); }
-            else if ((int)ov  == 0) { stateToggle.setDisable(State.Undo, false); }
+            if ((int) nv == 0) {
+                stateToggle.setDisable(State.Undo, true);
+            } else if ((int) ov == 0) {
+                stateToggle.setDisable(State.Undo, false);
+            }
             stateToggle.updateCell(State.Undo);
         });
         manager.redoQueueSizeProperty().addListener((ObservableValue<? extends Number> o, Number ov, Number nv) -> {
-            if ((int)nv == 0) { stateToggle.setDisable(State.Redo, true); }
-            else if ((int)ov  == 0) { stateToggle.setDisable(State.Redo, false); }
+            if ((int) nv == 0) {
+                stateToggle.setDisable(State.Redo, true);
+            } else if ((int) ov == 0) {
+                stateToggle.setDisable(State.Redo, false);
+            }
             stateToggle.updateCell(State.Redo);
         });
         stateToggle.getButton(State.Undo).setOnAction(e -> {
             manager.undo();
-            ((ToggleButton)e.getSource()).setSelected(false);
+            ((ToggleButton) e.getSource()).setSelected(false);
         });
         stateToggle.getButton(State.Redo).setOnAction(e -> {
             manager.redo();
-            ((ToggleButton)e.getSource()).setSelected(false);
+            ((ToggleButton) e.getSource()).setSelected(false);
         });
         stateToggle.getButton(State.Clear).setOnAction(e -> {
             context.getCanvasPane().getChildren().clear();
-            ((ToggleButton)e.getSource()).setSelected(false);
+            ((ToggleButton) e.getSource()).setSelected(false);
         });
 
         // レイアウト

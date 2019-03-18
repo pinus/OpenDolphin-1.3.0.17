@@ -23,10 +23,11 @@ import java.beans.PropertyChangeEvent;
  */
 public final class SchemaHolder extends AbstractComponentHolder {
     private static final long serialVersionUID = 1777560751402251092L;
-    private static final Dimension INITIAL_SIZE = new Dimension(192,192);
+    private static final Dimension INITIAL_SIZE = new Dimension(192, 192);
     private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
     private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
-
+    private final KartePane kartePane;
+    private final Logger logger;
     private SchemaModel schema;
     private ImageIcon icon;
     private float imgRatio = 1.0f;
@@ -34,9 +35,6 @@ public final class SchemaHolder extends AbstractComponentHolder {
     private boolean selected;
     private Position start;
     private Position end;
-    private final KartePane kartePane;
-
-    private final Logger logger;
 
     public SchemaHolder(KartePane kartePane, SchemaModel schema) {
         logger = Logger.getLogger(SchemaHolder.class);
@@ -73,6 +71,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
 
     /**
      * Label の大きさを border の分補正するために override する.
+     *
      * @param icon 登録する icon
      */
     @Override
@@ -91,6 +90,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
 
     /**
      * Alt-Click で拡大，Alt-Shift-Click で縮小.
+     *
      * @param e MouseEvent
      */
     @Override
@@ -99,7 +99,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
 
         if (e.isAltDown()) {
             Image img = icon.getImage();
-            imgRatio = e.isShiftDown()? imgRatio - 0.05f : imgRatio + 0.05f;
+            imgRatio = e.isShiftDown() ? imgRatio - 0.05f : imgRatio + 0.05f;
             int w = (int) (icon.getIconWidth() * imgRatio);
             int h = (int) (icon.getIconHeight() * imgRatio);
             img = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
@@ -124,6 +124,16 @@ public final class SchemaHolder extends AbstractComponentHolder {
     @Override
     public boolean isSelected() {
         return selected;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        logger.debug("SchemaHolder setSelected " + selected);
+
+        if (selected ^ this.selected) {
+            setBorder(selected ? MY_SELECTED_BORDER : MY_CLEAR_BORDER);
+            this.selected = selected;
+        }
     }
 
     @Override
@@ -160,16 +170,6 @@ public final class SchemaHolder extends AbstractComponentHolder {
     }
 
     @Override
-    public void setSelected(boolean selected) {
-        logger.debug("SchemaHolder setSelected " + selected);
-
-        if (selected ^ this.selected) {
-            setBorder(selected? MY_SELECTED_BORDER : MY_CLEAR_BORDER);
-            this.selected = selected;
-        }
-    }
-
-    @Override
     public void edit() {
         logger.debug("SchemaHolder edit");
 
@@ -199,7 +199,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
         this.setEditable(true);
 
         SchemaModel newSchema = (SchemaModel) e.getNewValue();
-        if (newSchema ==  null) {
+        if (newSchema == null) {
             return;
         }
 

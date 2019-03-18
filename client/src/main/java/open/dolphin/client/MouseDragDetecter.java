@@ -9,7 +9,6 @@ import java.awt.event.MouseMotionAdapter;
  * MouseDragDetecter
  *
  * @author Minagawa, Kazushi
- *
  */
 
 public class MouseDragDetecter extends MouseMotionAdapter {
@@ -17,7 +16,7 @@ public class MouseDragDetecter extends MouseMotionAdapter {
     private MouseEvent firstMouseEvent = null;
 
     @Override
-    public void mouseDragged (MouseEvent e) {
+    public void mouseDragged(MouseEvent e) {
 
         if (firstMouseEvent == null) {
             firstMouseEvent = e;
@@ -30,7 +29,7 @@ public class MouseDragDetecter extends MouseMotionAdapter {
             //If they are holding down the control key, COPY rather than MOVE
             int ctrlMask = InputEvent.CTRL_DOWN_MASK;
             int action = ((e.getModifiersEx() & ctrlMask) == ctrlMask) ?
-                TransferHandler.COPY : TransferHandler.MOVE;
+                    TransferHandler.COPY : TransferHandler.MOVE;
 
             int dx = Math.abs(e.getX() - firstMouseEvent.getX());
             int dy = Math.abs(e.getY() - firstMouseEvent.getY());
@@ -38,7 +37,7 @@ public class MouseDragDetecter extends MouseMotionAdapter {
             //official beginning of a drag.
             if (dx > 5 || dy > 5) {
                 //This is a drag, not a click.
-                JComponent c = (JComponent)e.getSource();
+                JComponent c = (JComponent) e.getSource();
                 //Tell the transfer handler to initiate the drag.
                 TransferHandler handler = c.getTransferHandler();
                 handler.exportAsDrag(c, firstMouseEvent, action);

@@ -63,7 +63,7 @@ public class ScriptExecutor {
             executeAppleScript(OPEN_PATIENT_FOLDER_SCRIPT);
 
         } else {
-            executeShellScript(new String[] {"explorer", path});
+            executeShellScript(new String[]{"explorer", path});
         }
     }
 

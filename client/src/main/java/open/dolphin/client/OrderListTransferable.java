@@ -6,11 +6,13 @@ import java.io.IOException;
 /**
  * Transferable class of the PTrain.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class OrderListTransferable implements Transferable, ClipboardOwner {
 
-    /** Data Flavor of this class */
+    /**
+     * Data Flavor of this class
+     */
     public static DataFlavor orderListFlavor = new DataFlavor(open.dolphin.client.OrderList.class, "Order List");
 
     public static final DataFlavor[] flavors = {OrderListTransferable.orderListFlavor};
@@ -18,21 +20,23 @@ public final class OrderListTransferable implements Transferable, ClipboardOwner
     private OrderList list;
 
 
-    /** Creates new OrderListTransferable */
+    /**
+     * Creates new OrderListTransferable
+     */
     public OrderListTransferable(OrderList list) {
         this.list = list;
     }
 
     public synchronized DataFlavor[] getTransferDataFlavors() {
-    	return flavors;
+        return flavors;
     }
 
-    public boolean isDataFlavorSupported( DataFlavor flavor ) {
-    	return flavor.equals(orderListFlavor) ? true : false;
+    public boolean isDataFlavorSupported(DataFlavor flavor) {
+        return flavor.equals(orderListFlavor);
     }
 
     public synchronized Object getTransferData(DataFlavor flavor)
-	    throws UnsupportedFlavorException, IOException {
+            throws UnsupportedFlavorException, IOException {
 
         if (flavor.equals(orderListFlavor)) {
             return list;

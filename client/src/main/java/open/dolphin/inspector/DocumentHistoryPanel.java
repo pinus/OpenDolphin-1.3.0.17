@@ -9,14 +9,13 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- *
  * @author pns
  */
 public class DocumentHistoryPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private JLabel cntLbl;
-    private JComboBox<PNSPair<String,Integer>> extractCombo;
+    private JComboBox<PNSPair<String, Integer>> extractCombo;
     private JTable table;
 
     public DocumentHistoryPanel() {
@@ -24,7 +23,7 @@ public class DocumentHistoryPanel extends JPanel {
     }
 
     private void initComponents() {
-        this.setLayout(new BorderLayout(0,0));
+        this.setLayout(new BorderLayout(0, 0));
 
         table = new JTable();
         table.putClientProperty("Quaqua.Table.style", "striped");
@@ -37,9 +36,9 @@ public class DocumentHistoryPanel extends JPanel {
 
         // 文書抽出期間の項目は DocumentHistory で管理
         extractCombo = ComboBoxFactory.createDocumentExtractionPeriodCombo();
-        extractCombo.setPreferredSize(new Dimension(76,24));
-        extractCombo.setMaximumSize(new Dimension(76,24));
-        extractCombo.setMinimumSize(new Dimension(76,24));
+        extractCombo.setPreferredSize(new Dimension(76, 24));
+        extractCombo.setMaximumSize(new Dimension(76, 24));
+        extractCombo.setMinimumSize(new Dimension(76, 24));
 
         StatusPanel statusPanel = new StatusPanel();
         statusPanel.setPanelHeight(26);
@@ -59,7 +58,7 @@ public class DocumentHistoryPanel extends JPanel {
         return cntLbl;
     }
 
-    public JComboBox<PNSPair<String,Integer>> getExtractCombo() {
+    public JComboBox<PNSPair<String, Integer>> getExtractCombo() {
         return extractCombo;
     }
 

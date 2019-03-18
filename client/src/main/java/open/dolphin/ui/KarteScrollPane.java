@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * カルテをスワイプスクロール
- *<pre>
+ * <pre>
  *      viewPos
  *      +---------------+
  * (i-1)|       (i)     |  (i+1)
@@ -23,12 +23,24 @@ import java.util.List;
  *      |               |
  *      +---------------+ ViewPort
  * i=karePageNumber
- *</pre>
+ * </pre>
+ *
  * @author pns
  */
 public class KarteScrollPane extends PNSScrollPane {
     private static final long serialVersionUID = 1L;
-
+    // 不透明で塗りつぶすための alpha 値
+    private static final AlphaComposite opaque = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f);
+    // 影をつけるための半透明の alpha 値
+    private static final AlphaComposite[] translucent = {
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.10f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.06f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.04f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.02f),
+            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.01f),
+    };
     // 最初は viewport.getView() を一気に BufferedImage にしようとしたが，カルテが多くなると OutOfMemorryError になってしまった
     // モニタの広さだけのバッファを１つ用意して，それを使い回すようにした. それでも，heap は -Xmx512m 以上にしないときつい
     // ここのメモリ使い方はもう少し工夫の余地がありそう
@@ -53,18 +65,6 @@ public class KarteScrollPane extends PNSScrollPane {
     private Rectangle viewRect;
     // viewRect の変化を検出するための変数
     private Rectangle prevViewRect = new Rectangle(0, 0, 0, 0);
-    // 不透明で塗りつぶすための alpha 値
-    private static final AlphaComposite opaque = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f);
-    // 影をつけるための半透明の alpha 値
-    private static final AlphaComposite[] translucent = {
-            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f),
-            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f),
-            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.10f),
-            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.06f),
-            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.04f),
-            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.02f),
-            AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.01f),
-    };
     // mouse caputure するパネル
     private JPanel mouseCapturePanel = null;
     // 親フレームの Container
@@ -72,12 +72,6 @@ public class KarteScrollPane extends PNSScrollPane {
     private Container contentPane = null;
     // view component に変化があったかどうか  KarteDocumentViewer からセットされる
     private boolean viewComponentChanged = false;
-
-    public KarteScrollPane() {
-        super();
-        // isClassicScrollBar = false;
-    }
-
     // getPositionList で使う comparator
     private Comparator<Point> xComparator = new Comparator<Point>() {
         @Override
@@ -91,6 +85,10 @@ public class KarteScrollPane extends PNSScrollPane {
             return o1.y - o2.y;
         }
     };
+    public KarteScrollPane() {
+        super();
+        // isClassicScrollBar = false;
+    }
 
     /**
      * paintChildern で描画しておく

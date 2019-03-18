@@ -16,53 +16,38 @@ import java.util.List;
 
 /**
  * StampHolder を右クリックでいろいろいじる.
+ *
  * @author pns
  */
 public class StampHolderPopupMenu extends JPopupMenu {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * メニューに載せる処方日数のリスト
+     */
+    private static final int[] BUNDLE_NUMS = {3, 4, 5, 7, 10, 14, 21, 28, 30, 56, 60};
+    /**
+     * メニューに載せる外用剤の量のリスト
+     */
+    private static final int[] DOSES = {5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 100, 125, 150, 200, 250};
     private final StampHolder ctx;
-
-    /** メニューに載せる処方日数のリスト */
-    private static final int[] BUNDLE_NUMS = {3,4,5,7,10,14,21,28,30,56,60};
-
-    /** メニューに載せる外用剤の量のリスト */
-    private static final int[] DOSES = {5,10,15,20,25,30,40,50,60,75,100,125,150,200,250};
-
-    /** メニューに載せる用法のリスト */
-    private static enum Admin {
-        once1  ("001000103","１日１回朝食後に"),
-        once2  ("001000105","１日１回昼食後に"),
-        once3  ("001000107","１日１回夕食後に"),
-        once4  ("001000111","１日１回就寝前に"),
-        twice1 ("001000202","１日２回朝夕食後に"),
-        twice2 ("001000214","１日２回朝食後及び就寝前に"),
-        thrice1("001000303","１日３回毎食後に");
-
-        public final String code, str;
-        private Admin(String code, String str) {
-            this.code = code;
-            this.str = str;
-        }
-    }
-
-    /** メニューに載せる外用回数のリスト */
-    private static enum Admin2 {
-        once("001000602", "１日１回外用"),
-        twice("001000603", "１日２回外用"),
-        thrice("001000604", "１日数回外用"),
-        onceTwice("001000614", "１日１〜２回外用"),
-        twiceThrice("001000615", "１日２〜３回外用");
-
-        public final String code, str;
-        private Admin2(String code, String str) {
-            this.code = code;
-            this.str = str;
-        }
-    }
 
     public StampHolderPopupMenu(StampHolder ctx) {
         this.ctx = ctx;
+    }
+
+    /**
+     * 分数対応で文字列を double にして返す.
+     *
+     * @param str
+     * @return
+     */
+    public static double stringToDouble(String str) {
+        String[] num = str.split("/");
+        if (num.length == 1) {
+            return Double.parseDouble(str);
+        } else {
+            return Double.parseDouble(num[0]) / Double.parseDouble(num[1]);
+        }
     }
 
     /**
@@ -73,7 +58,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
         BundleMed bundle = (BundleMed) ctx.getStamp().getModel();
 
         if (ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode()) ||
-            ClaimConst.RECEIPT_CODE_TONYO.equals(bundle.getClassCode())) {
+                ClaimConst.RECEIPT_CODE_TONYO.equals(bundle.getClassCode())) {
 
             // 内服薬用の変更メニューを加える
             addBundleChangeMenu();
@@ -157,6 +142,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
     /**
      * StampHolder に通知.
+     *
      * @param stamp
      */
     public void propertyChanged(ModuleModel stamp) {
@@ -166,19 +152,27 @@ public class StampHolderPopupMenu extends JPopupMenu {
     /**
      * ClaimItem の code から，１日何回投与かを判断して返す.
      * cf. order/AdminMaster.java
+     *
      * @param code
      * @return
      */
     private int getTimes(String code) {
-        if (code.startsWith("0010001")) { return 1; }
-        if (code.startsWith("0010002")) { return 2; }
-        if (code.startsWith("0010003")) { return 3; }
+        if (code.startsWith("0010001")) {
+            return 1;
+        }
+        if (code.startsWith("0010002")) {
+            return 2;
+        }
+        if (code.startsWith("0010003")) {
+            return 3;
+        }
 
         return 0;
     }
 
     /**
      * スタンプを複製して返す. bundle もコピーされる. ただし ClaimItem は空.
+     *
      * @return
      */
     private ModuleModel createModuleModel(ModuleModel src) {
@@ -202,6 +196,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
     /**
      * BundleMed を複製して返す. ただし ClaimItem は空.
+     *
      * @param src
      * @return
      */
@@ -222,6 +217,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
     /**
      * ClaimItem を複製して返す.
+     *
      * @param src
      * @return
      */
@@ -240,26 +236,56 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
     /**
      * オリジナルの ClaimItem[] を複製して返す.
+     *
      * @return
      */
     private ClaimItem[] createClaimItemInArray() {
-        ClaimItem[] src = ((BundleMed)ctx.getStamp().getModel()).getClaimItem();
+        ClaimItem[] src = ((BundleMed) ctx.getStamp().getModel()).getClaimItem();
 
         List<ClaimItem> dist = new ArrayList<>();
-        for(ClaimItem c : src) { dist.add(createClaimItem(c)); }
+        for (ClaimItem c : src) {
+            dist.add(createClaimItem(c));
+        }
 
         return dist.toArray(new ClaimItem[0]);
     }
 
     /**
-     * 分数対応で文字列を double にして返す.
-     * @param str
-     * @return
+     * メニューに載せる用法のリスト
      */
-    public static double stringToDouble(String str) {
-        String[] num = str.split("/");
-        if (num.length == 1) { return Double.parseDouble(str); }
-        else { return Double.parseDouble(num[0]) / Double.parseDouble(num[1]); }
+    private static enum Admin {
+        once1("001000103", "１日１回朝食後に"),
+        once2("001000105", "１日１回昼食後に"),
+        once3("001000107", "１日１回夕食後に"),
+        once4("001000111", "１日１回就寝前に"),
+        twice1("001000202", "１日２回朝夕食後に"),
+        twice2("001000214", "１日２回朝食後及び就寝前に"),
+        thrice1("001000303", "１日３回毎食後に");
+
+        public final String code, str;
+
+        private Admin(String code, String str) {
+            this.code = code;
+            this.str = str;
+        }
+    }
+
+    /**
+     * メニューに載せる外用回数のリスト
+     */
+    private static enum Admin2 {
+        once("001000602", "１日１回外用"),
+        twice("001000603", "１日２回外用"),
+        thrice("001000604", "１日数回外用"),
+        onceTwice("001000614", "１日１〜２回外用"),
+        twiceThrice("001000615", "１日２〜３回外用");
+
+        public final String code, str;
+
+        private Admin2(String code, String str) {
+            this.code = code;
+            this.str = str;
+        }
     }
 
     /**
@@ -272,14 +298,17 @@ public class StampHolderPopupMenu extends JPopupMenu {
         public BundleChangeAction(int value) {
             this.value = value;
             BundleMed bundle = (BundleMed) ctx.getStamp().getModel();
-            String label = ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode())? " 日分" : " 回分";
+            String label = ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode()) ? " 日分" : " 回分";
             putValue(AbstractAction.NAME, value + label);
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             // 変更されていなければそのまま帰る
             BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
-            if (srcBundle.getBundleNumber().equals(String.valueOf(value))) { return; }
+            if (srcBundle.getBundleNumber().equals(String.valueOf(value))) {
+                return;
+            }
 
             // コピーして stamp を新たに作成
             ModuleModel stamp = createModuleModel(ctx.getStamp());
@@ -304,12 +333,15 @@ public class StampHolderPopupMenu extends JPopupMenu {
             this.admin = admin;
             putValue(AbstractAction.NAME, admin.str);
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
 
             // 変更されていなければそのまま帰る
             BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
-            if (admin.code.equals(srcBundle.getAdminCode())) { return; }
+            if (admin.code.equals(srcBundle.getAdminCode())) {
+                return;
+            }
 
             // 新たなスタンプ作成
             ModuleModel stamp = createModuleModel(ctx.getStamp());
@@ -320,11 +352,11 @@ public class StampHolderPopupMenu extends JPopupMenu {
             // 変更に応じて投与量が何倍になるか = factor
             int srcTimes = getTimes(srcBundle.getAdminCode());
             int distTimes = getTimes(admin.code);
-            double factor = (srcTimes==0)? 1 : (double)distTimes/srcTimes;
+            double factor = (srcTimes == 0) ? 1 : (double) distTimes / srcTimes;
 
             List<ClaimItem> list = new ArrayList<>();
             // ClaimItem をチェックしながらコピー
-            for(ClaimItem src : srcBundle.getClaimItem()) {
+            for (ClaimItem src : srcBundle.getClaimItem()) {
                 ClaimItem dist = createClaimItem(src);
                 String str = dist.getName();
                 // １日量文字列がある場合は，投与量を調節する
@@ -352,13 +384,16 @@ public class StampHolderPopupMenu extends JPopupMenu {
             this.admin = admin;
             putValue(AbstractAction.NAME, admin.str);
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
 
             BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
 
             // 変更されていなければそのまま帰る
-            if (admin.code.equals(srcBundle.getAdminCode())) { return; }
+            if (admin.code.equals(srcBundle.getAdminCode())) {
+                return;
+            }
 
             ModuleModel stamp = createModuleModel(ctx.getStamp());
             BundleMed bundle = (BundleMed) stamp.getModel();
@@ -380,12 +415,13 @@ public class StampHolderPopupMenu extends JPopupMenu {
         public DoseChangeAction(int value) {
             this.value = value;
             ClaimItem[] item = ((BundleMed) ctx.getStamp().getModel()).getClaimItem();
-            putValue(AbstractAction.NAME, String.valueOf(value) + " " + item[0].getUnit());
+            putValue(AbstractAction.NAME, value + " " + item[0].getUnit());
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            BundleMed srcBundle = (BundleMed)ctx.getStamp().getModel();
+            BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
 
             // 新たなスタンプ作成
             ModuleModel stamp = createModuleModel(ctx.getStamp());
@@ -396,7 +432,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
             boolean changed = false;
             String num = String.valueOf(value);
 
-            for(ClaimItem src : srcBundle.getClaimItem()) {
+            for (ClaimItem src : srcBundle.getClaimItem()) {
                 ClaimItem dist = createClaimItem(src);
                 if (src.getCode().startsWith("6") && !src.getNumber().equals(num)) {
                     dist.setNumber(num);
@@ -422,17 +458,19 @@ public class StampHolderPopupMenu extends JPopupMenu {
         public PutRegionAction() {
             putValue(AbstractAction.NAME, "部位・指示...");
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            BundleMed srcBundle = (BundleMed)ctx.getStamp().getModel();
+            BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
 
             RegionView dialog = new RegionView(null, true);
             dialog.setValue(srcBundle.getClaimItem());
 
             // ダイアログ表示位置計算　できればスタンプの上に，上にスペースがなければ下に
             Point p = ctx.getLocationOnScreen();
-            int y; p.y = (y = p.y - dialog.getHeight() - 10)>30? y : p.y + ctx.getHeight() + 10;
+            int y;
+            p.y = (y = p.y - dialog.getHeight() - 10) > 30 ? y : p.y + ctx.getHeight() + 10;
             dialog.setLocation(p);
             dialog.setVisible(true);
 
@@ -457,7 +495,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
                         && !src.getCode().equals("001000608")
                         && !src.getCode().equals("001000001")
                         && !src.getCode().equals("001000002")
-                        ) {
+                ) {
 
                     list.add(createClaimItem(src));
                 }
@@ -482,11 +520,12 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
         public DoseChangeAction2(String str) {
             value = stringToDouble(str);
-            putValue(AbstractAction.NAME, "用量を " + String.valueOf(str) + " 倍に");
+            putValue(AbstractAction.NAME, "用量を " + str + " 倍に");
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            BundleMed srcBundle = (BundleMed)ctx.getStamp().getModel();
+            BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
 
             // 新たなスタンプ作成
             ModuleModel stamp = createModuleModel(ctx.getStamp());
@@ -504,9 +543,9 @@ public class StampHolderPopupMenu extends JPopupMenu {
                     String s;
                     // 外用剤の場合，最後に ".0" を付けないためのトリック
                     if (ClaimConst.RECEIPT_CODE_GAIYO.equals(bundle.getClassCode())) {
-                        s = DailyDoseStringTool.doubleToString(num*value, "");
+                        s = DailyDoseStringTool.doubleToString(num * value, "");
                     } else {
-                        s = DailyDoseStringTool.doubleToString(num*value, src.getUnit());
+                        s = DailyDoseStringTool.doubleToString(num * value, src.getUnit());
                     }
                     dist.setNumber(String.valueOf(s));
                 }
@@ -536,6 +575,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
         public PutCommentAction() {
             putValue(AbstractAction.NAME, "コメント...");
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -545,20 +585,22 @@ public class StampHolderPopupMenu extends JPopupMenu {
             JOptionPane pane = new JOptionPane(tf,
                     JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null,
                     options, options[0]) {
-                    // 初期状態でボタンでなく，tf にフォーカスを取る
-                    private static final long serialVersionUID = 1L;
-                        @Override
-                        public void selectInitialValue() {
-                            Focuser.requestFocus(tf);
-                        }
-                    };
+                // 初期状態でボタンでなく，tf にフォーカスを取る
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public void selectInitialValue() {
+                    Focuser.requestFocus(tf);
+                }
+            };
 
             JDialog dialog = pane.createDialog("コメント入力");
             dialog.setModal(true);
 
             // ダイアログ表示位置計算　できればスタンプの上に，上にスペースがなければ下に
             Point p = ctx.getLocationOnScreen();
-            int y; p.y = (y = p.y - dialog.getHeight() - 10)>30? y : p.y + ctx.getHeight() + 10;
+            int y;
+            p.y = (y = p.y - dialog.getHeight() - 10) > 30 ? y : p.y + ctx.getHeight() + 10;
             dialog.setLocation(p);
             dialog.setVisible(true);
 
@@ -571,14 +613,14 @@ public class StampHolderPopupMenu extends JPopupMenu {
             }
 
             // 新たなスタンプ作成
-            BundleMed srcBundle = (BundleMed)ctx.getStamp().getModel();
+            BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
             ModuleModel stamp = createModuleModel(ctx.getStamp());
             BundleMed bundle = (BundleMed) stamp.getModel();
 
             List<ClaimItem> list = new ArrayList<>();
 
             // 既存のコメント以外はそのまま登録，追加登録の場合は既存のコメントも登録
-            for(ClaimItem src : srcBundle.getClaimItem()) {
+            for (ClaimItem src : srcBundle.getClaimItem()) {
                 if (!src.getCode().startsWith("810000001") || options[0].equals(ans)) {
                     list.add(createClaimItem(src));
                 }
@@ -629,7 +671,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
             generic.setNumberCodeSystem("Claim004");
 
             // 新たなスタンプ作成
-            BundleMed srcBundle = (BundleMed)ctx.getStamp().getModel();
+            BundleMed srcBundle = (BundleMed) ctx.getStamp().getModel();
             ModuleModel stamp = createModuleModel(ctx.getStamp());
             BundleMed bundle = (BundleMed) stamp.getModel();
 
@@ -637,7 +679,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
             // 薬を検索して，最初に見つかった薬の後に一般名処方を入れる
             boolean found = false;
-            for(ClaimItem src : srcBundle.getClaimItem()) {
+            for (ClaimItem src : srcBundle.getClaimItem()) {
                 list.add(createClaimItem(src));
                 if (!found && src.getCode().startsWith("6")) {
                     list.add(generic);
@@ -647,7 +689,8 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
             // できた list を srcBundle に登録
             bundle.setClaimItem(list.toArray(new ClaimItem[0]));
-            propertyChanged(stamp);        }
+            propertyChanged(stamp);
+        }
     }
 }
 

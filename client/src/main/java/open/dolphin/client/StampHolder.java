@@ -34,24 +34,19 @@ import java.nio.charset.StandardCharsets;
  * @author pns
  */
 public final class StampHolder extends AbstractComponentHolder {
-    private static final long serialVersionUID = 5853431116398862958L;
-
     public static final String STAMP_MODIFIED = "stampModified";
-
+    private static final long serialVersionUID = 5853431116398862958L;
     private static final Color FOREGROUND = new Color(20, 20, 140);
-    private static final Color BACKGROUND = new Color(0,0,0,0);
+    private static final Color BACKGROUND = new Color(0, 0, 0, 0);
     private static final Color COMMENT_COLOR = new Color(120, 20, 140);
-
+    private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
+    private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
+    private final KartePane kartePane;
     private ModuleModel stamp;
     private StampRenderingHints hints;
-    private final KartePane kartePane;
     private Position start;
     private Position end;
     private boolean selected;
-
-    private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
-    private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
-
     // 検索語にマークする
     private String searchText = null;
     private String startTag = null;
@@ -65,9 +60,9 @@ public final class StampHolder extends AbstractComponentHolder {
         hints.setCommentColor(COMMENT_COLOR);
 
         // スタンプの初期幅は ChartImpl の幅から決定する
-        Rectangle bounds = PreferencesUtils.getRectangle(Project.getPreferences(), ChartImpl.PN_FRAME, new Rectangle(0,0,0,0));
-        int w = (bounds.width + 1)/2 - 168; // 実験から連立方程式で求めた
-        hints.setWidth((w<320)? 320 : w);
+        Rectangle bounds = PreferencesUtils.getRectangle(Project.getPreferences(), ChartImpl.PN_FRAME, new Rectangle(0, 0, 0, 0));
+        int w = (bounds.width + 1) / 2 - 168; // 実験から連立方程式で求めた
+        hints.setWidth((w < 320) ? 320 : w);
 
         init(model);
     }
@@ -82,6 +77,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * Focusされた場合のメニュー制御とボーダーを表示する.
+     *
      * @param map
      */
     @Override
@@ -104,6 +100,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * Focusがはずれた場合のメニュー制御とボーダーの非表示を行う.
+     *
      * @param map
      */
     @Override
@@ -115,6 +112,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * Popupメニューを表示する.
+     *
      * @param e
      */
     @Override
@@ -144,6 +142,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * このスタンプホルダのKartePaneを返す.
+     *
      * @return
      */
     @Override
@@ -153,6 +152,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * スタンプホルダのコンテントタイプを返す.
+     *
      * @return
      */
     @Override
@@ -162,6 +162,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * このホルダのモデルを返す.
+     *
      * @return
      */
     public ModuleModel getStamp() {
@@ -170,6 +171,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * このホルダのモデルを設定する.
+     *
      * @param model
      */
     public void setStamp(ModuleModel model) {
@@ -187,6 +189,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * 選択されているかどうかを返す.
+     *
      * @return 選択されている時 true
      */
     @Override
@@ -196,6 +199,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * 選択属性を設定する.
+     *
      * @param selected 選択の時 true
      */
     @Override
@@ -229,7 +233,7 @@ public final class StampHolder extends AbstractComponentHolder {
         } else {
             // ダブルクリックで EditorFrame に入力
             java.util.List<Chart> allFrames = EditorFrame.getAllEditorFrames();
-            if (! allFrames.isEmpty()) {
+            if (!allFrames.isEmpty()) {
                 Chart frame = allFrames.get(0);
                 if (this.isEditable()) {
                     KartePane pane = ((EditorFrame) frame).getEditor().getPPane();
@@ -246,6 +250,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * エディタで編集した値を受け取り内容を表示する.
+     *
      * @param e
      */
     @Override
@@ -271,6 +276,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * スタンプの内容を置き換える.
+     *
      * @param newStamp
      */
     public void importStamp(ModuleModel newStamp) {
@@ -286,6 +292,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * TextPane内での開始と終了ポジションを保存する.
+     *
      * @param start
      * @param end
      */
@@ -297,6 +304,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * 開始ポジションを返す.
+     *
      * @return
      */
     @Override
@@ -306,6 +314,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
     /**
      * 終了ポジションを返す.
+     *
      * @return
      */
     @Override
@@ -354,7 +363,7 @@ public final class StampHolder extends AbstractComponentHolder {
                 String taggedText = startTag + searchText + endTag;
                 int pos = text.indexOf(searchText);
                 while (pos != -1) {
-                    text = text.substring(0,pos) + taggedText + text.substring(pos + searchText.length());
+                    text = text.substring(0, pos) + taggedText + text.substring(pos + searchText.length());
                     pos = text.indexOf(searchText, pos + taggedText.length());
                 }
             }
@@ -390,8 +399,9 @@ public final class StampHolder extends AbstractComponentHolder {
 
         InputMap im = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "copyAsText");
-        this.getActionMap().put("copyAsText", new AbstractAction(){
+        this.getActionMap().put("copyAsText", new AbstractAction() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (getStamp().getModel().getClass().getName().equals("open.dolphin.infomodel.BundleMed")) {

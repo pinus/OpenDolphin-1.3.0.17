@@ -9,7 +9,6 @@ import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
 
 /**
- *
  * @author pns
  */
 public class PvtEndpoint extends Endpoint {

@@ -47,6 +47,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
 
     /**
      * 引数のカテゴリに対応するTreeを返す.
+     *
      * @param entity
      * @return カテゴリにマッチするStampTree
      */
@@ -67,7 +68,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
     }
 
     public StampTree getStampTree(int index) {
-        if (index >=0 && index < this.getTabCount()) {
+        if (index >= 0 && index < this.getTabCount()) {
             StampTreePanel panel = (StampTreePanel) this.getComponentAt(index);
             return panel.getTree();
         }
@@ -83,6 +84,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
 
     /**
      * スタンプボックスに含まれる全treeのTreeInfoリストを返す.
+     *
      * @return TreeInfoのリスト
      */
     public List<TreeInfo> getAllTreeInfos() {
@@ -100,6 +102,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
 
     /**
      * スタンプボックスに含まれる全treeを返す.
+     *
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllTrees() {
@@ -116,6 +119,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
 
     /**
      * スタンプボックスに含まれる病名以外のStampTreeを返す.
+     *
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllPTrees() {
@@ -129,7 +133,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
             StampTree tree = tp.getTree();
 
             // 病名StampTree はスキップする
-            if (! tree.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS)){
+            if (!tree.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS)) {
                 ret.add(tree);
             }
         }
@@ -139,6 +143,7 @@ public abstract class AbstractStampBox extends PNSTabbedPane {
     /**
      * 引数のエンティティ配下にある全てのスタンプを返す.
      * これはメニュー等で使用する.
+     *
      * @param entity Treeのエンティティ
      * @return 全てのスタンプのリスト
      */

@@ -19,17 +19,16 @@ import java.util.List;
  * KartePane の dumper.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
- * @pns
+ * @author pns
  */
 public class KartePaneDumper_2 {
-    private static final String[] MATCHES = new String[] { "<", ">", "&", "'","\""};
-    private static final String[] REPLACES = new String[] { "&lt;", "&gt;", "&amp;" ,"&apos;", "&quot;"};
+    private static final String[] MATCHES = new String[]{"<", ">", "&", "'", "\""};
+    private static final String[] REPLACES = new String[]{"&lt;", "&gt;", "&amp;", "&apos;", "&quot;"};
+    private final Logger logger;
     private List<ModuleModel> moduleList;
     private List<SchemaModel> schemaList;
     // Document の内容を XML で表したもの.
     private String spec;
-
-    private final Logger logger;
 
     public KartePaneDumper_2() {
         logger = ClientContext.getBootLogger();
@@ -37,6 +36,7 @@ public class KartePaneDumper_2 {
 
     /**
      * ダンプした Document の XML 定義を返す.
+     *
      * @return Documentの内容を XML で表したもの
      */
     public String getSpec() {
@@ -46,6 +46,7 @@ public class KartePaneDumper_2 {
 
     /**
      * ダンプした Document に含まれている ModuleModel を返す.
+     *
      * @return
      */
     public List<ModuleModel> getModule() {
@@ -54,6 +55,7 @@ public class KartePaneDumper_2 {
 
     /**
      * ダンプした Documentに含まれている SchemaModel を返す.
+     *
      * @return
      */
     public List<SchemaModel> getSchema() {
@@ -62,6 +64,7 @@ public class KartePaneDumper_2 {
 
     /**
      * 引数の Document をダンプする.
+     *
      * @param doc ダンプするドキュメント
      */
     public void dump(DefaultStyledDocument doc) {
@@ -86,8 +89,9 @@ public class KartePaneDumper_2 {
 
     /**
      * 要素を再帰的にダンプする.
+     *
      * @param element 要素
-     * @param writer	出力ライター
+     * @param writer  出力ライター
      * @throws IOException
      * @throws BadLocationException
      */
@@ -136,11 +140,11 @@ public class KartePaneDumper_2 {
                         Color c = (Color) atts.getAttribute(StyleConstants.Foreground);
                         logger.debug("color = " + c.toString());
                         StringBuilder buf = new StringBuilder();
-                        buf.append(String.valueOf(c.getRed()));
+                        buf.append(c.getRed());
                         buf.append(",");
-                        buf.append(String.valueOf(c.getGreen()));
+                        buf.append(c.getGreen());
                         buf.append(",");
-                        buf.append(String.valueOf(c.getBlue()));
+                        buf.append(c.getBlue());
                         retBuffer.append(addQuote(buf.toString()));
 
                     } else {

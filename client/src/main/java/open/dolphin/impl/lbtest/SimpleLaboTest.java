@@ -14,17 +14,23 @@ import java.util.TreeSet;
 /**
  * １検体につき，テストされた項目の TreeSet を保持するクラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class SimpleLaboTest implements Comparable {
 
-    /** 検体 */
+    /**
+     * 検体
+     */
     private SimpleLaboSpecimen specimen;
 
-    /** テスト項目の TreeSet 要素は SimpleLaboTestItem */
+    /**
+     * テスト項目の TreeSet 要素は SimpleLaboTestItem
+     */
     private TreeSet testItemTreeSet;
 
-    /** Creates a new instance of SimpleLaboTest */
+    /**
+     * Creates a new instance of SimpleLaboTest
+     */
     public SimpleLaboTest() {
     }
 
@@ -45,7 +51,7 @@ public class SimpleLaboTest implements Comparable {
     }
 
     @SuppressWarnings("unchecked")
-	public void addSimpleLaboTestItem(SimpleLaboTestItem val) {
+    public void addSimpleLaboTestItem(SimpleLaboTestItem val) {
 
         if (testItemTreeSet == null) {
             testItemTreeSet = new TreeSet();
@@ -56,7 +62,7 @@ public class SimpleLaboTest implements Comparable {
 
     public int compareTo(Object obj) {
 
-        SimpleLaboTest other = (SimpleLaboTest)obj;
+        SimpleLaboTest other = (SimpleLaboTest) obj;
 
         String str1 = specimen.getSpecimenName();
         String str2 = other.getSimpleSpecimen().getSpecimenName();
@@ -82,15 +88,15 @@ public class SimpleLaboTest implements Comparable {
 
         while (iter.hasNext()) {
 
-            testItem = (SimpleLaboTestItem)iter.next();
+            testItem = (SimpleLaboTestItem) iter.next();
             if (testItem.isTest(testID)) {
-                ret = (Object)testItem;
+                ret = (Object) testItem;
                 break;
             }
         }
 
         //if (ret == null) {
-            //ret = testID.getItemName();
+        //ret = testID.getItemName();
         //}
 
         return ret;
@@ -110,7 +116,7 @@ public class SimpleLaboTest implements Comparable {
 
         while (iter.hasNext()) {
 
-            testItem = (SimpleLaboTestItem)iter.next();
+            testItem = (SimpleLaboTestItem) iter.next();
             if (testItem.isTest(testID)) {
                 hasTest = true;
                 break;
@@ -126,26 +132,26 @@ public class SimpleLaboTest implements Comparable {
         return ret;
     }
 
-	@SuppressWarnings("unchecked")
-	public List getSimpleLaboTestItem() {
+    @SuppressWarnings("unchecked")
+    public List getSimpleLaboTestItem() {
 
-		List ret = null;
+        List ret = null;
 
-		if (testItemTreeSet == null) {
-			return ret;
-		}
+        if (testItemTreeSet == null) {
+            return ret;
+        }
 
-		Iterator iter = testItemTreeSet.iterator();
-		//SimpleLaboTestItem testItem;
-		ret = new ArrayList();
+        Iterator iter = testItemTreeSet.iterator();
+        //SimpleLaboTestItem testItem;
+        ret = new ArrayList();
 
-		while (iter.hasNext()) {
+        while (iter.hasNext()) {
 
-			ret.add((SimpleLaboTestItem)iter.next());
-		}
+            ret.add((SimpleLaboTestItem) iter.next());
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 
     public String toString() {
 
@@ -161,7 +167,7 @@ public class SimpleLaboTest implements Comparable {
             Iterator iter = testItemTreeSet.iterator();
             while (iter.hasNext()) {
 
-                SimpleLaboTestItem item = (SimpleLaboTestItem)iter.next();
+                SimpleLaboTestItem item = (SimpleLaboTestItem) iter.next();
 
                 buf.append(item.toString());
                 buf.append("\n");

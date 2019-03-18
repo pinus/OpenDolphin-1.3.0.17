@@ -9,11 +9,12 @@ import java.awt.*;
 
 /**
  * KartePanel をつくるファクトリー.
+ *
  * @author pns
  */
 public class KartePanelFactory {
     private static final int TIMESTAMP_PANEL_HEIGHT = 22; // 22で固定
-    private static final Font KARTE_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, ClientContext.isWin()? 12 : 13);
+    private static final Font KARTE_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, ClientContext.isWin() ? 12 : 13);
 
     private final KartePanel kartePanel;
     private JTextPane soaTextPane;
@@ -23,7 +24,7 @@ public class KartePanelFactory {
     private JPanel textPanePanel;
 
     private KartePanelFactory(boolean editor) {
-        kartePanel = (editor)? new EditorPanel() : new ViewerPanel();
+        kartePanel = (editor) ? new EditorPanel() : new ViewerPanel();
     }
 
     public static KartePanel createViewerPanel() {
@@ -36,6 +37,55 @@ public class KartePanelFactory {
 
     private KartePanel getProduct() {
         return kartePanel;
+    }
+
+    private void initComponents() {
+        soaTextPane = new JTextPane();
+        soaTextPane.setFont(KARTE_FONT);
+        soaTextPane.setEditorKit(new WrapEditorKit());
+        soaTextPane.setMargin(new Insets(10, 10, 10, 10));
+        soaTextPane.setMinimumSize(new Dimension(340, 1));
+        //soaTextPane.setPreferredSize(new Dimension(340, 500));
+        soaTextPane.setSize(1, 1); // なぜかこれでうまくいく。謎.
+
+        pTextPane = new JTextPane();
+        pTextPane.setFont(KARTE_FONT);
+        pTextPane.setEditorKit(new WrapEditorKit());
+        pTextPane.setMargin(new Insets(10, 10, 10, 10));
+        pTextPane.setMinimumSize(new Dimension(340, 1));
+        //pTextPane.setPreferredSize(new Dimension(340, 500));
+        pTextPane.setSize(1, 1);
+
+        // これをセットしないと，勝手に cut copy paste のポップアップがセットされてしまう.
+        soaTextPane.putClientProperty("Quaqua.TextComponent.showPopup", false);
+        pTextPane.putClientProperty("Quaqua.TextComponent.showPopup", false);
+
+        timeStampPanel = new JPanel() {
+            // フラットなタイトルバー
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void paintBorder(Graphics g) {
+                g.setColor(IInspector.BACKGROUND);
+                g.fillRect(0, 0, getWidth(), getHeight());
+                g.setColor(IInspector.BORDER_COLOR);
+                g.drawLine(0, 0, getWidth() - 1, 0);
+                g.drawLine(0, getHeight() - 1, getWidth() - 1, getHeight() - 1);
+            }
+        };
+        timeStampPanel.setMaximumSize(new Dimension(Short.MAX_VALUE, TIMESTAMP_PANEL_HEIGHT));
+        timeStampPanel.setMinimumSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
+        timeStampPanel.setPreferredSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
+        timeStampPanel.setLayout(new BorderLayout());
+        //timeStampPanel.setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
+
+        timeStampLabel = new JLabel();
+        timeStampPanel.add(timeStampLabel, BorderLayout.CENTER);
+
+        textPanePanel = new JPanel();
+        textPanePanel.setLayout(new GridLayout(1, 2, 2, 0));
+        textPanePanel.setOpaque(true); // KarteScrollPane で snap 取るとき，境界が黒くならないように
+        textPanePanel.setPreferredSize(new Dimension(682, 500));
     }
 
     /**
@@ -51,19 +101,23 @@ public class KartePanelFactory {
             // workaround http://ron.shoutboot.com/2010/05/23/swing-jscrollpane-scrolls-to-bottom/
             soaTextPane.setCaret(new DefaultCaret() {
                 private static final long serialVersionUID = 1L;
+
                 @Override
-                protected void adjustVisibility(Rectangle r) {}
+                protected void adjustVisibility(Rectangle r) {
+                }
             });
             pTextPane.setCaret(new DefaultCaret() {
                 private static final long serialVersionUID = 1L;
+
                 @Override
-                protected void adjustVisibility(Rectangle r) {}
+                protected void adjustVisibility(Rectangle r) {
+                }
             });
 
             textPanePanel.add(soaTextPane);
             textPanePanel.add(pTextPane);
 
-            setLayout(new BorderLayout(0,0));
+            setLayout(new BorderLayout(0, 0));
             add(timeStampPanel, BorderLayout.NORTH);
             add(textPanePanel, BorderLayout.CENTER);
         }
@@ -103,20 +157,24 @@ public class KartePanelFactory {
         public JTextPane getPTextPane() {
             return pTextPane;
         }
+
         @Override
         public JTextPane getSoaTextPane() {
             return soaTextPane;
         }
+
         @Override
         public JLabel getTimeStampLabel() {
             return timeStampLabel;
         }
+
         @Override
         public int getTimeStampPanelHeight() {
             return TIMESTAMP_PANEL_HEIGHT;
         }
+
         @Override
-        public JPanel getTimeStampPanel () {
+        public JPanel getTimeStampPanel() {
             return timeStampPanel;
         }
     }
@@ -143,7 +201,7 @@ public class KartePanelFactory {
             textPanePanel.add(soaScrollPane);
             textPanePanel.add(pScrollPane);
 
-            setLayout(new BorderLayout(0,0));
+            setLayout(new BorderLayout(0, 0));
             add(timeStampPanel, BorderLayout.NORTH);
             add(textPanePanel, BorderLayout.CENTER);
         }
@@ -152,70 +210,26 @@ public class KartePanelFactory {
         public JTextPane getPTextPane() {
             return pTextPane;
         }
+
         @Override
         public JTextPane getSoaTextPane() {
             return soaTextPane;
         }
+
         @Override
         public JLabel getTimeStampLabel() {
             return timeStampLabel;
         }
+
         @Override
         public int getTimeStampPanelHeight() {
             return TIMESTAMP_PANEL_HEIGHT;
         }
+
         @Override
-        public JPanel getTimeStampPanel () {
+        public JPanel getTimeStampPanel() {
             return timeStampPanel;
         }
-    }
-
-    private void initComponents() {
-        soaTextPane = new JTextPane();
-        soaTextPane.setFont(KARTE_FONT);
-        soaTextPane.setEditorKit(new WrapEditorKit());
-        soaTextPane.setMargin(new Insets(10, 10, 10, 10));
-        soaTextPane.setMinimumSize(new Dimension(340, 1));
-        //soaTextPane.setPreferredSize(new Dimension(340, 500));
-        soaTextPane.setSize(1, 1); // なぜかこれでうまくいく。謎.
-
-        pTextPane = new JTextPane();
-        pTextPane.setFont(KARTE_FONT);
-        pTextPane.setEditorKit(new WrapEditorKit());
-        pTextPane.setMargin(new Insets(10, 10, 10, 10));
-        pTextPane.setMinimumSize(new Dimension(340, 1));
-        //pTextPane.setPreferredSize(new Dimension(340, 500));
-        pTextPane.setSize(1, 1);
-
-        // これをセットしないと，勝手に cut copy paste のポップアップがセットされてしまう.
-        soaTextPane.putClientProperty("Quaqua.TextComponent.showPopup", false);
-        pTextPane.putClientProperty("Quaqua.TextComponent.showPopup", false);
-
-        timeStampPanel = new JPanel() {
-            // フラットなタイトルバー
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void paintBorder(Graphics g) {
-                g.setColor(IInspector.BACKGROUND);
-                g.fillRect(0, 0, getWidth(), getHeight());
-                g.setColor(IInspector.BORDER_COLOR);
-                g.drawLine(0, 0, getWidth()-1, 0);
-                g.drawLine(0, getHeight()-1, getWidth()-1, getHeight()-1);
-            }
-        };
-        timeStampPanel.setMaximumSize(new Dimension(Short.MAX_VALUE, TIMESTAMP_PANEL_HEIGHT));
-        timeStampPanel.setMinimumSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
-        timeStampPanel.setPreferredSize(new Dimension(682, TIMESTAMP_PANEL_HEIGHT));
-        timeStampPanel.setLayout(new BorderLayout());
-        //timeStampPanel.setBorder(PNSBorderFactory.createTitleBarBorder(new Insets(0,0,0,0)));
-
-        timeStampLabel = new JLabel();
-        timeStampPanel.add(timeStampLabel, BorderLayout.CENTER);
-
-        textPanePanel = new JPanel();
-        textPanePanel.setLayout(new GridLayout(1,2,2,0));
-        textPanePanel.setOpaque(true); // KarteScrollPane で snap 取るとき，境界が黒くならないように
-        textPanePanel.setPreferredSize(new Dimension(682,500));
     }
 
     /**
@@ -225,6 +239,7 @@ public class KartePanelFactory {
     private class WrapEditorKit extends StyledEditorKit {
         private static final long serialVersionUID = 1L;
         ViewFactory defaultFactory = new WrapColumnFactory();
+
         @Override
         public ViewFactory getViewFactory() {
             return defaultFactory;
@@ -260,6 +275,7 @@ public class KartePanelFactory {
         public WrapLabelView(Element elem) {
             super(elem);
         }
+
         @Override
         public float getMinimumSpan(int axis) {
             switch (axis) {

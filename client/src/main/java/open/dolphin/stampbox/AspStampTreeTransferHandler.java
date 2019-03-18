@@ -7,7 +7,7 @@ import java.awt.datatransfer.Transferable;
 /**
  * AspStampTreeTransferHandler.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class AspStampTreeTransferHandler extends StampTreeTransferHandler {
     private static final long serialVersionUID = 1L;

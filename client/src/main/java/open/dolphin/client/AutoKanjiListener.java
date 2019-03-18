@@ -6,14 +6,15 @@ import java.awt.event.FocusListener;
 import java.awt.im.InputSubset;
 
 /**
- *
  * @author Minagawa, Kazushi
  */
 public class AutoKanjiListener implements FocusListener {
 
     private static AutoKanjiListener instance = new AutoKanjiListener();
 
-    /** Creates a new instance of AutoIMEListener */
+    /**
+     * Creates a new instance of AutoIMEListener
+     */
     private AutoKanjiListener() {
     }
 
@@ -27,7 +28,7 @@ public class AutoKanjiListener implements FocusListener {
         if (source != null && source instanceof JTextComponent) {
             JTextComponent tc = (JTextComponent) source;
             if (tc.getInputContext() != null) {
-                tc.getInputContext().setCharacterSubsets(new Character.Subset[] {InputSubset.KANJI});
+                tc.getInputContext().setCharacterSubsets(new Character.Subset[]{InputSubset.KANJI});
             }
         }
     }

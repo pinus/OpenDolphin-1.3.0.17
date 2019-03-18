@@ -20,7 +20,7 @@ import java.util.*;
 /**
  * Dolphin用のマスタを登録する.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  * @author pns
  */
 public class InitDatabase {
@@ -31,19 +31,16 @@ public class InitDatabase {
 
     // マスタデータファイル
     private static final String RAD_METHOD_RESOURCE = "/master/radiology-method-data-sjis.txt";
-
+    private static final String ENCODING = "UTF-8";
     // マスタデータファイルの仕様
     private final int ARRAY_CAPACITY = 20;
     private final int TT_VALUE = 0;
     private final int TT_DELIM = 1;
     private final String delimitater = "\t";
-    private static final String ENCODING = "UTF-8";
-
-    // SystemService Proxy
-    private SystemService service;
-
     // Logger
     private final Logger logger;
+    // SystemService Proxy
+    private SystemService service;
 
     /**
      * InitDatabase のコンストラクタ
@@ -55,8 +52,28 @@ public class InitDatabase {
         logger = Logger.getLogger(InitDatabase.class);
     }
 
+    public static void main(String[] args) throws Exception {
+        final InitDatabase initDatabase = new InitDatabase();
+        final String usage = "Usage: java -cp OpenDolphin-1.3.0.X.jar open.dolphin.project.InitDatabase id password hostAddress";
+
+        if (args.length == 3) {
+            initDatabase.start(args[0], args[1], args[2]);
+
+        }
+        if (args.length == 0) {
+            // load data from profiel.txt
+            initDatabase.start(null, null, null);
+            //initDatabase.start(null, null, "http://localhost:8080/dolphin");
+
+        } else {
+            System.out.println(usage);
+        }
+        System.exit(0);
+    }
+
     /**
      * Start initializing database
+     *
      * @param userId
      * @param password
      * @param hostAddress
@@ -71,6 +88,7 @@ public class InitDatabase {
 
     /**
      * Add database administrator
+     *
      * @param userId
      * @param password
      * @param hostAddress
@@ -80,22 +98,26 @@ public class InitDatabase {
         HashMap<String, String> prop = new HashMap<>();
 
         try (InputStream in = this.getClass().getResourceAsStream(PROFIEL_RESOURCE);
-            InputStreamReader ir = new InputStreamReader(in, ENCODING);
-            BufferedReader reader = new BufferedReader(ir)) {
+             InputStreamReader ir = new InputStreamReader(in, ENCODING);
+             BufferedReader reader = new BufferedReader(ir)) {
 
             // profiel.txt ファイルの読み込み
             String line;
-            while ( (line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 // comment
-                if (line.startsWith("#") || line.startsWith("!")) { continue; }
+                if (line.startsWith("#") || line.startsWith("!")) {
+                    continue;
+                }
 
                 // "=" があるかどうか
                 int index = line.indexOf("=");
-                if (index < 0) { continue; }
+                if (index < 0) {
+                    continue;
+                }
 
                 // "=" から key, value ペアを抜き出して HashMap に登録
                 String key = line.substring(0, index);
-                String value = line.substring(index+1);
+                String value = line.substring(index + 1);
 
                 if (value != null) {
                     prop.put(key, value);
@@ -198,18 +220,19 @@ public class InitDatabase {
 
     /**
      * 放射線メソッドマスタを登録する.
+     *
      * @param name 放射線メソッドマスタリソース名
      */
     private void addRdMethod(String name) {
 
-        try ( InputStream in = this.getClass().getResourceAsStream(name);
-            InputStreamReader ir = new InputStreamReader(in, ENCODING);
-            BufferedReader reader = new BufferedReader(ir)){
+        try (InputStream in = this.getClass().getResourceAsStream(name);
+             InputStreamReader ir = new InputStreamReader(in, ENCODING);
+             BufferedReader reader = new BufferedReader(ir)) {
 
             List<RadiologyMethodValue> list = null;
 
             String line;
-            while ( (line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 String[] data = getStringArray(line);
 
                 if (data != null) {
@@ -259,7 +282,8 @@ public class InitDatabase {
 
     /**
      * リソースファイルから読み込んだタブ区切りの１行をパースし， String 配列のデータにして返す.
-     * @param line　パースするライン
+     *
+     * @param line 　パースするライン
      * @return データ配列
      */
     private String[] getStringArray(String line) {
@@ -276,7 +300,7 @@ public class InitDatabase {
 
         while (st.hasMoreTokens()) {
 
-            if ( (count % ARRAY_CAPACITY) == 0 ) {
+            if ((count % ARRAY_CAPACITY) == 0) {
                 String[] dest = new String[count + ARRAY_CAPACITY];
                 System.arraycopy(ret, 0, dest, 0, count);
                 ret = dest;
@@ -307,23 +331,5 @@ public class InitDatabase {
         System.arraycopy(ret, 0, ret2, 0, count);
 
         return ret2;
-    }
-
-    public static void main(String[] args) throws Exception {
-        final InitDatabase initDatabase = new InitDatabase();
-        final String usage = "Usage: java -cp OpenDolphin-1.3.0.X.jar open.dolphin.project.InitDatabase id password hostAddress";
-
-        if (args.length == 3) {
-            initDatabase.start(args[0], args[1], args[2]);
-
-        } if (args.length == 0) {
-            // load data from profiel.txt
-            initDatabase.start(null, null, null);
-            //initDatabase.start(null, null, "http://localhost:8080/dolphin");
-
-        } else {
-            System.out.println(usage);
-        }
-        System.exit(0);
     }
 }

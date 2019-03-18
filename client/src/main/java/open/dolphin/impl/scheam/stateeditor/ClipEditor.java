@@ -10,6 +10,7 @@ import open.dolphin.impl.scheam.shapeholder.PolygonHolder;
 /**
  * 選択範囲を切り抜く StateEditor.
  * 親の SchemaLayer を選択範囲の大きさにして，そこに選択範囲が入るように translate する.
+ *
  * @author pns
  */
 public class ClipEditor extends StateEditorBase {
@@ -34,7 +35,7 @@ public class ClipEditor extends StateEditorBase {
         draftHolder.setFillColor(Color.TRANSPARENT);
         draftHolder.setLineWidth(1.0);
         // setHolder の前に座標を決めなければならない
-        for (int i=0; i<4; i++) {
+        for (int i = 0; i < 4; i++) {
             draftHolder.addPathX(e.getX());
             draftHolder.addPathY(e.getY());
         }
@@ -47,11 +48,12 @@ public class ClipEditor extends StateEditorBase {
     @Override
     public void mouseDragged(MouseEvent e) {
         // draftHolder の範囲外には移動させない
-        double x = (e.getX() < 0)? 0 : (e.getX() >= draftLayer.getWidth())? draftLayer.getWidth()-1 : e.getX();
-        double y = (e.getY() < 0)? 0 : (e.getY() >= draftLayer.getHeight())? draftLayer.getHeight()-1 : e.getY();
+        double x = (e.getX() < 0) ? 0 : (e.getX() >= draftLayer.getWidth()) ? draftLayer.getWidth() - 1 : e.getX();
+        double y = (e.getY() < 0) ? 0 : (e.getY() >= draftLayer.getHeight()) ? draftLayer.getHeight() - 1 : e.getY();
 
         draftHolder.setPathX(1, x);
-        draftHolder.setPathX(2, x); draftHolder.setPathY(2, y);
+        draftHolder.setPathX(2, x);
+        draftHolder.setPathY(2, y);
         draftHolder.setPathY(3, y);
         draftLayer.redraw();
     }
@@ -64,10 +66,12 @@ public class ClipEditor extends StateEditorBase {
         ShapeHolderBounds b = draftHolder.getBounds();
         double w = b.getWidth();
         double h = b.getHeight();
-        if (w == 0 || h == 0) { return; }
+        if (w == 0 || h == 0) {
+            return;
+        }
 
-        double dx = - b.getMinX();
-        double dy = - b.getMinY();
+        double dx = -b.getMinX();
+        double dy = -b.getMinY();
 
         // UndoManager に登録
         undoManager.offerClip(baseLayer.getWidth(), baseLayer.getHeight(), dx, dy);

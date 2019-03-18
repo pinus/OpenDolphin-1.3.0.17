@@ -231,6 +231,15 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
     }
 
     /**
+     * 選択されているかどうかを返す.
+     *
+     * @return 選択されている時 true
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /**
      * 選択状態を設定する.
      * 選択状態により Viewer のタイムスタンプ部分のフォントを変える (BOLD にする).
      *
@@ -243,15 +252,6 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
         } else {
             timeStampLabel.setFont(TIMESTAMP_FONT);
         }
-    }
-
-    /**
-     * 選択されているかどうかを返す.
-     *
-     * @return 選択されている時 true
-     */
-    public boolean isSelected() {
-        return selected;
     }
 
     @Override

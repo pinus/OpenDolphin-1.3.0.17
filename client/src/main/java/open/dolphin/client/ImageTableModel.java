@@ -40,7 +40,7 @@ public class ImageTableModel extends AbstractTableModel {
         int size = imageList.size();
         int rowCount = size / columnCount;
 
-        return ( (size % columnCount) != 0 ) ? rowCount + 1 : rowCount;
+        return ((size % columnCount) != 0) ? rowCount + 1 : rowCount;
     }
 
     @Override
@@ -54,13 +54,13 @@ public class ImageTableModel extends AbstractTableModel {
         return entry;
     }
 
+    public List<ImageEntry> getImageList() {
+        return imageList;
+    }
+
     public void setImageList(List<ImageEntry> list) {
         imageList = list;
         fireTableDataChanged();
-    }
-
-    public List<ImageEntry> getImageList() {
-        return imageList;
     }
 
     private boolean isValidIndex(int index) {

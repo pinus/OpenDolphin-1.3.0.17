@@ -19,7 +19,7 @@ public class StampTreeUtils {
     /**
      * PersonalTreeModel をコピーして Publish 用の treeXml をセットした PublishedTreeModel を作る.
      *
-     * @param model PersonalTreeModel
+     * @param model   PersonalTreeModel
      * @param treeXml TreeXML
      * @return PublishedTreeModel
      */

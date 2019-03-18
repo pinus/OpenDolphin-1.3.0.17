@@ -14,10 +14,13 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
- *
  * @author pns
  */
 public class JsonTest {
+    public static void main(String[] arg) throws Exception {
+        new JsonTest().start();
+    }
+
     public void start() throws Exception {
         //postHello();
         //testTypeInfo();
@@ -144,9 +147,5 @@ public class JsonTest {
         System.out.println(rm1.getModel().getClass());
         System.out.println(rm2.getModel().getClass());
         System.out.println(rm3.getModel().getClass());
-    }
-
-    public static void main(String[] arg) throws Exception {
-        new JsonTest().start();
     }
 }

@@ -21,31 +21,28 @@ import java.util.stream.Stream;
 /**
  * ImageBox.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class ImageBox extends AbstractMainTool {
 
-    private static final int DEFAULT_COLUMN_COUNT 	=   3;
-    private static final int DEFAULT_IMAGE_WIDTH 	= 120;
-    private static final int DEFAULT_IMAGE_HEIGHT 	= 120;
-    private static final Point DEFAULT_LOC = new Point(537,22);
-    private static final Dimension DEFAULT_SIZE = new Dimension(406,587);
+    private static final int DEFAULT_COLUMN_COUNT = 3;
+    private static final int DEFAULT_IMAGE_WIDTH = 120;
+    private static final int DEFAULT_IMAGE_HEIGHT = 120;
+    private static final Point DEFAULT_LOC = new Point(537, 22);
+    private static final Dimension DEFAULT_SIZE = new Dimension(406, 587);
     private static final String[] DEFAULT_IMAGE_SUFFIX = {".jpg"};
-
-    private String imageLocation  = ClientContext.getLocation("schema");
+    private static final int TIMER_DELAY = 200;        // 200 msec 毎にチェック
+    private static final int MAX_ESTIMATION = 5000;        // 全体の見積もり時間
+    private static final String PROGRESS_NOTE = "画像をロードしています...";
+    private final String title = "シェーマ箱";
+    private String imageLocation = ClientContext.getLocation("schema");
     private PNSTabbedPane tabbedPane;
     private JButton refreshBtn;
     private int columnCount = DEFAULT_COLUMN_COUNT;
     private int imageWidth = DEFAULT_IMAGE_WIDTH;
     private int imageHeight = DEFAULT_IMAGE_HEIGHT;
     private String[] suffix = DEFAULT_IMAGE_SUFFIX;
-
     private MainFrame frame;
-    private final String title = "シェーマ箱";
-    private static final int TIMER_DELAY 	=  200;		// 200 msec 毎にチェック
-    private static final int MAX_ESTIMATION 	= 5000;		// 全体の見積もり時間
-    private static final String PROGRESS_NOTE = "画像をロードしています...";
-
     private Logger logger;
 
     // SchemaBox でもメニューを出すため
@@ -109,7 +106,7 @@ public class ImageBox extends AbstractMainTool {
 
             @Override
             protected void succeeded(Void result) {
-                if (! frame.isVisible()) {
+                if (!frame.isVisible()) {
                     frame.setVisible(true);
                 }
                 logger.debug("Task succeeded");
@@ -136,7 +133,7 @@ public class ImageBox extends AbstractMainTool {
 
             @Override
             protected void succeeded(Void result) {
-                if (! frame.isVisible()) {
+                if (!frame.isVisible()) {
                     frame.setVisible(true);
                 }
                 logger.debug("Task succeeded");
@@ -179,11 +176,11 @@ public class ImageBox extends AbstractMainTool {
             mediator.registerActions(appMenu.getActionMap());
             mediator.disableAllMenus();
             String[] enables = new String[]{
-                GUIConst.ACTION_SHOW_STAMPBOX,
-                GUIConst.ACTION_SET_KARTE_ENVIROMENT,
-                "showWaitingList",
-                "showPatientSearch",
-                "focusDiagnosisInspector"
+                    GUIConst.ACTION_SHOW_STAMPBOX,
+                    GUIConst.ACTION_SET_KARTE_ENVIROMENT,
+                    "showWaitingList",
+                    "showPatientSearch",
+                    "focusDiagnosisInspector"
             };
             mediator.enableMenus(enables);
         } else {
@@ -206,7 +203,7 @@ public class ImageBox extends AbstractMainTool {
         frame.removeStatusPanel();
         // MainPanel に TabbedPane を挿入
         MainFrame.MainPanel mainPanel = frame.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(0,0));
+        mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
     }
 
@@ -216,7 +213,7 @@ public class ImageBox extends AbstractMainTool {
     public void createImagePalettes() {
 
         File baseDir = new File(imageLocation);
-        if ( (! baseDir.exists()) || (! baseDir.isDirectory()) ) {
+        if ((!baseDir.exists()) || (!baseDir.isDirectory())) {
             return;
         }
 
@@ -244,13 +241,6 @@ public class ImageBox extends AbstractMainTool {
     }
 
     /**
-     * @param columnCount The columnCount to set.
-     */
-    public void setColumnCount(int columnCount) {
-        this.columnCount = columnCount;
-    }
-
-    /**
      * @return Returns the columnCount.
      */
     public int getColumnCount() {
@@ -258,10 +248,10 @@ public class ImageBox extends AbstractMainTool {
     }
 
     /**
-     * @param imageWidth The imageWidth to set.
+     * @param columnCount The columnCount to set.
      */
-    public void setImageWidth(int imageWidth) {
-        this.imageWidth = imageWidth;
+    public void setColumnCount(int columnCount) {
+        this.columnCount = columnCount;
     }
 
     /**
@@ -272,10 +262,10 @@ public class ImageBox extends AbstractMainTool {
     }
 
     /**
-     * @param imageHeight The imageHeight to set.
+     * @param imageWidth The imageWidth to set.
      */
-    public void setImageHeight(int imageHeight) {
-        this.imageHeight = imageHeight;
+    public void setImageWidth(int imageWidth) {
+        this.imageWidth = imageWidth;
     }
 
     /**
@@ -286,10 +276,10 @@ public class ImageBox extends AbstractMainTool {
     }
 
     /**
-     * @param suffix The suffix to set.
+     * @param imageHeight The imageHeight to set.
      */
-    public void setSuffix(String[] suffix) {
-        this.suffix = suffix;
+    public void setImageHeight(int imageHeight) {
+        this.imageHeight = imageHeight;
     }
 
     /**
@@ -299,20 +289,27 @@ public class ImageBox extends AbstractMainTool {
         return suffix;
     }
 
-    private class DirectoryFilter implements FileFilter {
-        @Override
-        public boolean accept(File path) {
-            return path.isDirectory();
-        }
+    /**
+     * @param suffix The suffix to set.
+     */
+    public void setSuffix(String[] suffix) {
+        this.suffix = suffix;
     }
 
     /**
      * ChartIml が開いていたら，DiagnosisInspector にフォーカスする.
      */
     public void focusDiagnosisInspector() {
-        if (! ChartImpl.getAllChart().isEmpty()) {
+        if (!ChartImpl.getAllChart().isEmpty()) {
             ChartImpl chart = ChartImpl.getAllChart().get(0);
             chart.getChartMediator().focusDiagnosisInspector();
+        }
+    }
+
+    private class DirectoryFilter implements FileFilter {
+        @Override
+        public boolean accept(File path) {
+            return path.isDirectory();
         }
     }
 }

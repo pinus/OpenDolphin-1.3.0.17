@@ -3,16 +3,13 @@ package open.dolphin.ui.sheet;
 import javax.swing.*;
 
 /**
- *
  * @author pns
  */
 public class TestWindow extends JWindow {
     private static final long serialVersionUID = 1L;
 
 
-
-
-    public static void main (String[] argv) {
+    public static void main(String[] argv) {
         TestWindow w = new TestWindow();
         JButton b = new JButton("OK");
         b.addActionListener(e -> {

@@ -5,9 +5,10 @@ import java.awt.*;
 
 /**
  * グレーの枠.
+ *
  * @author pns
  */
-public class PNSSelectedGrayBorder extends AbstractBorder{
+public class PNSSelectedGrayBorder extends AbstractBorder {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -16,7 +17,7 @@ public class PNSSelectedGrayBorder extends AbstractBorder{
     }
 
     @Override
-    public Insets getBorderInsets(Component c)       {
+    public Insets getBorderInsets(Component c) {
         return PNSBorder.DEFAULT_MARGIN;
     }
 }

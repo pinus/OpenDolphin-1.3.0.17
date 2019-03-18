@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * MML インスタンスを通知するイベントクラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class MmlMessageEvent extends java.util.EventObject {
 
@@ -25,7 +25,9 @@ public class MmlMessageEvent extends java.util.EventObject {
     private String content;
     private String confirmDate;
 
-    /** Creates new MmlPackage */
+    /**
+     * Creates new MmlPackage
+     */
     public MmlMessageEvent(Object source) {
         super(source);
     }

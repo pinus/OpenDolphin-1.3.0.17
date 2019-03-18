@@ -33,8 +33,8 @@ import java.util.Date;
 public class MemoInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.メモ;
 
-    private static final Color[] ALERT_LINE_COLOR = {new Color(255,100,100), new Color(255,130,130), new Color(255,180,180)};
-    private static final Color ALERT_BACK_COLOR = new Color(255,240,240);
+    private static final Color[] ALERT_LINE_COLOR = {new Color(255, 100, 100), new Color(255, 130, 130), new Color(255, 180, 180)};
+    private static final Color ALERT_BACK_COLOR = new Color(255, 240, 240);
 
     // jpeg ファイルフィルタ
     private static final FileFilter FF_JPG = file -> file.getName().toLowerCase().endsWith(".jpg");
@@ -47,25 +47,22 @@ public class MemoInspector implements IInspector {
     private static final FileFilter FF_ALTDRUG = file -> file.getName().contains("代替");
 
     private final ChartImpl context;
+    private final Logger logger;
+    // このカルテの関連情報ファイルのパス
+    private final String path;
     private JPanel memoPanel;
     private CompositeArea memoArea;
     private PatientMemoModel patientMemoModel;
-
     private InspectorBorder border;
     private String titleText;
     private Font titleFont;
     private Color titleColor;
-
-    private final Logger logger;
-
     private String oldText = "";
     private boolean shouldAlert = false;
 
-    // このカルテの関連情報ファイルのパス
-    private final String path;
-
     /**
      * MemoInspectorオブジェクトを生成する.
+     *
      * @param parent
      */
     public MemoInspector(PatientInspector parent) {
@@ -101,14 +98,14 @@ public class MemoInspector implements IInspector {
         memoPanel.setName(CATEGORY.name());
 
         memoPanel.add(pane, BorderLayout.CENTER);
-        memoPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, isWin()? 120 : 70));
-        memoPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, isWin()? 120 : 100));
+        memoPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, isWin() ? 120 : 70));
+        memoPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, isWin() ? 120 : 100));
 
         // kick AppleScript to open target folder
         memoPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                File infoFolder = new File (path);
+                File infoFolder = new File(path);
                 if (infoFolder.exists()) {
                     // folder があれば開く
                     ScriptExecutor.openPatientFolder(path);
@@ -133,6 +130,7 @@ public class MemoInspector implements IInspector {
 
     /**
      * レイアウト用のパネルを返す.
+     *
      * @return レイアウトパネル
      */
     @Override
@@ -152,6 +150,7 @@ public class MemoInspector implements IInspector {
 
     /**
      * 関連文書に応じた Border を返す.
+     *
      * @return
      */
     @Override
@@ -167,7 +166,7 @@ public class MemoInspector implements IInspector {
      * memo title を作ってフィールド変数にセットする.
      */
     private void createTitle() {
-        File infoFolder = new File (path);
+        File infoFolder = new File(path);
 
         StringBuilder memoTitle = new StringBuilder();
 
@@ -188,7 +187,7 @@ public class MemoInspector implements IInspector {
             }
             if (memoTitle.length() > 0) {
                 // 最後の「・」を取る
-                memoTitle.deleteCharAt(memoTitle.length()-1);
+                memoTitle.deleteCharAt(memoTitle.length() - 1);
             } else {
                 memoTitle.append("ファイル");
             }
@@ -196,7 +195,7 @@ public class MemoInspector implements IInspector {
             memoTitle.append("あり");
 
             titleColor = Color.blue;
-            titleFont = new Font(Font.SANS_SERIF, Font.BOLD, isWin()? 10 : 12);
+            titleFont = new Font(Font.SANS_SERIF, Font.BOLD, isWin() ? 10 : 12);
 
         } else {
             // フォルダがない
@@ -232,10 +231,12 @@ public class MemoInspector implements IInspector {
      */
     public void save() {
         // メモ内容に変更がなければ何もしない
-        if (oldText.equals(memoArea.getText().trim())) { return; }
+        if (oldText.equals(memoArea.getText().trim())) {
+            return;
+        }
 
         if (patientMemoModel == null) {
-            patientMemoModel =  new PatientMemoModel();
+            patientMemoModel = new PatientMemoModel();
         }
         // 上書き更新
         Date confirmed = new Date();
@@ -268,6 +269,7 @@ public class MemoInspector implements IInspector {
 
     /**
      * メモ内容に禁忌等の注意事項があるかどうか.
+     *
      * @return
      */
     public boolean containsContraindication() {
@@ -299,15 +301,15 @@ public class MemoInspector implements IInspector {
             Graphics g = graphics.create();
             if (shouldAlert) {
                 g.setColor(ALERT_BACK_COLOR);
-                g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 3, 3);
+                g.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 3, 3);
 
-                for (int i=0; i<3; i++) {
-                g.setColor(ALERT_LINE_COLOR[i]);
-                g.drawRoundRect(i, i, getWidth()-1-2*i, getHeight()-1-2*i, 3-i, 3-i);
+                for (int i = 0; i < 3; i++) {
+                    g.setColor(ALERT_LINE_COLOR[i]);
+                    g.drawRoundRect(i, i, getWidth() - 1 - 2 * i, getHeight() - 1 - 2 * i, 3 - i, 3 - i);
                 }
             } else {
                 g.setColor(Color.WHITE);
-                g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 3, 3);
+                g.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 3, 3);
             }
             g.dispose();
         }

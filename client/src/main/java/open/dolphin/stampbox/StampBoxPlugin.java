@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -31,6 +32,7 @@ import java.util.prefs.Preferences;
 
 /**
  * StampBoxPlugin.
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
@@ -39,10 +41,13 @@ public class StampBoxPlugin extends AbstractMainTool {
     private static final String NAME = "スタンプ箱";
 
     // frameのデフォルトの大きさ及びタイトル
-    private final int DEFAULT_WIDTH     = 320;
-    private final int DEFAULT_HEIGHT    = 690;
+    private final int DEFAULT_WIDTH = 320;
+    private final int DEFAULT_HEIGHT = 690;
     private final int IMPORT_TREE_OFFSET = 1;
-
+    // mac フラグ
+    private final boolean isMac;
+    // Logger
+    private final Logger logger;
     // StampBox の JFrame
     private MainFrame frame;
     // StampBox
@@ -73,8 +78,6 @@ public class StampBoxPlugin extends AbstractMainTool {
     private List<StampTreeBean> stampTreeModels;
     // mac でメニューが消えないようにするために使う
     private MenuSupport mediator;
-    // mac フラグ
-    private final boolean isMac;
     // ロックボタン
     private PNSToggleButton lockBtn;
     // ExtraMenu(gear) ボタン
@@ -84,8 +87,6 @@ public class StampBoxPlugin extends AbstractMainTool {
     // collapseAll ボタン
     private JButton collapseBtn;
     private boolean isLocked = true;
-    // Logger
-    private final Logger logger;
 
     public StampBoxPlugin() {
         setName(NAME);
@@ -95,6 +96,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * スタンプ項目の移動がロックされているかどうか
+     *
      * @return
      */
     public boolean isLocked() {
@@ -103,6 +105,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * スタンプ項目の移動をロックする
+     *
      * @param isLocked
      */
     private void setLocked(boolean isLocked) {
@@ -111,6 +114,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * 現在の StampBox を返す.
+     *
      * @return 現在選択されているStampBox
      */
     public AbstractStampBox getCurrentBox() {
@@ -119,6 +123,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * 現在の StampBox を設定する.
+     *
      * @param curBox 選択されたStampBox
      */
     public void setCurrentBox(AbstractStampBox curBox) {
@@ -127,6 +132,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * User(個人用)の StampBox を返す.
+     *
      * @return User(個人用)のStampBox
      */
     public AbstractStampBox getUserStampBox() {
@@ -135,6 +141,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * User(個人用)の StampBox を設定する.
+     *
      * @param userBox User(個人用)のStampBox
      */
     public void setUserStampBox(AbstractStampBox userBox) {
@@ -143,6 +150,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * StampBox の JFrame を返す.
+     *
      * @return StampBox の JFrame
      */
     public MainFrame getFrame() {
@@ -151,6 +159,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * インポートしている StampTree のリストを返す.
+     *
      * @return インポートしているStampTreeのリスト
      */
     public List<Long> getImportedTreeList() {
@@ -159,6 +168,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * Block用GlassPaneを返す.
+     *
      * @return Block用GlassPane
      */
     public BlockGlass getBlockGlass() {
@@ -168,6 +178,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     /**
      * StampTree をデータベースまたはリソースから読み込む.
      * アプリケーションの起動時に一括してコールされる.
+     *
      * @return
      */
     @Override
@@ -189,7 +200,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
                 // User 用の StampTree が存在するかどうか
                 boolean hasTree = false;
-                if (! treeList.isEmpty()) {
+                if (!treeList.isEmpty()) {
                     for (StampTreeBean tree : treeList) {
                         if (tree != null) { // null の可能性がある
                             long id = tree.getUser().getId();
@@ -205,11 +216,11 @@ public class StampBoxPlugin extends AbstractMainTool {
                     logger.info("New user, constract user's tree by resource");
                     try (
                             InputStream in = ClientContext.getResourceAsStream("stamptree-seed.xml");
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8")); ) {
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
                         String line;
                         StringBuilder sb = new StringBuilder();
-                        while( (line = reader.readLine()) != null ) {
+                        while ((line = reader.readLine()) != null) {
                             sb.append(line);
                         }
                         // Tree情報を設定し保存する
@@ -282,11 +293,11 @@ public class StampBoxPlugin extends AbstractMainTool {
             mediator.registerActions(appMenu.getActionMap());
             mediator.disableAllMenus();
             String[] enables = new String[]{
-                GUIConst.ACTION_SHOW_SCHEMABOX,
-                GUIConst.ACTION_SET_KARTE_ENVIROMENT,
-                "showWaitingList",
-                "showPatientSearch",
-                "focusDiagnosisInspector"
+                    GUIConst.ACTION_SHOW_SCHEMABOX,
+                    GUIConst.ACTION_SET_KARTE_ENVIROMENT,
+                    "showWaitingList",
+                    "showPatientSearch",
+                    "focusDiagnosisInspector"
             };
             mediator.enableMenus(enables);
 
@@ -303,7 +314,9 @@ public class StampBoxPlugin extends AbstractMainTool {
             public void windowClosing(WindowEvent e) {
                 if (editing) {
                     toolBtn.doClick();
-                    if (!isLocked) { lockBtn.doClick(); }
+                    if (!isLocked) {
+                        lockBtn.doClick();
+                    }
 
                 } else {
                     Toolkit.getDefaultToolkit().beep();
@@ -318,6 +331,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         //
         parentBox = new PNSTabbedPane() {
             private static final long serialVersionUID = 1L;
+
             // Insets なしのボーダーをつけるためにボーダーを書き直す
             // StampTree での改変も必要
             @Override
@@ -327,7 +341,7 @@ public class StampBoxPlugin extends AbstractMainTool {
             }
         };
         parentBox.setTabPlacement(JTabbedPane.BOTTOM);
-        parentBox.setButtonPanelPadding(new Dimension(0,4));
+        parentBox.setButtonPanelPadding(new Dimension(0, 4));
 
         //
         // 読み込んだStampTreeをTabbedPaneに格納し，さらにそれをparentBoxに追加する
@@ -357,7 +371,7 @@ public class StampBoxPlugin extends AbstractMainTool {
                     //
                     userBox = new UserStampBox();
 
-                    userBox.setButtonPanelPadding(new Dimension(16,4));
+                    userBox.setButtonPanelPadding(new Dimension(16, 4));
                     userBox.setContext(this);
                     userBox.setStampTreeModel(model);
                     userBox.buildStampBox();
@@ -417,12 +431,16 @@ public class StampBoxPlugin extends AbstractMainTool {
             if (!editing) {
                 startStampMake();
                 editing = true;
-                if (isLocked) { lockBtn.doClick(); }
+                if (isLocked) {
+                    lockBtn.doClick();
+                }
 
             } else {
                 stopStampMake();
                 editing = false;
-                if (!isLocked) { lockBtn.doClick(); }
+                if (!isLocked) {
+                    lockBtn.doClick();
+                }
             }
         });
 
@@ -435,7 +453,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         lockBtn.setSelectedIcon(GUIConst.ICON_PADLOCK_OPEN_16);
         lockBtn.setToolTipText("ダブルクリックでツリー内での入れ替えのロック／解除をします");
         lockBtn.setFocusable(false);
-        lockBtn.setPreferredSize(new java.awt.Dimension(16,16));
+        lockBtn.setPreferredSize(new java.awt.Dimension(16, 16));
         lockBtn.addActionListener(e -> {
             // 選択されていたらロック解除
             if (lockBtn.isSelected()) {
@@ -443,17 +461,17 @@ public class StampBoxPlugin extends AbstractMainTool {
                 // Insets のないボーダー
                 // このままだと paintComponent でボーダーが上書きされてしまうので，
                 // parentBox を作るときに，paint 内でボーダーを書き直すように設定する
-                parentBox.setBorder(new LineBorder(new Color(255,0,0,100),2,true){
+                parentBox.setBorder(new LineBorder(new Color(255, 0, 0, 100), 2, true) {
                     private static final long serialVersionUID = 1L;
+
                     @Override
                     public Insets getBorderInsets(Component c) {
-                        return new Insets(0,0,0,0);
+                        return new Insets(0, 0, 0, 0);
                     }
                 });
-            }
-            else {
+            } else {
                 setLocked(true);
-                parentBox.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+                parentBox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             }
         });
 
@@ -464,7 +482,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         extraBtn.setIcon(GUIConst.ICON_GEAR_16);
         extraBtn.setToolTipText("特別メニュー");
         extraBtn.setFocusable(false);
-        extraBtn.setPreferredSize(new java.awt.Dimension(16,16));
+        extraBtn.setPreferredSize(new java.awt.Dimension(16, 16));
         extraMenu = new StampBoxExtraMenu(this);
         extraBtn.addMouseListener(extraMenu);
 
@@ -475,7 +493,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         collapseBtn.setIcon(GUIConst.ICON_TREE_COLLAPSED_16);
         collapseBtn.setToolTipText("フォルダを全て閉じる");
         collapseBtn.setFocusable(false);
-        collapseBtn.setPreferredSize(new java.awt.Dimension(16,16));
+        collapseBtn.setPreferredSize(new java.awt.Dimension(16, 16));
         collapseBtn.addActionListener(e -> {
             StampTreePanel p = (StampTreePanel) getCurrentBox().getSelectedComponent();
             StampTree tree = p.getTree();
@@ -486,7 +504,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         // レイアウトする
         //
         MainFrame.MainPanel mainPanel = frame.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(0,0));
+        mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(parentBox, BorderLayout.CENTER);
 
         MainFrame.CommandPanel comPanel = frame.getCommandPanel();
@@ -507,10 +525,10 @@ public class StampBoxPlugin extends AbstractMainTool {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         String name = this.getClass().getName();
         int index = prefs.getInt(name + "_parentBox", 0);
-        index = ( index >= 0 && index <= (parentBox.getTabCount() -1) ) ? index : 0;
+        index = (index >= 0 && index <= (parentBox.getTabCount() - 1)) ? index : 0;
         parentBox.setSelectedIndex(index);
         index = prefs.getInt(name + "_stampBox", 0);
-        index = ( index >= 0 && index <= (userBox.getTabCount() -1) ) ? index : 0;
+        index = (index >= 0 && index <= (userBox.getTabCount() - 1)) ? index : 0;
 
         //
         // ORCA タブが選択されていて ORCA に接続がない場合を避ける
@@ -548,11 +566,12 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * ImportしたStampBoxの選択可能を制御する.
+     *
      * @param enabled 選択可能な時 true
      */
     private void enabledImportBox(boolean enabled) {
         int cnt = parentBox.getTabCount();
-        for (int i = 0 ; i < cnt; i++) {
+        for (int i = 0; i < cnt; i++) {
             if ((PNSTabbedPane) parentBox.getComponentAt(i) != userBox) {
                 parentBox.setEnabledAt(i, enabled);
             }
@@ -560,39 +579,8 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * TabChangeListener
-     * User用StampBoxのTab切り替えリスナクラス.
-     */
-    private class TabChangeListener implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent e) {
-
-            if (!editing) {
-                // スタンプメーカ起動中でない時
-                // テキストスタンプタブが選択されたらスタンプメーカボタンを disabledにする
-                // ORCA セットタブの場合を処理する
-                int index = userBox.getSelectedIndex();
-                StampTree tree = userBox.getStampTree(index);
-                tree.enter();
-                boolean enabled = userBox.hasEditor(index);
-                toolBtn.setEnabled(enabled);
-
-            } else {
-                // スタンプメーカ起動中の時
-                // 選択されたタブに対応するエディタを表示する
-                int index = userBox.getSelectedIndex();
-                StampTree tree = userBox.getStampTree(index);
-                if (stampMaker != null && userBox.hasEditor(index)) {
-                    stampMaker.show(tree.getEntity());
-                    fireTreeSelectionListener(tree);
-                }
-            }
-        }
-    }
-
-    /**
      * 選択しなおして，treeSelectionListener を fire する（左矢印を出すため）
+     *
      * @param tree
      */
     private void fireTreeSelectionListener(StampTree tree) {
@@ -600,16 +588,6 @@ public class StampBoxPlugin extends AbstractMainTool {
         if (tp != null) {
             tree.clearSelection();
             tree.getSelectionModel().setSelectionPath(tp);
-        }
-    }
-
-    /**
-     * ParentBox の TabChangeListenerクラス.
-     */
-    private class BoxChangeListener implements ChangeListener {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            boxChanged();
         }
     }
 
@@ -675,8 +653,8 @@ public class StampBoxPlugin extends AbstractMainTool {
             // センタリングする
             frame.pack();
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-            int x = (screen.width - frame.getWidth())/2;
-            int y = (screen.height - frame.getHeight())/2;
+            int x = (screen.width - frame.getWidth()) / 2;
+            int y = (screen.height - frame.getHeight()) / 2;
             frame.setLocation(x, y);
         } else {
             frame.setBounds(locX, locY, width, height);
@@ -694,7 +672,7 @@ public class StampBoxPlugin extends AbstractMainTool {
      */
     public void stopStampMake() {
 
-        if (! editing) {
+        if (!editing) {
             return;
         }
 
@@ -716,7 +694,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
         // サイズ固定解除（不要のようだ）
         parentBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        parentBox.setMinimumSize(new Dimension(0,0));
+        parentBox.setMinimumSize(new Dimension(0, 0));
 
         stampMaker = null;
         editorValueListener = null;
@@ -733,63 +711,6 @@ public class StampBoxPlugin extends AbstractMainTool {
         // ASP ボックスを選択可にする
         //
         enabledImportBox(true);
-    }
-
-    /**
-     * EditorValueListener.
-     * エディタで作成したスタンプをStampTreeに加える.
-     */
-    private class EditorValueListener implements PropertyChangeListener {
-
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-            Object obj = e.getNewValue();
-
-            if (obj != null && obj instanceof ModuleModel) {
-                // 傷病名以外の場合
-                ModuleModel stamp = (ModuleModel) obj;
-                String entity = stamp.getModuleInfo().getEntity();
-                final StampTree tree = userBox.getStampTree(entity);
-
-                StampTreeNode target = tree.getSelectedNode();
-                if (target == null) {
-                    // 選択がない場合は，tree の最後に追加
-                    tree.addStamp(stamp, null);
-
-                } else {
-                    if (target.isLeaf()) {
-                        // Leaf の場合，上書きするか確認
-                        String targetName = target.getStampInfo().getStampName();
-                        String sourceName = stamp.getModuleInfo().getStampName();
-                        if (targetName.equals(sourceName)) {
-                            // 名前が同じなら置き換えるかどうか確認
-                            int confirm = JSheet.showConfirmDialog(frame,
-                                    "「" + targetName + "」を上書きしますか？", "上書き確認",
-                                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE );
-                            if(confirm == JOptionPane.OK_OPTION) {
-                                ((StampTreeTransferHandler)tree.getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.AFTER);
-                                tree.replaceStamp(stamp, target);
-                            }
-                        } else {
-                            // 名前が違えば選択された項目の下に入れる
-                            ((StampTreeTransferHandler)tree.getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.AFTER);
-                            tree.addStamp(stamp, target);
-                        }
-                    } else {
-                        // Folder ならその中に入れる
-                        ((StampTreeTransferHandler)tree.getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.INTO_FOLDER);
-                        tree.addStamp(stamp, target);
-                    }
-                }
-                // 終わったら tree にフォーカスを取る
-                Focuser.requestFocus(tree);
-
-            } else if (obj != null && obj instanceof ArrayList) {
-                // 傷病名の場合
-                StampTree tree = getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
-                tree.addDiagnosis((List<RegisteredDiagnosisModel>) obj);
-            }
-        }
     }
 
     /**
@@ -810,6 +731,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * 公開されているスタンプTreeをインポートする.
+     *
      * @param importTree インポートする公開Tree
      */
     public void importPublishedTree(StampTreeBean importTree) {
@@ -817,7 +739,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         // Asp StampBox を生成し parentBox に加える
         //
         AbstractStampBox aspBox = new AspStampBox();
-        aspBox.setButtonPanelPadding(new Dimension(16,4));
+        aspBox.setButtonPanelPadding(new Dimension(16, 4));
         aspBox.setContext(this);
         aspBox.setStampTreeModel(importTree);
         aspBox.buildStampBox();
@@ -834,6 +756,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * インポートしている公開Treeを削除する.
+     *
      * @param removeId 削除する公開TreeのId
      */
     public void removeImportedTree(long removeId) {
@@ -842,7 +765,7 @@ public class StampBoxPlugin extends AbstractMainTool {
             for (int i = 0; i < importedTreeList.size(); i++) {
                 Long id = importedTreeList.get(i);
                 if (id == removeId) {
-                    parentBox.removeTabAt(i+IMPORT_TREE_OFFSET);
+                    parentBox.removeTabAt(i + IMPORT_TREE_OFFSET);
                     importedTreeList.remove(i);
                     break;
                 }
@@ -930,6 +853,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * 引数のカテゴリに対応するTreeを返す.
+     *
      * @param entity Treeのカテゴリ
      * @return カテゴリにマッチするStampTree
      */
@@ -943,6 +867,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * スタンプボックスに含まれる全treeのTreeInfoリストを返す.
+     *
      * @return TreeInfoのリスト
      */
     public List<TreeInfo> getAllTress() {
@@ -951,6 +876,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * スタンプボックスに含まれる全treeを返す.
+     *
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllTrees() {
@@ -959,6 +885,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * スタンプボックスに含まれる全treeを返す.
+     *
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllAllPTrees() {
@@ -976,6 +903,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     /**
      * Currentボックスの P 関連Staptreeを返す.
+     *
      * @return StampTreeのリスト
      */
     public List<StampTree> getAllPTrees() {
@@ -987,6 +915,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     /**
      * 引数のエンティティ配下にある全てのスタンプを返す.
      * これはメニュー等で使用する.
+     *
      * @param entity Treeのエンティティ
      * @return 全てのスタンプのリスト
      */
@@ -998,9 +927,108 @@ public class StampBoxPlugin extends AbstractMainTool {
      * ChartIml が開いていたら，DiagnosisInspector にフォーカスする.
      */
     public void focusDiagnosisInspector() {
-        if (! ChartImpl.getAllChart().isEmpty()) {
+        if (!ChartImpl.getAllChart().isEmpty()) {
             ChartImpl chart = ChartImpl.getAllChart().get(0);
             chart.getChartMediator().focusDiagnosisInspector();
+        }
+    }
+
+    /**
+     * TabChangeListener
+     * User用StampBoxのTab切り替えリスナクラス.
+     */
+    private class TabChangeListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+
+            if (!editing) {
+                // スタンプメーカ起動中でない時
+                // テキストスタンプタブが選択されたらスタンプメーカボタンを disabledにする
+                // ORCA セットタブの場合を処理する
+                int index = userBox.getSelectedIndex();
+                StampTree tree = userBox.getStampTree(index);
+                tree.enter();
+                boolean enabled = userBox.hasEditor(index);
+                toolBtn.setEnabled(enabled);
+
+            } else {
+                // スタンプメーカ起動中の時
+                // 選択されたタブに対応するエディタを表示する
+                int index = userBox.getSelectedIndex();
+                StampTree tree = userBox.getStampTree(index);
+                if (stampMaker != null && userBox.hasEditor(index)) {
+                    stampMaker.show(tree.getEntity());
+                    fireTreeSelectionListener(tree);
+                }
+            }
+        }
+    }
+
+    /**
+     * ParentBox の TabChangeListenerクラス.
+     */
+    private class BoxChangeListener implements ChangeListener {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            boxChanged();
+        }
+    }
+
+    /**
+     * EditorValueListener.
+     * エディタで作成したスタンプをStampTreeに加える.
+     */
+    private class EditorValueListener implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent e) {
+            Object obj = e.getNewValue();
+
+            if (obj instanceof ModuleModel) {
+                // 傷病名以外の場合
+                ModuleModel stamp = (ModuleModel) obj;
+                String entity = stamp.getModuleInfo().getEntity();
+                final StampTree tree = userBox.getStampTree(entity);
+
+                StampTreeNode target = tree.getSelectedNode();
+                if (target == null) {
+                    // 選択がない場合は，tree の最後に追加
+                    tree.addStamp(stamp, null);
+
+                } else {
+                    if (target.isLeaf()) {
+                        // Leaf の場合，上書きするか確認
+                        String targetName = target.getStampInfo().getStampName();
+                        String sourceName = stamp.getModuleInfo().getStampName();
+                        if (targetName.equals(sourceName)) {
+                            // 名前が同じなら置き換えるかどうか確認
+                            int confirm = JSheet.showConfirmDialog(frame,
+                                    "「" + targetName + "」を上書きしますか？", "上書き確認",
+                                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+                            if (confirm == JOptionPane.OK_OPTION) {
+                                ((StampTreeTransferHandler) tree.getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.AFTER);
+                                tree.replaceStamp(stamp, target);
+                            }
+                        } else {
+                            // 名前が違えば選択された項目の下に入れる
+                            ((StampTreeTransferHandler) tree.getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.AFTER);
+                            tree.addStamp(stamp, target);
+                        }
+                    } else {
+                        // Folder ならその中に入れる
+                        ((StampTreeTransferHandler) tree.getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.INTO_FOLDER);
+                        tree.addStamp(stamp, target);
+                    }
+                }
+                // 終わったら tree にフォーカスを取る
+                Focuser.requestFocus(tree);
+
+            } else if (obj instanceof ArrayList) {
+                // 傷病名の場合
+                StampTree tree = getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
+                tree.addDiagnosis((List<RegisteredDiagnosisModel>) obj);
+            }
         }
     }
 }

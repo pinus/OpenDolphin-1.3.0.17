@@ -9,14 +9,12 @@ import java.awt.event.MouseEvent;
  * Java Swing Hacks #36
  */
 public class MoreInfoPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-
-    public Component topComponent;
-    protected SpinWidget spinWidget;
-    public Component bottomComponent;
-    private JPanel spinComponent;
-
     public static final int SPIN_WIDGET_HEIGHT = 14;
+    private static final long serialVersionUID = 1L;
+    public Component topComponent;
+    public Component bottomComponent;
+    protected SpinWidget spinWidget;
+    private JPanel spinComponent;
 
     public MoreInfoPanel(Component tc, Component mic) {
         this(tc, mic, "");
@@ -33,11 +31,11 @@ public class MoreInfoPanel extends JPanel {
         JLabel messageLabel = new JLabel(spinMessage);
         spinComponent.add(messageLabel, BorderLayout.CENTER);
         messageLabel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    spinWidget.handleClick();
-                }
-            });
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                spinWidget.handleClick();
+            }
+        });
 
         bottomComponent = mic;
         doMyLayout();
@@ -59,7 +57,7 @@ public class MoreInfoPanel extends JPanel {
         revalidate();
         if (isShowing()) {
             Container ancestor = getTopLevelAncestor();
-            if ((ancestor != null) && (ancestor instanceof Window))
+            if (ancestor instanceof Window)
                 ((Window) ancestor).pack();
             repaint();
         }
@@ -76,21 +74,20 @@ public class MoreInfoPanel extends JPanel {
 
     public class SpinWidget extends JPanel {
         private static final long serialVersionUID = 1L;
-        boolean open;
-        Dimension mySize = new Dimension(SPIN_WIDGET_HEIGHT,
-                SPIN_WIDGET_HEIGHT);
         final int HALF_HEIGHT = SPIN_WIDGET_HEIGHT / 2;
+        boolean open;
+        Dimension mySize = new Dimension(SPIN_WIDGET_HEIGHT, SPIN_WIDGET_HEIGHT);
         int offsetX = 1;
         int offsetY = 3;
 
         int[] openXPoints =
-        { 1+offsetX, HALF_HEIGHT+offsetX, SPIN_WIDGET_HEIGHT-1+offsetX};
+                {1 + offsetX, HALF_HEIGHT + offsetX, SPIN_WIDGET_HEIGHT - 1 + offsetX};
         int[] openYPoints =
-        { HALF_HEIGHT+offsetY, SPIN_WIDGET_HEIGHT-1+offsetY, HALF_HEIGHT+offsetY};
+                {HALF_HEIGHT + offsetY, SPIN_WIDGET_HEIGHT - 1 + offsetY, HALF_HEIGHT + offsetY};
         int[] closedXPoints =
-        { 1+offsetX, 1+offsetX, HALF_HEIGHT+offsetX};
+                {1 + offsetX, 1 + offsetX, HALF_HEIGHT + offsetX};
         int[] closedYPoints =
-        { 1+offsetY, SPIN_WIDGET_HEIGHT-1+offsetY, HALF_HEIGHT+offsetY };
+                {1 + offsetY, SPIN_WIDGET_HEIGHT - 1 + offsetY, HALF_HEIGHT + offsetY};
 
         Polygon openTriangle =
                 new Polygon(openXPoints, openYPoints, 3);
@@ -108,7 +105,7 @@ public class MoreInfoPanel extends JPanel {
         }
 
         public void handleClick() {
-            setOpen(! isOpen());
+            setOpen(!isOpen());
         }
 
         public boolean isOpen() {
@@ -121,9 +118,14 @@ public class MoreInfoPanel extends JPanel {
         }
 
         @Override
-        public Dimension getMinimumSize() { return mySize; }
+        public Dimension getMinimumSize() {
+            return mySize;
+        }
+
         @Override
-        public Dimension getPreferredSize() { return mySize; }
+        public Dimension getPreferredSize() {
+            return mySize;
+        }
 
         // don't override update(), get the default clear
         @Override

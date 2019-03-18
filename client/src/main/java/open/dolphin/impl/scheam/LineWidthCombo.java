@@ -18,14 +18,21 @@ import java.util.HashMap;
 
 /**
  * LineWidth を選択する ComboBox.
+ *
  * @author pns
  */
 public class LineWidthCombo extends PnsComboBox<Double> {
-    /** 線の太さのメニュー */
-    private final static ObservableList<Double> LINE_WIDTH = FXCollections.observableArrayList(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 );
-    /** Line アイコンの幅 */
+    /**
+     * 線の太さのメニュー
+     */
+    private final static ObservableList<Double> LINE_WIDTH = FXCollections.observableArrayList(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0);
+    /**
+     * Line アイコンの幅
+     */
     private final static double ICON_WIDTH = 40;
-    /** {@code ObjectProperty<Double>} を DoubleProperty に変換するための Proxy */
+    /**
+     * {@code ObjectProperty<Double>} を DoubleProperty に変換するための Proxy
+     */
     private final DoubleProperty selectionPropertyProxy;
 
     public LineWidthCombo() {
@@ -37,7 +44,7 @@ public class LineWidthCombo extends PnsComboBox<Double> {
         // SimpleObjectProperty<Double> を SimpleDoubleProperty に変換するための Proxy
         selectionPropertyProxy = new SimpleDoubleProperty();
         selectionPropertyProxy.addListener((ObservableValue<? extends Number> ov, Number t, Number t1)
-                -> selectedItemProperty().set((Double)t1));
+                -> selectedItemProperty().set((Double) t1));
         selectedItemProperty().addListener((ObservableValue<? extends Double> ov, Double t, Double t1)
                 -> selectionPropertyProxy.set(t1));
 
@@ -49,7 +56,7 @@ public class LineWidthCombo extends PnsComboBox<Double> {
         // state の変化で Enable/Disable する
         final SimpleObjectProperty<State> state = new SimpleObjectProperty<>();
         state.addListener((ObservableValue<? extends State> ov, State t, State s) -> {
-            switch(s) {
+            switch (s) {
                 case Text:
                 case Scale:
                 case Rotate:
@@ -65,6 +72,10 @@ public class LineWidthCombo extends PnsComboBox<Double> {
         });
         // bind
         state.bind(SchemaEditorImpl.getProperties().stateProperty());
+    }
+
+    public DoubleProperty selectionPropertyProxy() {
+        return selectionPropertyProxy;
     }
 
     /**
@@ -87,6 +98,4 @@ public class LineWidthCombo extends PnsComboBox<Double> {
             return map.get(w);
         }
     }
-
-    public DoubleProperty selectionPropertyProxy() { return selectionPropertyProxy; }
 }

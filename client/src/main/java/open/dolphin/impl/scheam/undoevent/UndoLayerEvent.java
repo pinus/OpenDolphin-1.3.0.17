@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author pns
  */
 public class UndoLayerEvent implements UndoEvent {

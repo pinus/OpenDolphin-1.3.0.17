@@ -178,52 +178,52 @@ public class GridBagBuilder {
         add(new JLabel(""), x, y, 1, 1, GridBagConstraints.VERTICAL, 1.0, 1.0);
     }
 
-    public void setCmpSpaceH(int cmpSpaceH) {
-        this.cmpSpaceH = cmpSpaceH;
-    }
-
     public int getCmpSpaceH() {
         return cmpSpaceH;
     }
 
-    public void setCmpSpaceV(int cmpSpaceV) {
-        this.cmpSpaceV = cmpSpaceV;
+    public void setCmpSpaceH(int cmpSpaceH) {
+        this.cmpSpaceH = cmpSpaceH;
     }
 
     public int getCmpSpaceV() {
         return cmpSpaceV;
     }
 
-    public void setTitleSpaceTop(int titleSpaceTop) {
-        this.titleSpaceTop = titleSpaceTop;
+    public void setCmpSpaceV(int cmpSpaceV) {
+        this.cmpSpaceV = cmpSpaceV;
     }
 
     public int getTitleSpaceTop() {
         return titleSpaceTop;
     }
 
-    public void setTitleSpaceLeft(int titleSpaceLeft) {
-        this.titleSpaceLeft = titleSpaceLeft;
+    public void setTitleSpaceTop(int titleSpaceTop) {
+        this.titleSpaceTop = titleSpaceTop;
     }
 
     public int getTitleSpaceLeft() {
         return titleSpaceLeft;
     }
 
-    public void setTitleSpaceBottom(int titleSpaceBottom) {
-        this.titleSpaceBottom = titleSpaceBottom;
+    public void setTitleSpaceLeft(int titleSpaceLeft) {
+        this.titleSpaceLeft = titleSpaceLeft;
     }
 
     public int getTitleSpaceBottom() {
         return titleSpaceBottom;
     }
 
-    public void setTitleSpaceRight(int titleSpaceRight) {
-        this.titleSpaceRight = titleSpaceRight;
+    public void setTitleSpaceBottom(int titleSpaceBottom) {
+        this.titleSpaceBottom = titleSpaceBottom;
     }
 
     public int getTitleSpaceRight() {
         return titleSpaceRight;
+    }
+
+    public void setTitleSpaceRight(int titleSpaceRight) {
+        this.titleSpaceRight = titleSpaceRight;
     }
 
     public void addTextItem(int row, int col, String title, int length, boolean kanji) {

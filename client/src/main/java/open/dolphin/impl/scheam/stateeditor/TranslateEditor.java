@@ -23,14 +23,14 @@ public class TranslateEditor extends StateEditorBase {
     private final SchemaEditorProperties properties;
     private final StackPane canvasPane;
     private final SchemaLayer draftLayer;
+    // selectedHolder の枠表示
+    private final RubberBand band;
     // 選択された Layer　〜選択があるかどうかの flag にもなる
     private SchemaLayer selectedLayer;
     // 選択された Holder　
     private ShapeHolderBase selectedHolder;
     // Drag 途中の x, y 座標を保持
     private double startx, starty;
-    // selectedHolder の枠表示
-    private final RubberBand band;
     // RubberBand のどこがクリックされたか　〜これにより動作が変わる
     private RubberBand.Pos pos;
     // Holder の選択が外れたら bind 前のオリジナルのプロパティーに戻すためにオリジナルのプロパティーを保存しておく
@@ -50,13 +50,14 @@ public class TranslateEditor extends StateEditorBase {
 
     /**
      * Holder 選択してから DELETE で消去.
+     *
      * @param e
      */
     @Override
     public void keyPressed(KeyEvent e) {
 
         if (selectedLayer != null) {
-            switch(e.getCode()) {
+            switch (e.getCode()) {
                 case BACK_SPACE:
                     // デリートキーで削除
                     draftLayer.clear();
@@ -72,7 +73,7 @@ public class TranslateEditor extends StateEditorBase {
                     // Line で Option Key を押すと矢印を付けたり取ったりする
                     if (band.isLine()) {
                         LineHolder lineHolder = (LineHolder) selectedHolder;
-                        lineHolder.setDrawArrow(! lineHolder.getDrawArrow());
+                        lineHolder.setDrawArrow(!lineHolder.getDrawArrow());
                         selectedLayer.redraw();
                     }
                     break;
@@ -90,12 +91,13 @@ public class TranslateEditor extends StateEditorBase {
                 case LEFT:
                     translateDots(-1, 0);
                     break;
-           }
+            }
         }
     }
 
     /**
      * 指定ドット移動処理をして UndoManager に登録する.
+     *
      * @param x
      * @param y
      */
@@ -111,7 +113,8 @@ public class TranslateEditor extends StateEditorBase {
     public void mouseDown(MouseEvent e) {
 
         if (band.contains(e.getX(), e.getY())) {
-            startx = e.getX(); starty = e.getY();
+            startx = e.getX();
+            starty = e.getY();
             pos = band.getPos(startx, starty);
 
         } else {
@@ -119,16 +122,19 @@ public class TranslateEditor extends StateEditorBase {
             boolean found = false;
             ObservableList<Node> children = canvasPane.getChildren();
 
-            for (int i=children.size()-1; i>=0; i--) {
+            for (int i = children.size() - 1; i >= 0; i--) {
 
                 SchemaLayer layer = (SchemaLayer) children.get(i);
 
                 if (layer.getHolder().contains(e.getX(), e.getY())) {
                     // 見つかった場合
-                    startx = e.getX(); starty = e.getY();
+                    startx = e.getX();
+                    starty = e.getY();
 
                     // 選択された状態で他の Holder をクリックした場合などで現在選択されている Holder がああれば，unbind する
-                    if (selectedHolder != null) { unbind(selectedHolder); }
+                    if (selectedHolder != null) {
+                        unbind(selectedHolder);
+                    }
 
                     // selectedLayer の Hoder を取り出して bind する
                     selectedLayer = layer;
@@ -146,8 +152,10 @@ public class TranslateEditor extends StateEditorBase {
                 }
             }
             // 見つからない場合は選択解除処理をする
-            if (! found) {
-                if (selectedHolder != null) { unbind(selectedHolder); }
+            if (!found) {
+                if (selectedHolder != null) {
+                    unbind(selectedHolder);
+                }
                 draftLayer.clear();
                 band.setHolder(null);
                 selectedLayer = null;
@@ -168,14 +176,14 @@ public class TranslateEditor extends StateEditorBase {
 
             if (e.isAltDown()) {
                 // Option Key で回転　上下ドラッグで回転
-                selectedHolder.rotate(dy/100);
+                selectedHolder.rotate(dy / 100);
 
             } else {
                 // 通常の translate 処理
                 if (pos == null) {
                     selectedHolder.translate(dx, dy);
 
-                // pos に応じて拡大・縮小処理
+                    // pos に応じて拡大・縮小処理
                 } else {
                     switch (pos) {
                         case xSyS:
@@ -198,7 +206,8 @@ public class TranslateEditor extends StateEditorBase {
             }
 
             selectedLayer.draw();
-            startx = e.getX(); starty = e.getY();
+            startx = e.getX();
+            starty = e.getY();
             band.redraw();
         }
     }

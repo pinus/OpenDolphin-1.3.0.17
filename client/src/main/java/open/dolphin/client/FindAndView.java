@@ -21,21 +21,17 @@ public class FindAndView {
     private static final Color FOUND_COLOR = new Color(243, 255, 15); //黄色っぽい色
     private static final String FOUND_COLOR_HEX = "#F3FF0F";
     //private static final Color SELECTED_BORDER = new Color(255, 0, 153); //stampHolder の選択色
-
-    private String searchText;
-    private JPanel scrollerPanel; // 検索対象の Panel (KarteDocumentViewer からもってくる
-
     private final SimpleAttributeSet foundAttr = new SimpleAttributeSet(); // 見つかった
     private final SimpleAttributeSet onCursorAttr = new SimpleAttributeSet(); // 現在いるところ
     private final SimpleAttributeSet defaultAttr = new SimpleAttributeSet(); // もともとの背景色（panelに応じて変化）
-
-    private FoundDataList foundDataList;
-    private int row; // 現在の row
-
     // StampHolder にマークするためのタグ
     private final String FONT_END = "</font>";
     private final String FONT_FOUND = "<font style=\"background-color:" + FOUND_COLOR_HEX + "\">";
     private final String FONT_SELECTED = "<font style=\"background-color:" + SELECTED_COLOR_HEX + "\">";
+    private String searchText;
+    private JPanel scrollerPanel; // 検索対象の Panel (KarteDocumentViewer からもってくる
+    private FoundDataList foundDataList;
+    private int row; // 現在の row
 
 
     public FindAndView() {
@@ -114,7 +110,7 @@ public class FindAndView {
                     }
                 }
             } catch (BadLocationException ex) {
-                System.out.println(ex);
+                ex.printStackTrace(System.err);
             }
 
             kpHeight += kp.getHeight(); // kartePanel の高さ分だけずらす

@@ -41,7 +41,9 @@ class LaboTestFileTransferHandler extends TransferHandler {
     @Override
     public boolean importData(JComponent c, Transferable t) {
 
-        if (!canImport(c, t.getTransferDataFlavors())) { return false; }
+        if (!canImport(c, t.getTransferDataFlavors())) {
+            return false;
+        }
 
         try {
             if (hasFileFlavor(t.getTransferDataFlavors())) {
@@ -49,7 +51,9 @@ class LaboTestFileTransferHandler extends TransferHandler {
                 List<File> xmlFiles = new ArrayList<>(files.size());
 
                 files.stream().filter(file -> !file.isDirectory() && file.getName().endsWith(".xml")).forEach(file -> xmlFiles.add(file));
-                if (! xmlFiles.isEmpty()) { addFiles(xmlFiles); }
+                if (!xmlFiles.isEmpty()) {
+                    addFiles(xmlFiles);
+                }
 
                 return true;
             }
@@ -76,6 +80,7 @@ class LaboTestFileTransferHandler extends TransferHandler {
 
     /**
      * Queueへドロップされたファイルを加える.
+     *
      * @param xmlFiles ドロップされたファイルのリスト
      */
     public synchronized void addFiles(List<File> xmlFiles) {
@@ -85,6 +90,7 @@ class LaboTestFileTransferHandler extends TransferHandler {
 
     /**
      * Queueからファイルリストを取り出す.
+     *
      * @return ドロップされたファイルのリスト
      */
     public synchronized List<File> getFiles() {
@@ -92,7 +98,8 @@ class LaboTestFileTransferHandler extends TransferHandler {
         while (queue.isEmpty()) {
             try {
                 wait();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         return queue.removeFirst(); // last in first out
     }
@@ -104,7 +111,7 @@ class LaboTestFileTransferHandler extends TransferHandler {
 
         @Override
         public void run() {
-            while (! interrupted()) {
+            while (!interrupted()) {
                 try {
                     List<File> files = getFiles(); // ここで wait()
 

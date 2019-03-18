@@ -12,6 +12,7 @@ import java.util.HashMap;
 /**
  * 全ての StampEditor を保持可能なパネル
  * valid data かどうかを確認するリスナを登録必要
+ *
  * @author pns
  */
 public class StampEditorProxyPanel extends JPanel {
@@ -48,6 +49,7 @@ public class StampEditorProxyPanel extends JPanel {
 
     /**
      * entity のエディタを表示する.
+     *
      * @param entity
      */
     public void show(String entity) {
@@ -65,6 +67,7 @@ public class StampEditorProxyPanel extends JPanel {
 
     /**
      * エディタにセットされているデータを取り出す.
+     *
      * @return
      */
     public Object getValue() {
@@ -73,6 +76,7 @@ public class StampEditorProxyPanel extends JPanel {
 
     /**
      * エディタにデータをセットする.
+     *
      * @param value
      */
     public void setValue(Object value) {
@@ -81,6 +85,7 @@ public class StampEditorProxyPanel extends JPanel {
 
     /**
      * valid を通知する.
+     *
      * @param valid
      */
     public void setValid(boolean valid) {
@@ -105,6 +110,7 @@ public class StampEditorProxyPanel extends JPanel {
 
         /**
          * entity に対応する StampEditor を作成する
+         *
          * @param entity
          * @return
          */
@@ -133,7 +139,9 @@ public class StampEditorProxyPanel extends JPanel {
         public void disposeAll() {
             editorMap.keySet().forEach(key -> {
                 IStampEditor e = editorMap.get(key);
-                if (e != null ) { e.dispose(); }
+                if (e != null) {
+                    e.dispose();
+                }
             });
         }
     }

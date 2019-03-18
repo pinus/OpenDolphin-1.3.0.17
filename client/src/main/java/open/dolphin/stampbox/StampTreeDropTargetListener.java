@@ -9,14 +9,14 @@ import java.awt.dnd.DropTargetListener;
 
 /**
  * StampTree の DropTargetListener.（StampTree から分離）
+ *
  * @author pns
  */
 public class StampTreeDropTargetListener implements DropTargetListener {
-    private static enum Position { TOP, BOTTOM, CENTER };
+    private StampTree tree;
+
     //private static final Color UNLOCKED_COLOR = new Color(0x0A,0x53,0xB6);
     //private static final Color LOCKED_COLOR = Color.lightGray;
-
-    private StampTree tree;
     private StampTreeRenderer renderer;
     private StampTreeTransferHandler handler;
     private TreePath source;
@@ -57,14 +57,13 @@ public class StampTreeDropTargetListener implements DropTargetListener {
         handler.setTargetPath(target);
 
         if (node.isLeaf()) {
-            if (topOrBottom(p,r) == Position.TOP) {
+            if (topOrBottom(p, r) == Position.TOP) {
                 targetWithUpperLine();
-            }
-            else {
+            } else {
                 targetWithUnderLine();
             }
         } else {
-            switch (topOrBottomOrCenter(p,r)) {
+            switch (topOrBottomOrCenter(p, r)) {
                 case TOP:
                     targetWithUpperLine();
                     break;
@@ -80,38 +79,48 @@ public class StampTreeDropTargetListener implements DropTargetListener {
 
     /**
      * drop 位置の node の上半分にいるか，下半分にいるか.
+     *
      * @param p
      * @param r
      * @return
      */
     private Position topOrBottom(Point p, Rectangle r) {
         int offsetToTop = p.y - r.y;
-        if (offsetToTop < r.height/2) { return Position.TOP; }
-        else { return Position.BOTTOM; }
+        if (offsetToTop < r.height / 2) {
+            return Position.TOP;
+        } else {
+            return Position.BOTTOM;
+        }
     }
+
     /**
      * drop 位置の上半分にいるか，下半分にいるか，真ん中にいるか.
+     *
      * @param p
      * @param r
      * @return
      */
     private Position topOrBottomOrCenter(Point p, Rectangle r) {
         int offsetToTop = p.y - r.y;
-        int offsetToBottom = r.y+r.height - p.y;
-        if (offsetToTop < r.height/3) { return Position.TOP; }
-        else if (offsetToBottom < r.height/3) { return Position.BOTTOM; }
-        else { return Position.CENTER; }
+        int offsetToBottom = r.y + r.height - p.y;
+        if (offsetToTop < r.height / 3) {
+            return Position.TOP;
+        } else if (offsetToBottom < r.height / 3) {
+            return Position.BOTTOM;
+        } else {
+            return Position.CENTER;
+        }
     }
 
     private void targetWithUpperLine() {
         // 一番上か，上と親が違う場合は UpperLine で処理. それ以外は UnderLine に変換
         int row = tree.getRowForPath(target);
         boolean parentIsDifferent;
-        if (row == 0 ) {
+        if (row == 0) {
             parentIsDifferent = true;
         } else {
             StampTreeNode thisNode = (StampTreeNode) target.getLastPathComponent();
-            StampTreeNode aboveNode = (StampTreeNode) tree.getPathForRow(row-1).getLastPathComponent();
+            StampTreeNode aboveNode = (StampTreeNode) tree.getPathForRow(row - 1).getLastPathComponent();
             parentIsDifferent = (thisNode.getParent() != aboveNode.getParent());
         }
         if (parentIsDifferent) {
@@ -119,7 +128,7 @@ public class StampTreeDropTargetListener implements DropTargetListener {
             handler.setPosition(StampTreeTransferHandler.Insert.BEFORE);
         } else {
             // UnderLine で処理
-            target = tree.getPathForRow(row-1);
+            target = tree.getPathForRow(row - 1);
             renderer.setTargetNode(target.getLastPathComponent());
             handler.setTargetPath(target);
             targetWithUnderLine();
@@ -163,8 +172,14 @@ public class StampTreeDropTargetListener implements DropTargetListener {
 
     private void scrollTargetToVisible() {
         int row = tree.getRowForPath(target);
-        if (row >= 1) { tree.scrollRowToVisible(row-1); }
-        if (row < tree.getRowCount()) { tree.scrollRowToVisible(row+1); }
+        if (row >= 1) {
+            tree.scrollRowToVisible(row - 1);
+        }
+        if (row < tree.getRowCount()) {
+            tree.scrollRowToVisible(row + 1);
+        }
         tree.scrollRowToVisible(row);
     }
+
+    private static enum Position {TOP, BOTTOM, CENTER}
 }

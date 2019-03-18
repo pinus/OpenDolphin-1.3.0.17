@@ -19,8 +19,9 @@ import java.util.List;
  * @author pns
  */
 public final class ProjectSettingDialog {
-    public static final Color BACKGROUND = new Color(244,244,244);
-
+    public static final Color BACKGROUND = new Color(244, 244, 244);
+    private static int DEFAULT_WIDTH = 600;
+    private static int DEFAULT_HEIGHT = 700;
     // GUI
     private JDialog dialog;
     private JPanel itemPanel;
@@ -28,7 +29,6 @@ public final class ProjectSettingDialog {
     private CardLayout cardLayout;
     private JButton okButton;
     private JButton cancelButton;
-
     // 全体のモデル
     private HashMap<String, AbstractSettingPanel> settingMap;
     private List<AbstractSettingPanel> allSettings;
@@ -37,8 +37,6 @@ public final class ProjectSettingDialog {
     private boolean loginState;
     private boolean okState;
     private Logger logger;
-    private static int DEFAULT_WIDTH = 600;
-    private static int DEFAULT_HEIGHT = 700;
     private Frame parentFrame = null;
 
     private ValidListener validListener;
@@ -75,6 +73,7 @@ public final class ProjectSettingDialog {
 
     /**
      * オープン時に表示する設定画面をセットする.
+     *
      * @param startSettingName 表示する設定画面の名前
      */
     public void setProject(String startSettingName) {
@@ -177,8 +176,8 @@ public final class ProjectSettingDialog {
         panel.add(itemPanel, BorderLayout.NORTH);
         panel.add(cardPanel, BorderLayout.CENTER);
         // quaqua で表示が乱れるのを防ぐ
-        panel.setPreferredSize(new Dimension(DEFAULT_WIDTH-50, DEFAULT_HEIGHT-90));
-        panel.setMinimumSize(new Dimension(DEFAULT_WIDTH-50, DEFAULT_HEIGHT-90));
+        panel.setPreferredSize(new Dimension(DEFAULT_WIDTH - 50, DEFAULT_HEIGHT - 90));
+        panel.setMinimumSize(new Dimension(DEFAULT_WIDTH - 50, DEFAULT_HEIGHT - 90));
 
         // ダイアログを生成する
         Object[] options = new Object[]{okButton, cancelButton};
@@ -191,7 +190,7 @@ public final class ProjectSettingDialog {
                 options,
                 okButton);
 
-        dialog = jop.createDialog( parentFrame, ClientContext.getFrameTitle("環境設定"));
+        dialog = jop.createDialog(parentFrame, ClientContext.getFrameTitle("環境設定"));
         // この方法で作った dialog のタイトルバーは "brushMetalLook" にすると 244 の Gray １色になる
         // 構造は JDialog > JPanel (ContentPane) > JOptionPane となっている
         dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
@@ -254,6 +253,7 @@ public final class ProjectSettingDialog {
         im.put(key, "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new AbstractAction() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 doCancel();
@@ -308,6 +308,7 @@ public final class ProjectSettingDialog {
 
     /**
      * "apple.awt.brushMetalLook" の Container のバックグランドが黒くなるのを直す.
+     *
      * @param component 修正する Component
      */
     private void setContainerBackground(Component component) {
@@ -324,6 +325,7 @@ public final class ProjectSettingDialog {
 
     /**
      * 一つの SettingPanel から state 情報が送られてきたら，全ての state を調べ直す.
+     *
      * @param state SettingPanelState
      */
     public void controlButtons(SettingPanelState state) {

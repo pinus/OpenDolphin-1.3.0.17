@@ -5,13 +5,14 @@ import java.awt.*;
 
 /**
  * Mac で IME on/off を切り替える.
- *<ul>
+ * <ul>
  * <li>ver 1: AppleScript で on/off するバージョン　：　遅すぎてストレスたまる
  * <li>ver 2: InputContext.selectInputMethod バージョン　：　調子よかったが，1.6.0_29 で使えなくなる
  * <li>ver 3: Robot version 切り替わったかどうか判定するために event queue システム導入
  * <li>ver 4: enableInputMethod(true/false) バージョン
  * <li>ver 5: To DO
  * </ul>
+ *
  * @author pns
  */
 public class IMEControl {
@@ -48,6 +49,7 @@ public class IMEControl {
 
     /**
      * IME off
+     *
      * @param c
      */
     public static void setImeOff(Component c) {
@@ -56,6 +58,7 @@ public class IMEControl {
 
     /**
      * IME on
+     *
      * @param c
      */
     public static void setImeOn(Component c) {
@@ -66,6 +69,7 @@ public class IMEControl {
 
     /**
      * Component c がフォーカスを取ったら ime を切る
+     *
      * @param c
      */
     public static void setImeOffIfFocused(final Component c) {
@@ -79,6 +83,7 @@ public class IMEControl {
 
     /**
      * Component c がフォーカスを取ったら ime を on にする
+     *
      * @param c
      */
     public static void setImeOnIfFocused(final Component c) {

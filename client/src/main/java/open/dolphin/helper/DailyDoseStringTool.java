@@ -10,13 +10,15 @@ public class DailyDoseStringTool {
     /**
      * １日量文字列 src の用量部分を dose で置き換える.
      *
-     * @param src 1日量文字列
+     * @param src  1日量文字列
      * @param dose 用量
      * @return 用量文字列
      */
     public static String getString(String src, double dose) {
         int[] index = getNumberIndex(src);
-        if (index[0] == 0) { return src; } // 数字がなかった場合
+        if (index[0] == 0) {
+            return src;
+        } // 数字がなかった場合
 
         String unit = src.substring(index[2], index[2] + 1);
         String num = doubleToString(dose, unit);
@@ -34,7 +36,9 @@ public class DailyDoseStringTool {
         // dose を文字列に変換
         String num = String.format("%.2f", dose);
         // 最後の 0 をできるだけ取り除く
-        while (num.endsWith("0")) { num = num.substring(0, num.length() - 1); }
+        while (num.endsWith("0")) {
+            num = num.substring(0, num.length() - 1);
+        }
         // 小数点以下がなくなった場合
         if (num.endsWith(".")) {
             if ("ｇ".equals(unit) || "g".equals(unit)) {

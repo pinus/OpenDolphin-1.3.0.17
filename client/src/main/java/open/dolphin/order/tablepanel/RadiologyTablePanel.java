@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * ItemTablePanel を extend して作った RadiologyTablePanel.
+ *
  * @author pns
  */
 public class RadiologyTablePanel extends ItemTablePanel {
@@ -48,8 +49,8 @@ public class RadiologyTablePanel extends ItemTablePanel {
     private final class RadiologyMethodPanel extends JPanel {
         private static final long serialVersionUID = 7002106454090449477L;
 
-        private static final int METHOD_CELL_WIDTH   = 120;
-        private static final int COMMENT_CELL_WIDTH    = 140;
+        private static final int METHOD_CELL_WIDTH = 120;
+        private static final int COMMENT_CELL_WIDTH = 140;
 
         private JList<RadiologyMethodValue> methodList;
         private JList<RadiologyMethodValue> commentList;
@@ -70,16 +71,18 @@ public class RadiologyTablePanel extends ItemTablePanel {
             methodList.setFixedCellWidth(METHOD_CELL_WIDTH);
             methodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             methodList.addListSelectionListener(e -> {
-                if (e.getValueIsAdjusting() == false) {
+                if (!e.getValueIsAdjusting()) {
                     RadiologyMethodValue entry = methodList.getSelectedValue();
-                    if (entry == null) { return; }
+                    if (entry == null) {
+                        return;
+                    }
                     fetchComments(entry.getHierarchyCode1());
                 }
             });
 
             PNSScrollPane scroller = new PNSScrollPane(methodList,
-                            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scroller.isPermanentScrollBar = true;
             p1.add(scroller);
             p1.setBorder(PNSBorderFactory.createTitledBorder("撮影方法"));
@@ -90,15 +93,17 @@ public class RadiologyTablePanel extends ItemTablePanel {
             commentList.setFixedCellWidth(COMMENT_CELL_WIDTH);
             commentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             commentList.addListSelectionListener(e -> {
-                if (e.getValueIsAdjusting() == false) {
+                if (!e.getValueIsAdjusting()) {
                     RadiologyMethodValue entry = commentList.getSelectedValue();
-                    if (entry == null) { return; }
+                    if (entry == null) {
+                        return;
+                    }
                     notifyComment(entry.getMethodName());
                 }
             });
             scroller = new PNSScrollPane(commentList,
-                            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scroller.isPermanentScrollBar = true;
             p2.add(scroller);
             p2.setBorder(PNSBorderFactory.createTitledBorder("撮影コメント"));

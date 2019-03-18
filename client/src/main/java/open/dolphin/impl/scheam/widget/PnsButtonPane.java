@@ -11,6 +11,7 @@ import javafx.scene.layout.Region;
  * OK, Cancel, Option ボタンを載せる HBox.
  * 各ボタンは setButtonText すると visible になる.
  * Option ボタンが左側，スペーサーを挟んで右側に Cancel ボタン，OK ボタンというレイアウト.
+ *
  * @author pns
  */
 public class PnsButtonPane extends HBox {
@@ -41,6 +42,7 @@ public class PnsButtonPane extends HBox {
 
     /**
      * OK ボタンのテキストを設定する
+     *
      * @param text
      */
     public void setOkButtonText(String text) {
@@ -50,6 +52,7 @@ public class PnsButtonPane extends HBox {
 
     /**
      * Cancel ボタンのテキストを設定する
+     *
      * @param text
      */
     public void setCancelButtonText(String text) {
@@ -59,6 +62,7 @@ public class PnsButtonPane extends HBox {
 
     /**
      * Option ボタンのテキストを設定する
+     *
      * @param text
      */
     public void setOptionButtonText(String text) {
@@ -68,6 +72,7 @@ public class PnsButtonPane extends HBox {
 
     /**
      * OK ボタンの enable/disable
+     *
      * @param b
      */
     public void setOkButtonDisable(boolean b) {
@@ -76,6 +81,7 @@ public class PnsButtonPane extends HBox {
 
     /**
      * Cancel ボタンの enable/disable
+     *
      * @param b
      */
     public void setCancelButtonDisable(boolean b) {
@@ -84,6 +90,7 @@ public class PnsButtonPane extends HBox {
 
     /**
      * Option ボタンの enable/disable
+     *
      * @param b
      */
     public void setOptionButtonDisable(boolean b) {
@@ -92,6 +99,7 @@ public class PnsButtonPane extends HBox {
 
     /**
      * OK ボタンの EventHandler を登録
+     *
      * @param handler
      */
     public void setOnOK(EventHandler<ActionEvent> handler) {
@@ -100,6 +108,7 @@ public class PnsButtonPane extends HBox {
 
     /**
      * Cancel ボタンの EventHandler を登録
+     *
      * @param handler
      */
     public void setOnCancel(EventHandler<ActionEvent> handler) {
@@ -108,6 +117,7 @@ public class PnsButtonPane extends HBox {
 
     /**
      * Option ボタンの EventHandler を登録
+     *
      * @param handler
      */
     public void setOnOption(EventHandler<ActionEvent> handler) {

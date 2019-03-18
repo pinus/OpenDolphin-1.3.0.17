@@ -35,7 +35,8 @@ public class SaveParams {
     // SaveDialog.SAVE(0), TMP_SAVE(1), DISPOSE(2), or CANCEL(3);
     private int selection;
 
-    public SaveParams() { }
+    public SaveParams() {
+    }
 
     public String getTitle() {
         return title;

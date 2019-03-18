@@ -7,12 +7,11 @@ import java.beans.PropertyChangeListener;
 /**
  * ComponentHolder.
  * StampHolder と SchemHolder （いずれも JLabel）
- * @author  Kauzshi Minagawa
+ *
  * @param <T>
+ * @author Kauzshi Minagawa
  */
 public interface ComponentHolder<T> extends PropertyChangeListener, KarteComposite<T> {
-
-    public static enum ContentType { TT_STAMP, TT_IMAGE }
 
     public ContentType getContentType();
 
@@ -32,5 +31,7 @@ public interface ComponentHolder<T> extends PropertyChangeListener, KarteComposi
     public int getStartPos();
 
     public int getEndPos();
+
+    public static enum ContentType {TT_STAMP, TT_IMAGE}
 
 }

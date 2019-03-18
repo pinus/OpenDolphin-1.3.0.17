@@ -32,15 +32,11 @@ import java.util.StringTokenizer;
  */
 public class StampPublisher {
 
-    private enum PublishedState {NONE, SAVED_NONE, LOCAL, GLOBAL}
-    private enum PublishType {TT_NONE, TT_LOCAL, TT_PUBLIC}
-
     private static final int WIDTH = 858;
     private static final int HEIGHT = 477;
-
     private final StampBoxPlugin stampBox;
     private final String title = "スタンプ公開";
-
+    private final Logger logger;
     private JFrame dialog;
     private JLabel infoLable;
     private JLabel instLabel;
@@ -54,20 +50,12 @@ public class StampPublisher {
     private JButton publish;
     private JButton cancel;
     private JButton cancelPublish;
-
     private JCheckBox[] entities;
-
     private JComboBox<String> category;
-
     private PublishType publishType = PublishType.TT_NONE;
     private boolean okState;
-
     private StampDelegater sdl;
-
     private PublishedState publishState;
-
-    private final Logger logger;
-
 
     public StampPublisher(StampBoxPlugin stampBox) {
         this.stampBox = stampBox;
@@ -362,20 +350,6 @@ public class StampPublisher {
         return contentPane;
     }
 
-    private class PublishTypeListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (local.isSelected()) {
-                publishType = PublishType.TT_LOCAL;
-                category.setSelectedIndex(ClientContext.getInt("stamp.publish.categories.localItem")); //8
-            } else if (publc.isSelected()) {
-                publishType = PublishType.TT_PUBLIC;
-            }
-            checkButton();
-        }
-    }
-
     /**
      * スタンプを公開する.
      */
@@ -447,7 +421,7 @@ public class StampPublisher {
         sdl = new StampDelegater();
 
         int delay = 200;
-        int maxEstimation = 30*1000;
+        int maxEstimation = 30 * 1000;
 
         String message = "スタンプ公開";
         String note = "公開しています...";
@@ -539,7 +513,7 @@ public class StampPublisher {
         sdl = new StampDelegater();
 
         int delay = 200;
-        int maxEstimation = 60*1000;
+        int maxEstimation = 60 * 1000;
 
         String message = "スタンプ公開";
         String note = "公開を取り消しています...";
@@ -578,13 +552,14 @@ public class StampPublisher {
 
     /**
      * META クリックで CheckBox 全部の ON/OFF
+     *
      * @param e
      */
     private void checkCheckBox(ActionEvent e) {
         if ((e.getModifiers() & ActionEvent.META_MASK) != 0) {
             JCheckBox cb = (JCheckBox) e.getSource();
-            for (int i=0; i < IInfoModel.STAMP_NAMES.length; i++) {
-                if (! IInfoModel.STAMP_NAMES[i].equals(IInfoModel.TABNAME_ORCA)) {
+            for (int i = 0; i < IInfoModel.STAMP_NAMES.length; i++) {
+                if (!IInfoModel.STAMP_NAMES[i].equals(IInfoModel.TABNAME_ORCA)) {
                     entities[i].setSelected(cb.isSelected());
                 }
             }
@@ -634,6 +609,24 @@ public class StampPublisher {
                     publish.setEnabled(okState);
                 }
                 break;
+        }
+    }
+
+    private enum PublishedState {NONE, SAVED_NONE, LOCAL, GLOBAL}
+
+    private enum PublishType {TT_NONE, TT_LOCAL, TT_PUBLIC}
+
+    private class PublishTypeListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (local.isSelected()) {
+                publishType = PublishType.TT_LOCAL;
+                category.setSelectedIndex(ClientContext.getInt("stamp.publish.categories.localItem")); //8
+            } else if (publc.isSelected()) {
+                publishType = PublishType.TT_PUBLIC;
+            }
+            checkButton();
         }
     }
 }

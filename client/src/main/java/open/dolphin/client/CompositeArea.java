@@ -12,15 +12,15 @@ import java.awt.datatransfer.Transferable;
 /**
  * CompositeArea.
  * KarteComposite インターフェースを持つ JTextArea - Memo で使っている.
+ *
  * @author kazm
  * @author pns
  */
 public class CompositeArea extends JTextArea implements KarteComposite<JTextArea>, CaretListener {
     private static final long serialVersionUID = 1L;
-
+    private final TextComponentUndoManager undoManager;
     private boolean hasSelection;
     private ActionMap map;
-    private final TextComponentUndoManager undoManager;
 
     public CompositeArea(int row, int col) {
         super(row, col);
@@ -65,7 +65,7 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
 
     @Override
     public void caretUpdate(CaretEvent e) {
-        boolean newSelection =  (e.getDot() != e.getMark());
+        boolean newSelection = (e.getDot() != e.getMark());
 
         if (newSelection != hasSelection) {
             hasSelection = newSelection;
@@ -77,7 +77,7 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
 
     private boolean canPaste() {
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-        return t == null? false : t.isDataFlavorSupported(DataFlavor.stringFlavor);
+        return t != null && t.isDataFlavorSupported(DataFlavor.stringFlavor);
     }
 
     /**

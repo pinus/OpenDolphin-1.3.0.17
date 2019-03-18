@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
  * CompletableSearchField.
  * 未入力の Text Field に，半透明の虫眼鏡アイコンと Label を表示する.
  * 入力が始まるとアイコンと Label は消える.
+ *
  * @author pns
  */
 public class CompletableSearchField extends CompletableJTextField {
@@ -30,6 +31,17 @@ public class CompletableSearchField extends CompletableJTextField {
     public CompletableSearchField(int col) {
         super(col);
         init();
+    }
+
+    public static void main(String[] arg) {
+        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        CompletableSearchField field = new CompletableSearchField(15);
+        field.setLabel("病名検索");
+        f.add(field);
+        f.pack();
+        f.setVisible(true);
     }
 
     private void init() {
@@ -51,13 +63,14 @@ public class CompletableSearchField extends CompletableJTextField {
         });
 
         // 右端の X のところでカーソルの形を変える
-        addMouseMotionListener(new MouseMotionListener(){
+        addMouseMotionListener(new MouseMotionListener() {
             @Override
-            public void mouseDragged(MouseEvent e) {}
+            public void mouseDragged(MouseEvent e) {
+            }
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                if (getText() != null && ! getText().equals("") && getWidth() - e.getX() <= 20) {
+                if (getText() != null && !getText().equals("") && getWidth() - e.getX() <= 20) {
                     setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 } else {
                     setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
@@ -68,6 +81,7 @@ public class CompletableSearchField extends CompletableJTextField {
 
     /**
      * 未入力の Text Field に表示する文字列を設定.
+     *
      * @param s
      */
     public void setLabel(String s) {
@@ -76,16 +90,19 @@ public class CompletableSearchField extends CompletableJTextField {
 
     /**
      * 虫眼鏡と Label 文字列を表示する.
+     *
      * @param graphics
      */
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D g = (Graphics2D) graphics.create();
-        if (!isWin) { g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
+        if (!isWin) {
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        }
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
 
-        int verticalCentering = (getHeight() - icon.getHeight())/2;
+        int verticalCentering = (getHeight() - icon.getHeight()) / 2;
 
         if (getText() == null || getText().equals("")) {
             // 虫眼鏡とラベル
@@ -102,20 +119,9 @@ public class CompletableSearchField extends CompletableJTextField {
 
         } else {
             // 右端のクリアボタン（X マーク）
-            g.drawImage(clearButton, null, getWidth()-22, verticalCentering);
+            g.drawImage(clearButton, null, getWidth() - 22, verticalCentering);
         }
 
         g.dispose();
-    }
-
-    public static void main(String[] arg) {
-        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        CompletableSearchField field = new CompletableSearchField(15);
-        field.setLabel("病名検索");
-        f.add(field);
-        f.pack();
-        f.setVisible(true);
     }
 }

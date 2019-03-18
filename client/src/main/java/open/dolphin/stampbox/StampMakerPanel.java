@@ -23,20 +23,19 @@ import java.beans.PropertyChangeSupport;
  * StampMakerPanel.
  * StampBox の startStampMake() から呼ばれ，左側に表示されるパネル.
  * StampEditorProxyPanel と ButtonPanel からなる.
+ *
  * @author pns
  */
 public class StampMakerPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-
     public static final String EDITOR_VALUE_PROP = "editorSetProp";
-
+    private static final long serialVersionUID = 1L;
+    // StampBoxPlugin から addPropertyChangeListener される
+    private final PropertyChangeSupport boundSupport = new PropertyChangeSupport(this);
     // StampEditorProxyPanel
     private StampEditorProxyPanel editorPanel;
     // StampBoxPlugin とデータをやりとりするためのボタン
     private JButton rightArrowBtn;
     private JButton leftArrowBtn;
-    // StampBoxPlugin から addPropertyChangeListener される
-    private final PropertyChangeSupport boundSupport = new PropertyChangeSupport(this);
     // StampBoxPlugin で選択されているノード
     private StampTreeNode selectedNode;
 
@@ -51,7 +50,7 @@ public class StampMakerPanel extends JPanel {
 
         editorPanel = new StampEditorProxyPanel();
 
-         // 編集したスタンプをボックスへ登録する右向きボタンを生成する
+        // 編集したスタンプをボックスへ登録する右向きボタンを生成する
         rightArrowBtn = new JButton(GUIConst.ICON_ARROW1_RIGHT_16);
         rightArrowBtn.addActionListener(new ToStampBoxPlugin());
         rightArrowBtn.setEnabled(false);
@@ -86,6 +85,7 @@ public class StampMakerPanel extends JPanel {
 
     /**
      * StampBoxPlugin のタブが切り替えられた時，対応するエディタを show する.
+     *
      * @param entity するエディタのエンティティ名
      */
     public void show(String entity) {
@@ -104,7 +104,8 @@ public class StampMakerPanel extends JPanel {
 
     /**
      * プロパティチェンジリスナを登録する.
-     * @param prop プロパティ名
+     *
+     * @param prop     プロパティ名
      * @param listener プロパティチェンジリスナ
      */
     @Override
@@ -114,7 +115,8 @@ public class StampMakerPanel extends JPanel {
 
     /**
      * プロパティチェンジリスナを削除する.
-     * @param prop プロパティ名
+     *
+     * @param prop     プロパティ名
      * @param listener プロパティチェンジリスナ
      */
     public void remopvePropertyChangeListener(String prop, PropertyChangeListener listener) {
@@ -125,11 +127,12 @@ public class StampMakerPanel extends JPanel {
      * スタンプツリーで選択が変わると呼ばれる.
      * StampBoxPlugin で，全 StampTree に listener が付けられている.
      * 選択されたスタンプに応じて左ボタンを制御する.
+     *
      * @param e
      */
     public void treeSelectionChanged(TreeSelectionEvent e) {
         StampTree tree = (StampTree) e.getSource();
-        StampTreeNode node =(StampTreeNode) tree.getLastSelectedPathComponent();
+        StampTreeNode node = (StampTreeNode) tree.getLastSelectedPathComponent();
 
         // ノードが葉でない時のみ enabled にする
         // またその時以外は選択ノード属性をnullにする
@@ -166,12 +169,14 @@ public class StampMakerPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             // 無効なデータは読まない
-            if (selectedNode == null || !(selectedNode.getUserObject() instanceof ModuleInfoBean)) { return; }
+            if (selectedNode == null || !(selectedNode.getUserObject() instanceof ModuleInfoBean)) {
+                return;
+            }
 
             final ModuleInfoBean stampInfo = (ModuleInfoBean) selectedNode.getUserObject();
 
             final StampDelegater sdl = new StampDelegater();
-            int maxEstimation = 30*1000;
+            int maxEstimation = 30 * 1000;
             int delay = 200;
             String message = "スタンプ箱";
             String note = "検索しています...";
@@ -182,6 +187,7 @@ public class StampMakerPanel extends JPanel {
                 protected StampModel doInBackground() throws Exception {
                     return sdl.getStamp(stampInfo.getStampId());
                 }
+
                 @Override
                 protected void succeeded(StampModel stampModel) {
                     if (sdl.isNoError() && stampModel != null) {
@@ -202,7 +208,7 @@ public class StampMakerPanel extends JPanel {
 
                     } else {
                         JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(editorPanel),
-                                (stampModel == null)? "実体のないスタンプです。削除してください。" : sdl.getErrorMessage(),
+                                (stampModel == null) ? "実体のないスタンプです。削除してください。" : sdl.getErrorMessage(),
                                 ClientContext.getFrameTitle("Stamp取得"),
                                 JOptionPane.WARNING_MESSAGE);
                     }

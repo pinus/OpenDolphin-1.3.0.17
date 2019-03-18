@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 
 /**
  * Color 属性をひとまとめにした Model.
+ *
  * @author pns
  */
 public class ColorModel {
@@ -13,18 +14,43 @@ public class ColorModel {
     private double fillBlur;
     private FillMode fillMode;
 
-    public void setLineColor(Color c) { lineColor = c; }
-    public Color getLineColor() { return lineColor; }
+    public Color getLineColor() {
+        return lineColor;
+    }
 
-    public void setLineWidth(double d) { lineWidth = d; }
-    public double getLineWidth() { return lineWidth; }
+    public void setLineColor(Color c) {
+        lineColor = c;
+    }
 
-    public void setFillColor(Color c) { fillColor = c; }
-    public Color getFillColor() { return fillColor; }
+    public double getLineWidth() {
+        return lineWidth;
+    }
 
-    public void setFillBlur(double d) { fillBlur = d; }
-    public double getFillBlur() { return fillBlur; }
+    public void setLineWidth(double d) {
+        lineWidth = d;
+    }
 
-    public void setFillMode(FillMode m) { fillMode = m; }
-    public FillMode getFillMode() { return fillMode; }
+    public Color getFillColor() {
+        return fillColor;
+    }
+
+    public void setFillColor(Color c) {
+        fillColor = c;
+    }
+
+    public double getFillBlur() {
+        return fillBlur;
+    }
+
+    public void setFillBlur(double d) {
+        fillBlur = d;
+    }
+
+    public FillMode getFillMode() {
+        return fillMode;
+    }
+
+    public void setFillMode(FillMode m) {
+        fillMode = m;
+    }
 }

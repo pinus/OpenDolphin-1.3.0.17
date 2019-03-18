@@ -68,11 +68,13 @@ public class OrcaTree extends StampTree {
                 //fetched = true;
 
             }
+
             @Override
             protected void failed(Throwable cause) {
                 System.out.println("OrcaTree: failed " + cause);
                 //fetched = true;
             }
+
             @Override
             protected void interrupted(InterruptedException ex) {
                 System.out.println("OrcaTree: interrupted " + ex);

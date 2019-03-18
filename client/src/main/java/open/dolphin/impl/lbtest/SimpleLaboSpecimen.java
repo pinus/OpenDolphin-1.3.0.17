@@ -7,8 +7,7 @@
 package open.dolphin.impl.lbtest;
 
 /**
- *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class SimpleLaboSpecimen implements Comparable {
 
@@ -21,7 +20,9 @@ public class SimpleLaboSpecimen implements Comparable {
     private String specimenMemoCodeId;
     private String specimenFreeMemo;
 
-    /** Creates a new instance of SimpleLaboSpecimen */
+    /**
+     * Creates a new instance of SimpleLaboSpecimen
+     */
     public SimpleLaboSpecimen() {
     }
 
@@ -94,7 +95,7 @@ public class SimpleLaboSpecimen implements Comparable {
     }
 
     public void setSpecimenFreeMemo(String val) {
-       specimenFreeMemo = val;
+        specimenFreeMemo = val;
     }
 
     public String toString() {
@@ -110,11 +111,10 @@ public class SimpleLaboSpecimen implements Comparable {
 
         if (other != null && getClass() == other.getClass()) {
 
-            SimpleLaboSpecimen sp = (SimpleLaboSpecimen)other;
+            SimpleLaboSpecimen sp = (SimpleLaboSpecimen) other;
 
             return (specimenCodeID.equals(sp.getSpecimenCodeID()) &&
-                    specimenCode.equals(sp.getSpecimenCode())) ?
-                    true : false;
+                    specimenCode.equals(sp.getSpecimenCode()));
         }
 
         return false;
@@ -122,7 +122,7 @@ public class SimpleLaboSpecimen implements Comparable {
 
     public int compareTo(Object obj) {
 
-        SimpleLaboSpecimen other = (SimpleLaboSpecimen)obj;
+        SimpleLaboSpecimen other = (SimpleLaboSpecimen) obj;
 
         // コード体系を比較
         int ret = specimenCodeID.compareTo(other.getSpecimenCodeID());

@@ -16,14 +16,23 @@ public class PNSPair<N, V> implements Comparable<PNSPair<N, V>> {
     private N name;
     private V value;
 
+    public PNSPair() {
+    }
+
+    public PNSPair(N n, V v) {
+        this();
+        name = n;
+        value = v;
+    }
+
     /**
      * Value を比較して，targetPair が pairList の何番目の要素であるかを返す.
      * {@code int index = PNSPair<String,Integer>getIndex(targetPair, targetList)}
      *
-     * @param <N> name
-     * @param <V> value
+     * @param <N>        name
+     * @param <V>        value
      * @param targetPair target
-     * @param pairList source
+     * @param pairList   source
      * @return index
      */
     public static <N, V extends Comparable<V>> int getIndex(PNSPair<N, V> targetPair, List<PNSPair<N, V>> pairList) {
@@ -34,10 +43,10 @@ public class PNSPair<N, V> implements Comparable<PNSPair<N, V>> {
      * Value を比較して targetValue が pairList の何番目の要素であるかを返す.
      * {@code }int index = PNSPair.<String,Integer>getIndex(int, targetList)}
      *
-     * @param <N> name
-     * @param <V> value
+     * @param <N>       name
+     * @param <V>       value
      * @param targetVal target
-     * @param pairList source
+     * @param pairList  source
      * @return
      */
     public static <N, V extends Comparable<V>> int getIndex(V targetVal, List<PNSPair<N, V>> pairList) {
@@ -51,29 +60,20 @@ public class PNSPair<N, V> implements Comparable<PNSPair<N, V>> {
         return index;
     }
 
-    public PNSPair() {
-    }
-
-    public PNSPair(N n, V v) {
-        this();
-        name = n;
-        value = v;
+    public V getValue() {
+        return value;
     }
 
     public void setValue(V v) {
         value = v;
     }
 
-    public V getValue() {
-        return value;
+    public N getName() {
+        return name;
     }
 
     public void setName(N n) {
         name = n;
-    }
-
-    public N getName() {
-        return name;
     }
 
     /**

@@ -11,13 +11,14 @@ import javafx.util.Callback;
  * <ul>
  * <li> 選択項目にチェックマークをつける：css で list-cell に graphic を付ける. </li>
  * <li> ボタンクリックしたときに選択項目がボタン上の位置に一致するようにする：
- *      createDefaultSkin をフックして，カスタム ComboBoxListViewSkin を作り，
- *      その中で PopupWindow の位置を調節している. </li>
+ * createDefaultSkin をフックして，カスタム ComboBoxListViewSkin を作り，
+ * その中で PopupWindow の位置を調節している. </li>
  * <li> SelectionModel の selectedItemProperty, selectedIndexProperty は ReadOnly で
- *      BindBidrectional ができないので BindBidrectional できる Property を提供する. </li>
+ * BindBidrectional ができないので BindBidrectional できる Property を提供する. </li>
  * </ul>
- * @author pns
+ *
  * @param <T>
+ * @author pns
  */
 public class PnsComboBox<T> extends ComboBox<T> {
     private final ObjectProperty<Integer> selectedIndexProperty = new SimpleObjectProperty<>();
@@ -50,18 +51,25 @@ public class PnsComboBox<T> extends ComboBox<T> {
 
     /**
      * BindBidrectional 可能な selectionIndexProperty
+     *
      * @return
      */
-    public ObjectProperty<Integer> selectedIndexProperty() { return selectedIndexProperty; }
+    public ObjectProperty<Integer> selectedIndexProperty() {
+        return selectedIndexProperty;
+    }
 
     /**
      * BindBidrectional 可能な selectionItemProperty
+     *
      * @return
      */
-    public ObjectProperty<T> selectedItemProperty() { return selectedItemProperty; }
+    public ObjectProperty<T> selectedItemProperty() {
+        return selectedItemProperty;
+    }
 
     /**
      * PopupWindow のインスタンスに操作を加えるために，ここを hook する
+     *
      * @return
      */
     @Override
@@ -72,6 +80,7 @@ public class PnsComboBox<T> extends ComboBox<T> {
 
     /**
      * PopupWindow を出す位置を調整する機能を持った ComboBoxListViewSkin
+     *
      * @param <S>
      */
     private class ModifiedComboBoxListViewSkin<S> extends ComboBoxListViewSkin<S> {

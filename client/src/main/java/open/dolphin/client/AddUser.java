@@ -39,11 +39,10 @@ public class AddUser extends AbstractMainTool {
     private static final String ADD_USER_SUCCESS_MSG = "ユーザを登録しました。";
     private static final String DELETE_USER_SUCCESS_MSG = "ユーザを削除しました。";
     private static final String DELETE_OK_USER = "選択したユーザを削除します";
-    private static final Point DEFAULT_LOC = new Point(0,0);
-    private static final Dimension DEFAULT_SIZE = new Dimension(600,370);
-
-    private JFrame frame;
+    private static final Point DEFAULT_LOC = new Point(0, 0);
+    private static final Dimension DEFAULT_SIZE = new Dimension(600, 370);
     private final Logger logger;
+    private JFrame frame;
 
     public AddUser() {
         setName(TITLE);
@@ -97,6 +96,45 @@ public class AddUser extends AbstractMainTool {
         }
     }
 
+    private void constrain(JPanel container, Component cmp, int x, int y,
+                           int width, int height, int fill, int anchor) {
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = x;
+        c.gridy = y;
+        c.gridwidth = width;
+        c.gridheight = height;
+        c.fill = fill;
+        c.anchor = anchor;
+        c.insets = new Insets(0, 0, 5, 7);
+        ((GridBagLayout) container.getLayout()).setConstraints(cmp, c);
+        container.add(cmp);
+    }
+
+    /**
+     * タイムアウト警告表示を行う.
+     */
+    private void wraningTimeOut() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ClientContext.getString("task.timeoutMsg1"));
+        sb.append("\n");
+        sb.append(ClientContext.getString("task.timeoutMsg1"));
+        JOptionPane.showMessageDialog(frame,
+                sb.toString(),
+                ClientContext.getFrameTitle(getName()),
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
+     * OSがmacかどうかを返す.
+     *
+     * @return mac の時 true
+     */
+    private boolean isMac() {
+        String os = System.getProperty("os.name").toLowerCase();
+        return os.startsWith("mac");
+    }
+
     /**
      * 施設（医療機関）情報を変更するクラス.
      */
@@ -142,7 +180,7 @@ public class AddUser extends AbstractMainTool {
 
             clearBtn = new JButton("戻す");
             clearBtn.setEnabled(false);
-            clearBtn.addActionListener( e -> get());
+            clearBtn.addActionListener(e -> get());
 
             closeBtn = new JButton("閉じる");
             closeBtn.addActionListener(e -> stop());
@@ -385,7 +423,7 @@ public class AddUser extends AbstractMainTool {
 
         private void initComponents() {
 
-            List<PNSTriple<String,Class<?>,String>> reflectionList = Arrays.asList(
+            List<PNSTriple<String, Class<?>, String>> reflectionList = Arrays.asList(
                     new PNSTriple<>("　ユーザID", String.class, "idAsLocal"),
                     new PNSTriple<>("　姓", String.class, "getSirName"),
                     new PNSTriple<>("　名", String.class, "getGivenName"),
@@ -405,7 +443,7 @@ public class AddUser extends AbstractMainTool {
             table.setToolTipText(DELETE_OK_USER);
 
             table.getSelectionModel().addListSelectionListener(e -> {
-                if (! e.getValueIsAdjusting()) {
+                if (!e.getValueIsAdjusting()) {
                     // 削除ボタンをコントロールする
                     // 医療資格が other 以外は削除できない
                     int index = table.getSelectedRow();
@@ -436,9 +474,9 @@ public class AddUser extends AbstractMainTool {
             cancelButton = new JButton("閉じる");
             cancelButton.addActionListener(e -> stop());
 
-            JPanel btnPanel = isMac()?
-                GUIFactory.createCommandButtonPanel(new JButton[]{deleteButton, cancelButton, getButton}) :
-                GUIFactory.createCommandButtonPanel(new JButton[]{getButton, deleteButton, cancelButton});
+            JPanel btnPanel = isMac() ?
+                    GUIFactory.createCommandButtonPanel(new JButton[]{deleteButton, cancelButton, getButton}) :
+                    GUIFactory.createCommandButtonPanel(new JButton[]{getButton, deleteButton, cancelButton});
 
             setLayout(new BorderLayout(0, 0));
             add(scroller, BorderLayout.CENTER);
@@ -448,6 +486,7 @@ public class AddUser extends AbstractMainTool {
 
         /**
          * 医療資格が other 以外は削除できない.
+         *
          * @param user
          */
         private void controleDelete(UserModel user) {
@@ -494,7 +533,6 @@ public class AddUser extends AbstractMainTool {
 
         /**
          * 選択したユーザを削除する.
-         *
          */
         private void deleteUser() {
 
@@ -698,9 +736,9 @@ public class AddUser extends AbstractMainTool {
             label = new JLabel("パスワード - 半角英数記で" + passwordLength[0] + "文字以上" + passwordLength[1] + "文字以内");
             constrain(content, label, x, y, 4, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.EAST);
 
-            JPanel btnPanel = isMac()?
-                GUIFactory.createCommandButtonPanel(new JButton[]{cancelButton, okButton}) :
-                GUIFactory.createCommandButtonPanel(new JButton[]{okButton, cancelButton});
+            JPanel btnPanel = isMac() ?
+                    GUIFactory.createCommandButtonPanel(new JButton[]{cancelButton, okButton}) :
+                    GUIFactory.createCommandButtonPanel(new JButton[]{okButton, cancelButton});
 
             setLayout(new BorderLayout(0, 17));
             add(content, BorderLayout.NORTH);
@@ -832,12 +870,12 @@ public class AddUser extends AbstractMainTool {
             }
 
             if ((passwd1.length() < passwordLength[0])
-            || (passwd1.length() > passwordLength[1])) {
+                    || (passwd1.length() > passwordLength[1])) {
                 return false;
             }
 
             if ((passwd2.length() < passwordLength[0])
-            || (passwd2.length() > passwordLength[1])) {
+                    || (passwd2.length() > passwordLength[1])) {
                 return false;
             }
 
@@ -859,43 +897,5 @@ public class AddUser extends AbstractMainTool {
                 okButton.setEnabled(ok);
             }
         }
-    }
-
-    private void constrain(JPanel container, Component cmp, int x, int y,
-            int width, int height, int fill, int anchor) {
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = x;
-        c.gridy = y;
-        c.gridwidth = width;
-        c.gridheight = height;
-        c.fill = fill;
-        c.anchor = anchor;
-        c.insets = new Insets(0, 0, 5, 7);
-        ((GridBagLayout) container.getLayout()).setConstraints(cmp, c);
-        container.add(cmp);
-    }
-
-    /**
-     * タイムアウト警告表示を行う.
-     */
-    private void wraningTimeOut() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ClientContext.getString("task.timeoutMsg1"));
-        sb.append("\n");
-        sb.append(ClientContext.getString("task.timeoutMsg1"));
-        JOptionPane.showMessageDialog(frame,
-                sb.toString(),
-                ClientContext.getFrameTitle(getName()),
-                JOptionPane.WARNING_MESSAGE);
-    }
-
-    /**
-     * OSがmacかどうかを返す.
-     * @return mac の時 true
-     */
-    private boolean isMac() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.startsWith("mac");
     }
 }

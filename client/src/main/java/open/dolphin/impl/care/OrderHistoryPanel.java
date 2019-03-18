@@ -31,12 +31,11 @@ import java.util.List;
  */
 public final class OrderHistoryPanel extends JPanel {
     private static final long serialVersionUID = -2302784717739085879L;
-
+    private final Dimension contentSize = new Dimension(240, 300);
     private ObjectReflectTableModel<ModuleModel> tModel;
     private JTable table;
     private JLabel contents;
     private String pid;
-    private final Dimension contentSize = new Dimension(240, 300);
 
     public OrderHistoryPanel() {
         super(new BorderLayout(5, 0));
@@ -44,7 +43,7 @@ public final class OrderHistoryPanel extends JPanel {
     }
 
     private void initComponents() {
-        String[] columnNames = { "　実施日", "　内   容" };
+        String[] columnNames = {"　実施日", "　内   容"};
 
         // オーダの履歴(確定日|スタンプ名)を表示する TableModel: 各行は ModuleModel
         tModel = new ObjectReflectTableModel<ModuleModel>(columnNames) {
@@ -54,6 +53,7 @@ public final class OrderHistoryPanel extends JPanel {
             public boolean isCellEditable(int row, int col) {
                 return false;
             }
+
             @Override
             public Object getValueAt(int row, int col) {
                 ModuleModel module = getObject(row);
@@ -78,12 +78,12 @@ public final class OrderHistoryPanel extends JPanel {
         table.setRowSelectionAllowed(true);
         ListSelectionModel m = table.getSelectionModel();
         m.addListSelectionListener(e -> {
-            if (! e.getValueIsAdjusting()) {
+            if (!e.getValueIsAdjusting()) {
                 int index = table.getSelectedRow();
                 displayOrder(index);
             }
         });
-        setColumnWidth(new int[] { 50, 240 });
+        setColumnWidth(new int[]{50, 240});
 
         PNSScrollPane scroller = new PNSScrollPane(table, PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(scroller, BorderLayout.CENTER);
@@ -118,6 +118,7 @@ public final class OrderHistoryPanel extends JPanel {
      * allModules から ModuleModel を全部抽出して tModel に加える.
      * allModules は List＜List＜ModuleModel＞＞
      * 抽出期間の数だけ List＜ModuleModel＞が List になっている
+     *
      * @param allModules
      */
     public void setModuleList(List<List<ModuleModel>> allModules) {
@@ -135,7 +136,9 @@ public final class OrderHistoryPanel extends JPanel {
         contents.setText("");
 
         ModuleModel stamp = tModel.getObject(index);
-        if (stamp == null) { return; }
+        if (stamp == null) {
+            return;
+        }
 
         try {
             IInfoModel model = stamp.getModel();
@@ -168,13 +171,14 @@ public final class OrderHistoryPanel extends JPanel {
     /**
      * SimpleDate 型式の date の行を選択する.
      * 日付は column 0 に String として入っている
+     *
      * @param date
      */
     public void findDate(SimpleDate date) {
         if (CalendarEvent.isModule(date.getEventCode())) {
             String mmlDate = SimpleDate.simpleDateToMmldate(date);
 
-            for (int row=0; row<tModel.getObjectCount(); row++) {
+            for (int row = 0; row < tModel.getObjectCount(); row++) {
                 String rowDate = (String) tModel.getValueAt(row, 0);
                 if (rowDate.equals(mmlDate)) {
                     table.setRowSelectionInterval(row, row);

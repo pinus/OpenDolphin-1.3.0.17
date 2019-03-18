@@ -43,7 +43,7 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
 
     @Override
     public int getSourceActions(JComponent c) {
-        setDragImage((JLabel)c);
+        setDragImage((JLabel) c);
         return COPY_OR_MOVE;
     }
 
@@ -66,7 +66,7 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
                     if ((ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode()) &&
                             ClaimConst.RECEIPT_CODE_NAIYO.equals(orgBundle.getClassCode())) ||
                             (ClaimConst.RECEIPT_CODE_TONYO.equals(bundle.getClassCode()) &&
-                            ClaimConst.RECEIPT_CODE_TONYO.equals(orgBundle.getClassCode()))) {
+                                    ClaimConst.RECEIPT_CODE_TONYO.equals(orgBundle.getClassCode()))) {
 
                         bundle.setBundleNumber(orgBundle.getBundleNumber());
                     }
@@ -81,27 +81,33 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
                         for (ClaimItem c : orgBundle.getClaimItem()) {
                             String code = c.getCode();
                             // 量を保存
-                            if (dose == null && code.startsWith("6")) { dose = c.getNumber(); }
+                            if (dose == null && code.startsWith("6")) {
+                                dose = c.getNumber();
+                            }
                             // コメントを追加
-                            if (code.matches("^[0,8,9].*") &&
-                                    ! code.equals("001000001") && // 混合 は除外
-                                    ! code.equals("099209908")    // 一般名処方は除外
-                                    ) {
+                            if (code.matches("^[089].*") &&
+                                    !code.equals("001000001") && // 混合 は除外
+                                    !code.equals("099209908")    // 一般名処方は除外
+                            ) {
                                 // 重複していないコードを追加する
                                 boolean found = false;
-                                for(ClaimItem cc : bundle.getClaimItem()) {
+                                for (ClaimItem cc : bundle.getClaimItem()) {
                                     if (cc.getCode().equals(code)) {
                                         found = true;
                                         break;
                                     }
                                 }
-                                if (!found) { bundle.addClaimItem(c); }
+                                if (!found) {
+                                    bundle.addClaimItem(c);
+                                }
                             }
                         }
                         // 量を設定
                         if (dose != null) {
                             for (ClaimItem c : bundle.getClaimItem()) {
-                                if (c.getCode().startsWith("6")) { c.setNumber(dose); }
+                                if (c.getCode().startsWith("6")) {
+                                    c.setNumber(dose);
+                                }
                             }
                         }
                     }
@@ -119,17 +125,17 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
         String cancel = "取消し";
 
         int option = JOptionPane.showOptionDialog(
-                 w,
-                 "スタンプを置き換えますか?",
-                 "スタンプ Drag and Drop",
-                 JOptionPane.DEFAULT_OPTION,
-                 JOptionPane.QUESTION_MESSAGE,
-                 null,
-                 new String[]{replace, cancel}, replace);
+                w,
+                "スタンプを置き換えますか?",
+                "スタンプ Drag and Drop",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new String[]{replace, cancel}, replace);
 
-         if (option == 0) {
-             replaceStamp(target, stampInfo);
-         }
+        if (option == 0) {
+            replaceStamp(target, stampInfo);
+        }
     }
 
     @Override
@@ -176,7 +182,9 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
 
     @Override
     protected void exportDone(JComponent c, Transferable tr, int action) {
-        if (action == NONE) { return; }
+        if (action == NONE) {
+            return;
+        }
 
         if (action == MOVE) {
             StampHolder test = (StampHolder) c;
@@ -193,6 +201,7 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
 
     /**
      * インポート可能かどうかを返す.
+     *
      * @param c
      * @param flavors
      * @return
@@ -231,7 +240,7 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
     }
 
     private BufferedImage changeSize(BufferedImage image, int width, int height) {
-        BufferedImage scaledImage = new BufferedImage(width,height, image.getType());
+        BufferedImage scaledImage = new BufferedImage(width, height, image.getType());
         Graphics2D g2d = scaledImage.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.drawImage(image, 0, 0, width, height, null);

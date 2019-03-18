@@ -22,22 +22,10 @@ public class UserStampBox extends AbstractStampBox {
     private static final long serialVersionUID = 1L;
 
     private static final String BOX_INFO = "個人用スタンプ箱";
-
-    /**
-     * パススタンプのタブ番号
-     */
-    private int pathIndex;
-
-    /**
-     * ORCA セットのタブ番号
-     */
-    private int orcaIndex;
-
     /**
      * タブの順番をセットする HashMap
      */
     private final HashMap<String, Integer> tabMap = new HashMap<>();
-
     /**
      * 好みの順番
      */
@@ -46,6 +34,14 @@ public class UserStampBox extends AbstractStampBox {
             "処 置", "手 術", "生体検査", "生理検査", "細菌検査", "検体検査",
             "注 射", "パ ス", "汎 用", "放射線", "ORCA", "その他"
     };
+    /**
+     * パススタンプのタブ番号
+     */
+    private int pathIndex;
+    /**
+     * ORCA セットのタブ番号
+     */
+    private int orcaIndex;
 
     public UserStampBox() {
         super();

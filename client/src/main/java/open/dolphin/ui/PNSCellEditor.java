@@ -12,6 +12,7 @@ import java.awt.event.FocusEvent;
 /**
  * Mac っぽいボーダーの CellEditor.
  * undo 対応.
+ *
  * @author pns
  */
 public class PNSCellEditor extends DefaultCellEditor {
@@ -23,7 +24,7 @@ public class PNSCellEditor extends DefaultCellEditor {
     /**
      * Constructs a DefaultCellEditor that uses a text field.
      *
-     * @param textField  a JTextField object
+     * @param textField a JTextField object
      */
     public PNSCellEditor(JTextField textField) {
         super(textField);
@@ -39,7 +40,7 @@ public class PNSCellEditor extends DefaultCellEditor {
      * Constructs a DefaultCellEditor object that uses
      * a check box.
      *
-     * @param checkBox  a JCheckBox object
+     * @param checkBox a JCheckBox object
      */
     public PNSCellEditor(JCheckBox checkBox) {
         super(checkBox);
@@ -51,7 +52,7 @@ public class PNSCellEditor extends DefaultCellEditor {
      * Constructs a DefaultCellEditor object that uses a
      * combo box.
      *
-     * @param comboBox  a JComboBox object
+     * @param comboBox a JComboBox object
      */
     public PNSCellEditor(JComboBox<?> comboBox) {
         super(comboBox);

@@ -12,6 +12,7 @@ import java.awt.*;
 /**
  * StampTree に PopupMenu を表示する.
  * StampTreePopupAdapter から切換.
+ *
  * @author pns
  */
 public class StampTreePopupMenu extends JPopupMenu {
@@ -41,24 +42,34 @@ public class StampTreePopupMenu extends JPopupMenu {
     public void createNewFolder() {
         tree.createNewFolder();
     }
+
     @MenuAction
     public void deleteNode() {
         int ans = JSheet.showConfirmDialog(SwingUtilities.getWindowAncestor(tree),
                 "本当に削除しますか", "スタンプ削除", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
         if (ans == JOptionPane.OK_OPTION) {
-            if (isEditable()) { tree.deleteNode(); }
-            else { Toolkit.getDefaultToolkit().beep(); }
+            if (isEditable()) {
+                tree.deleteNode();
+            } else {
+                Toolkit.getDefaultToolkit().beep();
+            }
         }
     }
+
     @MenuAction
     public void renameNode() {
-        if (isEditable()) { tree.renameNode(); }
-        else { Toolkit.getDefaultToolkit().beep(); }
+        if (isEditable()) {
+            tree.renameNode();
+        } else {
+            Toolkit.getDefaultToolkit().beep();
+        }
     }
+
     @MenuAction
     public void expandAll() {
         tree.expandAll();
     }
+
     @MenuAction
     public void collapseAll() {
         tree.collapseAll();

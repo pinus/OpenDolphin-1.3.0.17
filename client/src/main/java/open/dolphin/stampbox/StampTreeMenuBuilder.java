@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * StampTree から JMenu または JPopupMenu を構築する.
+ *
  * @author pns
  */
 public class StampTreeMenuBuilder {
@@ -25,7 +26,7 @@ public class StampTreeMenuBuilder {
     }
 
     public StampTreeMenuBuilder(StampTree stampTree, String searchText) {
-        this(Arrays.asList(new StampTree[] { stampTree }) , searchText);
+        this(Arrays.asList(stampTree), searchText);
     }
 
     public StampTreeMenuBuilder(List<StampTree> stampTrees) {
@@ -42,7 +43,9 @@ public class StampTreeMenuBuilder {
      */
     private void build() {
         // 既に作成済み
-        if (product != null) { return; }
+        if (product != null) {
+            return;
+        }
 
         product = new ArrayList<>();
         trees.forEach(tree -> {
@@ -143,6 +146,7 @@ public class StampTreeMenuBuilder {
 
     /**
      * Menu item にリスナを登録する. ActionListener から StampMenuActionListener へブリッジする.
+     *
      * @param item
      * @param tree
      * @param node
@@ -157,12 +161,15 @@ public class StampTreeMenuBuilder {
 
     /**
      * searchText が completion にマッチするかどうかを判断する.
+     *
      * @param completion
      * @return
      */
     private boolean matches(String completion) {
         // searchText が null の場合は合致と判断
-        if (text == null) { return true; }
+        if (text == null) {
+            return true;
+        }
 
         // 大文字，小文字を無視するために小文字に変換して比較
         Pattern pattern = Pattern.compile(text.toLowerCase());
@@ -172,6 +179,7 @@ public class StampTreeMenuBuilder {
 
     /**
      * StampTreeMenuModel から JMenu を構築する.
+     *
      * @param menu
      */
     public void build(JMenu menu) {
@@ -182,8 +190,8 @@ public class StampTreeMenuBuilder {
         } else {
             product.forEach(model -> {
                 JMenu root = model.getRoot();
-                model.getSubMenus().forEach(subMenu -> root.add(subMenu));
-                model.getRootItems().forEach(item -> root.add(item));
+                model.getSubMenus().forEach(root::add);
+                model.getRootItems().forEach(root::add);
                 menu.add(root);
             });
         }
@@ -191,6 +199,7 @@ public class StampTreeMenuBuilder {
 
     /**
      * StampTreeMenuModel から JPopupMenu を構築する.
+     *
      * @param popup
      */
     public void build(JPopupMenu popup) {
@@ -201,8 +210,8 @@ public class StampTreeMenuBuilder {
         } else {
             product.forEach(model -> {
                 JMenu root = model.getRoot();
-                model.getSubMenus().forEach(subMenu -> root.add(subMenu));
-                model.getRootItems().forEach(item -> root.add(item));
+                model.getSubMenus().forEach(root::add);
+                model.getRootItems().forEach(root::add);
                 popup.add(root);
             });
         }
@@ -210,26 +219,29 @@ public class StampTreeMenuBuilder {
 
     /**
      * StampTreeMenuModel から Entity 部分のない Rootless の JMenu を作る.
+     *
      * @param menu
      */
     public void buildRootless(JMenu menu) {
         build();
-        product.forEach(model -> model.getSubMenus().forEach(subMenu -> menu.add(subMenu)));
-        product.forEach(model -> model.getRootItems().forEach(item -> menu.add(item)));
+        product.forEach(model -> model.getSubMenus().forEach(menu::add));
+        product.forEach(model -> model.getRootItems().forEach(menu::add));
     }
 
     /**
      * StampTreeMenuModel から Entity 部分のない Rootless の JPopupMenu を作る.
+     *
      * @param popup
      */
     public void buildRootless(JPopupMenu popup) {
         build();
-        product.forEach(model -> model.getSubMenus().forEach(subMenu -> popup.add(subMenu)));
-        product.forEach(model -> model.getRootItems().forEach(item -> popup.add(item)));
+        product.forEach(model -> model.getSubMenus().forEach(popup::add));
+        product.forEach(model -> model.getRootItems().forEach(popup::add));
     }
 
     /**
      * メニュー選択時のアクションを定義するリスナを登録する.
+     *
      * @param listener
      */
     public void addStampTreeMenuListener(StampTreeMenuListener listener) {

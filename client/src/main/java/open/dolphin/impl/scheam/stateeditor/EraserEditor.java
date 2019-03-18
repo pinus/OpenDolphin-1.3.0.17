@@ -21,6 +21,7 @@ import open.dolphin.impl.scheam.shapeholder.OvalHolder;
 /**
  * 不透明の白で上書きする StateEditor.
  * 直径は lineWidth の ERASER_WIDTH_FACTOR 倍.
+ *
  * @author pns
  */
 public class EraserEditor extends StateEditorBase {
@@ -48,11 +49,14 @@ public class EraserEditor extends StateEditorBase {
     @Override
     public void start() {
         // カーソル設定
-        draftLayer.cursorProperty().bind(new ObjectBinding<Cursor>(){
-            { super.bind(diameter); }
+        draftLayer.cursorProperty().bind(new ObjectBinding<Cursor>() {
+            {
+                super.bind(diameter);
+            }
+
             @Override
             protected Cursor computeValue() {
-                double r = diameter.get()/2;
+                double r = diameter.get() / 2;
                 Ellipse e = new Ellipse(r, r, r, r);
                 e.setFill(eraserFillColor);
                 e.setStroke(eraserStrokeColor);
@@ -60,7 +64,7 @@ public class EraserEditor extends StateEditorBase {
                 parameters.setFill(Color.TRANSPARENT);
                 Image img = e.snapshot(parameters, null);
 
-                return new ImageCursor(img, r+1, r+1);
+                return new ImageCursor(img, r + 1, r + 1);
             }
         });
     }
@@ -111,17 +115,21 @@ public class EraserEditor extends StateEditorBase {
     public ShapeHolder getHolder() {
         int size = draftHolder.getPathSize();
 
-        if (size == 0) { return null; }
+        if (size == 0) {
+            return null;
+        }
 
         // 点が１つの時は　LineWidth 大の Oval を返す
         // 色は fillColor になる
         if (size == 1) {
-            double r = diameter.get()/2;
+            double r = diameter.get() / 2;
             double x = draftHolder.getPathX(0);
             double y = draftHolder.getPathY(0);
             OvalHolder o = new OvalHolder();
-            o.setStartX(x-r); o.setStartY(y-r);
-            o.setEndX(x+r); o.setEndY(y+r);
+            o.setStartX(x - r);
+            o.setStartY(y - r);
+            o.setEndX(x + r);
+            o.setEndY(y + r);
             o.setProperties();
             // 色を上書き
             o.setLineColor(Color.WHITE);

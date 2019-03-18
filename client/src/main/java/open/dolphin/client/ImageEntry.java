@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * ImageEntry.
  *
- * @author  Kazushi Minagawa, Digital globe, Inc.
+ * @author Kazushi Minagawa, Digital globe, Inc.
  */
 public class ImageEntry implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -36,7 +36,9 @@ public class ImageEntry implements Serializable {
     private int height;
 
 
-    /** Creates a new instance of ImageEntry */
+    /**
+     * Creates a new instance of ImageEntry
+     */
     public ImageEntry() {
     }
 
@@ -89,29 +91,29 @@ public class ImageEntry implements Serializable {
     }
 
     /**
-     * @param url The url to set.
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    /**
      * @return Returns the url.
      */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * @param url The url to set.
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getFileName() {
         return fileName;
     }
 
-    public String getPath() {
-        return path;
-    }
-
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public void setPath(String path) {

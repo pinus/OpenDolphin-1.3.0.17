@@ -25,15 +25,11 @@ import java.util.Date;
 public class PhysicalEditor {
 
     private final PhysicalInspector inspector;
-    private PhysicalEditorView view;
     private final JDialog dialog;
     private final JButton addBtn;
     private final JButton clearBtn;
+    private PhysicalEditorView view;
     private boolean ok;
-
-    public static void show(PhysicalInspector ins) {
-        new PhysicalEditor(ins);
-    }
 
     public PhysicalEditor(PhysicalInspector inspector) {
         this.inspector = inspector;
@@ -64,18 +60,18 @@ public class PhysicalEditor {
         clearBtn.addActionListener(e -> clear());
         clearBtn.setEnabled(false);
 
-        Object[] options = new Object[]{addBtn,clearBtn};
+        Object[] options = new Object[]{addBtn, clearBtn};
 
         JOptionPane pane = new JOptionPane(view,
-                                           JOptionPane.PLAIN_MESSAGE,
-                                           JOptionPane.DEFAULT_OPTION,
-                                           null,
-                                           options, addBtn);
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                options, addBtn);
         dialog = pane.createDialog(inspector.getContext().getFrame(), ClientContext.getFrameTitle("身長体重登録"));
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         // dialog が開いたら WeightFld にフォーカスを当てる
-        dialog.addWindowListener(new WindowAdapter(){
+        dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
                 Focuser.requestFocus(view.getWeightFld());
@@ -91,13 +87,17 @@ public class PhysicalEditor {
         dialog.setVisible(true);
     }
 
+    public static void show(PhysicalInspector ins) {
+        new PhysicalEditor(ins);
+    }
+
     private void checkBtn() {
 
         String height = view.getHeightFld().getText().trim();
         String weight = view.getWeightFld().getText().trim();
         String dateStr = view.getIdentifiedDateFld().getText().trim();
 
-        boolean newOk = !(height.equals("") && weight.equals("")) && ! dateStr.equals("");
+        boolean newOk = !(height.equals("") && weight.equals("")) && !dateStr.equals("");
 
         if (ok != newOk) {
             ok = newOk;
@@ -112,8 +112,12 @@ public class PhysicalEditor {
         String w = view.getWeightFld().getText().trim();
         final PhysicalModel model = new PhysicalModel();
 
-        if (!h.equals("")) { model.setHeight(h); }
-        if (!w.equals("")) { model.setWeight(w); }
+        if (!h.equals("")) {
+            model.setHeight(h);
+        }
+        if (!w.equals("")) {
+            model.setWeight(w);
+        }
 
         // 同定日
         String confirmedStr = view.getIdentifiedDateFld().getText().trim();

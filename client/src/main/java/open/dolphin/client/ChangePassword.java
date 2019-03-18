@@ -28,8 +28,8 @@ import java.util.Collection;
 public class ChangePassword extends AbstractMainTool {
 
     private static final String TITLE = "プロフィール変更";
-    private static final Point DEFAULT_LOC = new Point(0,0);
-    private static final Dimension DEFAULT_SIZE = new Dimension(568,300);
+    private static final Point DEFAULT_LOC = new Point(0, 0);
+    private static final Dimension DEFAULT_SIZE = new Dimension(568, 300);
     private static final String PROGRESS_NOTE = "ユーザ情報を変更しています...";
     private static final String UPDATE_BTN_TEXT = "変更";
     private static final String CLOSE_BTN_TEXT = "閉じる";
@@ -46,10 +46,9 @@ public class ChangePassword extends AbstractMainTool {
     private static final String PASSWORD_ASSIST_3 = "文字以内) 変更しない場合は空白にしておきます。";
     private static final String SUCCESS_MESSAGE = "ユーザ情報を変更しました。";
     private static final String DUMMY_PASSWORD = "";
-
+    private final Logger logger;
     private JFrame frame;
     private JButton okButton;
-    private final Logger logger;
 
     public ChangePassword() {
         setName(TITLE);
@@ -89,6 +88,34 @@ public class ChangePassword extends AbstractMainTool {
         if (frame != null) {
             frame.toFront();
         }
+    }
+
+    /**
+     * GridBagLayout を使用してコンポーネントを配置する.
+     */
+    private void constrain(JPanel container, Component cmp, int x, int y,
+                           int width, int height, int fill, int anchor) {
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = x;
+        c.gridy = y;
+        c.gridwidth = width;
+        c.gridheight = height;
+        c.fill = fill;
+        c.anchor = anchor;
+        // c.insets = new Insets(0, 0, 5, 7);
+        c.insets = new Insets(0, 0, 0, 0);
+        ((GridBagLayout) container.getLayout()).setConstraints(cmp, c);
+        container.add(cmp);
+    }
+
+    /**
+     * OSがmacかどうかを返す.
+     *
+     * @return mac の時 true
+     */
+    private boolean isMac() {
+        return System.getProperty("os.name").toLowerCase().startsWith("mac");
     }
 
     /**
@@ -149,7 +176,7 @@ public class ChangePassword extends AbstractMainTool {
             userPassword1.getDocument().addDocumentListener(dl);
 
             userPassword2 = new JPasswordField(10);
-            userPassword2.addActionListener( e-> sn.requestFocus());
+            userPassword2.addActionListener(e -> sn.requestFocus());
             RegexConstrainedDocument passwordDoc2 = new RegexConstrainedDocument(pattern);
             userPassword2.setDocument(passwordDoc2);
             userPassword2.getDocument().addDocumentListener(dl);
@@ -159,7 +186,7 @@ public class ChangePassword extends AbstractMainTool {
             // 姓
             //
             sn = GUIFactory.createTextField(10, null, null, dl);
-            sn.addActionListener(e-> givenName.requestFocus());
+            sn.addActionListener(e -> givenName.requestFocus());
 
             //
             // 名
@@ -258,9 +285,9 @@ public class ChangePassword extends AbstractMainTool {
                     + passwordLength[1] + PASSWORD_ASSIST_3);
             constrain(content, label, x, y, 4, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.EAST);
 
-            JPanel btnPanel = isMac()?
-                GUIFactory.createCommandButtonPanel(new JButton[]{cancelButton, okButton}) :
-                GUIFactory.createCommandButtonPanel(new JButton[]{okButton, cancelButton});
+            JPanel btnPanel = isMac() ?
+                    GUIFactory.createCommandButtonPanel(new JButton[]{cancelButton, okButton}) :
+                    GUIFactory.createCommandButtonPanel(new JButton[]{okButton, cancelButton});
 
             setLayout(new BorderLayout(0, 17));
             add(content, BorderLayout.CENTER);
@@ -477,12 +504,12 @@ public class ChangePassword extends AbstractMainTool {
             }
 
             if ((passwd1.length() < passwordLength[0])
-            || (passwd1.length() > passwordLength[1])) {
+                    || (passwd1.length() > passwordLength[1])) {
                 return false;
             }
 
             if ((passwd2.length() < passwordLength[0])
-            || (passwd2.length() > passwordLength[1])) {
+                    || (passwd2.length() > passwordLength[1])) {
                 return false;
             }
 
@@ -507,32 +534,5 @@ public class ChangePassword extends AbstractMainTool {
                 okButton.setEnabled(ok);
             }
         }
-    }
-
-    /**
-     * GridBagLayout を使用してコンポーネントを配置する.
-     */
-    private void constrain(JPanel container, Component cmp, int x, int y,
-            int width, int height, int fill, int anchor) {
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = x;
-        c.gridy = y;
-        c.gridwidth = width;
-        c.gridheight = height;
-        c.fill = fill;
-        c.anchor = anchor;
-        // c.insets = new Insets(0, 0, 5, 7);
-        c.insets = new Insets(0, 0, 0, 0);
-        ((GridBagLayout) container.getLayout()).setConstraints(cmp, c);
-        container.add(cmp);
-    }
-
-    /**
-     * OSがmacかどうかを返す.
-     * @return mac の時 true
-     */
-    private boolean isMac() {
-        return System.getProperty("os.name").toLowerCase().startsWith("mac");
     }
 }

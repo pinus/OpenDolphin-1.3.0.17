@@ -3,18 +3,19 @@ package open.dolphin.impl.care;
 import open.dolphin.infomodel.AppointmentModel;
 
 import java.awt.datatransfer.*;
-import java.io.IOException;
 
 /**
  * AppointEntryTransferable.
  *
- * @author  Kazushi Minagawa
+ * @author Kazushi Minagawa
  */
 public final class AppointEntryTransferable implements Transferable, ClipboardOwner {
 
-    /** Data Flavor of this class */
+    /**
+     * Data Flavor of this class
+     */
     public static DataFlavor appointFlavor = new DataFlavor(AppointmentModel.class, "AppointEntry");
-    public static final DataFlavor[] flavors = { AppointEntryTransferable.appointFlavor };
+    public static final DataFlavor[] flavors = {AppointEntryTransferable.appointFlavor};
     private final AppointmentModel appoint;
 
     public AppointEntryTransferable(AppointmentModel appoint) {
@@ -23,17 +24,17 @@ public final class AppointEntryTransferable implements Transferable, ClipboardOw
 
     @Override
     public synchronized DataFlavor[] getTransferDataFlavors() {
-	return flavors;
+        return flavors;
     }
 
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-	return flavor.equals(appointFlavor);
+        return flavor.equals(appointFlavor);
     }
 
     @Override
     public synchronized Object getTransferData(DataFlavor flavor)
-	    throws UnsupportedFlavorException, IOException {
+            throws UnsupportedFlavorException {
 
         if (flavor.equals(appointFlavor)) {
             return appoint;

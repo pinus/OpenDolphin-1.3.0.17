@@ -8,18 +8,21 @@ import java.io.IOException;
 /**
  * Tranferable class of the StampTreeNode.
  *
- * @author  Kazushi Minagawa
+ * @author Kazushi Minagawa
  */
 public class LocalStampTreeNodeTransferable implements Transferable {
 
-    /** Data Flavor of this class */
+    /**
+     * Data Flavor of this class
+     */
     public static final DataFlavor localStampTreeNodeFlavor = new DataFlavor(LocalStampTreeNodeTransferable.class, "Local StampTree");
-    private static final DataFlavor[] flavors = { LocalStampTreeNodeTransferable.localStampTreeNodeFlavor };
+    private static final DataFlavor[] flavors = {LocalStampTreeNodeTransferable.localStampTreeNodeFlavor};
 
     private final StampTreeNode node;
 
     /**
      * Creates new StampTreeTransferable.
+     *
      * @param node
      */
     public LocalStampTreeNodeTransferable(StampTreeNode node) {
@@ -32,13 +35,13 @@ public class LocalStampTreeNodeTransferable implements Transferable {
     }
 
     @Override
-    public boolean isDataFlavorSupported(DataFlavor flavor)  {
+    public boolean isDataFlavorSupported(DataFlavor flavor) {
         return flavor.equals(localStampTreeNodeFlavor);
     }
 
     @Override
     public synchronized Object getTransferData(DataFlavor flavor)
-	    throws UnsupportedFlavorException, IOException {
+            throws UnsupportedFlavorException, IOException {
 
         if (flavor.equals(localStampTreeNodeFlavor)) {
             return node;

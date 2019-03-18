@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
  * ChartImpl の ChartDocument plugin として登録されるのはこれ.
  * このクラスの scroller へカルテが表示される.
  * 実務をしているのは KarteDocumentViewer.
+ *
  * @author kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
@@ -40,12 +41,14 @@ public class DocumentBridgeImpl extends AbstractChartDocument {
         // blankLabel をダブルクリックしたら，新規カルテ作成を呼ぶ
         blankPanel = new JPanel();
         blankPanel.setBackground(Color.white);
-        blankPanel.addMouseListener(new MouseAdapter(){
+        blankPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     Chart context = getContext();
-                    if (context instanceof ChartImpl) { ((ChartImpl)context).newKarte(); }
+                    if (context instanceof ChartImpl) {
+                        ((ChartImpl) context).newKarte();
+                    }
                 }
             }
         });
@@ -94,10 +97,13 @@ public class DocumentBridgeImpl extends AbstractChartDocument {
     /**
      * Bridge 機能を提供する.
      * KarteDocumentViewer に scroller を渡して表示してもらう.
+     *
      * @param docs 表示する文書の DocInfo 配列
      */
     public void showDocuments(DocInfoModel[] docs) {
-        if (docs == null || docs.length == 0) { return; }
+        if (docs == null || docs.length == 0) {
+            return;
+        }
 
         if (karteViewer != null) {
             karteViewer.showDocuments(docs, scroller);
@@ -119,7 +125,7 @@ public class DocumentBridgeImpl extends AbstractChartDocument {
         // TODO 編集直後に来た場合は，できれば editDate の該当カルテを viewwer で表示するようにしたい.
         // 現時点では，先頭を表示する.
         if (editDate != null) {
-            SwingUtilities.invokeLater(() -> scroller.getViewport().setViewPosition(new java.awt.Point(0,0)));
+            SwingUtilities.invokeLater(() -> scroller.getViewport().setViewPosition(new java.awt.Point(0, 0)));
             editDate = null;
         }
         // 文書履歴の選択変更処理

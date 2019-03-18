@@ -22,16 +22,16 @@ public enum DiagnosisCategory {
         model.setDiagnosisCategoryCodeSys(codeSys);
     }
 
-    public DiagnosisCategoryModel model() {
-        return model;
-    }
-
     public static DiagnosisCategoryModel[] models() {
         DiagnosisCategoryModel[] models = new DiagnosisCategoryModel[values().length];
-        for (int i=0; i<models.length; i++) {
+        for (int i = 0; i < models.length; i++) {
             models[i] = values()[i].model();
         }
         return models;
+    }
+
+    public DiagnosisCategoryModel model() {
+        return model;
     }
 
     @Override

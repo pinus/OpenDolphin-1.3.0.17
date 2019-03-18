@@ -16,6 +16,7 @@ import java.util.*;
 
 /**
  * DiagnosisDocumentTableModel を独立させて，undo/redo に対応した.
+ *
  * @author pns
  */
 public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<RegisteredDiagnosisModel> {
@@ -23,16 +24,14 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
 
     private final boolean isReadOnly;
     private final int[] lastVisitYmd = new int[3];
-    private DiagnosisDocumentTable diagTable;
     private final PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());
-
     // undo/redo 用 map（rd ごとに queue を作っておく）
     private final Map<Integer, Deque<DiagnosisLiteModel>> undoMap = new HashMap<>();
     private final Map<Integer, Deque<DiagnosisLiteModel>> redoMap = new HashMap<>();
-    private enum PollResult { succeeded, noMore }
+    private DiagnosisDocumentTable diagTable;
 
-    public DiagnosisDocumentTableModel(List<PNSTriple<String,Class<?>,String>> triples, boolean readOnly) {
-        super (triples);
+    public DiagnosisDocumentTableModel(List<PNSTriple<String, Class<?>, String>> triples, boolean readOnly) {
+        super(triples);
         isReadOnly = readOnly;
     }
 
@@ -60,20 +59,28 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     @Override
     public boolean isCellEditable(int row, int col) {
         // licenseCodeで制御
-        if (isReadOnly) { return false; }
+        if (isReadOnly) {
+            return false;
+        }
 
         // 病名レコードが存在しない場合は false
         RegisteredDiagnosisModel rd = getObject(row);
-        if (rd == null) { return false; }
+        if (rd == null) {
+            return false;
+        }
 
         // ORCA に登録されている病名の場合
-        if (rd.getStatus() != null && rd.getStatus().equals(DiagnosisDocument.ORCA_RECORD)) { return false; }
+        if (rd.getStatus() != null && rd.getStatus().equals(DiagnosisDocument.ORCA_RECORD)) {
+            return false;
+        }
 
         // 診断名 column は直接編集不可（編集は popup，エディタでの編集はできる）
-        if (col == DiagnosisDocument.DIAGNOSIS_COL) { return false; }
+        if (col == DiagnosisDocument.DIAGNOSIS_COL) {
+            return false;
+        }
 
         // DELETED_RECORD フラグが立っていたら cell editor による編集不可
-        return ! DiagnosisDocument.DELETED_RECORD.equals(rd.getStatus());
+        return !DiagnosisDocument.DELETED_RECORD.equals(rd.getStatus());
     }
 
     // オブジェクトの値を設定する
@@ -82,9 +89,13 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
 
         RegisteredDiagnosisModel rd = getObject(row);
 
-        if (value == null || rd == null) { return; }
+        if (value == null || rd == null) {
+            return;
+        }
         String status = rd.getStatus();
-        if (status != null && status.equals(DiagnosisDocument.ORCA_RECORD)) { return; }
+        if (status != null && status.equals(DiagnosisDocument.ORCA_RECORD)) {
+            return;
+        }
 
         // value = DELETED_RECORD で呼ばれた場合は DELETED_RECORD をセットする
         if (DiagnosisDocument.DELETED_RECORD.equals(value)) {
@@ -228,7 +239,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                 }
                 break;
 
-           case DiagnosisDocument.END_DATE_COL:
+            case DiagnosisDocument.END_DATE_COL:
                 strVal = (String) value;
                 test = rd.getEndDate();
                 if (test == null || !test.equals(strVal)) {
@@ -238,8 +249,10 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                 break;
         }
     }
+
     /**
      * DiagnosisDocument の propertyChange を呼び出す
+     *
      * @param row
      * @param rd
      */
@@ -250,6 +263,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
 
     /**
      * DiagnosisDocument の insertDiagnosis を呼び出す
+     *
      * @param rd
      */
     private void insert(RegisteredDiagnosisModel rd) {
@@ -258,6 +272,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
 
     /**
      * 加えられた病名を undo で delete するために undo queue に deleted recored を積む
+     *
      * @param rd
      */
     private void addDeletedRecordForUndo(RegisteredDiagnosisModel rd) {
@@ -269,6 +284,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
 
     /**
      * 加えられた病名は undo で delete されるようにする
+     *
      * @param row
      * @param rd
      */
@@ -293,8 +309,11 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
             int row = diagTable.convertRowIndexToModel(r);
             RegisteredDiagnosisModel rd = getObject(row);
             offerQueue(redoMap, rd);
-            if (pollQueue(undoMap, rd) == PollResult.succeeded) { update(row, rd); }
-            else { cancelOffer(redoMap, rd); } // poll に失敗した場合は offer した分は取り消す
+            if (pollQueue(undoMap, rd) == PollResult.succeeded) {
+                update(row, rd);
+            } else {
+                cancelOffer(redoMap, rd);
+            } // poll に失敗した場合は offer した分は取り消す
         }
     }
 
@@ -307,8 +326,11 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
             int row = diagTable.convertRowIndexToModel(r);
             RegisteredDiagnosisModel rd = getObject(row);
             offerQueue(undoMap, rd);
-            if (pollQueue(redoMap, rd) == PollResult.succeeded) { update(row, rd); }
-            else { cancelOffer(undoMap, rd); } // poll に失敗したときは，offer した分は取り消す
+            if (pollQueue(redoMap, rd) == PollResult.succeeded) {
+                update(row, rd);
+            } else {
+                cancelOffer(undoMap, rd);
+            } // poll に失敗したときは，offer した分は取り消す
         }
     }
 
@@ -325,6 +347,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     /**
      * Queue にためる
      * id は system hash を使う（厳密に一意ではないが重なる可能性はほとんど無い）
+     *
      * @param dequeMap
      * @param rd
      */
@@ -342,6 +365,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
 
     /**
      * Queue から取り出す　成功：true　取り出すもの無し：false
+     *
      * @param dequeMap
      * @param rd
      * @return
@@ -360,11 +384,16 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
 
     /**
      * Queue に積んだ分を取り消す
+     *
      * @param dequeMap
      * @param rd
      */
     private void cancelOffer(Map<Integer, Deque<DiagnosisLiteModel>> dequeMap, RegisteredDiagnosisModel rd) {
         Deque<DiagnosisLiteModel> dq = dequeMap.get(System.identityHashCode(rd));
-        if (dq != null) { dq.removeFirst(); }
+        if (dq != null) {
+            dq.removeFirst();
+        }
     }
+
+    private enum PollResult {succeeded, noMore}
 }

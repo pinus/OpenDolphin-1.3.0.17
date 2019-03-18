@@ -14,7 +14,7 @@ import java.util.TreeSet;
 /**
  * SimpleLaboModule
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class SimpleLaboModule {
 
@@ -33,7 +33,9 @@ public class SimpleLaboModule {
 
     private List simpleLaboTests;
 
-    /** Creates a new instance of SimpleLaboModule */
+    /**
+     * Creates a new instance of SimpleLaboModule
+     */
     public SimpleLaboModule() {
     }
 
@@ -142,7 +144,7 @@ public class SimpleLaboModule {
     }
 
     @SuppressWarnings("unchecked")
-	public void addSimpleLaboTest(SimpleLaboTest val) {
+    public void addSimpleLaboTest(SimpleLaboTest val) {
         if (simpleLaboTests == null) {
             simpleLaboTests = new ArrayList();
         }
@@ -229,25 +231,25 @@ public class SimpleLaboModule {
 
         while (iter.hasNext()) {
 
-            specimen = (SimpleLaboSpecimen)iter.next();
+            specimen = (SimpleLaboSpecimen) iter.next();
             //obj[row++][col] = "";
             //obj[row++][col] = specimen.getSpecimenName();
             obj[row++][col] = specimen;
 
             hasSpecimen = false;
             for (int i = 0; i < size; i++) {
-                test = (SimpleLaboTest)simpleLaboTests.get(i);
+                test = (SimpleLaboTest) simpleLaboTests.get(i);
                 if (test.isSpecimen(specimen)) {
                     hasSpecimen = true;
                     break;
                 }
             }
 
-            TreeSet ts = (TreeSet)allTests.getAllTests().get(specimen);
+            TreeSet ts = (TreeSet) allTests.getAllTests().get(specimen);
             Iterator i = ts.iterator();
             while (i.hasNext()) {
 
-                LaboTestItemID testID = (LaboTestItemID)i.next();
+                LaboTestItemID testID = (LaboTestItemID) i.next();
 
                 if (hasSpecimen) {
                     //obj[row++][col] = test.getTestValue(testID);
@@ -311,24 +313,24 @@ public class SimpleLaboModule {
 
             buf = new StringBuffer();
 
-            specimen = (SimpleLaboSpecimen)iter.next();
+            specimen = (SimpleLaboSpecimen) iter.next();
             buf.append((specimen.getSpecimenName()));
             buf.append("\n");
 
             hasSpecimen = false;
             for (int i = 0; i < size; i++) {
-                test = (SimpleLaboTest)simpleLaboTests.get(i);
+                test = (SimpleLaboTest) simpleLaboTests.get(i);
                 if (test.isSpecimen(specimen)) {
                     hasSpecimen = true;
                     break;
                 }
             }
 
-            TreeSet ts = (TreeSet)allTests.getAllTests().get(specimen);
+            TreeSet ts = (TreeSet) allTests.getAllTests().get(specimen);
             Iterator i = ts.iterator();
             while (i.hasNext()) {
 
-                LaboTestItemID testID = (LaboTestItemID)i.next();
+                LaboTestItemID testID = (LaboTestItemID) i.next();
 
                 if (hasSpecimen) {
                     buf.append(test.getTestValue(testID));
@@ -385,7 +387,7 @@ public class SimpleLaboModule {
         if (simpleLaboTests != null) {
 
             for (int i = 0; i < simpleLaboTests.size(); i++) {
-                SimpleLaboTest test = (SimpleLaboTest)simpleLaboTests.get(i);
+                SimpleLaboTest test = (SimpleLaboTest) simpleLaboTests.get(i);
 
                 buf.append(test.toString());
             }

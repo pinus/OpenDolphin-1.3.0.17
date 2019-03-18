@@ -2,13 +2,12 @@ package open.dolphin.helper;
 
 public class GUIDGenerator {
 
+    // initialise the secure random instance
+    private static final java.security.SecureRandom seeder = new java.security.SecureRandom();
     /**
      * Cached per JVM server IP.
      */
     private static String hexServerIP = null;
-
-    // initialise the secure random instance
-    private static final java.security.SecureRandom seeder = new java.security.SecureRandom();
 
     /**
      * A 32 byte GUID generator (Globally Unique ID). These artificial keys

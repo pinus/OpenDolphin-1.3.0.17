@@ -25,11 +25,6 @@ import java.util.List;
  */
 public class EditorFrame extends AbstractMainTool implements Chart {
 
-    // このクラスの２つのモード（状態）でメニューの制御に使用する
-    public enum EditorMode {
-        BROWSER, EDITOR
-    }
-
     // 全インスタンスを保持するリスト
     private static final List<Chart> allEditorFrames = new ArrayList<>(3);
     // このフレームの実のコンテキストチャート
@@ -52,7 +47,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     private ChartMediator mediator;
     // Block GlassPane
     private BlockGlass blockGlass;
-
     /**
      * EditorFrame オブジェクトを生成する.
      */
@@ -66,6 +60,38 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      */
     public static List<Chart> getAllEditorFrames() {
         return Collections.unmodifiableList(allEditorFrames);
+    }
+
+    /**
+     * PatientVisitModel の EditorFrame を前に出す
+     *
+     * @param pvt PatientVisitModel
+     */
+    public static void toFront(PatientVisitModel pvt) {
+        if (pvt == null) {
+            return;
+        }
+        toFront(pvt.getPatient());
+    }
+
+    /**
+     * PatientModel の EditorFrame を前に出す
+     *
+     * @param patient PatientModel
+     */
+    public static void toFront(PatientModel patient) {
+        if (patient == null) {
+            return;
+        }
+        long ptId = patient.getId();
+        for (Chart chart : allEditorFrames) {
+            long id = chart.getPatient().getId();
+            if (ptId == id) {
+                chart.getFrame().setExtendedState(java.awt.Frame.NORMAL);
+                chart.getFrame().toFront();
+                return;
+            }
+        }
     }
 
     public KarteEditor getEditor() {
@@ -115,6 +141,10 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         return pk;
     }
 
+    public Chart getChart() {
+        return realChart;
+    }
+
     /**
      * ChartImpl コンテキストを設定する.
      *
@@ -123,10 +153,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     public void setChart(Chart chartCtx) {
         this.realChart = chartCtx;
         super.setContext(chartCtx.getContext());
-    }
-
-    public Chart getChart() {
-        return realChart;
     }
 
     /**
@@ -280,7 +306,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     /**
      * Menu アクションを制御する.
      *
-     * @param name action name to enable
+     * @param name   action name to enable
      * @param enable enable
      */
     @Override
@@ -530,35 +556,8 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         }
     }
 
-    /**
-     * PatientVisitModel の EditorFrame を前に出す
-     *
-     * @param pvt PatientVisitModel
-     */
-    public static void toFront(PatientVisitModel pvt) {
-        if (pvt == null) {
-            return;
-        }
-        toFront(pvt.getPatient());
-    }
-
-    /**
-     * PatientModel の EditorFrame を前に出す
-     *
-     * @param patient PatientModel
-     */
-    public static void toFront(PatientModel patient) {
-        if (patient == null) {
-            return;
-        }
-        long ptId = patient.getId();
-        for (Chart chart : allEditorFrames) {
-            long id = chart.getPatient().getId();
-            if (ptId == id) {
-                chart.getFrame().setExtendedState(java.awt.Frame.NORMAL);
-                chart.getFrame().toFront();
-                return;
-            }
-        }
+    // このクラスの２つのモード（状態）でメニューの制御に使用する
+    public enum EditorMode {
+        BROWSER, EDITOR
     }
 }

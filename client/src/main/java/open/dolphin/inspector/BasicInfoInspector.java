@@ -18,14 +18,15 @@ import java.util.Objects;
 /**
  * BasicInfoInspector.
  * 名前，年齢，生年月日と住所. 3行バージョン.
+ *
  * @author pns
  */
 public class BasicInfoInspector implements IInspector {
     public static final String NAME = "患者情報";
 
-    private static final Color FONT_COLOR = new Color(20,20,140); // 濃い青
-    private static final Color MALE_COLOR = new Color(230,243,243);
-    private static final Color FEMALE_COLOR = new Color(254,221,242);
+    private static final Color FONT_COLOR = new Color(20, 20, 140); // 濃い青
+    private static final Color MALE_COLOR = new Color(230, 243, 243);
+    private static final Color FEMALE_COLOR = new Color(254, 221, 242);
     private static final Color INDETERMINATE_COLOR = Color.LIGHT_GRAY;
 
     private final Border MALE_BORDER = new NameBorder(MALE_COLOR);
@@ -34,23 +35,21 @@ public class BasicInfoInspector implements IInspector {
     private final Border MALE_BORDER2 = new AgeBorder(MALE_COLOR);
     private final Border FEMALE_BORDER2 = new AgeBorder(FEMALE_COLOR);
     private final Border UNKNOWN_BORDER2 = new AgeBorder(INDETERMINATE_COLOR);
-
+    // Context このインスペクタの親コンテキスト
+    private final ChartImpl context;
     private JLabel nameLabel;
     private JLabel kanaLabel;
     private JLabel ageLabel;
     private JLabel birthdayLabel;
     private JLabel addressLabel;
-
     private JPanel namePanel;
     private JPanel agePanel;
     private JPanel ageLayout;
     private JPanel panel;
 
-    // Context このインスペクタの親コンテキスト
-    private final ChartImpl context;
-
     /**
      * BasicInfoInspector オブジェクトを生成する.
+     *
      * @param parent
      */
     public BasicInfoInspector(PatientInspector parent) {
@@ -143,12 +142,13 @@ public class BasicInfoInspector implements IInspector {
         // 境界線つき
         panel = new JPanel() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void paint(Graphics g) {
                 super.paint(g);
                 g.setColor(IInspector.BORDER_COLOR);
                 //g.drawLine(0, 30, getWidth()-1, 30);
-                g.drawLine(10, getHeight()-1, getWidth()-11, getHeight()-1);
+                g.drawLine(10, getHeight() - 1, getWidth() - 11, getHeight() - 1);
 
             }
         };
@@ -175,6 +175,7 @@ public class BasicInfoInspector implements IInspector {
 
     /**
      * レイウアトのためにこのインスペクタのコンテナパネルを返す.
+     *
      * @return コンテナパネル
      */
     @Override
@@ -231,7 +232,7 @@ public class BasicInfoInspector implements IInspector {
         ageLabel.setText(String.format("%s 歳", age));
 
         SimpleAddressModel address = patient.getAddress();
-        if (Objects.nonNull(address)  && Objects.nonNull(address.getAddress())) {
+        if (Objects.nonNull(address) && Objects.nonNull(address.getAddress())) {
             String addr = StringTool.toZenkakuNumber(address.getAddress());
             addressLabel.setText(addr.replaceAll("北海道", "")); // 北海道は省略
         } else {
@@ -267,7 +268,7 @@ public class BasicInfoInspector implements IInspector {
     private class NameBorder extends AbstractBorder {
         private static final long serialVersionUID = 1L;
 
-        private Insets borderInsets = new Insets(4,8,5,4);
+        private Insets borderInsets = new Insets(4, 8, 5, 4);
         private int r = 10;
         private Color color;
         private int angle;
@@ -288,25 +289,25 @@ public class BasicInfoInspector implements IInspector {
 
             g.setColor(color);
             // 全体を囲む
-            g.fillRoundRect(0, 0, width-1, height-1, r, r);
+            g.fillRoundRect(0, 0, width - 1, height - 1, r, r);
             g.setColor(IInspector.BORDER_COLOR);
-            g.drawRoundRect(0, 0, width-1, height-1, r, r);
+            g.drawRoundRect(0, 0, width - 1, height - 1, r, r);
 
             // 右を角に塗り直す
             if (angle == SwingConstants.RIGHT) {
                 g.setColor(color);
                 g.fillRect(width - r, 0, width - r, height);
                 g.setColor(IInspector.BORDER_COLOR);
-                g.drawLine(width-r, 0, width, 0);
-                g.drawLine(width-r, height-1, width, height-1);
+                g.drawLine(width - r, 0, width, 0);
+                g.drawLine(width - r, height - 1, width, height - 1);
 
             } else {
-            // 左を角に塗り直す
+                // 左を角に塗り直す
                 g.setColor(color);
                 g.fillRect(0, 0, r, height);
                 g.setColor(IInspector.BORDER_COLOR);
                 g.drawLine(0, 0, r, 0);
-                g.drawLine(0, height-1, r, height-1);
+                g.drawLine(0, height - 1, r, height - 1);
             }
 
             g.dispose();

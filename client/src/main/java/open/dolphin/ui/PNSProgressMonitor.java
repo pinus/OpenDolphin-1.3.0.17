@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
  * PNSProgressMonitor
  * ProgressMonitor が，エスケープキーを押してキャンセルした場合 isCanceled() が true にならないのを workaround
  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6357974
+ *
  * @author pns
  */
 public class PNSProgressMonitor extends ProgressMonitor {

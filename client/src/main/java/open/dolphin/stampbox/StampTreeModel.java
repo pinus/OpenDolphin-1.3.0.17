@@ -9,13 +9,14 @@ import javax.swing.tree.TreePath;
 /**
  * スタンプツリーのモデルクラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class StampTreeModel extends DefaultTreeModel {
     private static final long serialVersionUID = -2227174337081687786L;
 
     /**
      * デフォルトコンストラクタ.
+     *
      * @param node
      */
     public StampTreeModel(TreeNode node) {
@@ -24,6 +25,7 @@ public class StampTreeModel extends DefaultTreeModel {
 
     /**
      * ノード名の変更をインターセプトして処理する.
+     *
      * @param path
      * @param newValue
      */

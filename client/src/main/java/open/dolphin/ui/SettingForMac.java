@@ -9,15 +9,17 @@ import javax.swing.*;
 
 /**
  * Mac 用のセッティング.
+ *
  * @author pns
  */
 public class SettingForMac {
-    private SettingForMac() {}
+    private SettingForMac() {
+    }
 
     public static void set(final Dolphin context) {
 
         // apple settings
-        System.setProperty("apple.laf.useScreenMenuBar","true"); // ClientContextStub でも設定しているが，そこだと遅いようだ
+        System.setProperty("apple.laf.useScreenMenuBar", "true"); // ClientContextStub でも設定しているが，そこだと遅いようだ
         // com.apple.eawt.Application の設定
         setMacApplication(context);
 
@@ -52,28 +54,6 @@ public class SettingForMac {
         TouchpadTest.startListening();
     }
 
-    private static class MyLookAndFeel extends com.apple.laf.AquaLookAndFeel {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public UIDefaults getDefaults() {
-            UIDefaults uiDefaults = super.getDefaults();
-
-            uiDefaults.putDefaults(new Object[] {
-                "TextFieldUI", MyTextFieldUI.class.getName(),
-                "PasswordFieldUI", MyPasswordFieldUI.class.getName(),
-                "TableUI", MyTableUI.class.getName(),
-                "ListUI", MyListUI.class.getName(),
-                "TreeUI", MyTreeUI.class.getName(),
-                "ButtonUI", MyButtonUI.class.getName(),
-                "ToggleButtonUI", MyToggleButtonUI.class.getName(),
-                "ComboBoxUI", MyComboBoxUI.class.getName(),
-            });
-
-            return uiDefaults;
-        }
-    }
-
     private static void setMacApplication(final Dolphin context) {
 
         // Mac Application Menu
@@ -88,5 +68,27 @@ public class SettingForMac {
         });
         // 環境設定
         fApplication.setPreferencesHandler(pe -> context.doPreference());
+    }
+
+    private static class MyLookAndFeel extends com.apple.laf.AquaLookAndFeel {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public UIDefaults getDefaults() {
+            UIDefaults uiDefaults = super.getDefaults();
+
+            uiDefaults.putDefaults(new Object[]{
+                    "TextFieldUI", MyTextFieldUI.class.getName(),
+                    "PasswordFieldUI", MyPasswordFieldUI.class.getName(),
+                    "TableUI", MyTableUI.class.getName(),
+                    "ListUI", MyListUI.class.getName(),
+                    "TreeUI", MyTreeUI.class.getName(),
+                    "ButtonUI", MyButtonUI.class.getName(),
+                    "ToggleButtonUI", MyToggleButtonUI.class.getName(),
+                    "ComboBoxUI", MyComboBoxUI.class.getName(),
+            });
+
+            return uiDefaults;
+        }
     }
 }

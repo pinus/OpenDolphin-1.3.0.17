@@ -18,19 +18,18 @@ import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * OIDRequester
  *
- * @author Minagawa,Kazushi
- *
+ * @author Minagawa, Kazushi
  */
 public class OIDGetter extends JPanel {
 
-    private static final long serialVersionUID = 1666003906485274645L;
-
     public static final String NEXT_OID_PROP = "nextOidProp";
-    private static final int MAX_ESTIMATION = 30*1000;
+    private static final long serialVersionUID = 1666003906485274645L;
+    private static final int MAX_ESTIMATION = 30 * 1000;
     private static final int DELAY = 200;
     private static final String PROGRESS_NOTE = "通信テストをしています...";
     private static final String SUCCESS_NOTE = "通信に成功しました。次項ボタンをクリックし次に進むことができます。";
@@ -69,11 +68,11 @@ public class OIDGetter extends JPanel {
             InputStream in = ClientContext.getResourceAsStream("account-make-info.txt");
 //masuda^   UTF-8に変更
             //BufferedReader reader = new BufferedReader(new InputStreamReader(in, "SHIFT_JIS"));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 //masuda$
             String line = null;
             StringBuilder sb = new StringBuilder();
-            while ( (line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 sb.append(line);
                 sb.append("\n");
             }
@@ -84,9 +83,9 @@ public class OIDGetter extends JPanel {
             JTextArea infoArea = new JTextArea();
             infoArea.setEditable(false);
             infoArea.setLineWrap(true);
-            infoArea.setMargin(new Insets(10,10,10,10));
+            infoArea.setMargin(new Insets(10, 10, 10, 10));
             infoArea.setText(sb.toString());
-            JScrollPane scroller = new JScrollPane(infoArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            JScrollPane scroller = new JScrollPane(infoArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
             JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             btnPanel.add(new JLabel("次のボタンをクリックし、通信できるかどうか確認してください。"));

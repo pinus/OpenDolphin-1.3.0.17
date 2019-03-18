@@ -4,7 +4,6 @@ import java.awt.*;
 import java.util.List;
 
 /**
- *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class GridBagComponent {
@@ -28,7 +27,9 @@ public final class GridBagComponent {
     private double colWeight = 0.0;
 
 
-    /** Creates a new instance of GridBagComponent */
+    /**
+     * Creates a new instance of GridBagComponent
+     */
     public GridBagComponent() {
     }
 
@@ -66,7 +67,7 @@ public final class GridBagComponent {
         this.component = component;
     }
 
-    public void setRowCol(int row,int col) {
+    public void setRowCol(int row, int col) {
         setRow(row);
         setCol(col);
     }

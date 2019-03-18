@@ -7,14 +7,20 @@ import open.dolphin.impl.scheam.helper.SchemaUtils;
  * 線を保持する ShapeHolder.
  * Path(0) と Path(1) を使う.
  * DrawArrow を true にセットすると矢印を書く.
+ *
  * @author pns
  */
 public class LineHolder extends ShapeHolderBase {
 
     private boolean drawArrow;
 
-    public void setDrawArrow(boolean b) { drawArrow = b; }
-    public boolean getDrawArrow() { return drawArrow; }
+    public boolean getDrawArrow() {
+        return drawArrow;
+    }
+
+    public void setDrawArrow(boolean b) {
+        drawArrow = b;
+    }
 
     @Override
     public void draw() {
@@ -24,7 +30,9 @@ public class LineHolder extends ShapeHolderBase {
         gc.beginPath();
         gc.moveTo(getPathX(0), getPathY(0));
         gc.lineTo(getPathX(1), getPathY(1));
-        if (drawArrow) { drawArrow(gc); }
+        if (drawArrow) {
+            drawArrow(gc);
+        }
         gc.stroke();
     }
 
@@ -33,11 +41,11 @@ public class LineHolder extends ShapeHolderBase {
         double h = 10; // 矢印部分の長さ
         double x = getPathX(1) - getPathX(0);
         double y = getPathY(1) - getPathY(0);
-        double len = Math.sqrt(x*x + y*y);
-        double lx = h * x/len + w * y/len;
-        double ly = h * y/len - w * x/len;
-        double rx = h * x/len - w * y/len;
-        double ry = h * y/len + w * x/len;
+        double len = Math.sqrt(x * x + y * y);
+        double lx = h * x / len + w * y / len;
+        double ly = h * y / len - w * x / len;
+        double rx = h * x / len - w * y / len;
+        double ry = h * y / len + w * x / len;
 
         gc.moveTo(getPathX(0), getPathY(0));
         gc.lineTo(getPathX(0) + lx, getPathY(0) + ly);
@@ -52,7 +60,8 @@ public class LineHolder extends ShapeHolderBase {
     }
 
     @Override
-    public void rotate(double r) {}
+    public void rotate(double r) {
+    }
 
     @Override
     public boolean contains(double x, double y) {
@@ -63,7 +72,9 @@ public class LineHolder extends ShapeHolderBase {
             double uy = getPathY(1) - getPathY(0);
             double vx = x - getPathX(0);
             double vy = y - getPathY(0);
-            if (SchemaUtils.getDistance(ux, uy, vx, vy) < 10) { return true; }
+            if (SchemaUtils.getDistance(ux, uy, vx, vy) < 10) {
+                return true;
+            }
         }
 
         return false;

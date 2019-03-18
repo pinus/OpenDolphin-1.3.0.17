@@ -2,11 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- *
  * @author pns
  */
 public class Test51 {
-    public static void main (String[] argv) {
+    public static void main(String[] argv) {
         JDialog d = new JDialog();
         d.setModal(true);
 

@@ -28,14 +28,14 @@ public class SchemaHolderTransferHandler extends PNSTransferHandler {
         context.setDraggedCount(1);
         SchemaModel schema = source.getSchema();
         SchemaList list = new SchemaList();
-        list.setSchemaList(new SchemaModel[]{ schema });
+        list.setSchemaList(new SchemaModel[]{schema});
         Transferable tr = new SchemaListTransferable(list);
         return tr;
     }
 
     @Override
     public int getSourceActions(JComponent c) {
-        setDragImage((JLabel)c);
+        setDragImage((JLabel) c);
         return COPY_OR_MOVE;
     }
 

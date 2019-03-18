@@ -101,6 +101,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     /**
      * PatientModel のカルテを開く.
      * PatientSearchImpl, LaboTestImporter
+     *
      * @param patient 対象患者
      */
     public void openKarte(final PatientModel patient) {
@@ -127,13 +128,17 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
                     pvtModel.setDepartment(constarctDept());
                     getContext().openKarte(pvtModel);
 
-                // 来院している場合
+                    // 来院している場合
                 } else {
                     int state = pvtModel.getState();
                     // すでに OPEN ならどっかで開いているということなので編集不可に設定
-                    if (KarteState.isOpen(state)) { openReadOnlyKarte(pvtModel, state); } //
+                    if (KarteState.isOpen(state)) {
+                        openReadOnlyKarte(pvtModel, state);
+                    } //
                     // OPEN でなければ，通常どおりオープン
-                    else { getContext().openKarte(pvtModel); }
+                    else {
+                        getContext().openKarte(pvtModel);
+                    }
                 }
             });
             t.start();
@@ -147,6 +152,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
 
     /**
      * ReadOnly でカルテを開く
+     *
      * @param pvtModel
      * @param state
      */
@@ -159,8 +165,8 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
         // ダイアログで確認する
         String ptName = pvtModel.getPatientName();
         String message = "<html>" +
-            "<h3>"+ ptName + " 様のカルテは他の端末で編集中です</h3>" +
-            "<p><nobr>閲覧のみで、編集はできません<nobr></p></html>";
+                "<h3>" + ptName + " 様のカルテは他の端末で編集中です</h3>" +
+                "<p><nobr>閲覧のみで、編集はできません<nobr></p></html>";
 
         int ans = JSheet.showConfirmDialog(getUI(), message, "", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
         if (ans == JOptionPane.OK_OPTION) {
@@ -171,6 +177,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
 
     /**
      * カルテを開くことが可能かどうかを返す.
+     *
      * @param patient
      * @return 開くことが可能な時 true
      */
@@ -195,6 +202,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
 
     /**
      * ニセの受付番号を連番で作成
+     *
      * @return
      */
     public int getNewPvtNumber() {
@@ -203,25 +211,28 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
 
     /**
      * MainComponent (WaitingList, PatientSearch, LaboImporter) で使われる ContextListener.
+     *
      * @param <T>
      */
     public abstract class ContextListener<T> extends MouseAdapter {
 
+        private final JPopupMenu contextMenu = new JPopupMenu();
         private JTable table;
         private ObjectReflectTableModel<T> tableModel;
-        private final JPopupMenu contextMenu = new JPopupMenu();
 
         public ContextListener() {
         }
 
         /**
          * {@code ObjectReflectTableModel<T>} に格納されている T からカルテを開く.
+         *
          * @param value
          */
         public abstract void openKarte(T value);
 
         /**
          * PopupMenu を表示する.
+         *
          * @param e
          */
         public abstract void maybeShowPopup(MouseEvent e);
@@ -276,7 +287,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
                     }
                 }
                 // 選択されていない場所でクリックした場合は選択し直す
-                if (!isSelected){
+                if (!isSelected) {
                     table.getSelectionModel().setSelectionInterval(clickedRow, clickedRow);
                     requestFocus(table);
                 }
@@ -286,6 +297,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
 
         /**
          * フォーカス要求.
+         *
          * @param c
          */
         private void requestFocus(Component c) {

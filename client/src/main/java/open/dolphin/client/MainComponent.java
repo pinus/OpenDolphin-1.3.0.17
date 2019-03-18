@@ -3,7 +3,6 @@ package open.dolphin.client;
 import javax.swing.*;
 
 /**
- *
  * @author kazm
  */
 public interface MainComponent extends MainTool {

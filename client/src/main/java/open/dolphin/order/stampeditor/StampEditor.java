@@ -86,15 +86,6 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * TablePanel をセットする.
-     *
-     * @param tablePanel ItemTablePanel
-     */
-    public void setTablePanel(ItemTablePanel tablePanel) {
-        this.tablePanel = tablePanel;
-    }
-
-    /**
      * TablePanel を返す.
      *
      * @return ItemTablePanel
@@ -103,12 +94,30 @@ public class StampEditor extends JPanel implements IStampEditor {
         return tablePanel;
     }
 
-    public void setMasterSearchPanel(MasterSearchPanel panel) {
-        masterSearchPanel = panel;
+    /**
+     * TablePanel をセットする.
+     *
+     * @param tablePanel ItemTablePanel
+     */
+    public void setTablePanel(ItemTablePanel tablePanel) {
+        this.tablePanel = tablePanel;
     }
 
     public MasterSearchPanel getMasterSearchPanel() {
         return masterSearchPanel;
+    }
+
+    public void setMasterSearchPanel(MasterSearchPanel panel) {
+        masterSearchPanel = panel;
+    }
+
+    /**
+     * セットされたエンティティーを返す.
+     *
+     * @return Entity
+     */
+    public String getEntity() {
+        return entity;
     }
 
     /**
@@ -120,15 +129,6 @@ public class StampEditor extends JPanel implements IStampEditor {
     public void setEntity(String entity) {
         this.entity = entity;
         tablePanel.setEntity(entity);
-    }
-
-    /**
-     * セットされたエンティティーを返す.
-     *
-     * @return Entity
-     */
-    public String getEntity() {
-        return entity;
     }
 
     /**

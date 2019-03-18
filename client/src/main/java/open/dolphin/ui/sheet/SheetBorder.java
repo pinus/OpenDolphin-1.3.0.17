@@ -6,7 +6,6 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- *
  * @author pns
  */
 public class SheetBorder extends AbstractBorder {

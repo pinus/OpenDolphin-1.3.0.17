@@ -124,21 +124,6 @@ public class Graphics2DHook extends Graphics2D {
     }
 
     @Override
-    public void setComposite(Composite comp) {
-        g2d.setComposite(comp);
-    }
-
-    @Override
-    public void setPaint(Paint paint) {
-        g2d.setPaint(paint);
-    }
-
-    @Override
-    public void setStroke(Stroke s) {
-        g2d.setStroke(s);
-    }
-
-    @Override
     public void setRenderingHint(RenderingHints.Key hintKey, Object hintValue) {
         g2d.setRenderingHint(hintKey, hintValue);
     }
@@ -149,11 +134,6 @@ public class Graphics2DHook extends Graphics2D {
     }
 
     @Override
-    public void setRenderingHints(Map<?, ?> hints) {
-        g2d.setRenderingHints(hints);
-    }
-
-    @Override
     public void addRenderingHints(Map<?, ?> hints) {
         g2d.addRenderingHints(hints);
     }
@@ -161,6 +141,11 @@ public class Graphics2DHook extends Graphics2D {
     @Override
     public RenderingHints getRenderingHints() {
         return g2d.getRenderingHints();
+    }
+
+    @Override
+    public void setRenderingHints(Map<?, ?> hints) {
+        g2d.setRenderingHints(hints);
     }
 
     @Override
@@ -329,13 +314,13 @@ public class Graphics2DHook extends Graphics2D {
     }
 
     @Override
-    public void setTransform(AffineTransform Tx) {
-        g2d.setTransform(Tx);
+    public AffineTransform getTransform() {
+        return g2d.getTransform();
     }
 
     @Override
-    public AffineTransform getTransform() {
-        return g2d.getTransform();
+    public void setTransform(AffineTransform Tx) {
+        g2d.setTransform(Tx);
     }
 
     @Override
@@ -344,13 +329,18 @@ public class Graphics2DHook extends Graphics2D {
     }
 
     @Override
+    public void setPaint(Paint paint) {
+        g2d.setPaint(paint);
+    }
+
+    @Override
     public Composite getComposite() {
         return g2d.getComposite();
     }
 
     @Override
-    public void setBackground(Color color) {
-        g2d.setBackground(color);
+    public void setComposite(Composite comp) {
+        g2d.setComposite(comp);
     }
 
     @Override
@@ -359,8 +349,18 @@ public class Graphics2DHook extends Graphics2D {
     }
 
     @Override
+    public void setBackground(Color color) {
+        g2d.setBackground(color);
+    }
+
+    @Override
     public Stroke getStroke() {
         return g2d.getStroke();
+    }
+
+    @Override
+    public void setStroke(Stroke s) {
+        g2d.setStroke(s);
     }
 
     @Override

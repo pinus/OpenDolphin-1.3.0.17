@@ -49,17 +49,16 @@ import java.util.prefs.Preferences;
  */
 public class KartePane implements DocumentListener, MouseListener, CaretListener, PropertyChangeListener, KarteComposite<JTextPane> {
 
-    // KartePane の状態　(_TEXT はテキストが選択された状態)
-    private enum State {
-        NONE, SOA, SOA_TEXT, SCHEMA, P, P_TEXT, STAMP
-    }
-
-    private State curState;
-
-    // 文書に付けるタイトルを自動で取得する時の長さ
-    private static final int TITLE_LENGTH = 15;
     // 編集不可時の背景色
     protected static final Color UNEDITABLE_COLOR = new Color(227, 250, 207);
+    // 文書に付けるタイトルを自動で取得する時の長さ
+    private static final int TITLE_LENGTH = 15;
+    // KartePane の UndoManager
+    private final TextComponentUndoManager undoManager;
+    private final UndoableEditListener undoListener;
+    // ロガー
+    private final Logger logger = Logger.getLogger(KartePane.class);
+    private State curState;
     // JTextPane
     private JTextPane textPane;
     // SOA または P のロール
@@ -88,12 +87,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     private ComponentHolder<?>[] draggedStamp;
     private int draggedCount;
     private int droppedCount;
-    // KartePane の UndoManager
-    private final TextComponentUndoManager undoManager;
-    private final UndoableEditListener undoListener;
-    // ロガー
-    private final Logger logger = Logger.getLogger(KartePane.class);
-
     public KartePane() {
         undoManager = new TextComponentUndoManager();
         undoListener = undoManager::listener;
@@ -113,15 +106,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
-     * このPaneのオーナを設定する.
-     *
-     * @param parent KarteEditorオーナ
-     */
-    public void setParent(ChartDocument parent) {
-        this.parent = parent;
-    }
-
-    /**
      * このPaneのオーナを返す.
      *
      * @return KarteEditorオーナ
@@ -131,12 +115,12 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
-     * 編集不可を表すカラーを設定する.
+     * このPaneのオーナを設定する.
      *
-     * @param uneditableColor 編集不可を表すカラー
+     * @param parent KarteEditorオーナ
      */
-    public void setUneditableColor(Color uneditableColor) {
-        this.uneditableColor = uneditableColor;
+    public void setParent(ChartDocument parent) {
+        this.parent = parent;
     }
 
     /**
@@ -149,12 +133,12 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
-     * このPaneで生成するDocumentModelの文書IDを設定する.
+     * 編集不可を表すカラーを設定する.
      *
-     * @param docId 文書ID
+     * @param uneditableColor 編集不可を表すカラー
      */
-    protected void setDocId(String docId) {
-        this.docId = docId;
+    public void setUneditableColor(Color uneditableColor) {
+        this.uneditableColor = uneditableColor;
     }
 
     /**
@@ -167,12 +151,30 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
+     * このPaneで生成するDocumentModelの文書IDを設定する.
+     *
+     * @param docId 文書ID
+     */
+    protected void setDocId(String docId) {
+        this.docId = docId;
+    }
+
+    /**
      * ChartMediatorを返す.
      *
      * @return ChartMediator
      */
     protected ChartMediator getMediator() {
         return mediator;
+    }
+
+    /**
+     * このPaneのロールを返す.
+     *
+     * @return SOAまたはPのロール
+     */
+    public String getMyRole() {
+        return myRole;
     }
 
     /**
@@ -185,12 +187,12 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
-     * このPaneのロールを返す.
+     * JTextPaneを返す.
      *
-     * @return SOAまたはPのロール
+     * @return JTextPane
      */
-    public String getMyRole() {
-        return myRole;
+    public JTextPane getTextPane() {
+        return textPane;
     }
 
     /**
@@ -212,15 +214,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
-     * JTextPaneを返す.
-     *
-     * @return JTextPane
-     */
-    public JTextPane getTextPane() {
-        return textPane;
-    }
-
-    /**
      * JTextPaneのStyledDocumentを返す.
      *
      * @return JTextPaneのStyledDocument
@@ -230,21 +223,21 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     }
 
     /**
-     * 初期長を設定する.
-     *
-     * @param initialLength Documentの初期長
-     */
-    public void setInitialLength(int initialLength) {
-        this.initialLength = initialLength;
-    }
-
-    /**
      * 初期長を返す.
      *
      * @return Documentの初期長
      */
     public int getInitialLength() {
         return initialLength;
+    }
+
+    /**
+     * 初期長を設定する.
+     *
+     * @param initialLength Documentの初期長
+     */
+    public void setInitialLength(int initialLength) {
+        this.initialLength = initialLength;
     }
 
     /**
@@ -1164,5 +1157,10 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
 
     public void redo() {
         undoManager.redo();
+    }
+
+    // KartePane の状態　(_TEXT はテキストが選択された状態)
+    private enum State {
+        NONE, SOA, SOA_TEXT, SCHEMA, P, P_TEXT, STAMP
     }
 }

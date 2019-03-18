@@ -23,27 +23,46 @@ import java.util.prefs.Preferences;
  */
 public abstract class AbstractCodeHelper {
 
-    /** キーワードの境界となる文字 */
-    public static final String[] WORD_SEPARATOR = {" ", "　", "，", "," , "、", "。", ".", "：", ":", "；", ";", "\n", "\t"};
-    /** 対応する ChartImpl */
+    /**
+     * キーワードの境界となる文字
+     */
+    public static final String[] WORD_SEPARATOR = {" ", "　", "，", ",", "、", "。", ".", "：", ":", "；", ";", "\n", "\t"};
+    /**
+     * 対応する ChartImpl
+     */
     private final ChartImpl realChart;
-    /** ChartMediator */
+    /**
+     * ChartMediator
+     */
     private final ChartMediator mediator;
-    /** KartePane の JTextPane */
+    /**
+     * KartePane の JTextPane
+     */
     private final JTextPane textPane;
-    /** DiagnosisDocument の JTable */
+    /**
+     * DiagnosisDocument の JTable
+     */
     private final DiagnosisDocumentTable diagTable;
-    /** 補完リストメニュー */
-    private JPopupMenu popup;
-    /** キーワードの開始位置 */
-    private int start;
-    /** キーワードの終了位置 */
-    private int end;
-    /** Preferences */
+    /**
+     * Preferences
+     */
     private final Preferences prefs = Preferences.userNodeForPackage(AbstractCodeHelper.class);
+    /**
+     * 補完リストメニュー
+     */
+    private JPopupMenu popup;
+    /**
+     * キーワードの開始位置
+     */
+    private int start;
+    /**
+     * キーワードの終了位置
+     */
+    private int end;
 
     /**
      * Creates a new instance of CodeHelper.
+     *
      * @param kartePane
      * @param chartMediator
      */
@@ -54,7 +73,7 @@ public abstract class AbstractCodeHelper {
         realChart = (ChartImpl) ((EditorFrame) kartePane.getParent().getContext()).getChart();
         diagTable = realChart.getDiagnosisDocument().getDiagnosisTable();
 
-        int modifier = prefs.get("modifier", "ctrl").equals("ctrl")? KeyEvent.CTRL_DOWN_MASK : KeyEvent.META_DOWN_MASK;
+        int modifier = prefs.get("modifier", "ctrl").equals("ctrl") ? KeyEvent.CTRL_DOWN_MASK : KeyEvent.META_DOWN_MASK;
 
         textPane.addKeyListener(new KeyAdapter() {
             @Override
@@ -112,6 +131,7 @@ public abstract class AbstractCodeHelper {
 
     /**
      * popup menu を構築する.
+     *
      * @param text キーワード
      */
     protected abstract void buildPopup(String text);
@@ -129,7 +149,7 @@ public abstract class AbstractCodeHelper {
             int pos = textPane.getCaretPosition();
             Rectangle r = textPane.modelToView(pos);
 
-            popup.show (textPane, r.x, r.y);
+            popup.show(textPane, r.x, r.y);
 
         } catch (BadLocationException e) {
             e.printStackTrace(System.err);
@@ -138,13 +158,16 @@ public abstract class AbstractCodeHelper {
 
     /**
      * 引数の entityに対応するスタンプの popup を作る.
+     *
      * @param entity
      */
     protected void buildEntityPopup(String entity) {
 
         StampBoxPlugin stampBox = mediator.getStampBox();
         StampTree tree = stampBox.getStampTree(entity);
-        if (tree == null) { return; }
+        if (tree == null) {
+            return;
+        }
 
         popup = new JPopupMenu();
 
@@ -155,6 +178,7 @@ public abstract class AbstractCodeHelper {
 
     /**
      * SearchText に一致するスタンプの popup を作る.
+     *
      * @param trees
      * @param searchText
      */
@@ -169,6 +193,7 @@ public abstract class AbstractCodeHelper {
 
     /**
      * StampTree menu action.
+     *
      * @param e
      */
     public void importStamp(StampTreeMenuEvent e) {
@@ -199,6 +224,7 @@ public abstract class AbstractCodeHelper {
 
     /**
      * ChartMediator を返す.
+     *
      * @return
      */
     protected ChartMediator getMediator() {
@@ -207,6 +233,7 @@ public abstract class AbstractCodeHelper {
 
     /**
      * Preferences を返す.
+     *
      * @return
      */
     protected Preferences getPreferences() {

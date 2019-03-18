@@ -18,9 +18,9 @@ public class ComponentBoundsManager implements ComponentListener {
     private final Component target;
     private final Point defaultLocation;
     private final Dimension defaultSize;
+    private final Logger logger;
     private Preferences prefs;
     private String key;
-    private final Logger logger;
 
     /**
      * @param component - target component

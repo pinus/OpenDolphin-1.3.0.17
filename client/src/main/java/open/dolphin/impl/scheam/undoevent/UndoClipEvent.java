@@ -6,7 +6,6 @@ import open.dolphin.impl.scheam.SchemaLayer;
 import open.dolphin.impl.scheam.UndoEvent;
 
 /**
- *
  * @author pns
  */
 public class UndoClipEvent implements UndoEvent {

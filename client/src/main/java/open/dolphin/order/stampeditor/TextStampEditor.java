@@ -18,21 +18,19 @@ import java.awt.*;
 
 /**
  * TextStampEditor.
- * @author  pns
+ *
+ * @author pns
  */
 public final class TextStampEditor extends JPanel implements IStampEditor<ModuleModel> {
     private static final long serialVersionUID = 1L;
-
+    // ItemTablePanel.java の stampNameField.setBackground と同じ色
+    private static final Color STAMP_NAME_FIELD_BACKGROUND = new Color(251, 239, 128);
     private String title; // Dialog に表示されるタイトル
-
     private ValidListener validListener;
     private JTextPane textPane;
     private JTextField headerField;
     private boolean isValidModel = false;
     private String entity;
-    // ItemTablePanel.java の stampNameField.setBackground と同じ色
-    private static final Color STAMP_NAME_FIELD_BACKGROUND = new Color(251,239,128);
-
     private TextComponentUndoManager paneUndoManager;
     private TextComponentUndoManager fieldUndoManager;
 
@@ -48,7 +46,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
         setTitle(ClaimConst.EntityNameMap.get(entity));
 
         textPane = new JTextPane();
-        textPane.setMargin(new Insets(7,7,7,7));
+        textPane.setMargin(new Insets(7, 7, 7, 7));
         textPane.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkState());
         headerField = new JTextField();
         headerField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkState());
@@ -61,7 +59,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
         fieldUndoManager = TextComponentUndoManager.getManager(headerField);
 
         HorizontalPanel headerPanel = new HorizontalPanel();
-        headerPanel.setPreferredSize(new Dimension(10,30));
+        headerPanel.setPreferredSize(new Dimension(10, 30));
 
         JLabel label = new JLabel(" スタンプ名：");
 
@@ -99,13 +97,13 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
     public void dispose() {
     }
 
+    public String getEntity() {
+        return entity;
+    }
+
     @Override
     public void setEntity(String entity) {
         this.entity = entity;
-    }
-
-    public String getEntity() {
-        return entity;
     }
 
     @Override
@@ -139,6 +137,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
 
     /**
      * 編集したテキストを返す.
+     *
      * @return ModuleModel
      */
     @Override
@@ -160,6 +159,7 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
 
     /**
      * 編集するテキストを設定する.
+     *
      * @param val ModuleModel
      */
     @Override

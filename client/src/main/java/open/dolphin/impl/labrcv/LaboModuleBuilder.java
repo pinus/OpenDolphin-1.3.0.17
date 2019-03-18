@@ -27,30 +27,30 @@ import java.util.List;
 public class LaboModuleBuilder {
 
     //private static final Namespace xhtml = Namespace.getNamespace("xhtml","http://www.w3.org/1999/xhtml");
-    private static final Namespace mmlCm = Namespace.getNamespace("mmlCm","http://www.medxml.net/MML/SharedComponent/Common/1.0");
-    private static final Namespace mmlNm = Namespace.getNamespace("mmlNm","http://www.medxml.net/MML/SharedComponent/Name/1.0");
-    private static final Namespace mmlFc = Namespace.getNamespace("mmlFc","http://www.medxml.net/MML/SharedComponent/Facility/1.0");
-    private static final Namespace mmlDp = Namespace.getNamespace("mmlDp","http://www.medxml.net/MML/SharedComponent/Department/1.0");
-    private static final Namespace mmlAd = Namespace.getNamespace("mmlAd","http://www.medxml.net/MML/SharedComponent/Address/1.0");
-    private static final Namespace mmlPh = Namespace.getNamespace("mmlPh","http://www.medxml.net/MML/SharedComponent/Phone/1.0");
-    private static final Namespace mmlPsi = Namespace.getNamespace("mmlPsi","http://www.medxml.net/MML/SharedComponent/PersonalizedInfo/1.0");
-    private static final Namespace mmlCi = Namespace.getNamespace("mmlCi","http://www.medxml.net/MML/SharedComponent/CreatorInfo/1.0");
-    private static final Namespace mmlPi = Namespace.getNamespace("mmlPi","http://www.medxml.net/MML/ContentModule/PatientInfo/1.0");
+    private static final Namespace mmlCm = Namespace.getNamespace("mmlCm", "http://www.medxml.net/MML/SharedComponent/Common/1.0");
+    private static final Namespace mmlNm = Namespace.getNamespace("mmlNm", "http://www.medxml.net/MML/SharedComponent/Name/1.0");
+    private static final Namespace mmlFc = Namespace.getNamespace("mmlFc", "http://www.medxml.net/MML/SharedComponent/Facility/1.0");
+    private static final Namespace mmlDp = Namespace.getNamespace("mmlDp", "http://www.medxml.net/MML/SharedComponent/Department/1.0");
+    private static final Namespace mmlAd = Namespace.getNamespace("mmlAd", "http://www.medxml.net/MML/SharedComponent/Address/1.0");
+    private static final Namespace mmlPh = Namespace.getNamespace("mmlPh", "http://www.medxml.net/MML/SharedComponent/Phone/1.0");
+    private static final Namespace mmlPsi = Namespace.getNamespace("mmlPsi", "http://www.medxml.net/MML/SharedComponent/PersonalizedInfo/1.0");
+    private static final Namespace mmlCi = Namespace.getNamespace("mmlCi", "http://www.medxml.net/MML/SharedComponent/CreatorInfo/1.0");
+    private static final Namespace mmlPi = Namespace.getNamespace("mmlPi", "http://www.medxml.net/MML/ContentModule/PatientInfo/1.0");
     //private static final Namespace mmlBc = Namespace.getNamespace("mmlBc","http://www.medxml.net/MML/ContentModule/BaseClinic/1.0");
     //private static final Namespace mmlFcl = Namespace.getNamespace("mmlFcl","http://www.medxml.net/MML/ContentModule/FirstClinic/1.0");
-    private static final Namespace mmlHi = Namespace.getNamespace("mmlHi","http://www.medxml.net/MML/ContentModule/HealthInsurance/1.1");
+    private static final Namespace mmlHi = Namespace.getNamespace("mmlHi", "http://www.medxml.net/MML/ContentModule/HealthInsurance/1.1");
     //private static final Namespace mmlLs = Namespace.getNamespace("mmlLs","http://www.medxml.net/MML/ContentModule/Lifestyle/1.0");
     //private static final Namespace mmlPc = Namespace.getNamespace("mmlPc","http://www.medxml.net/MML/ContentModule/ProgressCourse/1.0");
     //private static final Namespace mmlRd = Namespace.getNamespace("mmlRd","http://www.medxml.net/MML/ContentModule/RegisteredDiagnosis/1.0");
     //private static final Namespace mmlSg = Namespace.getNamespace("mmlSg","http://www.medxml.net/MML/ContentModule/Surgery/1.0");
     //private static final Namespace mmlSm = Namespace.getNamespace("mmlSm","http://www.medxml.net/MML/ContentModule/Summary/1.0");
-    private static final Namespace mmlLb = Namespace.getNamespace("mmlLb","http://www.medxml.net/MML/ContentModule/test/1.0");
+    private static final Namespace mmlLb = Namespace.getNamespace("mmlLb", "http://www.medxml.net/MML/ContentModule/test/1.0");
     //private static final Namespace mmlRp = Namespace.getNamespace("mmlRp","http://www.medxml.net/MML/ContentModule/report/1.0");
     //private static final Namespace mmlRe = Namespace.getNamespace("mmlRe","http://www.medxml.net/MML/ContentModule/Referral/1.0");
-    private static final Namespace mmlSc = Namespace.getNamespace("mmlSc","http://www.medxml.net/MML/SharedComponent/Security/1.0");
-    private static final Namespace claim = Namespace.getNamespace("claim","http://www.medxml.net/claim/claimModule/2.1");
+    private static final Namespace mmlSc = Namespace.getNamespace("mmlSc", "http://www.medxml.net/MML/SharedComponent/Security/1.0");
+    private static final Namespace claim = Namespace.getNamespace("claim", "http://www.medxml.net/claim/claimModule/2.1");
     //private static final Namespace claimA = Namespace.getNamespace("claimA","http://www.medxml.net/claim/claimAmountModule/2.1");
-
+    private final boolean DEBUG = false;
     private String patientId;
     private String patientIdType;
     private String patientIdTypeTableId;
@@ -63,7 +63,6 @@ public class LaboModuleBuilder {
     private String encoding;
     private LaboDelegater laboDelegater;
     private Logger logger;
-    private final boolean DEBUG = false;
 
     public LaboModuleBuilder() {
     }
@@ -88,11 +87,14 @@ public class LaboModuleBuilder {
         this.laboDelegater = laboDelegater;
     }
 
-    public List<LaboModuleValue> getProduct() { return allModules; }
+    public List<LaboModuleValue> getProduct() {
+        return allModules;
+    }
 
     /**
      * 引数のMML検査結果ファイルをパースしその中に含まれる.
      * 検査結果モジュールのリストを返す.
+     *
      * @param file MML検査結果ファイル
      * @return パースしたモジュール LaboModuleValue のリスト
      */
@@ -102,14 +104,14 @@ public class LaboModuleBuilder {
             setLogger(ClientContext.getLaboTestLogger());
         }
 
-        if (file == null ) {
+        if (file == null) {
             return null;
         }
 
         try {
             String name = file.getName();
             logger.info(name + " のパースを開始します");
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),encoding))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding))) {
                 parse(reader);
             }
 
@@ -123,6 +125,7 @@ public class LaboModuleBuilder {
 
     /**
      * MML検査結果ファイルをパースする.
+     *
      * @param files MML検査結果ファイルの配列
      * @return
      */
@@ -132,7 +135,7 @@ public class LaboModuleBuilder {
             setLogger(ClientContext.getLaboTestLogger());
         }
 
-        List<File>parseFiles = files;
+        List<File> parseFiles = files;
         if (parseFiles == null || parseFiles.isEmpty()) {
             logger.warn("パースするファイルがありません");
             return null;
@@ -169,7 +172,7 @@ public class LaboModuleBuilder {
                 }
 
                 try ( // 入力ストリームを生成しパースする
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding))) {
+                      BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding))) {
                     parse(reader);
                     // パースの例外をここで全てキャッチする
                 }
@@ -216,6 +219,7 @@ public class LaboModuleBuilder {
 
     /**
      * 入力ストリームの検査結果をパースする.
+     *
      * @param reader
      * @throws java.io.IOException
      */
@@ -235,6 +239,7 @@ public class LaboModuleBuilder {
     /**
      * MMLヘッダーをパースする.
      * 取得するのは MasterIdの mmlCm:Id 患者IDのみ.
+     *
      * @param header ヘッダー要素
      */
     private void parseHeader(Element header) {
@@ -258,6 +263,7 @@ public class LaboModuleBuilder {
     /**
      * MML Bodyをパースする.
      * ModuleItemのDocInfoの uuid, confirmdateを取得する.
+     *
      * @param body Body要素
      */
     private void parseBody(Element body) {
@@ -326,6 +332,7 @@ public class LaboModuleBuilder {
     /**
      * Content要素をパースする.
      * クライアント情報，ラボセンター情報，検体情報，検査項目情報を取得する.
+     *
      * @param testModule 検査結果があるコンテント要素
      */
     private void parseTestModule(Element testModule) {
@@ -412,7 +419,7 @@ public class LaboModuleBuilder {
                     // 検体情報をパースする
                     laboSpecimen = new LaboSpecimenValue();
                     laboModule.addLaboSpecimen(laboSpecimen);
-                    laboSpecimen.setLaboModule(laboModule);	// 関係を設定する
+                    laboSpecimen.setLaboModule(laboModule);    // 関係を設定する
                     break;
                 case "mmlLb:specimenName":
                     // 検体名を取得する
@@ -433,7 +440,7 @@ public class LaboModuleBuilder {
                     laboItem = new LaboItemValue();
                     //laboItem.setId(GUIDGenerator.generate(laboItem)); // EJB3.0で変更
                     laboSpecimen.addLaboItem(laboItem);
-                    laboItem.setLaboSpecimen(laboSpecimen);	// 関係を設定する
+                    laboItem.setLaboSpecimen(laboSpecimen);    // 関係を設定する
                     break;
                 case "mmlLb:itemName":
                     // 検査項目名をパースする

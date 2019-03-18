@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 /**
  * object の hashCode で row が取れる JTable
  * 複数選択で作業中に行挿入があった場合にも対応できる
+ *
  * @author pns
  */
 public class DiagnosisDocumentTable extends JTable {
@@ -24,7 +25,7 @@ public class DiagnosisDocumentTable extends JTable {
     public int[] convertViewRowsToHashArray(int[] viewRows) {
         int[] hashArray = new int[viewRows.length];
 
-        for(int i=0; i < viewRows.length; i++) {
+        for (int i = 0; i < viewRows.length; i++) {
             int row = convertRowIndexToModel(viewRows[i]);
             hashArray[i] = System.identityHashCode(model.getObject(row));
         }
@@ -33,7 +34,9 @@ public class DiagnosisDocumentTable extends JTable {
 
     public int convertHashToModelRow(int hash) {
         for (int row = 0; row < model.getObjectCount(); row++) {
-            if (System.identityHashCode(model.getObject(row)) == hash) { return row; }
+            if (System.identityHashCode(model.getObject(row)) == hash) {
+                return row;
+            }
         }
         // 見つからなかった
         return -1;

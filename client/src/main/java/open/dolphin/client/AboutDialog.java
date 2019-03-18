@@ -18,6 +18,7 @@ public class AboutDialog extends JDialog {
 
     /**
      * Creates new AboutDialog.
+     *
      * @param f
      * @param title
      * @param imageFile
@@ -39,7 +40,7 @@ public class AboutDialog extends JDialog {
             public void mouseClicked(MouseEvent e) {
                 if (imageLabel.getIcon().equals(icon1)) {
                     imageLabel.setIcon(icon2);
-                } else  {
+                } else {
                     imageLabel.setIcon(icon1);
                 }
             }
@@ -58,8 +59,8 @@ public class AboutDialog extends JDialog {
         String[] copyrightList = ClientContext.getStringArray("copyrightString");
         buf = new StringBuilder();
         buf.append("<html>");
-        for (int i=0; i<=4; i++) {
-            buf.append((i==0)? "": "<br>");
+        for (int i = 0; i <= 4; i++) {
+            buf.append((i == 0) ? "" : "<br>");
             buf.append(copyrightList[i]);
         }
         buf.append("</html>");
@@ -104,21 +105,21 @@ public class AboutDialog extends JDialog {
 
     private JScrollPane getMoreInfoPane() {
         JTextArea area =
-            new JTextArea(
-                "This product also contains copyrighted materials as follows: "+
-                "OpenDolphin 1.3-2.2 Copyright (C) Digital Globe Inc.,  " +
-                "OpenDolphin 1.4m-2.3m Copyright (C) Masuda Naika Clinic,  " +
-                "Fugue Icons 2.4.2 Copyright (C) Yusuke Kamiyamane, " +
-                "Aesthetica Icons 1.12 (http://dryicons.com), " +
-                "Icons from Tango Desktop Project, " +
-                "DefaultIcon ver 2.0 Copyright (c) 2010-2011 Apostolos Paschalidis interactivemania" +
-                "", 5, 20);
+                new JTextArea(
+                        "This product also contains copyrighted materials as follows: " +
+                                "OpenDolphin 1.3-2.2 Copyright (C) Digital Globe Inc.,  " +
+                                "OpenDolphin 1.4m-2.3m Copyright (C) Masuda Naika Clinic,  " +
+                                "Fugue Icons 2.4.2 Copyright (C) Yusuke Kamiyamane, " +
+                                "Aesthetica Icons 1.12 (http://dryicons.com), " +
+                                "Icons from Tango Desktop Project, " +
+                                "DefaultIcon ver 2.0 Copyright (c) 2010-2011 Apostolos Paschalidis interactivemania" +
+                                "", 5, 20);
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
         JScrollPane scroller =
                 new JScrollPane(area,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                        ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         return scroller;
     }
 

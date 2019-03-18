@@ -6,13 +6,15 @@ import java.io.IOException;
 /**
  * Tranferable class of the StampTree.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class StampTreeTransferable implements Transferable, ClipboardOwner {
 
-    /** Data Flavor of this class */
+    /**
+     * Data Flavor of this class
+     */
     public static DataFlavor stampTreeNodeFlavor
-    	= new DataFlavor(open.dolphin.stampbox.StampTreeNode.class, "Stamp Tree Node");
+            = new DataFlavor(open.dolphin.stampbox.StampTreeNode.class, "Stamp Tree Node");
 
     public static final DataFlavor[] flavors = {StampTreeTransferable.stampTreeNodeFlavor};
 
@@ -20,6 +22,7 @@ public final class StampTreeTransferable implements Transferable, ClipboardOwner
 
     /**
      * Creates new StampTreeTransferable.
+     *
      * @param node
      */
     public StampTreeTransferable(StampTreeNode node) {
@@ -32,13 +35,13 @@ public final class StampTreeTransferable implements Transferable, ClipboardOwner
     }
 
     @Override
-    public boolean isDataFlavorSupported(DataFlavor flavor)  {
-        return flavor.equals(stampTreeNodeFlavor) ? true : false;
+    public boolean isDataFlavorSupported(DataFlavor flavor) {
+        return flavor.equals(stampTreeNodeFlavor);
     }
 
     @Override
     public synchronized Object getTransferData(DataFlavor flavor)
-	    throws UnsupportedFlavorException, IOException {
+            throws UnsupportedFlavorException, IOException {
 
         if (flavor.equals(stampTreeNodeFlavor)) {
             return node;

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Director to build StampTree XML data.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class StampTreeXmlDirector {
 
@@ -21,6 +21,7 @@ public class StampTreeXmlDirector {
 
     /**
      * スタンプツリー全体をXMLにエンコードする.
+     *
      * @param allTrees StampTreeのリスト
      * @return XML
      */
@@ -43,6 +44,7 @@ public class StampTreeXmlDirector {
 
     /**
      * 一つのツリーを XML にエンコードする
+     *
      * @param tree StampTree
      * @throws IOException
      */

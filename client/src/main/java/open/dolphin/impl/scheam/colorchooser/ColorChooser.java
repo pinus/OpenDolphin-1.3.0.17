@@ -21,17 +21,17 @@ import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
  * ColorChooser for line and fill color.
+ *
  * @author pns
  */
 public class ColorChooser extends Popup {
     private static final int GAP = 8;
     private final SchemaEditorProperties properties;
-    private Color origFillColor;
-    private double origFillBlur;
-
     private final ColorPalette linePalette;
     private final ColorPalette fillPalette;
     private final Slider blurSlider;
+    private Color origFillColor;
+    private double origFillBlur;
 
     public ColorChooser() {
         properties = SchemaEditorImpl.getProperties();
@@ -56,7 +56,7 @@ public class ColorChooser extends Popup {
 
         // ラベル，スライダー付きの fill palette
         VBox fillPalettePane = new VBox();
-        fillPalettePane.setSpacing(GAP/2);
+        fillPalettePane.setSpacing(GAP / 2);
         fillPalettePane.setAlignment(Pos.TOP_CENTER);
         fillPalettePane.getChildren().addAll(label, fillPalette, blurSlider);
 
@@ -69,7 +69,7 @@ public class ColorChooser extends Popup {
         // line palette 用の pane を作って上記を並べる
         VBox linePalettePane = new VBox();
         linePalettePane.setAlignment(Pos.TOP_CENTER);
-        linePalettePane.setSpacing(GAP/2);
+        linePalettePane.setSpacing(GAP / 2);
         linePalettePane.getChildren().addAll(label, linePalette, infoPane);
 
         // fill palette と line palette を並べる
@@ -77,7 +77,7 @@ public class ColorChooser extends Popup {
         Separator separator = new Separator();
         separator.setOrientation(Orientation.VERTICAL);
         separator.setValignment(VPos.CENTER);
-        separator.setPrefWidth(GAP*2);
+        separator.setPrefWidth(GAP * 2);
 
         palettePane.getChildren().addAll(linePalettePane, separator, fillPalettePane);
 
@@ -112,7 +112,7 @@ public class ColorChooser extends Popup {
         getContent().add(pane);
 
         // pane をつかんで移動できるようにする
-        pane.addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>(){
+        pane.addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>() {
             private double x, y;
             private double toX = -1, toY = -1;
 
@@ -127,8 +127,8 @@ public class ColorChooser extends Popup {
                         toY = ColorChooser.this.getY();
 
                     } else {
-                        toX += ( t.getScreenX() - x );
-                        toY += ( t.getScreenY() - y );
+                        toX += (t.getScreenX() - x);
+                        toY += (t.getScreenY() - y);
                         ColorChooser.this.setX(toX);
                         ColorChooser.this.setY(toY);
                     }
@@ -146,6 +146,7 @@ public class ColorChooser extends Popup {
 
     /**
      * 位置補正して show.
+     *
      * @param source
      */
     public void show(Node source) {
@@ -160,7 +161,7 @@ public class ColorChooser extends Popup {
             Point2D p = SchemaUtils.getScreenLocation(source);
             Bounds b = source.getBoundsInLocal();
 
-            show(source, p.getX() + b.getWidth()/2, p.getY() + b.getHeight() - 16);
+            show(source, p.getX() + b.getWidth() / 2, p.getY() + b.getHeight() - 16);
 
             properties.valueChangingProperty().set(true);
         }
@@ -208,14 +209,21 @@ public class ColorChooser extends Popup {
             add(fillLabel, 1, 2);
             add(blurLabel, 1, 3, 4, 1);
 
-            add(lRed, 2, 1); add(lGreen, 3, 1); add(lBlue, 4, 1); add(lOpacity, 5, 1);
-            add(fRed, 2, 2); add(fGreen, 3, 2); add(fBlue, 4, 2); add(fOpacity, 5, 2);
+            add(lRed, 2, 1);
+            add(lGreen, 3, 1);
+            add(lBlue, 4, 1);
+            add(lOpacity, 5, 1);
+            add(fRed, 2, 2);
+            add(fGreen, 3, 2);
+            add(fBlue, 4, 2);
+            add(fOpacity, 5, 2);
             add(blur, 5, 3);
 
             properties.lineColorProperty().addListener((ObservableValue<? extends Color> ov, Color t, Color col) -> setValue(lRed, lGreen, lBlue, lOpacity, col));
             properties.fillColorProperty().addListener((ObservableValue<? extends Color> ov, Color t, Color col) -> setValue(fRed, fGreen, fBlue, fOpacity, col));
-            properties.fillBlurProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number b) -> setValue(blur, (double)b));
+            properties.fillBlurProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number b) -> setValue(blur, (double) b));
         }
+
         private Label buildLabel() {
             Label label = new Label();
             label.setPrefWidth(28);
@@ -223,12 +231,14 @@ public class ColorChooser extends Popup {
             label.setFont(font);
             return label;
         }
+
         private void setValue(Label red, Label green, Label blue, Label opacity, Color c) {
-            red.setText(String.format("%d", (int)(c.getRed()*255)));
-            green.setText(String.format("%d", (int)(c.getGreen()*255)));
-            blue.setText(String.format("%d", (int)(c.getBlue()*255)));
+            red.setText(String.format("%d", (int) (c.getRed() * 255)));
+            green.setText(String.format("%d", (int) (c.getGreen() * 255)));
+            blue.setText(String.format("%d", (int) (c.getBlue() * 255)));
             opacity.setText(String.format("%.1f", c.getOpacity()));
         }
+
         private void setValue(Label l, double d) {
             l.setText(String.format("%.1f", d));
         }

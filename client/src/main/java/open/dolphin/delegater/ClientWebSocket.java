@@ -3,7 +3,6 @@ package open.dolphin.delegater;
 import javax.websocket.*;
 
 /**
- *
  * @author pns
  */
 @ClientEndpoint

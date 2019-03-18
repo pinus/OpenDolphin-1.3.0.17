@@ -30,9 +30,9 @@ import java.util.stream.Stream;
  */
 public class MenuSupport implements MenuListener {
 
-    private ActionMap actions;
     private final Object[] chains = new Object[4];
     private final Logger logger = ClientContext.getBootLogger();
+    private ActionMap actions;
 
     public MenuSupport(Object owner) {
         setDefaultChains(owner);

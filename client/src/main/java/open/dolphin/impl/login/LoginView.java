@@ -10,6 +10,7 @@ import java.util.prefs.Preferences;
 
 /**
  * LoginView.
+ *
  * @author pns
  */
 public class LoginView extends JFrame {
@@ -104,12 +105,12 @@ public class LoginView extends JFrame {
 
     private JPanel createFieldCombo(String labelText, JTextComponent comp) {
         // size 指定
-        comp.setMaximumSize(new Dimension(500,TEXT_HEIGHT));
-        comp.setMinimumSize(new Dimension(0,TEXT_HEIGHT));
+        comp.setMaximumSize(new Dimension(500, TEXT_HEIGHT));
+        comp.setMinimumSize(new Dimension(0, TEXT_HEIGHT));
 
         JLabel label = new JLabel(labelText);
         label.setHorizontalAlignment(JLabel.RIGHT);
-        label.setPreferredSize(new Dimension(100, TEXT_HEIGHT+10));
+        label.setPreferredSize(new Dimension(100, TEXT_HEIGHT + 10));
         label.setOpaque(false);
 
         JPanel panel = new JPanel();

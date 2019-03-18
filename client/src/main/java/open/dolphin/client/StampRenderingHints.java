@@ -6,7 +6,7 @@ import java.awt.*;
  * StampRenderingHints.
  *
  * @author Minagawa, Kazushi
- * @autho pns
+ * @author pns
  */
 public class StampRenderingHints {
 
@@ -17,7 +17,8 @@ public class StampRenderingHints {
     private Color commentColor;
     private int border = 0;
     private int cellSpacing = 0;
-    private int cellPadding = System.getProperty("os.name").toLowerCase().startsWith("mac")? 3 : 0;
+    private int cellPadding = System.getProperty("os.name").toLowerCase().startsWith("mac") ? 3 : 0;
+    private int width;
 
     public int getFontSize() {
         return fontSize;
@@ -99,14 +100,12 @@ public class StampRenderingHints {
         }
     }
 
-    private int width ;
+    public int getWidth() {
+        return width;
+    }
 
     public void setWidth(int width) {
         this.width = width;
-    }
-
-    public int getWidth() {
-        return width;
     }
 
     public void setCommentColor(Color color) {
@@ -114,7 +113,10 @@ public class StampRenderingHints {
     }
 
     public String getCommentColorAs16String() {
-        if (commentColor == null) { return getForegroundAs16String(); }
-        else { return Integer.toHexString(commentColor.getRGB()).substring(2); }
+        if (commentColor == null) {
+            return getForegroundAs16String();
+        } else {
+            return Integer.toHexString(commentColor.getRGB()).substring(2);
+        }
     }
 }

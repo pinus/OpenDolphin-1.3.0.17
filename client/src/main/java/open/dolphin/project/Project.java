@@ -11,55 +11,55 @@ import java.util.prefs.Preferences;
 /**
  * プロジェクト情報管理クラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
-public class Project  {
+public class Project {
 
     // Prpject Name
-    public static final String PROJECT_NAME		= "name";
+    public static final String PROJECT_NAME = "name";
 
     // USER
-    public static final String USER_TYPE		 = "userType";
-    public static final String USER_ID 			 = "userId";
-    public static final String USER_PASSWORD 	 = "userPassword";
-    public static final String FACILITY_ID 		 = "facilityId";
-    public static final String SAVE_PASSWORD     = "savepassword";
+    public static final String USER_TYPE = "userType";
+    public static final String USER_ID = "userId";
+    public static final String USER_PASSWORD = "userPassword";
+    public static final String FACILITY_ID = "facilityId";
+    public static final String SAVE_PASSWORD = "savepassword";
 
     // SERVER
-    public static final String HOST_ADDRESS 	 = "hostAddress";
-    public static final String HOST_PORT 		 = "hostPort";
+    public static final String HOST_ADDRESS = "hostAddress";
+    public static final String HOST_PORT = "hostPort";
 
     // CLAIM
-    public static final String SEND_CLAIM 		 = "sendClaim";
-    public static final String SEND_CLAIM_SAVE   = "sendClaimSave";
-    public static final String SEND_CLAIM_TMP 	 = "sendClaimTmp";
+    public static final String SEND_CLAIM = "sendClaim";
+    public static final String SEND_CLAIM_SAVE = "sendClaimSave";
+    public static final String SEND_CLAIM_TMP = "sendClaimTmp";
     public static final String SEND_CLAIM_MODIFY = "sendClaimModify";
-    public static final String SEND_DIAGNOSIS 	 = "sendDiagnosis";
+    public static final String SEND_DIAGNOSIS = "sendDiagnosis";
 
     // ソフトウェア更新
-    public static final String USE_PROXY		 = "useProxy";
-    public static final String PROXY_HOST		 = "proxyHost";
-    public static final String PROXY_PORT		 = "proxyPort";
-    public static final String LAST_MODIFIED  	 = "lastModify";
+    public static final String USE_PROXY = "useProxy";
+    public static final String PROXY_HOST = "proxyHost";
+    public static final String PROXY_PORT = "proxyPort";
+    public static final String LAST_MODIFIED = "lastModify";
 
     // インスペクタのメモ位置
-    public static final String INSPECTOR_MEMO_LOCATION  = "inspectorMemoLocation";
+    public static final String INSPECTOR_MEMO_LOCATION = "inspectorMemoLocation";
 
     // インスペクタの locationByPlatform 属性
-    public static final String LOCATION_BY_PLATFORM     = "locationByPlatform";
+    public static final String LOCATION_BY_PLATFORM = "locationByPlatform";
 
     // 文書履歴
-    public static final String DOC_HISTORY_ASCENDING 	= "docHistory.ascending";
+    public static final String DOC_HISTORY_ASCENDING = "docHistory.ascending";
     public static final String DOC_HISTORY_SHOWMODIFIED = "docHistory.showModified";
-    public static final String DOC_HISTORY_FETCHCOUNT 	= "docHistory.fetchCount";
-    public static final String DOC_HISTORY_PERIOD 	= "docHistory.period";
-    public static final String KARTE_SCROLL_DIRECTION   = "karte.scroll.direction";
-    public static final String DOUBLE_KARTE             = "karte.double";
+    public static final String DOC_HISTORY_FETCHCOUNT = "docHistory.fetchCount";
+    public static final String DOC_HISTORY_PERIOD = "docHistory.period";
+    public static final String KARTE_SCROLL_DIRECTION = "karte.scroll.direction";
+    public static final String DOUBLE_KARTE = "karte.double";
 
     // 病名
-    public static final String DIAGNOSIS_ASCENDING 	= "diagnosis.ascending";
-    public static final String DIAGNOSIS_PERIOD 	= "diagnosis.period";
-    public static final String OFFSET_OUTCOME_DATE 	= "diagnosis.offsetOutcomeDate";
+    public static final String DIAGNOSIS_ASCENDING = "diagnosis.ascending";
+    public static final String DIAGNOSIS_PERIOD = "diagnosis.period";
+    public static final String OFFSET_OUTCOME_DATE = "diagnosis.offsetOutcomeDate";
 
     // 検体検査
     public static final String LABOTEST_PERIOD = "laboTest.period";
@@ -74,32 +74,25 @@ public class Project  {
     public static final String KARTE_SHOW_CONFIRM_AT_SAVE = "karte.showConfirmAtSave";
     public static final String KARTE_PRINT_COUNT = "karte.printCount";
     public static final String KARTE_SAVE_ACTION = "karte.saveAction";
-
-    // ユーザの利用形式
-    public enum UserType {ASP_MEMBER, ASP_TESTER, ASP_DEV, FACILITY_USER, UNKNOWN, EXPIRED};
-
     //スクロール速度設定
     public static final String SCROLL_UNIT_KARTE = "scroll.unit.karte";
     public static final String SCROLL_UNIT_TABLE = "scroll.unit.table";
     public static final String SCROLL_UNIT_STAMP = "scroll.unit.stamp";
-
     // pvt チェック間隔
     public static final String PVT_CHECK_INTERVAL = "pvt.check.interval";
-
     // コンソールのログファイル出力
     public static final String REDIRECT_CONSOLE = "redirect.console";
-
     private static ProjectStub stub;
 
     public Project() {
     }
 
-    public static void setProjectStub(ProjectStub p) {
-        stub = p;
-    }
-
     public static ProjectStub getProjectStub() {
         return stub;
+    }
+
+    public static void setProjectStub(ProjectStub p) {
+        stub = p;
     }
 
     public static UserType getUserType() {
@@ -133,7 +126,7 @@ public class Project  {
     public static boolean isReadOnly() {
         String licenseCode = stub.getUserModel().getLicenseModel().getLicense();
         String userId = stub.getUserModel().getUserId();
-        return ( licenseCode.equals("doctor") || userId.equals("lasmanager") ) ? false : true;
+        return !licenseCode.equals("doctor") && !userId.equals("lasmanager");
     }
 
     public static String getUserId() {
@@ -164,20 +157,22 @@ public class Project  {
         return stub.getHostPort();
     }
 
-    //
-    // CLAIM
-    //
-
     /**
      * 診療行為の送信を行うかどうかを返す.
+     *
      * @return 行うとき true
      */
     public static boolean getSendClaim() {
         return stub.getSendClaim();
     }
 
+    //
+    // CLAIM
+    //
+
     /**
      * 保存時に送信を行うかどうかを返す.
+     *
      * @return 行うとき true
      */
     public static boolean getSendClaimSave() {
@@ -186,6 +181,7 @@ public class Project  {
 
     /**
      * 仮保存時に診療行為の送信を行うかどうかを返す.
+     *
      * @return 行うとき true
      */
     public static boolean getSendClaimTmp() {
@@ -194,6 +190,7 @@ public class Project  {
 
     /**
      * 修正時に診療行為の送信を行うかどうかを返す.
+     *
      * @return 行うとき true
      */
     public static boolean getSendClaimModify() {
@@ -202,6 +199,7 @@ public class Project  {
 
     /**
      * 病名の送信を行うかどうかを返す.
+     *
      * @return 行うとき true
      */
     public static boolean getSendDiagnosis() {
@@ -226,6 +224,7 @@ public class Project  {
 
     /**
      * ProjectFactoryを返す.
+     *
      * @return Project毎に異なる部分の情報を生成するためのFactory
      */
     public static AbstractProjectFactory getProjectFactory() {
@@ -250,5 +249,10 @@ public class Project  {
 
     public static void clear() {
         stub.clear();
+    }
+
+    // ユーザの利用形式
+    public enum UserType {
+        ASP_MEMBER, ASP_TESTER, ASP_DEV, FACILITY_USER, UNKNOWN, EXPIRED
     }
 }

@@ -13,7 +13,8 @@ import java.io.IOException;
 
 /**
  * MasterItemTransferHandler.
- * @author Minagawa,Kazushi
+ *
+ * @author Minagawa, Kazushi
  * @author pns
  */
 public class MasterItemTransferHandler extends PNSTransferHandler {
@@ -69,7 +70,7 @@ public class MasterItemTransferHandler extends PNSTransferHandler {
                 shouldRemove = (dropTable == sourceTable);
 
                 if (shouldRemove) {
-                    tableModel.moveRow(fromIndex, (toIndex>fromIndex)? --toIndex : toIndex);
+                    tableModel.moveRow(fromIndex, (toIndex > fromIndex) ? --toIndex : toIndex);
                 } else {
                     tableModel.addRow(toIndex, dropItem);
                 }

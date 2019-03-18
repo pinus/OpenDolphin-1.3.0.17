@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 /**
  * Dolphin Client のコンテキストクラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class ClientContextStub {
 
@@ -38,6 +38,7 @@ public final class ClientContextStub {
     private final String RESOURCE = "Dolphin_ja";
     private final ResourceBundle resBundle;
     private final ClassLoader pluginClassLoader;
+    private final String DOCUMENT_LOCATION = isMac() ? "/Volumes/documents/" : "Z:\\";
     private Logger bootLogger;
     private Logger part11Logger;
     private Logger delegaterLogger;
@@ -46,8 +47,6 @@ public final class ClientContextStub {
     private Logger claimLogger;
     private Logger mmlLogger;
     private HashMap<String, Color> eventColorTable;
-
-    private final String DOCUMENT_LOCATION = isMac()? "/Volumes/documents/" : "Z:\\";
 
     /**
      * ClientContextStub オブジェクトを生成する.
@@ -116,7 +115,9 @@ public final class ClientContextStub {
         bootLogger.info("Velocity を初期化しました");
     }
 
-    public String getDocumentDirectory() { return DOCUMENT_LOCATION; }
+    public String getDocumentDirectory() {
+        return DOCUMENT_LOCATION;
+    }
 
     public ClassLoader getPluginClassLoader() {
         return pluginClassLoader;
@@ -198,13 +199,15 @@ public final class ClientContextStub {
                     sb.append(getString("lib.mac.dir"));
                 } else {
                     sb.append(getString("lib.dir"));
-                }   ret = sb.toString();
+                }
+                ret = sb.toString();
                 break;
             case "dolphin.jar":
                 if (isMac()) {
                     sb.append(File.separator);
                     sb.append(getString("dolphin.jar.mac.dir"));
-                }   ret = sb.toString();
+                }
+                ret = sb.toString();
                 break;
             case "security":
                 sb.append(File.separator);
@@ -561,7 +564,9 @@ public final class ClientContextStub {
     private void listJars(List<String> list, File dir) {
         File[] files = dir.listFiles();
         // plugin ディレクトリをなくしたので
-        if (files == null) { return; }
+        if (files == null) {
+            return;
+        }
 
         for (File file : files) {
             if (file.isDirectory()) {

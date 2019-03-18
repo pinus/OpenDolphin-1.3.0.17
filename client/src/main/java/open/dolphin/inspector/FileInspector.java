@@ -29,16 +29,13 @@ public class FileInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.関連文書;
 
     private static final FileFilter FF_REGULAR = file -> !file.getName().startsWith(".");
-
+    private final ChartImpl context;
+    private final Logger logger;
     private JPanel filePanel;
     private JList<File> list;
-    private final ChartImpl context;
     private DefaultListModel<File> model;
-
     private BadgeListener badgeListener;
     private int tabIndex;
-
-    private final Logger logger;
 
     /**
      * FileInspectorオブジェクトを生成する.
@@ -77,6 +74,10 @@ public class FileInspector implements IInspector {
         String subfolder = String.format(formatStr, index10k, (index10k + 1), index1k, (index1k + 1));
 
         return ClientContext.getDocumentDirectory() + subfolder + id;
+    }
+
+    public static void main(String[] arg) {
+        System.out.println(getDocumentPath("000125"));
     }
 
     @Override
@@ -255,9 +256,5 @@ public class FileInspector implements IInspector {
             sb.append(str);
             return sb.toString();
         }
-    }
-
-    public static void main(String[] arg) {
-        System.out.println(getDocumentPath("000125"));
     }
 }

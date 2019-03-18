@@ -23,16 +23,14 @@ public class Autosave implements Runnable {
     private final static int INITIAL_DELAY = 1;
     private final static String SUFFIX = "open.dolphin";
     private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
-
-    private AutosaveModel autosaveModel;
-    private File tmpFile;
     private final KarteEditor editor;
-    private boolean dirty = true;
-
-    // 自動セーブのタイマー
-    private ScheduledExecutorService executor;
     // Logger
     private final Logger logger = Logger.getLogger(Autosave.class);
+    private AutosaveModel autosaveModel;
+    private File tmpFile;
+    private boolean dirty = true;
+    // 自動セーブのタイマー
+    private ScheduledExecutorService executor;
 
     public Autosave(KarteEditor e) {
         editor = e;
@@ -49,37 +47,6 @@ public class Autosave implements Runnable {
     private static File getTemporaryFile(String patientId, String docId) {
         String path = String.format("%s%s-%s.%s", TMP_DIR, patientId, docId, SUFFIX);
         return new File(path);
-    }
-
-    /**
-     * 編集中カルテの記録を開始する.
-     */
-    public void start() {
-        String patientId = editor.getContext().getPatient().getPatientId();
-        String docId = editor.getDocument().getDocInfo().getDocId();
-
-        tmpFile = getTemporaryFile(patientId, docId);
-        logger.info(tmpFile);
-
-        executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleWithFixedDelay(this, INITIAL_DELAY, INTERVAL, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 編集中カルテの記録を終了し, TemporaryFile を消去する.
-     */
-    public void stop() {
-        executor.shutdown();
-        tmpFile.delete();
-    }
-
-    /**
-     * KarteEditor から Dirty 情報を受け取る.
-     *
-     * @param newDirty new dirty flag
-     */
-    public void setDirty(boolean newDirty) {
-        dirty = newDirty;
     }
 
     /**
@@ -165,6 +132,37 @@ public class Autosave implements Runnable {
                     break;
             }
         });
+    }
+
+    /**
+     * 編集中カルテの記録を開始する.
+     */
+    public void start() {
+        String patientId = editor.getContext().getPatient().getPatientId();
+        String docId = editor.getDocument().getDocInfo().getDocId();
+
+        tmpFile = getTemporaryFile(patientId, docId);
+        logger.info(tmpFile);
+
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleWithFixedDelay(this, INITIAL_DELAY, INTERVAL, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 編集中カルテの記録を終了し, TemporaryFile を消去する.
+     */
+    public void stop() {
+        executor.shutdown();
+        tmpFile.delete();
+    }
+
+    /**
+     * KarteEditor から Dirty 情報を受け取る.
+     *
+     * @param newDirty new dirty flag
+     */
+    public void setDirty(boolean newDirty) {
+        dirty = newDirty;
     }
 
     /**

@@ -40,17 +40,15 @@ import java.util.prefs.Preferences;
 
 /**
  * 受付リスト.
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.,
  * @author pns
  */
 public class WaitingListImpl extends AbstractMainComponent {
 
-    private static final String NAME = "受付リスト";
-
     // 来院情報テーブルの年齢カラム
     public static final int AGE_COLUMN = 5;
     public static final int BIRTHDAY_COLUMN = 6;
-
     // アイコン
     protected static final ImageIcon DONE_ICON = GUIConst.ICON_CHECK_LIGHTBLUE_16;
     protected static final ImageIcon OPEN_ICON = GUIConst.ICON_BOOK_OPEN_16;
@@ -60,19 +58,17 @@ public class WaitingListImpl extends AbstractMainComponent {
     protected static final ImageIcon OPEN_USED_NONE = GUIConst.ICON_USER_WHITE_16;
     protected static final ImageIcon OPEN_USED_SAVE = GUIConst.ICON_USER_BLUE_16;
     protected static final ImageIcon OPEN_USED_UNFINISHED = GUIConst.ICON_USER_RED_16;
-
+    protected static final Color SHOSHIN_COLOR = new Color(180, 220, 240); //青っぽい色
+    protected static final Color KARTE_EMPTY_COLOR = new Color(250, 200, 160); //茶色っぽい色
+    protected static final Color DIAGNOSIS_EMPTY_COLOR = new Color(243, 255, 15); //黄色
+    private static final String NAME = "受付リスト";
     // Font
     private static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
     private static final Font SMALL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 9);
-
     // JTableレンダラ用のカラー
-    private static final Color MALE_COLOR = new Color(230,243,243);
-    private static final Color FEMALE_COLOR = new Color(254,221,242);
-    private static final Color CANCEL_PVT_COLOR = new Color(128,128,128);
-    protected static final Color SHOSHIN_COLOR = new Color(180,220,240); //青っぽい色
-    protected static final Color KARTE_EMPTY_COLOR = new Color(250,200,160); //茶色っぽい色
-    protected static final Color DIAGNOSIS_EMPTY_COLOR = new Color(243,255,15); //黄色
-
+    private static final Color MALE_COLOR = new Color(230, 243, 243);
+    private static final Color FEMALE_COLOR = new Color(254, 221, 242);
+    private static final Color CANCEL_PVT_COLOR = new Color(128, 128, 128);
     // テーブルの row height
     private static final int ROW_HEIGHT = 18;
 
@@ -178,7 +174,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         JLabel legend = view.getLegendLbl();
         legend.setIcon(GUIConst.ICON_QUESTION_16);
         legend.setText("");
-        view.getLegendLbl().addMouseListener(new MouseAdapter(){
+        view.getLegendLbl().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JPopupMenu legend = new LegendPopup();
@@ -187,7 +183,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         });
 
         // 来院テーブル用のパラメータ
-        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+        List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" 受付", Integer.class, "getNumber"),
                 new PNSTriple<>("　患者 ID", String.class, "getPatientId"),
                 new PNSTriple<>("　来院時間", String.class, "getPvtDateTrimDate"),
@@ -200,20 +196,21 @@ public class WaitingListImpl extends AbstractMainComponent {
                 new PNSTriple<>(" 予約", String.class, "getAppointment"),
                 new PNSTriple<>("状態", Integer.class, "getState")
         );
-        int[] columnWidth = {34,68,72,140,40,50,100,75,50,40,30};
+        int[] columnWidth = {34, 68, 72, 140, 40, 50, 100, 75, 50, 40, 30};
 
         // 生成する
         pvtTable = view.getTable();
         pvtTableModel = new ObjectReflectTableModel<PatientVisitModel>(reflectList) {
             private static final long serialVersionUID = 1L;
+
             @Override
             public Object getValueAt(int row, int col) {
                 Object obj = super.getValueAt(row, col);
 
-                switch(col) {
+                switch (col) {
                     case BIRTHDAY_COLUMN:
                         // 元号表示切り替え
-                        return ageDisplay? ModelUtils.toNengo((String)obj) : obj;
+                        return ageDisplay ? ModelUtils.toNengo((String) obj) : obj;
 
                     default:
                         return obj;
@@ -232,11 +229,11 @@ public class WaitingListImpl extends AbstractMainComponent {
             // ASCENDING -> DESENDING -> 初期状態 と切り替える
             @Override
             public void toggleSortOrder(int column) {
-                if(column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
+                if (column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
                     List<RowSorter.SortKey> keys = new ArrayList<>(getSortKeys());
-                    if(!keys.isEmpty()) {
+                    if (!keys.isEmpty()) {
                         RowSorter.SortKey sortKey = keys.get(0);
-                        if(sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {
+                        if (sortKey.getColumn() == column && sortKey.getSortOrder() == SortOrder.DESCENDING) {
                             setSortKeys(null);
                             return;
                         }
@@ -249,7 +246,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         // 年齢コラム 32.10 の型式をソートできるようにする
         sorter.setComparator(AGE_COLUMN, Comparator.comparing(x -> {
-            String[] age = ((String)x).split("\\.");
+            String[] age = ((String) x).split("\\.");
             int y = Integer.valueOf(age[0]); // 歳
             int m = Integer.valueOf(age[1]); // ヶ月
             return 100 * y + m;
@@ -257,10 +254,10 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         // 生年月日コラム
         sorter.setComparator(BIRTHDAY_COLUMN,
-                Comparator.comparing(x -> ageDisplay? Gengo.toSeireki((String)x) : (String)x));
+                Comparator.comparing(x -> ageDisplay ? Gengo.toSeireki((String) x) : (String) x));
 
         // コラム幅の設定
-        for (int i = 0; i <columnWidth.length; i++) {
+        for (int i = 0; i < columnWidth.length; i++) {
             TableColumn column = pvtTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(columnWidth[i]);
             if (i != 3 && i != 7) { //固定幅
@@ -293,7 +290,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         setCheckInterval(checkInterval);
         // 来院数を設定する
         setPvtCount(0);
-   }
+    }
 
     /**
      * コンポーネントにイベントハンドラーを登録し相互に接続する.
@@ -311,13 +308,13 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         // ListSelectionListener を組み込む
         pvtTable.getSelectionModel().addListSelectionListener(e -> {
-            if (! e.getValueIsAdjusting()) {
+            if (!e.getValueIsAdjusting()) {
                 int[] rows = pvtTable.getSelectedRows();
                 if (rows == null) {
                     setSelectedPvt(null);
                 } else {
                     PatientVisitModel[] patients = new PatientVisitModel[rows.length];
-                    for (int i=0; i < rows.length; i++) {
+                    for (int i = 0; i < rows.length; i++) {
                         rows[i] = pvtTable.convertRowIndexToModel(rows[i]);
                         patients[i] = pvtTableModel.getObject(rows[i]);
                     }
@@ -347,13 +344,16 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * 選択されている来院情報の患者オブジェクトを返す.
      * 複数行対応 by pns
+     *
      * @return 患者オブジェクト
      */
     public PatientModel[] getPatinet() {
-        if (selectedPvt == null || selectedPvt.length == 0) { return null; }
+        if (selectedPvt == null || selectedPvt.length == 0) {
+            return null;
+        }
 
         PatientModel[] pm = new PatientModel[selectedPvt.length];
-        for (int i=0; i < selectedPvt.length; i++) {
+        for (int i = 0; i < selectedPvt.length; i++) {
             pm[i] = selectedPvt[i].getPatient();
         }
         return pm;
@@ -361,6 +361,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 性別レンダラかどうかを返す.
+     *
      * @return 性別レンダラの時 true
      */
     public boolean isSexRenderer() {
@@ -380,6 +381,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 来院情報を取得する日を設定する.
+     *
      * @param date 取得する日
      */
     private void setOperationDate(Date date) {
@@ -390,6 +392,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 来院情報をチェックした時刻を設定する.
+     *
      * @param date チェックした時刻
      */
     private void setCheckedTime(Date date) {
@@ -400,6 +403,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 来院情報のチェック間隔(Timer delay)を設定する.
+     *
      * @param interval チェック間隔 sec
      */
     public void setCheckInterval(int interval) {
@@ -416,12 +420,14 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 来院数を設定する.
+     *
      * @param cnt 来院数
      */
     public void setPvtCount(int cnt) {
         pvtCount = cnt;
         setPvtCount();
     }
+
     /**
      * 来院数，待人数，待時間表示
      */
@@ -461,7 +467,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         view.getCountLbl().setText(String.format("来院数%d人，待ち%d人，待ち時間 %s", pvtCount, waitingCount, waitingTime));
 
         // PNSBadgeTabbedPane に待ち人数を伝える
-        PNSBadgeTabbedPane pane = ((Dolphin)getContext()).getTabbedPane();
+        PNSBadgeTabbedPane pane = ((Dolphin) getContext()).getTabbedPane();
         BadgeEvent e = new BadgeEvent(this);
         e.setBadgeNumber(waitingCount);
         e.setTabIndex(pane.indexOfTab(getName()));
@@ -469,12 +475,13 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         // Dock のアイコンにバッジを出す
         com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
-        app.setDockIconBadge(waitingCount == 0? null: String.valueOf(waitingCount));
+        app.setDockIconBadge(waitingCount == 0 ? null : String.valueOf(waitingCount));
     }
 
     /**
      * テーブル及び靴アイコンの enable/diable 制御を行う.
      * 複数行選択対応 by pns
+     *
      * @param busy pvt 検索中は true
      */
     public void setBusy(boolean busy) {
@@ -488,7 +495,7 @@ public class WaitingListImpl extends AbstractMainComponent {
             getContext().getGlassPane().setText("");
             getContext().unblock();
             if (saveSelectedIndex != null && saveSelectedIndex.length != 0) {
-                for (int i=0; i < saveSelectedIndex.length; i++) {
+                for (int i = 0; i < saveSelectedIndex.length; i++) {
                     pvtTable.getSelectionModel().addSelectionInterval(saveSelectedIndex[i], saveSelectedIndex[i]);
                 }
             }
@@ -498,6 +505,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * 選択されている来院情報を設定返す.
      * 複数行選択対応 by pns
+     *
      * @return 選択されている来院情報
      */
     public PatientVisitModel[] getSelectedPvt() {
@@ -507,6 +515,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * 選択された来院情報を設定する.
      * 複数行選択対応 by pns
+     *
      * @param selectedPvt
      */
     public void setSelectedPvt(PatientVisitModel[] selectedPvt) {
@@ -535,6 +544,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 指定されたカルテを開く.
+     *
      * @param pvtModel
      */
     public void openKarte(final PatientVisitModel pvtModel) {
@@ -562,7 +572,9 @@ public class WaitingListImpl extends AbstractMainComponent {
                     openReadOnlyKarte(pvtModel, state);
                 }
                 // OPEN でなければ，通常どおりオープン （Dolphin#openKarte を呼ぶ）
-                else  { getContext().openKarte(pvtModel); }
+                else {
+                    getContext().openKarte(pvtModel);
+                }
                 setBusy(false);
                 // startCheckTimer(); // openKarte すると ChartImpl が open するので，updateState が必ず呼ばれるので，そちらで startCheckTimer される
             };
@@ -579,6 +591,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * Read Only でカルテを開く.
+     *
      * @param pvtModel
      * @param state
      */
@@ -595,10 +608,10 @@ public class WaitingListImpl extends AbstractMainComponent {
         String[] options = {"閲覧のみ", "強制的に編集", "キャンセル"};
 
         JOptionPane pane = new JOptionPane(
-            "<html>" +
-            "<h3>"+ ptName + " 様のカルテは他の端末で編集中です</h3>" +
-            "<p><nobr>強制的に編集した場合、後から保存したカルテが最新カルテになります<nobr></p></html>",
-            JOptionPane.WARNING_MESSAGE);
+                "<html>" +
+                        "<h3>" + ptName + " 様のカルテは他の端末で編集中です</h3>" +
+                        "<p><nobr>強制的に編集した場合、後から保存したカルテが最新カルテになります<nobr></p></html>",
+                JOptionPane.WARNING_MESSAGE);
         pane.setOptions(options);
         pane.setInitialValue(options[0]);
         pane.putClientProperty("Quaqua.OptionPane.destructiveOption", 2);
@@ -615,14 +628,16 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         while (!cc.isEmpty()) {
             List<Component> stack = new ArrayList<>();
-            for (Component c: cc) {
+            for (Component c : cc) {
                 if (c instanceof JButton) {
                     JButton button = (JButton) c;
                     String name = button.getText();
-                    if (options[1].equals(name)) { tmpForce = button; }
+                    if (options[1].equals(name)) {
+                        tmpForce = button;
+                    }
 
                 } else if (c instanceof JComponent) {
-                    components = ((JComponent)c).getComponents();
+                    components = ((JComponent) c).getComponents();
                     stack.addAll(java.util.Arrays.asList(components));
                 }
             }
@@ -666,7 +681,9 @@ public class WaitingListImpl extends AbstractMainComponent {
             for (PatientVisitModel model : pvt) {
                 // 既に開かれているカルテを openKarte すると toFront になるので，
                 // open できないカルテは cancel されたカルテのみである
-                if (isKarteCanceled(model)) { return false; }
+                if (isKarteCanceled(model)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -674,15 +691,19 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 指定されたカルテを開くことが可能かどうかを返す.
+     *
      * @return 開くことが可能な時 true
      */
     private boolean canOpen(PatientVisitModel pvt) {
-        if (pvt == null || isKarteCanceled(pvt)) { return false; }
+        if (pvt == null || isKarteCanceled(pvt)) {
+            return false;
+        }
         return !ChartImpl.isKarteOpened(pvt);
     }
 
     /**
      * 受付がキャンセルされているかどうかを返す.
+     *
      * @return キャンセルされている時 true
      */
     private boolean isKarteCanceled(PatientVisitModel pvtModel) {
@@ -693,6 +714,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      * チャートステートの状態をデータベースに書き込む.
      * ChartImpl の windowOpened, windowClosed で呼ばれる.
      * state, byomeiCount, byomeiCountToday が変化している可能性がある.
+     *
      * @param updated
      */
     public void updateState(final PatientVisitModel updated) {
@@ -714,7 +736,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 int serverState = pdl.getPvtState(updated.getId());
                 // サーバが NONE 以外かつクライアントが NONE の時はサーバの state を優先する
                 // i.e. NONE のカルテを強制変更でひらいて，変更しないで終了した場合，他の端末で SAVE になったのを NONE に戻してしまうのを防ぐ
-                if (! KarteState.isNone(serverState) && KarteState.isNone(state)) {
+                if (!KarteState.isNone(serverState) && KarteState.isNone(state)) {
                     updated.setState(serverState);
                 }
                 pdl.updatePvt(updated);
@@ -736,6 +758,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 終了時にカルテが OPEN になったまま残るのを防ぐためにすべて CLOSED に変換.
+     *
      * @return
      */
     @Override
@@ -748,24 +771,24 @@ public class WaitingListImpl extends AbstractMainComponent {
             List<ChartImpl> allCharts = new ArrayList<>(ChartImpl.getAllChart());
 
             allCharts.stream()
-                .map(ChartImpl::getPatientVisit)
-                .filter(pvt -> pvt.getPvtDate() != null) // 今日の受診と関係あるカルテのみ選択
-                .forEach(pvt -> {
-                    // 今日の受診がある場合は pvt status を変更する（open -> close)
-                    int oldState = pvt.getState();
-                    boolean isEmpty = new DocumentPeeker(pvt).isKarteEmpty();
-                    int newState = KarteState.toClosedState(oldState, isEmpty);
+                    .map(ChartImpl::getPatientVisit)
+                    .filter(pvt -> pvt.getPvtDate() != null) // 今日の受診と関係あるカルテのみ選択
+                    .forEach(pvt -> {
+                        // 今日の受診がある場合は pvt status を変更する（open -> close)
+                        int oldState = pvt.getState();
+                        boolean isEmpty = new DocumentPeeker(pvt).isKarteEmpty();
+                        int newState = KarteState.toClosedState(oldState, isEmpty);
 
-                    // サーバに書き込む
-                    PvtDelegater pdl = new PvtDelegater();
-                    // NONE 以外から NONE への状態変更はありえないので無視
-                    // NONE のカルテを強制変更でひらいて，変更しないで終了した場合，他の端末で SAVE になったのを NONE に戻してしまうのを防ぐ
-                    int serverState = pdl.getPvtState(pvt.getId());
-                    if (KarteState.isNone(serverState) || ! KarteState.isNone(newState)) {
-                        pvt.setState(newState);
-                        pdl.updatePvt(pvt);
-                    }
-            });
+                        // サーバに書き込む
+                        PvtDelegater pdl = new PvtDelegater();
+                        // NONE 以外から NONE への状態変更はありえないので無視
+                        // NONE のカルテを強制変更でひらいて，変更しないで終了した場合，他の端末で SAVE になったのを NONE に戻してしまうのを防ぐ
+                        int serverState = pdl.getPvtState(pvt.getId());
+                        if (KarteState.isNone(serverState) || !KarteState.isNone(newState)) {
+                            pvt.setState(newState);
+                            pdl.updatePvt(pvt);
+                        }
+                    });
             return true;
         };
     }
@@ -773,6 +796,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * 与えられた pvt に対応する TableModel の行を返す.
      * 要素が別オブジェクトになっている場合があるため，レコードIDで探す.
+     *
      * @param updated
      * @return
      */
@@ -799,7 +823,9 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         StringBuilder ptNames = new StringBuilder();
 
-        if (selectedPvt == null || selectedPvt.length == 0) { return; }
+        if (selectedPvt == null || selectedPvt.length == 0) {
+            return;
+        }
         // 名前リスト作成
         for (PatientVisitModel pvt : selectedPvt) {
             ptNames.append(pvt.getPatientName());
@@ -808,7 +834,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         // ダイアログを表示し確認する
         Object[] cstOptions = new Object[]{"はい", "いいえ"};
-        ptNames.deleteCharAt(ptNames.length()-1); // 最後の "," を取り除く
+        ptNames.deleteCharAt(ptNames.length() - 1); // 最後の "," を取り除く
         ptNames.append(" 様の受付を取り消しますか?");
 
         int select = JSheet.showOptionDialog(
@@ -818,12 +844,12 @@ public class WaitingListImpl extends AbstractMainComponent {
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.WARNING_MESSAGE,
                 null,
-                cstOptions,"はい");
+                cstOptions, "はい");
 
         // 受付を取り消す
         if (select == JOptionPane.OK_OPTION) {
             Runnable r = () -> {
-                for (PatientVisitModel pvt :selectedPvt) {
+                for (PatientVisitModel pvt : selectedPvt) {
                     PvtDelegater pdl = new PvtDelegater();
                     // karte open なら キャンセルできない
                     if (KarteState.isOpen(pdl.getPvtState(pvt.getId()))) {
@@ -847,6 +873,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         stopCheckTimer();
         startCheckTimer(0);
     }
+
     /**
      * チェックタイマーを止める(タスクが起動済みの場合はこのタスクを実行しているスレッドに割り込まないで完了を待つ).
      */
@@ -860,13 +887,17 @@ public class WaitingListImpl extends AbstractMainComponent {
             //logger.info("StopCheckTimer: no timeHandler");
         }
     }
+
     /**
      * チェックタイマーを second 秒後にスタートする.
      * Thread から呼ばれるので，stop されないで２回呼ばれることがある.
+     *
      * @param second
      */
     private void startCheckTimer(int second) {
-        if (timerHandler != null ) { stopCheckTimer(); }
+        if (timerHandler != null) {
+            stopCheckTimer();
+        }
         // checkInterval = 0 のときはタイマーをスタートさせない
         if (checkInterval == 0) {
             logger.info("pvt check timer is off");
@@ -880,8 +911,9 @@ public class WaitingListImpl extends AbstractMainComponent {
      * チェックタイマーを止めた時点での残り時間から再開する.
      */
     private void startCheckTimer() {
-        startCheckTimer((intervalToNextCheck > 0)? intervalToNextCheck : 0);
+        startCheckTimer((intervalToNextCheck > 0) ? intervalToNextCheck : 0);
     }
+
     /**
      * 更新ボタンで呼ばれる. 定期チェックの方はリセットする.
      */
@@ -889,6 +921,53 @@ public class WaitingListImpl extends AbstractMainComponent {
         stopCheckTimer();
         executor.submit(pvtChecker);
         startCheckTimer(checkInterval);
+    }
+
+    /**
+     * PvtServer からの pvt meessage を受け取って pvtTableModel を更新する.
+     *
+     * @param hostPvt
+     */
+    public void hostPvtReceiver(PatientVisitModel hostPvt) {
+        // 送られてきた pvt と同じものを local で探す
+        // pvtDate & patientId で判定する → Patient ID が同じでも，pvtDate が違えば違う受付と判断する
+        PatientVisitModel localPvt = null;
+        int row = -1;
+
+        for (int i = 0; i < pvtTableModel.getObjectCount(); i++) {
+            PatientVisitModel p = pvtTableModel.getObject(i);
+            if (p.getPvtDate().equals(hostPvt.getPvtDate()) && p.getPatientId().equals(hostPvt.getPatientId())) {
+                localPvt = p;
+                row = i;
+                break;
+            }
+        }
+
+        if (localPvt != null) {
+            logger.info("pvt state local = " + localPvt.getState() + ", server = " + hostPvt.getState());
+
+            // localPvt がみつかった場合，更新である
+            hostPvt.setNumber(localPvt.getNumber());
+            pvtTableModel.getObjectList().set(row, hostPvt);
+            // changeRow を fire，ただしカルテが開いていたら fire しない
+            if (!ChartImpl.isKarteOpened(localPvt)) {
+                pvtTableModel.fireTableRowsUpdated(row, row);
+            }
+            // 待ち時間更新
+            setPvtCount();
+
+        } else {
+            // localPvt がなければ，それは追加である
+            row = pvtTableModel.getObjectCount();
+            // 番号付加
+            hostPvt.setNumber(row + 1);
+            pvtTableModel.addRow(hostPvt);
+            //logger.info("pvt added at row " + row);
+            // 患者数セット
+            setPvtCount(row + 1);
+            // 通知を表示
+            ScriptExecutor.displayNotification(hostPvt.getPatientAgeBirthday(), "受付 " + (row + 1), hostPvt.getPatientName());
+        }
     }
 
     /**
@@ -925,7 +1004,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 for (int i = 0; i < newVisitCount; i++) {
                     pvt = result.get(i); // newVisitCount > 0 なので null ではない
                     // 受付番号セット
-                    pvt.setNumber(firstResult+i+1);
+                    pvt.setNumber(firstResult + i + 1);
                     // 受付リスト追加
                     newList.add(pvt);
                 }
@@ -941,7 +1020,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 PatientVisitModel myPvt;
                 List<Integer> changedRows = new ArrayList<>();
 
-                for (int i=0; i < pvtStateList.size(); i++) {
+                for (int i = 0; i < pvtStateList.size(); i++) {
                     PvtStateSpec serverPvt = pvtStateList.get(i);
                     myPvt = pvtTableModel.getObject(i);
 
@@ -964,7 +1043,9 @@ public class WaitingListImpl extends AbstractMainComponent {
                             myPvt.setByomeiCountToday(serverPvt.getByomeiCountToday());
                             lineChanged = true;
                         }
-                        if (lineChanged) { changedRows.add(i); }
+                        if (lineChanged) {
+                            changedRows.add(i);
+                        }
                     }
                 }
                 if (changedRows.size() > 0) {
@@ -985,52 +1066,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * PvtServer からの pvt meessage を受け取って pvtTableModel を更新する.
-     * @param hostPvt
-     */
-    public void hostPvtReceiver(PatientVisitModel hostPvt) {
-        // 送られてきた pvt と同じものを local で探す
-        // pvtDate & patientId で判定する → Patient ID が同じでも，pvtDate が違えば違う受付と判断する
-        PatientVisitModel localPvt = null;
-        int row = -1;
-
-        for (int i=0; i<pvtTableModel.getObjectCount(); i++) {
-            PatientVisitModel p = pvtTableModel.getObject(i);
-            if (p.getPvtDate().equals(hostPvt.getPvtDate()) && p.getPatientId().equals(hostPvt.getPatientId())) {
-                localPvt = p;
-                row = i;
-                break;
-            }
-        }
-
-        if (localPvt != null) {
-            logger.info("pvt state local = " + localPvt.getState() + ", server = " + hostPvt.getState());
-
-            // localPvt がみつかった場合，更新である
-            hostPvt.setNumber(localPvt.getNumber());
-            pvtTableModel.getObjectList().set(row, hostPvt);
-            // changeRow を fire，ただしカルテが開いていたら fire しない
-            if (! ChartImpl.isKarteOpened(localPvt)) {
-                pvtTableModel.fireTableRowsUpdated(row, row);
-            }
-            // 待ち時間更新
-            setPvtCount();
-
-        } else{
-            // localPvt がなければ，それは追加である
-            row = pvtTableModel.getObjectCount();
-            // 番号付加
-            hostPvt.setNumber(row+1);
-            pvtTableModel.addRow(hostPvt);
-            //logger.info("pvt added at row " + row);
-            // 患者数セット
-            setPvtCount(row+1);
-            // 通知を表示
-            ScriptExecutor.displayNotification(hostPvt.getPatientAgeBirthday(), "受付 " + (row+1), hostPvt.getPatientName());
-        }
-    }
-
-    /**
      * Retina 対応 Grid を描くレンダラのベース.
      */
     private abstract class TableCellRendererBase extends DefaultTableCellRenderer {
@@ -1046,6 +1081,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         /**
          * Show grids and markings.
+         *
          * @param graphics
          */
         @Override
@@ -1063,13 +1099,14 @@ public class WaitingListImpl extends AbstractMainComponent {
             }
             if (marking) {
                 g.setColor(markingColor);
-                g.fillRect(0,0,6,getHeight());
+                g.fillRect(0, 0, 6, getHeight());
             }
             g.dispose();
         }
 
         /**
          * Set background color.
+         *
          * @param table
          * @param value
          * @param isSelected
@@ -1078,10 +1115,10 @@ public class WaitingListImpl extends AbstractMainComponent {
          * @param col
          */
         public void setBackground(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
+                                  Object value,
+                                  boolean isSelected,
+                                  boolean isFocused,
+                                  int row, int col) {
 
             Color bg = table.getBackground();
 
@@ -1089,8 +1126,11 @@ public class WaitingListImpl extends AbstractMainComponent {
                 PatientVisitModel pvt = pvtTableModel.getObject(table.convertRowIndexToModel(row));
                 if (pvt != null) {
                     String gender = pvt.getPatient().getGender();
-                    if (gender.equals(IInfoModel.MALE)) { bg = MALE_COLOR; }
-                    else if (gender.equals(IInfoModel.FEMALE)) { bg = FEMALE_COLOR; }
+                    if (gender.equals(IInfoModel.MALE)) {
+                        bg = MALE_COLOR;
+                    } else if (gender.equals(IInfoModel.FEMALE)) {
+                        bg = FEMALE_COLOR;
+                    }
                 }
             }
             setBackground(bg);
@@ -1116,10 +1156,10 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         @Override
         public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
+                                                       Object value,
+                                                       boolean isSelected,
+                                                       boolean isFocused,
+                                                       int row, int col) {
 
             PatientVisitModel pvt = pvtTableModel.getObject(table.convertRowIndexToModel(row));
 
@@ -1159,18 +1199,27 @@ public class WaitingListImpl extends AbstractMainComponent {
                     // カルテが開いている
                     case KarteState.OPEN_NONE:
                     case KarteState.OPEN_TEMP:
-                        if (ChartImpl.isKarteOpened(pvt)) { this.setIcon(OPEN_ICON); }
-                        else { this.setIcon(OPEN_USED_NONE); }
+                        if (ChartImpl.isKarteOpened(pvt)) {
+                            this.setIcon(OPEN_ICON);
+                        } else {
+                            this.setIcon(OPEN_USED_NONE);
+                        }
                         break;
 
                     case KarteState.OPEN_SAVE:
-                        if (ChartImpl.isKarteOpened(pvt)) { this.setIcon(OPEN_ICON); }
-                        else { this.setIcon(OPEN_USED_SAVE); }
+                        if (ChartImpl.isKarteOpened(pvt)) {
+                            this.setIcon(OPEN_ICON);
+                        } else {
+                            this.setIcon(OPEN_USED_SAVE);
+                        }
                         break;
 
                     case KarteState.OPEN_UNFINISHED:
-                        if (ChartImpl.isKarteOpened(pvt)) { this.setIcon(OPEN_ICON); }
-                        else { this.setIcon(OPEN_USED_UNFINISHED); }
+                        if (ChartImpl.isKarteOpened(pvt)) {
+                            this.setIcon(OPEN_ICON);
+                        } else {
+                            this.setIcon(OPEN_USED_UNFINISHED);
+                        }
                         break;
 
                     // その他の場合はアイコン無し CLOSE_NONE はここ
@@ -1223,10 +1272,10 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         @Override
         public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
+                                                       Object value,
+                                                       boolean isSelected,
+                                                       boolean isFocused,
+                                                       int row, int col) {
 
             PatientVisitModel pvt = pvtTableModel.getObject(table.convertRowIndexToModel(row));
 
@@ -1257,11 +1306,11 @@ public class WaitingListImpl extends AbstractMainComponent {
                     case 1: // ID
                     case 3: // 名前
                     case 6: // 生年月日
-                        this.setText(IndentTableCellRenderer.addIndent((String)value, IndentTableCellRenderer.WIDE, this.getForeground()));
+                        this.setText(IndentTableCellRenderer.addIndent((String) value, IndentTableCellRenderer.WIDE, this.getForeground()));
                         this.setFont(NORMAL_FONT);
                         break;
                     case 5: // 年齢
-                        String[] age = ((String)value).split("\\.");
+                        String[] age = ((String) value).split("\\.");
                         if (age[0].equals("0")) {
                             setText(age[1] + " ヶ月");
                         } else {
@@ -1270,7 +1319,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                         break;
                     case 7: // ドクターに変更
                     case 8: // メモ
-                        this.setText(IndentTableCellRenderer.addIndent((String)value, IndentTableCellRenderer.WIDE, this.getForeground()));
+                        this.setText(IndentTableCellRenderer.addIndent((String) value, IndentTableCellRenderer.WIDE, this.getForeground()));
                         this.setFont(SMALL_FONT);
                         break;
                     default:
@@ -1362,20 +1411,31 @@ public class WaitingListImpl extends AbstractMainComponent {
         public MinMax(int[] rows) {
             set(rows);
         }
+
         public MinMax(List<Integer> list) {
-            if (list == null || list.isEmpty()) { return; }
+            if (list == null || list.isEmpty()) {
+                return;
+            }
             int[] rows = new int[list.size()];
             int count = 0;
-            for(Integer i: list) { rows[count++] = i; }
+            for (Integer i : list) {
+                rows[count++] = i;
+            }
             set(rows);
         }
+
         private void set(int[] rows) {
-            if (rows == null || rows.length == 0) { return; }
+            if (rows == null || rows.length == 0) {
+                return;
+            }
 
-            min = rows[0]; max = rows[0];
-            if (rows.length == 1) { return; }
+            min = rows[0];
+            max = rows[0];
+            if (rows.length == 1) {
+                return;
+            }
 
-            for (int i=1; i < rows.length ; i++) {
+            for (int i = 1; i < rows.length; i++) {
                 min = Math.min(min, rows[i]);
                 max = Math.max(max, rows[i]);
             }

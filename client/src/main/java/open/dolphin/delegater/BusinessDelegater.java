@@ -10,13 +10,9 @@ import java.lang.reflect.ParameterizedType;
  * @author pns
  */
 public class BusinessDelegater<T> {
-    public enum Result { NO_ERROR, ERROR }
-
+    protected Logger logger;
     private Result errorCode = Result.NO_ERROR;
     private String errorMessage = "delegate error";
-
-    protected Logger logger;
-
     // 呼び出し元の class
     private Class<T> target;
 
@@ -40,12 +36,12 @@ public class BusinessDelegater<T> {
         return null;
     }
 
-    public void setErrorCode(Result errCode) {
-        this.errorCode = errCode;
-    }
-
     public Result getErrorCode() {
         return errorCode;
+    }
+
+    public void setErrorCode(Result errCode) {
+        this.errorCode = errCode;
     }
 
     public boolean isNoError() {
@@ -65,4 +61,6 @@ public class BusinessDelegater<T> {
         setErrorCode(Result.ERROR);
         e.printStackTrace(System.err);
     }
+
+    public enum Result {NO_ERROR, ERROR}
 }

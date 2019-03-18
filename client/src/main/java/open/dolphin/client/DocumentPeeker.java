@@ -45,6 +45,16 @@ public class DocumentPeeker {
         setPatientVisitModel(pvt);
     }
 
+    public static boolean isKarteEmpty(String text) {
+        boolean maybe;
+        if (text == null) { maybe = false; }
+        else if (text.length() < LEAST_KARTE_SIZE) { maybe = true; }
+        else if (text.contains("+++")) { maybe = true; } // karte のどこかに "+++" が書いてある場合，書きかけカルテと判断する
+        else { maybe = false; }
+        return maybe;
+        //logger.info(text);
+    }
+
     public void setPatientVisitModel(PatientVisitModel pvt) {
         this.pvt = pvt;
         karte = ddl.getKarte(pvt.getPatient().getId(), today.getTime());
@@ -57,15 +67,5 @@ public class DocumentPeeker {
         }
         String text = pnsdl.peekKarte(pvt.getPatient().getId());
         return isKarteEmpty(text);
-    }
-
-    public static boolean isKarteEmpty(String text) {
-        boolean maybe;
-        if (text == null) maybe = false;
-        else if (text.length() < LEAST_KARTE_SIZE) maybe = true;
-        else if (text.indexOf("+++") != -1) maybe = true; // karte のどこかに "+++" が書いてある場合，書きかけカルテと判断する
-        else maybe = false;
-        return maybe;
-        //logger.info(text);
     }
 }

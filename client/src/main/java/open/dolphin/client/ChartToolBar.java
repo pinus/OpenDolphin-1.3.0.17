@@ -17,6 +17,7 @@ import java.util.prefs.Preferences;
 
 /**
  * ChartImpl と EditorFrame 特有の JToolBar.
+ *
  * @author pns
  */
 public class ChartToolBar extends JToolBar {
@@ -34,7 +35,7 @@ public class ChartToolBar extends JToolBar {
         prefs = Preferences.userNodeForPackage(ChartToolBar.class).node(ChartToolBar.class.getName());
 
         realChart = chart instanceof ChartImpl ?
-            (ChartImpl) chart : (ChartImpl) ((EditorFrame)chart).getChart();
+                (ChartImpl) chart : (ChartImpl) ((EditorFrame) chart).getChart();
 
         initComponents();
     }
@@ -62,12 +63,12 @@ public class ChartToolBar extends JToolBar {
         //stampButton.setIcon(GUIConst.ICON_STAMP_22);
         stampButton.setIcon(GUIConst.ICON_STAMP_32);
         stampButton.setOpaque(false);
-        stampButton.addActionListener(e-> {
+        stampButton.addActionListener(e -> {
             JButton b = (JButton) e.getSource();
             JPopupMenu popup = new JPopupMenu();
             mediator.addStampMenu(popup);
             Point loc = b.getLocation();
-            popup.show(b.getParent(), loc.x + b.getWidth()/2, loc.y + b.getHeight()/2);
+            popup.show(b.getParent(), loc.x + b.getWidth() / 2, loc.y + b.getHeight() / 2);
         });
         return stampButton;
     }
@@ -86,7 +87,7 @@ public class ChartToolBar extends JToolBar {
             JPopupMenu popup = new JPopupMenu();
             mediator.addTextMenu(popup);
             Point loc = b.getLocation();
-            popup.show(b.getParent(), loc.x + b.getWidth()/2, loc.y + b.getHeight()/2);
+            popup.show(b.getParent(), loc.x + b.getWidth() / 2, loc.y + b.getHeight() / 2);
         });
         return textStampButton;
     }
@@ -129,7 +130,10 @@ public class ChartToolBar extends JToolBar {
                     count++;
                 }
             }
-            if (count != 0) { popup.addSeparator(); count = 0; }
+            if (count != 0) {
+                popup.addSeparator();
+                count = 0;
+            }
 
             // インスペクタを popup に追加
             for (WindowSupport ws : windows) {
@@ -148,17 +152,25 @@ public class ChartToolBar extends JToolBar {
 
                 //Action a = new ProxyAction("インスペクタを整列", GUIConst.ICON_WINDOWS_22, () -> {
                 Action a = new ProxyAction("インスペクタを整列", GUIConst.ICON_WINDOW_STACK_16, () -> {
-                    int x = WindowSupport.INITIAL_X; int y = WindowSupport.INITIAL_Y; int width = 0; int height = 0;
+                    int x = WindowSupport.INITIAL_X;
+                    int y = WindowSupport.INITIAL_Y;
+                    int width = 0;
+                    int height = 0;
 
                     for (WindowSupport ws : windows) {
                         JFrame f = ws.getFrame();
                         if (f.getTitle().contains("インスペクタ")) {
-                            if (width == 0) { width = f.getBounds().width; }
-                            if (height == 0) { height = f.getBounds().height; }
+                            if (width == 0) {
+                                width = f.getBounds().width;
+                            }
+                            if (height == 0) {
+                                height = f.getBounds().height;
+                            }
 
                             f.setBounds(x, y, width, height);
                             f.toFront();
-                            x += WindowSupport.INITIAL_DX; y += WindowSupport.INITIAL_DY;
+                            x += WindowSupport.INITIAL_DX;
+                            y += WindowSupport.INITIAL_DY;
                         }
                     }
                 });
@@ -166,7 +178,7 @@ public class ChartToolBar extends JToolBar {
             }
             JButton b = (JButton) e.getSource();
             Point loc = b.getLocation();
-            popup.show(b.getParent(), loc.x + b.getWidth()/2, loc.y + b.getHeight()/2);
+            popup.show(b.getParent(), loc.x + b.getWidth() / 2, loc.y + b.getHeight() / 2);
         });
 
         return windowButton;
@@ -180,11 +192,11 @@ public class ChartToolBar extends JToolBar {
         keywordFld.setLabel("病名検索");
         keywordFld.setPreferences(prefs);
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
-        keywordFld.setPreferredSize(new Dimension(10,26));
+        keywordFld.setPreferredSize(new Dimension(10, 26));
         keywordFld.addActionListener(e -> {
             String text = keywordFld.getText();
 
-            if (text != null && ! text.equals("")) {
+            if (text != null && !text.equals("")) {
                 JPopupMenu popup = new JPopupMenu();
                 String pattern = ".*" + keywordFld.getText() + ".*";
 
@@ -211,7 +223,7 @@ public class ChartToolBar extends JToolBar {
 
         // ctrl-return でもリターンキーの notify-field-accept が発生するようにする
         InputMap map = keywordFld.getInputMap();
-        Object value =  map.get(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+        Object value = map.get(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
         map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), value);
 
         panel.add(keywordFld, BorderLayout.CENTER);

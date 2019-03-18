@@ -27,7 +27,8 @@ import java.util.prefs.Preferences;
 /**
  * KarteDocumentViewer.
  * KarteViewer2 をまとめて DocumentBridge の scroller に入れる.
- * @author Minagawa,Kazushi
+ *
+ * @author Minagawa, Kazushi
  */
 public class KarteDocumentViewer extends AbstractChartDocument {
 
@@ -36,6 +37,9 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     // 更新を表す文字
     private static final String TITLE_UPDATE = "更新";
     private static final String TITLE = "参 照";
+    // 検索用
+    private final FindAndView findAndView = new FindAndView();
+    private final Logger logger = ClientContext.getBootLogger();
     // このアプリケーションは文書履歴を複数選択することができる
     // このリストはそれに対応した KarteViewer(2号カルテ)を保持している
     // このリストの内容（KarteViewer)が一枚のパネルに並べて表示される
@@ -60,14 +64,10 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     private PNSScrollPane scrollPane;
     // 選択された history
     private DocInfoModel[] selectedHistories;
-    // 検索用
-    private final FindAndView findAndView = new FindAndView();
     // 今日の日付 2008-02-12 形式
     private String todayDateAsString;
     // 縦スクロールかどうか
     private boolean isVerticalScroll = true;
-
-    private final Logger logger = ClientContext.getBootLogger();
 
     /**
      * DocumentViewerオブジェクトを生成する.
@@ -106,7 +106,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         FindDialog sheet = new FindDialog(parent);
         sheet.start();
         String searchText = sheet.getSearchText();
-        if (searchText != null && ! searchText.equals("")) {
+        if (searchText != null && !searchText.equals("")) {
             findAndView.showFirst(searchText, sheet.isSoaBoxOn(), sheet.isPBoxOn(), scrollerPanel);
         }
     }
@@ -128,6 +128,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
 
     /**
      * busy かどうかを返す.
+     *
      * @return busy の時 true
      */
     public boolean isBusy() {
@@ -166,6 +167,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
 
     /**
      * 選択されているKarteViwerを返す.
+     *
      * @return 選択されているKarteViwer
      */
     public KarteViewer2 getSelectedKarte() {
@@ -176,7 +178,9 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                 break;
             }
         }
-        if (! found) { selectedKarte = null; }
+        if (!found) {
+            selectedKarte = null;
+        }
 
         return selectedKarte;
     }
@@ -185,6 +189,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
      * マウスクリック(選択)されたKarteViwerをselectedKarteに設定する.
      * 他のカルテが選択されている場合はそれを解除する.
      * StateMgrを Haskarte State にする.
+     *
      * @param view 選択されたKarteViwer
      */
     public void setSelectedKarte(KarteViewer2 view) {
@@ -210,12 +215,13 @@ public class KarteDocumentViewer extends AbstractChartDocument {
 
     /**
      * 新規カルテ作成の元になるカルテを返す.
+     *
      * @return 作成の元になるカルテ
      */
     public KarteViewer2 getBaseKarte() {
         KarteViewer2 ret = getSelectedKarte();
         if (ret == null) {
-            if (karteList != null && ! karteList.isEmpty()) {
+            if (karteList != null && !karteList.isEmpty()) {
                 ret = ascending ? karteList.get(karteList.size() - 1) : karteList.get(0);
             }
         }
@@ -236,6 +242,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
 
     /**
      * DocumentBridgeImpl から呼ばれる.
+     *
      * @param selected 選択された文書情報 DocInfo 配列
      * @param scroller PNSScrollPane
      */
@@ -259,6 +266,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     /**
      * データベースで検索した KarteModelを Viewer で表示する.
      * KarteTask から呼ばれる
+     *
      * @param models List of DocumentModel
      */
     private void addKarteViewer(List<DocumentModel> models) {
@@ -277,7 +285,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                         break;
                     }
                 }
-                if (! found) {
+                if (!found) {
                     removed.add(viewer);
                     viewer.stop();
                 }
@@ -299,7 +307,9 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                         break;
                     }
                 }
-                if (duplicated) { continue; }
+                if (duplicated) {
+                    continue;
+                }
 
                 // 対応する DocInfoModel を探す
                 DocInfoModel foundInfo = null;
@@ -355,11 +365,14 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             }
 
             // 時間軸でソート
-            if (ascending) { karteList.sort(Comparator.naturalOrder()); }
-            else { karteList.sort(Comparator.reverseOrder()); }
+            if (ascending) {
+                karteList.sort(Comparator.naturalOrder());
+            } else {
+                karteList.sort(Comparator.reverseOrder());
+            }
         }
 
-        if (! karteList.isEmpty()) {
+        if (!karteList.isEmpty()) {
 
             // JPanel を使い回してメモリ節約をはかる
             scrollerPanel.removeAll();
@@ -387,9 +400,11 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         DocumentModel baseDocumentModel = getBaseKarte().getDocument();
 
         // すでに修正中の document があれば toFront するだけで帰る
-        if (chart.toFrontDocumentIfPresent(baseDocumentModel)) { return; }
+        if (chart.toFrontDocumentIfPresent(baseDocumentModel)) {
+            return;
+        }
         // 削除フラグが設定されていたらenterしない
-        if (IInfoModel.STATUS_DELETE.equals(baseDocumentModel.getDocInfo().getStatus())){
+        if (IInfoModel.STATUS_DELETE.equals(baseDocumentModel.getDocInfo().getStatus())) {
             return;
         }
 
@@ -401,10 +416,10 @@ public class KarteDocumentViewer extends AbstractChartDocument {
 
         // このフラグはカルテを別ウインドウで編集するかどうか (使ってない)
         //if (Project.getPreferences().getBoolean(Project.KARTE_PLACE_MODE, true)) {
-            EditorFrame editorFrame = new EditorFrame();
-            editorFrame.setChart(getContext());
-            editorFrame.setKarteEditor(editor);
-            editorFrame.start();
+        EditorFrame editorFrame = new EditorFrame();
+        editorFrame.setChart(getContext());
+        editorFrame.setKarteEditor(editor);
+        editorFrame.start();
         //} else {
         //    editor.setContext(chart);
         //    editor.initialize();
@@ -479,7 +494,9 @@ public class KarteDocumentViewer extends AbstractChartDocument {
      */
     public void openKarte() {
         // ダブルクリックで modifyKarte することにした (isReadOnly対応)
-        if (!getContext().isReadOnly()) { modifyKarte(); }
+        if (!getContext().isReadOnly()) {
+            modifyKarte();
+        }
     }
 
     /**
@@ -502,7 +519,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         box1.setSelected(true);
 
         ActionListener al = e -> {
-            if (! box1.isSelected() && ! box2.isSelected() && ! box3.isSelected()) {
+            if (!box1.isSelected() && !box2.isSelected() && !box3.isSelected()) {
                 box3.setSelected(true);
             }
         };
@@ -547,6 +564,60 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     }
 
     /**
+     * 表示されているカルテを CLAIM 送信する.
+     */
+    public void sendClaim() {
+        logger.debug("sendClaim() in KarteDocumentViewer called.");
+
+        String message;
+        int messageType;
+
+        if (!Project.getSendClaim()) {
+            message = "CLAIM を送信しない設定になっています";
+            messageType = JOptionPane.ERROR_MESSAGE;
+
+        } else {
+            // claim を送るのはカルテだけ
+            // getBaseKarte() は選択カルテを返す
+            String docType = getBaseKarte().getDocument().getDocInfo().getDocType();
+            if (!IInfoModel.DOCTYPE_KARTE.equals(docType)) {
+                return;
+            }
+
+            ChartImpl chart = (ChartImpl) getContext();
+            DocumentModel model = chart.getKarteModelToEdit(getBaseKarte().getDocument());
+            model.setKarte(getContext().getKarte());
+            model.getDocInfo().setConfirmDate(new Date());
+            model.setCreator(Project.getUserModel());       // 送信者
+
+            OrcaDelegater delegater = new OrcaDelegater();
+            OrcaDelegater.Result result = delegater.sendDocument(model);
+
+            if (result.equals(OrcaDelegater.Result.NO_ERROR)) {
+                message = "ORCA に送信しました";
+                messageType = JOptionPane.PLAIN_MESSAGE;
+            } else {
+                message = "ORCA に送信できませんでした";
+                messageType = JOptionPane.ERROR_MESSAGE;
+            }
+        }
+
+        Frame parent = getContext().getFrame();
+        if (JSheet.isAlreadyShown(parent)) {
+            parent.toFront();
+            return;
+        }
+        JSheet.showMessageDialog(parent, message, "", messageType);
+    }
+
+    /**
+     * State Interface.
+     */
+    private interface BrowserState {
+        void enter();
+    }
+
+    /**
      * 文書をデータベースから取得するタスククラス.
      */
     private class KarteTask extends SwingWorker<Integer, List<DocumentModel>> {
@@ -572,12 +643,12 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                         break;
                     }
                 }
-                if (! found) {
+                if (!found) {
                     added.add(selectedDocInfo);
                 }
             }
 
-            if (! added.isEmpty()) {
+            if (!added.isEmpty()) {
                 progressBar.setMaximum(added.size());
 
                 DocumentDelegater ddl = new DocumentDelegater();
@@ -585,7 +656,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                 boolean hasNext = true;
                 while (hasNext) {
                     List<Long> pkList = new ArrayList<>(FRACTION);
-                    for (int i = 0; i<FRACTION; i++) {
+                    for (int i = 0; i < FRACTION; i++) {
                         pkList.add(added.get(count++).getDocPk());
                         if (count >= added.size()) {
                             hasNext = false;
@@ -611,11 +682,14 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             }
             return added.size();
         }
+
         @Override
         protected void done() {
             progressBar.setValue(0);
             // リスト先頭のカルテを選択状態に
-            if (! karteList.isEmpty()) { setSelectedKarte(karteList.get(0)); }
+            if (!karteList.isEmpty()) {
+                setSelectedKarte(karteList.get(0));
+            }
         }
 
         @Override
@@ -688,13 +762,6 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     }
 
     /**
-     * State Interface.
-     */
-    private interface BrowserState {
-        void enter();
-    }
-
-    /**
      * EmptyState.
      * 表示するカルテがない状態を表す.
      */
@@ -748,7 +815,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                     tmpKarte = true;
                 }
             }
-            boolean newOk = canEdit && ! tmpKarte;
+            boolean newOk = canEdit && !tmpKarte;
             getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, newOk);        // 新規カルテ
             getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, canEdit);   // 新規文書
             getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, canEdit);   // 修正
@@ -763,50 +830,5 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             getContext().enabledAction(GUIConst.ACTION_FIND_PREVIOUS, true);
             getContext().enabledAction(GUIConst.ACTION_SEND_CLAIM, true);
         }
-    }
-
-    /**
-     * 表示されているカルテを CLAIM 送信する.
-     */
-    public void sendClaim() {
-        logger.debug("sendClaim() in KarteDocumentViewer called.");
-
-        String message;
-        int messageType;
-
-        if (! Project.getSendClaim()) {
-            message = "CLAIM を送信しない設定になっています";
-            messageType = JOptionPane.ERROR_MESSAGE;
-
-        } else {
-            // claim を送るのはカルテだけ
-            // getBaseKarte() は選択カルテを返す
-            String docType = getBaseKarte().getDocument().getDocInfo().getDocType();
-            if (!IInfoModel.DOCTYPE_KARTE.equals(docType)) { return; }
-
-            ChartImpl chart = (ChartImpl) getContext();
-            DocumentModel model = chart.getKarteModelToEdit(getBaseKarte().getDocument());
-            model.setKarte(getContext().getKarte());
-            model.getDocInfo().setConfirmDate(new Date());
-            model.setCreator(Project.getUserModel());       // 送信者
-
-            OrcaDelegater delegater = new OrcaDelegater();
-            OrcaDelegater.Result result = delegater.sendDocument(model);
-
-            if (result.equals(OrcaDelegater.Result.NO_ERROR)) {
-                message = "ORCA に送信しました";
-                messageType = JOptionPane.PLAIN_MESSAGE;
-            } else {
-                message = "ORCA に送信できませんでした";
-                messageType = JOptionPane.ERROR_MESSAGE;
-            }
-        }
-
-        Frame parent = getContext().getFrame();
-        if (JSheet.isAlreadyShown(parent)) {
-            parent.toFront();
-            return;
-        }
-        JSheet.showMessageDialog(parent, message, "", messageType);
     }
 }

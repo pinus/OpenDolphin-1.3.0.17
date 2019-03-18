@@ -4,7 +4,7 @@ import java.util.EventListener;
 
 /**
  * CompletionListener.
- * 
+ *
  * @author pns
  */
 public interface CompletionListener extends EventListener {

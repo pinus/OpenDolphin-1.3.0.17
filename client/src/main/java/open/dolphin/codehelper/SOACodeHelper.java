@@ -27,6 +27,7 @@ public class SOACodeHelper extends AbstractCodeHelper {
     /**
      * tx, dx キーワードで呼ばれた場合は ENTITY_TEXT or DIAGNOSIS のメニューを作る.
      * それ以外の文字列の場合は，その文字列を含むスタンプからメニューを作る.
+     *
      * @param text
      */
     @Override

@@ -13,27 +13,14 @@ import java.util.GregorianCalendar;
 
 /**
  * StampTree から ModuleModel を取り出す.
+ *
  * @author pns
  */
 public class StampModulePicker {
 
-    private enum StampItem {
-        SHOSHIN ("初診"),
-        SHOSHIN_RYOTAN ("初診（療養担当）"),
-        SHOSHIN_YAKAN ("初診（夜間・早朝等）"),
-        SHOSHIN_RYOTAN_YAKAN ("初診（療養担当）（夜間・早朝等）"),
-        SAISHIN ("再診（診療所）"),
-        SAISHIN_YAKAN ("再診（診療所）（夜間・早朝等）"),
-        ;
-        private final String title;
-        private StampItem(String t) { title = t; }
-        public String stampTitle() { return title; }
-    }
-
     private final ChartMediator mediator;
     private final GregorianCalendar today;
     private final LastVisit lv;
-
     public StampModulePicker(ChartImpl context) {
         mediator = context.getChartMediator();
         today = new GregorianCalendar();
@@ -43,16 +30,17 @@ public class StampModulePicker {
     /**
      * entity のスタンプ箱から key に一致する module を探して返す. 無ければ null が返る.
      * ただし，フォルダの中身までは検索しない.
+     *
      * @param entity
      * @param key
      * @return ModuleInfoBean or null
      */
     private ModuleModel getStampModule(String entity, String key) {
-        StampTree tree =  mediator.getStampTree(entity);
+        StampTree tree = mediator.getStampTree(entity);
         ModuleInfoBean info = null;
         ModuleModel module = null;
 
-        for (int i=0; i<tree.getRowCount(); i++) {
+        for (int i = 0; i < tree.getRowCount(); i++) {
             StampTreeNode sn = (StampTreeNode) tree.getPathForRow(i).getLastPathComponent();
             if (sn.isLeaf()) {
                 ModuleInfoBean bean = sn.getStampInfo();
@@ -77,6 +65,7 @@ public class StampModulePicker {
 
     /**
      * テキストスタンプから title のスタンプを取ってきて返す.
+     *
      * @param title
      * @return ModuleModel
      */
@@ -91,16 +80,18 @@ public class StampModulePicker {
 
     /**
      * エディタを開いたときに最初に挿入するスタンプ名.
+     *
      * @return
      */
     public ModuleModel getInitialStamp() {
-        return isShoshin()?
-            getTextStamp("テンプレート（初診）"):
-            getTextStamp("テンプレート（再診）");
+        return isShoshin() ?
+                getTextStamp("テンプレート（初診）") :
+                getTextStamp("テンプレート（再診）");
     }
 
     /**
      * 初診・再診を判定して，module として返す.
+     *
      * @return
      */
     public ModuleModel getBaseCharge() {
@@ -114,15 +105,24 @@ public class StampModulePicker {
 
         if (isShoshin()) {
             if (isRyotan()) {
-                if (isYakan()) { item = StampItem.SHOSHIN_RYOTAN_YAKAN; }
-                else { item = StampItem.SHOSHIN_RYOTAN; }
+                if (isYakan()) {
+                    item = StampItem.SHOSHIN_RYOTAN_YAKAN;
+                } else {
+                    item = StampItem.SHOSHIN_RYOTAN;
+                }
             } else {
-                if (isYakan()) { item = StampItem.SHOSHIN_YAKAN; }
-                else { item = StampItem.SHOSHIN; }
+                if (isYakan()) {
+                    item = StampItem.SHOSHIN_YAKAN;
+                } else {
+                    item = StampItem.SHOSHIN;
+                }
             }
         } else {
-            if (isYakan()) { item = StampItem.SAISHIN_YAKAN; }
-            else { item = StampItem.SAISHIN; }
+            if (isYakan()) {
+                item = StampItem.SAISHIN_YAKAN;
+            } else {
+                item = StampItem.SAISHIN;
+            }
         }
 
         // スタンプ選択
@@ -133,7 +133,9 @@ public class StampModulePicker {
         int[] lastVisit = lv.getLastVisitInHistoryYmd();
 
         // 受診歴が無ければ初診で返す
-        if (lastVisit == null) { return true; }
+        if (lastVisit == null) {
+            return true;
+        }
 
         // 受診歴がある場合は，３ヶ月たったかどうか判定
         int dif_year = today.get(Calendar.YEAR) - lastVisit[0];
@@ -141,16 +143,24 @@ public class StampModulePicker {
         int dif_day = today.get(Calendar.DATE) - lastVisit[2];
 
         // ２年以上離れていたら初診
-        if (dif_year >= 2) { return true; }
+        if (dif_year >= 2) {
+            return true;
+        }
         // １年差の場合は月差を調整
-        if (dif_year == 1) { dif_month += 12; }
+        if (dif_year == 1) {
+            dif_month += 12;
+        }
         // 4ヶ月以上離れていたら初診
-        if (dif_month >= 4) { return true; }
+        if (dif_month >= 4) {
+            return true;
+        }
         // 3ヶ月離れている場合は，日付を比較
         else if (dif_month == 3) {
             return dif_day >= 0;
             // それ以外は再診
-        } else { return false; }
+        } else {
+            return false;
+        }
     }
 
     private boolean isRyotan() {
@@ -163,9 +173,30 @@ public class StampModulePicker {
         // 土曜日で 12時以降なら夜間
         GregorianCalendar gc = lv.getLastVisitGc();
         // 今日受診していないのに新規カルテを作った場合は false に決め打ち（実際はあり得ない操作）
-        if (gc == null) { return false; }
+        if (gc == null) {
+            return false;
+        }
 
         return (gc.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) &&
                 (gc.get(Calendar.AM_PM) == Calendar.PM);
+    }
+
+    private enum StampItem {
+        SHOSHIN("初診"),
+        SHOSHIN_RYOTAN("初診（療養担当）"),
+        SHOSHIN_YAKAN("初診（夜間・早朝等）"),
+        SHOSHIN_RYOTAN_YAKAN("初診（療養担当）（夜間・早朝等）"),
+        SAISHIN("再診（診療所）"),
+        SAISHIN_YAKAN("再診（診療所）（夜間・早朝等）"),
+        ;
+        private final String title;
+
+        private StampItem(String t) {
+            title = t;
+        }
+
+        public String stampTitle() {
+            return title;
+        }
     }
 }

@@ -15,6 +15,7 @@ import java.util.Map.Entry;
  * Orientation = HORIZONTAL 専用.
  * １行におさまる場合は通常の FlowPane の Centering したものを表示.
  * 複数行になるときは，空白が出ないように全体に広げる.
+ *
  * @author pns
  */
 public class PnsFlowPane extends FlowPane {
@@ -46,7 +47,7 @@ public class PnsFlowPane extends FlowPane {
             addPills(null);
             super.layoutChildren();
 
-        // 複数行の時は調節する
+            // 複数行の時は調節する
         } else {
             List<Run> runs = getRun(insideWidth, rowCount);
             addPills(runs);
@@ -60,6 +61,7 @@ public class PnsFlowPane extends FlowPane {
 
     /**
      * StyleClass に pill を付ける.
+     *
      * @param runs
      */
     private void addPills(List<Run> runs) {
@@ -72,32 +74,41 @@ public class PnsFlowPane extends FlowPane {
         // 新たに pill を付け直す
         if (runs == null) {
             getChildren().get(0).getStyleClass().add("left-pill");
-            for (int i=1; i< getChildren().size()-1; i++) { getChildren().get(i).getStyleClass().add("center-pill"); }
-            getChildren().get(getChildren().size()-1).getStyleClass().add("right-pill");
+            for (int i = 1; i < getChildren().size() - 1; i++) {
+                getChildren().get(i).getStyleClass().add("center-pill");
+            }
+            getChildren().get(getChildren().size() - 1).getStyleClass().add("right-pill");
 
         } else {
             // １行目
             List<LayoutRect> rects = runs.get(0).rects;
             rects.get(0).node.getStyleClass().add("top-left-pill");
-            for (int i=1; i<rects.size()-1; i++) { rects.get(i).node.getStyleClass().add("top-center-pill"); }
-            rects.get(rects.size()-1).node.getStyleClass().add("top-right-pill");
+            for (int i = 1; i < rects.size() - 1; i++) {
+                rects.get(i).node.getStyleClass().add("top-center-pill");
+            }
+            rects.get(rects.size() - 1).node.getStyleClass().add("top-right-pill");
             // 中間行
-            for (int r=1; r<runs.size()-1; r++) {
+            for (int r = 1; r < runs.size() - 1; r++) {
                 rects = runs.get(r).rects;
                 rects.get(0).node.getStyleClass().add("center-left-pill");
-                for (int i=1; i<rects.size()-1; i++) { rects.get(i).node.getStyleClass().add("center-center-pill"); }
-                rects.get(rects.size()-1).node.getStyleClass().add("center-right-pill");
+                for (int i = 1; i < rects.size() - 1; i++) {
+                    rects.get(i).node.getStyleClass().add("center-center-pill");
+                }
+                rects.get(rects.size() - 1).node.getStyleClass().add("center-right-pill");
             }
             // 最終行
-            rects = runs.get(runs.size()-1).rects;
+            rects = runs.get(runs.size() - 1).rects;
             rects.get(0).node.getStyleClass().add("bottom-left-pill");
-            for (int i=1; i<rects.size()-1; i++) { rects.get(i).node.getStyleClass().add("bottom-center-pill"); }
-            rects.get(rects.size()-1).node.getStyleClass().add("bottom-right-pill");
+            for (int i = 1; i < rects.size() - 1; i++) {
+                rects.get(i).node.getStyleClass().add("bottom-center-pill");
+            }
+            rects.get(rects.size() - 1).node.getStyleClass().add("bottom-right-pill");
         }
     }
 
     /**
      * Children を行に分割して justify して配置する.
+     *
      * @param insideWidth
      * @param rowCount
      * @return
@@ -119,9 +130,9 @@ public class PnsFlowPane extends FlowPane {
         HashMap<Integer, Double> widthMap = new HashMap<>();
         // 各行の node の幅を足してマップを作る
         int count = 0;
-        for (int row=0; row<rowCount; row++) {
+        for (int row = 0; row < rowCount; row++) {
             double width = 0;
-            for (int i=0; i<childrenPerRow.get(row); i++) {
+            for (int i = 0; i < childrenPerRow.get(row); i++) {
                 // 各行の node の幅を足す
                 width += getChildren().get(count++).prefWidth(-1);
             }
@@ -129,9 +140,9 @@ public class PnsFlowPane extends FlowPane {
         }
         // できたマップを children 幅で小さい順にソートする
         List<Entry<Integer, Double>> entries = new ArrayList<>(widthMap.entrySet());
-        entries.sort((o1,o2) -> (int) (o1.getValue() - o2.getValue()));
+        entries.sort((o1, o2) -> (int) (o1.getValue() - o2.getValue()));
         // residue を，上で作った順番に入れていく
-        for(int i=0; i<residue; i++) {
+        for (int i = 0; i < residue; i++) {
             int row = entries.get(i).getKey();
             int cpr = childrenPerRow.get(row);
             childrenPerRow.set(row, cpr + 1);
@@ -143,7 +154,7 @@ public class PnsFlowPane extends FlowPane {
         List<Integer> extraResidue = new ArrayList<>();
         for (int row = 0; row < rowCount; row++) {
             double totalWidth = 0;
-            for (int i=0; i< childrenPerRow.get(row); i++) {
+            for (int i = 0; i < childrenPerRow.get(row); i++) {
                 totalWidth += Math.round(getChildren().get(count++).prefWidth(-1));
             }
             int extraSpace = (int) (insideWidth - totalWidth);
@@ -159,7 +170,7 @@ public class PnsFlowPane extends FlowPane {
             Run run = new Run();
             // 開始 x 座標は常に 0
             x = 0;
-            for (int i=0; i< childrenPerRow.get(row); i++) {
+            for (int i = 0; i < childrenPerRow.get(row); i++) {
                 Node c = getChildren().get(count++);
 
                 LayoutRect rect = new LayoutRect();
@@ -170,10 +181,13 @@ public class PnsFlowPane extends FlowPane {
                 // 余りスペースいっぱいに広げる
                 rect.width = Math.round(c.prefWidth(-1)) + extraQuotient.get(row);
                 // residue の調節
-                if (extraResidue.get(row) < 0 && i < -extraResidue.get(row)) { rect.width--; }
-                else if (extraResidue.get(row) > 0 && i < extraResidue.get(row)) { rect.width++; }
+                if (extraResidue.get(row) < 0 && i < -extraResidue.get(row)) {
+                    rect.width--;
+                } else if (extraResidue.get(row) > 0 && i < extraResidue.get(row)) {
+                    rect.width++;
+                }
                 // そこまで広げられるように MaxWidth をセット
-                ((Region)c).setMaxWidth(rect.width);
+                ((Region) c).setMaxWidth(rect.width);
 
                 run.rects.add(rect);
 
@@ -191,6 +205,7 @@ public class PnsFlowPane extends FlowPane {
 
     /**
      * children の高さとしては，最初の child の高さを使う
+     *
      * @param children
      * @return
      */

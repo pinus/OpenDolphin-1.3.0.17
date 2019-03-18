@@ -10,20 +10,28 @@ import java.util.HashMap;
  * Command Panel，Status Panel のベースになるパネル.
  * 横長のパネルで，左から要素を詰めていく
  * Window のタイトルバーと連続するように active/deactive に合わせて Background 色を変える
+ *
  * @author pns
  */
 public class HorizontalPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private static final int SEPARATOR_WIDTH = 16;
     private static final int DEFAULT_PANEL_HEIGHT = 24;
-
-    /** パネルの高さ */
-    private int panelHeight = DEFAULT_PANEL_HEIGHT;
-    /** フォントサイズ */
-    private int fontSize = 0;
-    /** 文字列を挿入した場合は，後からそこに setText できるようにする */
+    /**
+     * 文字列を挿入した場合は，後からそこに setText できるようにする
+     */
     private final HashMap<String, JLabel> labelMap = new HashMap<>();
-    /** 親の Window */
+    /**
+     * パネルの高さ
+     */
+    private int panelHeight = DEFAULT_PANEL_HEIGHT;
+    /**
+     * フォントサイズ
+     */
+    private int fontSize = 0;
+    /**
+     * 親の Window
+     */
     private Window parent = null;
 
     public HorizontalPanel() {
@@ -37,10 +45,11 @@ public class HorizontalPanel extends JPanel {
 
     /**
      * 左右のマージンを入れる. 必ず最後に呼ぶ.
+     *
      * @param margin
      */
     public void setMargin(int margin) {
-        this.add(Box.createHorizontalStrut(margin),0);
+        this.add(Box.createHorizontalStrut(margin), 0);
         this.add(Box.createHorizontalStrut(margin));
     }
 
@@ -57,11 +66,13 @@ public class HorizontalPanel extends JPanel {
             MouseAdapter ma = new MouseAdapter() {
                 private final Point startPt = new Point();
                 private final Point windowPt = new Point();
+
                 @Override
                 public void mousePressed(MouseEvent e) {
                     startPt.setLocation(e.getLocationOnScreen());
                     windowPt.setLocation(parent.getLocation());
                 }
+
                 @Override
                 public void mouseDragged(MouseEvent e) {
                     Point pt = e.getLocationOnScreen();
@@ -75,13 +86,14 @@ public class HorizontalPanel extends JPanel {
 
     /**
      * パネルの高さをセットする
+     *
      * @param height
      */
     public void setPanelHeight(int height) {
         panelHeight = height;
-        this.setPreferredSize(new Dimension(100,height));
-        this.setMaximumSize(new Dimension(Integer.MAX_VALUE,height));
-        this.setMinimumSize(new Dimension(0,height));
+        this.setPreferredSize(new Dimension(100, height));
+        this.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
+        this.setMinimumSize(new Dimension(0, height));
     }
 
     /**
@@ -100,6 +112,7 @@ public class HorizontalPanel extends JPanel {
 
     /**
      * 隙間を入れる.
+     *
      * @param witdh
      */
     public void addSpace(int witdh) {
@@ -108,6 +121,7 @@ public class HorizontalPanel extends JPanel {
 
     /**
      * BoxLayout 部分にコンポネントを加える.
+     *
      * @param c
      * @return
      */
@@ -116,7 +130,9 @@ public class HorizontalPanel extends JPanel {
         // statusPanel でフォントサイズを小さくしたかった
         if (fontSize != 0) {
             Font f = c.getFont();
-            if (f != null) { c.setFont(new Font(f.getFontName(), f.getStyle(), fontSize)); }
+            if (f != null) {
+                c.setFont(new Font(f.getFontName(), f.getStyle(), fontSize));
+            }
         }
         return super.add(c);
     }
@@ -124,6 +140,7 @@ public class HorizontalPanel extends JPanel {
     /**
      * BoxLayout の場合，index オプションで NORTH または SOUTH に他の Panel を加える.
      * FlowLayout の場合は，挿入位置を指定.
+     *
      * @param c
      * @param index
      */
@@ -134,43 +151,55 @@ public class HorizontalPanel extends JPanel {
     /**
      * String を add した場合は，JLabel として挿入.
      * あとから，setText(String key) でその JLabel の文字列をセットできる.
+     *
      * @param text
      * @param key
      */
     public void add(String text, String key) {
         JLabel label = new JLabel(text);
-        if (text != null && !text.isEmpty()) { label.setToolTipText(text); }
+        if (text != null && !text.isEmpty()) {
+            label.setToolTipText(text);
+        }
         this.add(label);
         labelMap.put(key, label);
     }
 
     /**
      * String の add で key を省略した場合は，ラベルの順番（0〜）をストリングにしたキーとなる.
+     *
      * @param text
      */
     public void add(String text) {
         int count = 0;
-        for(Component c : this.getComponents()) {
-            if (c instanceof JLabel) { count++; }
+        for (Component c : this.getComponents()) {
+            if (c instanceof JLabel) {
+                count++;
+            }
         }
         this.add(text, String.valueOf(count));
     }
 
     /**
      * 後から挿入したラベルのテキストを変更する.
+     *
      * @param text
      * @param key
      */
     public void setText(String text, String key) {
         JLabel label = labelMap.get(key);
-        if (text != null && !text.isEmpty()) { label.setToolTipText(text); }
-        if (label != null) { label.setText(text); }
-
-        else { System.out.println("HorizontalPanel#setText: null label (key=" + key + ")"); }
+        if (text != null && !text.isEmpty()) {
+            label.setToolTipText(text);
+        }
+        if (label != null) {
+            label.setText(text);
+        } else {
+            System.out.println("HorizontalPanel#setText: null label (key=" + key + ")");
+        }
     }
 
     /**
      * BoxLayout 部分のフォントサイズをセットする.
+     *
      * @param size
      */
     public void setFontSize(int size) {
@@ -200,11 +229,11 @@ public class HorizontalPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics graphics) {
             Graphics g = graphics.create();
-            int center = SEPARATOR_WIDTH/2;
+            int center = SEPARATOR_WIDTH / 2;
             g.setColor(leftColor);
             g.drawLine(center, 5, center, getHeight() - 5);
             g.setColor(rightColor);
-            g.drawLine(center+1, 5, center+1, getHeight() - 5);
+            g.drawLine(center + 1, 5, center + 1, getHeight() - 5);
             g.dispose();
         }
     }

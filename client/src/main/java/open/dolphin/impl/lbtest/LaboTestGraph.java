@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class LaboTestGraph extends JPanel implements ComponentListener {
 
-    private static final long serialVersionUID = 7472151201436824606L;
     public static final int TT_ABSOLUTE_GRAPH = 0;
     public static final int TT_RELATIVE_GRAPH = 1;
     static final String UPPER_LIMIT_STRING = "上限値";
@@ -34,7 +33,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
     static final float EXAMPLE_FRAME_SPACE = 50.0F;
     static final float EXAMPLE_SPACE = 30.0F;
     static final float DUMMY_VALUE = -9999.99F;
-
+    private static final long serialVersionUID = 7472151201436824606L;
     // 検査データ
     String[] sampleTime; // 検体採取日
     String[] itemName; // テスト項目名
@@ -65,11 +64,11 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
     Color background = new Color(245, 245, 245);
     float plotCircleRadius = 10.0F;
     Color[] plotColors = new Color[]{Color.red, Color.blue, Color.pink,
-        Color.cyan, Color.orange, Color.green, Color.magenta, Color.yellow
+            Color.cyan, Color.orange, Color.green, Color.magenta, Color.yellow
     };
     boolean bValueCircle = true;
     boolean antiAliasing = true;
-//  boolean textAntiAliasing = false;
+    //  boolean textAntiAliasing = false;
     boolean textAntiAliasing = true;
     Color scaleLineColor = Color.lightGray;
     float scaleLineWidth = 1.0F;
@@ -89,12 +88,14 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
 
     // 相対表示の時 true，絶対表示の時 false;
     int mode = 1;
-    private Object[] yScales;
     // paint
     boolean hasOffset;
     boolean hasPixelsPerValue;
+    private Object[] yScales;
 
-    /** Creates a new instance of LaboTestGraph */
+    /**
+     * Creates a new instance of LaboTestGraph
+     */
     public LaboTestGraph() {
         this.setBackground(background);
         this.addComponentListener(this);
@@ -272,10 +273,10 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
                     }
                 }
 
-            /*
-             * strVal = test.getNormal(); if (strVal != null) { normal[i][j] =
-             * strVal; } else { normal[i][j] = null; }
-             */
+                /*
+                 * strVal = test.getNormal(); if (strVal != null) { normal[i][j] =
+                 * strVal; } else { normal[i][j] = null; }
+                 */
             }
 
             // このテスト項目のそれぞれの値を格納する
@@ -635,8 +636,8 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
     }
 
     protected void plotRelativeValue(Graphics2D g2, FontMetrics fm,
-            BasicStroke lineStroke, BasicStroke dashStroke, int index,
-            boolean circle) {
+                                     BasicStroke lineStroke, BasicStroke dashStroke, int index,
+                                     boolean circle) {
 
         int sampleCount = sampleTime.length;
 
@@ -705,7 +706,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
 
                     g2.draw(new Line2D.Float(fromP, toP));
 
-                // 次の点が null の時はプロットのみ
+                    // 次の点が null の時はプロットのみ
                 } else {
 
                     if (circle) {
@@ -913,8 +914,8 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
     }
 
     protected void plotValue(Graphics2D g2, FontMetrics fm,
-            BasicStroke lineStroke, BasicStroke dashStroke, int index,
-            boolean circle) {
+                             BasicStroke lineStroke, BasicStroke dashStroke, int index,
+                             boolean circle) {
 
         int sampleCount = sampleTime.length;
 
@@ -972,7 +973,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
 
                     g2.draw(new Line2D.Float(fromP, toP));
 
-                // 次の点が null の時はプロットのみ
+                    // 次の点が null の時はプロットのみ
                 } else {
 
                     if (circle) {

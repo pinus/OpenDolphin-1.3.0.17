@@ -33,42 +33,52 @@ import java.beans.PropertyChangeSupport;
 
 /**
  * SchemaEditorImpl.
- *
- *              +-- DraftLayer
- *              |                +- DrawLayer - Holder
- *              |                |
+ * <p>
+ * +-- DraftLayer
+ * |                +- DrawLayer - Holder
+ * |                |
  * ContentPane -+-- CanvasPane --+- DrawLayer - Holder
- *              |                |
- *              |                +- DrawLayer - Holder
- *              +-- BaseLayer
+ * |                |
+ * |                +- DrawLayer - Holder
+ * +-- BaseLayer
+ *
  * @author pns
  */
 public final class SchemaEditorImpl implements SchemaEditor {
     public static final String DEFAULT_TITLE = "参考画像";
     public static final String DEFAULT_ROLE = "参考図";
-
-    /** SchemaEditor のウインドウ (stage) */
+    private static SchemaEditorProperties properties;
+    /**
+     * SchemaEditor のウインドウ (stage)
+     */
     private final PnsStage canvasStage;
-    /** base image を載せる layer */
+    /**
+     * base image を載せる layer
+     */
     private final SchemaLayer baseLayer;
-    /** 実際に描画する Layers を入れる StackPane: 中に入る Layer は StateManager で作られる */
+    /**
+     * 実際に描画する Layers を入れる StackPane: 中に入る Layer は StateManager で作られる
+     */
     private final StackPane canvasPane;
-    /** mouse event を受けて途中経過を描画する Layer */
+    /**
+     * mouse event を受けて途中経過を描画する Layer
+     */
     private final SchemaLayer draftLayer;
-    /** StateManager */
+    /**
+     * StateManager
+     */
     private final StateManager stateManager;
-    /** UndoManager */
+    /**
+     * UndoManager
+     */
     private final UndoManager undoManager;
-
     private final Button okButton;
     private final Button cancelButton;
-
-    private static SchemaEditorProperties properties;
-
-    private SchemaModel model;
-    /** setEditable で Listener を付けたり取ったりするための Property */
+    /**
+     * setEditable で Listener を付けたり取ったりするための Property
+     */
     private final BooleanProperty editableProperty = new SimpleBooleanProperty();
-
+    private SchemaModel model;
     // KartePane との通信用
     private PropertyChangeSupport boundSupport;
 
@@ -109,7 +119,7 @@ public final class SchemaEditorImpl implements SchemaEditor {
             baseHolder.draw();
 
             canvasPane.getChildren().forEach(node -> {
-                ShapeHolder holder = ((SchemaLayer)node).getHolder();
+                ShapeHolder holder = ((SchemaLayer) node).getHolder();
                 holder.setGraphicsContext(outputGc);
                 holder.draw();
             });
@@ -134,8 +144,8 @@ public final class SchemaEditorImpl implements SchemaEditor {
         HBox buttonPane = new HBox();
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        HBox.setMargin(okButton, new Insets(8,8,4,0));
-        HBox.setMargin(cancelButton, new Insets(8,8,4,0));
+        HBox.setMargin(okButton, new Insets(8, 8, 4, 0));
+        HBox.setMargin(cancelButton, new Insets(8, 8, 4, 0));
         buttonPane.getChildren().addAll(spacer, cancelButton, okButton);
 
         StackPane contentPane = new StackPane();
@@ -159,7 +169,7 @@ public final class SchemaEditorImpl implements SchemaEditor {
 
         // Editable 処理
         editableProperty.set(true); // 初期値
-        editableProperty.addListener(new ChangeListener<Boolean>(){
+        editableProperty.addListener(new ChangeListener<Boolean>() {
             private final EventHandler<InputEvent> consumer = evt -> evt.consume();
 
             @Override
@@ -176,7 +186,7 @@ public final class SchemaEditorImpl implements SchemaEditor {
 
         // 終了処理
         canvasStage.setOnHidden(e -> {
-            for(PropertyChangeListener l : boundSupport.getPropertyChangeListeners()) {
+            for (PropertyChangeListener l : boundSupport.getPropertyChangeListeners()) {
                 boundSupport.removePropertyChangeListener(l);
             }
             // TranslateEditor で選択したまま終了する可能性がある
@@ -186,49 +196,80 @@ public final class SchemaEditorImpl implements SchemaEditor {
             properties.save();
         });
     }
+
     /**
      * Properties を返す.
+     *
      * @return
      */
     public static SchemaEditorProperties getProperties() {
         return properties;
     }
+
     /**
      * CanvasStage を返す.
+     *
      * @return
      */
-    public PnsStage getCanvasStage() { return canvasStage; }
+    public PnsStage getCanvasStage() {
+        return canvasStage;
+    }
+
     /**
      * DrawLayers を載せる Pane.
+     *
      * @return
      */
-    public StackPane getCanvasPane() { return canvasPane; }
+    public StackPane getCanvasPane() {
+        return canvasPane;
+    }
+
     /**
      * CanvasStage の ContentPane を返す.
      * BaseLayer, CanvasPane, DraftLayer を載せる.
+     *
      * @return
      */
-    public StackPane getContentPane() { return canvasStage.getContentPane(); }
+    public StackPane getContentPane() {
+        return canvasStage.getContentPane();
+    }
+
     /**
      * Mouse Event を受け取って途中経過を描く DraftLayer を返す.
+     *
      * @return
      */
-    public SchemaLayer getDraftLayer() { return draftLayer; }
+    public SchemaLayer getDraftLayer() {
+        return draftLayer;
+    }
+
     /**
      * Base 画像を表示する BaseLayer を返す.
+     *
      * @return
      */
-    public SchemaLayer getBaseLayer() { return baseLayer; }
+    public SchemaLayer getBaseLayer() {
+        return baseLayer;
+    }
+
     /**
      * StateManager を返す.
+     *
      * @return
      */
-    public StateManager getStateManager() { return stateManager; }
+    public StateManager getStateManager() {
+        return stateManager;
+    }
+
     /**
      * UndoManager を返す.
+     *
      * @return
      */
-    public UndoManager getUndoManager() { return undoManager; }
+    public UndoManager getUndoManager() {
+        return undoManager;
+    }
+
     /**
      * プログラムの入り口.
      */
@@ -254,6 +295,7 @@ public final class SchemaEditorImpl implements SchemaEditor {
 
     /**
      * このリスナは fire するとKartePane の propertyChanged を呼び出す.
+     *
      * @param l
      */
     @Override
@@ -277,6 +319,7 @@ public final class SchemaEditorImpl implements SchemaEditor {
      * FXImage → SwingImage 変換する.
      * 　「カルテに展開」ボタン：　createImage で作った BufferedImage を持ってくる
      * 　「破棄」ボタン　　　　：　null を持ってくる
+     *
      * @param image
      */
     public void firePropertyChange(Image image) {
@@ -288,7 +331,7 @@ public final class SchemaEditorImpl implements SchemaEditor {
             model.getExtRef().setMedicalRole(DEFAULT_ROLE);
             boundSupport.firePropertyChange("imageProp", null, model);
 
-        // キャンセル
+            // キャンセル
         } else {
             boundSupport.firePropertyChange("imageProp", model, null);
         }

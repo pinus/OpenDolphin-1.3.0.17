@@ -14,8 +14,8 @@ import javax.swing.*;
  */
 public abstract class AbstractSettingPanel {
 
-    public static final String STATE_PROP   = "stateProp";
-
+    public static final String STATE_PROP = "stateProp";
+    private final Logger logger;
     private ProjectSettingDialog context;
     private ProjectStub projectStub;
     private SettingPanelState state = SettingPanelState.NONE;
@@ -25,8 +25,6 @@ public abstract class AbstractSettingPanel {
     private ImageIcon icon;
     private String id;
     private StateListener stateListener;
-
-    private final Logger logger;
 
     /**
      * Creates a new instance of SettingPanel.
@@ -82,6 +80,7 @@ public abstract class AbstractSettingPanel {
 
     /**
      * ログイン後に呼ばれた場合 true.
+     *
      * @return
      */
     public boolean isLoginState() {
@@ -109,17 +108,17 @@ public abstract class AbstractSettingPanel {
     }
 
     /**
+     * @return Returns the state.
+     */
+    public SettingPanelState getState() {
+        return state;
+    }
+
+    /**
      * @param state The state to set.
      */
     public void setState(SettingPanelState state) {
         this.state = state;
         stateListener.state(state);
-    }
-
-    /**
-     * @return Returns the state.
-     */
-    public SettingPanelState getState() {
-        return state;
     }
 }

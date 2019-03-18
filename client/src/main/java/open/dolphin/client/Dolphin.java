@@ -80,6 +80,32 @@ public class Dolphin implements MainWindow {
     }
 
     /**
+     * システムの出力を console.log にリダイレクトする.
+     */
+    private static void redirectConsole() {
+        if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
+            try {
+                String logName = System.getProperty("user.dir") + "/console.log";
+                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
+                System.setOut(ps);
+                System.setErr(ps);
+                System.out.println("Console redirected to " + logName);
+            } catch (FileNotFoundException ex) {
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        // コンソールのリダイレクト
+        redirectConsole();
+
+        // Dolphin 本体の実行
+        Dolphin d = new Dolphin();
+        d.initialize();
+        d.startup();
+    }
+
+    /**
      * 初期化. 最初に呼ばれる.
      */
     private void initialize() {
@@ -399,6 +425,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * 使ってない. (MainWindow の implement に必要)
+     *
      * @return PageFormat
      */
     @Override
@@ -465,7 +492,7 @@ public class Dolphin implements MainWindow {
 
         // ここで処理して message をセットして下の Dialog で表示する
 
-        if (! messages.isEmpty()) {
+        if (!messages.isEmpty()) {
             String[] msgArray = messages.toArray(new String[0]);
             Component cmp = null;
             String title = ClientContext.getString("settingDialog.title");
@@ -480,6 +507,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * Dirty check.
+     *
      * @return dirty or not
      */
     private boolean isDirty() {
@@ -517,6 +545,7 @@ public class Dolphin implements MainWindow {
 
     /**
      * MainTool の StoppingTask を集めた Callable リストを生成する.
+     *
      * @return 作った Callabel のリスト
      */
     private List<Callable<Boolean>> getStoppingTask() {
@@ -799,6 +828,52 @@ public class Dolphin implements MainWindow {
     }
 
     /**
+     * DocumentFolder をチェック.
+     */
+    private void checkDocumentFolder() {
+        Path path = Paths.get(ClientContext.getDocumentDirectory());
+        bootLogger.info("document folder = " + path);
+
+        try {
+            if (Files.list(path).count() != 0) {
+                return;
+            }
+        } catch (IOException e) {
+        }
+        JOptionPane.showMessageDialog(null, "文書フォルダが見つかりません", "", JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
+     * MainWindowState.
+     */
+    private interface MainWindowState {
+        void enter();
+
+        boolean isLogin();
+    }
+
+    private static class FocusMonitor implements PropertyChangeListener {
+        private final KeyboardFocusManager focusManager;
+
+        public FocusMonitor() {
+            focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+            focusManager.addPropertyChangeListener(this);
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent e) {
+            System.out.println("FocusManager Report ----------------");
+            System.out.println(" oldValue=" + e.getOldValue());
+            System.out.println(" newValue=" + e.getNewValue());
+            System.out.println(" Active Window=" + focusManager.getActiveWindow());
+            System.out.println(" Focused Window=" + focusManager.getFocusedWindow());
+            System.out.println(" Focus Owner=" + focusManager.getFocusOwner());
+            System.out.println(" Permanent Focus Owner=" + focusManager.getPermanentFocusOwner());
+            System.out.println("");
+        }
+    }
+
+    /**
      * Mediator.
      */
     private final class Mediator extends MenuSupport {
@@ -818,14 +893,6 @@ public class Dolphin implements MainWindow {
             // メインウインドウなので閉じるだけは無効にする
             //getAction(GUIConst.ACTION_WINDOW_CLOSING).setEnabled(false);
         }
-    }
-
-    /**
-     * MainWindowState.
-     */
-    private interface MainWindowState {
-        void enter();
-        boolean isLogin();
     }
 
     /**
@@ -919,48 +986,6 @@ public class Dolphin implements MainWindow {
         }
     }
 
-    /**
-     * DocumentFolder をチェック.
-     */
-    private void checkDocumentFolder() {
-        Path path = Paths.get(ClientContext.getDocumentDirectory());
-        bootLogger.info("document folder = " + path);
-
-        try {
-            if (Files.list(path).count() != 0) {
-                return;
-            }
-        } catch (IOException e) {
-        }
-        JOptionPane.showMessageDialog(null, "文書フォルダが見つかりません", "", JOptionPane.WARNING_MESSAGE);
-    }
-
-    /**
-     * システムの出力を console.log にリダイレクトする.
-     */
-    private static void redirectConsole() {
-        if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
-            try {
-                String logName = System.getProperty("user.dir") + "/console.log";
-                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
-                System.setOut(ps);
-                System.setErr(ps);
-                System.out.println("Console redirected to " + logName);
-            } catch (FileNotFoundException ex) {
-            }
-        }
-    }
-
-    public static void main(String[] args) {
-        // コンソールのリダイレクト
-        redirectConsole();
-
-        // Dolphin 本体の実行
-        Dolphin d = new Dolphin();
-        d.initialize();
-        d.startup();
-    }
-
     // デバッグ用
     private class VerboseRepaintManager extends javax.swing.RepaintManager {
 
@@ -980,27 +1005,6 @@ public class Dolphin implements MainWindow {
             // private and not accessible from the subclass at the moment,
             // so we can't print more info about what's being painted.
             super.paintDirtyRegions();
-        }
-    }
-
-    private static class FocusMonitor implements PropertyChangeListener {
-        private final KeyboardFocusManager focusManager;
-
-        public FocusMonitor() {
-            focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-            focusManager.addPropertyChangeListener(this);
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-            System.out.println("FocusManager Report ----------------");
-            System.out.println(" oldValue=" + e.getOldValue());
-            System.out.println(" newValue=" + e.getNewValue());
-            System.out.println(" Active Window=" + focusManager.getActiveWindow());
-            System.out.println(" Focused Window=" + focusManager.getFocusedWindow());
-            System.out.println(" Focus Owner=" + focusManager.getFocusOwner());
-            System.out.println(" Permanent Focus Owner=" + focusManager.getPermanentFocusOwner());
-            System.out.println("");
         }
     }
 }

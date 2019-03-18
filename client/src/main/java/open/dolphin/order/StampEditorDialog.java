@@ -23,32 +23,33 @@ import java.util.Arrays;
 /**
  * Stamp 編集用の外枠を提供する Dialog.
  * StampHolder, DiagnosisDocument, KartePane から呼ばれる.
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
 public class StampEditorDialog {
 
     public static final String VALUE_PROP = "value";
-    private static final Point DEFAULT_LOC = new Point(159,67);
-    private static final Dimension DEFAULT_SIZE = new Dimension(924,616);
-
-    /** command buttons */
+    private static final Point DEFAULT_LOC = new Point(159, 67);
+    private static final Dimension DEFAULT_SIZE = new Dimension(924, 616);
+    private final PropertyChangeSupport boundSupport;
+    private final String entity;
+    private final Logger logger;
+    private final boolean isNew; // value が null なら new
+    /**
+     * command buttons
+     */
     private JButton okButton;
     private JButton cancelButton;
-
-    /** target editor */
+    /**
+     * target editor
+     */
     private StampEditor editor;
-    private final PropertyChangeSupport boundSupport;
-
     private JFrame dialog;
-    private final String entity;
     private Object value;
     private BlockGlass glass;
 
-    private final Logger logger;
-    private final boolean isNew; // value が null なら new
-
-    public StampEditorDialog(String entity, Object value)  {
+    public StampEditorDialog(String entity, Object value) {
         this.entity = entity;
         this.value = value;
         isNew = (value == null);
@@ -131,7 +132,7 @@ public class StampEditorDialog {
         dialog.getRootPane().getActionMap().put("close-window", new ProxyAction(() -> {
             int ans = JSheet.showOptionDialog(dialog, "カルテに展開しますか？", "",
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null,
-                    new String[] { "はい", "いいえ", "キャンセル" }, "はい");
+                    new String[]{"はい", "いいえ", "キャンセル"}, "はい");
             if (ans == 0) {
                 okButton.doClick();
             } else if (ans == 1) {
@@ -150,7 +151,8 @@ public class StampEditorDialog {
 
     /**
      * プロパティチェンジリスナを登録する.
-     * @param prop プロパティ名
+     *
+     * @param prop     プロパティ名
      * @param listener プロパティチェンジリスナ
      */
     public void addPropertyChangeListener(String prop, PropertyChangeListener listener) {

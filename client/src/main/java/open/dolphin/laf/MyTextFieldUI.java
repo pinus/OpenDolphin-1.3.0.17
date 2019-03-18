@@ -10,12 +10,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 /**
- *
  * @author pns
  */
 public class MyTextFieldUI extends BasicTextFieldUI {
 
-    public static final Color LIGHT_BLUE = new Color(152,194,241);
+    public static final Color LIGHT_BLUE = new Color(152, 194, 241);
     public static final Color LIGHTER_GRAY = new Color(228, 228, 228);
     private static final int DEFAULT_TEXT_HEIGHT = 28;
 
@@ -66,11 +65,11 @@ public class MyTextFieldUI extends BasicTextFieldUI {
         } else {
             // focus されていないときにグレーの枠線を描く
             g.setColor(LIGHTER_GRAY);
-            g.drawRoundRect(2, 2, tf.getWidth()-5, tf.getHeight()-5, 5, 5);
+            g.drawRoundRect(2, 2, tf.getWidth() - 5, tf.getHeight() - 5, 5, 5);
         }
         // 背景を塗る
         g.setColor(tf.getBackground());
-        g.fillRoundRect(3, 3, tf.getWidth()-6, tf.getHeight()-6, 5, 5);
+        g.fillRoundRect(3, 3, tf.getWidth() - 6, tf.getHeight() - 6, 5, 5);
 
         g.dispose();
         super.paintSafely(graphics);

@@ -17,12 +17,15 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 /**
- *
  * @author pns
  */
 public class PnsWidgetSampler extends Application {
-    private PnsStage stage;
     private static final Insets MARGIN = new Insets(10);
+    private PnsStage stage;
+
+    public static void main(String[] argv) {
+        Application.launch(argv);
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -38,7 +41,7 @@ public class PnsWidgetSampler extends Application {
         String[] category = {"ウィジェット", "タブ"};
         selector.getItems().addAll(category);
         selector.selectedItemProperty().addListener((ov, prev, selected) -> cardPane.show(selected));
-        StackPane.setMargin(selector, new Insets(3,10,8,10));
+        StackPane.setMargin(selector, new Insets(3, 10, 8, 10));
         stage.addTool(selector);
 
         /**
@@ -49,7 +52,7 @@ public class PnsWidgetSampler extends Application {
         cardPane.addCard(widget, category[0]);
 
         Node tab = getTabCard();
-        StackPane.setMargin(tab, new Insets(10,16,16,16));
+        StackPane.setMargin(tab, new Insets(10, 16, 16, 16));
         cardPane.addCard(tab, category[1]);
 
         selector.selectedIndexProperty().set(0);
@@ -62,6 +65,7 @@ public class PnsWidgetSampler extends Application {
 
     /**
      * いろいろな Widget.
+     *
      * @return
      */
     private Node getWidgetCard() {
@@ -112,12 +116,19 @@ public class PnsWidgetSampler extends Application {
         slider.setLabelFormatter(new StringConverter<Double>() {
             @Override
             public String toString(Double n) {
-                if (n == 1) { return "小"; }
-                else if (n == 2) { return "中"; }
-                else { return "大"; }
+                if (n == 1) {
+                    return "小";
+                } else if (n == 2) {
+                    return "中";
+                } else {
+                    return "大";
+                }
             }
+
             @Override
-            public Double fromString(String string) { return null; }
+            public Double fromString(String string) {
+                return null;
+            }
         });
         slider.valueProperty().addListener((ov, o, n) -> {
             text.setScaleX((double) n);
@@ -144,19 +155,27 @@ public class PnsWidgetSampler extends Application {
                 Task task = new Task<Integer>() {
                     @Override
                     protected Integer call() throws Exception {
-                        for (int i=0; i<100; i++) {
-                            updateProgress(i+1, 100);
-                            if (isCancelled()) { break; }
-                            try { Thread.sleep(10); }
-                            catch (InterruptedException e) {}
+                        for (int i = 0; i < 100; i++) {
+                            updateProgress(i + 1, 100);
+                            if (isCancelled()) {
+                                break;
+                            }
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException e) {
+                            }
                         }
                         return 0;
                     }
-                    @Override protected void cancelled() {
-                        updateProgress(-1,100);
+
+                    @Override
+                    protected void cancelled() {
+                        updateProgress(-1, 100);
                     }
-                    @Override protected void succeeded() {
-                        updateProgress(0,100);
+
+                    @Override
+                    protected void succeeded() {
+                        updateProgress(0, 100);
                     }
                 };
                 return task;
@@ -172,8 +191,11 @@ public class PnsWidgetSampler extends Application {
             }
         });
         service.runningProperty().addListener((ov, o, running) -> {
-            if (running) { startButton.setText("STOP"); }
-            else { startButton.setText("START"); }
+            if (running) {
+                startButton.setText("STOP");
+            } else {
+                startButton.setText("START");
+            }
         });
         // TextArea
         TextArea textArea = new TextArea();
@@ -192,11 +214,17 @@ public class PnsWidgetSampler extends Application {
         widgetPane.getColumnConstraints().add(1, col1);
         widgetPane.setHgap(8);
         widgetPane.setVgap(16);
-        widgetPane.add(new Label("表示テキスト："), 0, 0); widgetPane.add(textField, 1, 0);
-        widgetPane.add(new Label("フォント："), 0, 1); widgetPane.add(comboBox, 1, 1);
-        widgetPane.add(new Label("大きさ："), 0, 3); widgetPane.add(slider, 1, 3);
-        widgetPane.add(new Label("プログレスバー："), 0, 4); widgetPane.add(bar, 1, 4); widgetPane.add(startButton, 2, 4);
-        widgetPane.add(new Label("テキストエリア："), 0, 5); widgetPane.add(textArea, 1, 5, 2, 1);
+        widgetPane.add(new Label("表示テキスト："), 0, 0);
+        widgetPane.add(textField, 1, 0);
+        widgetPane.add(new Label("フォント："), 0, 1);
+        widgetPane.add(comboBox, 1, 1);
+        widgetPane.add(new Label("大きさ："), 0, 3);
+        widgetPane.add(slider, 1, 3);
+        widgetPane.add(new Label("プログレスバー："), 0, 4);
+        widgetPane.add(bar, 1, 4);
+        widgetPane.add(startButton, 2, 4);
+        widgetPane.add(new Label("テキストエリア："), 0, 5);
+        widgetPane.add(textArea, 1, 5, 2, 1);
 
         // Label 部分のレイアウト
         HBox labelPane = new HBox();
@@ -218,6 +246,7 @@ public class PnsWidgetSampler extends Application {
 
     /**
      * TabPane のサンプル.
+     *
      * @return
      */
     private Node getTabCard() {
@@ -249,9 +278,5 @@ public class PnsWidgetSampler extends Application {
 
         pane.getTabs().addAll(tab1, tab2, tab3);
         return pane;
-    }
-
-    public static void main(String[] argv) {
-        Application.launch(argv);
     }
 }

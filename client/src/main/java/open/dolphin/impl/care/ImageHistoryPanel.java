@@ -26,14 +26,13 @@ import java.util.List;
  */
 public class ImageHistoryPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-
+    private final int columnCount = 5;
+    private final int imageWidth = 132;
+    private final int imageHeight = 132;
     private String pid;
     private CareMapDocument myParent;
     private ImageTableModel tModel;
     private JTable table;
-    private final int columnCount = 5;
-    private final int imageWidth = 132;
-    private final int imageHeight = 132;
 
     public ImageHistoryPanel() {
         super(new BorderLayout());
@@ -225,8 +224,8 @@ public class ImageHistoryPanel extends JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table,
-                Object value, boolean isSelected, boolean isFocused, int row,
-                int col) {
+                                                       Object value, boolean isSelected, boolean isFocused, int row,
+                                                       int col) {
             Component compo = super.getTableCellRendererComponent(table, value,
                     isSelected, isFocused, row, col);
             JLabel l = (JLabel) compo;
@@ -241,7 +240,7 @@ public class ImageHistoryPanel extends JPanel {
 
                 // } else {
                 l.setText(entry.getConfirmDate().substring(0, 10));
-            // }
+                // }
 
             } else {
                 l.setIcon(null);

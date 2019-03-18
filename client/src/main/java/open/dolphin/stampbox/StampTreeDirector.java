@@ -13,23 +13,24 @@ import java.util.List;
 /**
  * Director of StampTree builder.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 
 public class StampTreeDirector {
 
-    protected final int TT_STAMP_INFO  	= 0;
-    protected final int TT_NODE  	= 1;
-    protected final int TT_ROOT  	= 2;
-    protected final int TT_STAMP_TREE  	= 3;
-    protected final int TT_STAMP_BOX  	= 4;
+    protected final int TT_STAMP_INFO = 0;
+    protected final int TT_NODE = 1;
+    protected final int TT_ROOT = 2;
+    protected final int TT_STAMP_TREE = 3;
+    protected final int TT_STAMP_BOX = 4;
 
     protected AbstractStampTreeBuilder builder;
 
     /**
      * Creates new StampTreeDirector.
      */
-    public StampTreeDirector() {}
+    public StampTreeDirector() {
+    }
 
     public StampTreeDirector(AbstractStampTreeBuilder builder) {
         this.builder = builder;

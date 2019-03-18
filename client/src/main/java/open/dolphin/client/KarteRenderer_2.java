@@ -74,29 +74,20 @@ public class KarteRenderer_2 {
 
     private static final String PROGRESS_COURSE_NAME = "kartePane";
 
-    private static final String[] REPLACES = new String[] { "<", ">", "&", "'" ,"\""};
+    private static final String[] REPLACES = new String[]{"<", ">", "&", "'", "\""};
 
-    private static final String[] MATCHES = new String[] { "&lt;", "&gt;", "&amp;", "&apos;", "&quot;" };
+    private static final String[] MATCHES = new String[]{"&lt;", "&gt;", "&amp;", "&apos;", "&quot;"};
 
     private static final String NAME_STAMP_HOLDER = "name=\"stampHolder\"";
-
-    private DocumentModel model;
-
     private final KartePane soaPane;
-
     private final KartePane pPane;
-
-    private KartePane thePane;
-
-    private boolean logicalStyle;
-
-    private boolean bSoaPane;
-
-    private List<ModuleModel> soaModules;
-
-    private List<ModuleModel> pModules;
-
     private final Logger logger;
+    private DocumentModel model;
+    private KartePane thePane;
+    private boolean logicalStyle;
+    private boolean bSoaPane;
+    private List<ModuleModel> soaModules;
+    private List<ModuleModel> pModules;
 
     public KarteRenderer_2(KartePane soaPane, KartePane pPane) {
         this.soaPane = soaPane;
@@ -106,6 +97,7 @@ public class KarteRenderer_2 {
 
     /**
      * DocumentModel をレンダリングする.
+     *
      * @param model レンダリングする DocumentModel
      */
     public void render(DocumentModel model) {
@@ -159,7 +151,9 @@ public class KarteRenderer_2 {
                 soaPane.makeParagraph();
             });
             // モジュールのみの場合も dirty にセット
-            if (soaModules != null) { soaPane.setDirty(true); }
+            if (soaModules != null) {
+                soaPane.setDirty(true);
+            }
 
         } else {
             debug("Render SOA Pane");
@@ -179,7 +173,9 @@ public class KarteRenderer_2 {
                 pPane.makeParagraph();
             });
             // モジュールだけの場合も dirty にセット
-            if (pModules != null && pPane != null) { pPane.setDirty(true); }
+            if (pModules != null && pPane != null) {
+                pPane.setDirty(true);
+            }
 
         } else {
             bSoaPane = false;
@@ -193,6 +189,7 @@ public class KarteRenderer_2 {
 
     /**
      * TextPane Dump の XML を解析する.
+     *
      * @param xml TextPane Dump の XML
      */
     private void renderPane(String xml) {
@@ -216,6 +213,7 @@ public class KarteRenderer_2 {
 
     /**
      * 子要素をパースする.
+     *
      * @param current 要素
      */
     private void writeChildren(Element current) {
@@ -347,7 +345,7 @@ public class KarteRenderer_2 {
     }
 
     private void startContent(String foreground, String size, String bold,
-            String italic, String underline, String text) {
+                              String italic, String underline, String text) {
 
         // 特殊文字を戻す
         for (int i = 0; i < REPLACES.length; i++) {

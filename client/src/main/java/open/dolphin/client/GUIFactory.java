@@ -9,23 +9,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 
 /**
- *
  * @author Kazushi Minagawa Digital Globe, Inc.
  */
 public class GUIFactory {
 
-    private static final int BUTTON_GAP 		= 5;
+    private static final int BUTTON_GAP = 5;
     //private static final int LABEL_ITEM_GAP 		= 7;
-    private static final int TF_MARGIN_TOP  		= 0;
-    private static final int TF_MARGIN_LEFT  		= 0;
-    private static final int TF_MARGIN_BOTTOM  		= 0;
-    private static final int TF_MARGIN_RIGHT  		= 0;
-    private static final int TF_LENGTH          	= 30;
-    private static final int TF_HEIGHT                  = 26;
-    private static final int TITLE_SPACE_TOP  		= 6;
-    private static final int TITLE_SPACE_LEFT  		= 6;
-    private static final int TITLE_SPACE_BOTTOM 	= 5;
-    private static final int TITLE_SPACE_RIGHT  	= 5;
+    private static final int TF_MARGIN_TOP = 0;
+    private static final int TF_MARGIN_LEFT = 0;
+    private static final int TF_MARGIN_BOTTOM = 0;
+    private static final int TF_MARGIN_RIGHT = 0;
+    private static final int TF_LENGTH = 30;
+    private static final int TF_HEIGHT = 26;
+    private static final int TITLE_SPACE_TOP = 6;
+    private static final int TITLE_SPACE_LEFT = 6;
+    private static final int TITLE_SPACE_BOTTOM = 5;
+    private static final int TITLE_SPACE_RIGHT = 5;
     private static final Color DROP_OK_COLOR = new Color(0, 12, 156);
 
     public static Font createSmallFont() {
@@ -33,68 +32,88 @@ public class GUIFactory {
     }
 
     public static JButton createOkButton() {
-        return new JButton((String)UIManager.get("OptionPane.okButtonText"));
+        return new JButton((String) UIManager.get("OptionPane.okButtonText"));
     }
 
     public static JButton createCancelButton() {
-        return new JButton((String)UIManager.get("OptionPane.cancelButtonText"));
+        return new JButton((String) UIManager.get("OptionPane.cancelButtonText"));
     }
 
     public static JButton createButton(String text, String mnemonic, ActionListener al) {
         JButton ret = new JButton(text);
-        if (al != null) { ret.addActionListener(al); }
+        if (al != null) {
+            ret.addActionListener(al);
+        }
         return ret;
     }
 
     public static JRadioButton createRadioButton(String text, ActionListener al, ButtonGroup bg) {
         JRadioButton radio = new JRadioButton(text);
-        if (al != null) { radio.addActionListener(al); }
-        if (bg != null) { bg.add(radio); }
+        if (al != null) {
+            radio.addActionListener(al);
+        }
+        if (bg != null) {
+            bg.add(radio);
+        }
         return radio;
     }
 
     public static JCheckBox createCheckBox(String text, ActionListener al) {
         JCheckBox ret = new JCheckBox(text);
-        if (al != null) { ret.addActionListener(al); }
+        if (al != null) {
+            ret.addActionListener(al);
+        }
         return ret;
     }
 
     public static JTextField createTextField(int val, Insets margin, FocusListener fl, DocumentListener dl) {
-        JTextField tf = new JTextField(val==0? TF_LENGTH : val);
+        JTextField tf = new JTextField(val == 0 ? TF_LENGTH : val);
         Dimension d = tf.getPreferredSize();
         tf.setPreferredSize(new Dimension(d.width, TF_HEIGHT));
-        tf.setMinimumSize(new Dimension(36,TF_HEIGHT));
-        tf.setMargin(margin==null? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin);
-        if (dl != null) { tf.getDocument().addDocumentListener(dl); }
-        if (fl != null) { tf.addFocusListener(fl); }
+        tf.setMinimumSize(new Dimension(36, TF_HEIGHT));
+        tf.setMargin(margin == null ? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin);
+        if (dl != null) {
+            tf.getDocument().addDocumentListener(dl);
+        }
+        if (fl != null) {
+            tf.addFocusListener(fl);
+        }
         return tf;
     }
 
     public static JPasswordField createPassField(int val, Insets margin, FocusListener fa, DocumentListener dl) {
-        JPasswordField pf = new JPasswordField(val==0? TF_LENGTH : val);
+        JPasswordField pf = new JPasswordField(val == 0 ? TF_LENGTH : val);
         Dimension d = pf.getPreferredSize();
         pf.setPreferredSize(new Dimension(d.width, TF_HEIGHT));
-        pf.setMinimumSize(new Dimension(36,TF_HEIGHT));
-        pf.setMargin(margin==null? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin);
-        if (dl != null) { pf.getDocument().addDocumentListener(dl); }
-        if (fa != null) { pf.addFocusListener(fa); }
+        pf.setMinimumSize(new Dimension(36, TF_HEIGHT));
+        pf.setMargin(margin == null ? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin);
+        if (dl != null) {
+            pf.getDocument().addDocumentListener(dl);
+        }
+        if (fa != null) {
+            pf.addFocusListener(fa);
+        }
         return pf;
     }
 
     /**
      * FlowLayout にボタンを配置したパネルを生成する.
-     * @param btns 配置する Button の配列
+     *
+     * @param btns  配置する Button の配列
      * @param align 配置する方向（FlowLayout.RIGHT/LEFT）
      * @return 5 ピクセル間隔でボタンが配置されたパネル
      */
     public static JPanel createButtonPanel(JButton[] btns, int align) {
         JPanel p = new JPanel(new FlowLayout(align, BUTTON_GAP, 0));
-        for (JButton btn : btns) { p.add(btn); }
+        for (JButton btn : btns) {
+            p.add(btn);
+        }
         return p;
     }
 
     /**
      * 右づめにボタンを配置したパネルを生成する.
+     *
      * @param btns 配置する Button の配列
      * @return ボタンが配列されたパネル（左に水平 Glue，右はマージンなし）
      */
@@ -112,13 +131,17 @@ public class GUIFactory {
 
     public static JPanel createRadioPanel(JRadioButton[] rbs) {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, BUTTON_GAP, 0));
-        for (JRadioButton rb : rbs) { p.add(rb); }
+        for (JRadioButton rb : rbs) {
+            p.add(rb);
+        }
         return p;
     }
 
     public static JPanel createCheckBoxPanel(JCheckBox[] boxes) {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT,BUTTON_GAP, 0));
-        for (JCheckBox boxe : boxes) { p.add(boxe); }
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, BUTTON_GAP, 0));
+        for (JCheckBox boxe : boxes) {
+            p.add(boxe);
+        }
         return p;
     }
 
@@ -131,7 +154,7 @@ public class GUIFactory {
     }
 
     public static JPanel createZipCodePanel(JTextField tf1, JTextField tf2) {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         p.add(tf1);
         p.add(new JLabel(" - "));
         p.add(tf2);
@@ -139,7 +162,7 @@ public class GUIFactory {
     }
 
     public static JPanel createPhonePanel(JTextField tf1, JTextField tf2, JTextField tf3) {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 0,0));
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         p.add(tf1);
         p.add(new JLabel(" - "));
         p.add(tf2);
@@ -163,7 +186,7 @@ public class GUIFactory {
     }
 
     public static JPanel createZeroPanel(JComponent jc) {
-        JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
+        JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         ret.add(jc);
         return ret;
     }
@@ -173,9 +196,9 @@ public class GUIFactory {
     }
 
     public static Point getCenterLoc(int width, int height) {
-        Dimension screen = Toolkit.getDefaultToolkit ().getScreenSize ();
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (screen.width - width) / 2;
-        int y = (screen.height - height ) / 3;
+        int y = (screen.height - height) / 3;
         return new Point(x, y);
     }
 
@@ -185,13 +208,14 @@ public class GUIFactory {
 
     /**
      * Slider のパネルを作る
+     *
      * @param min
      * @param max
      * @param initValue
      * @return
      */
     public static JPanel createSliderPanel(int min, int max, final int initValue) {
-        JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
+        JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         // スライダー
         final JSlider slider = new JSlider(min, max, initValue);
         slider.setFont(new Font("SansSerif", Font.PLAIN, 9));
@@ -203,7 +227,7 @@ public class GUIFactory {
 
         // お互いにリスン
         slider.addChangeListener(e -> spinner.setValue(slider.getValue()));
-        spinner.addChangeListener(e -> slider.setValue((Integer)spinner.getValue()));
+        spinner.addChangeListener(e -> slider.setValue((Integer) spinner.getValue()));
 
         ret.add(slider);
         ret.add(spinner);

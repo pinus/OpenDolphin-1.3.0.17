@@ -4,6 +4,7 @@ import java.util.EventObject;
 
 /**
  * PNSBadgeTabbedPane に送る BadgeEvent.
+ *
  * @author pns
  */
 public class BadgeEvent extends EventObject {
@@ -18,6 +19,7 @@ public class BadgeEvent extends EventObject {
 
     /**
      * Badge に表示する数字.
+     *
      * @return the badgeNumber
      */
     public int getBadgeNumber() {
@@ -25,7 +27,6 @@ public class BadgeEvent extends EventObject {
     }
 
     /**
-     *
      * @param badgeNumber the badgeNumber to set
      */
     public void setBadgeNumber(int badgeNumber) {
@@ -34,6 +35,7 @@ public class BadgeEvent extends EventObject {
 
     /**
      * Badge を付ける PNSBadgeTabbedPane の Index.
+     *
      * @return the tabIndex
      */
     public int getTabIndex() {
@@ -41,7 +43,6 @@ public class BadgeEvent extends EventObject {
     }
 
     /**
-     *
      * @param tabIndex the tabIndex to set
      */
     public void setTabIndex(int tabIndex) {

@@ -14,6 +14,7 @@ import java.awt.*;
  * |---------------|
  * | Status Panel  |
  * +---------------+
+ *
  * @author pns
  */
 public class StatusPanel extends HorizontalPanel {

@@ -2,6 +2,7 @@ package open.dolphin.impl.scheam;
 
 /**
  * 編集 State の種類.
+ *
  * @author pns
  */
 public enum State {

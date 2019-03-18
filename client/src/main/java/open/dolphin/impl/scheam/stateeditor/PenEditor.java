@@ -10,6 +10,7 @@ import open.dolphin.impl.scheam.shapeholder.PenHolder;
 /**
  * マウスドラッグで自由に線を引く StateEditor.
  * クリックされた場合は点を打つ.
+ *
  * @author pns
  */
 public class PenEditor extends StateEditorBase {
@@ -57,17 +58,21 @@ public class PenEditor extends StateEditorBase {
     public ShapeHolder getHolder() {
         int size = draftHolder.getPathSize();
 
-        if (size == 0) { return null; }
+        if (size == 0) {
+            return null;
+        }
 
         // 点が１つの時は　LineWidth 大の Oval を返す
         // 色は fillColor になる
         if (size == 1) {
-            double d = draftHolder.getLineWidth()/2.0;
+            double d = draftHolder.getLineWidth() / 2.0;
             double x = draftHolder.getPathX(0);
             double y = draftHolder.getPathY(0);
             OvalHolder o = new OvalHolder();
-            o.setStartX(x-d); o.setStartY(y-d);
-            o.setEndX(x+d); o.setEndY(y+d);
+            o.setStartX(x - d);
+            o.setStartY(y - d);
+            o.setEndX(x + d);
+            o.setEndY(y + d);
             o.setProperties();
             //o.setFillColor(draftHolder.getLineColor());
             //o.setLineColor(Color.TRANSPARENT);

@@ -7,6 +7,7 @@ import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
  * Polygon を保持する ShapeHolder.
+ *
  * @author pns
  */
 public class PolygonHolder extends ShapeHolderBase {
@@ -14,7 +15,7 @@ public class PolygonHolder extends ShapeHolderBase {
     protected void drawPath(GraphicsContext gc) {
         gc.beginPath();
         gc.moveTo(getPathX(0), getPathY(0));
-        for (int i=1; i<getPathSize(); i++) {
+        for (int i = 1; i < getPathSize(); i++) {
             gc.lineTo(getPathX(i), getPathY(i));
         }
     }
@@ -41,10 +42,11 @@ public class PolygonHolder extends ShapeHolderBase {
             gc.stroke();
         }
     }
+
     @Override
     public boolean contains(double x, double y) {
         // どれかの点と近ければ contains と判断
-        for (int i=0; i<getPathSize(); i++) {
+        for (int i = 0; i < getPathSize(); i++) {
             if (SchemaUtils.isNear(
                     x, y,
                     getPathX(i), getPathY(i))) {

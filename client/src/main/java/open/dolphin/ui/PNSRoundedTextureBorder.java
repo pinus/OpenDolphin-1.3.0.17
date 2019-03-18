@@ -10,12 +10,13 @@ import java.awt.image.BufferedImage;
 
 /**
  * イメージを texture で，角丸 fill するボーダ.
+ *
  * @author pns
  */
 public class PNSRoundedTextureBorder extends AbstractBorder {
     private static final long serialVersionUID = 1L;
 
-    private static final Color EDGE_COLOR = new Color(200,200,200);
+    private static final Color EDGE_COLOR = new Color(200, 200, 200);
     private final ImageIcon image;
     private final Insets insets;
 
@@ -31,20 +32,20 @@ public class PNSRoundedTextureBorder extends AbstractBorder {
         BufferedImage buf = ImageHelper.imageToBufferedImage(image);
         TexturePaint paint = new TexturePaint(buf, new Rectangle2D.Double(0, 0, buf.getWidth(), buf.getHeight()));
         g2d.setPaint(paint);
-        g2d.fillRoundRect(x, y, width-1, height-1, 10, 10);
+        g2d.fillRoundRect(x, y, width - 1, height - 1, 10, 10);
 
         g2d.setColor(EDGE_COLOR);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.drawRoundRect(x, y, width-1, height-1, 10, 10);
-   }
+        g2d.drawRoundRect(x, y, width - 1, height - 1, 10, 10);
+    }
 
     @Override
-    public Insets getBorderInsets(Component c){
+    public Insets getBorderInsets(Component c) {
         return insets;
     }
 
     @Override
-    public boolean isBorderOpaque(){
+    public boolean isBorderOpaque() {
         return false;
     }
 }

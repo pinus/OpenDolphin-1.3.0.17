@@ -5,7 +5,7 @@ import java.awt.*;
 
 /**
  * SeparatorPanel
- *
+ * <p>
  * Based on Java Swing Hacks.
  */
 public class SeparatorPanel extends JPanel {

@@ -1,4 +1,3 @@
-
 package open.dolphin.impl.psearch;
 
 import open.dolphin.infomodel.PatientModel;
@@ -8,7 +7,6 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 
 /**
- *
  * @author kazm
  * @author pns
  */

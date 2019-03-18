@@ -29,36 +29,27 @@ import java.io.UnsupportedEncodingException;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class AddFacilityDialog extends JDialog implements ComponentListener, Runnable {
-    private static final long serialVersionUID = 1L;
-
     public static final String ACCOUNT_INFO = "accountInfo";
-
-    private enum AccountState {COM_TEST, AGREEMENT, ACCOUNT_INFO}
-
+    private static final long serialVersionUID = 1L;
     private JPanel cardPanel;
     private CardLayout cardLayout;
     private JButton okBtn;
     private JButton cancelBtn;
     private JButton nextBtn;
     private JButton backBtn;
-
     private PropertyChangeSupport boundSupport;
     private ServerInfo serverInfo;
-
     private OIDGetter oidGetter;
     private AgreementPanel agreement;
     private AccountInfoPanel accountInfo;
-
     private AccountState state = AccountState.COM_TEST;
     private boolean comTestOk;
     private boolean agreementOk;
     private boolean accountInfoOk;
-
     private Logger logger;
 
-
     public AddFacilityDialog() {
-        super((Frame)null, null, true);
+        super((Frame) null, null, true);
         setIconImage(GUIConst.ICON_DOLPHIN.getImage());
         logger = ClientContext.getBootLogger();
         boundSupport = new PropertyChangeSupport(this);
@@ -101,7 +92,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
 
         String backBtnText = ClientContext.getString("account.backBtn.text");
         String nextBtnText = ClientContext.getString("account.nextBtn.text");
-        String cancelBtnText = (String)UIManager.get("OptionPane.cancelButtonText");
+        String cancelBtnText = (String) UIManager.get("OptionPane.cancelButtonText");
         String addBtnText = ClientContext.getString("account.addBtn.text");
 
         // 通信テストパネルを生成する
@@ -174,7 +165,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
         // 全体を配置する
         JPanel content = new JPanel(new BorderLayout(0, 17));
         content.add(cardPanel, BorderLayout.CENTER);
-        content.add(btnPanel,BorderLayout.SOUTH);
+        content.add(btnPanel, BorderLayout.SOUTH);
         content.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
 
         // コンテントにする
@@ -228,24 +219,6 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
         cancelBtn.addActionListener(e -> close());
 
         this.addComponentListener(this);
-    }
-
-    private class OidListener implements PropertyChangeListener {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-            String oid = (String)e.getNewValue();
-            comTestOk = oid != null && (!oid.equals(""));
-            controlButton();
-        }
-    }
-
-    private class AgreementListener implements PropertyChangeListener {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-            boolean agree = (boolean)e.getNewValue();
-            agreementOk = agree;
-            controlButton();
-        }
     }
 
     private void setState(AccountState s) {
@@ -304,9 +277,50 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
         String note = userId + "を登録しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        AddFacilityTask task = new AddFacilityTask(c, message, note, 30*1000, model);
+        AddFacilityTask task = new AddFacilityTask(c, message, note, 30 * 1000, model);
         // task.setMillisToPopup(200);
         task.execute();
+    }
+
+    @Override
+    public void componentMoved(java.awt.event.ComponentEvent componentEvent) {
+        //Point loc = getLocation();
+        //System.out.println(getTitle() + " : x=" + loc.x+ " y=" + loc.y);
+    }
+
+    @Override
+    public void componentResized(java.awt.event.ComponentEvent componentEvent) {
+        //int width = getWidth();
+        //int height = getHeight();
+        //System.out.println(getTitle() + " : width=" + width + " height=" + height);
+    }
+
+    @Override
+    public void componentShown(java.awt.event.ComponentEvent componentEvent) {
+    }
+
+    @Override
+    public void componentHidden(java.awt.event.ComponentEvent componentEvent) {
+    }
+
+    private enum AccountState {COM_TEST, AGREEMENT, ACCOUNT_INFO}
+
+    private class OidListener implements PropertyChangeListener {
+        @Override
+        public void propertyChange(PropertyChangeEvent e) {
+            String oid = (String) e.getNewValue();
+            comTestOk = oid != null && (!oid.equals(""));
+            controlButton();
+        }
+    }
+
+    private class AgreementListener implements PropertyChangeListener {
+        @Override
+        public void propertyChange(PropertyChangeEvent e) {
+            boolean agree = (boolean) e.getNewValue();
+            agreementOk = agree;
+            controlButton();
+        }
     }
 
     /**
@@ -439,26 +453,5 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
             }
             return sb.toString();
         }
-    }
-
-    @Override
-    public void componentMoved(java.awt.event.ComponentEvent componentEvent) {
-        //Point loc = getLocation();
-        //System.out.println(getTitle() + " : x=" + loc.x+ " y=" + loc.y);
-    }
-
-    @Override
-    public void componentResized(java.awt.event.ComponentEvent componentEvent) {
-        //int width = getWidth();
-        //int height = getHeight();
-        //System.out.println(getTitle() + " : width=" + width + " height=" + height);
-    }
-
-    @Override
-    public void componentShown(java.awt.event.ComponentEvent componentEvent) {
-    }
-
-    @Override
-    public void componentHidden(java.awt.event.ComponentEvent componentEvent) {
     }
 }

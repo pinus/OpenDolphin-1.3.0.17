@@ -6,12 +6,13 @@ import java.awt.*;
 
 /**
  * CalendarPanel ヘッダーの曜日部分のレンダラ.
+ *
  * @author pns
  */
 public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 1L;
 
-    private static final Color BACKGROUND = new Color (240,240,240);
+    private static final Color BACKGROUND = new Color(240, 240, 240);
     private static final Color BORDER = Color.LIGHT_GRAY;
 
     // バックグランドのグラデーションカラー
@@ -30,7 +31,7 @@ public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
     private void init() {
         setHorizontalAlignment(SwingConstants.CENTER);
         setOpaque(false);
-        setBackground(new Color(0,true));
+        setBackground(new Color(0, true));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
         g.setColor(BACKGROUND);
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(BORDER);
-        g.drawLine(0, getHeight()-1, getWidth()-1, getHeight()-1);
+        g.drawLine(0, getHeight() - 1, getWidth() - 1, getHeight() - 1);
         g.dispose();
 
 //        for (int y=0; y<getHeight();y++) {

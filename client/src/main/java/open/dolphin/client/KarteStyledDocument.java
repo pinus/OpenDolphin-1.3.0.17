@@ -11,22 +11,23 @@ import java.util.List;
 /**
  * KartePane の StyledDocument class.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class KarteStyledDocument extends DefaultStyledDocument {
     private static final long serialVersionUID = 1L;
-
+    //masuda^
+    private static final String STAMP_STYLE = "stampHolder";
+    private static final String SCHEMA_STYLE = "schemaHolder";
     // スタンプの先頭を改行する
     private boolean topSpace;
-//masuda^
-    private static final String STAMP_STYLE      = "stampHolder";
-    private static final String SCHEMA_STYLE     = "schemaHolder";
-//masuda$
+    //masuda$
     // KartePane
     private KartePane kartePane;
 
 
-    /** Creates new TestDocument */
+    /**
+     * Creates new TestDocument
+     */
     public KarteStyledDocument() {
 
         topSpace = Project.getPreferences().getBoolean("stampSpace", true);
@@ -54,7 +55,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
                 // エントリを修正するComponentHolderを取得
                 Object obj = StyleConstants.getComponent(kd.getCharacterElement(pos).getAttributes());
                 try {
-                    if (obj instanceof ComponentHolder){
+                    if (obj instanceof ComponentHolder) {
                         ComponentHolder ch = (ComponentHolder) obj;
                         // エントリを修正
                         ch.setEntry(kd.createPosition(pos), kd.createPosition(pos + 1));
@@ -97,6 +98,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
 
     /**
      * Stamp を挿入する.
+     *
      * @param sh 挿入するスタンプホルダ
      */
     public void stamp(final StampHolder sh) {
@@ -114,24 +116,25 @@ public class KarteStyledDocument extends DefaultStyledDocument {
             // Stamp を挿入する
             if (topSpace) {
                 insertString(start, "\n", null);
-                insertString(start+1, " ", runStyle);
-                insertString(start+2, "\n", null);                           // 改行をつけないとテキスト入力制御がやりにくくなる
-                sh.setEntry(createPosition(start+1), createPosition(start+2)); // スタンプの開始と終了位置を生成して保存する
+                insertString(start + 1, " ", runStyle);
+                insertString(start + 2, "\n", null);                           // 改行をつけないとテキスト入力制御がやりにくくなる
+                sh.setEntry(createPosition(start + 1), createPosition(start + 2)); // スタンプの開始と終了位置を生成して保存する
             } else {
                 insertString(start, " ", runStyle);
-                insertString(start+1, "\n", null);                           // 改行をつけないとテキスト入力制御がやりにくくなる
-                sh.setEntry(createPosition(start), createPosition(start+1)); // スタンプの開始と終了位置を生成して保存する
+                insertString(start + 1, "\n", null);                           // 改行をつけないとテキスト入力制御がやりにくくなる
+                sh.setEntry(createPosition(start), createPosition(start + 1)); // スタンプの開始と終了位置を生成して保存する
             }
 
-        } catch(BadLocationException be) {
+        } catch (BadLocationException be) {
             be.printStackTrace();
-        } catch(NullPointerException ne) {
+        } catch (NullPointerException ne) {
             ne.printStackTrace();
         }
     }
 
     /**
      * Stamp を挿入する.
+     *
      * @param sh 挿入するスタンプホルダ
      */
     public void flowStamp(final StampHolder sh) {
@@ -153,17 +156,18 @@ public class KarteStyledDocument extends DefaultStyledDocument {
             insertString(start, " ", runStyle);
 
             // スタンプの開始と終了位置を生成して保存する
-            sh.setEntry(createPosition(start), createPosition(start+1));
+            sh.setEntry(createPosition(start), createPosition(start + 1));
 
-        } catch(BadLocationException be) {
+        } catch (BadLocationException be) {
             be.printStackTrace();
-        } catch(NullPointerException ne) {
+        } catch (NullPointerException ne) {
             ne.printStackTrace();
         }
     }
 
     /**
      * Stampを削除する.
+     *
      * @param start 削除開始のオフセット位置
      * @param len
      */
@@ -173,21 +177,22 @@ public class KarteStyledDocument extends DefaultStyledDocument {
 //masuda^   Stamp/Schemaをremoveするときは直後の改行も削除する
             // Stamp は一文字で表されている
             //remove(start, 1);
-            if (start < getLength() && "\n".equals(getText(start+1, 1))) {
+            if (start < getLength() && "\n".equals(getText(start + 1, 1))) {
                 remove(start, 2);
             } else {
                 remove(start, 1);
             }
 //masuda$
-        } catch(BadLocationException be) {
+        } catch (BadLocationException be) {
             be.printStackTrace();
         }
     }
 
     /**
      * Stampを指定されたポジションに挿入する.
-     * @param inPos　挿入ポジション
-     * @param sh　挿入する StampHolder
+     *
+     * @param inPos 　挿入ポジション
+     * @param sh    　挿入する StampHolder
      */
     public void insertStamp(Position inPos, StampHolder sh) {
 
@@ -202,8 +207,8 @@ public class KarteStyledDocument extends DefaultStyledDocument {
             // 挿入位置
             int start = inPos.getOffset();
             insertString(start, " ", runStyle);
-            sh.setEntry(createPosition(start), createPosition(start+1));
-        } catch(BadLocationException be) {
+            sh.setEntry(createPosition(start), createPosition(start + 1));
+        } catch (BadLocationException be) {
             be.printStackTrace();
         }
     }
@@ -222,9 +227,9 @@ public class KarteStyledDocument extends DefaultStyledDocument {
             // Stamp同様
             int start = kartePane.getTextPane().getCaretPosition();
             insertString(start, " ", runStyle);
-            insertString(start+1, "\n", null);
-            sc.setEntry(createPosition(start), createPosition(start+1));
-        } catch(BadLocationException be) {
+            insertString(start + 1, "\n", null);
+            sc.setEntry(createPosition(start), createPosition(start + 1));
+        } catch (BadLocationException be) {
             be.printStackTrace();
         }
     }
@@ -247,11 +252,11 @@ public class KarteStyledDocument extends DefaultStyledDocument {
             insertString(start, " ", runStyle);
 
             // スタンプの開始と終了位置を生成して保存する
-            sh.setEntry(createPosition(start), createPosition(start+1));
+            sh.setEntry(createPosition(start), createPosition(start + 1));
 
-        } catch(BadLocationException be) {
+        } catch (BadLocationException be) {
             be.printStackTrace();
-        } catch(NullPointerException ne) {
+        } catch (NullPointerException ne) {
             ne.printStackTrace();
         }
     }
@@ -279,7 +284,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
         }
     }
 
-//masuda^   KarteStyledDocument内のStampHolderを取得する. pns先生のコード
+    //masuda^   KarteStyledDocument内のStampHolderを取得する. pns先生のコード
     public List<StampHolder> getStampHolders() {
 
         List<StampHolder> list = new ArrayList<StampHolder>();
@@ -294,14 +299,14 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     }
 
     // StampHolder直後の改行がない場合は補う
-    public void fixCrAfterStamp(){
+    public void fixCrAfterStamp() {
         try {
             int i = 0;
             while (i < getLength()) {
                 StampHolder sh = (StampHolder) StyleConstants.getComponent(getCharacterElement(i).getAttributes());
                 String strNext = getText(++i, 1);
                 if (sh != null && !"\n".equals(strNext)) {
-                    insertString(i, "\n" ,null);
+                    insertString(i, "\n", null);
                 }
 
             }

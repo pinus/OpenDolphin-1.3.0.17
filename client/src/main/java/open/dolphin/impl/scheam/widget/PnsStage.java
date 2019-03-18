@@ -21,18 +21,29 @@ import javafx.stage.StageStyle;
  * <li>ContentPane - 内容
  * <li>FooterPane - ボタンなどをおく Bottom 部分
  * </ul>
+ *
  * @author pns
  */
 public class PnsStage extends Stage {
-    /** Tool Pane */
+    /**
+     * Tool Pane
+     */
     private final StackPane toolPane;
-    /** Menu Pane */
+    /**
+     * Menu Pane
+     */
     private final StackPane menuPane;
-    /** 内容を入れる Content Pane */
+    /**
+     * 内容を入れる Content Pane
+     */
     private final StackPane contentPane;
-    /** 最下部に OK ボタンなどを貼るための Footer Pane */
+    /**
+     * 最下部に OK ボタンなどを貼るための Footer Pane
+     */
     private final StackPane footerPane;
-    /** Window inactivated の時の PseudoClass */
+    /**
+     * Window inactivated の時の PseudoClass
+     */
     private final PseudoClass inactivatedPseudoClass = PseudoClass.getPseudoClass("inactivated");
 
     public PnsStage() {
@@ -60,7 +71,7 @@ public class PnsStage extends Stage {
         layout.getChildren().addAll(toolPane, menuPane, contentPane, footerPane);
 
         // ツールペインをつかんで移動できるようにする
-        toolPane.addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>(){
+        toolPane.addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>() {
             private double x, y;
             private double toX = -1, toY = -1;
 
@@ -76,8 +87,8 @@ public class PnsStage extends Stage {
                         toY = PnsStage.this.getY();
 
                     } else {
-                        toX += ( t.getScreenX() - x );
-                        toY += ( t.getScreenY() - y );
+                        toX += (t.getScreenX() - x);
+                        toY += (t.getScreenY() - y);
                         PnsStage.this.setX(toX);
                         PnsStage.this.setY(toY);
                     }
@@ -98,53 +109,82 @@ public class PnsStage extends Stage {
         scene.getStylesheets().add("css/pns-stage.css");
         setScene(scene);
     }
+
     /**
      * Tool をセットする
+     *
      * @param n
      */
-    public void addTool(Node n) { toolPane.getChildren().add(n); }
+    public void addTool(Node n) {
+        toolPane.getChildren().add(n);
+    }
+
     /**
      * Menu をセットする
+     *
      * @param n
      */
-    public void addMenu(Node n) { menuPane.getChildren().add(n); }
+    public void addMenu(Node n) {
+        menuPane.getChildren().add(n);
+    }
+
     /**
      * Content 部分に node を追加する
+     *
      * @param n
      */
-    public void addContent(Node n) { contentPane.getChildren().add(n); }
+    public void addContent(Node n) {
+        contentPane.getChildren().add(n);
+    }
+
     /**
      * Bottom 部分に node を追加する
+     *
      * @param n
      */
-    public void addFooter(Node n) { footerPane.getChildren().add(n); }
+    public void addFooter(Node n) {
+        footerPane.getChildren().add(n);
+    }
+
     /**
      * Tool をのせる StackPane を返す
+     *
      * @return
      */
-    public StackPane getToolPane() { return toolPane; }
+    public StackPane getToolPane() {
+        return toolPane;
+    }
+
     /**
      * Content をのせる StackPane を返す
+     *
      * @return
      */
-    public StackPane getContentPane() { return contentPane; }
+    public StackPane getContentPane() {
+        return contentPane;
+    }
+
     /**
      * Footer をのせる StackPane を返す
+     *
      * @return
      */
-    public StackPane getFooterPane() { return footerPane; }
+    public StackPane getFooterPane() {
+        return footerPane;
+    }
 
     /**
      * window が inactive になったら inactivatedPseudoClass を全ての node にセットする
+     *
      * @param node
      */
-    private void setInactivatedPseudoClassRecurrsive (boolean isActive, Node node) {
-        node.pseudoClassStateChanged(inactivatedPseudoClass, ! isActive);
+    private void setInactivatedPseudoClassRecurrsive(boolean isActive, Node node) {
+        node.pseudoClassStateChanged(inactivatedPseudoClass, !isActive);
 
         if (node instanceof Region) {
             Region r = (Region) node;
             r.requestLayout();
-            r.getChildrenUnmodifiable().forEach( n -> setInactivatedPseudoClassRecurrsive(isActive, n));
+            r.getChildrenUnmodifiable().forEach(n -> setInactivatedPseudoClassRecurrsive(isActive, n));
         }
     }
 }

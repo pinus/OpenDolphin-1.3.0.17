@@ -12,26 +12,18 @@ import java.awt.geom.RoundRectangle2D;
 /**
  * UltraSonicProgressLabel
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class UltraSonicProgressLabel extends JLabel {
 
-    private static final long serialVersionUID = -7642593282566833954L;
-
     protected static final Dimension DEFAULT_SIZE = new Dimension(100, 14);
-
     protected static final Color BORDER_COLOR = new Color(162, 199, 237);
-
     protected static final Color WATER_COLOR = new Color(112, 173, 239);
-
     protected static final Color PULSE_HEAD = new Color(110, 170, 238);
-
     protected static final Color PULSE_TAIL = Color.WHITE;
-
     protected static final int PULSE_COUNT = 10;
-
     protected static final int DEFAULT_FPS = 10;  // 10 frames per sec
-
+    private static final long serialVersionUID = -7642593282566833954L;
     private Area[] pulses;
 
     private int pulseCount = PULSE_COUNT;
@@ -149,14 +141,14 @@ public class UltraSonicProgressLabel extends JLabel {
             g.setColor(borderColor);
             g.draw(getProgressBorder());
             // 内側をグラデーションする
-            GradientPaint borderGradient = new GradientPaint(x+1, height/2, waterColor, width-1, height/2, borderColor);
+            GradientPaint borderGradient = new GradientPaint(x + 1, height / 2, waterColor, width - 1, height / 2, borderColor);
             g.setPaint(borderGradient);
             g.fill(getProgressContent());
 
             // パルスをペイントする
             Area pulse = pulses[frame % pulseCount];
-            int pw = (int)pulse.getBounds().getWidth();
-            int tail = (int)pulse.getBounds().getX();
+            int pw = (int) pulse.getBounds().getWidth();
+            int tail = (int) pulse.getBounds().getX();
             int top = tail + pw;
             GradientPaint pulseGradient = new GradientPaint(top, 0, pulseHeadColor, tail, 0, pulseTailColor);
             g.setPaint(pulseGradient);
@@ -169,7 +161,7 @@ public class UltraSonicProgressLabel extends JLabel {
             g.setColor(Color.LIGHT_GRAY);
             g.draw(getProgressBorder());
             // 内側をグラデーションする
-            GradientPaint borderGradient = new GradientPaint(x+1, y+1, Color.white, x+1, height-1, Color.LIGHT_GRAY);
+            GradientPaint borderGradient = new GradientPaint(x + 1, y + 1, Color.white, x + 1, height - 1, Color.LIGHT_GRAY);
             g.setPaint(borderGradient);
             g.fill(getProgressContent());
         }
@@ -184,7 +176,7 @@ public class UltraSonicProgressLabel extends JLabel {
 
         for (int i = 0; i < pulseCount; i++) {
             Area primitive = buildPrimitive();
-            AffineTransform toRight = AffineTransform.getTranslateInstance(i*fixedWidth, 0);
+            AffineTransform toRight = AffineTransform.getTranslateInstance(i * fixedWidth, 0);
             primitive.transform(toRight);
             ret[i] = primitive;
         }
@@ -194,8 +186,8 @@ public class UltraSonicProgressLabel extends JLabel {
 
     private Area buildPrimitive() {
 
-        int width = getWidth() -1;
-        int height = getHeight() -1;
+        int width = getWidth() - 1;
+        int height = getHeight() - 1;
         int pw = width / pulseCount;
 
         Rectangle2D.Double body = new Rectangle2D.Double(1, 1, pw, height);
@@ -206,11 +198,11 @@ public class UltraSonicProgressLabel extends JLabel {
     }
 
     private RoundRectangle2D.Double getProgressBorder() {
-        return new RoundRectangle2D.Double(0, 0, getWidth()-1, getHeight()-1, 4, 4);
+        return new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, 4, 4);
 
     }
 
     private RoundRectangle2D.Double getProgressContent() {
-        return new RoundRectangle2D.Double(1, 1, getWidth()-2, getHeight()-2, 3, 3);
+        return new RoundRectangle2D.Double(1, 1, getWidth() - 2, getHeight() - 2, 3, 3);
     }
 }

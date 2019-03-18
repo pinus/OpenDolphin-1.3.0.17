@@ -12,8 +12,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- *
- *
  * @param <T>
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */

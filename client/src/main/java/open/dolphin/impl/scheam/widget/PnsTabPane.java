@@ -9,7 +9,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
 
 /**
- *
  * @author pns
  */
 public class PnsTabPane extends TabPane {
@@ -25,13 +24,16 @@ public class PnsTabPane extends TabPane {
             });
             // 新たに付け直す
             getTabs().get(0).getStyleClass().add("left-pill");
-            for (int i=1; i<getTabs().size()-1; i++) { getTabs().get(i).getStyleClass().add("center-pill"); }
-            getTabs().get(getTabs().size()-1).getStyleClass().add("right-pill");
+            for (int i = 1; i < getTabs().size() - 1; i++) {
+                getTabs().get(i).getStyleClass().add("center-pill");
+            }
+            getTabs().get(getTabs().size() - 1).getStyleClass().add("right-pill");
         });
     }
 
     /**
      * Tabs をセンタリングするためにここを hook する.
+     *
      * @return
      */
     @Override
@@ -54,6 +56,7 @@ public class PnsTabPane extends TabPane {
          * headrs-region: その中で，実際に Tabs が描かれた領域.
          * tab-header-area の幅は，layoutChildren の w に一致する.
          * headers-region の幅は getWidth() だと 0 なので prefWidth(-1) で計算されたものを取得して使う.
+         *
          * @param x
          * @param y
          * @param w

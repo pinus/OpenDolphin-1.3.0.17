@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.util.Date;
 
 /**
- *
  * @author kazm
  * @author pns
  */
@@ -26,7 +25,9 @@ public class RowTipsTable extends JTable {
         int col = columnAtPoint(e.getPoint());
         PatientVisitModel pvt = (PatientVisitModel) model.getObject(row);
 
-        if (pvt == null) { return null; }
+        if (pvt == null) {
+            return null;
+        }
 
         String text = null;
 

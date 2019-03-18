@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * Subset of ch.randelshofer.quaqua.border.PNSImageBevelBorder.
+ *
  * @author pns
  */
 public class PNSImageBevelBorder extends AbstractBorder {
@@ -31,7 +32,9 @@ public class PNSImageBevelBorder extends AbstractBorder {
 
     @Override
     public void paintBorder(Component c, Graphics gr, int x, int y, int width, int height) {
-        if (image == null) { return; }
+        if (image == null) {
+            return;
+        }
 
         Graphics2D g = (Graphics2D) gr.create();
 
@@ -44,7 +47,7 @@ public class PNSImageBevelBorder extends AbstractBorder {
 
         // top left corner
         //                |<-------  dist ------->|<---- source --->|
-        g.drawImage(image, x, y, x + left, y + top, 0, 0,  left, top,  c);
+        g.drawImage(image, x, y, x + left, y + top, 0, 0, left, top, c);
         // top right corner
         g.drawImage(image, x + width - right, y, x + width, y + top, imgWidth - right, 0, imgWidth, top, c);
         // bottom left

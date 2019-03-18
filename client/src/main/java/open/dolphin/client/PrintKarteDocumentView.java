@@ -14,37 +14,36 @@ import java.util.List;
  * カルテをまとめて印刷する
  * いつかやってくるであろう指導のために…　（´・ω・｀）
  * Mac で文字化けするので image にしてからプリントする by pns
- *
+ * <p>
  * Masuda Naika Clinic, VIVA! Wakayama-City!!
+ *
  * @author masuda
  * @author pns
  */
 public class PrintKarteDocumentView implements Printable {
     private static int FOOTER_HEIGHT = 24;
-
+    private static String ptName;
+    private static String ptId;
     private Component targetComponent;
     private List<Integer> yPosition;
     private int totalPageNumber;
     private BufferedImage printImage;
 
-    private static String ptName;
-    private static String ptId;
+    public PrintKarteDocumentView(Component c) {
+        this.targetComponent = c;
+    }
 
     /**
      * KarteDocmentViewer.printComponent(scrollPane, name, id) で呼べる static method.
      *
      * @param scrollPanel KarteDocumentViewer の scrollPanel
-     * @param name 患者名
-     * @param id 患者ID
+     * @param name        患者名
+     * @param id          患者ID
      */
     public static void printComponent(Component scrollPanel, String name, String id) {
         ptName = name;
         ptId = id;
         new PrintKarteDocumentView(scrollPanel).print();
-    }
-
-    public PrintKarteDocumentView(Component c) {
-        this.targetComponent = c;
     }
 
     public void print() {
@@ -64,11 +63,11 @@ public class PrintKarteDocumentView implements Printable {
         // １ページの imageable area の height/width の計算
         double imageableWidth = pf.getImageableWidth();
         double imageableHeight = pf.getImageableHeight() - FOOTER_HEIGHT;
-        double heightPerWidth = imageableHeight/imageableWidth;
+        double heightPerWidth = imageableHeight / imageableWidth;
 
         // printImage の幅に換算したページの高さを求める
         int printWidth = scrollPanel.getWidth();
-        int printHeight = (int)((double)printWidth * heightPerWidth);
+        int printHeight = (int) ((double) printWidth * heightPerWidth);
 
         // KartePanel を取り出して, ページ位置のインデックスを作る
         yPosition = new ArrayList<>();
@@ -103,7 +102,9 @@ public class PrintKarteDocumentView implements Printable {
     @Override
     public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
 
-        if (pageIndex >= totalPageNumber) { return Printable.NO_SUCH_PAGE; }
+        if (pageIndex >= totalPageNumber) {
+            return Printable.NO_SUCH_PAGE;
+        }
 
         Graphics2D g2d = (Graphics2D) g;
         Font f = new Font("MS-PGothic", Font.ITALIC, 9);
@@ -113,25 +114,25 @@ public class PrintKarteDocumentView implements Printable {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Footer
-        String footerStr = String.format("[%s] %s (%d/%s)", ptId, ptName, (pageIndex+1), totalPageNumber);
+        String footerStr = String.format("[%s] %s (%d/%s)", ptId, ptName, (pageIndex + 1), totalPageNumber);
         int strW = SwingUtilities.computeStringWidth(g2d.getFontMetrics(), footerStr);
-        int strX = (int)(pageFormat.getImageableX() + pageFormat.getImageableWidth())/2 - strW/2;
-        int strY = (int)(pageFormat.getImageableY() + pageFormat.getImageableHeight()) - g2d.getFontMetrics().getMaxDescent();
+        int strX = (int) (pageFormat.getImageableX() + pageFormat.getImageableWidth()) / 2 - strW / 2;
+        int strY = (int) (pageFormat.getImageableY() + pageFormat.getImageableHeight()) - g2d.getFontMetrics().getMaxDescent();
         g2d.drawString(footerStr, strX, strY);
 
         // image ソースの四隅
         int sx1 = 0;
         int sx2 = printImage.getWidth();
         int sy1 = yPosition.get(pageIndex);
-        int sy2 = yPosition.get(pageIndex+1) - 1;
+        int sy2 = yPosition.get(pageIndex + 1) - 1;
 
         // 出力先の四隅
         double pageWidth = pageFormat.getImageableWidth();
-        double imageHeightPerWidth = (double)(sy2-sy1+1) / (double)sx2;
+        double imageHeightPerWidth = (double) (sy2 - sy1 + 1) / (double) sx2;
 
         int dx1 = (int) pageFormat.getImageableX();
         int dx2 = dx1 + (int) pageFormat.getImageableWidth();
-        int dy1 = (int)pageFormat.getImageableY();
+        int dy1 = (int) pageFormat.getImageableY();
         int dy2 = dy1 + (int) (pageFormat.getImageableWidth() * imageHeightPerWidth);
 
         // イメージ描画

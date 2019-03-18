@@ -2,6 +2,7 @@ package open.dolphin.impl.scheam;
 
 /**
  * UndoEvent.
+ *
  * @author pns
  */
 public interface UndoEvent {

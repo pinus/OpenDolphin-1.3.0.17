@@ -10,7 +10,7 @@ import java.awt.print.PrinterJob;
 /**
  * PrintablePanel.
  *
- * @author  Junzo SATO
+ * @author Junzo SATO
  */
 public class PrintablePanel extends JPanel implements Printable {
     private static final long serialVersionUID = 1L;
@@ -18,14 +18,15 @@ public class PrintablePanel extends JPanel implements Printable {
     private String patientName;
     private int height;
 
-    public PrintablePanel() {}
+    public PrintablePanel() {
+    }
 
     // Junzo SATO
     public void printPanel(
 
-        PageFormat pageFormat,
-        int numOfCopies,
-        boolean useDialog, String name, int height) {
+            PageFormat pageFormat,
+            int numOfCopies,
+            boolean useDialog, String name, int height) {
 
         patientName = name + " カルテ";
         this.height = height;
@@ -60,7 +61,7 @@ public class PrintablePanel extends JPanel implements Printable {
     }
 
     @Override
-    public int print(Graphics g, PageFormat pf, int pi) throws PrinterException {
+    public int print(Graphics g, PageFormat pf, int pi) {
 
         Graphics2D g2 = (Graphics2D) g;
         Font f = new Font("Courier", Font.ITALIC, 9);
@@ -84,11 +85,11 @@ public class PrintablePanel extends JPanel implements Printable {
             scale = pageWidth / componentWidth;// shrink
         }
         //
-        double scaledComponentHeight = componentHeight*scale;
-        int totalNumPages = (int)Math.ceil(scaledComponentHeight/pageHeight);
+        double scaledComponentHeight = componentHeight * scale;
+        int totalNumPages = (int) Math.ceil(scaledComponentHeight / pageHeight);
 
         if (pi >= totalNumPages) {
-           return Printable.NO_SUCH_PAGE;
+            return Printable.NO_SUCH_PAGE;
         }
 
         // footer
@@ -96,27 +97,27 @@ public class PrintablePanel extends JPanel implements Printable {
         String footerString = patientName + "  Page: " + (pi + 1) + " of " + totalNumPages;
         int strW = SwingUtilities.computeStringWidth(g2.getFontMetrics(), footerString);
         g2.drawString(
-            footerString,
-            (int)pageWidth/2 - strW/2,
-            (int)(pageHeight + fontHeight - fontDescent)
-            //(int)(pageHeight + fontHeight)
+                footerString,
+                (int) pageWidth / 2 - strW / 2,
+                (int) (pageHeight + fontHeight - fontDescent)
+                //(int)(pageHeight + fontHeight)
         );
 
         // page
         g2.translate(0f, 0f);
-        g2.translate(0f, - pi * pageHeight);
+        g2.translate(0f, -pi * pageHeight);
 
         if (pi == totalNumPages - 1) {
             g2.setClip(
-                0, (int)(pageHeight * pi),
-                (int)Math.ceil(pageWidth),
-                (int)(scaledComponentHeight - pageHeight * (totalNumPages - 1))
+                    0, (int) (pageHeight * pi),
+                    (int) Math.ceil(pageWidth),
+                    (int) (scaledComponentHeight - pageHeight * (totalNumPages - 1))
             );
         } else {
             g2.setClip(
-                0, (int)(pageHeight * pi),
-                (int)Math.ceil(pageWidth),
-                (int)Math.ceil(pageHeight)
+                    0, (int) (pageHeight * pi),
+                    (int) Math.ceil(pageWidth),
+                    (int) Math.ceil(pageHeight)
             );
         }
 

@@ -15,6 +15,7 @@ import open.dolphin.impl.scheam.shapeholder.PolygonDraftHolder;
  * クリックすれば多角形の頂点を次々とセットできる (MultiClick Mode）.
  * 同じ点をクリックするか，最初の点に戻れば MultiClick Mode 終了.
  * ドラッグ中は drawDragFeedback を呼ぶ.
+ *
  * @author pns
  */
 public abstract class PolygonEditorBase extends StateEditorBase {
@@ -29,13 +30,21 @@ public abstract class PolygonEditorBase extends StateEditorBase {
         draftLayer = context.getDraftLayer();
     }
 
-    public SchemaLayer getDraftLayer() { return draftLayer; }
-    public PolygonDraftHolder getDraftHolder() { return draftHolder; }
-    public boolean isMultiClickMode() { return multiClickMode; }
+    public SchemaLayer getDraftLayer() {
+        return draftLayer;
+    }
+
+    public PolygonDraftHolder getDraftHolder() {
+        return draftHolder;
+    }
+
+    public boolean isMultiClickMode() {
+        return multiClickMode;
+    }
 
     @Override
     public void mouseDown(MouseEvent e) {
-        if (! multiClickMode) {
+        if (!multiClickMode) {
             // 最初に入るときは Multiclick mode ではない
             // 下書き用の設定
             draftHolder = new PolygonDraftHolder();
@@ -73,7 +82,8 @@ public abstract class PolygonEditorBase extends StateEditorBase {
         drawDragFeedback(e);
     }
 
-    public void drawDragFeedback(MouseEvent e) {}
+    public void drawDragFeedback(MouseEvent e) {
+    }
 
     @Override
     public void mouseUp(MouseEvent e) {
@@ -82,8 +92,8 @@ public abstract class PolygonEditorBase extends StateEditorBase {
             if (size > 1) {
                 double firstx = draftHolder.getPathX(0);
                 double firsty = draftHolder.getPathY(0);
-                double lastx = draftHolder.getPathX(size-2);
-                double lasty = draftHolder.getPathY(size-2);
+                double lastx = draftHolder.getPathX(size - 2);
+                double lasty = draftHolder.getPathY(size - 2);
                 // 最初の点か，最後の点の近くなら終了とする
                 if (SchemaUtils.isNear(lastx, lasty, e.getX(), e.getY())
                         || SchemaUtils.isNear(firstx, firsty, e.getX(), e.getY())) {
@@ -118,6 +128,7 @@ public abstract class PolygonEditorBase extends StateEditorBase {
             }
         }
     }
+
     @Override
     public void end() {
         draftLayer.clear();

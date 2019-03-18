@@ -18,6 +18,7 @@ import open.dolphin.impl.scheam.shapeholder.ShapeHolderBase;
  * Canvas 全部を拡大／縮小する StateEditor.
  * 普通は縮小モード，Option を押すと拡大モードになる.
  * モードに合わせてカーソルを変化させる.
+ *
  * @author pns
  */
 public class ScaleEditor extends StateEditorBase {
@@ -41,8 +42,8 @@ public class ScaleEditor extends StateEditorBase {
         parameters.setFill(Color.TRANSPARENT);
         Image plusImage = ShapeIcon.getLoupePlus().snapshot(parameters, null);
         Image minusImage = ShapeIcon.getLoupeMinus().snapshot(parameters, null);
-        cursorPlus = new ImageCursor(plusImage, plusImage.getWidth()/2, plusImage.getHeight()/2);
-        cursorMinus = new ImageCursor(minusImage, minusImage.getWidth()/2, minusImage.getHeight()/2);
+        cursorPlus = new ImageCursor(plusImage, plusImage.getWidth() / 2, plusImage.getHeight() / 2);
+        cursorMinus = new ImageCursor(minusImage, minusImage.getWidth() / 2, minusImage.getHeight() / 2);
     }
 
     @Override
@@ -88,14 +89,16 @@ public class ScaleEditor extends StateEditorBase {
             dx = diffX;
             dy = diffY;
         } else {
-            dx = - diffX;
-            dy = - diffY;
+            dx = -diffX;
+            dy = -diffY;
         }
 
         double w = baseLayer.getWidth();
         double h = baseLayer.getHeight();
         // 50 ドット以下にはしない
-        if (w + dx < 50 && h + dy < 50) { return; }
+        if (w + dx < 50 && h + dy < 50) {
+            return;
+        }
 
         // bind されているので，BaseLayer の大きさを変更すると全ての Layer が変更される
         baseLayer.setWidth(w + dx);
@@ -115,6 +118,7 @@ public class ScaleEditor extends StateEditorBase {
 
     /**
      * 各 Layer を拡大／縮小する.
+     *
      * @param dx
      * @param dy
      * @param w
@@ -128,8 +132,8 @@ public class ScaleEditor extends StateEditorBase {
         double holderw = holder.getEndX() - holder.getStartX();
         double holderh = holder.getEndY() - holder.getStartY();
 
-        holder.translate(holderx * dx/w, holdery * dy/h);
-        holder.scale(holderw * dx/w, holderh * dy/h);
+        holder.translate(holderx * dx / w, holdery * dy / h);
+        holder.scale(holderw * dx / w, holderh * dy / h);
 
         layer.redraw();
     }

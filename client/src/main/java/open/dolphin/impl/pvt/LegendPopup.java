@@ -7,6 +7,7 @@ import java.awt.*;
 
 /**
  * 状態ラベルの説明を表示する popup.
+ *
  * @author pns
  */
 public class LegendPopup extends JPopupMenu {
@@ -25,13 +26,13 @@ public class LegendPopup extends JPopupMenu {
 
     private void initComponents() {
 
-        insert(getPanel("診察終了　", WaitingListImpl.DONE_ICON),             0);
-        insert(getPanel("記載未完了", WaitingListImpl.UNFINISHED_ICON),       1);
-        insert(getPanel("オープン　", WaitingListImpl.OPEN_ICON),             2);
-        insert(getPanel("仮保存　　", WaitingListImpl.TEMPORARY_ICON),        3);
-        insert(getPanel("他で編集中", WaitingListImpl.OPEN_USED_NONE),        4);
+        insert(getPanel("診察終了　", WaitingListImpl.DONE_ICON), 0);
+        insert(getPanel("記載未完了", WaitingListImpl.UNFINISHED_ICON), 1);
+        insert(getPanel("オープン　", WaitingListImpl.OPEN_ICON), 2);
+        insert(getPanel("仮保存　　", WaitingListImpl.TEMPORARY_ICON), 3);
+        insert(getPanel("他で編集中", WaitingListImpl.OPEN_USED_NONE), 4);
         insert(getPanel("診断未入力", WaitingListImpl.DIAGNOSIS_EMPTY_COLOR), 5);
-        insert(getPanel("初診　　　", WaitingListImpl.SHOSHIN_COLOR),         6);
+        insert(getPanel("初診　　　", WaitingListImpl.SHOSHIN_COLOR), 6);
 
         pack();
     }

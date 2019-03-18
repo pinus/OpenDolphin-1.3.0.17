@@ -54,6 +54,14 @@ public class MasterSearchPanel extends JPanel {
      */
     private final String entity;
     /**
+     * 20120519 形式の今日の日付
+     */
+    private final String todayDate;
+    /**
+     * プレファレンス
+     */
+    private final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+    /**
      * ItemTablePanel からリスンされる
      */
     private OrderListener<MasterItem> orderListener;
@@ -81,14 +89,6 @@ public class MasterSearchPanel extends JPanel {
      * 検索結果テーブルの table model
      */
     private ObjectReflectTableModel<OrcaEntry> tableModel;
-    /**
-     * 20120519 形式の今日の日付
-     */
-    private final String todayDate;
-    /**
-     * プレファレンス
-     */
-    private final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 
     public MasterSearchPanel(String entity) {
         super();

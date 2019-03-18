@@ -7,29 +7,17 @@ import java.util.List;
 /**
  * AbstractStampTreeBuilder.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public abstract class AbstractStampTreeBuilder {
-    /** XML文書で置換が必要な文字 */
-    private static final String[] REPLACES = new String[] { "<", ">", "&", "'" ,"\""};
-    /** 置換文字 */
-    private static final String[] MATCHES = new String[] { "&lt;", "&gt;", "&amp;", "&apos;", "&quot;" };
-
-    public abstract List<StampTree> getProduct();
-
-    public abstract void buildStart();
-
-    public abstract void buildRoot(String name, String entity);
-
-    public abstract void buildNode(String name);
-
-    public abstract void buildStampInfo(String name, String role, String entity, String editable, String memo, String id);
-
-    public abstract void buildNodeEnd();
-
-    public abstract void buildRootEnd();
-
-    public abstract void buildEnd();
+    /**
+     * XML文書で置換が必要な文字
+     */
+    private static final String[] REPLACES = new String[]{"<", ">", "&", "'", "\""};
+    /**
+     * 置換文字
+     */
+    private static final String[] MATCHES = new String[]{"&lt;", "&gt;", "&amp;", "&apos;", "&quot;"};
 
     protected static String getEntity(String rootName) {
 
@@ -49,8 +37,25 @@ public abstract class AbstractStampTreeBuilder {
         return ret;
     }
 
+    public abstract List<StampTree> getProduct();
+
+    public abstract void buildStart();
+
+    public abstract void buildRoot(String name, String entity);
+
+    public abstract void buildNode(String name);
+
+    public abstract void buildStampInfo(String name, String role, String entity, String editable, String memo, String id);
+
+    public abstract void buildNodeEnd();
+
+    public abstract void buildRootEnd();
+
+    public abstract void buildEnd();
+
     /**
      * 特殊文字を変換する.
+     *
      * @param text
      * @return
      */

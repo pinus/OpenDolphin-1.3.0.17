@@ -16,6 +16,7 @@ import java.util.prefs.Preferences;
 /**
  * コードヘルパー設定パネル.
  * Preferences の node は AbstractCodeHelper.class を使っている.
+ *
  * @author Kazushi
  * @author pns
  */
@@ -123,8 +124,8 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
         //
         GridBagBuilder gbl = new GridBagBuilder("スタンプ箱キーワード入力後に「修飾キー + RETURN」でポップアップが出ます");
 
-        gbl.add(new JLabel("修飾キー:"),  0, 0, GridBagConstraints.EAST);
-        gbl.add(GUIFactory.createRadioPanel(new JRadioButton[]{ctrlMask,metaMask}), 1, 0, GridBagConstraints.CENTER);
+        gbl.add(new JLabel("修飾キー:"), 0, 0, GridBagConstraints.EAST);
+        gbl.add(GUIFactory.createRadioPanel(new JRadioButton[]{ctrlMask, metaMask}), 1, 0, GridBagConstraints.CENTER);
         JPanel keyBind = gbl.getProduct();
 
         //
@@ -132,61 +133,61 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
         //
         gbl = new GridBagBuilder("スタンプ箱のキーワード");
 
-        gbl.add(new JLabel("テキスト:"),         0, 0, GridBagConstraints.EAST);
-        gbl.add(text,                           1, 0, GridBagConstraints.WEST);
+        gbl.add(new JLabel("テキスト:"), 0, 0, GridBagConstraints.EAST);
+        gbl.add(text, 1, 0, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("パス:"),            2, 0, GridBagConstraints.EAST);
-        gbl.add(path,                           3, 0, GridBagConstraints.WEST);
+        gbl.add(new JLabel("パス:"), 2, 0, GridBagConstraints.EAST);
+        gbl.add(path, 3, 0, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("汎 用:"),           0, 1, GridBagConstraints.EAST);
-        gbl.add(general,                        1, 1, GridBagConstraints.WEST);
+        gbl.add(new JLabel("汎 用:"), 0, 1, GridBagConstraints.EAST);
+        gbl.add(general, 1, 1, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("その他:"),           2, 1, GridBagConstraints.EAST);
-        gbl.add(other,                          3, 1, GridBagConstraints.WEST);
+        gbl.add(new JLabel("その他:"), 2, 1, GridBagConstraints.EAST);
+        gbl.add(other, 3, 1, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("処 置:"),            0, 2, GridBagConstraints.EAST);
-        gbl.add(treatment,                       1, 2, GridBagConstraints.WEST);
+        gbl.add(new JLabel("処 置:"), 0, 2, GridBagConstraints.EAST);
+        gbl.add(treatment, 1, 2, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("手 術:"),            2, 2, GridBagConstraints.EAST);
-        gbl.add(surgery,                         3, 2, GridBagConstraints.WEST);
+        gbl.add(new JLabel("手 術:"), 2, 2, GridBagConstraints.EAST);
+        gbl.add(surgery, 3, 2, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("放射線:"),           0, 3, GridBagConstraints.EAST);
-        gbl.add(radiology,                       1, 3, GridBagConstraints.WEST);
+        gbl.add(new JLabel("放射線:"), 0, 3, GridBagConstraints.EAST);
+        gbl.add(radiology, 1, 3, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("検体検査:"),          2, 3, GridBagConstraints.EAST);
-        gbl.add(labo,                            3, 3, GridBagConstraints.WEST);
+        gbl.add(new JLabel("検体検査:"), 2, 3, GridBagConstraints.EAST);
+        gbl.add(labo, 3, 3, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("生体検査:"),          0, 4, GridBagConstraints.EAST);
-        gbl.add(physiology,                      1, 4, GridBagConstraints.WEST);
+        gbl.add(new JLabel("生体検査:"), 0, 4, GridBagConstraints.EAST);
+        gbl.add(physiology, 1, 4, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("細菌検査:"),          2, 4, GridBagConstraints.EAST);
-        gbl.add(bacteria,                        3, 4, GridBagConstraints.WEST);
+        gbl.add(new JLabel("細菌検査:"), 2, 4, GridBagConstraints.EAST);
+        gbl.add(bacteria, 3, 4, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("注 射:"),            0, 5, GridBagConstraints.EAST);
-        gbl.add(injection,                       1, 5, GridBagConstraints.WEST);
+        gbl.add(new JLabel("注 射:"), 0, 5, GridBagConstraints.EAST);
+        gbl.add(injection, 1, 5, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("処 方:"),            2, 5, GridBagConstraints.EAST);
-        gbl.add(rp,                              3, 5, GridBagConstraints.WEST);
+        gbl.add(new JLabel("処 方:"), 2, 5, GridBagConstraints.EAST);
+        gbl.add(rp, 3, 5, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("診断料:"),           0, 6, GridBagConstraints.EAST);
-        gbl.add(baseCharge,                      1, 6, GridBagConstraints.WEST);
+        gbl.add(new JLabel("診断料:"), 0, 6, GridBagConstraints.EAST);
+        gbl.add(baseCharge, 1, 6, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("指導・在宅:"),         2, 6, GridBagConstraints.EAST);
-        gbl.add(instraction,                     3, 6, GridBagConstraints.WEST);
+        gbl.add(new JLabel("指導・在宅:"), 2, 6, GridBagConstraints.EAST);
+        gbl.add(instraction, 3, 6, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("ORCA:"),            0, 7, GridBagConstraints.EAST);
-        gbl.add(orca,                           1, 7, GridBagConstraints.WEST);
+        gbl.add(new JLabel("ORCA:"), 0, 7, GridBagConstraints.EAST);
+        gbl.add(orca, 1, 7, GridBagConstraints.WEST);
 
-        gbl.add(new JLabel("病名:"),            2, 7, GridBagConstraints.EAST);
-        gbl.add(diag,                           3, 7, GridBagConstraints.WEST);
+        gbl.add(new JLabel("病名:"), 2, 7, GridBagConstraints.EAST);
+        gbl.add(diag, 3, 7, GridBagConstraints.WEST);
 
         JPanel stamp = gbl.getProduct();
 
         // 全体をレイアウトする
         gbl = new GridBagBuilder();
-        gbl.add(keyBind,        0, 0, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
-        gbl.add(stamp,          0, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
-        gbl.add(new JLabel(""), 0, 2, GridBagConstraints.BOTH,       1.0, 1.0);
+        gbl.add(keyBind, 0, 0, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
+        gbl.add(stamp, 0, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
+        gbl.add(new JLabel(""), 0, 2, GridBagConstraints.BOTH, 1.0, 1.0);
 
         setUI(gbl.getProduct());
 

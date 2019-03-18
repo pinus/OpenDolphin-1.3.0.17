@@ -26,53 +26,35 @@ import java.util.stream.Stream;
  */
 public class DiagnosisInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.病名;
-
-    /** 呼び元の ChartImpl */
-    private final ChartImpl context;
-    /** PatientInspector に返すパネル */
-    private JPanel diagPanel;
-    /** 病名を保持するリスト */
-    private JList<RegisteredDiagnosisModel> diagList;
-    /** 病名を保持するモデル */
-    private DefaultListModel<RegisteredDiagnosisModel> listModel;
-    /** DiagnosisDocument */
-    private DiagnosisDocument doc;
-    /** ListSelectionLisner 循環呼び出し lock */
-    private boolean locked = false;
-
     private static final String SUSPECT = " 疑い";
-
     /**
-     * ショートカットキー定義.
-     * MenuSupport には依存せず，全て独自実装している.
+     * 呼び元の ChartImpl
      */
-    private enum Shortcut{
-        undo (KeyEvent.VK_Z, InputEvent.META_DOWN_MASK),
-        redo (KeyEvent.VK_Z, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK),
-        addLeft (KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK), // sinistro
-        addRight (KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK), // destro
-        addBoth (KeyEvent.VK_E, InputEvent.SHIFT_DOWN_MASK), // entrambi
-        finish (KeyEvent.VK_F, 0),
-        discontinue (KeyEvent.VK_D, 0),
-        renew (KeyEvent.VK_R, 0),
-        dropPrepos (KeyEvent.VK_T, 0), // togliere
-        dropPostpos (KeyEvent.VK_T, InputEvent.SHIFT_DOWN_MASK), // togliere
-        delete (KeyEvent.VK_BACK_SPACE, 0),
-        sendClaim (KeyEvent.VK_L, InputEvent.META_DOWN_MASK),
-        duplicate (KeyEvent.VK_D, InputEvent.META_DOWN_MASK),
-        suspected (KeyEvent.VK_U, 0), // utagai
-        mainDiag (KeyEvent.VK_U, InputEvent.SHIFT_DOWN_MASK),
-        infection (KeyEvent.VK_I, 0),
-        ;
-        private final int key, mask;
-
-        Shortcut(int k, int m) { key = k; mask = m; }
-        public int key() { return key; }
-        public int mask() { return mask; }
-    }
+    private final ChartImpl context;
+    /**
+     * PatientInspector に返すパネル
+     */
+    private JPanel diagPanel;
+    /**
+     * 病名を保持するリスト
+     */
+    private JList<RegisteredDiagnosisModel> diagList;
+    /**
+     * 病名を保持するモデル
+     */
+    private DefaultListModel<RegisteredDiagnosisModel> listModel;
+    /**
+     * DiagnosisDocument
+     */
+    private DiagnosisDocument doc;
+    /**
+     * ListSelectionLisner 循環呼び出し lock
+     */
+    private boolean locked = false;
 
     /**
      * DiagnosisInspectorオブジェクトを生成する.
+     *
      * @param parent PatientInspector
      */
     public DiagnosisInspector(PatientInspector parent) {
@@ -90,6 +72,7 @@ public class DiagnosisInspector implements IInspector {
 
         diagList = new JList<RegisteredDiagnosisModel>(listModel) {
             private static final long serialVersionUID = 1L;
+
             @Override
             public String getToolTipText(MouseEvent e) {
                 int index = locationToIndex(e.getPoint());
@@ -114,11 +97,12 @@ public class DiagnosisInspector implements IInspector {
         diagList.setTransferHandler(new DiagnosisInspectorTransferHandler(context));
 
         // 複数選択しているとき，focus の変更で１つの項目しか repaint されないのの workaround
-        diagList.addFocusListener(new FocusListener(){
+        diagList.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 diagList.repaint();
             }
+
             @Override
             public void focusLost(FocusEvent e) {
                 diagList.repaint();
@@ -128,7 +112,7 @@ public class DiagnosisInspector implements IInspector {
         // 右クリックでポップアップを表示する
         // ダブルクリックでエディタを立ち上げる
         if (!context.isReadOnly()) {
-            diagList.addMouseListener(new MouseAdapter(){
+            diagList.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     Point mousePoint = e.getPoint();
@@ -144,11 +128,13 @@ public class DiagnosisInspector implements IInspector {
 
                     Point indexPoint = diagList.indexToLocation(index);
                     // あまりマウスが離れたところをクリックしてたらクリアする
-                    if (indexPoint != null && Math.abs((indexPoint.y+6) - mousePoint.y) > 12) {
+                    if (indexPoint != null && Math.abs((indexPoint.y + 6) - mousePoint.y) > 12) {
                         diagList.clearSelection();
                     }
                     // ポップアップメニュー
-                    if (e.isPopupTrigger()) { maybeShowPopup(e); }
+                    if (e.isPopupTrigger()) {
+                        maybeShowPopup(e);
+                    }
 
                     // 診断が一つでもある場合はこちらに入る
                     // ダブルクリックならエディタを立ち上げる
@@ -165,10 +151,13 @@ public class DiagnosisInspector implements IInspector {
                         }
                     }
                 }
+
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     // windows
-                    if (e.isPopupTrigger()) { maybeShowPopup(e); }
+                    if (e.isPopupTrigger()) {
+                        maybeShowPopup(e);
+                    }
                 }
 
                 private void maybeShowPopup(MouseEvent e) {
@@ -210,7 +199,7 @@ public class DiagnosisInspector implements IInspector {
         diagPanel.add(scrollPane);
 
         // タイトル部分のダブルクリックで新規病名入力
-        diagPanel.addMouseListener(new MouseAdapter(){
+        diagPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -233,23 +222,27 @@ public class DiagnosisInspector implements IInspector {
             ListSelectionModel selectionModel = table.getSelectionModel();
 
             diagList.addListSelectionListener(e -> {
-                if (locked) { return; }
+                if (locked) {
+                    return;
+                }
                 locked = true;
 
                 selectionModel.clearSelection();
 
                 diagList.getSelectedValuesList().forEach(o -> {
-                    for(int i=0; i<model.getObjectCount(); i++) {
+                    for (int i = 0; i < model.getObjectCount(); i++) {
                         if (model.getObject(i).equals(o)) {
                             int row = table.convertRowIndexToView(i);
-                            selectionModel.addSelectionInterval(row,row);
+                            selectionModel.addSelectionInterval(row, row);
                         }
                     }
                 });
                 locked = false;
             });
             selectionModel.addListSelectionListener(e -> {
-                if (locked) { return; }
+                if (locked) {
+                    return;
+                }
                 locked = true;
 
                 diagList.clearSelection();
@@ -257,7 +250,7 @@ public class DiagnosisInspector implements IInspector {
                 int[] rows = table.getSelectedRows();
                 for (int view : rows) {
                     int row = table.convertRowIndexToModel(view);
-                    for (int i=0; i<diagList.getModel().getSize(); i++) {
+                    for (int i = 0; i < diagList.getModel().getSize(); i++) {
                         if (diagList.getModel().getElementAt(i).equals(model.getObject(row))) {
                             diagList.addSelectionInterval(i, i);
                         }
@@ -271,6 +264,7 @@ public class DiagnosisInspector implements IInspector {
 
     /**
      * PaientInspector にレイアウト用のパネルを返す.
+     *
      * @return レイアウトパネル
      */
     @Override
@@ -296,11 +290,13 @@ public class DiagnosisInspector implements IInspector {
      * このインスペクタは DiagnosisDocument に依存しているので，自分で update できない.
      */
     @Override
-    public void update() {}
+    public void update() {
+    }
 
     /**
      * データのアップデート.
      * DiagnosisDocument から呼ばれる.
+     *
      * @param model DiagnosisDocumentTableModel
      */
     public void update(DiagnosisDocumentTableModel model) {
@@ -309,8 +305,11 @@ public class DiagnosisInspector implements IInspector {
         List<RegisteredDiagnosisModel> ended = new ArrayList<>();
 
         model.getObjectList().forEach(rd -> {
-            if (rd.getEndDate() == null) { active.add(rd); }
-            else { ended.add(rd); }
+            if (rd.getEndDate() == null) {
+                active.add(rd);
+            } else {
+                ended.add(rd);
+            }
         });
         // 選択を保存　hashCode を保存しておく
         List<Integer> selected = Arrays.stream(diagList.getSelectedIndices()).boxed()
@@ -323,7 +322,7 @@ public class DiagnosisInspector implements IInspector {
 
         // 選択を復元　hashCode で同じオブジェクトを判定
         selected.forEach(h -> {
-            for(int i=0; i<listModel.getSize(); i++) {
+            for (int i = 0; i < listModel.getSize(); i++) {
                 if (h == System.identityHashCode(listModel.get(i))) {
                     diagList.addSelectionInterval(i, i);
                 }
@@ -331,16 +330,134 @@ public class DiagnosisInspector implements IInspector {
         });
     }
 
+    @MenuAction
+    public void undo() {
+        doc.undo();
+    }
+
+    @MenuAction
+    public void redo() {
+        doc.redo();
+    }
+
+    @MenuAction
+    public void addLeft() {
+        doc.getDiagnosisDocumentPopup().doClickDiagPopup("左");
+    }
+
+    @MenuAction
+    public void addRight() {
+        doc.getDiagnosisDocumentPopup().doClickDiagPopup("右");
+    }
+
+    @MenuAction
+    public void addBoth() {
+        doc.getDiagnosisDocumentPopup().doClickDiagPopup("両");
+    }
+
+    @MenuAction
+    public void finish() {
+        doc.getDiagnosisDocumentPopup().doClickOutcomePopup("全治");
+    }
+
+    @MenuAction
+    public void discontinue() {
+        doc.getDiagnosisDocumentPopup().doClickOutcomePopup("中止");
+    }
+
+    @MenuAction
+    public void renew() {
+        doc.getDiagnosisDocumentPopup().doClickOutcomePopup("");
+    }
+
+    @MenuAction
+    public void delete() {
+        doc.delete();
+    }
+
+    @MenuAction
+    public void sendClaim() {
+        doc.sendClaim();
+    }
+
+    @MenuAction
+    public void duplicate() {
+        doc.duplicateDiagnosis();
+    }
+
+    @MenuAction
+    public void dropPrepos() {
+        doc.getDiagnosisDocumentPopup().dropPreposition();
+    }
+
+    @MenuAction
+    public void dropPostpos() {
+        doc.getDiagnosisDocumentPopup().dropPostposition();
+    }
+
+    @MenuAction
+    public void suspected() {
+        doc.getDiagnosisDocumentPopup().doClickCategoryPopup("疑い病名");
+    }
+
+    @MenuAction
+    public void mainDiag() {
+        doc.getDiagnosisDocumentPopup().doClickCategoryPopup("主病名");
+    }
+
+    @MenuAction
+    public void infection() {
+        doc.getDiagnosisDocumentPopup().doClickDiagPopup("の二次感染");
+    }
+
+    /**
+     * ショートカットキー定義.
+     * MenuSupport には依存せず，全て独自実装している.
+     */
+    private enum Shortcut {
+        undo(KeyEvent.VK_Z, InputEvent.META_DOWN_MASK),
+        redo(KeyEvent.VK_Z, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK),
+        addLeft(KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK), // sinistro
+        addRight(KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK), // destro
+        addBoth(KeyEvent.VK_E, InputEvent.SHIFT_DOWN_MASK), // entrambi
+        finish(KeyEvent.VK_F, 0),
+        discontinue(KeyEvent.VK_D, 0),
+        renew(KeyEvent.VK_R, 0),
+        dropPrepos(KeyEvent.VK_T, 0), // togliere
+        dropPostpos(KeyEvent.VK_T, InputEvent.SHIFT_DOWN_MASK), // togliere
+        delete(KeyEvent.VK_BACK_SPACE, 0),
+        sendClaim(KeyEvent.VK_L, InputEvent.META_DOWN_MASK),
+        duplicate(KeyEvent.VK_D, InputEvent.META_DOWN_MASK),
+        suspected(KeyEvent.VK_U, 0), // utagai
+        mainDiag(KeyEvent.VK_U, InputEvent.SHIFT_DOWN_MASK),
+        infection(KeyEvent.VK_I, 0),
+        ;
+        private final int key, mask;
+
+        Shortcut(int k, int m) {
+            key = k;
+            mask = m;
+        }
+
+        public int key() {
+            return key;
+        }
+
+        public int mask() {
+            return mask;
+        }
+    }
+
     private class DiagnosisListCellRenderer extends DefaultListCellRenderer {
         private static final long serialVersionUID = 1L;
 
         @Override
         public Component getListCellRendererComponent(
-            JList<?> list,           // the diagList
-            Object value,            // value to display
-            int index,               // cell index
-            boolean isSelected,      // is the cell selected
-            boolean isFocused)  { // does the cell have focus
+                JList<?> list,           // the diagList
+                Object value,            // value to display
+                int index,               // cell index
+                boolean isSelected,      // is the cell selected
+                boolean isFocused) { // does the cell have focus
 
             RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) value;
             String diagName = rd.getDiagnosis();
@@ -358,8 +475,12 @@ public class DiagnosisInspector implements IInspector {
                 if (deleted || ended) {
                     int rgb = list.getSelectionForeground().getRGB();
                     int adjust = 0x4f4f4f;
-                    if ((rgb & 0x00ffffff) > adjust) { rgb -= adjust; }
-                    if ((rgb & 0x00ffffff) < adjust) { rgb += adjust; }
+                    if ((rgb & 0x00ffffff) > adjust) {
+                        rgb -= adjust;
+                    }
+                    if ((rgb & 0x00ffffff) < adjust) {
+                        rgb += adjust;
+                    }
                     setForeground(new Color(rgb));
                 } else if (ikou) {
                     setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR);
@@ -374,14 +495,19 @@ public class DiagnosisInspector implements IInspector {
                 if (list.isFocusOwner()) {
                     setBackground(list.getSelectionBackground());
                 } else {
-                    setBackground((Color)list.getClientProperty("JList.backgroundOffFocus"));
+                    setBackground((Color) list.getClientProperty("JList.backgroundOffFocus"));
                 }
             } else {
                 // foreground
-                if (deleted) { setForeground(DiagnosisDocument.DELETED_COLOR); }
-                else if (ended) { setForeground(DiagnosisDocument.ENDED_COLOR); }
-                else if (ikou) { setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR); }
-                else { setForeground(list.getForeground()); }
+                if (deleted) {
+                    setForeground(DiagnosisDocument.DELETED_COLOR);
+                } else if (ended) {
+                    setForeground(DiagnosisDocument.ENDED_COLOR);
+                } else if (ikou) {
+                    setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR);
+                } else {
+                    setForeground(list.getForeground());
+                }
                 // background
                 setBackground(list.getBackground());
             }
@@ -438,8 +564,11 @@ public class DiagnosisInspector implements IInspector {
                         showFeedback = false;
                         repaint();
                     }
+
                     @Override
-                    public void dragOver(DropTargetDragEvent dtde) {}
+                    public void dragOver(DropTargetDragEvent dtde) {
+                    }
+
                     @Override
                     public void dragExit(DropTargetEvent dte) {
                         showFeedback = false;
@@ -447,7 +576,8 @@ public class DiagnosisInspector implements IInspector {
                     }
                 });
                 dt.setActive(true);
-            } catch (TooManyListenersException e) {}
+            } catch (TooManyListenersException e) {
+            }
         }
 
         @Override
@@ -460,78 +590,13 @@ public class DiagnosisInspector implements IInspector {
                 // cut and try
                 int x = 7;
                 int y = 12;
-                int width = getWidth() - 2*x - 1;
+                int width = getWidth() - 2 * x - 1;
                 int height = getHeight() - y;
-                PNSBorder.drawSelectedBlueRoundRect(this, g, x, y, width, height,10,10);
+                PNSBorder.drawSelectedBlueRoundRect(this, g, x, y, width, height, 10, 10);
                 g.dispose();
             }
             graphics.setColor(IInspector.BORDER_COLOR);
-            graphics.drawLine(getWidth()-1, 0, getWidth()-1, getHeight()-1);
+            graphics.drawLine(getWidth() - 1, 0, getWidth() - 1, getHeight() - 1);
         }
-    }
-
-    @MenuAction
-    public void undo() {
-        doc.undo();
-    }
-    @MenuAction
-    public void redo() {
-        doc.redo();
-    }
-    @MenuAction
-    public void addLeft() {
-        doc.getDiagnosisDocumentPopup().doClickDiagPopup("左");
-    }
-    @MenuAction
-    public void addRight() {
-        doc.getDiagnosisDocumentPopup().doClickDiagPopup("右");
-    }
-    @MenuAction
-    public void addBoth() {
-        doc.getDiagnosisDocumentPopup().doClickDiagPopup("両");
-    }
-    @MenuAction
-    public void finish() {
-        doc.getDiagnosisDocumentPopup().doClickOutcomePopup("全治");
-    }
-    @MenuAction
-    public void discontinue() {
-        doc.getDiagnosisDocumentPopup().doClickOutcomePopup("中止");
-    }
-    @MenuAction
-    public void renew() {
-        doc.getDiagnosisDocumentPopup().doClickOutcomePopup("");
-    }
-    @MenuAction
-    public void delete() {
-        doc.delete();
-    }
-    @MenuAction
-    public void sendClaim() {
-        doc.sendClaim();
-    }
-    @MenuAction
-    public void duplicate(){
-        doc.duplicateDiagnosis();
-    }
-    @MenuAction
-    public void dropPrepos(){
-        doc.getDiagnosisDocumentPopup().dropPreposition();
-    }
-    @MenuAction
-    public void dropPostpos(){
-        doc.getDiagnosisDocumentPopup().dropPostposition();
-    }
-    @MenuAction
-    public void suspected() {
-        doc.getDiagnosisDocumentPopup().doClickCategoryPopup("疑い病名");
-    }
-    @MenuAction
-    public void mainDiag() {
-        doc.getDiagnosisDocumentPopup().doClickCategoryPopup("主病名");
-    }
-    @MenuAction
-    public void infection() {
-        doc.getDiagnosisDocumentPopup().doClickDiagPopup("の二次感染");
     }
 }

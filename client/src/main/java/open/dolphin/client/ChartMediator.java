@@ -39,18 +39,16 @@ public final class ChartMediator extends MenuSupport {
 
     // Font size
     private static final int[] FONT_SIZE = {10, 12, 14, 16, 18, 24, 36};
-    private int curFontSize = 1;
-
     // ChartPlugin
     private final Chart chart;
-
+    private final Logger logger;
+    private int curFontSize = 1;
     // current KarteComposit
     private KarteComposite<?> curKarteComposit;
 
-    private final Logger logger;
-
     /**
      * Create ChartMediator.
+     *
      * @param owner
      */
     public ChartMediator(Chart owner) {
@@ -71,7 +69,7 @@ public final class ChartMediator extends MenuSupport {
                 if (comp instanceof JTextPane) {
                     // KartePane に入っている JTextPane は ClientProperty に親の KartePane を入れてある
                     Object obj = ((JComponent) comp).getClientProperty("kartePane");
-                    if (obj != null && obj instanceof KartePane) {
+                    if (obj instanceof KartePane) {
                         // KartePane
                         setCurKarteComposit((KarteComposite) obj);
                     }
@@ -117,6 +115,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * KarteComosite 層の Object を addChain する.
      * chain[0] に入る.
+     *
      * @param karteComposite
      */
     public void addKarteCompositeChain(KarteComposite<?> karteComposite) {
@@ -125,6 +124,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * KarteComposite 層の Object を返す.
+     *
      * @return
      */
     public KarteComposite<?> getKarteCompositeChain() {
@@ -134,6 +134,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * ChartDocument 層の Object を addChain する.
      * chain[1] に入る.
+     *
      * @param chartDocument
      */
     public void addChartDocumentChain(ChartDocument chartDocument) {
@@ -142,6 +143,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * ChartDocument 層の Object を返す.
+     *
      * @return
      */
     public ChartDocument getChartDocumentChain() {
@@ -155,15 +157,17 @@ public final class ChartMediator extends MenuSupport {
 
         // 昇順降順を Preference から取得し設定しておく
         boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
-        Action action = asc? map.get(GUIConst.ACTION_ASCENDING) : map.get(GUIConst.ACTION_DESCENDING) ;
+        Action action = asc ? map.get(GUIConst.ACTION_ASCENDING) : map.get(GUIConst.ACTION_DESCENDING);
         JRadioButtonMenuItem rdi = (JRadioButtonMenuItem) action.getValue("menuItem");
         rdi.setSelected(true);
     }
 
-    public void dispose() {}
+    public void dispose() {
+    }
 
     /**
      * 現在の {@code KarteCompsite<T>} の中身の T (JComponent) を返す.
+     *
      * @return
      */
     private JComponent getCurrentComponent() {
@@ -176,6 +180,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * メニューリスナの実装.
      * 挿入及びテキストメニューが選択された時の処理を行う.
+     *
      * @param e
      */
     @Override
@@ -235,6 +240,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * フォーマット関連メニューを調整する.
+     *
      * @param kartePane
      */
     private void adjustStyleMenu() {
@@ -280,6 +286,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * スタンプTreeから傷病名メニューを構築する.
+     *
      * @param insertMenu テキストメニュー
      */
     private JMenu createDiagnosisMenu(StampTree stampTree) {
@@ -288,7 +295,7 @@ public final class ChartMediator extends MenuSupport {
         //
         JMenu myMenu;
         Object obj = getChartDocumentChain(); // chain の先頭
-        DiagnosisDocument diagnosis = obj instanceof DiagnosisDocument?
+        DiagnosisDocument diagnosis = obj instanceof DiagnosisDocument ?
                 (DiagnosisDocument) obj : null;
 
         if (diagnosis == null) {
@@ -308,6 +315,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * スタンプTreeからテキストメニューを構築する.
+     *
      * @param insertMenu テキストメニュー
      */
     private JMenu createTextMenu(StampTree stampTree) {
@@ -360,6 +368,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * スタンプメニューを構築する.
+     *
      * @param insertMenu スタンプメニュー
      */
     private JMenu createStampMenu(StampTree stampTree) {
@@ -398,6 +407,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * 引数のポップアップメニューへ傷病名メニューを追加する.
+     *
      * @param popup 傷病名メニューを追加するポップアップメニュー
      */
     public void addDiseaseMenu(JPopupMenu popup) {
@@ -430,6 +440,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * 引数のポップアップメニューへテキストメニューを追加する.
+     *
      * @param popup テキストメニューを追加するポップアップメニュー
      */
     public void addTextMenu(JPopupMenu popup) {
@@ -473,7 +484,8 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * PPane のコンテキストメニューまたはツールバーの stampIcon へスタンプメニューを追加する.
-     * @param menu Ppane のコンテキストメニュー
+     *
+     * @param menu      Ppane のコンテキストメニュー
      * @param kartePane PPnae
      */
     public void addStampMenu(JPopupMenu menu, final KartePane kartePane) {
@@ -495,6 +507,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * 引数のポップアップメニューへスタンプメニューを追加する.
      * このメソッドはツールバーの stamp icon の actionPerformed からコールされる.
+     *
      * @param popup
      */
     public void addStampMenu(JPopupMenu popup) {
@@ -519,6 +532,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * 指定された entity の StampTree を返す.
+     *
      * @param entity
      * @return
      */
@@ -528,6 +542,7 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * StampBoxPlugin を返す.
+     *
      * @return
      */
     public StampBoxPlugin getStampBox() {
@@ -536,11 +551,12 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * 指定された entity の StampTree が存在するかどうか.
+     *
      * @param entity
      * @return
      */
     public boolean hasTree(String entity) {
-        StampBoxPlugin stBox = (StampBoxPlugin)chart.getContext().getPlugin("stampBox");
+        StampBoxPlugin stBox = (StampBoxPlugin) chart.getContext().getPlugin("stampBox");
         StampTree tree = stBox.getStampTree(entity);
         return tree != null;
     }
@@ -586,7 +602,7 @@ public final class ChartMediator extends MenuSupport {
 
     public void resetStyle() {
         JComponent focusOwner = getCurrentComponent();
-        if (focusOwner != null && focusOwner instanceof JTextPane) {
+        if (focusOwner instanceof JTextPane) {
             JTextPane pane = (JTextPane) focusOwner;
             pane.setCharacterAttributes(SimpleAttributeSet.EMPTY, true);
         }
@@ -732,42 +748,43 @@ public final class ChartMediator extends MenuSupport {
     }
 
     public void fontRed() {
-        colorAction(new Color(255,43,58));
+        colorAction(new Color(255, 43, 58));
     }
 
     public void fontOrange() {
-       colorAction(new Color(255,148,44));
+        colorAction(new Color(255, 148, 44));
     }
 
     public void fontYellow() {
-        colorAction(new Color(242,207,43));
+        colorAction(new Color(242, 207, 43));
     }
 
     public void fontGreen() {
-        colorAction(new Color(139,209,40));
+        colorAction(new Color(139, 209, 40));
     }
 
     public void fontBlue() {
-        colorAction(new Color(10,140,211));
+        colorAction(new Color(10, 140, 211));
     }
 
     public void fontPurple() {
-        colorAction(new Color(223,61,154));
+        colorAction(new Color(223, 61, 154));
     }
 
     public void fontGray() {
-        colorAction(new Color(130,130,130));
+        colorAction(new Color(130, 130, 130));
     }
 
     public void fontBlack() {
         colorAction(Color.BLACK);
     }
+
     /**
      * DiagnosisInspector にフォーカスする.
      */
     public void focusDiagnosisInspector() {
-        ChartImpl realChart = chart instanceof EditorFrame?
-                (ChartImpl) ((EditorFrame)chart).getChart() : (ChartImpl) chart;
+        ChartImpl realChart = chart instanceof EditorFrame ?
+                (ChartImpl) ((EditorFrame) chart).getChart() : (ChartImpl) chart;
         JList diagList = realChart.getDiagnosisInspector().getList();
         if (diagList.getSelectedIndex() == -1) {
             diagList.setSelectedIndex(0);

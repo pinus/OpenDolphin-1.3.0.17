@@ -15,6 +15,7 @@ import java.util.GregorianCalendar;
 
 /**
  * CalendarTable にコントローラーを付けたパネル.
+ *
  * @author pns
  */
 public class CalendarPanel extends JPanel {
@@ -31,6 +32,22 @@ public class CalendarPanel extends JPanel {
         initComponents();
     }
 
+    public static void main(String[] arg) {
+        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
+
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        CalendarPanel panel = new CalendarPanel();
+
+        panel.getTable().addCalendarListener(date -> {
+            System.out.println(date.getYear() + " / " + date.getMonth() + " / " + date.getDay());
+        });
+
+        f.add(panel);
+        f.pack();
+        f.setVisible(true);
+    }
+
     private void initComponents() {
         table = new CalendarTable();
         tableModel = (CalendarTableModel) table.getModel();
@@ -38,8 +55,11 @@ public class CalendarPanel extends JPanel {
         // mouse wheel でカレンダースクロール
         table.addMouseWheelListener(e -> {
             int r = e.getWheelRotation();
-            if (r > 0) { tableModel.nextWeek(); }
-            else if (r < 0) { tableModel.previousWeek(); }
+            if (r > 0) {
+                tableModel.nextWeek();
+            } else if (r < 0) {
+                tableModel.previousWeek();
+            }
             fireCalendarChanged();
         });
 
@@ -51,9 +71,9 @@ public class CalendarPanel extends JPanel {
             expand.setBorderPainted(false);
         }
         expand.addActionListener(e -> expand());
-        expand.setPreferredSize(new Dimension(12,16));
-        expand.setMinimumSize(new Dimension(12,16));
-        expand.setMaximumSize(new Dimension(12,16));
+        expand.setPreferredSize(new Dimension(12, 16));
+        expand.setMinimumSize(new Dimension(12, 16));
+        expand.setMaximumSize(new Dimension(12, 16));
 
         JButton nextWeek = createButton(GUIConst.ICON_MD_FORWARD_16, e -> tableModel.nextWeek());
         JButton nextMonth = createButton(GUIConst.ICON_MD_FAST_FORWARD_16, e -> tableModel.nextMonth());
@@ -83,11 +103,12 @@ public class CalendarPanel extends JPanel {
         // 境界線を描く
         LayerUI<JPanel> layerUI = new LayerUI<JPanel>() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void paint(Graphics g, JComponent c) {
                 super.paint(g, c);
                 g.setColor(Color.LIGHT_GRAY);
-                g.drawLine(0, 0, 0, c.getHeight()-1);
+                g.drawLine(0, 0, 0, c.getHeight() - 1);
             }
         };
         JLayer<JPanel> controlLayer = new JLayer<>(controlPanel, layerUI);
@@ -132,34 +153,38 @@ public class CalendarPanel extends JPanel {
      */
     private void expand() {
         JDialog dialog = new JDialog();
-        dialog.getRootPane().putClientProperty( "Window.style", "small" );
-        dialog.getRootPane().putClientProperty( "apple.awt.brushMetalLook", Boolean.TRUE );
+        dialog.getRootPane().putClientProperty("Window.style", "small");
+        dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
-        dialog.setLayout(new GridLayout(4,3));
+        dialog.setLayout(new GridLayout(4, 3));
         GregorianCalendar gc = new GregorianCalendar(tableModel.getYear(), tableModel.getMonth(), 1);
         gc.add(Calendar.MONTH, -6);
 
-        for (int i=0; i<12; i++) {
+        for (int i = 0; i < 12; i++) {
             CalendarTable tbl = new CalendarTable(gc);
-            CalendarTableModel mdl = (CalendarTableModel)tbl.getModel();
+            CalendarTableModel mdl = (CalendarTableModel) tbl.getModel();
             mdl.setMarkDates(tableModel.getMarkDates());
 
             tbl.addCalendarListener(date -> {
                 // リスナのブリッジ
                 CalendarListener l = table.getCalendarListener();
-                if (l != null) { l.dateSelected(date); }
+                if (l != null) {
+                    l.dateSelected(date);
+                }
             });
 
             // 内容をつかんでドラッグできるようにする
             MouseAdapter ma = new MouseAdapter() {
                 private final Point startPt = new Point();
                 private final Point windowPt = new Point();
+
                 @Override
                 public void mousePressed(MouseEvent e) {
                     startPt.setLocation(e.getLocationOnScreen());
                     windowPt.setLocation(dialog.getLocation());
                 }
+
                 @Override
                 public void mouseDragged(MouseEvent e) {
                     Point pt = e.getLocationOnScreen();
@@ -180,6 +205,7 @@ public class CalendarPanel extends JPanel {
 
     /**
      * バックグラウンド色を設定する.
+     *
      * @param bg
      */
     public void setCalendarBackground(Color bg) {
@@ -189,6 +215,7 @@ public class CalendarPanel extends JPanel {
 
     /**
      * 表示年月変更のリスナ.
+     *
      * @param l
      */
     public void addCalendarListener(CalendarListener l) {
@@ -197,6 +224,7 @@ public class CalendarPanel extends JPanel {
 
     /**
      * CalendarTable を返す.
+     *
      * @return
      */
     public CalendarTable getTable() {
@@ -205,25 +233,10 @@ public class CalendarPanel extends JPanel {
 
     /**
      * CalendarTableModel を返す.
+     *
      * @return
      */
     public CalendarTableModel getModel() {
         return tableModel;
-    }
-
-    public static void main (String[] arg) {
-        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
-
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        CalendarPanel panel = new CalendarPanel();
-
-        panel.getTable().addCalendarListener(date -> {
-            System.out.println(date.getYear() + " / " + date.getMonth() + " / " + date.getDay());
-        });
-
-        f.add(panel);
-        f.pack();
-        f.setVisible(true);
     }
 }

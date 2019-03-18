@@ -7,13 +7,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * StampTree のノードクラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class StampTreeNode extends DefaultMutableTreeNode {
     private static final long serialVersionUID = 1L;
 
     /**
      * コンストラクタ
+     *
      * @param userObject
      */
     public StampTreeNode(Object userObject) {
@@ -28,15 +29,17 @@ public class StampTreeNode extends DefaultMutableTreeNode {
 
     /**
      * 葉かどうかを返す.
+     *
      * @return
      */
     @Override
     public boolean isLeaf() {
-        return (! this.allowsChildren);
+        return (!this.allowsChildren);
     }
 
     /**
      * StampInfo を返す.
+     *
      * @return
      */
     public ModuleInfoBean getStampInfo() {

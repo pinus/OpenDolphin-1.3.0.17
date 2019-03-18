@@ -7,8 +7,7 @@
 package open.dolphin.impl.lbtest;
 
 /**
- *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class LaboTestItemID implements Comparable {
 
@@ -16,7 +15,9 @@ public class LaboTestItemID implements Comparable {
     private String itemCode;
     private String itemName;
 
-    /** Creates a new instance of LaboTestItemID */
+    /**
+     * Creates a new instance of LaboTestItemID
+     */
     public LaboTestItemID() {
     }
 
@@ -61,11 +62,10 @@ public class LaboTestItemID implements Comparable {
 
         if (other != null && getClass() == other.getClass()) {
 
-            LaboTestItemID sp = (LaboTestItemID)other;
+            LaboTestItemID sp = (LaboTestItemID) other;
 
             return (itemCodeID.equals(sp.getItemCodeID()) &&
-                    itemCode.equals(sp.getItemCode())) ?
-                    true : false;
+                    itemCode.equals(sp.getItemCode()));
         }
 
         return false;
@@ -73,7 +73,7 @@ public class LaboTestItemID implements Comparable {
 
     public int compareTo(Object obj) {
 
-        LaboTestItemID other = (LaboTestItemID)obj;
+        LaboTestItemID other = (LaboTestItemID) obj;
 
         int ret = itemCodeID.compareTo(other.getItemCodeID());
 

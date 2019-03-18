@@ -15,18 +15,19 @@ import java.util.HashMap;
 
 /**
  * ClientContextStub のインスタンスを static method で参照する.
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ *
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ClientContext {
 
     private static ClientContextStub stub;
 
-    public static void setClientContextStub(ClientContextStub s) {
-        stub = s;
-    }
-
     public static ClientContextStub getClientContextStub() {
         return stub;
+    }
+
+    public static void setClientContextStub(ClientContextStub s) {
+        stub = s;
     }
 
     public static ClassLoader getPluginClassLoader() {
@@ -173,7 +174,7 @@ public class ClientContext {
         return stub.getLongArray(name);
     }
 
-    public static Color getColor(String name){
+    public static Color getColor(String name) {
         return stub.getColor(name);
     }
 
@@ -221,5 +222,7 @@ public class ClientContext {
         return stub.getDiagnosisCategoryModel();
     }
 
-    public static String getDocumentDirectory() { return stub.getDocumentDirectory(); }
+    public static String getDocumentDirectory() {
+        return stub.getDocumentDirectory();
+    }
 }

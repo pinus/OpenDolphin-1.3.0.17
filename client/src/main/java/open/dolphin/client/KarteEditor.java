@@ -36,7 +36,11 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private static final int TIMESTAMP_FONT_SIZE = 12;
     private static final Font TIMESTAMP_FONT = new Font("Dialog", Font.PLAIN, TIMESTAMP_FONT_SIZE);
     private static final String DEFAULT_TITLE = "経過記録";
-
+    // タイムスタンプの foreground
+    private final Color timeStampFore = TIMESTAMP_FORE;
+    // タイムスタンプフォント
+    private final Font timeStampFont = TIMESTAMP_FONT;
+    private final Logger logger = ClientContext.getBootLogger();
     // このエディタを構成するコンポーネント
     private JLabel timeStampLabel;
     // Timestamp
@@ -47,10 +51,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private KartePane pPane;
     // 2号カルテ JPanel
     private PrintablePanel panel2;
-    // タイムスタンプの foreground
-    private final Color timeStampFore = TIMESTAMP_FORE;
-    // タイムスタンプフォント
-    private final Font timeStampFont = TIMESTAMP_FONT;
     // 編集可能かどうかのフラグ. このフラグで KartePane を初期化する
     private boolean editable;
     // 修正時に true
@@ -67,8 +67,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private Autosave autosave;
     // dirty フラグ
     private boolean dirty;
-
-    private final Logger logger = ClientContext.getBootLogger();
 
     public KarteEditor() {
         init();
@@ -188,6 +186,11 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
     }
 
+    @Override
+    public boolean isDirty() {
+        return stateMgr.isDirty();
+    }
+
     /**
      * KartePane から dirty の通知を受ける.
      *
@@ -201,11 +204,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         }
         // autosave に dirty 情報を流す.
         autosave.setDirty(newDirty);
-    }
-
-    @Override
-    public boolean isDirty() {
-        return stateMgr.isDirty();
     }
 
     /**
@@ -820,6 +818,74 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     }
 
     /**
+     * 文頭・文末の無駄な改行文字を削除する.
+     * original by masuda-sensei
+     *
+     * @param kd KarteStyledDocument
+     */
+    private void removeExtraCR(KarteStyledDocument kd) {
+        // これが一番速い！ 20個の改行削除に2msec!!
+        try {
+            int len = kd.getLength();
+            int pos;
+            // 改行文字以外が出てくるまで文頭からスキャン
+            for (pos = 0; pos < len - 1; pos++) {
+                if (!"\n".equals(kd.getText(pos, 1))) {
+                    break;
+                }
+            }
+            if (pos > 0) {
+                kd.remove(0, pos);
+            }
+
+            len = kd.getLength();
+            // 改行文字以外が出てくるまで文書末からスキャン
+            for (pos = len - 1; pos >= 0; --pos) {
+                if (!"\n".equals(kd.getText(pos, 1))) {
+                    break;
+                }
+            }
+            ++pos;  // 一文字戻す
+            if (len - pos > 0) {
+                kd.remove(pos, len - pos);
+            }
+        } catch (BadLocationException ex) {
+            ex.printStackTrace(System.err);
+        }
+    }
+
+    /**
+     * 3個以上連続する改行を2個にする.
+     * つまり，２つ以上連続する空行を１つにする.
+     *
+     * @param kd KarteStyledDocument
+     */
+    private void removeRepeatedCR(KarteStyledDocument kd) {
+        int pos = 0;
+        int crPos = 0;
+
+        while (pos < kd.getLength()) {
+            try {
+                if (crPos == 0 && "\n".equals(kd.getText(pos, 1))) {
+                    crPos = pos;
+                }
+                if (crPos != 0 && !"\n".equals(kd.getText(pos, 1))) {
+                    int len = pos - crPos;
+                    if (len > 1) {
+                        kd.remove(crPos + 1, len - 1);
+                        pos -= (len - 1);
+                    }
+                    crPos = 0;
+                }
+                pos++;
+
+            } catch (BadLocationException ex) {
+                ex.printStackTrace(System.err);
+            }
+        }
+    }
+
+    /**
      * このエディタの状態インターフェース.
      */
     private interface EditorState {
@@ -951,74 +1017,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
         public void controlMenu() {
             currentState.controlMenu();
-        }
-    }
-
-    /**
-     * 文頭・文末の無駄な改行文字を削除する.
-     * original by masuda-sensei
-     *
-     * @param kd KarteStyledDocument
-     */
-    private void removeExtraCR(KarteStyledDocument kd) {
-        // これが一番速い！ 20個の改行削除に2msec!!
-        try {
-            int len = kd.getLength();
-            int pos;
-            // 改行文字以外が出てくるまで文頭からスキャン
-            for (pos = 0; pos < len - 1; pos++) {
-                if (!"\n".equals(kd.getText(pos, 1))) {
-                    break;
-                }
-            }
-            if (pos > 0) {
-                kd.remove(0, pos);
-            }
-
-            len = kd.getLength();
-            // 改行文字以外が出てくるまで文書末からスキャン
-            for (pos = len - 1; pos >= 0; --pos) {
-                if (!"\n".equals(kd.getText(pos, 1))) {
-                    break;
-                }
-            }
-            ++pos;  // 一文字戻す
-            if (len - pos > 0) {
-                kd.remove(pos, len - pos);
-            }
-        } catch (BadLocationException ex) {
-            ex.printStackTrace(System.err);
-        }
-    }
-
-    /**
-     * 3個以上連続する改行を2個にする.
-     * つまり，２つ以上連続する空行を１つにする.
-     *
-     * @param kd KarteStyledDocument
-     */
-    private void removeRepeatedCR(KarteStyledDocument kd) {
-        int pos = 0;
-        int crPos = 0;
-
-        while (pos < kd.getLength()) {
-            try {
-                if (crPos == 0 && "\n".equals(kd.getText(pos, 1))) {
-                    crPos = pos;
-                }
-                if (crPos != 0 && !"\n".equals(kd.getText(pos, 1))) {
-                    int len = pos - crPos;
-                    if (len > 1) {
-                        kd.remove(crPos + 1, len - 1);
-                        pos -= (len - 1);
-                    }
-                    crPos = 0;
-                }
-                pos++;
-
-            } catch (BadLocationException ex) {
-                ex.printStackTrace(System.err);
-            }
         }
     }
 }

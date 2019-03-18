@@ -6,6 +6,7 @@ import open.dolphin.impl.scheam.constant.Const;
 /**
  * EraserEditor で作られる ShapeHolder.
  * 実体は太さ LineWidth * ERASER_WIDTH_FACTOR の PenHolder.
+ *
  * @author pns
  */
 public class EraserHolder extends PenHolder {
@@ -19,7 +20,7 @@ public class EraserHolder extends PenHolder {
 
         gc.beginPath();
         gc.moveTo(getPathX(0), getPathY(0));
-        for (int i=1; i<getPathSize(); i++) {
+        for (int i = 1; i < getPathSize(); i++) {
             gc.lineTo(getPathX(i), getPathY(i));
         }
         gc.stroke();

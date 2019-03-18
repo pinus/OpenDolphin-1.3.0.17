@@ -48,14 +48,9 @@ import java.util.Objects;
  * @author pns
  */
 public class ItemTablePanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-
     public static final String DEFAULT_STAMP_NAME = "新規スタンプ";
     public static final String FROM_EDITOR_STAMP_NAME = "エディタから";
     public static final String DEFAULT_NUMBER = "1";
-    public final ImageIcon REMOVE_BUTTON_IMAGE = GUIConst.ICON_REMOVE_16;
-    public final ImageIcon CLEAR_BUTTON_IMAGE = GUIConst.ICON_ERASER_16;
-
     public static final String TOOLTIP_DELETE_TEXT = "選択したアイテムを削除します。";
     public static final String TOOLTIP_CLEAR_TEXT = "セット内容をクリアします。";
     public static final String TOOLTIP_DND_TEXT = "ドラッグ & ドロップで順番を入れ替えることができます。";
@@ -63,7 +58,7 @@ public class ItemTablePanel extends JPanel {
     public static final String NUMBER_LABEL_TEXT = "回 数";
     public static final String SET_NAME_LABEL_TEXT = "セット名：";
     public static final String MEMO_LABEL_TEXT = "メ モ";
-
+    private static final long serialVersionUID = 1L;
     // 数量コンボ用のデータを生成する
     private static String[] NUMBER_LIST;
 
@@ -74,6 +69,8 @@ public class ItemTablePanel extends JPanel {
         }
     }
 
+    public final ImageIcon REMOVE_BUTTON_IMAGE = GUIConst.ICON_REMOVE_16;
+    public final ImageIcon CLEAR_BUTTON_IMAGE = GUIConst.ICON_ERASER_16;
     // GUI コンポーネント
     private JTable table;
     private ObjectReflectTableModel<MasterItem> tableModel;
@@ -128,16 +125,17 @@ public class ItemTablePanel extends JPanel {
      */
     public ObjectReflectTableModel<MasterItem> createTableModel() {
         // セットテーブルのモデルを生成する
-        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+        List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" コード", String.class, "getCode"),
                 new PNSTriple<>("　診療内容", String.class, "getName"),
                 new PNSTriple<>(" 数 量", String.class, "getNumber"),
                 new PNSTriple<>(" 単 位", String.class, "getUnit")
         );
-        setTableColumnWidth(new int[] {90, 200, 60, 60});
+        setTableColumnWidth(new int[]{90, 200, 60, 60});
 
         return new ObjectReflectTableModel<MasterItem>(reflectList) {
             private static final long serialVersionUID = 1L;
+
             @Override
             public boolean isCellEditable(int row, int col) {
                 // col=0 がコメントコード（810000001)なら，col=1 を編集可能とする
@@ -232,7 +230,7 @@ public class ItemTablePanel extends JPanel {
 
             // カラム幅を設定する
             column.setPreferredWidth(columnWidth[i]);
-            if (! tableModel.getColumnName(i).contains("診療内容")) {
+            if (!tableModel.getColumnName(i).contains("診療内容")) {
                 column.setMaxWidth(columnWidth[i]); // 診療内容コラム以外のコラム幅を固定する
             }
         }
@@ -339,15 +337,6 @@ public class ItemTablePanel extends JPanel {
     }
 
     /**
-     * テーブルをセット.
-     *
-     * @param table JTable
-     */
-    public void setTable(JTable table) {
-        this.table = table;
-    }
-
-    /**
      * テーブルを返す.
      *
      * @return JTable
@@ -357,12 +346,12 @@ public class ItemTablePanel extends JPanel {
     }
 
     /**
-     * テーブルモデルをセットする.
+     * テーブルをセット.
      *
-     * @param tableModel ObjectReflectTableModel
+     * @param table JTable
      */
-    public void setTableModel(ObjectReflectTableModel<MasterItem> tableModel) {
-        this.tableModel = tableModel;
+    public void setTable(JTable table) {
+        this.table = table;
     }
 
     /**
@@ -375,21 +364,21 @@ public class ItemTablePanel extends JPanel {
     }
 
     /**
+     * テーブルモデルをセットする.
+     *
+     * @param tableModel ObjectReflectTableModel
+     */
+    public void setTableModel(ObjectReflectTableModel<MasterItem> tableModel) {
+        this.tableModel = tableModel;
+    }
+
+    /**
      * StampNameField(JTextField) を返す.
      *
      * @return StampNameField
      */
     public JTextField getStampNameField() {
         return stampNameField;
-    }
-
-    /**
-     * スタンプ名フィールド.
-     *
-     * @param stampName stamp name
-     */
-    public void setStampName(String stampName) {
-        stampNameField.setText(stampName);
     }
 
     /**
@@ -402,12 +391,12 @@ public class ItemTablePanel extends JPanel {
     }
 
     /**
-     * コメントフィールドにテキストを設定する.
+     * スタンプ名フィールド.
      *
-     * @param comment テキスト
+     * @param stampName stamp name
      */
-    public void setComment(String comment) {
-        commentField.setText(comment);
+    public void setStampName(String stampName) {
+        stampNameField.setText(stampName);
     }
 
     /**
@@ -417,6 +406,15 @@ public class ItemTablePanel extends JPanel {
      */
     public String getComment() {
         return commentField.getText();
+    }
+
+    /**
+     * コメントフィールドにテキストを設定する.
+     *
+     * @param comment テキスト
+     */
+    public void setComment(String comment) {
+        commentField.setText(comment);
     }
 
     /**
@@ -934,17 +932,15 @@ public class ItemTablePanel extends JPanel {
 
     // number かどうか
     private boolean isNumber(String test) {
-        if (test.equals(".")) {
-            return false;
-        }
-        try {
-            float num = Float.parseFloat(test);
-            if (num <= 0F) {
-                return false;
+        if (!test.equals(".")) {
+            try {
+                float num = Float.parseFloat(test);
+                if (num > 0F) {
+                    return true;
+                }
+            } catch (NumberFormatException e) {
             }
-        } catch (NumberFormatException e) {
-            return false;
         }
-        return true;
+        return false;
     }
 }

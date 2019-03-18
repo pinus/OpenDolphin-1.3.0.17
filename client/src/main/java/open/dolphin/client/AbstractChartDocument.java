@@ -19,28 +19,24 @@ public abstract class AbstractChartDocument implements ChartDocument {
     public static final String UPDATE_MARK = "Ⓤ";
 
     private static final String[] CHART_MENUS = {
-        GUIConst.ACTION_OPEN_KARTE, GUIConst.ACTION_SAVE, GUIConst.ACTION_DELETE, GUIConst.ACTION_PRINT, GUIConst.ACTION_MODIFY_KARTE,
-        GUIConst.ACTION_ASCENDING, GUIConst.ACTION_DESCENDING, GUIConst.ACTION_SHOW_MODIFIED,
-        GUIConst.ACTION_INSERT_TEXT, GUIConst.ACTION_INSERT_SCHEMA, GUIConst.ACTION_INSERT_STAMP, GUIConst.ACTION_SELECT_INSURANCE,
-        GUIConst.ACTION_CUT, GUIConst.ACTION_COPY, GUIConst.ACTION_PASTE, GUIConst.ACTION_UNDO, GUIConst.ACTION_REDO,
-        GUIConst.ACTION_FIND_FIRST, GUIConst.ACTION_FIND_NEXT, GUIConst.ACTION_FIND_PREVIOUS, GUIConst.ACTION_SEND_CLAIM
+            GUIConst.ACTION_OPEN_KARTE, GUIConst.ACTION_SAVE, GUIConst.ACTION_DELETE, GUIConst.ACTION_PRINT, GUIConst.ACTION_MODIFY_KARTE,
+            GUIConst.ACTION_ASCENDING, GUIConst.ACTION_DESCENDING, GUIConst.ACTION_SHOW_MODIFIED,
+            GUIConst.ACTION_INSERT_TEXT, GUIConst.ACTION_INSERT_SCHEMA, GUIConst.ACTION_INSERT_STAMP, GUIConst.ACTION_SELECT_INSURANCE,
+            GUIConst.ACTION_CUT, GUIConst.ACTION_COPY, GUIConst.ACTION_PASTE, GUIConst.ACTION_UNDO, GUIConst.ACTION_REDO,
+            GUIConst.ACTION_FIND_FIRST, GUIConst.ACTION_FIND_NEXT, GUIConst.ACTION_FIND_PREVIOUS, GUIConst.ACTION_SEND_CLAIM
     };
-
+    private final Logger logger = Logger.getLogger(AbstractChartDocument.class);
     /**
      * この ChartDocument を保持する Chart.
      */
     private Chart chartContext;
-
     /**
      * この ChartDocument が保持する DocumentModel.
      */
     private DocumentModel documentModel;
-
     private String title;
     private JPanel ui;
     private boolean dirty;
-
-    private final Logger logger = Logger.getLogger(AbstractChartDocument.class);
 
     public AbstractChartDocument() {
         initComponent();
@@ -72,10 +68,14 @@ public abstract class AbstractChartDocument implements ChartDocument {
     }
 
     @Override
-    public DocumentModel getDocument() { return documentModel; }
+    public DocumentModel getDocument() {
+        return documentModel;
+    }
 
     @Override
-    public void setDocument(DocumentModel model) { documentModel = model; }
+    public void setDocument(DocumentModel model) {
+        documentModel = model;
+    }
 
     @Override
     public void enter() {
@@ -116,7 +116,8 @@ public abstract class AbstractChartDocument implements ChartDocument {
 
     /**
      * 共通の警告表示を行う.
-     * @param title タイトル
+     *
+     * @param title   タイトル
      * @param message メッセージ
      */
     protected void warning(String title, String message) {

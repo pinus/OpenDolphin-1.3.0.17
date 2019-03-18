@@ -5,6 +5,7 @@ import java.awt.*;
 
 /**
  * 選択されたときの青っぽい枠.
+ *
  * @author pns
  */
 public class PNSSelectedBorder extends AbstractBorder {
@@ -16,7 +17,7 @@ public class PNSSelectedBorder extends AbstractBorder {
     }
 
     @Override
-    public Insets getBorderInsets(Component c)       {
+    public Insets getBorderInsets(Component c) {
         return PNSBorder.DEFAULT_MARGIN;
     }
 }

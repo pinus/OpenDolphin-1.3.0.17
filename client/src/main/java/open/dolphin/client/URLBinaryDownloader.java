@@ -87,14 +87,14 @@ public class URLBinaryDownloader implements Runnable {
             // Create ProgressMonitor
             SwingUtilities.invokeLater(new Runnable() {
 
-                        public void run() {
-                            monitor = new ProgressMonitor((Component) null,
-                                    message,
-                                    null,
-                                    0,
-                                    contentLength);
-                        }
-                    });
+                public void run() {
+                    monitor = new ProgressMonitor((Component) null,
+                            message,
+                            null,
+                            0,
+                            contentLength);
+                }
+            });
 
             // Create streams
             din = new DataInputStream(new BufferedInputStream(con.getInputStream()));
@@ -116,27 +116,27 @@ public class URLBinaryDownloader implements Runnable {
                 current++;
 
                 // Update progressbar
-                if (updateScheduled == false) {
+                if (!updateScheduled) {
                     updateScheduled = true;
                     SwingUtilities.invokeLater(new Runnable() {
 
-                                public void run() {
-                                    monitor.setProgress(current);
-                                    updateScheduled = false;
-                                }
-                            });
+                        public void run() {
+                            monitor.setProgress(current);
+                            updateScheduled = false;
+                        }
+                    });
                 }
 
                 // Check cancel
-                if (cancelScheduled == false) {
+                if (!cancelScheduled) {
                     cancelScheduled = true;
                     SwingUtilities.invokeLater(new Runnable() {
 
-                                public void run() {
-                                    canceled = monitor.isCanceled();
-                                    cancelScheduled = false;
-                                }
-                            });
+                        public void run() {
+                            canceled = monitor.isCanceled();
+                            cancelScheduled = false;
+                        }
+                    });
                 }
             }
         } catch (EOFException eof) {
@@ -177,12 +177,12 @@ public class URLBinaryDownloader implements Runnable {
     private void showErrorMessage(final String msg) {
         SwingUtilities.invokeLater(new Runnable() {
 
-                    public void run() {
-                        JOptionPane.showMessageDialog((Component) null,
-                                "ダウンロード中にエラーが発生しました。" + msg,
-                                "Dolphin: Software download",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                });
+            public void run() {
+                JOptionPane.showMessageDialog((Component) null,
+                        "ダウンロード中にエラーが発生しました。" + msg,
+                        "Dolphin: Software download",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 }

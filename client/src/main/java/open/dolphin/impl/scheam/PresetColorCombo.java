@@ -19,11 +19,14 @@ import java.util.List;
 
 /**
  * Preset Color を選択するための PnsComboBox.
+ *
  * @author pns
  */
 public class PresetColorCombo extends PnsComboBox<List<ColorModel>> {
 
-    /** これを Listen すると選択された ColorModel がとれる */
+    /**
+     * これを Listen すると選択された ColorModel がとれる
+     */
     private final ObjectProperty<ColorModel> selectionProxyProperty;
 
     public PresetColorCombo() {
@@ -75,6 +78,36 @@ public class PresetColorCombo extends PnsComboBox<List<ColorModel>> {
         getSelectionModel().select(redFill);
     }
 
+    @Override
+    public void show() {
+        // ActionEvent での popup はブロックする
+        // MouseEvent で下の superPopup で popup する
+    }
+
+    /**
+     * 親の show を呼ぶ.
+     * ComboBox の右側の矢印を押したとき: popup を出す
+     * ComboBox の ColorModeLabel を押したとき: ColorModelLabel にイベントを渡す
+     *
+     * @param e
+     */
+    public void superShow(MouseEvent e) {
+        // 右側の矢印をクリックした場合 popup する
+        if (e.getX() > getWidth() - 14) {
+            super.show();
+        }
+    }
+
+    /**
+     * ColorModel のプロパティ.
+     * ColorModelLabel がクリックされるとセットされる
+     *
+     * @return
+     */
+    public ObjectProperty<ColorModel> selectionProxyProperty() {
+        return selectionProxyProperty;
+    }
+
     /**
      * ColorModel のリストから ListCell を作る.
      * ColorModelLabel を並べて作る.
@@ -92,10 +125,12 @@ public class PresetColorCombo extends PnsComboBox<List<ColorModel>> {
 
         @Override
         public Label getCell(List<ColorModel> list) {
-            if (list == null) { return null; }
+            if (list == null) {
+                return null;
+            }
 
             box.getChildren().clear();
-            list.forEach( model -> box.getChildren().add(new ColorModelLabel(model)));
+            list.forEach(model -> box.getChildren().add(new ColorModelLabel(model)));
             cell.setGraphic(box);
 
             return cell;
@@ -126,31 +161,5 @@ public class PresetColorCombo extends PnsComboBox<List<ColorModel>> {
             setOnMouseReleased(e -> selectionProxyProperty.set(model));
         }
     }
-
-    @Override
-    public void show() {
-        // ActionEvent での popup はブロックする
-        // MouseEvent で下の superPopup で popup する
-    }
-
-    /**
-     * 親の show を呼ぶ.
-     * ComboBox の右側の矢印を押したとき: popup を出す
-     * ComboBox の ColorModeLabel を押したとき: ColorModelLabel にイベントを渡す
-     * @param e
-     */
-    public void superShow(MouseEvent e) {
-        // 右側の矢印をクリックした場合 popup する
-        if (e.getX() > getWidth() - 14) {
-            super.show();
-        }
-    }
-
-    /**
-     * ColorModel のプロパティ.
-     * ColorModelLabel がクリックされるとセットされる
-     * @return
-     */
-    public ObjectProperty<ColorModel> selectionProxyProperty() { return selectionProxyProperty; }
 
 }

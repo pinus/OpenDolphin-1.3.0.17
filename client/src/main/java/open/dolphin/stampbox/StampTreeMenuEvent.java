@@ -4,7 +4,6 @@ import java.awt.datatransfer.Transferable;
 import java.util.EventObject;
 
 /**
- *
  * @author pns
  */
 public class StampTreeMenuEvent extends EventObject {

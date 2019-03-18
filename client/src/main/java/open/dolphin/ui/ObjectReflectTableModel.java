@@ -21,12 +21,12 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     // カラム名配列
     private final String[] columnNames;
+    // カラム数
+    private final int columnCount;
     // カラムクラス配列
     private Class<?>[] columnClasses;
     // 属性値を取得するためのメソッド名
     private String[] methodNames;
-    // カラム数
-    private final int columnCount;
     // データオブジェクトリスト
     private List<T> objectList = new ArrayList<>();
 
@@ -127,16 +127,6 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * データリストを設定する.
-     *
-     * @param otherList データリスト
-     */
-    public void setObjectList(List<T> otherList) {
-        objectList = otherList; // 参照しているのみ
-        fireTableDataChanged();
-    }
-
-    /**
      * Method 名を帰す
      *
      * @param index インデックス
@@ -150,7 +140,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      * コンストラクト後にカラム名を変更する.
      *
      * @param columnName カラム名
-     * @param col カラム番号
+     * @param col        カラム番号
      */
     public void setColumnName(String columnName, int col) {
         if (col >= 0 && col < columnNames.length) {
@@ -163,7 +153,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      * コンストラクト後にメソッドを変更する.
      *
      * @param methodName メソッド名
-     * @param col カラム番号
+     * @param col        カラム番号
      */
     public void setMethodName(String methodName, int col) {
         if (col >= 0 && col < methodNames.length) {
@@ -181,6 +171,16 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      */
     public List<T> getObjectList() {
         return objectList;
+    }
+
+    /**
+     * データリストを設定する.
+     *
+     * @param otherList データリスト
+     */
+    public void setObjectList(List<T> otherList) {
+        objectList = otherList; // 参照しているのみ
+        fireTableDataChanged();
     }
 
     /**

@@ -5,7 +5,6 @@ import open.dolphin.impl.scheam.UndoEvent;
 import open.dolphin.impl.scheam.shapeholder.ShapeHolderBase;
 
 /**
- *
  * @author pns
  */
 public class UndoLineWidthEvent implements UndoEvent {
@@ -18,7 +17,9 @@ public class UndoLineWidthEvent implements UndoEvent {
         holder = h;
     }
 
-    public void setPreviousLineWidth(double d) { lineWidth = d; }
+    public void setPreviousLineWidth(double d) {
+        lineWidth = d;
+    }
 
     @Override
     public void rollback() {

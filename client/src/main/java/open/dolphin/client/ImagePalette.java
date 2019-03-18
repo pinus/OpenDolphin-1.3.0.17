@@ -25,17 +25,19 @@ import java.util.List;
 /**
  * ImagePalette.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  * @author pns
  */
 public class ImagePalette extends JPanel {
     private static final long serialVersionUID = -6218860704261308773L;
 
-    private static final int DEFAULT_COLUMN_COUNT 	=   3;
-    private static final int DEFAULT_IMAGE_WIDTH 	= 120;
-    private static final int DEFAULT_IMAGE_HEIGHT 	= 120;
+    private static final int DEFAULT_COLUMN_COUNT = 3;
+    private static final int DEFAULT_IMAGE_WIDTH = 120;
+    private static final int DEFAULT_IMAGE_HEIGHT = 120;
     private static final String[] DEFAULT_IMAGE_SUFFIX = {".jpg"};
-
+    private final Border selectedBorder = PNSBorderFactory.createSelectedBorder();
+    // private Border normalBorder = PNSBorderFactory.createClearBorder();
+    private final Border normalBorder = BorderFactory.createEmptyBorder();
     private ImageTableModel imageTableModel;
     private int imageWidth;
     private int imageHeight;
@@ -43,10 +45,6 @@ public class ImagePalette extends JPanel {
     private File imageDirectory;
     private String[] suffix = DEFAULT_IMAGE_SUFFIX;
     private boolean showHeader;
-
-    private final Border selectedBorder = PNSBorderFactory.createSelectedBorder();
-    // private Border normalBorder = PNSBorderFactory.createClearBorder();
-    private final Border normalBorder = BorderFactory.createEmptyBorder();
 
     public ImagePalette(String[] columnNames, int columnCount, int width, int height) {
         imageTableModel = new ImageTableModel(columnNames, columnCount);
@@ -96,7 +94,7 @@ public class ImagePalette extends JPanel {
 
     public void refresh() {
 
-        if ( (! imageDirectory.exists()) || (! imageDirectory.isDirectory()) ) {
+        if ((!imageDirectory.exists()) || (!imageDirectory.isDirectory())) {
             return;
         }
 
@@ -113,7 +111,7 @@ public class ImagePalette extends JPanel {
                     entry.setUrl(url.toString());
                     imageList.add(entry);
 
-                }catch (MalformedURLException e) {
+                } catch (MalformedURLException e) {
                     e.printStackTrace(System.err);
                 }
             }
@@ -132,24 +130,24 @@ public class ImagePalette extends JPanel {
         imageTable.setTransferHandler(new ImageTransferHandler());
 
         // ドラッグ処理
-        imageTable.addMouseMotionListener(new MouseMotionAdapter(){
+        imageTable.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
-            public void mouseDragged (MouseEvent e) {
+            public void mouseDragged(MouseEvent e) {
                 imageTable.getTransferHandler().exportAsDrag((JComponent) e.getSource(), e, TransferHandler.COPY);
             }
         });
 
         // ダブルクリックで直接入力
-        imageTable.addMouseListener(new MouseAdapter(){
+        imageTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getClickCount() == 2 && ! MouseHelper.mouseMoved()) {
+                if (e.getClickCount() == 2 && !MouseHelper.mouseMoved()) {
                     int row = imageTable.getSelectedRow();
                     int col = imageTable.getSelectedColumn();
                     ImageEntry entry = (ImageEntry) imageTable.getModel().getValueAt(row, col);
 
                     List<Chart> allFrames = EditorFrame.getAllEditorFrames();
-                    if (! allFrames.isEmpty()) {
+                    if (!allFrames.isEmpty()) {
                         Chart frame = allFrames.get(0);
                         KartePane pane = ((EditorFrame) frame).getEditor().getSOAPane();
                         // caret を最後に送ってから import する
@@ -185,22 +183,22 @@ public class ImagePalette extends JPanel {
             this.add(scroller);
         }
 
-        imageTable.setIntercellSpacing(new Dimension(0,0));
+        imageTable.setIntercellSpacing(new Dimension(0, 0));
     }
 
     private ImageIcon adjustImageSize(ImageIcon icon, Dimension dim) {
 
-        if ( (icon.getIconHeight() > dim.height) || (icon.getIconWidth() > dim.width) ) {
+        if ((icon.getIconHeight() > dim.height) || (icon.getIconWidth() > dim.width)) {
             Image img = icon.getImage();
-            float hRatio = (float)icon.getIconHeight() / dim.height;
-            float wRatio = (float)icon.getIconWidth() / dim.width;
+            float hRatio = (float) icon.getIconHeight() / dim.height;
+            float wRatio = (float) icon.getIconWidth() / dim.width;
             int h, w;
             if (hRatio > wRatio) {
                 h = dim.height;
-                w = (int)(icon.getIconWidth() / hRatio);
+                w = (int) (icon.getIconWidth() / hRatio);
             } else {
                 w = dim.width;
-                h = (int)(icon.getIconHeight() / wRatio);
+                h = (int) (icon.getIconHeight() / wRatio);
             }
             img = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
             return new ImageIcon(img);
@@ -250,10 +248,10 @@ public class ImagePalette extends JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
+                                                       Object value,
+                                                       boolean isSelected,
+                                                       boolean isFocused,
+                                                       int row, int col) {
 
             Component compo = super.getTableCellRendererComponent(table,
                     value,
@@ -261,14 +259,17 @@ public class ImagePalette extends JPanel {
                     isFocused,
                     row, col);
 
-            JLabel l = (JLabel)compo;
+            JLabel l = (JLabel) compo;
 
-            l.setBackground(new Color(254,255,255)); // なぜか WHITE は無視される => quaqua のせい
-            if (isSelected) { l.setBorder(selectedBorder); }
-            else { l.setBorder(normalBorder); }
+            l.setBackground(new Color(254, 255, 255)); // なぜか WHITE は無視される => quaqua のせい
+            if (isSelected) {
+                l.setBorder(selectedBorder);
+            } else {
+                l.setBorder(normalBorder);
+            }
 
             if (value != null) {
-                ImageEntry entry = (ImageEntry)value;
+                ImageEntry entry = (ImageEntry) value;
                 l.setIcon(entry.getImageIcon());
                 l.setText(null);
 
@@ -293,7 +294,7 @@ public class ImagePalette extends JPanel {
 
             ImageEntry entry = null;
             if (row != -1 && col != -1) {
-                entry = (ImageEntry)imageTable.getValueAt(row, col);
+                entry = (ImageEntry) imageTable.getValueAt(row, col);
             }
             return new ImageEntryTransferable(entry);
         }

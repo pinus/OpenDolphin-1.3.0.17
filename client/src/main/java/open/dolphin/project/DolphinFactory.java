@@ -11,13 +11,15 @@ import java.awt.*;
 /**
  * プロジェクトに依存するオブジェクトを生成するファクトリクラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class DolphinFactory extends AbstractProjectFactory {
 
     protected String csgwPath;
 
-    /** Creates new Project */
+    /**
+     * Creates new Project
+     */
     public DolphinFactory() {
     }
 
@@ -31,9 +33,9 @@ public class DolphinFactory extends AbstractProjectFactory {
     /**
      * CSGW(Client Side Gate Way) のパスを返す.
      *
-     * @param  uploaderAddress MMLアップローダのIP Address
-     * @param  share Samba 共有ディレクトリ
-     * @param  facilityId 連携用の施設ID
+     * @param uploaderAddress MMLアップローダのIP Address
+     * @param share           Samba 共有ディレクトリ
+     * @param facilityId      連携用の施設ID
      */
     public String createCSGWPath(String uploaderAddress, String share, String facilityId) {
         if (csgwPath == null) {
@@ -74,7 +76,7 @@ public class DolphinFactory extends AbstractProjectFactory {
         return new AboutDialog(null, title, "splash/splash.jpg");
     }
 
-    public Object createSaveDialog(Window parent,SaveParams params) {
+    public Object createSaveDialog(Window parent, SaveParams params) {
         SaveDialog sd = new SaveDialog(parent);
         params.setAllowPatientRef(false);    // 患者の参照
         params.setAllowClinicRef(false);     // 診療履歴のある医療機関

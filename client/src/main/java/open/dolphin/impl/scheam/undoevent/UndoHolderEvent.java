@@ -10,21 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author pns
  */
 public final class UndoHolderEvent implements UndoEvent {
     private final SchemaLayer layer;
     private final ShapeHolderBase holder;
-
-    private double startx, starty, endx, endy;
     private final List<Double> pathx, pathy;
+    private double startx, starty, endx, endy;
     private double translatex, translatey, scalex, scaley;
     private Color lineColor, fillColor;
     private double lineWidth, fillBlur;
     private FillMode fillMode;
 
-    public UndoHolderEvent (ShapeHolderBase h) {
+    public UndoHolderEvent(ShapeHolderBase h) {
         holder = h;
         layer = (SchemaLayer) holder.getGraphicsContext().getCanvas();
         pathx = new ArrayList<>();
@@ -40,7 +38,8 @@ public final class UndoHolderEvent implements UndoEvent {
     @Override
     public void rollback() {
         // 現在の Holder のパラメータを保存
-        ShapeHolderBase tmpHolder = new ShapeHolderBase() {};
+        ShapeHolderBase tmpHolder = new ShapeHolderBase() {
+        };
         UndoHolderEvent tmp = new UndoHolderEvent(holder);
         tmp.copyTo(tmpHolder);
         // Holder のパラメータを保存していたもので置き換える → rollback
@@ -54,6 +53,7 @@ public final class UndoHolderEvent implements UndoEvent {
 
     /**
      * Holder からパラメータを吸い取る.
+     *
      * @param src
      */
     public void copyFrom(ShapeHolderBase src) {
@@ -81,6 +81,7 @@ public final class UndoHolderEvent implements UndoEvent {
 
     /**
      * dist Holder にパラメータをコピーする.
+     *
      * @param dist
      */
     public void copyTo(ShapeHolderBase dist) {

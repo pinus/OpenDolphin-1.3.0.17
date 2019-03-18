@@ -12,7 +12,7 @@ import java.beans.PropertyChangeSupport;
 /**
  * ColorChooserComp.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class ColorChooserComp extends JComponent implements MouseListener, MouseMotionListener {
 
@@ -39,7 +39,7 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
         colors = ClientContext.getColorArray("color.set.default.end");
         size = ClientContext.getDimension("colorCooserComp.default.size");
         strokeWidth = ClientContext.getInt("colorChooserComp.stroke.width");
-        this.setPreferredSize(new Dimension(2*size.width*colors.length + size.width, 2*size.height));
+        this.setPreferredSize(new Dimension(2 * size.width * colors.length + size.width, 2 * size.height));
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -48,7 +48,7 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
     public ColorChooserComp(Dimension size, Color[] colors) {
         this.size = size;
         this.colors = colors;
-        this.setPreferredSize(new Dimension(2*size.width*colors.length + size.width, 2*size.height));
+        this.setPreferredSize(new Dimension(2 * size.width * colors.length + size.width, 2 * size.height));
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -121,9 +121,9 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
 
         Graphics2D g = (Graphics2D) graphics.create();
 
-        double dx = size.getWidth()*2;
+        double dx = size.getWidth() * 2;
         double offsetX = size.getWidth();
-        double offsetY = (this.getPreferredSize().getHeight() - size.getHeight())/2;
+        double offsetY = (this.getPreferredSize().getHeight() - size.getHeight()) / 2;
 
         BasicStroke stroke = new BasicStroke(strokeWidth);
 
@@ -132,11 +132,11 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHints(rh);
 
-        for (int i=0; i < colors.length; i++) {
+        for (int i = 0; i < colors.length; i++) {
             double x = offsetX + i * dx;
             double y = offsetY;
             Ellipse2D.Double body = new Ellipse2D.Double(x, y, size.getWidth(), size.getHeight());
-            GradientPaint lightToDark = new GradientPaint((int)x, (int)y, colorStart[i], (int)x + size.width, (int)y + size.height, colors[i]);
+            GradientPaint lightToDark = new GradientPaint((int) x, (int) y, colorStart[i], (int) x + size.width, (int) y + size.height, colors[i]);
             g.setPaint(lightToDark);
             g.fill(body);
             if (i == index) {

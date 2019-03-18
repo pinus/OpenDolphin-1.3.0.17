@@ -5,6 +5,7 @@ import open.dolphin.impl.scheam.helper.SchemaUtils;
 
 /**
  * 自由描画の Path を線で保持する ShapeHolder.
+ *
  * @author pns
  */
 public class PenHolder extends ShapeHolderBase {
@@ -16,7 +17,7 @@ public class PenHolder extends ShapeHolderBase {
         GraphicsContext gc = getGraphicsContext();
         gc.beginPath();
         gc.moveTo(getPathX(0), getPathY(0));
-        for (int i=1; i<getPathSize(); i++) {
+        for (int i = 1; i < getPathSize(); i++) {
             gc.lineTo(getPathX(i), getPathY(i));
         }
         gc.stroke();
@@ -25,7 +26,7 @@ public class PenHolder extends ShapeHolderBase {
     @Override
     public boolean contains(double x, double y) {
         // どれかの点と 6 ドット未満の近さなら contains と判断
-        for (int i=0; i<getPathSize(); i++) {
+        for (int i = 0; i < getPathSize(); i++) {
             if (SchemaUtils.isNear(
                     x, y,
                     getPathX(i), getPathY(i))) {

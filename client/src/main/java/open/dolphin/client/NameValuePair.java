@@ -2,12 +2,20 @@ package open.dolphin.client;
 
 /**
  * @author Kazushi Minagawa Digital Globe, Inc.
- *
  */
 public class NameValuePair {
 
     private String value;
     private String name;
+
+    public NameValuePair() {
+    }
+
+    public NameValuePair(String name, String value) {
+        this();
+        setName(name);
+        setValue(value);
+    }
 
     public static int getIndex(NameValuePair test, NameValuePair[] cnArray) {
         int index = 0;
@@ -31,29 +39,20 @@ public class NameValuePair {
         return index;
     }
 
-    public NameValuePair() {
-    }
-
-    public NameValuePair(String name, String value) {
-        this();
-        setName(name);
-        setValue(value);
+    public String getValue() {
+        return value;
     }
 
     public void setValue(String code) {
         this.value = code;
     }
 
-    public String getValue() {
-        return value;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -69,7 +68,7 @@ public class NameValuePair {
     @Override
     public boolean equals(Object other) {
         if (other != null && getClass() == other.getClass()) {
-            String otherValue = ((NameValuePair)other).getValue();
+            String otherValue = ((NameValuePair) other).getValue();
             return value.equals(otherValue);
         }
         return false;
@@ -77,7 +76,7 @@ public class NameValuePair {
 
     public int compareTo(Object other) {
         if (other != null && getClass() == other.getClass()) {
-            String otherValue = ((NameValuePair)other).getValue();
+            String otherValue = ((NameValuePair) other).getValue();
             return value.compareTo(otherValue);
         }
         return -1;

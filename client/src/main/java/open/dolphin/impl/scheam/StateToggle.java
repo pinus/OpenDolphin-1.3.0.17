@@ -10,6 +10,7 @@ import open.dolphin.impl.scheam.widget.PnsToggleSet;
 
 /**
  * State 切換のための Toggle.
+ *
  * @author pns
  */
 public class StateToggle extends PnsToggleSet<State> {
@@ -78,9 +79,9 @@ public class StateToggle extends PnsToggleSet<State> {
         @Override
         public Node call(State s) {
             selected = (s == getSelectionModel().getSelectedItem());
-            disabled = (getButton(s) == null)? false : getButton(s).isDisabled();
+            disabled = (getButton(s) == null) ? false : getButton(s).isDisabled();
 
-            switch(s) {
+            switch (s) {
                 case Pen:
                     setStroke(pen);
                     return pen;
@@ -144,8 +145,11 @@ public class StateToggle extends PnsToggleSet<State> {
             if (disabled) {
                 shape.setStroke(Const.PNS_LIGHT_GLAY);
             } else {
-                if (selected) { shape.setStroke(Const.PNS_WHITE); }
-                else { shape.setStroke(Const.PNS_BLACK); }
+                if (selected) {
+                    shape.setStroke(Const.PNS_WHITE);
+                } else {
+                    shape.setStroke(Const.PNS_BLACK);
+                }
             }
         }
 
@@ -153,8 +157,11 @@ public class StateToggle extends PnsToggleSet<State> {
             if (disabled) {
                 shape.setFill(Const.PNS_LIGHT_GLAY);
             } else {
-            if (selected) { shape.setFill(Const.PNS_WHITE); }
-            else { shape.setFill(Const.PNS_BLACK); }
+                if (selected) {
+                    shape.setFill(Const.PNS_WHITE);
+                } else {
+                    shape.setFill(Const.PNS_BLACK);
+                }
             }
         }
     }

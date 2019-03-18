@@ -10,6 +10,7 @@ import javax.swing.*;
 
 /**
  * WaitingListView 互換 JPanel
+ *
  * @author pns
  */
 public class WaitingListPanel extends MainComponentPanel {
@@ -67,7 +68,9 @@ public class WaitingListPanel extends MainComponentPanel {
         dateLbl = new JLabel("2011-11-11(土)");
         intervalLbl = new JLabel("チェック間隔：30秒");
         statusPanel.add(kutuBtn);
-        if (ClientContext.isWin()) { statusPanel.addSpace(5); }
+        if (ClientContext.isWin()) {
+            statusPanel.addSpace(5);
+        }
         statusPanel.add(checkedTimeLbl);
         statusPanel.addSeparator();
         statusPanel.add(intervalLbl);

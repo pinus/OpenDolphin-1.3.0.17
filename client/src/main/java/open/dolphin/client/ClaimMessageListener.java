@@ -4,7 +4,7 @@ package open.dolphin.client;
 /**
  * CLAIM イベントリスナ.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public interface ClaimMessageListener extends MainService {
 

@@ -5,7 +5,6 @@ import open.dolphin.infomodel.SchemaModel;
 import java.beans.PropertyChangeListener;
 
 /**
- *
  * @author kazm
  */
 public interface SchemaEditor {

@@ -12,6 +12,7 @@ import java.awt.event.FocusEvent;
 /**
  * Mac っぽい Border の TreeCellEditor.
  * undo 対応.
+ *
  * @author pns
  */
 public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
@@ -30,6 +31,7 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
     protected TreeCellEditor createTreeCellEditor() {
         final DefaultTextField textField = new DefaultTextField(null) {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void setText(String text) {
                 super.setText(text);
@@ -50,14 +52,16 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
         // focus を失ったら編集はやめる
         textField.addFocusListener(new FocusAdapter() {
             @Override
-            public void focusLost(FocusEvent e) { stopCellEditing(); }
+            public void focusLost(FocusEvent e) {
+                stopCellEditing();
+            }
         });
 
         DefaultCellEditor editor = new DefaultCellEditor(textField);
 
-	// One click to edit.
-	editor.setClickCountToStart(1);
-	return editor;
+        // One click to edit.
+        editor.setClickCountToStart(1);
+        return editor;
     }
 
     /**
@@ -65,10 +69,10 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
      */
     @Override
     protected void startEditingTimer() {
-	if(timer == null) {
-	    timer = new Timer(DELAY, this);
-	    timer.setRepeats(false);
-	}
-	timer.start();
+        if (timer == null) {
+            timer = new Timer(DELAY, this);
+            timer.setRepeats(false);
+        }
+        timer.start();
     }
 }

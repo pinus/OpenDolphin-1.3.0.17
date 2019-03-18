@@ -6,18 +6,22 @@ import java.io.IOException;
 /**
  * Transferable class of the ImageIcon.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class ImageEntryTransferable implements Transferable, ClipboardOwner {
 
-    /** Data Flavor of this class */
+    /**
+     * Data Flavor of this class
+     */
     public static DataFlavor imageEntryFlavor = new DataFlavor(ImageEntry.class, "Image Entry");
 
     public static final DataFlavor[] flavors = {ImageEntryTransferable.imageEntryFlavor};
 
     private ImageEntry entry;
 
-    /** Creates new ImgeIconTransferable */
+    /**
+     * Creates new ImgeIconTransferable
+     */
     public ImageEntryTransferable(ImageEntry entry) {
         this.entry = entry;
     }
@@ -27,11 +31,11 @@ public final class ImageEntryTransferable implements Transferable, ClipboardOwne
     }
 
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-        return flavor.equals(imageEntryFlavor) ? true : false;
+        return flavor.equals(imageEntryFlavor);
     }
 
     public synchronized Object getTransferData(DataFlavor flavor)
-    throws UnsupportedFlavorException, IOException {
+            throws UnsupportedFlavorException, IOException {
 
         if (flavor.equals(imageEntryFlavor)) {
             return entry;

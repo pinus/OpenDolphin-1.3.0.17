@@ -13,6 +13,7 @@ import open.dolphin.impl.scheam.shapeholder.PolygonHolder;
 /**
  * State，FillMode に合わせて Prevew を表示する.
  * ボタンになっていて，押すと ColorChooser を起動する.
+ *
  * @author pns
  */
 public class PreviewPane extends StackPane {
@@ -25,41 +26,52 @@ public class PreviewPane extends StackPane {
 
         // サンプル表示用 Holder を用意
         final Shape penSample = ShapeIcon.getOpenPath();
-        penSample.setScaleX(2); penSample.setScaleY(2);
+        penSample.setScaleX(2);
+        penSample.setScaleY(2);
         penSample.strokeWidthProperty().bind(properties.lineWidthProperty().divide(2.0));
         penSample.strokeProperty().bind(properties.lineColorProperty());
 
         final Shape lineSample = ShapeIcon.getLine();
-        lineSample.setScaleX(2); lineSample.setScaleY(2);
+        lineSample.setScaleX(2);
+        lineSample.setScaleY(2);
         lineSample.strokeWidthProperty().bind(properties.lineWidthProperty().divide(2.0));
         lineSample.strokeProperty().bind(properties.lineColorProperty());
 
         final SchemaLayer ovalSample = new SchemaLayer();
-        ovalSample.setWidth(HEIGHT); ovalSample.setHeight(HEIGHT);
+        ovalSample.setWidth(HEIGHT);
+        ovalSample.setHeight(HEIGHT);
         OvalHolder ovalHolder = new OvalHolder();
-        ovalHolder.setStartX(INSETS); ovalHolder.setStartY(INSETS);
-        ovalHolder.setEndX(HEIGHT-INSETS); ovalHolder.setEndY(HEIGHT-INSETS);
+        ovalHolder.setStartX(INSETS);
+        ovalHolder.setStartY(INSETS);
+        ovalHolder.setEndX(HEIGHT - INSETS);
+        ovalHolder.setEndY(HEIGHT - INSETS);
         ovalSample.setHolder(ovalHolder);
         ovalHolder.bind();
         ovalSample.draw();
 
         final SchemaLayer rectangleSample = new SchemaLayer();
-        rectangleSample.setWidth(HEIGHT); rectangleSample.setHeight(HEIGHT);
+        rectangleSample.setWidth(HEIGHT);
+        rectangleSample.setHeight(HEIGHT);
         PolygonHolder rectangleHolder = new PolygonHolder();
-        rectangleHolder.addPathX(INSETS); rectangleHolder.addPathY(INSETS);
-        rectangleHolder.addPathX(HEIGHT-INSETS); rectangleHolder.addPathY(INSETS);
-        rectangleHolder.addPathX(HEIGHT-INSETS); rectangleHolder.addPathY(HEIGHT-INSETS);
-        rectangleHolder.addPathX(INSETS); rectangleHolder.addPathY(HEIGHT-INSETS);
+        rectangleHolder.addPathX(INSETS);
+        rectangleHolder.addPathY(INSETS);
+        rectangleHolder.addPathX(HEIGHT - INSETS);
+        rectangleHolder.addPathY(INSETS);
+        rectangleHolder.addPathX(HEIGHT - INSETS);
+        rectangleHolder.addPathY(HEIGHT - INSETS);
+        rectangleHolder.addPathX(INSETS);
+        rectangleHolder.addPathY(HEIGHT - INSETS);
         rectangleSample.setHolder(rectangleHolder);
         rectangleHolder.bind();
         rectangleSample.draw();
 
         final SchemaLayer polygonSample = new SchemaLayer();
-        polygonSample.setWidth(HEIGHT); polygonSample.setHeight(HEIGHT);
+        polygonSample.setWidth(HEIGHT);
+        polygonSample.setHeight(HEIGHT);
         final PolygonHolder polygonHolder = new PolygonHolder();
-        ShapeIcon.getPolygonPath(HEIGHT-INSETS*2, HEIGHT-INSETS*2).forEach(path -> {
-            polygonHolder.addPathX(path.getX()+INSETS);
-            polygonHolder.addPathY(path.getY()+INSETS);
+        ShapeIcon.getPolygonPath(HEIGHT - INSETS * 2, HEIGHT - INSETS * 2).forEach(path -> {
+            polygonHolder.addPathX(path.getX() + INSETS);
+            polygonHolder.addPathY(path.getY() + INSETS);
         });
         polygonSample.setHolder(polygonHolder);
         polygonHolder.bind();
@@ -80,18 +92,19 @@ public class PreviewPane extends StackPane {
         // preview button の graphic を関連する properties に bind
         button.graphicProperty().bind(new ObjectBinding<Node>() {
 
-            { super.bind(properties.lineWidthProperty(),
-                    properties.lineColorProperty(),
-                    properties.fillColorProperty(),
-                    properties.fillBlurProperty(),
-                    properties.fillModeProperty(),
-                    properties.previewStateProperty());
+            {
+                super.bind(properties.lineWidthProperty(),
+                        properties.lineColorProperty(),
+                        properties.fillColorProperty(),
+                        properties.fillBlurProperty(),
+                        properties.fillModeProperty(),
+                        properties.previewStateProperty());
             }
 
             @Override
             protected Node computeValue() {
 
-                switch(properties.getPreviewState()) {
+                switch (properties.getPreviewState()) {
                     case Pen:
                         return penSample;
                     case Line:

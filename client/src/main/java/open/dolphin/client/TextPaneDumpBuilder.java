@@ -10,8 +10,7 @@ import java.io.Writer;
 import java.util.Enumeration;
 
 /**
- *
- * @author  kazm
+ * @author kazm
  */
 public class TextPaneDumpBuilder {
 
@@ -23,7 +22,9 @@ public class TextPaneDumpBuilder {
     static final int TT_ICON = 3;
     static final int TT_COMPONENT = 4;
 
-    /** Creates a new instance of TextPaneDumpBuilder */
+    /**
+     * Creates a new instance of TextPaneDumpBuilder
+     */
     public TextPaneDumpBuilder() {
     }
 
@@ -34,33 +35,36 @@ public class TextPaneDumpBuilder {
 
         try {
             //w.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-            javax.swing.text.Element root = (javax.swing.text.Element) doc.getDefaultRootElement();
+            javax.swing.text.Element root = doc.getDefaultRootElement();
             writeElemnt(root, w);
 
             w.flush();
             w.close();
 
-        } catch (IOException e) { System.out.println("TextPaneDumpBuilder.java: " + e);
-        } catch (BadLocationException e) {System.out.println("TextPaneDumpBuilder.java: " + e); }
+        } catch (IOException e) {
+            System.out.println("TextPaneDumpBuilder.java: " + e);
+        } catch (BadLocationException e) {
+            System.out.println("TextPaneDumpBuilder.java: " + e);
+        }
 
         return sw.toString();
     }
 
     String attsDump(AttributeSet atts) {
         if (atts != null) {
-            StringBuffer retBuffer = new StringBuffer();
+            StringBuilder retBuilder = new StringBuilder();
             Enumeration names = atts.getAttributeNames();
             while (names.hasMoreElements()) {
                 Object nextName = names.nextElement();
                 if (nextName != StyleConstants.ResolveAttribute) {
-                    retBuffer.append(" ");
-                    retBuffer.append(nextName);
-                    retBuffer.append("=");
+                    retBuilder.append(" ");
+                    retBuilder.append(nextName);
+                    retBuilder.append("=");
                     Object attObject = atts.getAttribute(nextName);
-                    retBuffer.append(addQuote(attObject.toString()));
+                    retBuilder.append(addQuote(attObject.toString()));
                 }
             }
-            return retBuffer.toString();
+            return retBuilder.toString();
         }
         return null;
     }
@@ -79,7 +83,7 @@ public class TextPaneDumpBuilder {
 
         if (atts != null) {
 
-            StringBuffer retBuffer = new StringBuffer();
+            StringBuilder retBuilder = new StringBuilder();
 
             // 全ての属性を列挙する
             Enumeration names = atts.getAttributeNames();
@@ -95,20 +99,20 @@ public class TextPaneDumpBuilder {
                         continue;
                     }
 
-                    retBuffer.append(" ");
-                    retBuffer.append(nextName);
-                    retBuffer.append("=");
+                    retBuilder.append(" ");
+                    retBuilder.append(nextName);
+                    retBuilder.append("=");
 
                     // foreground 属性の場合は再構築の際に利用しやすい形に分解する
                     if (nextName.toString().equals("foreground")) {
                         Color c = (Color) atts.getAttribute(StyleConstants.Foreground);
-                        StringBuffer buf = new StringBuffer();
-                        buf.append(String.valueOf(c.getRed()));
-                        buf.append(",");
-                        buf.append(String.valueOf(c.getGreen()));
-                        buf.append(",");
-                        buf.append(String.valueOf(c.getBlue()));
-                        retBuffer.append(addQuote(buf.toString()));
+                        StringBuilder builder = new StringBuilder();
+                        builder.append(c.getRed());
+                        builder.append(",");
+                        builder.append(c.getGreen());
+                        builder.append(",");
+                        builder.append(c.getBlue());
+                        retBuilder.append(addQuote(builder.toString()));
 
                     } else {
                         Object attObject = atts.getAttribute(nextName);
@@ -116,16 +120,16 @@ public class TextPaneDumpBuilder {
                         // スタンプ及びシェーマの判定をする
                         if (attObject instanceof JLabel) {
                             String str = ((JLabel) attObject).getText();
-                            retBuffer.append(addQuote(str));
+                            retBuilder.append(addQuote(str));
 
                         } else {
                             // それ以外の属性についてはそのまま記録する
-                            retBuffer.append(addQuote(attObject.toString()));
+                            retBuilder.append(addQuote(attObject.toString()));
                         }
                     }
                 }
             }
-            asString = retBuffer.toString();
+            asString = retBuilder.toString();
         }
 
         writer.write("<");
@@ -250,19 +254,19 @@ public class TextPaneDumpBuilder {
         }
 
         if (atts != null) {
-            StringBuffer retBuffer = new StringBuffer();
+            StringBuilder retBuilder = new StringBuilder();
             Enumeration names = atts.getAttributeNames();
             while (names.hasMoreElements()) {
                 Object nextName = names.nextElement();
                 if (nextName != StyleConstants.ResolveAttribute) {
-                    retBuffer.append(" ");
-                    retBuffer.append(nextName);
-                    retBuffer.append("=");
+                    retBuilder.append(" ");
+                    retBuilder.append(nextName);
+                    retBuilder.append("=");
                     Object attObject = atts.getAttribute(nextName);
-                    retBuffer.append(addQuote(attObject.toString()));
+                    retBuilder.append(addQuote(attObject.toString()));
                 }
             }
-            w.write(retBuffer.toString());
+            w.write(retBuilder.toString());
         }
 
         w.write(">\n");
@@ -284,30 +288,30 @@ public class TextPaneDumpBuilder {
         w.write(addQuote(end));
 
         if (atts != null) {
-            StringBuffer retBuffer = new StringBuffer();
+            StringBuilder retBuilder = new StringBuilder();
             Enumeration names = atts.getAttributeNames();
             while (names.hasMoreElements()) {
                 Object nextName = names.nextElement();
                 if (nextName != StyleConstants.ResolveAttribute) {
-                    retBuffer.append(" ");
-                    retBuffer.append(nextName);
-                    retBuffer.append("=");
+                    retBuilder.append(" ");
+                    retBuilder.append(nextName);
+                    retBuilder.append("=");
                     if (nextName.toString().equals("foreground")) {
-                        StringBuffer buf = new StringBuffer();
+                        StringBuilder builder = new StringBuilder();
                         Color c = (Color) atts.getAttribute(StyleConstants.Foreground);
-                        buf.append(String.valueOf(c.getRed()));
-                        buf.append(",");
-                        buf.append(String.valueOf(c.getGreen()));
-                        buf.append(",");
-                        buf.append(String.valueOf(c.getBlue()));
-                        retBuffer.append(addQuote(buf.toString()));
+                        builder.append(c.getRed());
+                        builder.append(",");
+                        builder.append(c.getGreen());
+                        builder.append(",");
+                        builder.append(c.getBlue());
+                        retBuilder.append(addQuote(builder.toString()));
                     } else {
                         Object attObject = atts.getAttribute(nextName);
-                        retBuffer.append(addQuote(attObject.toString()));
+                        retBuilder.append(addQuote(attObject.toString()));
                     }
                 }
             }
-            w.write(retBuffer.toString());
+            w.write(retBuilder.toString());
         }
         w.write(">\n");
 
@@ -344,7 +348,7 @@ public class TextPaneDumpBuilder {
         w.write(addQuote(end));
 
         if (atts != null) {
-            StringBuffer retBuffer = new StringBuffer();
+            StringBuilder retBuilder = new StringBuilder();
             Enumeration names = atts.getAttributeNames();
             while (names.hasMoreElements()) {
                 Object nextName = names.nextElement();
@@ -352,19 +356,19 @@ public class TextPaneDumpBuilder {
                     if (nextName.toString().startsWith("$")) {
                         continue;
                     }
-                    retBuffer.append(" ");
-                    retBuffer.append(nextName);
-                    retBuffer.append("=");
+                    retBuilder.append(" ");
+                    retBuilder.append(nextName);
+                    retBuilder.append("=");
                     if (nextName.toString().equals("component")) {
                         JLabel l = (JLabel) atts.getAttribute(nextName);
-                        retBuffer.append(addQuote(l.getText()));
+                        retBuilder.append(addQuote(l.getText()));
                     } else {
                         Object attObject = atts.getAttribute(nextName);
-                        retBuffer.append(addQuote(attObject.toString()));
+                        retBuilder.append(addQuote(attObject.toString()));
                     }
                 }
             }
-            w.write(retBuffer.toString());
+            w.write(retBuilder.toString());
         }
         w.write(">\n");
     }
@@ -425,18 +429,10 @@ public class TextPaneDumpBuilder {
     }
 
     String addQuote(String str) {
-        StringBuffer buf = new StringBuffer();
-        buf.append("\"");
-        buf.append(str);
-        buf.append("\"");
-        return buf.toString();
+        return "\"" + str + "\"";
     }
 
     String addQuote(int str) {
-        StringBuffer buf = new StringBuffer();
-        buf.append("\"");
-        buf.append(str);
-        buf.append("\"");
-        return buf.toString();
+        return "\"" + str + "\"";
     }
 }

@@ -30,7 +30,8 @@ import java.util.*;
  */
 public class DocumentHistory implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.文書履歴;
-
+    // context
+    private final ChartImpl context;
     // 文書履歴テーブル
     private ObjectReflectTableModel<DocInfoModel> tableModel;
     //private DocumentHistoryView view;
@@ -43,8 +44,6 @@ public class DocumentHistory implements IInspector {
     private DocumentHistoryUpdateListener updateListener;
     // DocumentHistorySelection リスナ
     private DocumentHistorySelectionListener selectionListener;
-    // context
-    private final ChartImpl context;
     // 選択された文書情報(DocInfo)の配列
     private DocInfoModel[] selectedHistories;
     // 抽出開始日
@@ -477,6 +476,63 @@ public class DocumentHistory implements IInspector {
     }
 
     /**
+     * 検索パラメータの抽出期間を返す.
+     *
+     * @return 抽出期間
+     */
+    public Date getExtractionPeriod() {
+        return extractionPeriod;
+    }
+
+    /**
+     * 検索パラメータの抽出期間を設定する.
+     *
+     * @param extractionPeriod 抽出期間
+     */
+    public void setExtractionPeriod(Date extractionPeriod) {
+        this.extractionPeriod = extractionPeriod;
+        update();
+    }
+
+    /**
+     * 文書履歴表示の昇順/降順を返す.
+     *
+     * @return 昇順の時 true
+     */
+    public boolean isAscending() {
+        return ascending;
+    }
+
+    /**
+     * 文書履歴表示の昇順/降順を設定する.
+     *
+     * @param ascending 昇順の時 true
+     */
+    public void setAscending(boolean ascending) {
+        this.ascending = ascending;
+        update();
+    }
+
+    /**
+     * 修正版を表示するかどうかを返す.
+     *
+     * @return 表示する時 true
+     */
+    public boolean isShowModified() {
+        return showModified;
+    }
+
+    /**
+     * 修正版を表示するかどうかを設定する.
+     *
+     * @param showModifyed 表示する時 true
+     */
+    public void setShowModified(boolean showModifyed) {
+        this.showModified = showModifyed;
+        update();
+    }
+
+    /**
      * キーボード入力をブロックするリスナクラス.
      */
     private class BlockKeyListener implements KeyListener {
@@ -494,63 +550,6 @@ public class DocumentHistory implements IInspector {
         public void keyReleased(KeyEvent e) {
             e.consume();
         }
-    }
-
-    /**
-     * 検索パラメータの抽出期間を設定する.
-     *
-     * @param extractionPeriod 抽出期間
-     */
-    public void setExtractionPeriod(Date extractionPeriod) {
-        this.extractionPeriod = extractionPeriod;
-        update();
-    }
-
-    /**
-     * 検索パラメータの抽出期間を返す.
-     *
-     * @return 抽出期間
-     */
-    public Date getExtractionPeriod() {
-        return extractionPeriod;
-    }
-
-    /**
-     * 文書履歴表示の昇順/降順を設定する.
-     *
-     * @param ascending 昇順の時 true
-     */
-    public void setAscending(boolean ascending) {
-        this.ascending = ascending;
-        update();
-    }
-
-    /**
-     * 文書履歴表示の昇順/降順を返す.
-     *
-     * @return 昇順の時 true
-     */
-    public boolean isAscending() {
-        return ascending;
-    }
-
-    /**
-     * 修正版を表示するかどうかを設定する.
-     *
-     * @param showModifyed 表示する時 true
-     */
-    public void setShowModified(boolean showModifyed) {
-        this.showModified = showModifyed;
-        update();
-    }
-
-    /**
-     * 修正版を表示するかどうかを返す.
-     *
-     * @return 表示する時 true
-     */
-    public boolean isShowModified() {
-        return showModified;
     }
 
     /**

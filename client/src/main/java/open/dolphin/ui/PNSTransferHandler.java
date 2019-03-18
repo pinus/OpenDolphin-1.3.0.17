@@ -8,16 +8,18 @@ import java.awt.image.BufferedImage;
 
 /**
  * DragImage の utility 付きの TransferHandler.
+ *
  * @author pns
  */
 public class PNSTransferHandler extends TransferHandler {
     private static final long serialVersionUID = 1L;
 
     private final boolean isWin = ClientContext.isWin();
-    private final Point offset = new Point(0,0);
+    private final Point offset = new Point(0, 0);
 
     /**
      * JLabel から DragImage を作る.
+     *
      * @param label
      */
     protected void setDragImage(JLabel label) {
@@ -31,8 +33,9 @@ public class PNSTransferHandler extends TransferHandler {
 
     /**
      * JLabel から DragImage を作る.
+     *
      * @param label
-     * @param clip true の場合，文字幅に合わせて clipping する
+     * @param clip  true の場合，文字幅に合わせて clipping する
      */
     protected void setDragImage(JLabel label, boolean clip) {
         int width = label.getWidth();
@@ -57,21 +60,22 @@ public class PNSTransferHandler extends TransferHandler {
 
         // グレーの枠を付ける
         g.setColor(Color.gray);
-        g.drawRect(0, 0, width-1, height-1);
+        g.drawRect(0, 0, width - 1, height - 1);
 
         setDragImage(image);
     }
 
     /**
      * DragImageOffset を設定してから setDragImage する.
+     *
      * @param image
      */
     @Override
     public void setDragImage(Image image) {
         if (offset.x == 0 && offset.y == 0) {
             // センタリング
-            offset.x = -image.getWidth(null)/2;
-            offset.y = -image.getHeight(null)/2;
+            offset.x = -image.getWidth(null) / 2;
+            offset.y = -image.getHeight(null) / 2;
         }
         // windows では offset の方向が逆
         if (isWin) {

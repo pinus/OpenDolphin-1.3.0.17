@@ -11,7 +11,7 @@ import javax.swing.*;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
-public interface ChartDocument  {
+public interface ChartDocument {
 
     String getTitle();
 
@@ -27,15 +27,20 @@ public interface ChartDocument  {
 
     JPanel getUI();
 
-    default void start() {}
+    default void start() {
+    }
 
-    default void stop() {}
+    default void stop() {
+    }
 
-    default void enter() {}
+    default void enter() {
+    }
 
-    default void save() {}
+    default void save() {
+    }
 
-    default void print() {}
+    default void print() {
+    }
 
     boolean isDirty();
 

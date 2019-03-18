@@ -21,10 +21,9 @@ import java.io.IOException;
 /**
  * StampTreeTransferHandler.<br>
  * {@code getVisualRepresentation(Transferable t) } 対応.
-
- * @author Minagawa,Kazushi
- * @author pns
  *
+ * @author Minagawa, Kazushi
+ * @author pns
  */
 public class StampTreeTransferHandler extends PNSTransferHandler {
     private static final long serialVersionUID = 1205897976539749194L;
@@ -43,23 +42,23 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
 
     // Drop する target の path
     private TreePath targetPath;
-
-    // target の中に入れるか，前に挿入するか，後ろに挿入するかの情報（StampTreeDropTargetListener でセットする）
-    public enum Insert { AFTER, BEFORE, INTO_FOLDER };
     private Insert insertPosition;
 
     public void setTargetPath(TreePath t) {
         targetPath = t;
     }
+
     public void setPosition(Insert p) {
         insertPosition = p;
     }
+
     public Insert getInsertPosition() {
         return insertPosition;
     }
 
     /**
      * 選択されたノードでDragを開始する.
+     *
      * @return
      */
     @Override
@@ -73,7 +72,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
     public int getSourceActions(JComponent c) {
         insertPosition = null;
 
-        JTree tree = (JTree)c;
+        JTree tree = (JTree) c;
         TreePath path = tree.getSelectionPath();
 
         if (path != null) {
@@ -96,6 +95,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
 
     /**
      * DropされたFlavorをStampTreeにインポートする.
+     *
      * @param c
      * @param tr
      * @return
@@ -157,17 +157,19 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
                         if (sourceNode.getParent() == newParent && insertPosition != Insert.INTO_FOLDER) {
                             int sourceRow = tree.getRowForPath(new TreePath(sourceNode.getPath()));
                             int targetRow = tree.getRowForPath(targetPath);
-                            if (sourceRow < targetRow) { index--; }
+                            if (sourceRow < targetRow) {
+                                index--;
+                            }
                         }
 
-                        switch(insertPosition) {
+                        switch (insertPosition) {
                             case BEFORE:
                                 model.removeNodeFromParent(sourceNode);
                                 model.insertNodeInto(sourceNode, newParent, index);
                                 break;
                             case AFTER:
                                 model.removeNodeFromParent(sourceNode);
-                                model.insertNodeInto(sourceNode, newParent, index+1);
+                                model.insertNodeInto(sourceNode, newParent, index + 1);
                                 break;
                             case INTO_FOLDER: //最後の子として挿入
                                 model.removeNodeFromParent(sourceNode);
@@ -178,7 +180,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
                     }
                     return true;
 
-                // KartePaneからDropされたオーダをインポートする
+                    // KartePaneからDropされたオーダをインポートする
                 } else if (tr.isDataFlavorSupported(orderFlavor)) {
 
                     OrderList list = (OrderList) tr.getTransferData(OrderListTransferable.orderListFlavor);
@@ -188,7 +190,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
                     if (droppedStamp.getModuleInfo().getEntity().equals(targetEntity)) {
                         return tree.addStamp(droppedStamp, targetNode);
 
-                    // パス Tree の場合
+                        // パス Tree の場合
                     } else if (targetEntity.equals(IInfoModel.ENTITY_PATH)) {
                         if (targetNode == null) {
                             targetNode = (StampTreeNode) tree.getModel().getRoot();
@@ -200,7 +202,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
                         return tree.addStamp(droppedStamp, null);
                     }
 
-                // KartePaneからDropされたテキストをインポートする
+                    // KartePaneからDropされたテキストをインポートする
                 } else if (tr.isDataFlavorSupported(stringFlavor)) {
 
                     String text = (String) tr.getTransferData(DataFlavor.stringFlavor);
@@ -210,7 +212,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
                         return tree.addTextStamp(text, null);
                     }
 
-                // DiagnosisEditorからDropされた病名をインポートする
+                    // DiagnosisEditorからDropされた病名をインポートする
                 } else if (tr.isDataFlavorSupported(infoModelFlavor)) {
 
                     RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) tr.getTransferData(InfoModelTransferable.infoModelFlavor);
@@ -224,7 +226,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
                 }
 
             } catch (IOException | UnsupportedFlavorException ex) {
-                System.out.println("StampTreeTransferHandler.java: "+ ex);
+                System.out.println("StampTreeTransferHandler.java: " + ex);
                 ex.printStackTrace(System.err);
             }
         }
@@ -233,6 +235,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
 
     /**
      * DnD後，Dragしたノードを元のStamptreeから削除する.
+     *
      * @param c
      */
     @Override
@@ -241,6 +244,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
 
     /**
      * インポート可能かどうかを返す.
+     *
      * @param c
      * @param flavors
      * @return
@@ -248,17 +252,30 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
     @Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {
 
-        boolean isLocked = ((StampTree)c).getStampBox().isLocked();
+        boolean isLocked = ((StampTree) c).getStampBox().isLocked();
         return isFlavorMatched(flavors) && !isLocked && targetPath != null;
     }
 
     private boolean isFlavorMatched(DataFlavor[] flavors) {
         for (DataFlavor flavor : flavors) {
-            if (stampTreeNodeFlavor.equals(flavor)) { return true; }
-            if (orderFlavor.equals(flavor)) { return true; }
-            if (stringFlavor.equals(flavor)) { return true; }
-            if (infoModelFlavor.equals(flavor)) { return true; }
+            if (stampTreeNodeFlavor.equals(flavor)) {
+                return true;
+            }
+            if (orderFlavor.equals(flavor)) {
+                return true;
+            }
+            if (stringFlavor.equals(flavor)) {
+                return true;
+            }
+            if (infoModelFlavor.equals(flavor)) {
+                return true;
+            }
         }
         return false;
+    }
+
+    // target の中に入れるか，前に挿入するか，後ろに挿入するかの情報（StampTreeDropTargetListener でセットする）
+    public enum Insert {
+        AFTER, BEFORE, INTO_FOLDER
     }
 }

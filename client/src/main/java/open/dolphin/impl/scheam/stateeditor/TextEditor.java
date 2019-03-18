@@ -14,6 +14,7 @@ import open.dolphin.impl.scheam.shapeholder.TextHolder;
 
 /**
  * Text 入力用の StateEditor.
+ *
  * @author pns
  */
 public class TextEditor extends StateEditorBase {
@@ -78,7 +79,7 @@ public class TextEditor extends StateEditorBase {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch(e.getCode()) {
+        switch (e.getCode()) {
             case ESCAPE:
                 end();
                 break;

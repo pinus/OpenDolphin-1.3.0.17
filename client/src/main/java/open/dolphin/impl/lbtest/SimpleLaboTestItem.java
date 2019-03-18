@@ -9,7 +9,7 @@ package open.dolphin.impl.lbtest;
 /**
  * SimpleLaboTestItem
  *
- * @author  Kazushi Minagawa
+ * @author Kazushi Minagawa
  */
 public class SimpleLaboTestItem implements Comparable {
 
@@ -30,7 +30,9 @@ public class SimpleLaboTestItem implements Comparable {
     private String extRef;
 
 
-    /** Creates a new instance of SimpleLaboTestItem */
+    /**
+     * Creates a new instance of SimpleLaboTestItem
+     */
     public SimpleLaboTestItem() {
     }
 
@@ -154,15 +156,14 @@ public class SimpleLaboTestItem implements Comparable {
         extRef = val;
     }
 
-	public int compareTo(Object o) {
-        SimpleLaboTestItem other = (SimpleLaboTestItem)o;
+    public int compareTo(Object o) {
+        SimpleLaboTestItem other = (SimpleLaboTestItem) o;
         return itemCode.compareTo(other.getItemCode());
     }
 
     public boolean isTest(LaboTestItemID testID) {
-        return ( itemCodeID.equals(testID.getItemCodeID()) && itemCode.equals(testID.getItemCode()) )
-               ? true
-               : false;
+        return (itemCodeID.equals(testID.getItemCodeID()) &&
+                itemCode.equals(testID.getItemCode()));
     }
 
     public String toString() {

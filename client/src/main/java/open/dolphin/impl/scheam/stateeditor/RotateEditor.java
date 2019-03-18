@@ -17,6 +17,7 @@ import open.dolphin.impl.scheam.constant.ShapeIcon;
 /**
  * canvas全体を 右に 90度回転する StateEditor.
  * Option キーで左 90度回転.
+ *
  * @author pns
  */
 public class RotateEditor extends StateEditorBase {
@@ -37,11 +38,11 @@ public class RotateEditor extends StateEditorBase {
         SnapshotParameters parameters = new SnapshotParameters();
         parameters.setFill(Color.TRANSPARENT);
         Image img = ShapeIcon.getRotate().snapshot(parameters, null);
-        cursor = new ImageCursor(img, img.getWidth()/2, img.getHeight()/2);
+        cursor = new ImageCursor(img, img.getWidth() / 2, img.getHeight() / 2);
         Transform t = Transform.scale(-1, 1);
         parameters.setTransform(t);
         img = ShapeIcon.getRotate().snapshot(parameters, null);
-        cursorReverse = new ImageCursor(img, img.getWidth()/2, img.getHeight()/2);
+        cursorReverse = new ImageCursor(img, img.getWidth() / 2, img.getHeight() / 2);
     }
 
     @Override
@@ -78,9 +79,9 @@ public class RotateEditor extends StateEditorBase {
     public void mouseUp(MouseEvent e) {
         double r;
         if (e.isAltDown()) {
-            r = -Math.PI/2;
+            r = -Math.PI / 2;
         } else {
-            r = Math.PI/2;
+            r = Math.PI / 2;
         }
         rotateLayers(r);
         // UndoManager に操作を登録
@@ -89,6 +90,7 @@ public class RotateEditor extends StateEditorBase {
 
     /**
      * 各 Layer を 90度回転する.
+     *
      * @param dx
      * @param dy
      */

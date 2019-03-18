@@ -12,6 +12,7 @@ import java.util.prefs.Preferences;
 
 /**
  * Miscellaneous Setting Panel.
+ *
  * @author pns
  */
 public class MiscSettingPanel extends AbstractSettingPanel {
@@ -59,23 +60,23 @@ public class MiscSettingPanel extends AbstractSettingPanel {
 
         // カルテスクロール速度
         JLabel label = new JLabel("カルテ :", SwingConstants.RIGHT);
-        JPanel slider = GUIFactory.createSliderPanel(1,32, 15);
+        JPanel slider = GUIFactory.createSliderPanel(1, 32, 15);
         scrollUnitKarteSpinner = (JSpinner) slider.getComponent(1);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
         gbb.add(slider, 1, row, 1, 1, GridBagConstraints.WEST);
-        row ++;
+        row++;
 
         // テーブルのスクロール速度
         label = new JLabel("テーブル :", SwingConstants.RIGHT);
-        slider = GUIFactory.createSliderPanel(1,32, 15);
+        slider = GUIFactory.createSliderPanel(1, 32, 15);
         scrollUnitTableSpinner = (JSpinner) slider.getComponent(1);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
         gbb.add(slider, 1, row, 1, 1, GridBagConstraints.WEST);
-        row ++;
+        row++;
 
         // スタンプのスクロール速度
         label = new JLabel("スタンプ :", SwingConstants.RIGHT);
-        slider = GUIFactory.createSliderPanel(1,32, 15);
+        slider = GUIFactory.createSliderPanel(1, 32, 15);
         scrollUnitStampSpinner = (JSpinner) slider.getComponent(1);
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
         gbb.add(slider, 1, row, 1, 1, GridBagConstraints.WEST);
@@ -86,7 +87,7 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         //scrollUnitPanel.add(Box.createVerticalGlue());
 
         // コンソールのログ出力
-        redirectBox = new JCheckBox ("コンソールをファイルに出力する [設定反映に再起動が必要]");
+        redirectBox = new JCheckBox("コンソールをファイルに出力する [設定反映に再起動が必要]");
 
         gbb = new GridBagBuilder("コンソールのログ出力");
         gbb.add(redirectBox, 0, 1, 1, 1, GridBagConstraints.EAST);

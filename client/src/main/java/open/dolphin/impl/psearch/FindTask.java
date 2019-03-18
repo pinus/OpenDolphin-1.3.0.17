@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * 検索タスクの実務をするクラス
+ *
  * @author pns
  */
 class FindTask extends Task<Collection> {
@@ -23,12 +24,12 @@ class FindTask extends Task<Collection> {
     private final PatientSearchPanel view;
     private final ObjectReflectTableModel<PatientModel> tableModel;
     private final PatientSearchSpec spec;
-    private List<PatientModel> result;
-
     private final Logger logger = ClientContext.getBootLogger();
+    private List<PatientModel> result;
 
     /**
      * メモ検索 or 全文検索のコンストラクタ
+     *
      * @param view
      * @param message
      * @param note
@@ -66,8 +67,8 @@ class FindTask extends Task<Collection> {
         // 検索結果が 0 だったら，full text search に切り替えることにする
         if (pm.isEmpty() && (
                 spec.getCode() == PatientSearchSpec.KANA_SEARCH
-                || spec.getCode() == PatientSearchSpec.ROMAN_SEARCH
-                || spec.getCode() == PatientSearchSpec.NAME_SEARCH)) {
+                        || spec.getCode() == PatientSearchSpec.ROMAN_SEARCH
+                        || spec.getCode() == PatientSearchSpec.NAME_SEARCH)) {
 
             spec.setCode(PatientSearchSpec.FULL_TEXT_SEARCH);
             spec.setSearchText(spec.getName());
@@ -103,7 +104,9 @@ class FindTask extends Task<Collection> {
 
     private void unfinished() {
         // 途中経過の書き込み
-        if (tableModel.getObjectCount() == 0) { setResult(); }
+        if (tableModel.getObjectCount() == 0) {
+            setResult();
+        }
     }
 
     /**

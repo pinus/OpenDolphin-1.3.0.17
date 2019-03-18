@@ -17,8 +17,8 @@ import java.util.HashMap;
  * <ul>
  * <li>BindBidirectional できる selectedItemProperty を持つ.</li>
  * <li>removeFromGroup(item) で ToggleGroup から外すこともできる.
- *     以下のようにして外した ToggleButton を Button のように扱うことができる.
- *     <pre>
+ * 以下のようにして外した ToggleButton を Button のように扱うことができる.
+ * <pre>
  *     toggleSet.removeFromGroup(item);
  *     toggleSet.getButton(item).setOnMouseClicked(e -> {
  *         -- process --
@@ -26,28 +26,44 @@ import java.util.HashMap;
  *     });
  *     </pre></li>
  * <li>アイコンはデフォルトでは Label. css で操作できるように setStyleClass("button-cell")してある.
- *     setCellFactory(Callback) でカスタマイズすることもできる.</li>
+ * setCellFactory(Callback) でカスタマイズすることもできる.</li>
  * </ul>
  *
- * @author pns
  * @param <T>
+ * @author pns
  */
 public class PnsToggleSet<T> extends PnsFlowPane {
-    /** ToggleButton の ToggleGroup */
+    /**
+     * ToggleButton の ToggleGroup
+     */
     private final ToggleGroup group = new ToggleGroup();
-    /** (T)item を入れる配列 */
+    /**
+     * (T)item を入れる配列
+     */
     private final ObservableList<T> items = FXCollections.observableArrayList();
-    /** BindBidirectinal 可能な selectedIndexProperty */
+    /**
+     * BindBidirectinal 可能な selectedIndexProperty
+     */
     private final ObjectProperty<Integer> selectedIndexProperty = new SimpleObjectProperty<>();
-    /** BindBidirectinal 可能な selectedItemProperty */
+    /**
+     * BindBidirectinal 可能な selectedItemProperty
+     */
     private final ObjectProperty<T> selectedItemProperty = new SimpleObjectProperty<>();
-    /** 使用する SingleSelectionModel. 変更不可 */
+    /**
+     * 使用する SingleSelectionModel. 変更不可
+     */
     private final SingleSelectionModel<T> selectionModel = new ToggleSetSelectionModel();
-    /** (T)item をキーとして対応する Toggle を入れた Map */
+    /**
+     * (T)item をキーとして対応する Toggle を入れた Map
+     */
     private final HashMap<T, ToggleButton> toggleMap = new HashMap<>();
-    /** Toggle から item を逆引きする Map */
+    /**
+     * Toggle から item を逆引きする Map
+     */
     private final HashMap<ToggleButton, T> itemMap = new HashMap<>();
-    /** button cell のアイコンを作る cell factory */
+    /**
+     * button cell のアイコンを作る cell factory
+     */
     private Callback<T, Node> cellFactory = new DefaultCellFactory();
 
     public PnsToggleSet() {
@@ -55,7 +71,7 @@ public class PnsToggleSet<T> extends PnsFlowPane {
 
         // items 追加時の処理
         items.addListener((ListChangeListener.Change<? extends T> c) -> {
-            while(c.next()) {
+            while (c.next()) {
                 // 加わった item から Toggle を作成
                 c.getAddedSubList().forEach(item -> {
                     ToggleButton toggle = new ToggleButton();
@@ -106,36 +122,46 @@ public class PnsToggleSet<T> extends PnsFlowPane {
             // update button icon
             PnsToggleSet.this.updateCell(oldToggle);
             PnsToggleSet.this.updateCell(newToggle);
-       });
+        });
     }
 
     /**
      * 保持する配列データ.
+     *
      * @return
      */
-    public ObservableList<T> getItems() { return items; }
+    public ObservableList<T> getItems() {
+        return items;
+    }
 
     /**
      * 固定 width を設定するヘルパーメソッド.
+     *
      * @param w
      */
     private void setFixedWidth(ToggleButton b, double w) {
-        b.setPrefWidth(w); b.setMaxWidth(w); b.setMinWidth(w);
+        b.setPrefWidth(w);
+        b.setMaxWidth(w);
+        b.setMinWidth(w);
     }
 
     /**
      * ボタンの高さを固定する.
+     *
      * @param h
      */
     public void setAllButtonHeight(double h) {
         items.forEach(item -> {
             ToggleButton b = toggleMap.get(item);
-            b.setPrefHeight(h); b.setMinHeight(h); b.setMaxHeight(h);
+            b.setPrefHeight(h);
+            b.setMinHeight(h);
+            b.setMaxHeight(h);
         });
     }
 
     /**
      * 全ての ToggleButton の幅を一定値に指定する.
+     *
      * @param width
      */
     public void setAllButtonWidth(double width) {
@@ -144,20 +170,27 @@ public class PnsToggleSet<T> extends PnsFlowPane {
 
     /**
      * item の項目の ToggleButton の幅を指定する.
+     *
      * @param item
      * @param width
      */
-    public void setButtonWidth(T item, double width) { setFixedWidth(toggleMap.get(item), width); }
+    public void setButtonWidth(T item, double width) {
+        setFixedWidth(toggleMap.get(item), width);
+    }
 
     /**
      * item に対応するボタンを返す.
+     *
      * @param item
      * @return
      */
-    public ToggleButton getButton(T item) { return toggleMap.get(item); }
+    public ToggleButton getButton(T item) {
+        return toggleMap.get(item);
+    }
 
     /**
      * item に対応するボタンを ToggleGroup から外す.
+     *
      * @param item
      */
     public void removeFromGroup(T item) {
@@ -168,12 +201,16 @@ public class PnsToggleSet<T> extends PnsFlowPane {
 
     /**
      * 外部から cell factory を登録する.
+     *
      * @param callback
      */
-    public void setCellFactory(Callback<T, Node> callback) { cellFactory = callback; }
+    public void setCellFactory(Callback<T, Node> callback) {
+        cellFactory = callback;
+    }
 
     /**
      * ToggleButton のアイコンを更新する.
+     *
      * @param toggle
      */
     public final void updateCell(ToggleButton toggle) {
@@ -185,6 +222,7 @@ public class PnsToggleSet<T> extends PnsFlowPane {
 
     /**
      * ToggleButton のアイコンを更新する.
+     *
      * @param item
      */
     public void updateCell(T item) {
@@ -194,36 +232,51 @@ public class PnsToggleSet<T> extends PnsFlowPane {
 
     /**
      * 指定した Toggle を disable/enable する.
+     *
      * @param item
      * @param disabled
      */
-    public void setDisable(T item, boolean disabled) { toggleMap.get(item).setDisable(disabled); }
+    public void setDisable(T item, boolean disabled) {
+        toggleMap.get(item).setDisable(disabled);
+    }
 
     /**
      * 指定した Toggle に Tooltip を加える.
+     *
      * @param item
      * @param text
      */
-    public void setTooltip(T item, String text) { toggleMap.get(item).setTooltip(new Tooltip(text)); }
+    public void setTooltip(T item, String text) {
+        toggleMap.get(item).setTooltip(new Tooltip(text));
+    }
 
     /**
      * BindBidirectional 可能な selectedIndexProperty.
+     *
      * @return
      */
-    public ObjectProperty<Integer> selectedIndexProperty() { return selectedIndexProperty; }
+    public ObjectProperty<Integer> selectedIndexProperty() {
+        return selectedIndexProperty;
+    }
 
     /**
      * BindBidirectional 可能な selectedItemProperty.
+     *
      * @return
      */
-    public ObjectProperty<T> selectedItemProperty() { return selectedItemProperty; }
+    public ObjectProperty<T> selectedItemProperty() {
+        return selectedItemProperty;
+    }
 
     /**
      * SelectionModel を返す.
      * SelectionModel は変更不可.
+     *
      * @return
      */
-    public SingleSelectionModel<T> getSelectionModel() { return selectionModel; }
+    public SingleSelectionModel<T> getSelectionModel() {
+        return selectionModel;
+    }
 
     /**
      * カスタム SingleSelectionModel.
@@ -231,10 +284,14 @@ public class PnsToggleSet<T> extends PnsFlowPane {
     private class ToggleSetSelectionModel extends SingleSelectionModel<T> {
 
         @Override
-        protected T getModelItem(int index) { return items.get(index); }
+        protected T getModelItem(int index) {
+            return items.get(index);
+        }
 
         @Override
-        protected int getItemCount() { return items.size(); }
+        protected int getItemCount() {
+            return items.size();
+        }
 
     }
 

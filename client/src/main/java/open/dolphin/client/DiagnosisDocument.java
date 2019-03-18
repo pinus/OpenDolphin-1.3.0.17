@@ -42,28 +42,27 @@ import java.util.prefs.Preferences;
  */
 public final class DiagnosisDocument extends AbstractChartDocument implements PropertyChangeListener {
 
-    private static final String TITLE = "傷病名";
-
     // 傷病名テーブルのカラム番号定義
     public static final int DIAGNOSIS_COL = 0;
     public static final int CATEGORY_COL = 1;
     public static final int OUTCOME_COL = 2;
     public static final int START_DATE_COL = 3;
     public static final int END_DATE_COL = 4;
-
     // propertyChange 用
     public static final String ADD_UPDATED_LIST = "addUpdatedList";
     public static final String ADD_ADDED_LIST = "addAddedList";
-
     // DiagnosisCategory 用
     public static final String MAIN_DIAGNOSIS = "主病名";
     public static final String SUSPECTED_DIAGNOSIS = "疑い病名";
-
     // RegisteredDiagnosisModel の Status
     public static final String ORCA_RECORD = "ORCA"; // ORCA 病名
     public static final String DELETED_RECORD = "DELETED"; // 削除病名
     public static final String IKOU_BYOMEI_RECORD = "IKOU_BYOMEI"; // 移行病名
-
+    public static final Color IKOU_BYOMEI_COLOR = Color.red;
+    public static final Color DELETED_COLOR = new Color(192, 192, 192); // silver
+    public static final Color ENDED_COLOR = new Color(119, 136, 153); // light slate gray
+    public static final Color ENDED_SELECTION_COLOR = new Color(220, 220, 220);// grains boro
+    private static final String TITLE = "傷病名";
     // GUI コンポーネント定義
     private static final ImageIcon DELETE_BUTTON_IMAGE = GUIConst.ICON_REMOVE_16;
     private static final ImageIcon ADD_BUTTON_IMAGE = GUIConst.ICON_LIST_ADD_16;
@@ -71,11 +70,16 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private static final ImageIcon ORCA_VIEW_IMAGE = GUIConst.ICON_DOWNLOAD_16;
     private static final String ORCA_VIEW = "ORCA View";
     private static final Color ORCA_BACK_COLOR = ClientContext.getColor("color.CALENDAR_BACK");
-    public static final Color IKOU_BYOMEI_COLOR = Color.red;
-    public static final Color DELETED_COLOR = new Color(192, 192, 192); // silver
-    public static final Color ENDED_COLOR = new Color(119, 136, 153); // light slate gray
-    public static final Color ENDED_SELECTION_COLOR = new Color(220, 220, 220);// grains boro
-
+    // 新規に追加された傷病名リスト
+    private final List<RegisteredDiagnosisModel> addedDiagnosis = new ArrayList<>();
+    // 更新された傷病名リスト
+    private final List<RegisteredDiagnosisModel> updatedDiagnosis = new ArrayList<>();
+    // 削除された傷病名リスト
+    private final List<RegisteredDiagnosisModel> deletedDiagnosis = new ArrayList<>();
+    // 初期状態の病名リストを保存しておく（undoの際，保存している状態に戻ったかどうか判定して controlUpdate を制御する）
+    private final List<DiagnosisLiteModel> initialDiagnosis = new ArrayList<>();
+    // Logger
+    private final Logger logger = Logger.getLogger(DiagnosisDocument.class);
     private JButton addButton;                  // 新規病名エディタボタン
     private JButton updateButton;               // 既存傷病名の転帰等の更新ボタン
     private JButton deleteButton;               // 既存傷病名の削除ボタン
@@ -86,17 +90,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private JTextField countField;              // 件数フィールド
     private JTextField startDateField;
     private JTextField endDateField;
-
     // 昇順降順フラグ
     private boolean ascend;
-    // 新規に追加された傷病名リスト
-    private final List<RegisteredDiagnosisModel> addedDiagnosis = new ArrayList<>();
-    // 更新された傷病名リスト
-    private final List<RegisteredDiagnosisModel> updatedDiagnosis = new ArrayList<>();
-    // 削除された傷病名リスト
-    private final List<RegisteredDiagnosisModel> deletedDiagnosis = new ArrayList<>();
-    // 初期状態の病名リストを保存しておく（undoの際，保存している状態に戻ったかどうか判定して controlUpdate を制御する）
-    private final List<DiagnosisLiteModel> initialDiagnosis = new ArrayList<>();
     // 傷病名件数
     private int diagnosisCount;
     // 最終受診日＝今日受診している場合は今日，していないばあいは最後の受診日
@@ -109,11 +104,27 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private DiagnosisDocumentPopupMenu popup;
     // ChartImpl#close() で isValidOutcome でない時，DiagnosisDocument に戻れるようにするために使う
     private boolean isValidOutcome = true;
-    // Logger
-    private final Logger logger = Logger.getLogger(DiagnosisDocument.class);
 
     public DiagnosisDocument() {
         setTitle(TITLE);
+    }
+
+    /**
+     * JComboBox の項目から target item の index を返す.
+     *
+     * @param combo JComboBox
+     * @param item  targetItem
+     * @return index
+     */
+    public static int itemToIndex(JComboBox combo, String item) {
+        int index = 0;
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            if (item.equals(combo.getItemAt(i).toString())) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 
     /**
@@ -616,21 +627,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     }
 
     /**
-     * 追加及び更新リストをクリアする.
-     */
-    private void clearDiagnosisList() {
-
-        addedDiagnosis.clear();
-        updatedDiagnosis.clear();
-        deletedDiagnosis.clear();
-
-        // initialDiagnosis の更新
-        initialDiagnosis.clear();
-        tableModel.getObjectList().forEach(rd -> initialDiagnosis.add(new DiagnosisLiteModel(rd)));
-        controlButtons();
-    }
-
-    /**
      * デバッグ用
      */
 /*
@@ -649,6 +645,21 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         }
     }
 */
+
+    /**
+     * 追加及び更新リストをクリアする.
+     */
+    private void clearDiagnosisList() {
+
+        addedDiagnosis.clear();
+        updatedDiagnosis.clear();
+        deletedDiagnosis.clear();
+
+        // initialDiagnosis の更新
+        initialDiagnosis.clear();
+        tableModel.getObjectList().forEach(rd -> initialDiagnosis.add(new DiagnosisLiteModel(rd)));
+        controlButtons();
+    }
 
     /**
      * ボタン制御 update, delete, undo, redo.
@@ -1223,9 +1234,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
                 // ikouList に合致する病名に IKOU_BYOMEI_RECORD をマークする
                 ikouList.stream().forEach(code ->
-                    rdList.stream()
-                            .filter(rd -> rd.getDiagnosisCode().contains(code))
-                            .forEach(rd -> rd.setStatus(IKOU_BYOMEI_RECORD))
+                        rdList.stream()
+                                .filter(rd -> rd.getDiagnosisCode().contains(code))
+                                .forEach(rd -> rd.setStatus(IKOU_BYOMEI_RECORD))
                 );
                 return !ikouList.isEmpty();
             }
@@ -1293,6 +1304,114 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             }
         };
         task.execute();
+    }
+
+    public void undo() {
+        tableModel.undo();
+        setDiagnosisCount();
+    }
+
+    public void redo() {
+        tableModel.redo();
+        setDiagnosisCount();
+    }
+
+    public void selectAll() {
+        diagTable.selectAll();
+    }
+
+    /**
+     * 選択された診断を CLAIM 送信する.
+     */
+    public void sendClaim() {
+
+        // 選択された診断を CLAIM 送信する
+        RegisteredDiagnosisModel rd;
+        List<RegisteredDiagnosisModel> diagList = new ArrayList<>();
+        Date confirmed = new Date();
+        int[] rows = diagTable.getSelectedRows();
+        for (int r : rows) {
+            int row = diagTable.convertRowIndexToModel(r);
+            rd = tableModel.getObject(row);
+            rd.setKarte(getContext().getKarte());           // Karte
+            rd.setCreator(Project.getUserModel());          // Creator
+            rd.setConfirmed(confirmed);                     // 確定日
+            rd.setRecorded(confirmed);                      // 記録日
+            // 開始日=適合開始日 not-null
+            if (rd.getStarted() == null) {
+                rd.setStarted(confirmed);
+            }
+            rd.setPatientLiteModel(getContext().getPatient().patientAsLiteModel());
+            rd.setUserLiteModel(Project.getUserModel().getLiteModel());
+
+            // 転帰をチェックする
+            if (!isValidOutcome(rd)) {
+                return;
+            }
+
+            diagList.add(rd);
+        }
+
+        MainFrame parent = getContext().getFrame();
+        String message;
+        int messageType = JOptionPane.PLAIN_MESSAGE;
+
+        if (!diagList.isEmpty()) {
+            OrcaDelegater delegater = new OrcaDelegater();
+            delegater.sendDiagnoses(diagList);
+            message = diagList.size() + " 件を ORCA に送信しました";
+
+        } else {
+            message = "CLAIM 送信する病名を選択して下さい";
+            messageType = JOptionPane.ERROR_MESSAGE;
+        }
+
+        if (JSheet.isAlreadyShown(parent)) {
+            parent.toFront();
+            return;
+        }
+        JSheet.showMessageDialog(parent, message, "", messageType);
+    }
+
+    /**
+     * 選択された診断を複製する.
+     */
+    public void duplicateDiagnosis() {
+
+        int[] rows = diagTable.getSelectedRows();
+        for (int r : rows) {
+            int row = diagTable.convertRowIndexToModel(r);
+
+            RegisteredDiagnosisModel srcRd = tableModel.getObject(row);
+            RegisteredDiagnosisModel distRd = new RegisteredDiagnosisModel();
+
+            distRd.setDiagnosis(srcRd.getDiagnosis());
+            distRd.setDiagnosisCode(srcRd.getDiagnosisCode());
+            distRd.setDiagnosisCodeSystem(srcRd.getDiagnosisCodeSystem());
+
+            distRd.setCategory(srcRd.getCategory());
+            distRd.setCategoryDesc(srcRd.getCategoryDesc());
+            distRd.setCategoryCodeSys(srcRd.getCategoryCodeSys());
+
+            distRd.setOutcome(srcRd.getOutcome());
+            distRd.setOutcomeDesc(srcRd.getOutcomeDesc());
+            distRd.setOutcomeCodeSys(srcRd.getOutcomeCodeSys());
+
+            // distRd.setStartDate(srcRd.getStartDate());
+            // duplicate した場合は，startDate は LastVisit とする
+            GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
+            distRd.setStartDate(MMLDate.getDate(gc));
+
+            // endDate は消去
+            // distRd.setEndDate(srcRd.getEndDate());
+
+            tableModel.insertRow(r, distRd);
+            diagTable.getSelectionModel().setSelectionInterval(r, r);
+            addAddedList(distRd);
+
+            // DiagnosisInspector に連絡
+            diagnosisInspector.update(tableModel);
+        }
     }
 
     /**
@@ -1530,132 +1649,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                     break;
             }
             return combo;
-        }
-    }
-
-    /**
-     * JComboBox の項目から target item の index を返す.
-     *
-     * @param combo JComboBox
-     * @param item targetItem
-     * @return index
-     */
-    public static int itemToIndex(JComboBox combo, String item) {
-        int index = 0;
-        for (int i = 0; i < combo.getItemCount(); i++) {
-            if (item.equals(combo.getItemAt(i).toString())) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
-    public void undo() {
-        tableModel.undo();
-        setDiagnosisCount();
-    }
-
-    public void redo() {
-        tableModel.redo();
-        setDiagnosisCount();
-    }
-
-    public void selectAll() {
-        diagTable.selectAll();
-    }
-
-    /**
-     * 選択された診断を CLAIM 送信する.
-     */
-    public void sendClaim() {
-
-        // 選択された診断を CLAIM 送信する
-        RegisteredDiagnosisModel rd;
-        List<RegisteredDiagnosisModel> diagList = new ArrayList<>();
-        Date confirmed = new Date();
-        int[] rows = diagTable.getSelectedRows();
-        for (int r : rows) {
-            int row = diagTable.convertRowIndexToModel(r);
-            rd = tableModel.getObject(row);
-            rd.setKarte(getContext().getKarte());           // Karte
-            rd.setCreator(Project.getUserModel());          // Creator
-            rd.setConfirmed(confirmed);                     // 確定日
-            rd.setRecorded(confirmed);                      // 記録日
-            // 開始日=適合開始日 not-null
-            if (rd.getStarted() == null) {
-                rd.setStarted(confirmed);
-            }
-            rd.setPatientLiteModel(getContext().getPatient().patientAsLiteModel());
-            rd.setUserLiteModel(Project.getUserModel().getLiteModel());
-
-            // 転帰をチェックする
-            if (!isValidOutcome(rd)) {
-                return;
-            }
-
-            diagList.add(rd);
-        }
-
-        MainFrame parent = getContext().getFrame();
-        String message;
-        int messageType = JOptionPane.PLAIN_MESSAGE;
-
-        if (!diagList.isEmpty()) {
-            OrcaDelegater delegater = new OrcaDelegater();
-            delegater.sendDiagnoses(diagList);
-            message = diagList.size() + " 件を ORCA に送信しました";
-
-        } else {
-            message = "CLAIM 送信する病名を選択して下さい";
-            messageType = JOptionPane.ERROR_MESSAGE;
-        }
-
-        if (JSheet.isAlreadyShown(parent)) {
-            parent.toFront();
-            return;
-        }
-        JSheet.showMessageDialog(parent, message, "", messageType);
-    }
-
-    /**
-     * 選択された診断を複製する.
-     */
-    public void duplicateDiagnosis() {
-
-        int[] rows = diagTable.getSelectedRows();
-        for (int r : rows) {
-            int row = diagTable.convertRowIndexToModel(r);
-
-            RegisteredDiagnosisModel srcRd = tableModel.getObject(row);
-            RegisteredDiagnosisModel distRd = new RegisteredDiagnosisModel();
-
-            distRd.setDiagnosis(srcRd.getDiagnosis());
-            distRd.setDiagnosisCode(srcRd.getDiagnosisCode());
-            distRd.setDiagnosisCodeSystem(srcRd.getDiagnosisCodeSystem());
-
-            distRd.setCategory(srcRd.getCategory());
-            distRd.setCategoryDesc(srcRd.getCategoryDesc());
-            distRd.setCategoryCodeSys(srcRd.getCategoryCodeSys());
-
-            distRd.setOutcome(srcRd.getOutcome());
-            distRd.setOutcomeDesc(srcRd.getOutcomeDesc());
-            distRd.setOutcomeCodeSys(srcRd.getOutcomeCodeSys());
-
-            // distRd.setStartDate(srcRd.getStartDate());
-            // duplicate した場合は，startDate は LastVisit とする
-            GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
-            distRd.setStartDate(MMLDate.getDate(gc));
-
-            // endDate は消去
-            // distRd.setEndDate(srcRd.getEndDate());
-
-            tableModel.insertRow(r, distRd);
-            diagTable.getSelectionModel().setSelectionInterval(r, r);
-            addAddedList(distRd);
-
-            // DiagnosisInspector に連絡
-            diagnosisInspector.update(tableModel);
         }
     }
 }

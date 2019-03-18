@@ -65,7 +65,7 @@ public class AutosaveModel {
         // soa
         dumper.dump(soa);
         soaSpec = dumper.getSpec();
-        dumper.getModule().forEach(moduleList::add);
+        moduleList.addAll(dumper.getModule());
         dumper.getSchema().forEach(m -> {
             Image image = m.getIcon().getImage();
             int hash = image.hashCode();
@@ -82,7 +82,7 @@ public class AutosaveModel {
         // p
         dumper.dump(p);
         pSpec = dumper.getSpec();
-        dumper.getModule().forEach(moduleList::add);
+        moduleList.addAll(dumper.getModule());
     }
 
     /**

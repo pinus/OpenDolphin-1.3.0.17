@@ -1,4 +1,3 @@
-
 package open.dolphin.impl.lbtest;
 
 import open.dolphin.client.*;
@@ -26,7 +25,6 @@ import java.util.prefs.Preferences;
  * LaboTestBean
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
- *
  */
 public class LaboTestBean extends AbstractChartDocument {
 
@@ -62,152 +60,6 @@ public class LaboTestBean extends AbstractChartDocument {
 
     public LaboTestBean() {
         setTitle(TITLE);
-    }
-
-    class ImageTableCellRenderer extends JLabel implements TableCellRenderer {
-
-        private static final long serialVersionUID = -520905432722518156L;
-        private Color penCol = Color.black;
-        private String upperValueText = ClientContext.getString("labotest.value.upperText");
-        private String standardValueText = ClientContext.getString("labotest.value.standardText");
-        private String lowerValueText = ClientContext.getString("labotest.value.lowerText");
-
-        public ImageTableCellRenderer() {
-            setOpaque(true);
-            setBackground(Color.white);
-            setHorizontalAlignment(LEFT);
-            setVerticalAlignment(CENTER);
-        }
-
-        public Component getTableCellRendererComponent(
-                JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-
-            if (isSelected) {
-                setBackground(table.getSelectionBackground());
-                setForeground(table.getSelectionForeground());
-//pns
-                penCol = table.getSelectionForeground();
-
-            } else {
-                setBackground(table.getBackground());
-                setForeground(table.getForeground());
-//pns
-                penCol = table.getForeground();
-            }
-
-            //-------------------------------------------------------
-            if (value != null) {
-
-                if (value instanceof java.lang.String) {
-//pns               penCol = Color.black;
-                    setForeground(penCol);
-                    setText((String) value);
-                    setToolTipText("");
-
-                } else if (value instanceof open.dolphin.impl.lbtest.SimpleLaboTestItem) {
-
-                    SimpleLaboTestItem testItem = (SimpleLaboTestItem) value;
-                    // 検査値表示用カラーを得る
-                    String out = testItem.getOut();
-                    if (out == null) {
-//pns                   penCol = Color.black;
-
-                    } else if (out.equals("L")) {
-                        if (!isSelected) penCol = lowColor;
-
-//pns               } else if (out.equals("N")) {
-//                      penCol = normalColor;
-
-                    } else if (out.equals("H")) {
-                        if (!isSelected) penCol = highColor;
-
-//pns               } else {
-//                        penCol = Color.black;
-                    }
-
-                    setForeground(penCol);
-                    setText(testItem.toString());
-
-                    // ToolTips を設定する
-                    StringBuilder buf = new StringBuilder();
-                    if (testItem.getUp() != null) {
-                        buf.append(upperValueText);
-                        buf.append(testItem.getUp());
-                        buf.append(") ");
-                    }
-
-                    if (testItem.getLow() != null) {
-                        buf.append(lowerValueText);
-                        buf.append(testItem.getLow());
-                        buf.append(") ");
-                    }
-
-                    if (testItem.getNormal() != null) {
-                        buf.append(standardValueText);
-                        buf.append(testItem.getNormal());
-                        buf.append(")");
-                    }
-
-                    if (buf.length() > 0) {
-                        setToolTipText(buf.toString());
-                    }
-
-                } else if (value instanceof open.dolphin.impl.lbtest.SimpleLaboSpecimen) {
-                    SimpleLaboSpecimen specimen = (SimpleLaboSpecimen) value;
-                    setBackground(specimenColor);	// 標本表示カラー
-                    setForeground(Color.black);
-                    setForeground(Color.black);
-                    setText(specimen.toString());
-                }
-
-            } else {
-                penCol = Color.black;
-                setForeground(penCol);
-                setText("");
-                setToolTipText("");
-            }
-            //-------------------------------------------------------
-
-            return this;
-        }
-    }
-
-    /**
-     * MyTableModel
-     */
-    class MyTableModel extends AbstractTableModel {
-
-        private static final long serialVersionUID = 3686975270538007030L;
-        Object[] columnNames;
-        Object[][] data;
-
-        public MyTableModel(Object[] names, Object[][] d) {
-            columnNames = names;
-            data = d;
-        }
-
-        @Override
-        public boolean isCellEditable(int row, int col) {
-            return false;
-        }
-
-        public int getColumnCount() {
-            return columnNames.length;
-        }
-
-        public int getRowCount() {
-            return data.length;
-        }
-
-        @Override
-        public String getColumnName(int col) {
-            return (String) columnNames[col];
-        }
-
-        public Object getValueAt(int row, int col) {
-            return data[row][col];
-        }
     }
 
     /**
@@ -320,7 +172,7 @@ public class LaboTestBean extends AbstractChartDocument {
 
             ListSelectionModel m = table.getSelectionModel();
             m.addListSelectionListener(e -> {
-                if (! e.getValueIsAdjusting()) {
+                if (!e.getValueIsAdjusting()) {
                     createLaboTestGraph();
                 }
             });
@@ -709,6 +561,152 @@ public class LaboTestBean extends AbstractChartDocument {
         String name = getContext().getPatient().getFullName();
         PageFormat pageFormat = getContext().getContext().getPageFormat();
         int height = getUI().getSize().height;
-        ((PrintablePanel)getUI()).printPanel(pageFormat, 1, true, name, height);
+        ((PrintablePanel) getUI()).printPanel(pageFormat, 1, true, name, height);
+    }
+
+    class ImageTableCellRenderer extends JLabel implements TableCellRenderer {
+
+        private static final long serialVersionUID = -520905432722518156L;
+        private Color penCol = Color.black;
+        private String upperValueText = ClientContext.getString("labotest.value.upperText");
+        private String standardValueText = ClientContext.getString("labotest.value.standardText");
+        private String lowerValueText = ClientContext.getString("labotest.value.lowerText");
+
+        public ImageTableCellRenderer() {
+            setOpaque(true);
+            setBackground(Color.white);
+            setHorizontalAlignment(LEFT);
+            setVerticalAlignment(CENTER);
+        }
+
+        public Component getTableCellRendererComponent(
+                JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+
+            if (isSelected) {
+                setBackground(table.getSelectionBackground());
+                setForeground(table.getSelectionForeground());
+//pns
+                penCol = table.getSelectionForeground();
+
+            } else {
+                setBackground(table.getBackground());
+                setForeground(table.getForeground());
+//pns
+                penCol = table.getForeground();
+            }
+
+            //-------------------------------------------------------
+            if (value != null) {
+
+                if (value instanceof java.lang.String) {
+//pns               penCol = Color.black;
+                    setForeground(penCol);
+                    setText((String) value);
+                    setToolTipText("");
+
+                } else if (value instanceof open.dolphin.impl.lbtest.SimpleLaboTestItem) {
+
+                    SimpleLaboTestItem testItem = (SimpleLaboTestItem) value;
+                    // 検査値表示用カラーを得る
+                    String out = testItem.getOut();
+                    if (out == null) {
+//pns                   penCol = Color.black;
+
+                    } else if (out.equals("L")) {
+                        if (!isSelected) penCol = lowColor;
+
+//pns               } else if (out.equals("N")) {
+//                      penCol = normalColor;
+
+                    } else if (out.equals("H")) {
+                        if (!isSelected) penCol = highColor;
+
+//pns               } else {
+//                        penCol = Color.black;
+                    }
+
+                    setForeground(penCol);
+                    setText(testItem.toString());
+
+                    // ToolTips を設定する
+                    StringBuilder buf = new StringBuilder();
+                    if (testItem.getUp() != null) {
+                        buf.append(upperValueText);
+                        buf.append(testItem.getUp());
+                        buf.append(") ");
+                    }
+
+                    if (testItem.getLow() != null) {
+                        buf.append(lowerValueText);
+                        buf.append(testItem.getLow());
+                        buf.append(") ");
+                    }
+
+                    if (testItem.getNormal() != null) {
+                        buf.append(standardValueText);
+                        buf.append(testItem.getNormal());
+                        buf.append(")");
+                    }
+
+                    if (buf.length() > 0) {
+                        setToolTipText(buf.toString());
+                    }
+
+                } else if (value instanceof open.dolphin.impl.lbtest.SimpleLaboSpecimen) {
+                    SimpleLaboSpecimen specimen = (SimpleLaboSpecimen) value;
+                    setBackground(specimenColor);    // 標本表示カラー
+                    setForeground(Color.black);
+                    setForeground(Color.black);
+                    setText(specimen.toString());
+                }
+
+            } else {
+                penCol = Color.black;
+                setForeground(penCol);
+                setText("");
+                setToolTipText("");
+            }
+            //-------------------------------------------------------
+
+            return this;
+        }
+    }
+
+    /**
+     * MyTableModel
+     */
+    class MyTableModel extends AbstractTableModel {
+
+        private static final long serialVersionUID = 3686975270538007030L;
+        Object[] columnNames;
+        Object[][] data;
+
+        public MyTableModel(Object[] names, Object[][] d) {
+            columnNames = names;
+            data = d;
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int col) {
+            return false;
+        }
+
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        public int getRowCount() {
+            return data.length;
+        }
+
+        @Override
+        public String getColumnName(int col) {
+            return (String) columnNames[col];
+        }
+
+        public Object getValueAt(int row, int col) {
+            return data[row][col];
+        }
     }
 }

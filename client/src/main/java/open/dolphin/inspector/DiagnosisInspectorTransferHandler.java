@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 
 /**
- *
  * @author pns
  */
 public class DiagnosisInspectorTransferHandler extends TransferHandler {
@@ -22,7 +21,9 @@ public class DiagnosisInspectorTransferHandler extends TransferHandler {
 
     @Override
     public boolean importData(TransferSupport support) {
-        if (!support.isDrop()) { return false; }
+        if (!support.isDrop()) {
+            return false;
+        }
 
         DiagnosisDocument doc = context.getDiagnosisDocument();
         DiagnosisTransferHandler handler = (DiagnosisTransferHandler) doc.getDiagnosisTable().getTransferHandler();

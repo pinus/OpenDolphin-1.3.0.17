@@ -11,14 +11,12 @@ import java.awt.*;
  * @author pns
  */
 public class IndentTableCellRenderer extends DefaultTableCellRenderer {
-    private static final long serialVersionUID = 1L;
-
     // pixels to indent
     public static final int NARROW = 5;
     public static final int WIDE = 10;
     public static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
     public static final Font SMALL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 9);
-
+    private static final long serialVersionUID = 1L;
     private int indent;
     private Font font;
 
@@ -34,6 +32,22 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
         super();
         this.indent = indent;
         this.font = font;
+    }
+
+    /**
+     * にせインデント.
+     *
+     * @param text   インデントを付けるテキスト
+     * @param indent インデント量
+     * @param color  色
+     * @return インデントを付けたテキスト
+     */
+    public static String addIndent(String text, int indent, Color color) {
+        if (indent >= 10) {
+            return "　" + text;
+        } else {
+            return " " + text;
+        }
     }
 
     @Override
@@ -84,21 +98,5 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
         g.setColor(Color.WHITE);
         g.drawLine(0, getHeight(), getWidth(), getHeight());
         g.dispose();
-    }
-
-    /**
-     * にせインデント.
-     *
-     * @param text インデントを付けるテキスト
-     * @param indent インデント量
-     * @param color 色
-     * @return インデントを付けたテキスト
-     */
-    public static String addIndent(String text, int indent, Color color) {
-        if (indent >= 10) {
-            return "　" + text;
-        } else {
-            return " " + text;
-        }
     }
 }

@@ -5,6 +5,7 @@ import javax.swing.table.TableModel;
 
 /**
  * JTable with fixed fill behavior.
+ *
  * @author pns
  */
 public class PNSTable extends JTable {

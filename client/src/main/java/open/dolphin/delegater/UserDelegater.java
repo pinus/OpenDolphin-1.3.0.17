@@ -29,9 +29,7 @@ public class UserDelegater extends BusinessDelegater<UserService> {
      * @return
      */
     public List<UserModel> getAllUser() {
-        List<UserModel> ret = new ArrayList<>();
-        ret.addAll(getService().getAllUser());
-        return ret;
+        return  new ArrayList<>(getService().getAllUser());
     }
 
     /**

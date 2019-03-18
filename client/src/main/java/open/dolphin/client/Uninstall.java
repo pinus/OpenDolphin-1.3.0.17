@@ -4,19 +4,25 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
- *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  */
 public class Uninstall {
 
     private static final String DOLPHIN_NODE = "/open";
 
-    /** Creates a new instance of Uninstall */
+    /**
+     * Creates a new instance of Uninstall
+     */
     public Uninstall() {
 
         clearPrefernces();
 
         deleteDirectories();
+    }
+
+    public static void main(String[] args) {
+        new Uninstall();
+        System.exit(0);
     }
 
     private void clearPrefernces() {
@@ -31,10 +37,5 @@ public class Uninstall {
     }
 
     private void deleteDirectories() {
-    }
-
-    public static void main(String[] args) {
-        new Uninstall();
-        System.exit(0);
     }
 }

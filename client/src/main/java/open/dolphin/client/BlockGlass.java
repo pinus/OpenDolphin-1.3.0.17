@@ -43,34 +43,62 @@ import java.awt.geom.*;
 
 public class BlockGlass extends JComponent implements MouseListener {
     private static final long serialVersionUID = 1L;
-    /** Contains the bars composing the circular shape. */
-    protected Area[]  ticker     = null;
-    /** The animation thread is responsible for fade in/out and rotation. */
-    protected Thread  animation  = null;
-    /** Notifies whether the animation is running or not. */
-    protected boolean started    = false;
-    /** Alpha level of the veil, used for fade in/out. */
-    protected int     alphaLevel = 0;
-    /** Duration of the veil's fade in/out. */
-    protected int     rampDelay  = 300;
-    /** Alpha level of the veil. */
-    protected float   shield     = 0.70f;
-    /** Message displayed below the circular shape. */
-    protected String  text       = "";
-    /** Amount of bars composing the circular shape. */
-    protected int     barsCount  = 14;
-    /** Amount of frames per seconde. Lowers this to save CPU. */
-    protected float   fps        = 15.0f;
-    /** Rendering hints to set anti aliasing. */
+    /**
+     * Contains the bars composing the circular shape.
+     */
+    protected Area[] ticker = null;
+    /**
+     * The animation thread is responsible for fade in/out and rotation.
+     */
+    protected Thread animation = null;
+    /**
+     * Notifies whether the animation is running or not.
+     */
+    protected boolean started = false;
+    /**
+     * Alpha level of the veil, used for fade in/out.
+     */
+    protected int alphaLevel = 0;
+    /**
+     * Duration of the veil's fade in/out.
+     */
+    protected int rampDelay = 300;
+    /**
+     * Alpha level of the veil.
+     */
+    protected float shield = 0.70f;
+    /**
+     * Message displayed below the circular shape.
+     */
+    protected String text = "";
+    /**
+     * Amount of bars composing the circular shape.
+     */
+    protected int barsCount = 14;
+    /**
+     * Amount of frames per seconde. Lowers this to save CPU.
+     */
+    protected float fps = 15.0f;
+    /**
+     * Rendering hints to set anti aliasing.
+     */
     protected RenderingHints hints = null;
-    /** Frame width and height */
+    /**
+     * Frame width and height
+     */
     private int frameWidth;
     private int frameHeight;
-    /** caller for this blocker */
+    /**
+     * caller for this blocker
+     */
     private StackTraceElement blockCaller;
-    /** caller's hash code for this blocker */
+    /**
+     * caller's hash code for this blocker
+     */
     private long blockCallerHash;
-    /** lock */
+    /**
+     * lock
+     */
     private boolean isLocked;
 
     /**
@@ -95,6 +123,7 @@ public class BlockGlass extends JComponent implements MouseListener {
      * <li>15 frames per second</li>
      * <li>Fade in/out last 300 ms</li>
      * </ul>
+     *
      * @param text The message to be displayed. Can be null or empty.
      */
     public BlockGlass(String text) {
@@ -108,7 +137,8 @@ public class BlockGlass extends JComponent implements MouseListener {
      * <li>15 frames per second</li>
      * <li>Fade in/out last 300 ms</li>
      * </ul>
-     * @param text The message to be displayed. Can be null or empty.
+     *
+     * @param text      The message to be displayed. Can be null or empty.
      * @param barsCount The amount of bars composing the circular shape
      */
     public BlockGlass(String text, int barsCount) {
@@ -121,10 +151,11 @@ public class BlockGlass extends JComponent implements MouseListener {
      * <li>15 frames per second</li>
      * <li>Fade in/out last 300 ms</li>
      * </ul>
-     * @param text The message to be displayed. Can be null or empty.
+     *
+     * @param text      The message to be displayed. Can be null or empty.
      * @param barsCount The amount of bars composing the circular shape.
-     * @param shield The alpha level between 0.0 and 1.0 of the colored
-     *               shield (or veil).
+     * @param shield    The alpha level between 0.0 and 1.0 of the colored
+     *                  shield (or veil).
      */
     public BlockGlass(String text, int barsCount, float shield) {
         this(text, barsCount, shield, 15.0f);
@@ -135,12 +166,13 @@ public class BlockGlass extends JComponent implements MouseListener {
      * <ul>
      * <li>Fade in/out last 300 ms</li>
      * </ul>
-     * @param text The message to be displayed. Can be null or empty.
+     *
+     * @param text      The message to be displayed. Can be null or empty.
      * @param barsCount The amount of bars composing the circular shape.
-     * @param shield The alpha level between 0.0 and 1.0 of the colored
-     *               shield (or veil).
-     * @param fps The number of frames per second. Lower this value to
-     *            decrease CPU usage.
+     * @param shield    The alpha level between 0.0 and 1.0 of the colored
+     *                  shield (or veil).
+     * @param fps       The number of frames per second. Lower this value to
+     *                  decrease CPU usage.
      */
     public BlockGlass(String text, int barsCount, float shield, float fps) {
         this(text, barsCount, shield, fps, 300);
@@ -148,20 +180,21 @@ public class BlockGlass extends JComponent implements MouseListener {
 
     /**
      * Creates a new progress panel.
-     * @param text The message to be displayed. Can be null or empty.
+     *
+     * @param text      The message to be displayed. Can be null or empty.
      * @param barsCount The amount of bars composing the circular shape.
-     * @param shield The alpha level between 0.0 and 1.0 of the colored
-     *               shield (or veil).
-     * @param fps The number of frames per second. Lower this value to
-     *            decrease CPU usage.
+     * @param shield    The alpha level between 0.0 and 1.0 of the colored
+     *                  shield (or veil).
+     * @param fps       The number of frames per second. Lower this value to
+     *                  decrease CPU usage.
      * @param rampDelay The duration, in milli seconds, of the fade in and
      *                  the fade out of the veil.
      */
     public BlockGlass(String text, int barsCount, float shield, float fps, int rampDelay) {
-        this.text 	   = text;
+        this.text = text;
         this.rampDelay = rampDelay >= 0 ? rampDelay : 0;
-        this.shield    = shield >= 0.0f ? shield : 0.0f;
-        this.fps       = fps > 0.0f ? fps : 15.0f;
+        this.shield = shield >= 0.0f ? shield : 0.0f;
+        this.fps = fps > 0.0f ? fps : 15.0f;
         this.barsCount = barsCount > 0 ? barsCount : 14;
 
         this.hints = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -172,6 +205,15 @@ public class BlockGlass extends JComponent implements MouseListener {
     }
 
     /**
+     * Returns the current displayed message.
+     *
+     * @return
+     */
+    public String getText() {
+        return text;
+    }
+
+    /**
      * Changes the displayed message at runtime.
      *
      * @param text The message to be displayed. Can be null or empty.
@@ -179,14 +221,6 @@ public class BlockGlass extends JComponent implements MouseListener {
     public void setText(String text) {
         this.text = text;
         repaint();
-    }
-
-    /**
-     * Returns the current displayed message.
-     * @return
-     */
-    public String getText() {
-        return text;
     }
 
     /**
@@ -252,7 +286,9 @@ public class BlockGlass extends JComponent implements MouseListener {
                 g2.fill(ticker[i]);
 
                 Rectangle2D bounds = ticker[i].getBounds2D();
-                if (bounds.getMaxY() > maxY) { maxY = bounds.getMaxY(); }
+                if (bounds.getMaxY() > maxY) {
+                    maxY = bounds.getMaxY();
+                }
             }
 
             if (text != null && text.length() > 0) {
@@ -303,14 +339,78 @@ public class BlockGlass extends JComponent implements MouseListener {
      */
     private Area buildPrimitive() {
         Rectangle2D.Double body = new Rectangle2D.Double(2, 0, 10, 4);
-        Ellipse2D.Double   head = new Ellipse2D.Double(0, 0, 4, 4);
-        Ellipse2D.Double   tail = new Ellipse2D.Double(10, 0, 4, 4);
+        Ellipse2D.Double head = new Ellipse2D.Double(0, 0, 4, 4);
+        Ellipse2D.Double tail = new Ellipse2D.Double(10, 0, 4, 4);
 
         Area tick = new Area(body);
         tick.add(new Area(head));
         tick.add(new Area(tail));
 
         return tick;
+    }
+
+    public void block() {
+        if (!isLocked) {
+            Throwable t = new Throwable();
+            blockCaller = t.getStackTrace()[1];
+            // System.out.println("blocked by blocker: " + blockCaller.getClassName());
+            isLocked = true;
+            start();
+        }
+    }
+
+    public void unblock() {
+        Throwable t = new Throwable();
+        StackTraceElement unblockCaller = t.getStackTrace()[1];
+        // System.out.println("blocker: " + blockCaller.getClassName());
+        // System.out.println("unblocker: " + unblockCaller.getClassName());
+        if (unblockCaller.getClassName().equals(blockCaller.getClassName())) {
+            stop();
+            isLocked = false;
+        }
+    }
+
+    // hash コードによる block 処理実験
+    public void block(long hash) {
+        if (!isLocked) {
+            System.out.println("blocker: " + hash);
+            blockCallerHash = hash;
+            isLocked = true;
+            start();
+        }
+    }
+
+    public void unblock(long hash) {
+        if (blockCallerHash == hash) {
+            System.out.println("unblocker: " + hash);
+            stop();
+            isLocked = false;
+        }
+    }
+
+    private void beep() {
+        Toolkit.getDefaultToolkit().beep();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        beep();
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 
     /**
@@ -343,7 +443,9 @@ public class BlockGlass extends JComponent implements MouseListener {
             }
 
             long start = System.currentTimeMillis();
-            if (rampDelay == 0) { alphaLevel = rampUp ? 255 : 0; }
+            if (rampDelay == 0) {
+                alphaLevel = rampUp ? 255 : 0;
+            }
 
             started = true;
             boolean inRamp = rampUp;
@@ -394,65 +496,5 @@ public class BlockGlass extends JComponent implements MouseListener {
                 removeMouseListener(BlockGlass.this);
             }
         }
-    }
-
-    public void block() {
-        if (!isLocked) {
-            Throwable t = new Throwable();
-            blockCaller = t.getStackTrace()[1];
-            // System.out.println("blocked by blocker: " + blockCaller.getClassName());
-            isLocked = true;
-            start();
-        }
-    }
-
-    public void unblock() {
-        Throwable t = new Throwable();
-        StackTraceElement unblockCaller = t.getStackTrace()[1];
-        // System.out.println("blocker: " + blockCaller.getClassName());
-        // System.out.println("unblocker: " + unblockCaller.getClassName());
-        if (unblockCaller.getClassName().equals(blockCaller.getClassName())) {
-            stop();
-            isLocked = false;
-        }
-    }
-
-    // hash コードによる block 処理実験
-    public void block(long hash) {
-        if (!isLocked) {
-            System.out.println("blocker: " + hash);
-            blockCallerHash = hash;
-            isLocked = true;
-            start();
-        }
-    }
-
-    public void unblock(long hash) {
-        if (blockCallerHash == hash) {
-            System.out.println("unblocker: " + hash);
-            stop();
-            isLocked = false;
-        }
-    }
-
-    private void beep() {
-        Toolkit.getDefaultToolkit().beep();
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        beep();
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
     }
 }

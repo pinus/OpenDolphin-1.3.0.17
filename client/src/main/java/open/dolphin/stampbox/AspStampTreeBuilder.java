@@ -11,18 +11,19 @@ import java.util.List;
 /**
  * AspStampTreeBuilder.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
-public class AspStampTreeBuilder extends AbstractStampTreeBuilder  {
+public class AspStampTreeBuilder extends AbstractStampTreeBuilder {
 
-    /** Control staffs */
+    private final Logger logger;
+    /**
+     * Control staffs
+     */
     private StampTreeNode rootNode;
     private StampTreeNode node;
     private ModuleInfoBean info;
     private LinkedList<StampTreeNode> linkedList;
     private List<StampTree> products;
-
-    private final Logger logger;
 
     public AspStampTreeBuilder() {
         logger = ClientContext.getBootLogger();
@@ -30,6 +31,7 @@ public class AspStampTreeBuilder extends AbstractStampTreeBuilder  {
 
     /**
      * Returns the product of this builder
+     *
      * @return vector that contains StampTree instances
      */
     @Override
@@ -66,6 +68,7 @@ public class AspStampTreeBuilder extends AbstractStampTreeBuilder  {
 
     /**
      * ノードを生成する.
+     *
      * @param name ノード名
      */
     @Override
@@ -85,11 +88,11 @@ public class AspStampTreeBuilder extends AbstractStampTreeBuilder  {
 
     @Override
     public void buildStampInfo(String name,
-            String role,
-            String entity,
-            String editable,
-            String memo,
-            String id) {
+                               String role,
+                               String entity,
+                               String editable,
+                               String memo,
+                               String id) {
 
         if (logger != null) {
             StringBuilder sb = new StringBuilder();
@@ -107,8 +110,8 @@ public class AspStampTreeBuilder extends AbstractStampTreeBuilder  {
             logger.debug(sb.toString());
         }
 
-         // ASP Tree なのでエディタから発行を無視する
-        if (name.equals("エディタから発行...") && (id == null) && (role.equals("p")) ) {
+        // ASP Tree なのでエディタから発行を無視する
+        if (name.equals("エディタから発行...") && (id == null) && (role.equals("p"))) {
             return;
         }
 
@@ -122,7 +125,7 @@ public class AspStampTreeBuilder extends AbstractStampTreeBuilder  {
         if (memo != null) {
             info.setStampMemo(memo);
         }
-        if ( id != null ) {
+        if (id != null) {
             info.setStampId(id);
         }
 

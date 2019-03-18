@@ -17,13 +17,14 @@ import java.awt.*;
  * badgeEvent.setTabIndex(0);
  * badgeListener.badgeChanged(e);
  * </pre>
+ *
  * @author pns
  */
 public class PNSBadgeTabbedPane extends PNSTabbedPane {
     private static final long serialVersionUID = 1L;
 
-    private static final int BADGE_RADIUS = ClientContext.isWin()? 6 : 8;
-    private static final int BADGE_FONT_SIZE = ClientContext.isWin()? 10 : 11;
+    private static final int BADGE_RADIUS = ClientContext.isWin() ? 6 : 8;
+    private static final int BADGE_FONT_SIZE = ClientContext.isWin() ? 10 : 11;
     private static final int BADGE_OFFSET = 4;
     private static final String BADGE_FONT = "Arial";
     private static final Color BADGE_COLOR = Color.red;
@@ -51,7 +52,7 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
             Point p = getButtonTopRightCornerLocation(tabIndex);
             Point center = new Point(p.x - BADGE_OFFSET, p.y + BADGE_OFFSET);
-            g.fillOval(center.x - BADGE_RADIUS, center.y - BADGE_RADIUS, BADGE_RADIUS*2, BADGE_RADIUS*2);
+            g.fillOval(center.x - BADGE_RADIUS, center.y - BADGE_RADIUS, BADGE_RADIUS * 2, BADGE_RADIUS * 2);
 
             // 文字
             g.setColor(Color.WHITE);
@@ -62,7 +63,7 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
             String num = String.valueOf(badgeNumber);
             int strWidth = fm.stringWidth(num);
 
-            g.drawString(num, center.x - strWidth/2, center.y + fm.getHeight()/2 - fm.getDescent());
+            g.drawString(num, center.x - strWidth / 2, center.y + fm.getHeight() / 2 - fm.getDescent());
 
             g.dispose();
         }
@@ -70,6 +71,7 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
 
     /**
      * BadgeEvent に従って Badge を付ける.
+     *
      * @param e
      */
     public void setBadge(BadgeEvent e) {

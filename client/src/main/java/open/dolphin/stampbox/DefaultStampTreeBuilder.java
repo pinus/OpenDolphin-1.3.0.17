@@ -11,26 +11,44 @@ import java.util.List;
 /**
  * StampTree Builder クラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
-    /** エディタから発行のスタンプ名 */
+    /**
+     * エディタから発行のスタンプ名
+     */
     protected static final String FROM_EDITOR = "エディタから発行...";
-    /** rootノードの名前 */
+    /**
+     * rootノードの名前
+     */
     private String rootName;
-    /** エディタから発行があったかどうかのフラグ */
+    /**
+     * エディタから発行があったかどうかのフラグ
+     */
     private boolean hasEditor;
-    /** StampTree のルートノード*/
+    /**
+     * StampTree のルートノード
+     */
     private StampTreeNode rootNode;
-    /** StampTree のノード*/
+    /**
+     * StampTree のノード
+     */
     private StampTreeNode node;
-    /** ノードの UserObject になる StampInfo */
+    /**
+     * ノードの UserObject になる StampInfo
+     */
     private ModuleInfoBean info;
-    /** 制御用のリスト */
+    /**
+     * 制御用のリスト
+     */
     private LinkedList<StampTreeNode> linkedList;
-    /** 生成物 */
+    /**
+     * 生成物
+     */
     private List<StampTree> products;
-    /** Logger */
+    /**
+     * Logger
+     */
     private Logger logger;  // = ClientContext.getLogger("boot");
 
     public DefaultStampTreeBuilder() {
@@ -38,6 +56,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
 
     /**
      * Returns the product of this builder.
+     *
      * @return vector that contains StampTree instances
      */
     @Override
@@ -58,7 +77,8 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
 
     /**
      * Root を生成する.
-     * @param name root名
+     *
+     * @param name   root名
      * @param entity Stamptree の Entity
      */
     @Override
@@ -82,6 +102,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
 
     /**
      * ノードを生成する.
+     *
      * @param name ノード名
      */
     @Override
@@ -101,20 +122,21 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
 
     /**
      * StampInfo を UserObject にするノードを生成する.
-     * @param name ノード名
+     *
+     * @param name     ノード名
      * @param role
-     * @param entity エンティティ
+     * @param entity   エンティティ
      * @param editable 編集可能かどうかのフラグ
-     * @param memo メモ
-     * @param id DB key
+     * @param memo     メモ
+     * @param id       DB key
      */
     @Override
     public void buildStampInfo(String name,
-            String role,
-            String entity,
-            String editable,
-            String memo,
-            String id) {
+                               String role,
+                               String entity,
+                               String editable,
+                               String memo,
+                               String id) {
 
         if (logger != null) {
             StringBuilder sb = new StringBuilder();
@@ -143,7 +165,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
         if (memo != null) {
             info.setStampMemo(toXmlText(memo));
         }
-        if ( id != null ) {
+        if (id != null) {
             info.setStampId(id);
         }
 
@@ -152,7 +174,7 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
         getCurrentNode().add(node);
 
         // エディタから発行を持っているか
-        if (info.getStampName().equals(FROM_EDITOR) && (! info.isSerialized()) ) {
+        if (info.getStampName().equals(FROM_EDITOR) && (!info.isSerialized())) {
             hasEditor = true;
             info.setEditable(false);
         }
@@ -176,9 +198,9 @@ public class DefaultStampTreeBuilder extends AbstractStampTreeBuilder {
     public void buildRootEnd() {
 
         // エディタから発行...を削除された場合に追加する処置
-        if ( (!hasEditor) && (getEntity(rootName) != null) ) {
+        if ((!hasEditor) && (getEntity(rootName) != null)) {
 
-            if	( getEntity(rootName).equals(IInfoModel.ENTITY_TEXT) || getEntity(rootName).equals(IInfoModel.ENTITY_PATH)) {
+            if (getEntity(rootName).equals(IInfoModel.ENTITY_TEXT) || getEntity(rootName).equals(IInfoModel.ENTITY_PATH)) {
                 // テキストスタンプとパススタンプにはエディタから発行...はなし
             } else {
                 ModuleInfoBean si = new ModuleInfoBean();

@@ -10,13 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
  * @author pns
  */
 public class DrawTest extends Application {
 
     // ******************  JavaFX version  ***********************
-    public static void main (String[] arg) {
+    public static void main(String[] arg) {
         Application.launch(arg);
     }
 
@@ -36,7 +35,7 @@ public class DrawTest extends Application {
         try {
             int n = in.available();
             buf = new byte[n];
-            for(int i=0; i<n; i++) buf[i] = (byte) in.read();
+            for (int i = 0; i < n; i++) buf[i] = (byte) in.read();
         } catch (IOException ex) {
         }
         schema.setIcon(new ImageIcon(buf));

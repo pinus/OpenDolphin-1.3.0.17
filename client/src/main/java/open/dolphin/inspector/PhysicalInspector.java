@@ -33,12 +33,10 @@ import java.util.*;
  */
 public class PhysicalInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.身長体重;
-
+    private final ChartImpl context;
+    private final Logger logger;
     private ObjectReflectTableModel<PhysicalModel> tableModel;
     private PhysicalView view;
-    private final ChartImpl context;
-
-    private final Logger logger;
 
     /**
      * PhysicalInspectorオブジェクトを生成する.

@@ -221,9 +221,9 @@ public class DiagnosisTablePanel extends ItemTablePanel {
      * diagnosis と alias から "diagnosis,alias" の名前を作る.
      * getValue で使う.
      *
-     * @param diag diagnosis
+     * @param diag  diagnosis
      * @param alias alias
-     * @return diagnosis,alias
+     * @return diagnosis, alias
      */
     private String getDiagnosisWithAlias(String diag, String alias) {
         if (StringUtils.isEmpty(alias)) {
@@ -265,6 +265,77 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         } else {
             return getValue2();
         }
+    }
+
+    /**
+     * スタンプから RegisteredDiagnosis を受け取って，MasterItem に変換してセット.
+     * ここで受け取る病名は alias を含んでいる可能性がある.
+     *
+     * @param o RegisteredDiagnosisModel
+     */
+    @Override
+    public void setValue(Object o) {
+        if (o == null) {
+            return;
+        }
+
+        RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) o;
+        // . で区切られたコードを分解してコード配列を作る
+        final String[] codes = rd.getDiagnosisCode().split("\\.");
+        for (int i = 0; i < codes.length; ++i) {
+            // 修飾語は４桁. コードにZZZを追加する.
+            if (codes[i].length() == 4) {
+                codes[i] = "ZZZ" + codes[i];
+            }
+        }
+        // エリアスを切り出しておく
+        final String alias = getDiagnosisAlias(rd.getDiagnosis());
+
+        // 分解したコードのそれぞれについて，不足情報を ORCA に問い合わせる
+        String message = "傷病名検索";
+        String note = "傷病名を検索しています...";
+        Component c = SwingUtilities.getWindowAncestor(this);
+
+        Task<List<OrcaEntry>> task = new Task<List<OrcaEntry>>(c, message, note, 30 * 1000) {
+            @Override
+            protected List<OrcaEntry> doInBackground() {
+                // 傷病名コードからDiseaseEntryを取得
+                OrcaDelegater delegater = new OrcaDelegater();
+                return delegater.findDiagnosis(Arrays.asList(codes));
+            }
+
+            @Override
+            protected void succeeded(List<OrcaEntry> result) {
+                if (result == null) {
+                    return;
+                }
+
+                // 取得したDiseaseEntryから MasterItem を作成しテーブルに追加
+                // 順番がばらばらで帰ってくるので元の順に並べ替える
+                String codeSystem = ClientContext.getString("mml.codeSystem.diseaseMaster");
+
+                for (String code : codes) {
+                    for (OrcaEntry entry : result) {
+                        if (code.equals(entry.getCode())) {
+                            MasterItem model = new MasterItem();
+                            model.setName(entry.getName());
+                            model.setCode(entry.getCode());
+                            model.setMasterTableId(codeSystem);
+                            // alias は dummy を間借りする
+                            if (!entry.getCode().startsWith(MODIFIER_CODE)) {
+                                model.setDummy(alias);
+                            }
+                            tableModel.addRow(model);
+                            break;
+                        }
+                    }
+                }
+                // ボタンコントロールと通知
+                checkState();
+            }
+        };
+        // task.setMillisToPopup(200);
+        task.execute();
     }
 
     /**
@@ -338,77 +409,6 @@ public class DiagnosisTablePanel extends ItemTablePanel {
             ret.add(rd);
         });
         return ret;
-    }
-
-    /**
-     * スタンプから RegisteredDiagnosis を受け取って，MasterItem に変換してセット.
-     * ここで受け取る病名は alias を含んでいる可能性がある.
-     *
-     * @param o RegisteredDiagnosisModel
-     */
-    @Override
-    public void setValue(Object o) {
-        if (o == null) {
-            return;
-        }
-
-        RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) o;
-        // . で区切られたコードを分解してコード配列を作る
-        final String[] codes = rd.getDiagnosisCode().split("\\.");
-        for (int i = 0; i < codes.length; ++i) {
-            // 修飾語は４桁. コードにZZZを追加する.
-            if (codes[i].length() == 4) {
-                codes[i] = "ZZZ" + codes[i];
-            }
-        }
-        // エリアスを切り出しておく
-        final String alias = getDiagnosisAlias(rd.getDiagnosis());
-
-        // 分解したコードのそれぞれについて，不足情報を ORCA に問い合わせる
-        String message = "傷病名検索";
-        String note = "傷病名を検索しています...";
-        Component c = SwingUtilities.getWindowAncestor(this);
-
-        Task<List<OrcaEntry>> task = new Task<List<OrcaEntry>>(c, message, note, 30 * 1000) {
-            @Override
-            protected List<OrcaEntry> doInBackground() {
-                // 傷病名コードからDiseaseEntryを取得
-                OrcaDelegater delegater = new OrcaDelegater();
-                return delegater.findDiagnosis(Arrays.asList(codes));
-            }
-
-            @Override
-            protected void succeeded(List<OrcaEntry> result) {
-                if (result == null) {
-                    return;
-                }
-
-                // 取得したDiseaseEntryから MasterItem を作成しテーブルに追加
-                // 順番がばらばらで帰ってくるので元の順に並べ替える
-                String codeSystem = ClientContext.getString("mml.codeSystem.diseaseMaster");
-
-                for (String code : codes) {
-                    for (OrcaEntry entry : result) {
-                        if (code.equals(entry.getCode())) {
-                            MasterItem model = new MasterItem();
-                            model.setName(entry.getName());
-                            model.setCode(entry.getCode());
-                            model.setMasterTableId(codeSystem);
-                            // alias は dummy を間借りする
-                            if (!entry.getCode().startsWith(MODIFIER_CODE)) {
-                                model.setDummy(alias);
-                            }
-                            tableModel.addRow(model);
-                            break;
-                        }
-                    }
-                }
-                // ボタンコントロールと通知
-                checkState();
-            }
-        };
-        // task.setMillisToPopup(200);
-        task.execute();
     }
 
     /**

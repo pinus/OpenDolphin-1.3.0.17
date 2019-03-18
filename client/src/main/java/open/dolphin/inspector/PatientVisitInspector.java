@@ -14,20 +14,21 @@ import java.util.List;
 
 /**
  * PatientVisitInspector.
+ *
  * @author kazm
  * @author pns
  */
 public class PatientVisitInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.カレンダー;
-
+    private final ChartImpl context;
     private CalendarPanel calendarPanel;
     private String pvtCode; // PVT
-    private final ChartImpl context;
     private String titleText;
     private InspectorBorder border;
 
     /**
      * PatientVisitInspector を生成する.
+     *
      * @param parent
      */
     public PatientVisitInspector(PatientInspector parent) {
@@ -37,6 +38,7 @@ public class PatientVisitInspector implements IInspector {
 
     /**
      * レイアウトパネルを返す.
+     *
      * @return レイアウトパネル
      */
     @Override
@@ -69,10 +71,10 @@ public class PatientVisitInspector implements IInspector {
 
         calendarPanel.addCalendarListener(this::calendarUpdated);
         // タイトル
-        CalendarTableModel tableModel = (CalendarTableModel)calendarPanel.getTable().getModel();
+        CalendarTableModel tableModel = (CalendarTableModel) calendarPanel.getTable().getModel();
         int year = tableModel.getYear();
         int month = tableModel.getMonth();
-        titleText = String.format("%s %d年%d月", CATEGORY.title(), year, month+1);
+        titleText = String.format("%s %d年%d月", CATEGORY.title(), year, month + 1);
     }
 
     @Override
@@ -103,6 +105,7 @@ public class PatientVisitInspector implements IInspector {
 
     /**
      * タイトルに年月をつけたボーダーを返す.
+     *
      * @return
      */
     @Override
@@ -113,11 +116,12 @@ public class PatientVisitInspector implements IInspector {
 
     /**
      * CalendarPanel から月変更の通知を受ける.
+     *
      * @param date
      */
     public void calendarUpdated(SimpleDate date) {
         if (border != null) {
-            titleText = String.format("%s %d年%d月", CATEGORY.title(), date.getYear(), date.getMonth()+1);
+            titleText = String.format("%s %d年%d月", CATEGORY.title(), date.getYear(), date.getMonth() + 1);
             border.setTitle(titleText);
             context.getFrame().repaint();
         }

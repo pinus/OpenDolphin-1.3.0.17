@@ -54,6 +54,7 @@ public class TouchpadTest implements Observer {
 
     /**
      * マウスの背中に触っているかどうかを返す.
+     *
      * @return
      */
     public static boolean isPressed() {
@@ -62,6 +63,7 @@ public class TouchpadTest implements Observer {
 
     /**
      * X 軸方向の速度　右がプラス.
+     *
      * @return
      */
     public static float getXVelocity() {
@@ -70,14 +72,21 @@ public class TouchpadTest implements Observer {
 
     /**
      * Y 軸方向の速度　上がプラス.
+     *
      * @return
      */
     public static float getYVelocity() {
         return yVelocity;
     }
 
+    public static void main(String[] argv) {
+        TouchpadTest.startListening();
+        JOptionPane.showMessageDialog(null, "showing raw data");
+    }
+
     /**
      * TouchpadObservable からデータ（Finger）がここに送られてくる.
+     *
      * @param o
      * @param arg
      */
@@ -85,7 +94,9 @@ public class TouchpadTest implements Observer {
     public void update(Observable o, Object arg) {
         Finger finger = (Finger) arg;
         int id = finger.getID();
-        if (id <= MAX_FINGER_BLOBS) { blobs[id-1] = finger; }
+        if (id <= MAX_FINGER_BLOBS) {
+            blobs[id - 1] = finger;
+        }
 
         // blob が１つでも press だったら pressed = true
         pressed = false;
@@ -93,7 +104,7 @@ public class TouchpadTest implements Observer {
         xVelocity = 0;
         yVelocity = 0;
 
-        for (int i=0; i<MAX_FINGER_BLOBS;i++) {
+        for (int i = 0; i < MAX_FINGER_BLOBS; i++) {
             if (blobs[i] != null) {
                 // pressed の判定
                 if (blobs[i] != null && blobs[i].getState() == FingerState.PRESSED) {
@@ -110,10 +121,5 @@ public class TouchpadTest implements Observer {
     private void showRawData(Finger f) {
         System.out.printf("id=%2d frame=%d size=%1.2f x=%1.2f xvel=%1.2f y=%1.2f yvel=%1.2f state=%s\n",
                 f.getID(), f.getFrame(), f.getSize(), f.getX(), f.getXVelocity(), f.getY(), f.getYVelocity(), f.getState());
-    }
-
-    public static void main(String[] argv) {
-        TouchpadTest.startListening();
-        JOptionPane.showMessageDialog(null, "showing raw data");
     }
 }

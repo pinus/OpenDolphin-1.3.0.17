@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * イメージを texture で fill するボーダ.
+ *
  * @author pns
  */
 public class PNSTexturedBorder extends AbstractBorder {
@@ -35,12 +36,12 @@ public class PNSTexturedBorder extends AbstractBorder {
     }
 
     @Override
-    public Insets getBorderInsets(Component c){
+    public Insets getBorderInsets(Component c) {
         return insets;
     }
 
     @Override
-    public boolean isBorderOpaque(){
+    public boolean isBorderOpaque() {
         return false;
     }
 }

@@ -11,38 +11,33 @@ import java.util.HashMap;
 
 /**
  * CalendarTableModel.
-
+ *
  * @author Kazushi Minagawa Digital Globe, Inc.
  * @author pns
  */
 public class CalendarTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
 
-    private static final String[] COLUMN_NAME = { "日", "月", "火", "水", "木", "金", "土" };
-
+    private static final String[] COLUMN_NAME = {"日", "月", "火", "水", "木", "金", "土"};
+    private final int numRows = 6; // 6週で固定
+    private final int numCols = 7; // 7日で固定
+    // SimpleDate を入れる HashMap
+    private final HashMap<GregorianCalendar, SimpleDate> data = new HashMap<>();
+    // 今日
+    private final SimpleDate today = new SimpleDate(new GregorianCalendar());
     // このカレンダーテーブルの年月
     private int year;
     private int month;
-
     // このカレンダーテーブルの左上隅の日
     private GregorianCalendar startDate;
-
-    private final int numRows = 6; // 6週で固定
-    private final int numCols = 7; // 7日で固定
-
-    // SimpleDate を入れる HashMap
-    private final HashMap<GregorianCalendar, SimpleDate> data = new HashMap<>();
-
     // 外部から登録された，EventCode でマークされた SimpleDate のコレクション
     private Collection<SimpleDate> markDates;
-
-    // 今日
-    private final SimpleDate today = new SimpleDate(new GregorianCalendar());
     // 誕生日
     private SimpleDate birthday;
 
     /**
      * CalendarTableModel を生成する.
+     *
      * @param gc
      */
     public CalendarTableModel(GregorianCalendar gc) {
@@ -51,8 +46,9 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * CalendarTableModel を生成する.
-     * @param year   カレンダの年
-     * @param month　 カレンダの月
+     *
+     * @param year  カレンダの年
+     * @param month 　 カレンダの月
      */
     public CalendarTableModel(int year, int month) {
         init(year, month);
@@ -60,6 +56,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * 指定した year, month で初期化する.
+     *
      * @param y
      * @param m
      */
@@ -75,7 +72,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
         // このカレンダーの左上の日まで戻して左上の日を登録
         startDate = (GregorianCalendar) gc.clone();
-        startDate.add(Calendar.DAY_OF_MONTH, - diff +1);
+        startDate.add(Calendar.DAY_OF_MONTH, -diff + 1);
     }
 
     /**
@@ -98,16 +95,22 @@ public class CalendarTableModel extends AbstractTableModel {
      * model を１ヶ月進める.
      */
     public void nextMonth() {
-        if (month == 11) { reset(year+1, 0); }
-        else { reset(year, month+1); }
+        if (month == 11) {
+            reset(year + 1, 0);
+        } else {
+            reset(year, month + 1);
+        }
     }
 
     /**
      * model を１ヶ月戻す.
      */
     public void previousMonth() {
-        if (month == 0) { reset(year-1, 11); }
-        else { reset(year, month-1); }
+        if (month == 0) {
+            reset(year - 1, 11);
+        } else {
+            reset(year, month - 1);
+        }
     }
 
     /**
@@ -133,6 +136,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * model を y年 m月にリセットする.
+     *
      * @param y
      * @param m
      */
@@ -143,6 +147,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * 現在の model の年を返す.
+     *
      * @return
      */
     public int getYear() {
@@ -151,6 +156,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * 現在の model の月を返す.
+     *
      * @return
      */
     public int getMonth() {
@@ -174,6 +180,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * 指定された row, col から SimpleDate を取り出す.
+     *
      * @param row
      * @param col
      * @return
@@ -203,6 +210,7 @@ public class CalendarTableModel extends AbstractTableModel {
     /**
      * 指定された row, col に SimpleDate を設定する.
      * SimpleDate の日付に設定することにしたので，row, col は使ってない.
+     *
      * @param value
      * @param row
      * @param col
@@ -216,6 +224,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * EventCode に今日情報，休日情報，誕生日を入れた SimpleDate を作る.
+     *
      * @param gc
      * @return
      */
@@ -225,6 +234,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * SimpleDate の EventCode に今日情報，休日情報，誕生日を入れる.
+     *
      * @param date
      * @return
      */
@@ -246,6 +256,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * 誕生日を登録する.
+     *
      * @param mmlBirthday
      */
     public void setBirthday(String mmlBirthday) {
@@ -253,7 +264,17 @@ public class CalendarTableModel extends AbstractTableModel {
     }
 
     /**
+     * 登録された マーク付き SimpleDate のリストを返す.
+     *
+     * @return
+     */
+    public Collection<SimpleDate> getMarkDates() {
+        return markDates;
+    }
+
+    /**
      * マークされた SimpleDate をモデルに追加する.
+     *
      * @param c
      */
     public void setMarkDates(Collection<SimpleDate> c) {
@@ -272,15 +293,8 @@ public class CalendarTableModel extends AbstractTableModel {
     }
 
     /**
-     * 登録された マーク付き SimpleDate のリストを返す.
-     * @return
-     */
-    public Collection<SimpleDate> getMarkDates() {
-        return markDates;
-    }
-
-    /**
      * event のマークをクリアする.
+     *
      * @param event
      */
     public void clearMarkDates(String event) {
@@ -294,6 +308,7 @@ public class CalendarTableModel extends AbstractTableModel {
 
     /**
      * 指定 row, col が今月から外れているかどうか.
+     *
      * @param row
      * @param col
      * @return

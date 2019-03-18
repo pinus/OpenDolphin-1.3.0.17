@@ -3,7 +3,6 @@ package open.dolphin.client;
 import javax.swing.*;
 
 /**
- *
  * @author Minagawa, Kazushi
  */
 public class UnsavedDocument {
@@ -12,7 +11,9 @@ public class UnsavedDocument {
     private ChartDocument doc;
     private JCheckBox checkBox;
 
-    /** Creates a new instance of UnsavedDocument */
+    /**
+     * Creates a new instance of UnsavedDocument
+     */
     public UnsavedDocument() {
     }
 

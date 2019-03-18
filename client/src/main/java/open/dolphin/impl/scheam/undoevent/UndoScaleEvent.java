@@ -7,7 +7,6 @@ import open.dolphin.impl.scheam.UndoEvent;
 import open.dolphin.impl.scheam.shapeholder.ShapeHolderBase;
 
 /**
- *
  * @author pns
  */
 public class UndoScaleEvent implements UndoEvent {
@@ -48,6 +47,7 @@ public class UndoScaleEvent implements UndoEvent {
 
     /**
      * 各 Layer を拡大／縮小する.
+     *
      * @param dx
      * @param dy
      * @param w
@@ -61,8 +61,8 @@ public class UndoScaleEvent implements UndoEvent {
         double holderw = holder.getEndX() - holder.getStartX();
         double holderh = holder.getEndY() - holder.getStartY();
 
-        holder.translate(holderx * dx/w, holdery * dy/h);
-        holder.scale(holderw * dx/w, holderh * dy/h);
+        holder.translate(holderx * dx / w, holdery * dy / h);
+        holder.scale(holderw * dx / w, holderh * dy / h);
 
         layer.redraw();
     }

@@ -5,11 +5,11 @@ import open.dolphin.event.ValidListener;
 /**
  * StampEditor が実装するインターフェイス.
  *
+ * @param <T>
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
- * @param <T>
  **/
-public interface IStampEditor <T> {
+public interface IStampEditor<T> {
 
     public void start();
 
@@ -17,12 +17,14 @@ public interface IStampEditor <T> {
 
     /**
      * ダイアログのタイトルを返す.
+     *
      * @return
      */
     public String getTitle();
 
     /**
      * ダイアログのタイトルトルをセットする.
+     *
      * @param val
      */
     public void setTitle(String val);
@@ -36,6 +38,7 @@ public interface IStampEditor <T> {
     /**
      * 編集中のデータが valid かどうかをリスンするリスナ.
      * これによりカルテに展開するボタンの制御を行う.
+     *
      * @param listener
      */
     public void addValidListener(ValidListener listener);

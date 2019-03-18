@@ -16,14 +16,6 @@ import java.lang.reflect.Method;
  */
 public class MenuActionManager {
 
-    /**
-     * {@code @MenuAction} を付けたメソッドが Action で呼ばれる.
-     */
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    public @interface MenuAction {
-    }
-
     private final ActionMap actionMap;
 
     public MenuActionManager(Object obj) {
@@ -69,9 +61,9 @@ public class MenuActionManager {
      * static バージョン.
      *
      * @param actionMap ActionMap
-     * @param key キー
-     * @param name 名前
-     * @param icon アイコン
+     * @param key       キー
+     * @param name      名前
+     * @param icon      アイコン
      * @return
      */
     public static JMenuItem getMenuItem(ActionMap actionMap, String key, String name, ImageIcon icon) {
@@ -88,7 +80,7 @@ public class MenuActionManager {
      * ActionMap に登録された action に名前とアイコンを付けて JMenuItem として取り出す.
      * instance 作って使うバージョン.
      *
-     * @param key キー
+     * @param key  キー
      * @param name 名前
      * @param icon アイコン
      * @return JMenuItem
@@ -104,5 +96,13 @@ public class MenuActionManager {
      */
     public ActionMap getActionMap() {
         return actionMap;
+    }
+
+    /**
+     * {@code @MenuAction} を付けたメソッドが Action で呼ばれる.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface MenuAction {
     }
 }

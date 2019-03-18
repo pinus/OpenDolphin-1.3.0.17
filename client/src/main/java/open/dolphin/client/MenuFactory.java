@@ -10,17 +10,18 @@ import java.awt.event.KeyEvent;
 
 /**
  * Menu Factory.
+ *
  * @author Minagawa, Kazushi
  * @author pns
  */
 public class MenuFactory {
 
+    private static final boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
     private MenuSupport main;
     private MenuSupport chart; // ChartMediator
     private JMenuBar menuBar;
     private JPanel toolPanel;
     private ActionMap actionMap;
-    private static final boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
 
 
     public MenuFactory() {
@@ -80,12 +81,12 @@ public class MenuFactory {
 
     @MenuAction
     public void print() {
-       chart.sendToChain("print");
+        chart.sendToChain("print");
     }
 
     @MenuAction
     public void processExit() {
-       main.sendToChain("processExit");
+        main.sendToChain("processExit");
     }
 
     @MenuAction
@@ -127,6 +128,7 @@ public class MenuFactory {
     public void sendClaim() {
         chart.sendToChain("sendClaim");
     }
+
     @MenuAction
     public void ascending() {
         chart.sendToChain("ascending");
@@ -570,7 +572,7 @@ public class MenuFactory {
         ascending.setName("ascending");
         ascending.setAction(actionMap.get("ascending"));
         ascending.setText("昇順");
-        actionMap.get("ascending").putValue("menuItem",ascending);
+        actionMap.get("ascending").putValue("menuItem", ascending);
         karte.add(ascending);
 
         // 降順
@@ -578,7 +580,7 @@ public class MenuFactory {
         descending.setName("descending");
         descending.setAction(actionMap.get("descending"));
         descending.setText("降順");
-        actionMap.get("descending").putValue("menuItem",descending);
+        actionMap.get("descending").putValue("menuItem", descending);
         karte.add(descending);
 
         // RadiButtonGroup
@@ -592,7 +594,7 @@ public class MenuFactory {
         showModified.setName("showModified");
         showModified.setAction(actionMap.get("showModified"));
         showModified.setText("修正履歴表示");
-        actionMap.get("showModified").putValue("menuItem",showModified);
+        actionMap.get("showModified").putValue("menuItem", showModified);
         karte.add(showModified);
 
         // 環境設定
@@ -864,13 +866,13 @@ public class MenuFactory {
 
         /******************************************************/
         // この時点で menuBar には既に window メニューが入っている (menuCount = 1 となっている)
-        menuBar.add(file,  0);
-        menuBar.add(edit,  1);
+        menuBar.add(file, 0);
+        menuBar.add(edit, 1);
         menuBar.add(karte, 2);
-        menuBar.add(text,  3);
-        menuBar.add(tool,  4);
+        menuBar.add(text, 3);
+        menuBar.add(tool, 4);
         // window menu = 5
-        menuBar.add(help,  6);
+        menuBar.add(help, 6);
     }
 
     private void setAccelerator(JMenuItem item, int key) {

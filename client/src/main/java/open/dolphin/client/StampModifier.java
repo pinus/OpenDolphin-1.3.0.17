@@ -13,12 +13,18 @@ import java.util.List;
 
 /**
  * drop された stamp を加工する.
+ *
  * @author pns
  */
 public class StampModifier {
 
+    private static String[] UNIT_MAI = {
+            "620005757", "620005758", "620007608", "620007706", "620007807", "620614501"
+    };
+
     /**
      * スタンプ加工バッチ処理.
+     *
      * @param stamp
      */
     public static void modify(ModuleModel stamp) {
@@ -36,6 +42,7 @@ public class StampModifier {
     /**
      * 重複スタンプがあれば注意を促す.
      * KartePane，PTransferHandler から呼ばれる.
+     *
      * @param srcStamp
      * @param kartePane
      * @return duplicate の数
@@ -60,7 +67,7 @@ public class StampModifier {
 
                     for (ClaimItem distItem : distModel.getClaimItem()) {
                         if (distItem.getCode().matches("^[1,6].*") && // 6.. 薬剤，1.. 検査その他
-                            distItem.getCode().equals(srcItem.getCode())) {
+                                distItem.getCode().equals(srcItem.getCode())) {
 
                             String text = StringTool.toHankakuNumber(distItem.getName());
                             text = StringTool.toHankakuUpperLower(text);
@@ -72,7 +79,7 @@ public class StampModifier {
             }
         }
 
-        if (! duplicates.isEmpty()) {
+        if (!duplicates.isEmpty()) {
             final Window parent = SwingUtilities.getWindowAncestor(kartePane.getComponent());
 
             SwingUtilities.invokeLater(new Runnable() {
@@ -93,6 +100,7 @@ public class StampModifier {
 
     /**
      * 初回実施で number が入力されていない場合，今日の日付を入れる
+     *
      * @param stamp
      */
     private static void addTodaysDate(ModuleModel stamp) {
@@ -104,7 +112,7 @@ public class StampModifier {
                 // 既に入力されていなければ今日の日付を入力
                 if (c.getNumber() == null || !c.getNumber().matches("[0-9]*-[0-9]*")) {
                     Calendar calendar = Calendar.getInstance();
-                    c.setNumber(String.format("%02d-%02d", calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DATE)));
+                    c.setNumber(String.format("%02d-%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DATE)));
                     break;
                 }
             }
@@ -115,6 +123,7 @@ public class StampModifier {
      * 外用剤の bundleNumber，number を補正する.
      * 外用剤の場合は bundle は常に 1 にして，その分を dose の方に増やす.
      * ドレニゾンテープ 1枚 x 3回分 → ドレニゾンテープ 3枚 x 1回分 という形式にする.
+     *
      * @param stamp
      */
     public static void adjustNumber(ModuleModel stamp) {
@@ -130,7 +139,7 @@ public class StampModifier {
                 int bdl = Integer.parseInt(bundleStr);
                 for (ClaimItem c : items) {
                     int dose = Integer.parseInt(c.getNumber());
-                    c.setNumber(String.valueOf(dose*bdl));
+                    c.setNumber(String.valueOf(dose * bdl));
                 }
             } catch (NumberFormatException ex) {
                 //System.out.println("StampModifier: " + ex.getMessage());
@@ -140,6 +149,7 @@ public class StampModifier {
 
     /**
      * 単位の付いてない薬剤に単位を付ける.
+     *
      * @param stamp
      */
     private static void addUnit(ModuleModel stamp) {
@@ -150,10 +160,6 @@ public class StampModifier {
             }
         }
     }
-
-    private static String[] UNIT_MAI = {
-        "620005757", "620005758", "620007608", "620007706", "620007807", "620614501"
-    };
 
     private static String getUnit(String code) {
         for (String s : UNIT_MAI) {

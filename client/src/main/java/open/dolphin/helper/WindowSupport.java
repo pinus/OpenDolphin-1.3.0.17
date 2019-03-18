@@ -23,30 +23,34 @@ import java.util.List;
  */
 public class WindowSupport implements MenuListener {
 
-    final private static List<WindowSupport> allWindows = new ArrayList<>();
-
-    private static final String WINDOW_MWNU_NAME = "ウインドウ";
-
-    private enum State {OPENED, CLOSED}
-
     // frame を整列させるときの初期位置と移動幅
     final public static int INITIAL_X = 256;
     final public static int INITIAL_Y = 40;
     final public static int INITIAL_DX = 96;
     final public static int INITIAL_DY = 48;
-
+    final private static List<WindowSupport> allWindows = new ArrayList<>();
+    private static final String WINDOW_MWNU_NAME = "ウインドウ";
     // Window support が提供するスタッフ
     // フレーム
     final private MainFrame frame;
-
     // メニューバー
     final private JMenuBar menuBar;
-
     // ウインドウメニュー
     final private JMenu windowMenu;
-
     // Window Action
     final private Action windowAction;
+
+    // プライベートコンストラクタ
+    private WindowSupport(MainFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction) {
+        this.frame = frame;
+        this.menuBar = menuBar;
+        this.windowMenu = windowMenu;
+        this.windowAction = windowAction;
+
+        // インスペクタを整列するアクションだけはあらかじめ入れておく
+        // こうしておかないと，１回 window メニューを開かないと accelerator が効かないことになる
+        windowMenu.add(new ArrangeInspectorAction());
+    }
 
     /**
      * WindowSupportを生成する.
@@ -109,16 +113,8 @@ public class WindowSupport implements MenuListener {
         return Collections.unmodifiableList(allWindows);
     }
 
-    // プライベートコンストラクタ
-    private WindowSupport(MainFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction) {
-        this.frame = frame;
-        this.menuBar = menuBar;
-        this.windowMenu = windowMenu;
-        this.windowAction = windowAction;
-
-        // インスペクタを整列するアクションだけはあらかじめ入れておく
-        // こうしておかないと，１回 window メニューを開かないと accelerator が効かないことになる
-        windowMenu.add(new ArrangeInspectorAction());
+    public static ImageIcon getIcon(JFrame frame) {
+        return frame.isActive() ? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16;
     }
 
     public MainFrame getFrame() {
@@ -203,6 +199,16 @@ public class WindowSupport implements MenuListener {
         }
     }
 
+    @Override
+    public void menuDeselected(MenuEvent e) {
+    }
+
+    @Override
+    public void menuCanceled(MenuEvent e) {
+    }
+
+    private enum State {OPENED, CLOSED}
+
     /**
      * インスペクタを整列する action.
      */
@@ -245,17 +251,5 @@ public class WindowSupport implements MenuListener {
                 }
             }
         }
-    }
-
-    @Override
-    public void menuDeselected(MenuEvent e) {
-    }
-
-    @Override
-    public void menuCanceled(MenuEvent e) {
-    }
-
-    public static ImageIcon getIcon(JFrame frame) {
-        return frame.isActive() ? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16;
     }
 }

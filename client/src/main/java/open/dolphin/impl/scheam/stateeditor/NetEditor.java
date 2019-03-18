@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * 指定された範囲に網を描く StateEditor.
+ *
  * @author pns
  */
 public class NetEditor extends PolygonEditorBase {
@@ -30,6 +31,7 @@ public class NetEditor extends PolygonEditorBase {
 
     /**
      * PolygonEditorBase から呼ばれて画面に FeedBack を表示する.
+     *
      * @param e
      */
     @Override
@@ -41,9 +43,9 @@ public class NetEditor extends PolygonEditorBase {
         interval = Math.abs((width + height) / 2) / LINES_PER_WIDTH / intervalFactor;
 
         List<Point2D> list = getNet();
-        for (int n=0; n<list.size(); n+=2) {
+        for (int n = 0; n < list.size(); n += 2) {
             Point2D p1 = list.get(n);
-            Point2D p2 = list.get(n+1);
+            Point2D p2 = list.get(n + 1);
 
             gc.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
         }
@@ -61,10 +63,11 @@ public class NetEditor extends PolygonEditorBase {
 
     /**
      * Option, Shift キーで網を増やす処理.
+     *
      * @param e
      */
     private void adjustInterval(KeyEvent e) {
-        intervalFactor = e.isAltDown()? (e.isShiftDown()? 0.8: 1.5): 1;
+        intervalFactor = e.isAltDown() ? (e.isShiftDown() ? 0.8 : 1.5) : 1;
         if (StateManager.isMousePressed() || isMultiClickMode()) {
             getDraftLayer().redraw();
             drawDragFeedback(null);
@@ -88,7 +91,7 @@ public class NetEditor extends PolygonEditorBase {
             });
             h.setNetDataSize(netData.size());
             // 輪郭をセット
-            for (int i=0; i<draftHolder.getPathSize(); i++) {
+            for (int i = 0; i < draftHolder.getPathSize(); i++) {
                 h.addPathX(draftHolder.getPathX(i));
                 h.addPathY(draftHolder.getPathY(i));
             }
@@ -104,7 +107,7 @@ public class NetEditor extends PolygonEditorBase {
      * 網の座標を作る.
      * Path(0) - line - Path(1)
      * Path(2) - line - Path(3)
-     *   :
+     * :
      * Path(2n) - line - Path(2n+1)
      * という line の集合体として表す
      *
@@ -126,12 +129,12 @@ public class NetEditor extends PolygonEditorBase {
             double d = 0;
 
             boolean found = false;
-            while(x + d < maxx && y + d < maxy) {
-                if (! found && gc.isPointInPath(x + d, y + d)) {
+            while (x + d < maxx && y + d < maxy) {
+                if (!found && gc.isPointInPath(x + d, y + d)) {
                     found = true;
                     list.add(new Point2D(x + d, y + d));
                 }
-                if (found && ! gc.isPointInPath(x + d, y + d)) {
+                if (found && !gc.isPointInPath(x + d, y + d)) {
                     found = false;
                     list.add(new Point2D(x + d, y + d));
                 }
@@ -147,12 +150,12 @@ public class NetEditor extends PolygonEditorBase {
             double d = 0;
 
             boolean found = false;
-            while(x + d < maxx && y + d < maxy) {
-                if (! found && gc.isPointInPath(x + d, y + d)) {
+            while (x + d < maxx && y + d < maxy) {
+                if (!found && gc.isPointInPath(x + d, y + d)) {
                     found = true;
                     list.add(new Point2D(x + d, y + d));
                 }
-                if (found && ! gc.isPointInPath(x + d, y + d)) {
+                if (found && !gc.isPointInPath(x + d, y + d)) {
                     found = false;
                     list.add(new Point2D(x + d, y + d));
                 }
@@ -169,12 +172,12 @@ public class NetEditor extends PolygonEditorBase {
             double d = 0;
 
             boolean found = false;
-            while(x - d > minx && y + d < maxy) {
-                if (! found && gc.isPointInPath(x - d, y + d)) {
+            while (x - d > minx && y + d < maxy) {
+                if (!found && gc.isPointInPath(x - d, y + d)) {
                     found = true;
                     list.add(new Point2D(x - d, y + d));
                 }
-                if (found && ! gc.isPointInPath(x - d, y + d)) {
+                if (found && !gc.isPointInPath(x - d, y + d)) {
                     found = false;
                     list.add(new Point2D(x - d, y + d));
                 }
@@ -190,12 +193,12 @@ public class NetEditor extends PolygonEditorBase {
             double d = 0;
 
             boolean found = false;
-            while(x - d > minx && y + d < maxy) {
-                if (! found && gc.isPointInPath(x - d, y + d)) {
+            while (x - d > minx && y + d < maxy) {
+                if (!found && gc.isPointInPath(x - d, y + d)) {
                     found = true;
                     list.add(new Point2D(x - d, y + d));
                 }
-                if (found && ! gc.isPointInPath(x - d, y + d)) {
+                if (found && !gc.isPointInPath(x - d, y + d)) {
                     found = false;
                     list.add(new Point2D(x - d, y + d));
                 }

@@ -5,7 +5,6 @@ import open.dolphin.infomodel.SimpleDate;
 import java.util.EventListener;
 
 /**
- *
  * @author pns
  */
 public interface CalendarListener extends EventListener {

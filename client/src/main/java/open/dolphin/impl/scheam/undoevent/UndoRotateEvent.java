@@ -6,7 +6,6 @@ import open.dolphin.impl.scheam.SchemaLayer;
 import open.dolphin.impl.scheam.UndoEvent;
 
 /**
- *
  * @author pns
  */
 public class UndoRotateEvent implements UndoEvent {
@@ -18,7 +17,7 @@ public class UndoRotateEvent implements UndoEvent {
         canvasPane = context.getCanvasPane();
         baseLayer = context.getBaseLayer();
         // 逆回転にして保存しておく
-        rotate = - r;
+        rotate = -r;
     }
 
     @Override

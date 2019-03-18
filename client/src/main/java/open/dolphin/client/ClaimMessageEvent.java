@@ -3,7 +3,7 @@ package open.dolphin.client;
 /**
  * CLAIM インスタンスを通知するイベント.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ClaimMessageEvent extends java.util.EventObject {
 
@@ -15,7 +15,9 @@ public class ClaimMessageEvent extends java.util.EventObject {
     private int number;
     private String confirmDate;
 
-    /** Creates new ClaimEvent */
+    /**
+     * Creates new ClaimEvent
+     */
     public ClaimMessageEvent(Object source) {
         super(source);
     }

@@ -35,6 +35,44 @@ public class MainComponentPanel extends JPanel {
         initComponents();
     }
 
+    public static void main(String[] argv) {
+        MainFrame f = new MainFrame("", false, false);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setSize(600, 800);
+
+        MainComponentPanel p = new MainComponentPanel();
+        MainComponentPanel.CommandPanel com = p.getCommandPanel();
+        StatusPanel status = p.getStatusPanel();
+
+        JLabel l1 = new JLabel("TEST1");
+        JLabel l2 = new JLabel("TEST2");
+        JLabel l3 = new JLabel("TEST3");
+        JButton b1 = new JButton("TEST4");
+        JButton b2 = new JButton("TEST4");
+        JTextField tf = new JTextField();
+        tf.setMaximumSize(new Dimension(100, Integer.MAX_VALUE));
+        tf.setPreferredSize(new Dimension(100, Integer.MAX_VALUE));
+        JProgressBar bar = new JProgressBar();
+
+        status.add(l1);
+        status.addSeparator();
+        status.add(l2);
+        status.addGlue();
+        status.add(bar);
+        status.addSeparator();
+        status.add(l3);
+        status.setMargin(8);
+
+        com.add(b1);
+        com.addGlue();
+        com.add(tf);
+        com.add(b2);
+
+        f.add(p);
+
+        f.setVisible(true);
+    }
+
     private void initComponents() {
         commandPanel = new CommandPanel();
         mainPanel = new MainPanel();
@@ -68,12 +106,13 @@ public class MainComponentPanel extends JPanel {
             this.setPanelHeight(COMMAND_PANEL_HEIGHT);
         }
     }
+
     /**
      * Table の入るメインパネル
      */
     public class MainPanel extends JPanel {
         public MainPanel() {
-            setLayout(new BorderLayout(0,0));
+            setLayout(new BorderLayout(0, 0));
         }
 
         @Override
@@ -81,43 +120,5 @@ public class MainComponentPanel extends JPanel {
             add(c, BorderLayout.CENTER);
             return c;
         }
-    }
-
-    public static void main(String[] argv) {
-        MainFrame f = new MainFrame("", false, false);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(600, 800);
-
-        MainComponentPanel p = new MainComponentPanel();
-        MainComponentPanel.CommandPanel com = p.getCommandPanel();
-        StatusPanel status = p.getStatusPanel();
-
-        JLabel l1 = new JLabel("TEST1");
-        JLabel l2 = new JLabel("TEST2");
-        JLabel l3 = new JLabel("TEST3");
-        JButton b1 = new JButton("TEST4");
-        JButton b2 = new JButton("TEST4");
-        JTextField tf = new JTextField();
-        tf.setMaximumSize(new Dimension(100,Integer.MAX_VALUE));
-        tf.setPreferredSize(new Dimension(100,Integer.MAX_VALUE));
-        JProgressBar bar = new JProgressBar();
-
-        status.add(l1);
-        status.addSeparator();
-        status.add(l2);
-        status.addGlue();
-        status.add(bar);
-        status.addSeparator();
-        status.add(l3);
-        status.setMargin(8);
-
-        com.add(b1);
-        com.addGlue();
-        com.add(tf);
-        com.add(b2);
-
-        f.add(p);
-
-        f.setVisible(true);
     }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * 指定した範囲内に点をたくさん打つ StateEditor.
  * Option キー，Shit キーで点を増やす.
+ *
  * @author pns
  */
 public class DotsEditor extends PolygonEditorBase {
@@ -29,8 +30,10 @@ public class DotsEditor extends PolygonEditorBase {
     public DotsEditor(SchemaEditorImpl context) {
         super(context);
     }
+
     /**
      * PolygonEditorBase から呼ばれて FeedBack を画面に表示する.
+     *
      * @param e
      */
     @Override
@@ -52,7 +55,7 @@ public class DotsEditor extends PolygonEditorBase {
 
         points.forEach(p -> {
             if (gc.isPointInPath(p.getX(), p.getY())) {
-                gc.fillOval(p.getX()-dotSize/2, p.getY()-dotSize/2, dotSize, dotSize);
+                gc.fillOval(p.getX() - dotSize / 2, p.getY() - dotSize / 2, dotSize, dotSize);
             }
         });
     }
@@ -69,6 +72,7 @@ public class DotsEditor extends PolygonEditorBase {
 
     /**
      * Option, Shift キーで点を増やす処理.
+     *
      * @param e
      */
     private void adjustInterval(KeyEvent e) {
@@ -76,8 +80,11 @@ public class DotsEditor extends PolygonEditorBase {
 
         // option key を押すたびにドットが増えて，shift-option なら減る
         if (e.isAltDown()) {
-            if (e.isShiftDown()) { intervalFactor *= 0.8; }
-            else { intervalFactor *= 1.2; }
+            if (e.isShiftDown()) {
+                intervalFactor *= 0.8;
+            } else {
+                intervalFactor *= 1.2;
+            }
         }
 
         if (StateManager.isMousePressed() || isMultiClickMode()) {
@@ -108,7 +115,7 @@ public class DotsEditor extends PolygonEditorBase {
             });
             h.setDotDataSize(h.getPathSize());
             // 輪郭をセット
-            for (int i=0; i<draftHolder.getPathSize(); i++) {
+            for (int i = 0; i < draftHolder.getPathSize(); i++) {
                 h.addPathX(draftHolder.getPathX(i));
                 h.addPathY(draftHolder.getPathY(i));
             }

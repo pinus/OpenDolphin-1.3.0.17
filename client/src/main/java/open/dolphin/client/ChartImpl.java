@@ -42,13 +42,17 @@ import java.util.prefs.Preferences;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
+    public static final String PN_FRAME = "chart.frame";
     private static final long serialVersionUID = 1L;
-
     //  Chart インスタンスを管理するstatic 変数
     private static final List<ChartImpl> allCharts = new ArrayList<>(3);
-
     // PvtChangeListener
     private static PvtListener pvtListener;
+    // getDiagnosisDocument() に loadDocuments() が終わったことを知らせる lock オブジェクト
+    public final boolean[] loadDocumentsDone = {false};
+    // Logger
+    private final Logger logger;
+    private final Preferences prefs;
     /// Document Plugin を格納する TabbedPane
     private PNSTabbedPane tabbedPane;
     // Active になっているDocument Plugin
@@ -73,14 +77,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private BlockGlass blockGlass;
     // 最新の受診歴
     private LastVisit lastVisit;
-    // Logger
-    private final Logger logger;
-
-    private final Preferences prefs;
-    public static final String PN_FRAME = "chart.frame";
-
-    // getDiagnosisDocument() に loadDocuments() が終わったことを知らせる lock オブジェクト
-    public final boolean[] loadDocumentsDone = {false};
 
     /**
      * Create new ChartImpl.
@@ -177,6 +173,61 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
+     * PatientVisitModel のカルテを前に出す static method.
+     *
+     * @param pvt PatientVisitModel
+     */
+    public static void toFront(PatientVisitModel pvt) {
+        if (pvt == null) {
+            return;
+        }
+        toFront(pvt.getPatient());
+    }
+
+    /**
+     * PatientModel のカルテを前に出す static method.
+     *
+     * @param patient PatientModel
+     */
+    public static void toFront(PatientModel patient) {
+        if (patient == null) {
+            return;
+        }
+        long ptId = patient.getId();
+        allCharts.stream().filter(chart -> chart.getPatient().getId() == ptId)
+                .findAny().ifPresent(chart -> chart.getFrame().toFront());
+
+    }
+
+    /**
+     * PatientVisitModel のカルテが開いているかどうか調べる static method.
+     *
+     * @param pvt PatientVisitModel
+     * @return karte opened or not
+     */
+    public static boolean isKarteOpened(PatientVisitModel pvt) {
+        if (pvt == null) {
+            return false;
+        }
+        return isKarteOpened(pvt.getPatient());
+    }
+
+    /**
+     * PatientModel のカルテが開いているかどうか調べる static method.
+     *
+     * @param patient PatientModel
+     * @return karte opened or not
+     */
+    public static boolean isKarteOpened(PatientModel patient) {
+        if (patient == null) {
+            return false;
+        }
+        long ptId = patient.getId();
+
+        return allCharts.stream().anyMatch(chart -> chart.getPatient().getId() == ptId);
+    }
+
+    /**
      * このチャートのカルテを返す.
      *
      * @return カルテ
@@ -227,16 +278,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 来院情報を設定する.
-     *
-     * @param pvt 来院情報
-     */
-    @Override
-    public void setPatientVisit(PatientVisitModel pvt) {
-        this.pvt = pvt;
-    }
-
-    /**
      * 来院情報を返す.
      *
      * @return 来院情報
@@ -244,6 +285,16 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     @Override
     public PatientVisitModel getPatientVisit() {
         return pvt;
+    }
+
+    /**
+     * 来院情報を設定する.
+     *
+     * @param pvt 来院情報
+     */
+    @Override
+    public void setPatientVisit(PatientVisitModel pvt) {
+        this.pvt = pvt;
     }
 
     /**
@@ -1179,12 +1230,12 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     /**
      * カルテ作成時にダアイログをオープンし，保険を選択させる.
      *
-     * @param docType 生成するドキュメントの種類. ２号カルテで固定.
-     * @param option NewKarteOption
-     * @param f Frame
-     * @param dept Department
+     * @param docType      生成するドキュメントの種類. ２号カルテで固定.
+     * @param option       NewKarteOption
+     * @param f            Frame
+     * @param dept         Department
      * @param insuranceUid Insurance UID
-     * @param deptCode Department ocd
+     * @param deptCode     Department ocd
      * @return NewKarteParams
      */
     public NewKarteParams getNewKarteParams(String docType, Chart.NewKarteOption option, MainFrame f, String dept, String deptCode, String insuranceUid) {
@@ -1320,7 +1371,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     /**
      * タブにドキュメントを追加する.
      *
-     * @param doc ChartDocument
+     * @param doc   ChartDocument
      * @param title タブタイトル
      */
     public void addChartDocument(ChartDocument doc, String title) {
@@ -1334,7 +1385,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * 新規カルテ用のタブタイトルを作成する.
      * 使ってない.
      *
-     * @param dept Department
+     * @param dept      Department
      * @param insurance 保険名
      * @return タブタイトル
      */
@@ -1496,6 +1547,60 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         getFrame().dispose();
     }
 
+    /**
+     * Document が modify用に既に開かれていたら toFront する
+     * masuda 先生の docAlreadyOpened のパクリ
+     *
+     * @param baseDocumentModel doc
+     * @return toFront できたら true
+     */
+    public boolean toFrontDocumentIfPresent(DocumentModel baseDocumentModel) {
+        if (baseDocumentModel == null || baseDocumentModel.getDocInfo() == null) {
+            return false;
+        }
+        long baseDocPk = baseDocumentModel.getDocInfo().getDocPk();
+        List<Chart> editorFrames = EditorFrame.getAllEditorFrames();
+        if (!editorFrames.isEmpty()) {
+            for (Chart chart : editorFrames) {
+                EditorFrame frame = (EditorFrame) chart;
+                long parentDocPk = frame.getParentDocPk();
+                if (baseDocPk == parentDocPk) {
+                    // parentPkが同じEditorFrameがある場合はFrameをtoFrontする
+                    chart.getFrame().setExtendedState(java.awt.Frame.NORMAL);
+                    chart.getFrame().toFront();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * NewKarte が既に開かれていたら toFront する.
+     * masuda 先生の newKarteAlreadyOpened のパクリ.
+     *
+     * @return toFront できたら true
+     */
+    private boolean toFrontNewKarteIfPresent() {
+        List<Chart> editorFrames = EditorFrame.getAllEditorFrames();
+        if (!editorFrames.isEmpty()) {
+            String patientId = this.getKarte().getPatient().getPatientId();
+            for (Chart chart : editorFrames) {
+                // 新規カルテだとDocInfoのstatusは"N"
+                EditorFrame ef = (EditorFrame) chart;
+                String status = ef.getDocInfoStatus();
+                String id = chart.getKarte().getPatient().getPatientId();
+                if (patientId.equals(id) && IInfoModel.STATUS_NONE.equals(status)) {
+                    // 新規カルテのEditorFrameがある場合はFrameをtoFrontする
+                    chart.getFrame().setExtendedState(Frame.NORMAL);
+                    chart.getFrame().toFront();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private abstract class ChartState {
 
         public ChartState() {
@@ -1586,114 +1691,5 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         public void controlMenu() {
             currentState.controlMenu();
         }
-    }
-
-    /**
-     * Document が modify用に既に開かれていたら toFront する
-     * masuda 先生の docAlreadyOpened のパクリ
-     *
-     * @param baseDocumentModel doc
-     * @return toFront できたら true
-     */
-    public boolean toFrontDocumentIfPresent(DocumentModel baseDocumentModel) {
-        if (baseDocumentModel == null || baseDocumentModel.getDocInfo() == null) {
-            return false;
-        }
-        long baseDocPk = baseDocumentModel.getDocInfo().getDocPk();
-        List<Chart> editorFrames = EditorFrame.getAllEditorFrames();
-        if (!editorFrames.isEmpty()) {
-            for (Chart chart : editorFrames) {
-                EditorFrame frame = (EditorFrame) chart;
-                long parentDocPk = frame.getParentDocPk();
-                if (baseDocPk == parentDocPk) {
-                    // parentPkが同じEditorFrameがある場合はFrameをtoFrontする
-                    chart.getFrame().setExtendedState(java.awt.Frame.NORMAL);
-                    chart.getFrame().toFront();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * NewKarte が既に開かれていたら toFront する.
-     * masuda 先生の newKarteAlreadyOpened のパクリ.
-     *
-     * @return toFront できたら true
-     */
-    private boolean toFrontNewKarteIfPresent() {
-        List<Chart> editorFrames = EditorFrame.getAllEditorFrames();
-        if (!editorFrames.isEmpty()) {
-            String patientId = this.getKarte().getPatient().getPatientId();
-            for (Chart chart : editorFrames) {
-                // 新規カルテだとDocInfoのstatusは"N"
-                EditorFrame ef = (EditorFrame) chart;
-                String status = ef.getDocInfoStatus();
-                String id = chart.getKarte().getPatient().getPatientId();
-                if (patientId.equals(id) && IInfoModel.STATUS_NONE.equals(status)) {
-                    // 新規カルテのEditorFrameがある場合はFrameをtoFrontする
-                    chart.getFrame().setExtendedState(Frame.NORMAL);
-                    chart.getFrame().toFront();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * PatientVisitModel のカルテを前に出す static method.
-     *
-     * @param pvt PatientVisitModel
-     */
-    public static void toFront(PatientVisitModel pvt) {
-        if (pvt == null) {
-            return;
-        }
-        toFront(pvt.getPatient());
-    }
-
-    /**
-     * PatientModel のカルテを前に出す static method.
-     *
-     * @param patient PatientModel
-     */
-    public static void toFront(PatientModel patient) {
-        if (patient == null) {
-            return;
-        }
-        long ptId = patient.getId();
-        allCharts.stream().filter(chart -> chart.getPatient().getId() == ptId)
-                .findAny().ifPresent(chart -> chart.getFrame().toFront());
-
-    }
-
-    /**
-     * PatientVisitModel のカルテが開いているかどうか調べる static method.
-     *
-     * @param pvt PatientVisitModel
-     * @return karte opened or not
-     */
-    public static boolean isKarteOpened(PatientVisitModel pvt) {
-        if (pvt == null) {
-            return false;
-        }
-        return isKarteOpened(pvt.getPatient());
-    }
-
-    /**
-     * PatientModel のカルテが開いているかどうか調べる static method.
-     *
-     * @param patient PatientModel
-     * @return karte opened or not
-     */
-    public static boolean isKarteOpened(PatientModel patient) {
-        if (patient == null) {
-            return false;
-        }
-        long ptId = patient.getId();
-
-        return allCharts.stream().anyMatch(chart -> chart.getPatient().getId() == ptId);
     }
 }

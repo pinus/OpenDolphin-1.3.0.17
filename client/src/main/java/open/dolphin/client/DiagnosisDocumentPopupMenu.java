@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 
 /**
  * DiagnosisDocument のポップアップメニューを一手に引き受ける
+ *
  * @author pns
  */
 public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMotionListener {
@@ -34,23 +35,6 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
     private int targetColumn;
 
     private PropertyChangeSupport boundSupport;
-
-    // 病名修飾語リスト
-    private enum DiagnosisPreposition {
-        右("2056"), 左("2049"), 両 ("2057");
-        private final String code;
-        private DiagnosisPreposition(String code) { this.code = code; }
-        public String desc() { return name(); }
-        public String code() { return code; }
-    }
-
-    private enum DiagnosisPostposition {
-        の急性増悪("8061"), の二次感染("8069"),の再発("8065"), の術後("8048"),の治療後("8075");
-        private final String code;
-        private DiagnosisPostposition(String code) { this.code = code; }
-        public String desc() { return name(); }
-        public String code() { return code; }
-    }
 
     public DiagnosisDocumentPopupMenu(DiagnosisDocument parent) {
         super();
@@ -86,18 +70,24 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         // マウスがクリックされた column を記録
         targetColumn = diagTable.columnAtPoint(e.getPoint());
 
-        if (e.isPopupTrigger()) { rightPressed(e); }
-        else { leftPressed(e); }
+        if (e.isPopupTrigger()) {
+            rightPressed(e);
+        } else {
+            leftPressed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         // Windows
-        if (e.isPopupTrigger()) { rightPressed(e); }
+        if (e.isPopupTrigger()) {
+            rightPressed(e);
+        }
     }
 
     /**
      * 右クリックの処理
+     *
      * @param e
      */
     private void rightPressed(MouseEvent e) {
@@ -128,7 +118,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
         // CellEditor を立ち上げずに右クリックした場合
         int column = diagTable.columnAtPoint(e.getPoint());
-        switch(column) {
+        switch (column) {
             case DiagnosisDocument.DIAGNOSIS_COL:
                 popupDiagnosis(e);
                 break;
@@ -151,6 +141,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     /**
      * 左クリックの処理
+     *
      * @param e
      */
     private void leftPressed(MouseEvent e) {
@@ -168,6 +159,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     /**
      * カレンダーポップアップを出す
+     *
      * @param e
      */
     private void popupCalendar(MouseEvent e) {
@@ -176,7 +168,9 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         GregorianCalendar gc = new GregorianCalendar();
         int this_month = gc.get(Calendar.MONTH);
         int dif = lastVisitYmd[1] - this_month; //lastVisit, this_month は gc なので，両者とも値が0-11 になる
-        if (dif > 0) { dif -= 12; }
+        if (dif > 0) {
+            dif -= 12;
+        }
 
         CalendarPanel cp = new CalendarPanel();
         cp.getTable().addCalendarListener(this::setDate);
@@ -187,6 +181,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     /**
      * SimpleDate を diagTable にセットする.
+     *
      * @param date
      */
     public void setDate(SimpleDate date) {
@@ -203,6 +198,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     /**
      * 診断修飾語ポップアップを出す
+     *
      * @param e
      */
     private void popupDiagnosis(final MouseEvent e) {
@@ -234,6 +230,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     /**
      * DiagnosisInspector で diagPopup を使う
+     *
      * @return
      */
     public JPopupMenu getDiagPopup() {
@@ -242,6 +239,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     /**
      * DiagnosisInspector で outcomePopup を使う
+     *
      * @return
      */
     public JPopupMenu getOutcomePopup() {
@@ -250,77 +248,11 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     /**
      * DiagnosisInspector で categoryPopup を使う
+     *
      * @return
      */
     public JPopupMenu getCategoryPopup() {
         return categoryPopup;
-    }
-
-    /**
-     * 病名修飾の実務 action
-     */
-    private class DiagAction implements ActionListener {
-        Object modifier;
-        boolean prep; // preposition or postposition
-
-        public DiagAction(DiagnosisPreposition p) {
-            modifier = p;
-            prep = true;
-        }
-        public DiagAction(DiagnosisPostposition p) {
-            modifier = p;
-            prep = false;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int[] rows = diagTable.getSelectedRows();
-            for (int r : rows) {
-                int row = diagTable.convertRowIndexToModel(r);
-                RegisteredDiagnosisModel rd = diagTableModel.getObject(row);
-
-                // 新しく作った診断名を設定
-                String diagDesc = rd.getDiagnosis();
-                String diagCode = rd.getDiagnosisCode();
-                String newDiagDesc;
-                String newDiagCode;
-
-                if (prep) {
-                    String desc = ((DiagnosisPreposition)modifier).desc();
-                    String code = ((DiagnosisPreposition)modifier).code() + ".";
-
-                    if (diagCode.contains(code)) {
-                        // すでに入力されていたらそれを消去することにした
-                        newDiagDesc = diagDesc.replaceFirst(desc, "");
-                        newDiagCode = diagCode.replaceFirst(code, "");
-                    } else {
-                        // 重複がなければ追加
-                        newDiagDesc = desc + diagDesc;
-                        newDiagCode = code + diagCode;
-                    }
-                } else {
-                    String desc = ((DiagnosisPostposition)modifier).desc();
-                    String code = "." + ((DiagnosisPostposition)modifier).code();
-
-                    if (diagCode.contains(code)) {
-                        // すでに入力されていたらそれを消去する
-                        newDiagDesc = diagDesc.replaceFirst(desc, "");
-                        newDiagCode = diagCode.replaceFirst(code, "");
-                    } else {
-                        newDiagDesc = diagDesc + desc;
-                        newDiagCode = diagCode + code;
-                    }
-                }
-
-                DiagnosisLiteModel newDiag = new DiagnosisLiteModel(rd);
-                newDiag.setDiagnosisDesc(newDiagDesc);
-                newDiag.setDiagnosisCode(newDiagCode);
-                diagTableModel.setValueAt(newDiag, row, DiagnosisDocument.DIAGNOSIS_COL);
-
-                // diagnosisInspector にも知らせる
-                ((ChartImpl)parent.getContext()).getDiagnosisInspector().update(diagTableModel);
-            }
-        }
     }
 
     /**
@@ -354,7 +286,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
                 diagTableModel.setValueAt(newDiag, row, DiagnosisDocument.DIAGNOSIS_COL);
 
                 // diagnosisInspector にも知らせる
-                ((ChartImpl)parent.getContext()).getDiagnosisInspector().update(diagTableModel);
+                ((ChartImpl) parent.getContext()).getDiagnosisInspector().update(diagTableModel);
             }
         }
     }
@@ -390,13 +322,14 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
                 diagTableModel.setValueAt(newDiag, row, DiagnosisDocument.DIAGNOSIS_COL);
 
                 // diagnosisInspector にも知らせる
-                ((ChartImpl)parent.getContext()).getDiagnosisInspector().update(diagTableModel);
+                ((ChartImpl) parent.getContext()).getDiagnosisInspector().update(diagTableModel);
             }
         }
     }
 
     /**
      * 主病名／疑い病名ポップアップを出す
+     *
      * @param e
      */
     private void popupCategory(MouseEvent e) {
@@ -405,11 +338,13 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     /**
      * 転帰ポップアップを出す
+     *
      * @param e
      */
     private void popupOutcome(MouseEvent e) {
         outcomePopup.show(e.getComponent(), e.getX(), e.getY());
     }
+
     /**
      * 主病名／疑い病名ポップアップを作る
      */
@@ -422,6 +357,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
             categoryPopup.add(item);
         }
     }
+
     /**
      * 転帰ポップアップを作る
      */
@@ -434,43 +370,10 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
             outcomePopup.add(item);
         }
     }
-    /**
-     * 主病名／疑い病名，転帰の実務
-     */
-    private class CategoryOutcomeAction implements ActionListener {
-        Object model;
-        int column;
-
-        public CategoryOutcomeAction() {
-            super();
-        }
-        public CategoryOutcomeAction(DiagnosisCategoryModel model) {
-            this();
-            this.model = model;
-            this.column = DiagnosisDocument.CATEGORY_COL;
-        }
-        public CategoryOutcomeAction(DiagnosisOutcomeModel model) {
-            this();
-            this.model = model;
-            this.column = DiagnosisDocument.OUTCOME_COL;
-        }
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // 処理途中に insert が発生して選択行の行番号が変わってしまうことがあるので hash 処理する
-            int[] rows = diagTable.getSelectedRows();
-            int[] hashArray = diagTable.convertViewRowsToHashArray(rows);
-
-            for (int hash : hashArray) {
-                int row = diagTable.convertHashToModelRow(hash);
-                diagTable.getModel().setValueAt(model, row, column);
-            }
-            // diagnosisInspector にも知らせる
-            ((ChartImpl)parent.getContext()).getDiagnosisInspector().update(diagTableModel);
-        }
-    }
 
     /**
      * 外部からポップアップの action を使うためのメソッド群
+     *
      * @param s
      */
     public void doClickDiagPopup(String s) {
@@ -487,7 +390,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
 
     private void doClickPopup(JPopupMenu popup, String s) {
         JMenuItem m = null;
-        for(Component c : popup.getComponents()) {
+        for (Component c : popup.getComponents()) {
             if (c instanceof JMenuItem) {
                 JMenuItem item = (JMenuItem) c;
                 if (s.equals(item.getText())) {
@@ -496,6 +399,149 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
                 }
             }
         }
-        if (m != null) { m.doClick(); }
+        if (m != null) {
+            m.doClick();
+        }
+    }
+
+    // 病名修飾語リスト
+    private enum DiagnosisPreposition {
+        右("2056"), 左("2049"), 両("2057");
+        private final String code;
+
+        private DiagnosisPreposition(String code) {
+            this.code = code;
+        }
+
+        public String desc() {
+            return name();
+        }
+
+        public String code() {
+            return code;
+        }
+    }
+
+    private enum DiagnosisPostposition {
+        の急性増悪("8061"), の二次感染("8069"), の再発("8065"), の術後("8048"), の治療後("8075");
+        private final String code;
+
+        private DiagnosisPostposition(String code) {
+            this.code = code;
+        }
+
+        public String desc() {
+            return name();
+        }
+
+        public String code() {
+            return code;
+        }
+    }
+
+    /**
+     * 病名修飾の実務 action
+     */
+    private class DiagAction implements ActionListener {
+        Object modifier;
+        boolean prep; // preposition or postposition
+
+        public DiagAction(DiagnosisPreposition p) {
+            modifier = p;
+            prep = true;
+        }
+
+        public DiagAction(DiagnosisPostposition p) {
+            modifier = p;
+            prep = false;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int[] rows = diagTable.getSelectedRows();
+            for (int r : rows) {
+                int row = diagTable.convertRowIndexToModel(r);
+                RegisteredDiagnosisModel rd = diagTableModel.getObject(row);
+
+                // 新しく作った診断名を設定
+                String diagDesc = rd.getDiagnosis();
+                String diagCode = rd.getDiagnosisCode();
+                String newDiagDesc;
+                String newDiagCode;
+
+                if (prep) {
+                    String desc = ((DiagnosisPreposition) modifier).desc();
+                    String code = ((DiagnosisPreposition) modifier).code() + ".";
+
+                    if (diagCode.contains(code)) {
+                        // すでに入力されていたらそれを消去することにした
+                        newDiagDesc = diagDesc.replaceFirst(desc, "");
+                        newDiagCode = diagCode.replaceFirst(code, "");
+                    } else {
+                        // 重複がなければ追加
+                        newDiagDesc = desc + diagDesc;
+                        newDiagCode = code + diagCode;
+                    }
+                } else {
+                    String desc = ((DiagnosisPostposition) modifier).desc();
+                    String code = "." + ((DiagnosisPostposition) modifier).code();
+
+                    if (diagCode.contains(code)) {
+                        // すでに入力されていたらそれを消去する
+                        newDiagDesc = diagDesc.replaceFirst(desc, "");
+                        newDiagCode = diagCode.replaceFirst(code, "");
+                    } else {
+                        newDiagDesc = diagDesc + desc;
+                        newDiagCode = diagCode + code;
+                    }
+                }
+
+                DiagnosisLiteModel newDiag = new DiagnosisLiteModel(rd);
+                newDiag.setDiagnosisDesc(newDiagDesc);
+                newDiag.setDiagnosisCode(newDiagCode);
+                diagTableModel.setValueAt(newDiag, row, DiagnosisDocument.DIAGNOSIS_COL);
+
+                // diagnosisInspector にも知らせる
+                ((ChartImpl) parent.getContext()).getDiagnosisInspector().update(diagTableModel);
+            }
+        }
+    }
+
+    /**
+     * 主病名／疑い病名，転帰の実務
+     */
+    private class CategoryOutcomeAction implements ActionListener {
+        Object model;
+        int column;
+
+        public CategoryOutcomeAction() {
+            super();
+        }
+
+        public CategoryOutcomeAction(DiagnosisCategoryModel model) {
+            this();
+            this.model = model;
+            this.column = DiagnosisDocument.CATEGORY_COL;
+        }
+
+        public CategoryOutcomeAction(DiagnosisOutcomeModel model) {
+            this();
+            this.model = model;
+            this.column = DiagnosisDocument.OUTCOME_COL;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // 処理途中に insert が発生して選択行の行番号が変わってしまうことがあるので hash 処理する
+            int[] rows = diagTable.getSelectedRows();
+            int[] hashArray = diagTable.convertViewRowsToHashArray(rows);
+
+            for (int hash : hashArray) {
+                int row = diagTable.convertHashToModelRow(hash);
+                diagTable.getModel().setValueAt(model, row, column);
+            }
+            // diagnosisInspector にも知らせる
+            ((ChartImpl) parent.getContext()).getDiagnosisInspector().update(diagTableModel);
+        }
     }
 }

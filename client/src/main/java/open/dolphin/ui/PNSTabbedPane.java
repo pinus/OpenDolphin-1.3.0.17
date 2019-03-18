@@ -22,6 +22,14 @@ import java.util.List;
 public class PNSTabbedPane extends JPanel implements ChangeListener {
     private static final long serialVersionUID = 1L;
     /**
+     * １行の最低タブ数
+     */
+    private static final int MIN_TAB_PER_LINE = 3;
+    /**
+     * ChangeListener
+     */
+    private final List<ChangeListener> listeners = new ArrayList<>();
+    /**
      * タブ切り替えボタン格納パネル
      */
     private ButtonPanel buttonPanel;
@@ -62,17 +70,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      */
     private int tabCount = 0;
     /**
-     * １行の最低タブ数
-     */
-    private static final int MIN_TAB_PER_LINE = 3;
-    /**
      * タブの場所　上か下か
      */
     private int tabPlacement = JTabbedPane.TOP;
-    /**
-     * ChangeListener
-     */
-    private final List<ChangeListener> listeners = new ArrayList<>();
     /**
      * 親の Window
      */
@@ -88,6 +88,262 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
     public PNSTabbedPane() {
         initComponents();
+    }
+
+    //================== TEST =================
+    public static void main(String[] argv) {
+        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
+        //testPattern1();
+        //testPattern2();
+        testPattern3();
+    }
+
+    /**
+     * MainWindow Style
+     * +---------------+
+     * | Tab Panel     |
+     * |---------------|
+     * | Command Panel |
+     * |---------------|
+     * |               |
+     * | Table         |
+     * |               |
+     * |---------------|
+     * | Status Panel  |
+     * +---------------+
+     */
+    private static void testPattern1() {
+        MainFrame f = new MainFrame("", false, false);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setSize(600, 800);
+
+        JPanel mainComponentPanel_1 = createMainPanel();
+        JPanel mainComponentPanel_2 = createMainPanel();
+        JPanel mainComponentPanel_3 = createMainPanel();
+
+        final PNSTabbedPane tabPane = new PNSTabbedPane();
+        tabPane.setButtonVgap(4);
+        tabPane.addTab("受付リスト", mainComponentPanel_1);
+        tabPane.addTab("患者検索", mainComponentPanel_2);
+        tabPane.addTab("ラボレシーバ", mainComponentPanel_3);
+
+        MainFrame.MainPanel mainPanel = f.getMainPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(tabPane, BorderLayout.CENTER);
+
+        f.pack();
+        f.setVisible(true);
+
+        JPanel p = tabPane.getAccessoryPanel();
+        JButton button1 = new JButton("西ボタン");
+        JButton button2 = new JButton("東ボタン");
+        p.add(button1, BorderLayout.WEST);
+        p.add(button2, BorderLayout.EAST);
+        f.pack();
+    }
+
+    private static JPanel createMainPanel() {
+        JPanel mainComponentPanel = new JPanel();
+        mainComponentPanel.setLayout(new BorderLayout(0, 0));
+
+        HorizontalPanel commandPanel = new HorizontalPanel();
+        commandPanel.setPanelHeight(36);
+        commandPanel.add(new JButton("テスト１"));
+        commandPanel.addSeparator();
+        commandPanel.add(new JButton("テスト２"));
+        commandPanel.addGlue();
+        commandPanel.add(new JButton("右端"));
+
+        StatusPanel statusPanel = new StatusPanel();
+        statusPanel.add("Label1");
+        statusPanel.addSeparator();
+        statusPanel.add("Label2");
+        statusPanel.addGlue();
+        statusPanel.add("END");
+        statusPanel.setMargin(8);
+
+        JTable table = new JTable(50, 10);
+        table.setGridColor(Color.gray);
+
+        mainComponentPanel.add(commandPanel, BorderLayout.NORTH);
+        mainComponentPanel.add(table, BorderLayout.CENTER);
+        mainComponentPanel.add(statusPanel, BorderLayout.SOUTH);
+
+        return mainComponentPanel;
+    }
+
+    /**
+     * ChartImpl Style
+     * +---------------+
+     * | Command Panel |
+     * |---------------|
+     * |   | TabPanel  |
+     * |p1 |-----------|
+     * |---| TextPane  |
+     * |   |           |
+     * |p2 |           |
+     * |---------------|
+     * | Status Panel  |
+     * +---------------+
+     */
+    private static void testPattern2() {
+        MainFrame f = new MainFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setSize(800, 600);
+
+        MainFrame.CommandPanel commandPanel = f.getCommandPanel();
+        commandPanel.setPanelHeight(56);
+        commandPanel.add(new JButton("FIRST"));
+        commandPanel.addSeparator();
+        commandPanel.add(new JButton("NEXT"));
+        commandPanel.addGlue();
+        commandPanel.add(new JButton("END"));
+
+        StatusPanel statusPanel = f.getStatusPanel();
+        statusPanel.add("Label1");
+        statusPanel.addSeparator();
+        statusPanel.add("Label2");
+        statusPanel.addGlue();
+        statusPanel.add("END");
+        statusPanel.setMargin(8);
+
+        MainFrame.MainPanel mainPanel = f.getMainPanel();
+        mainPanel.setLayout(new BorderLayout(1, 1));
+
+        JPanel p = new JPanel(new BorderLayout());
+        JPanel p1 = new JPanel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void paintComponent(Graphics grahics) {
+                super.paintComponent(grahics);
+                Graphics g = grahics.create();
+                g.setColor(Color.GRAY);
+                g.drawLine(0, 0, getWidth(), 0);
+                g.dispose();
+            }
+        };
+        p1.setPreferredSize(new Dimension(200, 100));
+        p1.setBorder(BorderFactory.createTitledBorder("PANEL1"));
+        JPanel p2 = new JPanel();
+        p2.setPreferredSize(new Dimension(200, 100));
+        p2.setBorder(BorderFactory.createTitledBorder("PANEL2"));
+        p.add(p1, BorderLayout.NORTH);
+        p.add(p2, BorderLayout.CENTER);
+
+        PNSTabbedPane tab = new PNSTabbedPane();
+        tab.setButtonVgap(4);
+        tab.addTab("カルテ", new JTextPane());
+        JTable table = new JTable(50, 10);
+        table.setGridColor(Color.gray);
+        tab.addTab("病名", table);
+
+        mainPanel.add(p, BorderLayout.WEST);
+        mainPanel.add(tab, BorderLayout.CENTER);
+
+        f.setVisible(true);
+    }
+
+    /**
+     * StampBox Style
+     * +---------------+
+     * | Command Panel |
+     * |---------------|
+     * |               |
+     * | Tab Panel in  |
+     * |               |
+     * |---------------|
+     * | Status Panel  |
+     * |---------------|
+     * | TabPanel out  |
+     * +---------------+
+     */
+    private static void testPattern3() {
+        MainFrame f = new MainFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // MainFrame の StatusPanel は使わない
+        f.removeStatusPanel();
+        // コマンドパネル
+        MainFrame.CommandPanel commandPanel = f.getCommandPanel();
+        commandPanel.add(new JButton("FIRST"));
+        commandPanel.addSeparator();
+        commandPanel.add(new JButton("NEXT"));
+        commandPanel.addGlue();
+        commandPanel.add(new JButton("END"));
+
+        // 内側のタブ
+        String[] tabStr = {"細菌検査", "注 射", "処 方", "初診・再診", "指導・在宅",
+                "処 置", "手 術", "放射線", "検体検査", "生体検査", "傷病名", "テキスト", "パ ス", "ORCA", "汎 用", "その他"};
+        PNSTabbedPane tabIn1 = createTreeTabPane(tabStr);
+        final String[] tabStr2 = {"細菌検査", "処 方", "初診・再診", "指導・在宅",
+                "処 置", "手 術", "放射線", "検体検査", "生体検査", "傷病名", "テキスト", "パ ス", "ORCA", "汎 用", "その他"};
+        final PNSTabbedPane tabIn2 = createTreeTabPane(tabStr2);
+
+        // 遅延生成テスト
+        tabIn2.addChangeListener(e -> {
+            System.out.println("stateChanged");
+            int index = tabIn2.getSelectedIndex();
+            tabIn2.setComponentAt(index, new JLabel(index + ":" + tabStr2[index]));
+        });
+
+        // 外側の tabbed pane
+        PNSTabbedPane tabOut = new PNSTabbedPane();
+        // 上下に隙間を入れる
+        tabOut.setButtonVgap(4);
+        // タブ位置は下
+        tabOut.setTabPlacement(JTabbedPane.BOTTOM);
+        tabOut.addTab("個人用", tabIn1);
+        tabOut.addTab("ネットワーク", tabIn2);
+
+
+        // main panel に tab を格納
+        MainFrame.MainPanel mainPanel = f.getMainPanel();
+        mainPanel.setLayout(new BorderLayout(0, 0));
+        mainPanel.add(tabOut, BorderLayout.CENTER);
+
+        f.pack();
+        f.setVisible(true);
+    }
+
+    private static PNSTabbedPane createTreeTabPane(String[] tabStr) {
+        // 内側の tabbed pane
+        PNSTabbedPane tab = new PNSTabbedPane();
+        // ボタンパネルの余白設定
+        tab.setButtonPanelPadding(new Dimension(4, 4));
+        // status panel を inner tab に設定
+        StatusPanel statusPanel = new StatusPanel();
+        tab.add(statusPanel, BorderLayout.SOUTH);
+        statusPanel.add(new JLabel("STATUS PANEL TEST"));
+        statusPanel.setMargin(16);
+
+        JTree[] panes = new JTree[tabStr.length];
+
+        for (int i = 0; i < tabStr.length; i++) {
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode(tabStr[i]);
+            DefaultMutableTreeNode swing = new DefaultMutableTreeNode("Swing");
+            DefaultMutableTreeNode java2d = new DefaultMutableTreeNode("Java2D");
+            DefaultMutableTreeNode java3d = new DefaultMutableTreeNode("Java3D");
+            DefaultMutableTreeNode javamail = new DefaultMutableTreeNode("JavaMail");
+
+            DefaultMutableTreeNode swingSub1 = new DefaultMutableTreeNode("JLabel");
+            DefaultMutableTreeNode swingSub2 = new DefaultMutableTreeNode("JButton");
+            DefaultMutableTreeNode swingSub3 = new DefaultMutableTreeNode("JTextField");
+
+            swing.add(swingSub1);
+            swing.add(swingSub2);
+            swing.add(swingSub3);
+
+            root.add(swing);
+            root.add(java2d);
+            root.add(java3d);
+            root.add(javamail);
+
+            panes[i] = new JTree(root);
+            panes[i].setPreferredSize(new Dimension(500, 700));
+            tab.addTab(tabStr[i], panes[i]);
+        }
+
+        return tab;
     }
 
     /**
@@ -270,6 +526,15 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
+     * 選択されている index を返す.
+     *
+     * @return selected index
+     */
+    public int getSelectedIndex() {
+        return selectionModel.getSelectedIndex();
+    }
+
+    /**
      * index のタブを選択する.
      *
      * @param index index
@@ -278,15 +543,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         if (buttonList.get(index).isEnabled()) {
             selectionModel.setSelectedIndex(index);
         }
-    }
-
-    /**
-     * 選択されている index を返す.
-     *
-     * @return selected index
-     */
-    public int getSelectedIndex() {
-        return selectionModel.getSelectedIndex();
     }
 
     /**
@@ -391,15 +647,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
-     * ボタンパネルの回りの余白を設定する.
-     *
-     * @param d dimension of padding
-     */
-    public void setButtonPanelPadding(Dimension d) {
-        buttonPanel.setPadding(d);
-    }
-
-    /**
      * ボタンパネルの回りの余白を返す.
      *
      * @return dmension of padding
@@ -409,37 +656,21 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
+     * ボタンパネルの回りの余白を設定する.
+     *
+     * @param d dimension of padding
+     */
+    public void setButtonPanelPadding(Dimension d) {
+        buttonPanel.setPadding(d);
+    }
+
+    /**
      * ボタンパネルのフォントをセットする.
      *
      * @param font Font
      */
     public void setButtonPanelFont(Font font) {
         buttonPanelFont = font;
-    }
-
-    /**
-     * ボタンパネル.
-     */
-    private class ButtonPanel extends HorizontalPanel {
-        private static final long serialVersionUID = 1L;
-        private Dimension padding = new Dimension(0, 0);
-
-        public ButtonPanel() {
-        }
-
-        public void setPadding(Dimension d) {
-            padding = d;
-        }
-
-        public Dimension getPadding() {
-            return padding;
-        }
-
-        @Override
-        public void paint(Graphics g) {
-            super.paint(g);
-            paintButtonPanel(g);
-        }
     }
 
     /**
@@ -474,6 +705,31 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     }
 
     /**
+     * ボタンパネル.
+     */
+    private class ButtonPanel extends HorizontalPanel {
+        private static final long serialVersionUID = 1L;
+        private Dimension padding = new Dimension(0, 0);
+
+        public ButtonPanel() {
+        }
+
+        public Dimension getPadding() {
+            return padding;
+        }
+
+        public void setPadding(Dimension d) {
+            padding = d;
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            super.paint(g);
+            paintButtonPanel(g);
+        }
+    }
+
+    /**
      * タブボタンクラス.
      */
     private class TabButton extends JToggleButton implements ActionListener {
@@ -490,17 +746,14 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         private final Color ACTIVE_FILL_SELECTED = new Color(100, 100, 100);
         private final Color INACTIVE_TEXT = new Color(180, 180, 180);
         private final Color INACTIVE_TEXT_SELECTED = new Color(50, 50, 50);
-
-        private String name;
-        private int index;
-
         public boolean isTop;
         public boolean isBottom;
         public boolean isRightEnd;
         public boolean isLeftEnd;
-
         // レイアウトマネージャーでボタンの大きさを調節する時使う
         public Dimension margin = new Dimension(0, 0); // no quaqua
+        private String name;
+        private int index;
         //public Dimension margin = new Dimension(0,-2); // quaqua 8.0
         //public Dimension margin = new Dimension(0,4); // quaqua 7.2
 
@@ -774,261 +1027,5 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                 return new Dimension(width, totalHeight + padding.height);
             }
         }
-    }
-
-    //================== TEST =================
-    public static void main(String[] argv) {
-        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
-        //testPattern1();
-        //testPattern2();
-        testPattern3();
-    }
-
-    /**
-     * MainWindow Style
-     * +---------------+
-     * | Tab Panel     |
-     * |---------------|
-     * | Command Panel |
-     * |---------------|
-     * |               |
-     * | Table         |
-     * |               |
-     * |---------------|
-     * | Status Panel  |
-     * +---------------+
-     */
-    private static void testPattern1() {
-        MainFrame f = new MainFrame("", false, false);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(600, 800);
-
-        JPanel mainComponentPanel_1 = createMainPanel();
-        JPanel mainComponentPanel_2 = createMainPanel();
-        JPanel mainComponentPanel_3 = createMainPanel();
-
-        final PNSTabbedPane tabPane = new PNSTabbedPane();
-        tabPane.setButtonVgap(4);
-        tabPane.addTab("受付リスト", mainComponentPanel_1);
-        tabPane.addTab("患者検索", mainComponentPanel_2);
-        tabPane.addTab("ラボレシーバ", mainComponentPanel_3);
-
-        MainFrame.MainPanel mainPanel = f.getMainPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(tabPane, BorderLayout.CENTER);
-
-        f.pack();
-        f.setVisible(true);
-
-        JPanel p = tabPane.getAccessoryPanel();
-        JButton button1 = new JButton("西ボタン");
-        JButton button2 = new JButton("東ボタン");
-        p.add(button1, BorderLayout.WEST);
-        p.add(button2, BorderLayout.EAST);
-        f.pack();
-    }
-
-    private static JPanel createMainPanel() {
-        JPanel mainComponentPanel = new JPanel();
-        mainComponentPanel.setLayout(new BorderLayout(0, 0));
-
-        HorizontalPanel commandPanel = new HorizontalPanel();
-        commandPanel.setPanelHeight(36);
-        commandPanel.add(new JButton("テスト１"));
-        commandPanel.addSeparator();
-        commandPanel.add(new JButton("テスト２"));
-        commandPanel.addGlue();
-        commandPanel.add(new JButton("右端"));
-
-        StatusPanel statusPanel = new StatusPanel();
-        statusPanel.add("Label1");
-        statusPanel.addSeparator();
-        statusPanel.add("Label2");
-        statusPanel.addGlue();
-        statusPanel.add("END");
-        statusPanel.setMargin(8);
-
-        JTable table = new JTable(50, 10);
-        table.setGridColor(Color.gray);
-
-        mainComponentPanel.add(commandPanel, BorderLayout.NORTH);
-        mainComponentPanel.add(table, BorderLayout.CENTER);
-        mainComponentPanel.add(statusPanel, BorderLayout.SOUTH);
-
-        return mainComponentPanel;
-    }
-
-    /**
-     * ChartImpl Style
-     * +---------------+
-     * | Command Panel |
-     * |---------------|
-     * |   | TabPanel  |
-     * |p1 |-----------|
-     * |---| TextPane  |
-     * |   |           |
-     * |p2 |           |
-     * |---------------|
-     * | Status Panel  |
-     * +---------------+
-     */
-    private static void testPattern2() {
-        MainFrame f = new MainFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(800, 600);
-
-        MainFrame.CommandPanel commandPanel = f.getCommandPanel();
-        commandPanel.setPanelHeight(56);
-        commandPanel.add(new JButton("FIRST"));
-        commandPanel.addSeparator();
-        commandPanel.add(new JButton("NEXT"));
-        commandPanel.addGlue();
-        commandPanel.add(new JButton("END"));
-
-        StatusPanel statusPanel = f.getStatusPanel();
-        statusPanel.add("Label1");
-        statusPanel.addSeparator();
-        statusPanel.add("Label2");
-        statusPanel.addGlue();
-        statusPanel.add("END");
-        statusPanel.setMargin(8);
-
-        MainFrame.MainPanel mainPanel = f.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(1, 1));
-
-        JPanel p = new JPanel(new BorderLayout());
-        JPanel p1 = new JPanel() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void paintComponent(Graphics grahics) {
-                super.paintComponent(grahics);
-                Graphics g = grahics.create();
-                g.setColor(Color.GRAY);
-                g.drawLine(0, 0, getWidth(), 0);
-                g.dispose();
-            }
-        };
-        p1.setPreferredSize(new Dimension(200, 100));
-        p1.setBorder(BorderFactory.createTitledBorder("PANEL1"));
-        JPanel p2 = new JPanel();
-        p2.setPreferredSize(new Dimension(200, 100));
-        p2.setBorder(BorderFactory.createTitledBorder("PANEL2"));
-        p.add(p1, BorderLayout.NORTH);
-        p.add(p2, BorderLayout.CENTER);
-
-        PNSTabbedPane tab = new PNSTabbedPane();
-        tab.setButtonVgap(4);
-        tab.addTab("カルテ", new JTextPane());
-        JTable table = new JTable(50, 10);
-        table.setGridColor(Color.gray);
-        tab.addTab("病名", table);
-
-        mainPanel.add(p, BorderLayout.WEST);
-        mainPanel.add(tab, BorderLayout.CENTER);
-
-        f.setVisible(true);
-    }
-
-    /**
-     * StampBox Style
-     * +---------------+
-     * | Command Panel |
-     * |---------------|
-     * |               |
-     * | Tab Panel in  |
-     * |               |
-     * |---------------|
-     * | Status Panel  |
-     * |---------------|
-     * | TabPanel out  |
-     * +---------------+
-     */
-    private static void testPattern3() {
-        MainFrame f = new MainFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // MainFrame の StatusPanel は使わない
-        f.removeStatusPanel();
-        // コマンドパネル
-        MainFrame.CommandPanel commandPanel = f.getCommandPanel();
-        commandPanel.add(new JButton("FIRST"));
-        commandPanel.addSeparator();
-        commandPanel.add(new JButton("NEXT"));
-        commandPanel.addGlue();
-        commandPanel.add(new JButton("END"));
-
-        // 内側のタブ
-        String[] tabStr = {"細菌検査", "注 射", "処 方", "初診・再診", "指導・在宅",
-                "処 置", "手 術", "放射線", "検体検査", "生体検査", "傷病名", "テキスト", "パ ス", "ORCA", "汎 用", "その他"};
-        PNSTabbedPane tabIn1 = createTreeTabPane(tabStr);
-        final String[] tabStr2 = {"細菌検査", "処 方", "初診・再診", "指導・在宅",
-                "処 置", "手 術", "放射線", "検体検査", "生体検査", "傷病名", "テキスト", "パ ス", "ORCA", "汎 用", "その他"};
-        final PNSTabbedPane tabIn2 = createTreeTabPane(tabStr2);
-
-        // 遅延生成テスト
-        tabIn2.addChangeListener(e -> {
-            System.out.println("stateChanged");
-            int index = tabIn2.getSelectedIndex();
-            tabIn2.setComponentAt(index, new JLabel(index + ":" + tabStr2[index]));
-        });
-
-        // 外側の tabbed pane
-        PNSTabbedPane tabOut = new PNSTabbedPane();
-        // 上下に隙間を入れる
-        tabOut.setButtonVgap(4);
-        // タブ位置は下
-        tabOut.setTabPlacement(JTabbedPane.BOTTOM);
-        tabOut.addTab("個人用", tabIn1);
-        tabOut.addTab("ネットワーク", tabIn2);
-
-
-        // main panel に tab を格納
-        MainFrame.MainPanel mainPanel = f.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(0, 0));
-        mainPanel.add(tabOut, BorderLayout.CENTER);
-
-        f.pack();
-        f.setVisible(true);
-    }
-
-    private static PNSTabbedPane createTreeTabPane(String[] tabStr) {
-        // 内側の tabbed pane
-        PNSTabbedPane tab = new PNSTabbedPane();
-        // ボタンパネルの余白設定
-        tab.setButtonPanelPadding(new Dimension(4, 4));
-        // status panel を inner tab に設定
-        StatusPanel statusPanel = new StatusPanel();
-        tab.add(statusPanel, BorderLayout.SOUTH);
-        statusPanel.add(new JLabel("STATUS PANEL TEST"));
-        statusPanel.setMargin(16);
-
-        JTree[] panes = new JTree[tabStr.length];
-
-        for (int i = 0; i < tabStr.length; i++) {
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode(tabStr[i]);
-            DefaultMutableTreeNode swing = new DefaultMutableTreeNode("Swing");
-            DefaultMutableTreeNode java2d = new DefaultMutableTreeNode("Java2D");
-            DefaultMutableTreeNode java3d = new DefaultMutableTreeNode("Java3D");
-            DefaultMutableTreeNode javamail = new DefaultMutableTreeNode("JavaMail");
-
-            DefaultMutableTreeNode swingSub1 = new DefaultMutableTreeNode("JLabel");
-            DefaultMutableTreeNode swingSub2 = new DefaultMutableTreeNode("JButton");
-            DefaultMutableTreeNode swingSub3 = new DefaultMutableTreeNode("JTextField");
-
-            swing.add(swingSub1);
-            swing.add(swingSub2);
-            swing.add(swingSub3);
-
-            root.add(swing);
-            root.add(java2d);
-            root.add(java3d);
-            root.add(javamail);
-
-            panes[i] = new JTree(root);
-            panes[i].setPreferredSize(new Dimension(500, 700));
-            tab.addTab(tabStr[i], panes[i]);
-        }
-
-        return tab;
     }
 }

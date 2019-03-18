@@ -8,7 +8,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 /**
- *
  * @author pns
  */
 public class TablePanelRenderer extends DefaultTableCellRenderer {
@@ -24,15 +23,15 @@ public class TablePanelRenderer extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column ) {
+                                                   boolean isSelected, boolean hasFocus, int row, int column) {
 
-       JLabel comp = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-       comp.setBorder(null);
+        JLabel comp = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        comp.setBorder(null);
 
-       String text = "";
+        String text = "";
 
         if (value != null) {
-            text = (value instanceof String)? (String) value : value.toString();
+            text = (value instanceof String) ? (String) value : value.toString();
         }
 
         text = StringTool.toHankakuNumber(text);
@@ -47,7 +46,7 @@ public class TablePanelRenderer extends DefaultTableCellRenderer {
                 comp.setBackground(table.getSelectionBackground());
                 comp.setForeground(table.getSelectionForeground());
             } else {
-                comp.setBackground((Color)table.getClientProperty("JTable.backgroundOffFocus"));
+                comp.setBackground((Color) table.getClientProperty("JTable.backgroundOffFocus"));
                 comp.setForeground(table.getForeground());
             }
         } else {

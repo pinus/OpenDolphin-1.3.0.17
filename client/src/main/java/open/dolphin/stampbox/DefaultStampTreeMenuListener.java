@@ -4,6 +4,7 @@ import javax.swing.*;
 
 /**
  * StampTreeMenuBuilder に登録する Defalut Listener.
+ *
  * @author pns
  */
 public class DefaultStampTreeMenuListener implements StampTreeMenuListener {

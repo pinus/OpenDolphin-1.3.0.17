@@ -23,16 +23,15 @@ import java.util.stream.Stream;
 /**
  * DiagnosisTransferHandler
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  * @author pns
  */
 public class DiagnosisTransferHandler extends PNSTransferHandler {
     private static final long serialVersionUID = 1L;
-
+    private final DiagnosisDocument parent;
     private JTable sourceTable;
     private RegisteredDiagnosisModel dragItem;
     private boolean shouldRemove;
-    private final DiagnosisDocument parent;
 
     public DiagnosisTransferHandler(DiagnosisDocument parent) {
         super();
@@ -76,7 +75,7 @@ public class DiagnosisTransferHandler extends PNSTransferHandler {
             // canImport で得た選択行に挿入（DiagnosisDocument#importStamp では使ってないんだけど）
             JTable dropTable = (JTable) c;
             int index = dropTable.getSelectedRow();
-            index = index < 0? 0 : index;
+            index = index < 0 ? 0 : index;
 
             // Dropされたノードを取得する
             StampTreeNode droppedNode = (StampTreeNode) t.getTransferData(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor);
@@ -108,7 +107,7 @@ public class DiagnosisTransferHandler extends PNSTransferHandler {
                     StampTreeNode node = (StampTreeNode) e.nextElement();
                     if (node.isLeaf()) {
                         ModuleInfoBean stampInfo = node.getStampInfo();
-                        if (stampInfo.isSerialized() && (stampInfo.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS)) ) {
+                        if (stampInfo.isSerialized() && (stampInfo.getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS))) {
                             importList.add(stampInfo);
                             //System.out.println("StampId " + stampInfo.getStampId());
                         }

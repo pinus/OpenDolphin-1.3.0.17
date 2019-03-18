@@ -13,6 +13,7 @@ import java.util.List;
  *      |- rootItem
  *      +- rootItem
  * </pre>
+ *
  * @author pns
  */
 public class StampTreeMenuModel {

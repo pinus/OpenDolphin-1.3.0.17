@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
  * ver.4 1回だけ getNextEvent() から戻らなくなったことがあったので，Timeout するようにした.
  * ver.5 TimeOut を入れてもまれに freeze 発生. AWTEventListener をつける方法に変更
  * -- java 1.8.0_121 の時点で確認してみたら不要になってた
+ *
  * @author pns
  */
 public class PNSPopupMenu extends JPopupMenu {
@@ -29,7 +30,7 @@ public class PNSPopupMenu extends JPopupMenu {
     }
 
     @Override
-    public void show(Component invoker, int x , int y) {
+    public void show(Component invoker, int x, int y) {
         // 他のアプリケーションからクリックされたとき
         com.apple.eawt.Application.getApplication().requestForeground(true);
 
@@ -39,6 +40,11 @@ public class PNSPopupMenu extends JPopupMenu {
         Toolkit.getDefaultToolkit().addAWTEventListener(listener, AWTEvent.MOUSE_EVENT_MASK);
     }
 
+    public void superShow() {
+        Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
+        super.show(invoker, x, y);
+    }
+
     // MOUSE_RELEASED を検出する Listener
     private class EventListener implements AWTEventListener {
         public void eventDispatched(AWTEvent event) {
@@ -46,10 +52,5 @@ public class PNSPopupMenu extends JPopupMenu {
                 superShow();
             }
         }
-    }
-
-    public void superShow() {
-        Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
-        super.show(invoker, x, y);
     }
 }

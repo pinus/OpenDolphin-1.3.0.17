@@ -20,16 +20,12 @@ import java.util.prefs.Preferences;
 /**
  * プロジェクト情報管理クラス.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ProjectStub implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Preferences prefs;
-    private boolean valid;
-    private DolphinPrincipal principal;
-    private String providerURL;
-    private UserModel userModel;
     // Preferences のノード名
     private final String NODE_NAME = "/open/dolphin/project/v1310";
     // デフォルトのプロジェクト名
@@ -42,27 +38,32 @@ public class ProjectStub implements java.io.Serializable {
     //private final int RMI_PORT = 1099;
     //private final int RMI_PORT = 4447; // jboss as 7.1
     private final int RMI_PORT = 8080; // REST
-
     // Claim
     private final boolean DEFAULT_SEND_CLAIM = false;
     private final boolean DEFAULT_SEND_CLAIM_SAVE = true;
     private final boolean DEFAULT_SEND_CLAIM_TMP = false;
     private final boolean DEFAULT_SEND_CLAIM_MODIFY = false;
     private final boolean DEFAULT_SEND_DIAGNOSIS = true;
-
     // Update
     private final boolean DEFAULT_USE_PROXY = false;
     private final String DEFAULT_PROXY_HOST = null;
     private final int DEFAULT_PROXY_PORT = 8080;
     private final long DEFAULT_LAST_MODIFIED = 0L;
+    private boolean valid;
+    private DolphinPrincipal principal;
+    private String providerURL;
+    private UserModel userModel;
 
-    /** ProjectStub を生成する.  */
+    /**
+     * ProjectStub を生成する.
+     */
     public ProjectStub() {
         prefs = Preferences.userRoot().node(NODE_NAME);
     }
 
     /**
      * Preferencesを返す.
+     *
      * @return
      */
     public Preferences getPreferences() {
@@ -71,6 +72,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 設定ファイルが有効かどうかを返す.
+     *
      * @return 有効な時 true
      */
     public boolean isValid() {
@@ -100,6 +102,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ProviderURLを返す.
+     *
      * @return JNDI に使用する ProviderURL
      */
     public String getProviderURL() {
@@ -116,6 +119,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * JNDIのProviderURLを設定する.
+     *
      * @param providerURL JNDIのProviderURL
      */
     public void setProviderURL(String providerURL) {
@@ -124,6 +128,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * プロジェクト名を返す.
+     *
      * @return プロジェクト名 (Dolphin ASP, HOT, MAIKO, HANIWA ... etc)
      */
     public String getName() {
@@ -132,6 +137,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * プロジェクト名を返す.
+     *
      * @param projectName
      */
     public void setName(String projectName) {
@@ -140,6 +146,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログインユーザ情報を返す.
+     *
      * @return Dolphinサーバに登録されているユーザ情報
      */
     public UserModel getUserModel() {
@@ -148,6 +155,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログインユーザ情報を設定する.
+     *
      * @param userModel ログイン時にDolphinサーバから取得した情報
      */
     public void setUserModel(UserModel userModel) {
@@ -156,6 +164,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログイン画面用のUserIDを返す.
+     *
      * @return ログイン画面に表示するUserId
      */
     public String getUserId() {
@@ -164,6 +173,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログイン画面用のUserIDを設定する.
+     *
      * @param val ログイン画面に表示するUserId
      */
     public void setUserId(String val) {
@@ -172,6 +182,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログイン画面用のFacilityIDを返す.
+     *
      * @return ログイン画面に表示するFacilityID
      */
     public String getFacilityId() {
@@ -180,6 +191,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログイン画面用のFacilityIDを設定する.
+     *
      * @param val ログイン画面に表示するFacilityID
      */
     public void setFacilityId(String val) {
@@ -188,6 +200,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 保存したパスワードをデコードして返す
+     *
      * @return
      */
     public String getUserPassword() {
@@ -196,6 +209,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログイン時のパスワードを暗号化保存
+     *
      * @param val
      */
     public void setUserPassword(String val) {
@@ -204,6 +218,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログイン時のパスワードを保存するかどうか
+     *
      * @return
      */
     public boolean isSavePassword() {
@@ -212,6 +227,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ログイン時のパスワードを保存するかどうかを設定
+     *
      * @param b
      */
     public void setSavePassword(boolean b) {
@@ -220,6 +236,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ORCA バージョンを返す.
+     *
      * @return ORCA バージョン
      */
     public String getOrcaVersion() {
@@ -228,6 +245,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * ORCA バージョンを設定する.
+     *
      * @param version ORCA バージョン
      */
     public void setOrcaVersion(String version) {
@@ -236,6 +254,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * JMARICode を返す.
+     *
      * @return JMARI Code
      */
     public String getJMARICode() {
@@ -244,6 +263,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * JMARICode を設定する.
+     *
      * @param jamriCode
      */
     public void setJMARICode(String jamriCode) {
@@ -521,10 +541,12 @@ public class ProjectStub implements java.io.Serializable {
     //
     // CLAIM関連情報
     //
+
     /**
      * CLAIM 送信全体への設定を返す.
      * デフォルトが false になっているのは新規インストールの場合で ORCA 接続なしで
      * 使えるようにするため.
+     *
      * @return 送信する時 true
      */
     public boolean getSendClaim() {
@@ -537,6 +559,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 保存時に CLAIM 送信を行うかどうかを返す.
+     *
      * @return 行う時 true
      */
     public boolean getSendClaimSave() {
@@ -549,6 +572,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 仮保存時に CLAIM 送信を行うかどうかを返す.
+     *
      * @return 行う時 true
      */
     public boolean getSendClaimTmp() {
@@ -561,6 +585,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 修正時に CLAIM 送信を行うかどうかを返す.
+     *
      * @return 行う時 true
      */
     public boolean getSendClaimModify() {
@@ -589,6 +614,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 病名 CLAIM 送信を行うかどうかを返す.
+     *
      * @return 行う時 true
      */
     public boolean getSendDiagnosis() {
@@ -652,6 +678,7 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * パスワードを暗号化した文字列を返す.
+     *
      * @param key
      * @param pass
      * @return
@@ -683,12 +710,15 @@ public class ProjectStub implements java.io.Serializable {
 
     /**
      * 暗号化したパスワードをデコードして返す.
+     *
      * @param key
      * @param pass
      * @return
      */
     public String decryptPassword(String key, String pass) {
-        if (key == null || key.equals("")) { return ""; }
+        if (key == null || key.equals("")) {
+            return "";
+        }
 
         InputStream inputStream = null;
 

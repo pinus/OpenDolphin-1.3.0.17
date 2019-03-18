@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * StampImporter.
  *
- * @author Minagawa,Kazushi
+ * @author Minagawa, Kazushi
  * @author pns
  */
 public class StampImporter {
@@ -41,7 +41,9 @@ public class StampImporter {
 
     private static final int WIDTH = 780;
     private static final int HEIGHT = 380;
-
+    private final StampBoxPlugin stampBox;
+    private final List<Long> importedTreeList;
+    private final Logger logger;
     private JFrame frame;
     //private ObjectListTable browseTable;
     private JTable table;
@@ -49,15 +51,10 @@ public class StampImporter {
     private JButton importBtn;
     private JButton deleteBtn;
     private JButton cancelBtn;
-
     private JLabel publicLabel;
     private JLabel localLabel;
     private JLabel importedLabel;
-
-    private final StampBoxPlugin stampBox;
-    private final List<Long> importedTreeList;
     private StampDelegater sdl;
-    private final Logger logger;
 
     public StampImporter(StampBoxPlugin stampBox) {
         this.stampBox = stampBox;
@@ -73,12 +70,12 @@ public class StampImporter {
         sdl = new StampDelegater();
 
         int delay = 200;
-        int maxEstimation = 60*1000;
+        int maxEstimation = 60 * 1000;
         String mmsg = "公開スタンプを取得しています...";
         String message = "スタンプ取り込み";
         Component c = null;
 
-        Task task =  new Task<List<PublishedTreeModel>>(c, message, mmsg, maxEstimation) {
+        Task task = new Task<List<PublishedTreeModel>>(c, message, mmsg, maxEstimation) {
 
             @Override
             protected List<PublishedTreeModel> doInBackground() {
@@ -158,7 +155,7 @@ public class StampImporter {
 
         JPanel browsePane = new JPanel();
 
-        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+        List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>("名  称", String.class, "getName"),
                 new PNSTriple<>("カテゴリ", String.class, "getCategory"),
                 new PNSTriple<>("公開者", String.class, "getPartyName"),
@@ -172,8 +169,8 @@ public class StampImporter {
         tableModel = new ObjectReflectTableModel<>(reflectList);
         table.setModel(tableModel);
 
-        int[] columnWidth = { 120, 90, 170, 270, 40, 40 };
-        for (int i=0; i<columnWidth.length; i++) {
+        int[] columnWidth = {120, 90, 170, 270, 40, 40};
+        for (int i = 0; i < columnWidth.length; i++) {
             table.getColumnModel().getColumn(i).setPreferredWidth(columnWidth[i]);
         }
 
@@ -243,7 +240,9 @@ public class StampImporter {
     public void importPublishedTree() {
         int row = table.getSelectedRow();
         PublishedTreeModel importTree = tableModel.getObject(row);
-        if (importTree == null) { return; }
+        if (importTree == null) {
+            return;
+        }
 
         // サブスクライブリストに追加する
         SubscribedTreeModel sm = new SubscribedTreeModel();
@@ -257,7 +256,7 @@ public class StampImporter {
 
         // Worker, Timer を実行する
         int delay = 200;
-        int maxEstimation = 60*1000;
+        int maxEstimation = 60 * 1000;
         String mmsg = "公開スタンプをインポートしています...";
         String message = "スタンプ取り込み";
         Component c = frame;
@@ -297,7 +296,9 @@ public class StampImporter {
     public void removeImportedTree() {
         int row = table.getSelectedRow();
         PublishedTreeModel removeTree = tableModel.getObject(row);
-        if (removeTree == null) { return; }
+        if (removeTree == null) {
+            return;
+        }
 
         SubscribedTreeModel sm = new SubscribedTreeModel();
         sm.setTreeId(removeTree.getId());
@@ -310,7 +311,7 @@ public class StampImporter {
 
         // Unsubscribeタスクを実行する
         int delay = 200;
-        int maxEstimation = 60*1000;
+        int maxEstimation = 60 * 1000;
         String mmsg = "インポート済みスタンプを削除しています...";
         String message = "スタンプ取り込み";
         Component c = frame;
@@ -355,10 +356,10 @@ public class StampImporter {
 
         @Override
         public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
+                                                       Object value,
+                                                       boolean isSelected,
+                                                       boolean isFocused,
+                                                       int row, int col) {
 
             if (isSelected) {
                 setBackground(table.getSelectionBackground());
@@ -402,10 +403,10 @@ public class StampImporter {
 
         @Override
         public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean isFocused,
-                int row, int col) {
+                                                       Object value,
+                                                       boolean isSelected,
+                                                       boolean isFocused,
+                                                       int row, int col) {
 
             if (isSelected) {
                 setBackground(table.getSelectionBackground());

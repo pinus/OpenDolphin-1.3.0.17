@@ -21,20 +21,33 @@ import java.util.List;
 /**
  * 色見本のパレットと opacity のスライダからなる color palette.
  * opacity は color に含めて扱う.
+ *
  * @author pns
  */
 public class ColorPalette extends Pane {
-    /** パレットの行数 */
+    /**
+     * パレットの行数
+     */
     private static final int PALETTE_ROWS = 8;
-    /** 各々のラベルのサイズ */
+    /**
+     * 各々のラベルのサイズ
+     */
     private static final int PALETTE_LABEL_SIZE = 16;
-    /** 色配列から作った color labels を保持する配列 */
+    /**
+     * 色配列から作った color labels を保持する配列
+     */
     private final List<ColorLabel> labelList = new ArrayList<>();
-    /** opacity を管理するスライダー */
+    /**
+     * opacity を管理するスライダー
+     */
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty();
-    /** 選択した色を保持する property. これは opacity も保持する.  */
+    /**
+     * 選択した色を保持する property. これは opacity も保持する.
+     */
     private final ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>();
-    /** Slider の valueChangingProperty に連動 */
+    /**
+     * Slider の valueChangingProperty に連動
+     */
     private final BooleanProperty valueChangingProperty = new SimpleBooleanProperty();
 
     /**
@@ -45,7 +58,7 @@ public class ColorPalette extends Pane {
         final ToggleGroup group = new ToggleGroup();
 
         // 色見本 label を入れるための TilePane
-        final TilePane colorTile = new TilePane(2,2);
+        final TilePane colorTile = new TilePane(2, 2);
         colorTile.setOrientation(Orientation.VERTICAL);
         colorTile.setPrefRows(PALETTE_ROWS);
 
@@ -72,7 +85,7 @@ public class ColorPalette extends Pane {
         // opacityProperty の変化 → colorProperty を設定
         opacityProperty.addListener((ObservableValue<? extends Number> ov, Number t, Number opacity) -> {
             Color c = colorProperty.get();
-            colorProperty.set(Color.color(c.getRed(), c.getGreen(), c.getBlue(), (double)opacity));
+            colorProperty.set(Color.color(c.getRed(), c.getGreen(), c.getBlue(), (double) opacity));
         });
 
         // 色見本の選択 → colorProperty を設定　色見本の色には opacity 情報が入ってないので opacityProperty と合成する
@@ -82,7 +95,7 @@ public class ColorPalette extends Pane {
                 // 前の Toggle を選択しなおす（RadioButton にすればその必要はないが，RadioButton はボタン画像がが消せない）
                 t.setSelected(true);
             } else {
-                Color c = ((ColorLabel)toggle).getColor();
+                Color c = ((ColorLabel) toggle).getColor();
                 colorProperty.set(Color.color(c.getRed(), c.getGreen(), c.getBlue(), opacityProperty.get()));
             }
         });
@@ -94,7 +107,9 @@ public class ColorPalette extends Pane {
                 // 同じ色の color label を選択状態にする
                 if (SchemaUtils.equalsExceptOpacity(label.getColor(), color)) {
                     // 同じ色が見つかって，かつ選択状態になければ選択する
-                    if (! label.isSelected()) { group.selectToggle(label); }
+                    if (!label.isSelected()) {
+                        group.selectToggle(label);
+                    }
                     break;
                 }
             }
@@ -112,17 +127,29 @@ public class ColorPalette extends Pane {
 
     /**
      * 選択色の property を返す
+     *
      * @return
      */
-    public ObjectProperty<Color> colorProperty() { return colorProperty; }
-    public Color getColor() { return colorProperty.get(); }
-    public void setColor(Color c) { colorProperty.set(c);}
+    public ObjectProperty<Color> colorProperty() {
+        return colorProperty;
+    }
+
+    public Color getColor() {
+        return colorProperty.get();
+    }
+
+    public void setColor(Color c) {
+        colorProperty.set(c);
+    }
 
     /**
      * Slider の valueChangingProperty に連動
+     *
      * @return
      */
-    public BooleanProperty valueChangingProperty() { return valueChangingProperty; }
+    public BooleanProperty valueChangingProperty() {
+        return valueChangingProperty;
+    }
 
     /**
      * パレットの各々の色のラベル
@@ -133,6 +160,7 @@ public class ColorPalette extends Pane {
 
         /**
          * color c をもつ color label を作る
+         *
          * @param c
          */
         public ColorLabel(Color c) {
@@ -146,8 +174,10 @@ public class ColorPalette extends Pane {
             r.setFill(c);
             setGraphic(r);
         }
+
         /**
          * この color label のもつ色を返す
+         *
          * @return
          */
         public Color getColor() {

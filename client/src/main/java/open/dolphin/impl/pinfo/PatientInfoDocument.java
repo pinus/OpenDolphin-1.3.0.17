@@ -32,16 +32,16 @@ public class PatientInfoDocument extends AbstractChartDocument {
 
     // 患者属性名
     private static final String[] PATIENT_ATTRS = {
-        "患者 ID", "氏  名", "カナ", "ローマ字 *","性  別", "生年月日", "国  籍 *", "婚姻状況 *", "郵便番号", "住  所", "電  話", "携帯電話 *", "電子メール *"
+            "患者 ID", "氏  名", "カナ", "ローマ字 *", "性  別", "生年月日", "国  籍 *", "婚姻状況 *", "郵便番号", "住  所", "電  話", "携帯電話 *", "電子メール *"
     };
 
     // Info アイコン
-    private static final ImageIcon INFO_BUTTON_IMAGE   = GUIConst.ICON_INFORMATION_16;
+    private static final ImageIcon INFO_BUTTON_IMAGE = GUIConst.ICON_INFORMATION_16;
 
     private static final String INFO = "* の項目は編集が可能です";
 
     // カラム名
-    private static final String[] COLUMN_NAMES = { "項   目", "値" };
+    private static final String[] COLUMN_NAMES = {"項   目", "値"};
 
     // 編集可能な行
     private static final int[] EDITABLE_ROWS = {3, 6, 7, 11, 12};
@@ -73,7 +73,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
 
         JPanel myPanel = getUI();
         JComponent compo = createComponent();
-        compo.setBorder(PNSBorderFactory.createGroupBoxBorder(new Insets(5,5,5,5)));
+        compo.setBorder(PNSBorderFactory.createGroupBoxBorder(new Insets(5, 5, 5, 5)));
         myPanel.setLayout(new BorderLayout());
 
         //
@@ -329,9 +329,10 @@ public class PatientInfoDocument extends AbstractChartDocument {
 
         /**
          * 属性値を変更する.
+         *
          * @param value 属性値
-         * @param row 行
-         * @param col 列
+         * @param row   行
+         * @param col   列
          */
         @Override
         public void setValueAt(Object value, int row, int col) {
@@ -368,7 +369,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
                     stateMgr.processDirtyEvent();
                     break;
 
-               case 11:
+                case 11:
                     //
                     // 携帯電話
                     //
@@ -397,7 +398,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
         private List<String[]> data;
 
         public HealthInsuranceTableModel(PVTHealthInsuranceModel insurance,
-                String[] columnNames) {
+                                         String[] columnNames) {
             this.columnNames = columnNames;
             data = getData(insurance);
         }
@@ -604,7 +605,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
         }
 
         public boolean isDirtyState() {
-            return curState == dirtyState ? true : false;
+            return curState == dirtyState;
         }
     }
 }

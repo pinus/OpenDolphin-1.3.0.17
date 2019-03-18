@@ -335,6 +335,7 @@ public final class StringTool {
 
     /**
      * 文字変数 str が空かどうかを返す.
+     *
      * @param str 文字列
      * @return null or "" で空と判断
      */

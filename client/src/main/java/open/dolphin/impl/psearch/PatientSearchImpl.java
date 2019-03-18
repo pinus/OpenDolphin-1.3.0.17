@@ -37,6 +37,7 @@ import java.util.prefs.Preferences;
 
 /**
  * 患者検索.
+ *
  * @author Kazushi Minagawa
  * @author pns
  */
@@ -46,22 +47,21 @@ public class PatientSearchImpl extends AbstractMainComponent {
     // 年齢表示カラム
     private static final int AGE_COLUMN = 4;
 
-    private static final int[] COLUMN_WIDTH = {80,100,120,40,120,120};
+    private static final int[] COLUMN_WIDTH = {80, 100, 120, 40, 120, 120};
     // Preferences の key
     private static final String NARROWING_SEARCH = "narrowingSearch";
     private static final String AGE_DISPLAY = "ageDisplay";
     // 年齢生年月日メソッド
     private static final String[] AGE_METHOD = new String[]{"getAgeBirthday", "getBirthday"};
+    private final Logger logger;
+    private final Preferences prefs;
     // 選択されている患者情報
     private PatientModel[] selectedPatient;
     // 年齢表示をするかどうか
     private boolean ageDisplay;
     // View
     private PatientSearchPanel view;
-
     private KeyBlocker keyBlocker;
-    private final Logger logger;
-    private final Preferences prefs;
 
     public PatientSearchImpl() {
         setName(NAME);
@@ -86,9 +86,9 @@ public class PatientSearchImpl extends AbstractMainComponent {
         JPanel keywordPanel = new JPanel();
         keywordPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
         keywordPanel.add(view.getKeywordFld());
-        view.getKeywordFld().setPreferredSize(new Dimension(300,26));
+        view.getKeywordFld().setPreferredSize(new Dimension(300, 26));
 
-        PNSBadgeTabbedPane tab = ((Dolphin)getContext()).getTabbedPane();
+        PNSBadgeTabbedPane tab = ((Dolphin) getContext()).getTabbedPane();
         JPanel panel = tab.getAccessoryPanel();
         panel.add(keywordPanel, BorderLayout.EAST);
 
@@ -121,7 +121,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         setUI(view);
         JTable table = view.getTable();
 
-        List<PNSTriple<String,Class<?>,String>> reflectList = Arrays.asList(
+        List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" 　患者 ID", String.class, "getPatientId"),
                 new PNSTriple<>("　 氏   名", String.class, "getFullName"),
                 new PNSTriple<>("　 カ  ナ", String.class, "getKanaName"),
@@ -140,7 +140,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
                 // SortKey があるかどうか
                 int index = -1;
-                for (int i=0; i<keys.size(); i++) {
+                for (int i = 0; i < keys.size(); i++) {
                     if (keys.get(i).getColumn() == column) {
                         index = i;
                         break;
@@ -152,25 +152,34 @@ public class PatientSearchImpl extends AbstractMainComponent {
                     if (column == 5) {
                         key = new SortKey(5, SortOrder.DESCENDING);
 
-                    // それ以外は ASCENDING -> DESCENDING -> UNSORTED の純
+                        // それ以外は ASCENDING -> DESCENDING -> UNSORTED の純
                     } else {
                         key = new SortKey(column, SortOrder.ASCENDING);
                     }
-                // SortKey がある場合新たなキーと置き換える
+                    // SortKey がある場合新たなキーと置き換える
                 } else {
                     SortOrder order = keys.get(index).getSortOrder();
-                    switch(order) {
+                    switch (order) {
                         case ASCENDING:
-                            if (column == 5) { key = new SortKey(5, SortOrder.UNSORTED); }
-                            else { key = new SortKey(column, SortOrder.DESCENDING); }
+                            if (column == 5) {
+                                key = new SortKey(5, SortOrder.UNSORTED);
+                            } else {
+                                key = new SortKey(column, SortOrder.DESCENDING);
+                            }
                             break;
                         case DESCENDING:
-                            if (column == 5) { key = new SortKey(5, SortOrder.ASCENDING); }
-                            else { key = new SortKey(column, SortOrder.UNSORTED); }
+                            if (column == 5) {
+                                key = new SortKey(5, SortOrder.ASCENDING);
+                            } else {
+                                key = new SortKey(column, SortOrder.UNSORTED);
+                            }
                             break;
                         case UNSORTED:
-                            if (column == 5) { key = new SortKey(5, SortOrder.DESCENDING); }
-                            else { key = new SortKey(column, SortOrder.ASCENDING); }
+                            if (column == 5) {
+                                key = new SortKey(5, SortOrder.DESCENDING);
+                            } else {
+                                key = new SortKey(column, SortOrder.ASCENDING);
+                            }
                             break;
                     }
                     keys.remove(index);
@@ -264,7 +273,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 find(test);
 
                 // この MainComponent を選択
-                PNSBadgeTabbedPane pane = ((Dolphin)getContext()).getTabbedPane();
+                PNSBadgeTabbedPane pane = ((Dolphin) getContext()).getTabbedPane();
                 pane.setSelectedIndex(pane.indexOfTab(getName()));
 
             } else {
@@ -286,14 +295,14 @@ public class PatientSearchImpl extends AbstractMainComponent {
         final ObjectReflectTableModel<PatientModel> tableModel = (ObjectReflectTableModel<PatientModel>) table.getModel();
 
         table.getSelectionModel().addListSelectionListener(e -> {
-            if (! e.getValueIsAdjusting()) {
+            if (!e.getValueIsAdjusting()) {
 
                 int[] rows = table.getSelectedRows();
                 if (rows == null) {
                     setSelectedPatinet(null);
                 } else {
                     PatientModel[] patients = new PatientModel[rows.length];
-                    for (int i=0; i < rows.length; i++) {
+                    for (int i = 0; i < rows.length; i++) {
                         rows[i] = table.convertRowIndexToModel(rows[i]);
                         patients[i] = tableModel.getObject(rows[i]);
                     }
@@ -305,6 +314,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
     /**
      * 検索フィールドの背景ラベルを変更する.
+     *
      * @param isNarrowing
      */
     private void setTextFieldBackground(boolean isNarrowing) {
@@ -327,6 +337,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
     /**
      * 現在選択されている PatientModel[] を返す
+     *
      * @return
      */
     public PatientModel[] getSelectedPatinet() {
@@ -335,6 +346,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
     /**
      * SelectionListener から呼ばれて selectedPatient をセットする.
+     *
      * @param model
      */
     public void setSelectedPatinet(PatientModel[] model) {
@@ -374,7 +386,9 @@ public class PatientSearchImpl extends AbstractMainComponent {
      */
     public void openKarte() {
         PatientModel[] patient = getSelectedPatinet();
-        if (patient == null) { return; }
+        if (patient == null) {
+            return;
+        }
         Arrays.asList(patient).forEach(this::openKarte);
     }
 
@@ -385,13 +399,15 @@ public class PatientSearchImpl extends AbstractMainComponent {
     public void addAsPvt() {
 
         PatientModel[] patients = getSelectedPatinet();
-        if (patients == null) { return; }
+        if (patients == null) {
+            return;
+        }
 
         PatientVisitModel[] pvts = new PatientVisitModel[patients.length];
         String pvtDate = ModelUtils.getDateTimeAsString(new Date());
         String dept = constarctDept();
 
-        for (int i=0; i < patients.length; i++) {
+        for (int i = 0; i < patients.length; i++) {
             // 来院情報を生成する
             PatientVisitModel pvt = new PatientVisitModel();
             pvt.setId(0L);
@@ -409,33 +425,9 @@ public class PatientSearchImpl extends AbstractMainComponent {
         task.execute();
     }
 
-
-    /**
-     * 選択患者を受付する.
-     * 複数行選択対応　by pns.
-     */
-    private class AddAsPvtTask extends SwingWorker<Void, Void> {
-
-        private final PatientVisitModel[] pvts;
-
-        public AddAsPvtTask(PatientVisitModel[] pvts) {
-            super();
-            this.pvts = pvts;
-        }
-
-        @Override
-        protected Void doInBackground() {
-
-            PvtDelegater pdl = new PvtDelegater();
-            for(PatientVisitModel pvt : pvts) {
-                pdl.addPvt(pvt);
-            }
-            return null;
-        }
-    }
-
     /**
      * 検索テキストを解析して，該当する検索タスクを呼び出す.
+     *
      * @param text キーワード
      */
     private void find(String text) {
@@ -514,7 +506,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
             spec.setCode(PatientSearchSpec.KANA_SEARCH);
             spec.setName(text);
 
-        } else if (isHiragana(text)){
+        } else if (isHiragana(text)) {
             spec.setCode(PatientSearchSpec.KANA_SEARCH);
             spec.setName(StringTool.hiraganaToKatakana(text));
 
@@ -524,7 +516,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         } else if (text.length() <= 1) {
             JSheet.showMessageDialog(getContext().getFrame(),
-                "検索文字列は２文字以上入力して下さい",  "検索文字列入力エラー", JOptionPane.ERROR_MESSAGE);
+                    "検索文字列は２文字以上入力して下さい", "検索文字列入力エラー", JOptionPane.ERROR_MESSAGE);
             return;
 
         } else {
@@ -532,12 +524,142 @@ public class PatientSearchImpl extends AbstractMainComponent {
             spec.setSearchText(text);
         }
 
-        FindTask task = new FindTask(view, "患者検索", "検索中...",  spec);
+        FindTask task = new FindTask(view, "患者検索", "検索中...", spec);
 
         task.setInputBlocker(new Blocker());
         // キャンセルした際 interrupt すると delegater で NamigException が出る
         task.setInterruptOnCancel(false);
         task.execute();
+    }
+
+    private boolean isDate(String text) {
+        return text != null && text.matches("[0-9][0-9][0-9][0-9]-[0-9]+-[0-9]+");
+    }
+
+    private boolean isNengoDate(String text) {
+        return text != null && text.matches("[MmTtSsHh][0-9]+-[0-9]+-[0-9]+");
+    }
+
+    private boolean isOrcaDate(String text) {
+        // S12-3-4 = 3120304
+        return text != null && text.matches("[1-4][0-6][0-9][0-1][0-9][0-3][0-9]");
+    }
+
+    private boolean isKana(String text) {
+        boolean maybe = true;
+        if (text != null) {
+            for (int i = 0; i < text.length(); i++) {
+                char c = text.charAt(i);
+                // スペースが入っていてもカタカナと判断するようにする
+                if (!StringTool.isKatakana(c) && !StringTool.isSpace(c)) {
+                    maybe = false;
+                    break;
+                }
+            }
+            return maybe;
+        }
+        return false;
+    }
+
+    private boolean isHiragana(String text) {
+        boolean maybe = true;
+        if (text != null) {
+            for (int i = 0; i < text.length(); i++) {
+                char c = text.charAt(i);
+                if (!StringTool.isHiragana(c) && !StringTool.isSpace(c)) {
+                    maybe = false;
+                    break;
+                }
+            }
+            return maybe;
+        }
+        return false;
+    }
+
+    private boolean isId(String text) {
+        if (text == null || text.length() > 6) {
+            return false;
+        }
+        return text.matches("[0-9]+");
+    }
+
+    /**
+     * 検索結果をファイルに書き出す.
+     * 複数行選択対応.
+     */
+    public void exportSearchResult() {
+        final JFileChooser fileChooser = new JFileChooser();
+        JSheet.showSaveSheet(fileChooser, getContext().getFrame(), e -> {
+            if (e.getOption() == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+
+                if (!file.exists() || overwriteConfirmed(file)) {
+
+                    try (FileWriter writer = new FileWriter(file)) {
+                        JTable table = view.getTable();
+                        // 書き出す内容　選択されたものを書き出す
+                        StringBuilder sb = new StringBuilder();
+                        int[] rows = table.getSelectedRows();
+                        for (int i = 0; i < rows.length; i++) {
+                            rows[i] = table.convertRowIndexToModel(rows[i]);
+                            for (int column = 0; column < table.getColumnCount(); column++) {
+                                sb.append(column == 0 ? '"' : ",\"");
+                                sb.append(table.getValueAt(rows[i], column));
+                                sb.append('"');
+                            }
+                            sb.append('\n');
+                        }
+                        writer.write(sb.toString());
+
+                    } catch (IOException ex) {
+                        System.out.println("PatientSearchImpl.java: " + ex);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * ファイル上書き確認ダイアログを表示する.
+     *
+     * @param file 上書き対象ファイル
+     * @return 上書きOKが指示されたらtrue
+     */
+    private boolean overwriteConfirmed(File file) {
+        String title = "上書き確認";
+        String message = "既存のファイル「" + file.toString() + "」\n"
+                + "を上書きしようとしています。続けますか？";
+
+        int confirm = JSheet.showConfirmDialog(
+                getContext().getFrame(), message, title,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        return confirm == JOptionPane.OK_OPTION;
+    }
+
+    /**
+     * 選択患者を受付する.
+     * 複数行選択対応　by pns.
+     */
+    private class AddAsPvtTask extends SwingWorker<Void, Void> {
+
+        private final PatientVisitModel[] pvts;
+
+        public AddAsPvtTask(PatientVisitModel[] pvts) {
+            super();
+            this.pvts = pvts;
+        }
+
+        @Override
+        protected Void doInBackground() {
+
+            PvtDelegater pdl = new PvtDelegater();
+            for (PatientVisitModel pvt : pvts) {
+                pdl.addPvt(pvt);
+            }
+            return null;
+        }
     }
 
     /**
@@ -561,50 +683,6 @@ public class PatientSearchImpl extends AbstractMainComponent {
             //bar.setIndeterminate(false);
             bar.setValue(0);
         }
-    }
-
-    private boolean isDate(String text) {
-        return text != null && text.matches("[0-9][0-9][0-9][0-9]-[0-9]+-[0-9]+");
-    }
-    private boolean isNengoDate(String text) {
-        return text != null && text.matches("[MmTtSsHh][0-9]+-[0-9]+-[0-9]+");
-    }
-    private boolean isOrcaDate(String text) {
-        // S12-3-4 = 3120304
-        return text != null && text.matches("[1-4][0-6][0-9][0-1][0-9][0-3][0-9]");
-    }
-    private boolean isKana(String text) {
-        boolean maybe = true;
-        if (text != null) {
-            for (int i = 0; i < text.length(); i++) {
-                char c = text.charAt(i);
-                // スペースが入っていてもカタカナと判断するようにする
-                if (!StringTool.isKatakana(c) && !StringTool.isSpace(c)) {
-                    maybe = false;
-                    break;
-                }
-            }
-            return maybe;
-        }
-        return false;
-    }
-    private boolean isHiragana(String text) {
-        boolean maybe = true;
-        if (text != null) {
-            for (int i = 0; i < text.length(); i++) {
-                char c = text.charAt(i);
-                if (!StringTool.isHiragana(c) && !StringTool.isSpace(c)) {
-                    maybe = false;
-                    break;
-                }
-            }
-            return maybe;
-        }
-        return false;
-    }
-    private boolean isId(String text) {
-        if (text == null || text.length() > 6) { return false; }
-        return text.matches("[0-9]+");
     }
 
     /**
@@ -658,59 +736,5 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 contextMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
-    }
-
-    /**
-     * 検索結果をファイルに書き出す.
-     * 複数行選択対応.
-     */
-    public void exportSearchResult() {
-        final JFileChooser fileChooser = new JFileChooser();
-        JSheet.showSaveSheet(fileChooser, getContext().getFrame(), e -> {
-            if (e.getOption() == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-
-                if (!file.exists() || overwriteConfirmed(file)) {
-
-                    try (FileWriter writer = new FileWriter(file)) {
-                        JTable table = view.getTable();
-                        // 書き出す内容　選択されたものを書き出す
-                        StringBuilder sb = new StringBuilder();
-                        int[] rows = table.getSelectedRows();
-                        for (int i = 0; i < rows.length; i++) {
-                            rows[i] = table.convertRowIndexToModel(rows[i]);
-                            for (int column = 0; column < table.getColumnCount(); column++) {
-                                sb.append(column==0?'"':",\"");
-                                sb.append(table.getValueAt(rows[i], column));
-                                sb.append('"');
-                            }
-                            sb.append('\n');
-                        }
-                        writer.write(sb.toString());
-
-                    } catch (IOException ex) {
-                        System.out.println("PatientSearchImpl.java: " + ex);
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * ファイル上書き確認ダイアログを表示する.
-     * @param file 上書き対象ファイル
-     * @return 上書きOKが指示されたらtrue
-     */
-    private boolean overwriteConfirmed(File file){
-        String title = "上書き確認";
-        String message = "既存のファイル「" + file.toString() + "」\n"
-                        +"を上書きしようとしています。続けますか？";
-
-        int confirm = JSheet.showConfirmDialog(
-                getContext().getFrame(), message, title,
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.WARNING_MESSAGE );
-
-        return confirm == JOptionPane.OK_OPTION;
     }
 }

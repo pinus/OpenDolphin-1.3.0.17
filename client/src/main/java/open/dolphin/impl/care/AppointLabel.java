@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 /**
  * AppointLabel.
  * Draggable label.
+ *
  * @author Kauzshi Minagawa, Digital Globe, Inc.
  * @author pns
  */
@@ -43,7 +44,7 @@ public class AppointLabel extends JLabel {
 
         @Override
         protected Transferable createTransferable(JComponent c) {
-            JLabel label = (JLabel)c;
+            JLabel label = (JLabel) c;
             AppointmentModel appo = new AppointmentModel();
             appo.setName(label.getText());
             return new AppointEntryTransferable(appo);
@@ -51,7 +52,7 @@ public class AppointLabel extends JLabel {
 
         @Override
         public int getSourceActions(JComponent c) {
-            Icon icon = ((JLabel)c).getIcon();
+            Icon icon = ((JLabel) c).getIcon();
             JLabel label = new JLabel(icon);
             label.setSize(icon.getIconWidth(), icon.getIconHeight());
 

@@ -13,6 +13,7 @@ import open.dolphin.impl.scheam.widget.PnsToggleSet;
 
 /**
  * FillMode (line, fill, mixed） を Toggle で切り替える.
+ *
  * @author pns
  */
 public class FillModeToggle extends PnsToggleSet<FillMode> {
@@ -31,18 +32,27 @@ public class FillModeToggle extends PnsToggleSet<FillMode> {
         Callback<FillMode, Node> cellFactory = f -> {
             FillMode selectedMode = getSelectionModel().getSelectedItem();
 
-            switch(f) {
+            switch (f) {
                 case Line:
-                    if (selectedMode == FillMode.Line) { return sline; }
-                    else { return line; }
+                    if (selectedMode == FillMode.Line) {
+                        return sline;
+                    } else {
+                        return line;
+                    }
 
                 case Fill:
-                    if (selectedMode == FillMode.Fill) { return sfill; }
-                    else { return fill; }
+                    if (selectedMode == FillMode.Fill) {
+                        return sfill;
+                    } else {
+                        return fill;
+                    }
 
                 case Mixed:
-                    if (selectedMode == FillMode.Mixed) { return smix; }
-                    else { return mix; }
+                    if (selectedMode == FillMode.Mixed) {
+                        return smix;
+                    } else {
+                        return mix;
+                    }
             }
             return null;
         };
@@ -53,7 +63,7 @@ public class FillModeToggle extends PnsToggleSet<FillMode> {
         final ObjectProperty<State> state = new SimpleObjectProperty<>();
 
         state.addListener((ObservableValue<? extends State> ov, State t, State s) -> {
-            switch(s) {
+            switch (s) {
                 case Oval:
                 case Rectangle:
                 case Polygon:

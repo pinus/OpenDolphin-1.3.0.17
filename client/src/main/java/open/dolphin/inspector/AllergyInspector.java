@@ -29,13 +29,12 @@ import java.util.*;
  */
 public class AllergyInspector implements IInspector {
     public static final InspectorCategory CATEGORY = InspectorCategory.アレルギー;
-
+    // Chart
+    private final ChartImpl context;
     // TableModel
     private ObjectReflectTableModel<AllergyModel> tableModel;
     // コンテナパネル
     private AllergyView view;
-    // Chart
-    private final ChartImpl context;
 
     /**
      * AllergyInspectorオブジェクトを生成する.

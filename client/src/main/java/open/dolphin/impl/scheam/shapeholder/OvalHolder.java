@@ -11,6 +11,7 @@ import java.util.List;
  * Oval を保持する ShapeHolder.
  * 回転が必要ないものは OvalHolder で保持して良いが，
  * 回転が必要な場合は Polygon に変換して PolygonHolder として保持しなくてはならない.
+ *
  * @author pns
  */
 public class OvalHolder extends ShapeHolderBase {
@@ -32,9 +33,11 @@ public class OvalHolder extends ShapeHolderBase {
             gc.strokeOval(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), bounds.getHeight());
         }
     }
+
     /**
      * oval -> polygon 変換.
      * 回転させるために Path に変換しておく必要がある.
+     *
      * @return
      */
     public PolygonHolder getPolygonHolder() {
@@ -45,9 +48,9 @@ public class OvalHolder extends ShapeHolderBase {
         List<Double> py = new ArrayList<>();
 
         final int FR = 120;
-        for (double f=0; f<FR; f++) {
-            px.add(a * Math.cos(2 * Math.PI * f/FR) + bounds.getMinX() + a);
-            py.add(b * Math.sin(2 * Math.PI * f/FR) + bounds.getMinY() + b);
+        for (double f = 0; f < FR; f++) {
+            px.add(a * Math.cos(2 * Math.PI * f / FR) + bounds.getMinX() + a);
+            py.add(b * Math.sin(2 * Math.PI * f / FR) + bounds.getMinY() + b);
         }
 
         PolygonHolder p = new PolygonHolder();

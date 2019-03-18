@@ -5,14 +5,15 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 /**
- *
  * @author kazm
  */
 public class AutoRomanListener implements FocusListener {
 
     private static AutoRomanListener instance = new AutoRomanListener();
 
-    /** Creates a new instance of AutoRomanListener */
+    /**
+     * Creates a new instance of AutoRomanListener
+     */
     private AutoRomanListener() {
     }
 

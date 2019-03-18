@@ -25,6 +25,7 @@ public class PCodeHelper extends AbstractCodeHelper {
     /**
      * CodeHelperSettingPanel のキーワードで呼ばれた場合は，それぞれの ENTITY のメニューを作る.
      * それ以外の文字列の場合は，その文字列を含むスタンプからメニューを作る.
+     *
      * @param text
      */
     @Override

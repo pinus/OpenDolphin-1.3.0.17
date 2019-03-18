@@ -5,6 +5,7 @@ import javax.swing.*;
 /**
  * KartePanel abstract for KarteViewer and KarteEditor.
  * 実体は KartePanelFactory で作る.
+ *
  * @author pns
  */
 public abstract class KartePanel extends PrintablePanel {

@@ -5,7 +5,7 @@ import open.dolphin.infomodel.PVTHealthInsuranceModel;
 /**
  * NewKarteParams.
  *
- * @author  Kazushi Minagawa
+ * @author Kazushi Minagawa
  */
 public final class NewKarteParams {
 
@@ -43,6 +43,7 @@ public final class NewKarteParams {
 
     /**
      * Creates a new instance of NewKarteParams.
+     *
      * @param option
      */
     public NewKarteParams(Chart.NewKarteOption option) {
@@ -101,12 +102,12 @@ public final class NewKarteParams {
         insurance = val;
     }
 
-    public void setOpenFrame(boolean openFrame) {
-        this.openFrame = openFrame;
-    }
-
     public boolean isOpenFrame() {
         return openFrame;
+    }
+
+    public void setOpenFrame(boolean openFrame) {
+        this.openFrame = openFrame;
     }
 
     public Chart.NewKarteMode getCreateMode() {

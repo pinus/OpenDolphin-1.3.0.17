@@ -13,12 +13,13 @@ import java.util.prefs.Preferences;
 
 /**
  * FindDialog の JSheet バージョン
+ *
  * @author pns
  */
 public class FindDialog {
 
-    private JSheet sheet;
     private final Frame parent;
+    private JSheet sheet;
     private boolean isSearchReady;
     private boolean isTextReady;
     private boolean isSoapBoxReady;
@@ -48,7 +49,7 @@ public class FindDialog {
         JPanel content = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // TextField
         searchTextField = new CompletableSearchField(20);
-        searchTextField.setPreferredSize(new Dimension(10,26));
+        searchTextField.setPreferredSize(new Dimension(10, 26));
         searchTextField.setPreferences(Preferences.userNodeForPackage(FindDialog.class).node(FindDialog.class.getName()));
         searchTextField.setLabel("カルテ検索");
 
@@ -62,7 +63,7 @@ public class FindDialog {
         searchButton = new JButton("検索");
         cancelButton = new JButton("キャンセル");
 
-        Object[] options = new Object[] { searchButton, cancelButton };
+        Object[] options = new Object[]{searchButton, cancelButton};
 
         // OptinoPane
         JOptionPane jop = new JOptionPane(
@@ -75,7 +76,9 @@ public class FindDialog {
 
         sheet = JSheet.createDialog(jop, parent);
         sheet.addSheetListener(se -> {
-            if (se.getOption() == JOptionPane.CLOSED_OPTION) { cancelButton.doClick(); }
+            if (se.getOption() == JOptionPane.CLOSED_OPTION) {
+                cancelButton.doClick();
+            }
         });
 
         // 初期値設定
@@ -93,10 +96,12 @@ public class FindDialog {
             public void windowOpened(WindowEvent e) {
                 requestFocus();
             }
+
             @Override
             public void windowActivated(WindowEvent e) {
                 requestFocus();
             }
+
             private void requestFocus() {
                 // JSheet が表示完了するまで 100msec 待つ
                 Timer t = new Timer(100, e -> {
@@ -131,7 +136,7 @@ public class FindDialog {
 
     // 結果を保持している部分
     public String getSearchText() {
-       return searchText;
+        return searchText;
     }
 
     public boolean isSoaBoxOn() {
@@ -153,7 +158,7 @@ public class FindDialog {
     }
 
     // 検索ボタンの状態を制御
-    public void checkState () {
+    public void checkState() {
         isTextReady = !searchTextField.getText().equals("");
         isSoaBoxChecked = soaBox.isSelected();
         isPBoxChecked = pBox.isSelected();

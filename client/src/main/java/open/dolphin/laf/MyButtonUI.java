@@ -5,7 +5,6 @@ import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 
 /**
- *
  * @author pns
  */
 public class MyButtonUI extends com.apple.laf.AquaButtonUI {
@@ -36,11 +35,11 @@ public class MyButtonUI extends com.apple.laf.AquaButtonUI {
             /* draw text of pressed & armed, selected, and default button with white in active window */
             if (parent != null && parent.isActive() && (
                     (model.isPressed() && model.isArmed())
-                    || b.isSelected()
-                    || (b instanceof JButton && ((JButton)b).isDefaultButton()))) {
+                            || b.isSelected()
+                            || (b instanceof JButton && ((JButton) b).isDefaultButton()))) {
                 // text color in active window can be changed by property
                 Object o = b.getClientProperty("JButton.activeForeground");
-                g.setColor((o instanceof Color)? (Color) o : Color.WHITE);
+                g.setColor((o instanceof Color) ? (Color) o : Color.WHITE);
 
             } else {
                 g.setColor(b.getForeground());

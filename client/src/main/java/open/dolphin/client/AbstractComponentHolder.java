@@ -13,13 +13,16 @@ import java.awt.event.MouseMotionListener;
 /**
  * ComponentHolder.
  * StampHolder と SchemaHolder.
+ *
  * @author Kazushi Minagawa
  * @author pns
  */
 public abstract class AbstractComponentHolder extends JLabel implements ComponentHolder<JLabel>, MouseListener, MouseMotionListener {
     private static final long serialVersionUID = 1L;
 
-    /** エディタの二重起動を防ぐためのフラグ */
+    /**
+     * エディタの二重起動を防ぐためのフラグ
+     */
     private boolean isEditable = true;
 
     public AbstractComponentHolder() {
@@ -35,7 +38,7 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
         map.put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
         map.put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
         map.put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
-   }
+    }
 
     public boolean isEditable() {
         return isEditable;
@@ -74,15 +77,21 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
         // requestFocus はここの方がいい. mouseClicked だと，mouseRelease されるまで focus とれないから
         Focuser.requestFocus(this);
         // 右クリックで popup 表示
-        if (e.isPopupTrigger()) { maybeShowPopup(e); }
+        if (e.isPopupTrigger()) {
+            maybeShowPopup(e);
+        }
         // ダブルクリックでエディタ表示
-        else if (e.getClickCount() == 2 && ! MouseHelper.mouseMoved() && ! e.isAltDown()) { edit(); }
+        else if (e.getClickCount() == 2 && !MouseHelper.mouseMoved() && !e.isAltDown()) {
+            edit();
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         //windows
-        if (e.isPopupTrigger() && e.getClickCount() != 2) { maybeShowPopup(e); }
+        if (e.isPopupTrigger() && e.getClickCount() != 2) {
+            maybeShowPopup(e);
+        }
     }
 
     @Override
@@ -93,7 +102,7 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
 
         int ctrlMask = InputEvent.CTRL_DOWN_MASK;
         int optionMask = InputEvent.ALT_DOWN_MASK;
-        int action = ((e.getModifiersEx() & (ctrlMask | optionMask)) != 0)?
+        int action = ((e.getModifiersEx() & (ctrlMask | optionMask)) != 0) ?
                 TransferHandler.COPY : TransferHandler.MOVE;
 
         JComponent c = (JComponent) e.getSource();
@@ -102,7 +111,8 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) { }
+    public void mouseMoved(MouseEvent e) {
+    }
 
     @Override
     public abstract void edit();

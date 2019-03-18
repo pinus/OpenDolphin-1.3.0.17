@@ -12,18 +12,19 @@ import java.util.LinkedList;
 /**
  * StampTree XML builder.
  *
- * @author  Kazushi Minagawa, Digital Globe, Inc.
+ * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class DefaultStampTreeXmlBuilder {
 
-    private static final String[] MATCHES = new String[] { "<", ">", "&", "'","\""};
+    private static final String[] MATCHES = new String[]{"<", ">", "&", "'", "\""};
 
-    private static final String[] REPLACES = new String[] { "&lt;", "&gt;", "&amp;" ,"&apos;", "&quot;"};
-
-    /** Control staffs */
-    private LinkedList<StampTreeNode> linkedList;
+    private static final String[] REPLACES = new String[]{"&lt;", "&gt;", "&amp;", "&apos;", "&quot;"};
     protected BufferedWriter writer;
     protected StringWriter stringWriter;
+    /**
+     * Control staffs
+     */
+    private LinkedList<StampTreeNode> linkedList;
     private StampTreeNode rootNode;
 
     private Logger logger;
@@ -38,6 +39,7 @@ public class DefaultStampTreeXmlBuilder {
 
     /**
      * Return the product of this builder
+     *
      * @return StampTree XML data
      */
     public String getProduct() {
@@ -66,7 +68,7 @@ public class DefaultStampTreeXmlBuilder {
             logger.debug("Build Root Node: " + root.toString());
         }
         rootNode = root;
-        TreeInfo treeInfo = (TreeInfo)rootNode.getUserObject();
+        TreeInfo treeInfo = (TreeInfo) rootNode.getUserObject();
         writer.write("<root name=");
         writer.write(addQuote(treeInfo.getName()));
         writer.write(" entity=");
@@ -78,7 +80,7 @@ public class DefaultStampTreeXmlBuilder {
 
     public void buildNode(StampTreeNode node) throws IOException {
 
-        if ( node.isLeaf() ) {
+        if (node.isLeaf()) {
             buildLeafNode(node);
         } else {
             buildDirectoryNode(node);

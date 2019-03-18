@@ -72,6 +72,7 @@ public class LaboTestImporter extends AbstractMainComponent {
     public JProgressBar getProgressBar() {
         return usp;
     }
+
     /**
      * 検索結果件数を設定しステータスパネルへ表示する.
      */
@@ -85,7 +86,7 @@ public class LaboTestImporter extends AbstractMainComponent {
      * メニューを制御する.
      */
     private void controlMenu() {
-        PatientModel patientModel = getSelectedObject() != null? getSelectedObject().getPatient() : null;
+        PatientModel patientModel = getSelectedObject() != null ? getSelectedObject().getPatient() : null;
         getContext().enableAction(GUIConst.ACTION_OPEN_KARTE, canOpen(patientModel));
     }
 
@@ -98,7 +99,7 @@ public class LaboTestImporter extends AbstractMainComponent {
         JLabel instLabel = new JLabel("検査結果ファイル(MML形式)を下のテーブルに Drag & Drop してください. ");
 
         // ラボテストテーブルを生成する
-        List<PNSTriple<String,Class<?>,String>> reflectionList = Arrays.asList(
+        List<PNSTriple<String, Class<?>, String>> reflectionList = Arrays.asList(
                 new PNSTriple<>("　患者氏名", String.class, "getPatientName"),
                 new PNSTriple<>("　性別", String.class, "getPatientGender"),
                 new PNSTriple<>("　テスト/検体名", String.class, "getSetName"),
@@ -107,7 +108,7 @@ public class LaboTestImporter extends AbstractMainComponent {
                 new PNSTriple<>("　ステータス", String.class, "getReportStatus"),
                 new PNSTriple<>("　ラボ名", String.class, "getLaboratoryCenter")
         );
-        int[] columnWidth = {100,50,100,100,100,80,100};
+        int[] columnWidth = {100, 50, 100, 100, 100, 80, 100};
         int rowHeight = ClientContext.getInt("labotestImport.rowHeight");
 
         tableModel = new ObjectReflectTableModel<>(reflectionList);
@@ -135,7 +136,7 @@ public class LaboTestImporter extends AbstractMainComponent {
 
         // Status パネルを生成する
         usp = new JProgressBar();
-        Dimension pbSize = new Dimension(100,14);
+        Dimension pbSize = new Dimension(100, 14);
         usp.setMaximumSize(pbSize);
         usp.setPreferredSize(pbSize);
 

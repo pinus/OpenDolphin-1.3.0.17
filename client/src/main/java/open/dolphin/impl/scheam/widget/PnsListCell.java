@@ -8,8 +8,9 @@ import javafx.scene.layout.HBox;
 /**
  * Check Mark を付ける ListCell.
  * getCell を Override して使う
- * @author pns
+ *
  * @param <T>
+ * @author pns
  */
 public class PnsListCell<T> extends ListCell<T> {
     private final HBox box;
@@ -48,11 +49,12 @@ public class PnsListCell<T> extends ListCell<T> {
             }
 
             setGraphic(box);
-       }
+        }
     }
 
     /**
      * ここをオーバーライドして使う.
+     *
      * @param item
      * @return
      */

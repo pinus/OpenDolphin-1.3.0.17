@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 /**
  * CardLayout 的なもの.
+ *
  * @author pns
  */
 public class PnsCardPane extends StackPane {
@@ -16,6 +17,7 @@ public class PnsCardPane extends StackPane {
 
     /**
      * カードを加えるときは必ずここで加える.
+     *
      * @param node
      * @param name
      */
@@ -29,6 +31,7 @@ public class PnsCardPane extends StackPane {
 
     /**
      * index 番目のカードを表示する.
+     *
      * @param i
      */
     public void show(int i) {
@@ -43,17 +46,32 @@ public class PnsCardPane extends StackPane {
 
     /**
      * name という名前で登録したカードを表示する.
+     *
      * @param name
      */
-    public void show(String name) { show(nodeMap.get(name)); }
+    public void show(String name) {
+        show(nodeMap.get(name));
+    }
 
-    public void first() { show(0); }
-    public void last() { show(getChildren().size()-1); }
-    public void next() { show(index + 1); }
-    public void previous() {show(index -1 ); }
+    public void first() {
+        show(0);
+    }
+
+    public void last() {
+        show(getChildren().size() - 1);
+    }
+
+    public void next() {
+        show(index + 1);
+    }
+
+    public void previous() {
+        show(index - 1);
+    }
 
     /**
      * 全てのカードを一度に alingment する.
+     *
      * @param pos
      */
     public void alignAll(Pos pos) {

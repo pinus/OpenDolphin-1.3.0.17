@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * PatientSearchView 互換 JPanel.
  * Keyword Field を各 MainComponent で共有することにした.
+ *
  * @author pns
  */
 public class PatientSearchPanel extends MainComponentPanel {
@@ -45,7 +46,7 @@ public class PatientSearchPanel extends MainComponentPanel {
         remove(comPanel);
 
         final JPopupMenu popup = new JPopupMenu();
-        final List<PNSPair<String,String>> menuPair = Arrays.asList(
+        final List<PNSPair<String, String>> menuPair = Arrays.asList(
                 new PNSPair<>("名前検索", "N"),
                 new PNSPair<>("カナ検索", "K"),
                 new PNSPair<>("患者番号検索", "T"),
@@ -65,9 +66,9 @@ public class PatientSearchPanel extends MainComponentPanel {
 
         JMenu pvtMenu = new JMenu("受診日検索");
         CalendarPanel cp = new CalendarPanel();
-        cp.setPreferredSize(new Dimension(200,150));
+        cp.setPreferredSize(new Dimension(200, 150));
         cp.getTable().addCalendarListener(date -> {
-            keywordFld.setText(String.format("%d-%02d-%02d", date.getYear(), date.getMonth()+1, date.getDay()));
+            keywordFld.setText(String.format("%d-%02d-%02d", date.getYear(), date.getMonth() + 1, date.getDay()));
             popup.setVisible(false);
             keywordFld.postActionEvent();
         });
@@ -92,7 +93,7 @@ public class PatientSearchPanel extends MainComponentPanel {
 
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
 
-        keywordFld.addMouseListener(new MouseAdapter(){
+        keywordFld.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.isPopupTrigger()) {
@@ -111,7 +112,7 @@ public class PatientSearchPanel extends MainComponentPanel {
         StatusPanel statusPanel = getStatusPanel();
 
         progressBar = new JProgressBar();
-        Dimension pbSize = new Dimension(100,14);
+        Dimension pbSize = new Dimension(100, 14);
         progressBar.setMaximumSize(pbSize);
         progressBar.setPreferredSize(pbSize);
         cntLbl = new JLabel("0件");

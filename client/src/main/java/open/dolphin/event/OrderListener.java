@@ -3,9 +3,8 @@ package open.dolphin.event;
 import java.util.EventListener;
 
 /**
- *
- * @author pns
  * @param <T>
+ * @author pns
  */
 public interface OrderListener<T> extends EventListener {
 

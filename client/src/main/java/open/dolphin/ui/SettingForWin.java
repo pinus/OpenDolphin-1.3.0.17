@@ -10,10 +10,16 @@ import java.awt.*;
 import java.util.Enumeration;
 
 /**
- *
  * @author pns
  */
 public class SettingForWin {
+    /**
+     * Windows のデフォルトフォントを設定する。
+     */
+    private static String MEIRYO_NAME_JP = "メイリオ";
+    private static String MEIRYO_NAME = "Meiryo";
+    private static String DEFAULT_FONT_NAME = Font.SANS_SERIF;
+
     public static void set(Dolphin context) {
         // necessary to initialize JavaFX Toolkit
         new JFXPanel();
@@ -32,33 +38,6 @@ public class SettingForWin {
         //setUIFonts();
     }
 
-    private static class MyLookAndFeel extends WindowsLookAndFeel {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public UIDefaults getDefaults() {
-            UIDefaults uiDefaults = super.getDefaults();
-
-            uiDefaults.putDefaults(new Object[] {
-                "ListUI", "open.dolphin.ui.MyListUI",
-                "TreeUI", "open.dolphin.ui.MyTreeUI",
-                "TableUI", "open.dolphin.ui.MyTableUI",
-                "TableHeaderUI", "open.dolphin.ui.MyTableHeaderUI",
-                "TextFieldUI", "open.dolphin.ui.MyTextFieldUI",
-                "PasswordFieldUI", "open.dolphin.ui.MyPasswordFieldUI",
-            });
-
-            return uiDefaults;
-        }
-    }
-
-    /**
-     * Windows のデフォルトフォントを設定する。
-     */
-    private static String MEIRYO_NAME_JP = "メイリオ";
-    private static String MEIRYO_NAME = "Meiryo";
-    private static String DEFAULT_FONT_NAME = Font.SANS_SERIF;
-
     private static void setUIFonts() {
 
         if (isMeiryoAvailable()) setMeiryoFont();
@@ -72,7 +51,7 @@ public class SettingForWin {
 
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] names = env.getAvailableFontFamilyNames();
-        for(int i=0; i<names.length; i++){
+        for (int i = 0; i < names.length; i++) {
             String name = names[i];
             System.out.println("SettingForWin.java: " + name);
             if (name.equals(MEIRYO_NAME_JP) || name.equals(MEIRYO_NAME)) {
@@ -88,7 +67,7 @@ public class SettingForWin {
     private static void setMeiryoFont() {
 
         Enumeration keys = UIManager.getDefaults().keys();
-        while(keys.hasMoreElements()){
+        while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
             Object value = UIManager.get(key);
             if (value instanceof Font) {
@@ -104,13 +83,33 @@ public class SettingForWin {
      */
     private static void setDefaultFont() {
         Enumeration keys = UIManager.getDefaults().keys();
-        while(keys.hasMoreElements()){
+        while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
             Object value = UIManager.get(key);
             if (value instanceof Font) {
                 Font font = (Font) value;
                 UIManager.put(key, new Font(DEFAULT_FONT_NAME, font.getStyle(), font.getSize()));
             }
+        }
+    }
+
+    private static class MyLookAndFeel extends WindowsLookAndFeel {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public UIDefaults getDefaults() {
+            UIDefaults uiDefaults = super.getDefaults();
+
+            uiDefaults.putDefaults(new Object[]{
+                    "ListUI", "open.dolphin.ui.MyListUI",
+                    "TreeUI", "open.dolphin.ui.MyTreeUI",
+                    "TableUI", "open.dolphin.ui.MyTableUI",
+                    "TableHeaderUI", "open.dolphin.ui.MyTableHeaderUI",
+                    "TextFieldUI", "open.dolphin.ui.MyTextFieldUI",
+                    "PasswordFieldUI", "open.dolphin.ui.MyPasswordFieldUI",
+            });
+
+            return uiDefaults;
         }
     }
 }

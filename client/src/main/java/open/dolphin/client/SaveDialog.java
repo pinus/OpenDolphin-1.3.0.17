@@ -11,22 +11,23 @@ import java.awt.event.KeyEvent;
 
 /**
  * カルテ保存時の SaveDialog.
- * @author  pns
+ *
+ * @author pns
  */
 public class SaveDialog {
-    private static final String[] PRINT_COUNT = { "0", "1",  "2",  "3",  "4", "5" };
-    private static final String[] TITLE_LIST = {"経過記録", "処方", "処置", "検査", "画像", "指導"};
-    private static final String DIALOG_TITLE = "ドキュメント保存";
     // result code
     public static final int SAVE = 0;
     public static final int TMP_SAVE = 1;
     public static final int DISPOSE = 2;
     public static final int CANCEL = 3;
-
+    private static final String[] PRINT_COUNT = {"0", "1", "2", "3", "4", "5"};
+    private static final String[] TITLE_LIST = {"経過記録", "処方", "処置", "検査", "画像", "指導"};
+    private static final String DIALOG_TITLE = "ドキュメント保存";
     private final Window parent;
+    // 戻り値のSaveParams
+    private final SaveParams value = new SaveParams();
     private JOptionPane pane;
     private JSheet dialog;
-
     private JTextField titleField;
     private JComboBox<String> titleCombo;
     //private JComboBox<String> printCombo;
@@ -37,12 +38,32 @@ public class SaveDialog {
     private JButton disposeButton;
     private JButton cancelButton;
 
-    // 戻り値のSaveParams
-    private final SaveParams value = new SaveParams();
-
     public SaveDialog(Window parent) {
         this.parent = parent;
         initComponent();
+    }
+
+    public static void main(String[] args) throws UnsupportedLookAndFeelException {
+
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JButton b = new JButton("Show Sheet");
+        b.addActionListener(e -> {
+            SaveDialog sd = new SaveDialog(f);
+            SaveParams param = new SaveParams();
+            sd.setValue(param);
+            sd.start();
+
+            System.out.println("----modal--- ");
+
+            param = sd.getValue();
+            System.out.println("selection = " + param.getSelection());
+        });
+
+        f.add(b);
+        f.setSize(500, 200);
+        f.setVisible(true);
     }
 
     /**
@@ -99,17 +120,19 @@ public class SaveDialog {
         disposeButton = new JButton(new ProxyAction("破 棄", this::doDispose));
         disposeButton.setToolTipText("<html>&#8984;ESC</html>");
 
-        cancelButton = new JButton(new ProxyAction("キャンセル",this::doCancel));
+        cancelButton = new JButton(new ProxyAction("キャンセル", this::doCancel));
         cancelButton.setToolTipText("ESC");
 
         // JOptionPane
         pane = new JOptionPane(content, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null,
-                new JButton[] { okButton, tmpButton, disposeButton, cancelButton }, okButton);
+                new JButton[]{okButton, tmpButton, disposeButton, cancelButton}, okButton);
 
         dialog = JSheet.createDialog(pane, parent);
         dialog.addSheetListener(se -> {
             // Escape を押したときだけここに入る
-            if (se.getOption() == JOptionPane.CLOSED_OPTION) { doCancel(); }
+            if (se.getOption() == JOptionPane.CLOSED_OPTION) {
+                doCancel();
+            }
         });
 
         // ショートカット登録
@@ -133,7 +156,7 @@ public class SaveDialog {
         am.put("dispose", new ProxyAction(disposeButton::doClick));
     }
 
-    public void start () {
+    public void start() {
         dialog.setVisible(true);
     }
 
@@ -145,7 +168,7 @@ public class SaveDialog {
 
         // Titleを表示する
         String val = params.getTitle();
-        if (val != null && (!val.equals("") &&(!val.equals("経過記録")))) {
+        if (val != null && (!val.equals("") && (!val.equals("経過記録")))) {
             titleCombo.insertItemAt(val, 0);
         }
         titleCombo.setSelectedIndex(0);
@@ -169,9 +192,9 @@ public class SaveDialog {
         //    printCombo.setSelectedItem(String.valueOf(count));
 
         //} else {
-            // いつのまにか preferences: open.dolphin.client.plist
-            // karte.print.count が -1 になっていてどうにも直せなくなったことがあった
-            // printCombo.setEnabled(false);
+        // いつのまにか preferences: open.dolphin.client.plist
+        // karte.print.count が -1 になっていてどうにも直せなくなったことがあった
+        // printCombo.setEnabled(false);
         //    printCombo.setSelectedItem(0);
         //}
 
@@ -192,7 +215,7 @@ public class SaveDialog {
      * タイトルフィールドの有効性をチェックする.
      */
     public void checkTitle() {
-        boolean enabled = ! titleField.getText().trim().equals("");
+        boolean enabled = !titleField.getText().trim().equals("");
         okButton.setEnabled(enabled);
         tmpButton.setEnabled(enabled);
     }
@@ -204,7 +227,7 @@ public class SaveDialog {
 
         // 文書タイトルを取得する
         String val = (String) titleCombo.getSelectedItem();
-        if (! val.equals("")) {
+        if (!val.equals("")) {
             value.setTitle(val);
         } else {
             value.setTitle("経過記録");
@@ -244,7 +267,7 @@ public class SaveDialog {
 
         // 文書タイトルを取得する
         String val = (String) titleCombo.getSelectedItem();
-        if (! val.equals("")) {
+        if (!val.equals("")) {
             value.setTitle(val);
         }
 
@@ -294,28 +317,5 @@ public class SaveDialog {
     private void close() {
         dialog.setVisible(false);
         dialog.dispose();
-    }
-
-    public static void main(String[] args) throws UnsupportedLookAndFeelException {
-
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JButton b = new JButton("Show Sheet");
-        b.addActionListener(e -> {
-            SaveDialog sd = new SaveDialog(f);
-            SaveParams param = new SaveParams();
-            sd.setValue(param);
-            sd.start();
-
-            System.out.println("----modal--- ");
-
-            param = sd.getValue();
-            System.out.println("selection = " + param.getSelection());
-        });
-
-        f.add(b);
-        f.setSize(500, 200);
-        f.setVisible(true);
     }
 }

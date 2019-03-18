@@ -5,7 +5,6 @@ import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 
 /**
- *
  * @author pns
  */
 public class MyToggleButtonUI extends MyButtonUI {

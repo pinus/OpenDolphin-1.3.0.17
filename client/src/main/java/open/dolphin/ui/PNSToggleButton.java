@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 
 /**
  * ダブルクリック or shift-クリックで動作する JToggleButton
+ *
  * @author pns
  */
 public class PNSToggleButton extends JLabel {
@@ -19,7 +20,7 @@ public class PNSToggleButton extends JLabel {
     public PNSToggleButton() {
         super();
         isSelected = false;
-        addMouseListener(new MouseAdapter(){
+        addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.isShiftDown() || e.getClickCount() == 2) doClick();

@@ -17,21 +17,18 @@ import java.util.Date;
 
 /**
  * アレルギデータを編集するエディタクラス.
+ *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
 public class AllergyEditor {
 
     private final AllergyInspector inspector;
-    private AllergyEditorView view;
     private final JDialog dialog;
     private final JButton addBtn;
     private final JButton clearBtn;
+    private AllergyEditorView view;
     private boolean ok;
-
-    public static void show(AllergyInspector inspector) {
-        AllergyEditor editor = new AllergyEditor(inspector);
-    }
 
     public AllergyEditor(AllergyInspector inspector) {
 
@@ -62,18 +59,18 @@ public class AllergyEditor {
         clearBtn.addActionListener(e -> clear());
         clearBtn.setEnabled(false);
 
-        Object[] options = new Object[]{addBtn,clearBtn, "閉じる"};
+        Object[] options = new Object[]{addBtn, clearBtn, "閉じる"};
 
         JOptionPane pane = new JOptionPane(view,
-                                           JOptionPane.PLAIN_MESSAGE,
-                                           JOptionPane.DEFAULT_OPTION,
-                                           null,
-                                           options, addBtn);
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                options, addBtn);
         dialog = pane.createDialog(inspector.getContext().getFrame(), "アレルギー登録");
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         // dialog が開いたら FactorFld にフォーカスを当てる
-        dialog.addWindowListener(new WindowAdapter(){
+        dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
                 Focuser.requestFocus(view.getFactorFld());
@@ -89,12 +86,16 @@ public class AllergyEditor {
         dialog.setVisible(true);
     }
 
+    public static void show(AllergyInspector inspector) {
+        AllergyEditor editor = new AllergyEditor(inspector);
+    }
+
     private void checkBtn() {
 
         String factor = view.getFactorFld().getText().trim();
         String date = view.getIdentifiedFld().getText().trim();
 
-        boolean newOk = ! factor.equals("") && ! date.equals("");
+        boolean newOk = !factor.equals("") && !date.equals("");
 
         if (ok != newOk) {
             ok = newOk;

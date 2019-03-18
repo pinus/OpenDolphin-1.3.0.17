@@ -4,8 +4,7 @@ import javax.swing.border.AbstractBorder;
 import java.awt.*;
 
 /**
- *
- * @author pinus
+ * @author pns
  */
 public class PNSClearBorder extends AbstractBorder {
     private static final long serialVersionUID = 1L;
@@ -16,7 +15,7 @@ public class PNSClearBorder extends AbstractBorder {
     }
 
     @Override
-    public Insets getBorderInsets(Component c)       {
+    public Insets getBorderInsets(Component c) {
         return PNSBorder.DEFAULT_MARGIN;
     }
 }
