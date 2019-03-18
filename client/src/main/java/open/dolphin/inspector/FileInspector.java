@@ -76,10 +76,6 @@ public class FileInspector implements IInspector {
         return ClientContext.getDocumentDirectory() + subfolder + id;
     }
 
-    public static void main(String[] arg) {
-        System.out.println(getDocumentPath("000125"));
-    }
-
     @Override
     public void addBadgeListener(BadgeListener listener, int index) {
         badgeListener = listener;
@@ -256,5 +252,9 @@ public class FileInspector implements IInspector {
             sb.append(str);
             return sb.toString();
         }
+    }
+
+    public static void main(String[] arg) {
+        System.out.println(getDocumentPath("000125"));
     }
 }

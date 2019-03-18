@@ -83,21 +83,21 @@ public class Dolphin implements MainWindow {
      * システムの出力を console.log にリダイレクトする.
      */
     private static void redirectConsole() {
-        if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
-            try {
-                String logName = System.getProperty("user.dir") + "/console.log";
-                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
-                System.setOut(ps);
-                System.setErr(ps);
-                System.out.println("Console redirected to " + logName);
-            } catch (FileNotFoundException ex) {
-            }
+        try {
+            String logName = System.getProperty("user.dir") + "/console.log";
+            PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
+            System.setOut(ps);
+            System.setErr(ps);
+            System.out.println("Console redirected to " + logName);
+        } catch (FileNotFoundException ex) {
         }
     }
 
     public static void main(String[] args) {
         // コンソールのリダイレクト
-        redirectConsole();
+        if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
+            redirectConsole();
+        }
 
         // Dolphin 本体の実行
         Dolphin d = new Dolphin();
@@ -852,27 +852,6 @@ public class Dolphin implements MainWindow {
         boolean isLogin();
     }
 
-    private static class FocusMonitor implements PropertyChangeListener {
-        private final KeyboardFocusManager focusManager;
-
-        public FocusMonitor() {
-            focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-            focusManager.addPropertyChangeListener(this);
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-            System.out.println("FocusManager Report ----------------");
-            System.out.println(" oldValue=" + e.getOldValue());
-            System.out.println(" newValue=" + e.getNewValue());
-            System.out.println(" Active Window=" + focusManager.getActiveWindow());
-            System.out.println(" Focused Window=" + focusManager.getFocusedWindow());
-            System.out.println(" Focus Owner=" + focusManager.getFocusOwner());
-            System.out.println(" Permanent Focus Owner=" + focusManager.getPermanentFocusOwner());
-            System.out.println("");
-        }
-    }
-
     /**
      * Mediator.
      */
@@ -987,6 +966,27 @@ public class Dolphin implements MainWindow {
     }
 
     // デバッグ用
+    private static class FocusMonitor implements PropertyChangeListener {
+        private final KeyboardFocusManager focusManager;
+
+        public FocusMonitor() {
+            focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+            focusManager.addPropertyChangeListener(this);
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent e) {
+            System.out.println("FocusManager Report ----------------");
+            System.out.println(" oldValue=" + e.getOldValue());
+            System.out.println(" newValue=" + e.getNewValue());
+            System.out.println(" Active Window=" + focusManager.getActiveWindow());
+            System.out.println(" Focused Window=" + focusManager.getFocusedWindow());
+            System.out.println(" Focus Owner=" + focusManager.getFocusOwner());
+            System.out.println(" Permanent Focus Owner=" + focusManager.getPermanentFocusOwner());
+            System.out.println("---");
+        }
+    }
+
     private class VerboseRepaintManager extends javax.swing.RepaintManager {
 
         @Override

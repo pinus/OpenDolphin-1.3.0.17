@@ -248,28 +248,6 @@ public class RegionView extends javax.swing.JDialog {
         });
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        // ClientContext を生成する
-        ClientContextStub stub = new ClientContextStub();
-        ClientContext.setClientContextStub(stub);
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                RegionView dialog = new RegionView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
-
     private void connect() {
         // short-cut
         InputMap im = getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -912,4 +890,24 @@ public class RegionView extends javax.swing.JDialog {
             super.paint(g);
         }
     }
+
+    public static void main(String args[]) {
+        // ClientContext を生成する
+        ClientContextStub stub = new ClientContextStub();
+        ClientContext.setClientContextStub(stub);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                RegionView dialog = new RegionView(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
+
 }

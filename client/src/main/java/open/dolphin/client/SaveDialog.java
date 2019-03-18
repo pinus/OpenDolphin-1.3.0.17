@@ -43,29 +43,6 @@ public class SaveDialog {
         initComponent();
     }
 
-    public static void main(String[] args) throws UnsupportedLookAndFeelException {
-
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JButton b = new JButton("Show Sheet");
-        b.addActionListener(e -> {
-            SaveDialog sd = new SaveDialog(f);
-            SaveParams param = new SaveParams();
-            sd.setValue(param);
-            sd.start();
-
-            System.out.println("----modal--- ");
-
-            param = sd.getValue();
-            System.out.println("selection = " + param.getSelection());
-        });
-
-        f.add(b);
-        f.setSize(500, 200);
-        f.setVisible(true);
-    }
-
     /**
      * GUIコンポーネントを初期化する.
      */
@@ -317,5 +294,28 @@ public class SaveDialog {
     private void close() {
         dialog.setVisible(false);
         dialog.dispose();
+    }
+
+    public static void main(String[] args) throws UnsupportedLookAndFeelException {
+
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JButton b = new JButton("Show Sheet");
+        b.addActionListener(e -> {
+            SaveDialog sd = new SaveDialog(f);
+            SaveParams param = new SaveParams();
+            sd.setValue(param);
+            sd.start();
+
+            System.out.println("----modal--- ");
+
+            param = sd.getValue();
+            System.out.println("selection = " + param.getSelection());
+        });
+
+        f.add(b);
+        f.setSize(500, 200);
+        f.setVisible(true);
     }
 }

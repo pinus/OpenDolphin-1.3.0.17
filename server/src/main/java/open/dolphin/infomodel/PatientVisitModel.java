@@ -17,10 +17,13 @@ import java.util.StringTokenizer;
 @EntityListeners(PatientVisitModelListener.class)
 @Table(name = "d_patient_visit")
 public class PatientVisitModel extends InfoModel {
+    private static final long serialVersionUID = 7049490761810599245L;
+
     public static final DataFlavor PVT_FLAVOR =
             new DataFlavor(open.dolphin.infomodel.PatientVisitModel.class, "Patient Visit");
+
     public static final DataFlavor[] flavors = {PVT_FLAVOR};
-    private static final long serialVersionUID = 7049490761810599245L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

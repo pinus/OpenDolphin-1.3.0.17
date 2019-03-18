@@ -33,17 +33,6 @@ public class CompletableSearchField extends CompletableJTextField {
         init();
     }
 
-    public static void main(String[] arg) {
-        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        CompletableSearchField field = new CompletableSearchField(15);
-        field.setLabel("病名検索");
-        f.add(field);
-        f.pack();
-        f.setVisible(true);
-    }
-
     private void init() {
         putClientProperty("Quaqua.TextField.style", "search");
         icon = ImageHelper.imageToBufferedImage(GUIConst.ICON_SEARCH_16);
@@ -123,5 +112,16 @@ public class CompletableSearchField extends CompletableJTextField {
         }
 
         g.dispose();
+    }
+
+    public static void main(String[] arg) {
+        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        CompletableSearchField field = new CompletableSearchField(15);
+        field.setLabel("病名検索");
+        f.add(field);
+        f.pack();
+        f.setVisible(true);
     }
 }

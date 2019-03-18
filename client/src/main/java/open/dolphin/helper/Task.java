@@ -83,74 +83,6 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
         initialize(parent, message, note);
     }
 
-    public static void main(String[] argv) {
-        Task task = new Task<String>(null, "テスト１", "実行中...") {
-
-            @Override
-            protected String doInBackground() throws Exception {
-                for (int i = 0; i < 4; i++) {
-                    setProgress(i * 25);
-                    Thread.sleep(1000);
-                }
-                return "test";
-            }
-
-            @Override
-            protected void succeeded(String result) {
-                System.out.println("ended: " + new java.util.Date());
-                System.out.println("result=" + result);
-            }
-
-            @Override
-            protected void cancelled() {
-                System.out.println("Canceled");
-            }
-
-            @Override
-            protected void failed(Throwable cause) {
-                System.out.println("failed " + cause);
-            }
-
-            @Override
-            protected void interrupted(InterruptedException ex) {
-                System.out.println("interrupted " + ex);
-            }
-
-        };
-        task.setTimeOut(3000);
-        task.execute();
-        System.out.println("Task thread started: " + new java.util.Date());
-
-        Task task2 = new Task(null, "テスト２", "実行中...") {
-
-            @Override
-            protected Object doInBackground() throws Exception {
-                System.out.println("task2 start");
-                for (int i = 0; i < 5; i++) {
-                    setProgress(i * 20);
-                    Thread.sleep(1000);
-                }
-                return null;
-            }
-
-            @Override
-            protected void succeeded(Object result) {
-                System.out.println("task2 done");
-            }
-
-        };
-        task2.setTimeOut(5000);
-        task2.execute();
-
-
-        System.out.println("Main thread is waiting for the thread done.");
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException ex) {
-        }
-        System.out.println("Main thread ended.");
-    }
-
     private void initialize(Component c, Object message, String note) {
         timer = new Timer(INTERVAL, this);
         progressMonitor = new PNSProgressMonitor(c, message, note, 0, 100);
@@ -327,6 +259,74 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
         public void block();
 
         public void unblock();
+    }
+
+    public static void main(String[] argv) {
+        Task task = new Task<String>(null, "テスト１", "実行中...") {
+
+            @Override
+            protected String doInBackground() throws Exception {
+                for (int i = 0; i < 4; i++) {
+                    setProgress(i * 25);
+                    Thread.sleep(1000);
+                }
+                return "test";
+            }
+
+            @Override
+            protected void succeeded(String result) {
+                System.out.println("ended: " + new java.util.Date());
+                System.out.println("result=" + result);
+            }
+
+            @Override
+            protected void cancelled() {
+                System.out.println("Canceled");
+            }
+
+            @Override
+            protected void failed(Throwable cause) {
+                System.out.println("failed " + cause);
+            }
+
+            @Override
+            protected void interrupted(InterruptedException ex) {
+                System.out.println("interrupted " + ex);
+            }
+
+        };
+        task.setTimeOut(3000);
+        task.execute();
+        System.out.println("Task thread started: " + new java.util.Date());
+
+        Task task2 = new Task(null, "テスト２", "実行中...") {
+
+            @Override
+            protected Object doInBackground() throws Exception {
+                System.out.println("task2 start");
+                for (int i = 0; i < 5; i++) {
+                    setProgress(i * 20);
+                    Thread.sleep(1000);
+                }
+                return null;
+            }
+
+            @Override
+            protected void succeeded(Object result) {
+                System.out.println("task2 done");
+            }
+
+        };
+        task2.setTimeOut(5000);
+        task2.execute();
+
+
+        System.out.println("Main thread is waiting for the thread done.");
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException ex) {
+        }
+        System.out.println("Main thread ended.");
     }
 }
 

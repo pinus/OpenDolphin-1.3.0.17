@@ -32,22 +32,6 @@ public class CalendarPanel extends JPanel {
         initComponents();
     }
 
-    public static void main(String[] arg) {
-        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
-
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        CalendarPanel panel = new CalendarPanel();
-
-        panel.getTable().addCalendarListener(date -> {
-            System.out.println(date.getYear() + " / " + date.getMonth() + " / " + date.getDay());
-        });
-
-        f.add(panel);
-        f.pack();
-        f.setVisible(true);
-    }
-
     private void initComponents() {
         table = new CalendarTable();
         tableModel = (CalendarTableModel) table.getModel();
@@ -239,4 +223,22 @@ public class CalendarPanel extends JPanel {
     public CalendarTableModel getModel() {
         return tableModel;
     }
+
+    public static void main(String[] arg) {
+        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
+
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        CalendarPanel panel = new CalendarPanel();
+
+        panel.getTable().addCalendarListener(date -> {
+            System.out.println(date.getYear() + " / " + date.getMonth() + " / " + date.getDay());
+        });
+
+        f.add(panel);
+        f.pack();
+        f.setVisible(true);
+    }
+
+
 }

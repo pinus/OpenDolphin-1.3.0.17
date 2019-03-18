@@ -56,13 +56,6 @@ public class SchemaEditorProperties {
         });
     }
 
-    public static void main(String[] arg) {
-        SchemaEditorProperties p = new SchemaEditorProperties();
-        String str = SchemaUtils.colorToString(Color.web("#01234567"));
-        System.out.println(str);
-        System.out.println(Color.web(str));
-    }
-
     /**
      * ColorModel に関連したプロパティー.
      * これらのうちどれかが変化すると ColorModel も変化すべき.
@@ -294,5 +287,14 @@ public class SchemaEditorProperties {
                 break;
             }
         }
+
+
+    }
+
+    public static void main(String[] arg) {
+        SchemaEditorProperties p = new SchemaEditorProperties();
+        String str = SchemaUtils.colorToString(Color.web("#01234567"));
+        System.out.println(str);
+        System.out.println(Color.web(str));
     }
 }

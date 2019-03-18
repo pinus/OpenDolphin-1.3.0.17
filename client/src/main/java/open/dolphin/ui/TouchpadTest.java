@@ -79,11 +79,6 @@ public class TouchpadTest implements Observer {
         return yVelocity;
     }
 
-    public static void main(String[] argv) {
-        TouchpadTest.startListening();
-        JOptionPane.showMessageDialog(null, "showing raw data");
-    }
-
     /**
      * TouchpadObservable からデータ（Finger）がここに送られてくる.
      *
@@ -121,5 +116,10 @@ public class TouchpadTest implements Observer {
     private void showRawData(Finger f) {
         System.out.printf("id=%2d frame=%d size=%1.2f x=%1.2f xvel=%1.2f y=%1.2f yvel=%1.2f state=%s\n",
                 f.getID(), f.getFrame(), f.getSize(), f.getX(), f.getXVelocity(), f.getY(), f.getYVelocity(), f.getState());
+    }
+
+    public static void main(String[] argv) {
+        TouchpadTest.startListening();
+        JOptionPane.showMessageDialog(null, "showing raw data");
     }
 }

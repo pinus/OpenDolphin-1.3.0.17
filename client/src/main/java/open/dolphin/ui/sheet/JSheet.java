@@ -212,82 +212,6 @@ public class JSheet extends JDialog implements ActionListener {
         return false;
     }
 
-    public static void main(String[] arg) {
-        JFrame frame = new JFrame();
-        frame.setLayout(new BorderLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JLabel label = new JLabel(new ImageIcon(JSheet.class.getResource("/schemaeditor/usagi.jpg")));
-
-        JButton b1 = new JButton("Create Dialog");
-        b1.addActionListener(e -> {
-            JButton ok = new JButton("OK");
-            JButton cancel = new JButton("キャンセル");
-            JButton dispose = new JButton("破棄");
-
-            JOptionPane optionPane = new JOptionPane("JSheet.createDialog", JOptionPane.INFORMATION_MESSAGE,
-                    JOptionPane.OK_CANCEL_OPTION, (Icon) null, new JButton[]{ok, cancel, dispose}, ok);
-            JSheet sheet = JSheet.createDialog(optionPane, frame);
-            sheet.addSheetListener(se -> {
-                // Escape を押したときだけ JOptionPane.CLOSED_OPTION (=-1) が返る
-                System.out.println("option = " + se.getOption());
-            });
-
-            ok.setAction(new ProxyAction("OK", () -> sheet.setVisible(false)));
-            cancel.setAction(new ProxyAction("キャンセル", () -> sheet.setVisible(false)));
-            dispose.setAction(new ProxyAction("破棄", () -> sheet.setVisible(false)));
-
-            sheet.setVisible(true);
-            System.out.println("Create Dialog ended");
-        });
-
-        JButton b2 = new JButton("Show Sheet");
-        b2.addActionListener(e -> {
-            JOptionPane optionPane = new JOptionPane("JSheet.showSheet",
-                    JOptionPane.QUESTION_MESSAGE,
-                    JOptionPane.YES_NO_OPTION);
-
-            JSheet.showSheet(optionPane, frame, se -> {
-                System.out.println("option = " + se.getOption());
-            });
-            System.out.println("Show Sheet ended");
-        });
-
-        JButton b3 = new JButton("Show Save");
-        b3.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            JSheet.showSaveSheet(chooser, frame, se -> {
-                System.out.println("option = " + se.getOption());
-            });
-            System.out.println("Show Save ended");
-        });
-
-        JButton b4 = new JButton("Show Open");
-        b4.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            JSheet.showOpenSheet(chooser, frame, se -> {
-                System.out.println("option = " + se.getOption());
-            });
-            System.out.println("Show Open ended");
-        });
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.add(Box.createHorizontalGlue());
-        panel.add(b1);
-        panel.add(b2);
-        panel.add(b3);
-        panel.add(b4);
-        panel.add(Box.createHorizontalGlue());
-
-        frame.add(label, BorderLayout.CENTER);
-        frame.add(panel, BorderLayout.SOUTH);
-
-        frame.pack();
-        frame.setLocation(600, 200);
-        frame.setVisible(true);
-    }
-
     private void init(Window owner) {
         this.owner = owner;
 
@@ -637,5 +561,81 @@ public class JSheet extends JDialog implements ActionListener {
                     = offscreenImage.getSubimage(0, offscreenImage.getHeight() - animatingSize.height, source.getWidth(), animatingSize.height);
             g.drawImage(fragment, 0, 0, this);
         }
+    }
+
+    public static void main(String[] arg) {
+        JFrame frame = new JFrame();
+        frame.setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JLabel label = new JLabel(new ImageIcon(JSheet.class.getResource("/schemaeditor/usagi.jpg")));
+
+        JButton b1 = new JButton("Create Dialog");
+        b1.addActionListener(e -> {
+            JButton ok = new JButton("OK");
+            JButton cancel = new JButton("キャンセル");
+            JButton dispose = new JButton("破棄");
+
+            JOptionPane optionPane = new JOptionPane("JSheet.createDialog", JOptionPane.INFORMATION_MESSAGE,
+                    JOptionPane.OK_CANCEL_OPTION, (Icon) null, new JButton[]{ok, cancel, dispose}, ok);
+            JSheet sheet = JSheet.createDialog(optionPane, frame);
+            sheet.addSheetListener(se -> {
+                // Escape を押したときだけ JOptionPane.CLOSED_OPTION (=-1) が返る
+                System.out.println("option = " + se.getOption());
+            });
+
+            ok.setAction(new ProxyAction("OK", () -> sheet.setVisible(false)));
+            cancel.setAction(new ProxyAction("キャンセル", () -> sheet.setVisible(false)));
+            dispose.setAction(new ProxyAction("破棄", () -> sheet.setVisible(false)));
+
+            sheet.setVisible(true);
+            System.out.println("Create Dialog ended");
+        });
+
+        JButton b2 = new JButton("Show Sheet");
+        b2.addActionListener(e -> {
+            JOptionPane optionPane = new JOptionPane("JSheet.showSheet",
+                    JOptionPane.QUESTION_MESSAGE,
+                    JOptionPane.YES_NO_OPTION);
+
+            JSheet.showSheet(optionPane, frame, se -> {
+                System.out.println("option = " + se.getOption());
+            });
+            System.out.println("Show Sheet ended");
+        });
+
+        JButton b3 = new JButton("Show Save");
+        b3.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            JSheet.showSaveSheet(chooser, frame, se -> {
+                System.out.println("option = " + se.getOption());
+            });
+            System.out.println("Show Save ended");
+        });
+
+        JButton b4 = new JButton("Show Open");
+        b4.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            JSheet.showOpenSheet(chooser, frame, se -> {
+                System.out.println("option = " + se.getOption());
+            });
+            System.out.println("Show Open ended");
+        });
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(Box.createHorizontalGlue());
+        panel.add(b1);
+        panel.add(b2);
+        panel.add(b3);
+        panel.add(b4);
+        panel.add(Box.createHorizontalGlue());
+
+        frame.add(label, BorderLayout.CENTER);
+        frame.add(panel, BorderLayout.SOUTH);
+
+        frame.pack();
+        frame.setLocation(600, 200);
+        frame.setVisible(true);
     }
 }

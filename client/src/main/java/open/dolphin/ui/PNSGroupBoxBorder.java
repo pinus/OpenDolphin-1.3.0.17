@@ -22,18 +22,6 @@ public class PNSGroupBoxBorder extends AbstractBorder {
         this.insets = insets;
     }
 
-    public static void main(String[] argv) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel p = new JPanel();
-//        ImageIcon icon = new ImageIcon(PNSGroupBoxBorder.class.getResource("/open/dolphin/resources/images/borders/16/Frame.titlePane.small.png"));
-        ImageIcon icon = new ImageIcon(PNSGroupBoxBorder.class.getResource("/open/dolphin/resources/images/borders/18/GroupBox.png"));
-        p.setBorder(new PNSGroupBoxBorder(icon, new Insets(7, 7, 7, 7)));
-        f.add(p);
-        f.setVisible(true);
-        f.setBounds(700, 100, 500, 500);
-    }
-
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
         Graphics2D g2d = (Graphics2D) g.create();
@@ -155,4 +143,15 @@ public class PNSGroupBoxBorder extends AbstractBorder {
         }
     }
 
+    public static void main(String[] argv) {
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel p = new JPanel();
+//        ImageIcon icon = new ImageIcon(PNSGroupBoxBorder.class.getResource("/open/dolphin/resources/images/borders/16/Frame.titlePane.small.png"));
+        ImageIcon icon = new ImageIcon(PNSGroupBoxBorder.class.getResource("/open/dolphin/resources/images/borders/18/GroupBox.png"));
+        p.setBorder(new PNSGroupBoxBorder(icon, new Insets(7, 7, 7, 7)));
+        f.add(p);
+        f.setVisible(true);
+        f.setBounds(700, 100, 500, 500);
+    }
 }

@@ -24,46 +24,6 @@ public class MyTreeUI extends BasicTreeUI {
         return new MyTreeUI();
     }
 
-    public static void main(String[] arg) {
-        UIManager.put("TreeUI", MyTreeUI.class.getName());
-        UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
-
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JTree tree = new JTree();
-        ToolTipManager.sharedInstance().registerComponent(tree);
-        tree.setPreferredSize(new Dimension(300, 400));
-        tree.setRootVisible(false);
-
-        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public Component getTreeCellRendererComponent(JTree tree, Object value,
-                                                          boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                JLabel l = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-                l.setToolTipText(l.getText());
-                return l;
-            }
-        };
-
-        DefaultTreeCellEditor editor = new PNSTreeCellEditor(tree, renderer);
-
-        tree.setCellRenderer(renderer);
-        tree.setCellEditor(editor);
-        tree.setEditable(true);
-
-        tree.setDragEnabled(true);
-
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
-        f.add(tree, BorderLayout.CENTER);
-        f.pack();
-        f.setLocation(300, 100);
-        f.setVisible(true);
-    }
-
     @Override
     protected void installDefaults() {
         UIManager.put("Tree.selectionBackground", UIHelper.DEFAULT_BACKGROUND_SELECTION_FOCUSED);
@@ -231,5 +191,45 @@ public class MyTreeUI extends BasicTreeUI {
         if (!helper.isDragging()) {
             super.startEditingAtPath(tree, path);
         }
+    }
+    
+    public static void main(String[] arg) {
+        UIManager.put("TreeUI", MyTreeUI.class.getName());
+        UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
+
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JTree tree = new JTree();
+        ToolTipManager.sharedInstance().registerComponent(tree);
+        tree.setPreferredSize(new Dimension(300, 400));
+        tree.setRootVisible(false);
+
+        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value,
+                                                          boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                JLabel l = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+                l.setToolTipText(l.getText());
+                return l;
+            }
+        };
+
+        DefaultTreeCellEditor editor = new PNSTreeCellEditor(tree, renderer);
+
+        tree.setCellRenderer(renderer);
+        tree.setCellEditor(editor);
+        tree.setEditable(true);
+
+        tree.setDragEnabled(true);
+
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+        f.add(tree, BorderLayout.CENTER);
+        f.pack();
+        f.setLocation(300, 100);
+        f.setVisible(true);
     }
 }

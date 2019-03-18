@@ -42,27 +42,6 @@ public class CompletableJTextField extends JTextField
         connect();
     }
 
-    public static void main(String[] argv) {
-        CompletableJTextField completableField = new CompletableJTextField(30);
-
-        // 履歴を保存するための pref を作る
-        String prefKey = CompletableJTextField.class.getName() + ".pref";
-        System.out.println("pref key = " + prefKey);
-        Preferences userRoot = Preferences.userRoot();
-        Preferences prefs = userRoot.node(prefKey);
-        completableField.setPreferences(prefs);
-
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(300, 300, 300, 300);
-        JPanel p = new JPanel();
-        frame.add(p);
-        p.add(completableField);
-        frame.pack();
-
-        frame.setVisible(true);
-    }
-
     private void initComponents() {
         completer = new Completer();
         completionListModel = new DefaultListModel<>();
@@ -433,5 +412,26 @@ public class CompletableJTextField extends JTextField
             buildAndShowPopup();
         }
 
+    }
+
+    public static void main(String[] argv) {
+        CompletableJTextField completableField = new CompletableJTextField(30);
+
+        // 履歴を保存するための pref を作る
+        String prefKey = CompletableJTextField.class.getName() + ".pref";
+        System.out.println("pref key = " + prefKey);
+        Preferences userRoot = Preferences.userRoot();
+        Preferences prefs = userRoot.node(prefKey);
+        completableField.setPreferences(prefs);
+
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setBounds(300, 300, 300, 300);
+        JPanel p = new JPanel();
+        frame.add(p);
+        p.add(completableField);
+        frame.pack();
+
+        frame.setVisible(true);
     }
 }

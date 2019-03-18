@@ -42,45 +42,6 @@ public class MainFrame extends JFrame {
         initComponents(title, commandPanelNeeded, statusPanelNeeded);
     }
 
-    public static void main(String[] argv) {
-        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
-
-        MainFrame f = new MainFrame();
-        f.setSize(600, 700);
-
-        f.setTitle("テスト〜タイトル");
-
-        CommandPanel commandPanel = f.getCommandPanel();
-        commandPanel.setPanelHeight(56);
-        for (int i = 0; i < 5; i++) {
-            JButton b = new JButton("TEST" + i);
-            commandPanel.add(b);
-        }
-
-        commandPanel.addGlue();
-        commandPanel.add(new JButton("TEST"));
-
-        MainPanel mainPanel = f.getMainPanel();
-        mainPanel.setLayout(new BorderLayout(0, 0));
-        mainPanel.add(new JTextPane(), BorderLayout.CENTER);
-
-        StatusPanel statusPanel = f.getStatusPanel();
-        statusPanel.add("TEST");
-        statusPanel.addSeparator();
-        statusPanel.add("test2");
-        statusPanel.addGlue();
-        statusPanel.addProgressBar();
-        statusPanel.addSeparator();
-        statusPanel.add("2011-10-21", "3rdLabel");
-        statusPanel.setMargin(8);
-
-        statusPanel.setText("ラベル変更", "0");
-        statusPanel.setText("ラベル", "1");
-        statusPanel.setText("2011-10-27", "3rdLabel");
-
-        f.setVisible(true);
-    }
-
     private void initComponents(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
         getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
         setTitle(title);
@@ -203,5 +164,44 @@ public class MainFrame extends JFrame {
         public MainPanel() {
             super();
         }
+    }
+
+    public static void main(String[] argv) {
+        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
+
+        MainFrame f = new MainFrame();
+        f.setSize(600, 700);
+
+        f.setTitle("テスト〜タイトル");
+
+        CommandPanel commandPanel = f.getCommandPanel();
+        commandPanel.setPanelHeight(56);
+        for (int i = 0; i < 5; i++) {
+            JButton b = new JButton("TEST" + i);
+            commandPanel.add(b);
+        }
+
+        commandPanel.addGlue();
+        commandPanel.add(new JButton("TEST"));
+
+        MainPanel mainPanel = f.getMainPanel();
+        mainPanel.setLayout(new BorderLayout(0, 0));
+        mainPanel.add(new JTextPane(), BorderLayout.CENTER);
+
+        StatusPanel statusPanel = f.getStatusPanel();
+        statusPanel.add("TEST");
+        statusPanel.addSeparator();
+        statusPanel.add("test2");
+        statusPanel.addGlue();
+        statusPanel.addProgressBar();
+        statusPanel.addSeparator();
+        statusPanel.add("2011-10-21", "3rdLabel");
+        statusPanel.setMargin(8);
+
+        statusPanel.setText("ラベル変更", "0");
+        statusPanel.setText("ラベル", "1");
+        statusPanel.setText("2011-10-27", "3rdLabel");
+
+        f.setVisible(true);
     }
 }
