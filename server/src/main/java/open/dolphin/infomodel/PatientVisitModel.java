@@ -169,9 +169,7 @@ public class PatientVisitModel extends InfoModel {
         this.number = number;
     }
 
-    public String getPvtDate() {
-        return pvtDate;
-    }
+    public String getPvtDate() { return pvtDate; }
 
     public void setPvtDate(String time) {
         this.pvtDate = time;

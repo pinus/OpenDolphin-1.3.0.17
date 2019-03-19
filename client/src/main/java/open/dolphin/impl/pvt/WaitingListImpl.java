@@ -82,7 +82,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     private boolean sexRenderer;
     // 生年月日の元号表示
     private boolean ageDisplay;
-    // 運転日
+    // PatientVisit の対象となる日, つまり今日
     private LocalDateTime operationDate;
     // 受付 DB をチェックした時間
     private LocalDateTime checkedTime;
@@ -90,10 +90,8 @@ public class WaitingListImpl extends AbstractMainComponent {
     private int pvtCount;
     // 選択されている患者情報
     private PatientVisitModel[] selectedPvt; // 複数行選択対応
-    private int[] saveSelectedIndex; // 複数行選択対応
-    // handler of PvtChecker
-    private ScheduledFuture timerHandler;
-    // 定期チェックの runnable: タイマーで定期起動, kutuBtn, PvtBroadcastReceiver で臨時起動される
+    private int[] selectedIndex; // 複数行選択対応
+    // 定期チェックの runnable
     private PvtChecker pvtChecker;
     // PvtChecker の臨時起動等, runnable を乗せるための ExecutorService
     private ExecutorService executor;
@@ -125,9 +123,9 @@ public class WaitingListImpl extends AbstractMainComponent {
         // 初回のチェック
         checkFullPvt();
 
-        // １分ごとに setPvtCount() を呼んで待ち時間を更新して時計として使う
+        // １分ごとに showPvtCount() を呼んで待ち時間を更新して時計として使う
         Runnable r = () -> {
-            setPvtCount();
+            showPvtCount();
             setCheckedTime(LocalDateTime.now()); // これは時計になる
         };
         schedule.scheduleAtFixedRate(r, 0, 1, TimeUnit.MINUTES);
@@ -362,23 +360,23 @@ public class WaitingListImpl extends AbstractMainComponent {
      */
     public void setPvtCount(int cnt) {
         pvtCount = cnt;
-        setPvtCount();
+        showPvtCount();
     }
 
     /**
      * 来院数, 待人数, 待時間表示.
      */
-    private void setPvtCount() {
+    private void showPvtCount() {
         int waitingCount = 0;
         String waitingTime = "00:00";
-        List dataList = pvtTableModel.getObjectList();
+        List<PatientVisitModel> dataList = pvtTableModel.getObjectList();
 
         if (pvtCount > 0) {
             boolean found = false;
             int continuousCount = 0;
 
             for (int i = 0; i < pvtCount; i++) {
-                PatientVisitModel pvt = (PatientVisitModel) dataList.get(i);
+                PatientVisitModel pvt = dataList.get(i);
                 int state = pvt.getState();
                 if (state == KarteState.CLOSE_NONE || state == KarteState.OPEN_NONE) {
                     // 診察未終了レコードをカウント, 最初に見つかった未終了レコードの時間から待ち時間を計算
@@ -417,7 +415,6 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * テーブル及び靴アイコンの enable/diable 制御を行う.
-     * 複数行選択対応 by pns
      *
      * @param busy pvt 検索中は true
      */
@@ -427,13 +424,13 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         if (busy) {
             getContext().block();
-            saveSelectedIndex = pvtTable.getSelectedRows();
+            selectedIndex = pvtTable.getSelectedRows();
         } else {
             getContext().getGlassPane().setText("");
             getContext().unblock();
-            if (saveSelectedIndex != null && saveSelectedIndex.length != 0) {
-                for (int i = 0; i < saveSelectedIndex.length; i++) {
-                    pvtTable.getSelectionModel().addSelectionInterval(saveSelectedIndex[i], saveSelectedIndex[i]);
+            if (selectedIndex != null && selectedIndex.length != 0) {
+                for (int i = 0; i < selectedIndex.length; i++) {
+                    pvtTable.getSelectionModel().addSelectionInterval(selectedIndex[i], selectedIndex[i]);
                 }
             }
         }
@@ -441,7 +438,6 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 選択されている来院情報を設定返す.
-     * 複数行選択対応 by pns
      *
      * @return 選択されている来院情報
      */
@@ -451,7 +447,6 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 選択された来院情報を設定する.
-     * 複数行選択対応 by pns
      *
      * @param selectedPvt
      */
@@ -462,7 +457,6 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * カルテオープンメニューを制御する.
-     * 複数行選択対応 by pns
      */
     private void controlMenu() {
         getContext().enableAction(GUIConst.ACTION_OPEN_KARTE, canOpen());
@@ -470,7 +464,6 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * Popupメニューから, 現在選択されている全ての患者のカルテを開く.
-     * 複数行選択対応 by pns
      */
     public void openKarte() {
         PatientVisitModel[] pvtModel = getSelectedPvt();
@@ -528,8 +521,8 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * Read Only でカルテを開く.
      *
-     * @param pvtModel
-     * @param state
+     * @param pvtModel PatientVisitModel
+     * @param state State
      */
     @Override
     public void openReadOnlyKarte(final PatientVisitModel pvtModel, final int state) {
@@ -604,7 +597,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 現在の selectedPvt が canOpen かどうか判定 by pns.
+     * 現在の selectedPvt が canOpen かどうか判定.
      * １つでも開けられないものがあれば false とする.
      */
     private boolean canOpen() {
@@ -732,69 +725,17 @@ public class WaitingListImpl extends AbstractMainComponent {
      * @return
      */
     private int getRowForPvt(PatientVisitModel updated) {
-        List pvtList = pvtTableModel.getObjectList();
-        //setPvtCount(pvtTableModel.getObjectCount());
+        List<PatientVisitModel> pvtList = pvtTableModel.getObjectList();
         int updatedRow = -1;
 
         for (int i = 0; i < pvtList.size(); i++) {
-            PatientVisitModel pvt = (PatientVisitModel) pvtList.get(i);
+            PatientVisitModel pvt = pvtList.get(i);
             if (updated.getId() == pvt.getId()) {
                 updatedRow = i;
                 break;
             }
         }
         return updatedRow;
-    }
-
-    /**
-     * 選択した患者の受付をキャンセルする.
-     * 複数行選択対応 by pns
-     */
-    public void cancelVisit() {
-
-        StringBuilder ptNames = new StringBuilder();
-
-        if (selectedPvt == null || selectedPvt.length == 0) {
-            return;
-        }
-        // 名前リスト作成
-        for (PatientVisitModel pvt : selectedPvt) {
-            ptNames.append(pvt.getPatientName());
-            ptNames.append(", ");
-        }
-
-        // ダイアログを表示し確認する
-        Object[] cstOptions = new Object[]{"はい", "いいえ"};
-        ptNames.deleteCharAt(ptNames.length() - 1); // 最後の "," を取り除く
-        ptNames.append(" 様の受付を取り消しますか?");
-
-        int select = JSheet.showOptionDialog(
-                pvtTable,
-                ptNames.toString(),
-                ClientContext.getFrameTitle(getName()),
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.WARNING_MESSAGE,
-                null,
-                cstOptions, "はい");
-
-        // 受付を取り消す
-        if (select == JOptionPane.OK_OPTION) {
-            Runnable r = () -> {
-                for (PatientVisitModel pvt : selectedPvt) {
-                    PvtDelegater pdl = new PvtDelegater();
-                    // karte open なら キャンセルできない
-                    if (KarteState.isOpen(pdl.getPvtState(pvt.getId()))) {
-                        JSheet.showMessageDialog(getContext().getFrame(), "編集中のカルテはキャンセルできません", "", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        pvt.setState(KarteState.CANCEL_PVT);
-                        pdl.updatePvt(pvt);
-                    }
-                }
-                MinMax row = new MinMax(pvtTable.getSelectedRows());
-                pvtTableModel.fireTableRowsUpdated(row.min, row.max);
-            };
-            executor.submit(r);
-        }
     }
 
     /**
@@ -835,7 +776,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 pvtTableModel.fireTableRowsUpdated(row, row);
             }
             // 待ち時間更新
-            setPvtCount();
+            showPvtCount();
 
         } else {
             // localPvt がなければ, それは追加である
@@ -1217,7 +1158,6 @@ public class WaitingListImpl extends AbstractMainComponent {
 
     /**
      * 受付リストのコンテキストメニュークラス.
-     * modified by pns
      */
     private class ContextListener extends AbstractMainComponent.ContextListener<PatientVisitModel> {
         private final JPopupMenu contextMenu;
@@ -1243,13 +1183,9 @@ public class WaitingListImpl extends AbstractMainComponent {
 
                 if (canOpen()) {
                     String pop1 = "カルテを開く";
-                    String pop2 = "受付をキャンセルする";
                     JMenuItem openKarte = new JMenuItem(new ProxyAction(pop1, WaitingListImpl.this::openKarte));
-                    JMenuItem cancelVisit = new JMenuItem(new ProxyAction(pop2, WaitingListImpl.this::cancelVisit));
                     openKarte.setIconTextGap(8);
-                    cancelVisit.setIconTextGap(8);
                     contextMenu.add(openKarte);
-                    contextMenu.add(cancelVisit);
                     contextMenu.addSeparator();
                 }
 
@@ -1283,7 +1219,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 配列の中から最大値, 最小値を調べる
+     * 配列の中から最大値, 最小値を調べる.
      */
     private class MinMax {
         public int max = -1;

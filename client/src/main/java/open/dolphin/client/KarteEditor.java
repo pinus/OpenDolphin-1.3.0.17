@@ -354,7 +354,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
         if (sendClaim) {
             if (modify) {
-                if (docInfo.getStatus().equals(STATUS_NONE)) {
+                if (docInfo.getStatus().equals(STATUS_TMP)) {
                     // 仮保存から修正がかかっている場合
                     sendClaim = Project.getSendClaimSave();
 
