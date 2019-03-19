@@ -21,14 +21,12 @@ public class WaitingListPanel extends MainComponentPanel {
     // command panel
     private JButton kutuBtn;
     private JLabel legendLbl;
-    private JLabel atokLbl;
     // main panel
     private JTable table;
     // status panel
     private JLabel checkedTimeLbl;
     private JLabel countLbl;
     private JLabel dateLbl;
-    private JLabel intervalLbl;
 
     public WaitingListPanel() {
         initComponents();
@@ -48,12 +46,6 @@ public class WaitingListPanel extends MainComponentPanel {
         }
         kutuBtn.setFocusable(false);
         legendLbl = new JLabel();
-        //atokLbl = new JLabel("ATOKメモリ");
-        //comPanel.add(kutuBtn);
-        //comPanel.addGlue();
-        //comPanel.add(atokLbl);
-        //comPanel.add(legendLbl);
-        //comPanel.setMargin(4);
 
         MainPanel mainPanel = getMainPanel();
         table = new RowTipsTable();
@@ -66,14 +58,12 @@ public class WaitingListPanel extends MainComponentPanel {
         checkedTimeLbl = new JLabel("00:00");
         countLbl = new JLabel("来院数10人，待ち10人，待ち時間 00:00");
         dateLbl = new JLabel("2011-11-11(土)");
-        intervalLbl = new JLabel("チェック間隔：30秒");
         statusPanel.add(kutuBtn);
         if (ClientContext.isWin()) {
             statusPanel.addSpace(5);
         }
         statusPanel.add(checkedTimeLbl);
         statusPanel.addSeparator();
-        statusPanel.add(intervalLbl);
         statusPanel.addGlue();
         statusPanel.add(dateLbl);
         statusPanel.addSeparator();
@@ -89,13 +79,7 @@ public class WaitingListPanel extends MainComponentPanel {
         return countLbl;
     }
 
-    public JLabel getDateLbl() {
-        return dateLbl;
-    }
-
-    public JLabel getIntervalLbl() {
-        return intervalLbl;
-    }
+    public JLabel getDateLbl() { return dateLbl; }
 
     public JButton getKutuBtn() {
         return kutuBtn;
@@ -103,10 +87,6 @@ public class WaitingListPanel extends MainComponentPanel {
 
     public JLabel getLegendLbl() {
         return legendLbl;
-    }
-
-    public JLabel getAtokLbl() {
-        return atokLbl;
     }
 
     public JTable getTable() {

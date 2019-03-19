@@ -732,7 +732,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
                 Dimension padding = ((ButtonPanel) buttonPanel).getPadding();
 
                 int width = PNSTabbedPane.this.getWidth() - padding.width;
-                if (width <= 0 || !buttonPanel.isValid()) {
+                if (width <= 0) {
                     return new Dimension(1, 1);
                 }
                 //logger.info("width=" + width + " container=" + buttonPanel);

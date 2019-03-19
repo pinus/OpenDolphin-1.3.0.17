@@ -11,7 +11,6 @@ import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.KarteState;
-import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IMEControl;
@@ -32,7 +31,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
@@ -45,6 +45,7 @@ import java.util.prefs.Preferences;
  * @author pns
  */
 public class WaitingListImpl extends AbstractMainComponent {
+    private static final String NAME = "受付リスト";
 
     // 来院情報テーブルの年齢カラム
     public static final int AGE_COLUMN = 5;
@@ -61,7 +62,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     protected static final Color SHOSHIN_COLOR = new Color(180, 220, 240); //青っぽい色
     protected static final Color KARTE_EMPTY_COLOR = new Color(250, 200, 160); //茶色っぽい色
     protected static final Color DIAGNOSIS_EMPTY_COLOR = new Color(243, 255, 15); //黄色
-    private static final String NAME = "受付リスト";
     // Font
     private static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
     private static final Font SMALL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 9);
@@ -71,10 +71,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     private static final Color CANCEL_PVT_COLOR = new Color(128, 128, 128);
     // テーブルの row height
     private static final int ROW_HEIGHT = 18;
-
-    // デフォルトのチェック間隔
-    private static int DEFAULT_CHECK_INTERVAL = 30; // デフォルト値
-
     // WaitingList の表示パネル
     private WaitingListPanel view;
     // PVT Table
@@ -87,13 +83,11 @@ public class WaitingListImpl extends AbstractMainComponent {
     // 生年月日の元号表示
     private boolean ageDisplay;
     // 運転日
-    private Date operationDate;
-    // 受付 DB をチェックした Date
-    private Date checkedTime;
+    private LocalDateTime operationDate;
+    // 受付 DB をチェックした時間
+    private LocalDateTime checkedTime;
     // 来院患者数
     private int pvtCount;
-    // チェック間隔
-    private int checkInterval;
     // 次のチェックまでの残り時間
     private int intervalToNextCheck;
     // 選択されている患者情報
@@ -108,7 +102,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     // PvtChecker を定期起動するための ExecutorService
     private ScheduledExecutorService schedule;
     // Logger
-    private Logger logger;
+    private Logger logger = Logger.getLogger(WaitingListImpl.class);
 
     /**
      * Creates new WaitingList.
@@ -129,36 +123,25 @@ public class WaitingListImpl extends AbstractMainComponent {
         setup();
         initComponents();
         connect();
-        // pvt 定期チェック開始
-        restartCheckTimer();
-        // pvt 受信待ち
-        PvtEndpoint endpoint = new PvtEndpoint();
-        DolphinClientContext.getContext().setEndpoint(endpoint);
-        endpoint.addPvtListener(this::hostPvtReceiver);
 
-        if (checkInterval == 0) {
-            // 定期チェック off の場合 (checkInterval = 0)
-            // 初回のチェック. 以後は ReceivePvtBroadcast と，下のタイマーで更新
-            checkFullPvt();
-            // １分ごとに setPvtCount() を呼んで待ち時間を更新
-            Runnable r = () -> {
-                setPvtCount();
-                setCheckedTime(new Date()); // これは時計になる
-            };
-            schedule.scheduleAtFixedRate(r, 0, 1, TimeUnit.MINUTES);
-        }
+        // 初回のチェック
+        checkFullPvt();
+
+        // １分ごとに setPvtCount() を呼んで待ち時間を更新して時計として使う
+        Runnable r = () -> {
+            setPvtCount();
+            setCheckedTime(LocalDateTime.now()); // これは時計になる
+        };
+        schedule.scheduleAtFixedRate(r, 0, 1, TimeUnit.MINUTES);
     }
 
     /**
-     * ロガー等を取得する.
+     * Preferences を取得
      */
     private void setup() {
-        logger = Logger.getLogger(this.getClass());
         preferences = Preferences.userNodeForPackage(this.getClass());
         sexRenderer = preferences.getBoolean("sexRenderer", false);
         ageDisplay = preferences.getBoolean("ageDisplay", true);
-        //checkInterval = Project.getPreferences().getInt(Project.PVT_CHECK_INTERVAL, DEFAULT_CHECK_INTERVAL);
-        checkInterval = 0;
     }
 
     /**
@@ -166,7 +149,6 @@ public class WaitingListImpl extends AbstractMainComponent {
      */
     private void initComponents() {
 
-        //view = new WaitingListView();
         view = new WaitingListPanel();
         setUI(view);
 
@@ -285,9 +267,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         pvtTable.getColumnModel().getColumn(10).setCellRenderer(stateRenderer);
 
         // 日付ラベルに値を設定する
-        setOperationDate(new Date());
-        // チェック間隔情報を設定する
-        setCheckInterval(checkInterval);
+        setOperationDate(LocalDateTime.now());
         // 来院数を設定する
         setPvtCount(0);
     }
@@ -322,6 +302,11 @@ public class WaitingListImpl extends AbstractMainComponent {
                 }
             }
         });
+
+        // pvt 受信待ち
+        PvtEndpoint endpoint = new PvtEndpoint();
+        DolphinClientContext.getContext().setEndpoint(endpoint);
+        endpoint.addPvtListener(this::hostPvtReceiver);
     }
 
     /**
@@ -339,24 +324,6 @@ public class WaitingListImpl extends AbstractMainComponent {
      */
     @Override
     public void stop() {
-    }
-
-    /**
-     * 選択されている来院情報の患者オブジェクトを返す.
-     * 複数行対応 by pns
-     *
-     * @return 患者オブジェクト
-     */
-    public PatientModel[] getPatinet() {
-        if (selectedPvt == null || selectedPvt.length == 0) {
-            return null;
-        }
-
-        PatientModel[] pm = new PatientModel[selectedPvt.length];
-        for (int i = 0; i < selectedPvt.length; i++) {
-            pm[i] = selectedPvt[i].getPatient();
-        }
-        return pm;
     }
 
     /**
@@ -384,10 +351,10 @@ public class WaitingListImpl extends AbstractMainComponent {
      *
      * @param date 取得する日
      */
-    private void setOperationDate(Date date) {
+    private void setOperationDate(LocalDateTime date) {
         operationDate = date;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd (EE)"); // 2006-11-20 (水)
-        view.getDateLbl().setText(sdf.format(operationDate));
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd (EE)"); // 2006-11-20 (水)
+        view.getDateLbl().setText(dtf.format(operationDate));
     }
 
     /**
@@ -395,27 +362,10 @@ public class WaitingListImpl extends AbstractMainComponent {
      *
      * @param date チェックした時刻
      */
-    private void setCheckedTime(Date date) {
+    private void setCheckedTime(LocalDateTime date) {
         checkedTime = date;
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        view.getCheckedTimeLbl().setText(sdf.format(checkedTime));
-    }
-
-    /**
-     * 来院情報のチェック間隔(Timer delay)を設定する.
-     *
-     * @param interval チェック間隔 sec
-     */
-    public void setCheckInterval(int interval) {
-        checkInterval = interval;
-
-        String text;
-        if (interval == 0) {
-            text = ""; // 定期チェックなし
-        } else {
-            text = String.format("チェック間隔：%d秒", interval);
-        }
-        view.getIntervalLbl().setText(text);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+        view.getCheckedTimeLbl().setText(dtf.format(checkedTime));
     }
 
     /**
@@ -429,7 +379,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 来院数，待人数，待時間表示
+     * 来院数，待人数，待時間表示.
      */
     private void setPvtCount() {
         int waitingCount = 0;
@@ -550,7 +500,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     public void openKarte(final PatientVisitModel pvtModel) {
 
         if (canOpen(pvtModel)) {
-            stopCheckTimer();
             setBusy(true);
 
             // isReadOnly対応
@@ -719,9 +668,6 @@ public class WaitingListImpl extends AbstractMainComponent {
      */
     public void updateState(final PatientVisitModel updated) {
 
-        //update の最中は PvtChecker を止めて，update が終了したら再開する
-        stopCheckTimer();
-
         final int row = getRowForPvt(updated);
         if (row < 0) {
             logger.info("Something weird! Updated pvt is not found in the present pvtTable");
@@ -741,7 +687,6 @@ public class WaitingListImpl extends AbstractMainComponent {
                 }
                 pdl.updatePvt(updated);
                 pvtTableModel.fireTableRowsUpdated(row, row);
-                startCheckTimer();
             };
             executor.submit(r);
         } else {
@@ -750,7 +695,6 @@ public class WaitingListImpl extends AbstractMainComponent {
                 PvtDelegater pdl = new PvtDelegater();
                 updated.setState(pdl.getPvtState(updated.getId()));
                 pvtTableModel.fireTableRowsUpdated(row, row);
-                startCheckTimer();
             };
             executor.submit(r);
         }
@@ -867,60 +811,10 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * チェックタイマーをリスタートする.
-     */
-    public void restartCheckTimer() {
-        stopCheckTimer();
-        startCheckTimer(0);
-    }
-
-    /**
-     * チェックタイマーを止める(タスクが起動済みの場合はこのタスクを実行しているスレッドに割り込まないで完了を待つ).
-     */
-    private void stopCheckTimer() {
-        if (timerHandler != null) {
-            intervalToNextCheck = (int) timerHandler.getDelay(TimeUnit.SECONDS);
-            boolean succeeded = timerHandler.cancel(false);
-            timerHandler = null;
-            //logger.info("StopCheckTimer succeeded = " + succeeded);
-        } else {
-            //logger.info("StopCheckTimer: no timeHandler");
-        }
-    }
-
-    /**
-     * チェックタイマーを second 秒後にスタートする.
-     * Thread から呼ばれるので，stop されないで２回呼ばれることがある.
-     *
-     * @param second
-     */
-    private void startCheckTimer(int second) {
-        if (timerHandler != null) {
-            stopCheckTimer();
-        }
-        // checkInterval = 0 のときはタイマーをスタートさせない
-        if (checkInterval == 0) {
-            logger.info("pvt check timer is off");
-        } else {
-            timerHandler = schedule.scheduleWithFixedDelay(pvtChecker, second, checkInterval, TimeUnit.SECONDS);
-            //logger.info("startCheckTimer in " + intervalToNextCheck + " sec");
-        }
-    }
-
-    /**
-     * チェックタイマーを止めた時点での残り時間から再開する.
-     */
-    private void startCheckTimer() {
-        startCheckTimer((intervalToNextCheck > 0) ? intervalToNextCheck : 0);
-    }
-
-    /**
      * 更新ボタンで呼ばれる. 定期チェックの方はリセットする.
      */
     public void checkFullPvt() {
-        stopCheckTimer();
         executor.submit(pvtChecker);
-        startCheckTimer(checkInterval);
     }
 
     /**
@@ -977,16 +871,18 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         private PatientVisitModel pvt;
         private PvtDelegater delegater = new PvtDelegater();
-        private long startTime = 0; // check にかかる時間をログ出力
 
         @Override
         public void run() {
-            startTime = new Date().getTime();
-
             SwingUtilities.invokeLater(() -> setBusy(true));
 
-            final Date date = new Date();
-            final String[] dateToSerach = ModelUtils.getSearchDateAsString(date);
+            // PVTDelegater で使う date を作成する
+            // [0] = today, date[1] = AppodateFrom, date[2] = AppodateTo
+            // [0] 今日, [1] 2ヶ月前(AppodateFrom), [2]その2ヶ月後(AppodteTo) それは今日
+            final LocalDateTime date = LocalDateTime.now();
+            String[] dateToSearch = new String[3];
+            dateToSearch[0] = dateToSearch[2] = date.format(DateTimeFormatter.ISO_DATE);
+            dateToSearch[1] = date.plusMonths(-2).format((DateTimeFormatter.ISO_DATE));
 
             // 現在のテーブルサイズを firstResult とする
             List<PatientVisitModel> dataList = pvtTableModel.getObjectList();
@@ -994,21 +890,19 @@ public class WaitingListImpl extends AbstractMainComponent {
             //logger.info("check PVT at " + date + " firstResult = " + firstResult);
 
             // 検索する
-            final List<PatientVisitModel> result = delegater.getPvt(dateToSerach, firstResult);
+            final List<PatientVisitModel> result = delegater.getPvt(dateToSearch, firstResult);
             int newVisitCount = result != null ? result.size() : 0;
             //logger.info("new visits = " + newVisitCount);
 
             // 結果を追加する
             if (newVisitCount > 0) {
-                List<PatientVisitModel> newList = new ArrayList<>();
                 for (int i = 0; i < newVisitCount; i++) {
                     pvt = result.get(i); // newVisitCount > 0 なので null ではない
                     // 受付番号セット
                     pvt.setNumber(firstResult + i + 1);
                     // 受付リスト追加
-                    newList.add(pvt);
+                    dataList.add(pvt);
                 }
-                dataList.addAll(newList);
                 pvtTableModel.fireTableRowsInserted(firstResult, firstResult + newVisitCount - 1);
             }
 
