@@ -82,10 +82,6 @@ public class WaitingListImpl extends AbstractMainComponent {
     private boolean sexRenderer;
     // 生年月日の元号表示
     private boolean ageDisplay;
-    // PatientVisit の対象となる日, つまり今日
-    private LocalDateTime operationDate;
-    // 受付 DB をチェックした時間
-    private LocalDateTime checkedTime;
     // 来院患者数
     private int pvtCount;
     // 選択されている患者情報
@@ -194,7 +190,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         // sorter を設定
         TableRowSorter<ObjectReflectTableModel> sorter = new TableRowSorter<ObjectReflectTableModel>(pvtTableModel) {
-            // ASCENDING -> DESENDING -> 初期状態 と切り替える
+            // ASCENDING -> DESCENDING -> 初期状態 と切り替える
             @Override
             public void toggleSortOrder(int column) {
                 if (column >= 0 && column < getModelWrapper().getColumnCount() && isSortable(column)) {
@@ -323,7 +319,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * レンダラをトグルで切り替える.
      */
-    public void switchRenderere() {
+    public void switchRenderer() {
         sexRenderer = !sexRenderer;
         preferences.putBoolean("sexRenderer", sexRenderer);
         if (pvtTable != null) {
@@ -337,9 +333,8 @@ public class WaitingListImpl extends AbstractMainComponent {
      * @param date 取得する日
      */
     private void setOperationDate(LocalDateTime date) {
-        operationDate = date;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd (EE)"); // 2006-11-20 (水)
-        view.getDateLbl().setText(dtf.format(operationDate));
+        view.getDateLbl().setText(dtf.format(date));
     }
 
     /**
@@ -348,9 +343,8 @@ public class WaitingListImpl extends AbstractMainComponent {
      * @param time チェックした時刻
      */
     private void setCheckedTime(LocalDateTime time) {
-        checkedTime = time;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
-        view.getCheckedTimeLbl().setText(dtf.format(checkedTime));
+        view.getCheckedTimeLbl().setText(dtf.format(time));
     }
 
     /**
@@ -414,7 +408,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * テーブル及び靴アイコンの enable/diable 制御を行う.
+     * テーブル及び靴アイコンの enable/disable 制御を行う.
      *
      * @param busy pvt 検索中は true
      */
@@ -543,7 +537,6 @@ public class WaitingListImpl extends AbstractMainComponent {
                 JOptionPane.WARNING_MESSAGE);
         pane.setOptions(options);
         pane.setInitialValue(options[0]);
-        pane.putClientProperty("Quaqua.OptionPane.destructiveOption", 2);
         // メッセージが改行しないように大きさをセット（JDialog なら自動でやってくれる）
         Dimension size = pane.getPreferredSize();
         size.width = 540; // cut and try
@@ -746,7 +739,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * PvtServer からの pvt meessage を受け取って pvtTableModel を更新する.
+     * PvtServer からの pvt message を受け取って pvtTableModel を更新する.
      *
      * @param hostPvt
      */
@@ -806,7 +799,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
             // PVTDelegater で使う date を作成する
             // [0] = today, date[1] = AppodateFrom, date[2] = AppodateTo
-            // [0] 今日, [1] 2ヶ月前(AppodateFrom), [2]その2ヶ月後(AppodteTo) それは今日
+            // [0] 今日, [1] 2ヶ月前(AppodateFrom), [2]その2ヶ月後(AppodateTo) それは今日
             final LocalDateTime date = LocalDateTime.now();
             String[] dateToSearch = new String[3];
             dateToSearch[0] = dateToSearch[2] = date.format(DateTimeFormatter.ISO_DATE);
@@ -893,8 +886,8 @@ public class WaitingListImpl extends AbstractMainComponent {
     private abstract class TableCellRendererBase extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
 
-        protected boolean holizontalGrid = false;
-        protected boolean virticalGrid = false;
+        protected boolean horizontalGrid = false;
+        protected boolean verticalGrid = false;
         protected boolean marking = false;
         protected Color markingColor = Color.WHITE;
 
@@ -910,11 +903,11 @@ public class WaitingListImpl extends AbstractMainComponent {
         public void paint(Graphics graphics) {
             Graphics2D g = (Graphics2D) graphics.create();
             super.paint(graphics);
-            if (holizontalGrid) {
+            if (horizontalGrid) {
                 g.setColor(Color.WHITE);
                 g.drawLine(0, getHeight(), getWidth(), getHeight());
             }
-            if (virticalGrid) {
+            if (verticalGrid) {
                 g.setColor(Color.WHITE);
                 g.drawLine(0, 0, 0, getHeight());
 
@@ -967,8 +960,8 @@ public class WaitingListImpl extends AbstractMainComponent {
         private static final long serialVersionUID = -7654410476024116413L;
 
         public KarteStateRenderer() {
-            holizontalGrid = true;
-            virticalGrid = true;
+            horizontalGrid = true;
+            verticalGrid = true;
             initComponent();
         }
 
@@ -1084,7 +1077,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         }
 
         public MaleFemaleRenderer(int alignment) {
-            holizontalGrid = true;
+            horizontalGrid = true;
             initComponent(alignment);
         }
 
@@ -1189,8 +1182,8 @@ public class WaitingListImpl extends AbstractMainComponent {
                     contextMenu.addSeparator();
                 }
 
-                JRadioButtonMenuItem oddEven = new JRadioButtonMenuItem(new ProxyAction(pop3, WaitingListImpl.this::switchRenderere));
-                JRadioButtonMenuItem sex = new JRadioButtonMenuItem(new ProxyAction(pop4, WaitingListImpl.this::switchRenderere));
+                JRadioButtonMenuItem oddEven = new JRadioButtonMenuItem(new ProxyAction(pop3, WaitingListImpl.this::switchRenderer));
+                JRadioButtonMenuItem sex = new JRadioButtonMenuItem(new ProxyAction(pop4, WaitingListImpl.this::switchRenderer));
                 ButtonGroup bg = new ButtonGroup();
                 bg.add(oddEven);
                 bg.add(sex);
