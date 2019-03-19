@@ -8,10 +8,10 @@ package open.dolphin.infomodel;
  */
 public enum DiagnosisOutcome {
 
-    none("", ""),
-    fullyRecovered("全治", "MML0016"),
-    end("終了", "MML0016"),
-    pause("中止", "MML0016"),
+    NONE("", ""),
+    FULLY_RECOVERED("全治", "MML0016"),
+    END("終了", "MML0016"),
+    PAUSE("中止", "MML0016"),
     ;
 
     private final DiagnosisOutcomeModel model = new DiagnosisOutcomeModel();

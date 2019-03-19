@@ -337,19 +337,19 @@ public class ModelUtils {
                 // 数字=DAO, 文字=API
                 case "1":
                 case "F":
-                    return DiagnosisOutcome.fullyRecovered.model(); // 治癒
+                    return DiagnosisOutcome.FULLY_RECOVERED.model(); // 治癒
                 case "2":
                 case "D":
-                    return DiagnosisOutcome.end.model(); // 死亡→終了に変換
+                    return DiagnosisOutcome.END.model(); // 死亡→終了に変換
                 case "3":
                 case "C":
-                    return DiagnosisOutcome.pause.model(); // 中止
+                    return DiagnosisOutcome.PAUSE.model(); // 中止
                 case "8":
                 case "S":
-                    return DiagnosisOutcome.pause.model(); // 移行→中止に変換
+                    return DiagnosisOutcome.PAUSE.model(); // 移行→中止に変換
             }
         }
-        return DiagnosisOutcome.none.model();
+        return DiagnosisOutcome.NONE.model();
     }
 
     /**
@@ -359,11 +359,11 @@ public class ModelUtils {
      * @return ORCA転帰
      */
     public static String toOrcaOutcome(DiagnosisOutcomeModel outcome) {
-        if (Objects.nonNull(outcome)) {
-            if (outcome.getOutcome().equals(DiagnosisOutcome.pause.name())) {
+        if (Objects.nonNull(outcome) && Objects.nonNull(outcome.getOutcome())) {
+            if (outcome.getOutcome().equals(DiagnosisOutcome.PAUSE.name())) {
                 return "C";
-            } else if (outcome.getOutcome().equals(DiagnosisOutcome.fullyRecovered.name())
-                    || outcome.getOutcome().equals(DiagnosisOutcome.end.name())) {
+            } else if (outcome.getOutcome().equals(DiagnosisOutcome.FULLY_RECOVERED.name())
+                    || outcome.getOutcome().equals(DiagnosisOutcome.END.name())) {
                 return "F";
             }
         }

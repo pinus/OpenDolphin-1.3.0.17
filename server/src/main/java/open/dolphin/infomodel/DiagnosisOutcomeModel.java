@@ -20,9 +20,7 @@ public class DiagnosisOutcomeModel extends InfoModel {
         return getOutcomeDesc();
     }
 
-    public String getOutcome() {
-        return outcome;
-    }
+    public String getOutcome() { return outcome; }
 
     public void setOutcome(String outcome) {
         this.outcome = outcome;
