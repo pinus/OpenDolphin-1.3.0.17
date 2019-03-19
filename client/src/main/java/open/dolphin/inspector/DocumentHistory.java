@@ -12,6 +12,7 @@ import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -58,6 +59,8 @@ public class DocumentHistory implements IInspector {
     private BlockKeyListener blockKeyListener;
     // 編集終了したカルテの日付を保存する. 編集終了した時に必ず選択するために使う
     private String editDate = null;
+    // ロガー
+    private Logger logger = Logger.getLogger(DocumentHistory.class);
 
     /**
      * 文書履歴オブジェクトを生成する.
@@ -570,13 +573,9 @@ public class DocumentHistory implements IInspector {
 
         @Override
         protected List<DocInfoModel> doInBackground() {
-            //logger.debug("DocInfoTask started");
             List<DocInfoModel> result = ddl.getDocInfoList(spec);
-            if (ddl.isNoError()) {
-                return result;
-            } else {
-                return null;
-            }
+            //logger.info("DocInfoTask result count: " + result.size());
+            return ddl.isNoError() ? result : null;
         }
 
         @Override

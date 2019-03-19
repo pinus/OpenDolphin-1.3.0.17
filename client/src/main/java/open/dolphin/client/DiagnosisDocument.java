@@ -827,12 +827,16 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     /**
      * row に RegisteredDiagnosisModel を挿入する.
      * テーブルへの挿入をする場所はここ（スタンプ箱，DiagnosisDocumentTableModel）と propertyChange（エディタから挿入）.
+     * LastVisit がないのに病名だけ付ける場合はありえない
      *
      * @param module RegisteredDiagnosisModule
      */
     private void insertDiagnosis(RegisteredDiagnosisModel module) {
-        // 今日の日付を疾患開始日として設定する
         // 疾患開始日を lastVisit に設定
+        if (lastVisitYmd == null) {
+            JSheet.showMessageDialog(getContext().getFrame(), "最終受診日が取得できません", "", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
 
         String today = MMLDate.getDate(gc);

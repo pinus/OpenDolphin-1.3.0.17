@@ -359,10 +359,10 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                     sendClaim = Project.getSendClaimSave();
 
                 } else {
-                    // modify 時に中途終了データがある場合
+                    // modify 時に中途終了データがある場合は modify でも sendClaimSave
                     OrcaDelegater delegater = new OrcaDelegater();
-                    sendClaim = delegater.existsOrcaWorkingData(getContext().getPatient().getPatientId()) ?
-                            Project.getSendClaimModify() : Project.getSendClaim();
+                    boolean existsWorkingData = delegater.existsOrcaWorkingData(getContext().getPatient().getPatientId());
+                    sendClaim = existsWorkingData ? Project.getSendClaimSave() : Project.getSendClaimModify();
                 }
 
             } else {

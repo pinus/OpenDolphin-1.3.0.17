@@ -57,15 +57,6 @@ public class LastVisit {
     }
 
     /**
-     * 今日を除いた最終受診日（時間なしの mmlDate 形式：2008-02-01）
-     *
-     * @return ISO_DATE
-     */
-    public String getLastVisitInHistory() {
-        return MMLDate.trimTime(lastVisitInHistoryMML);
-    }
-
-    /**
      * 今日を除いた最終受診日（int 配列形式 int[0]=year, int[1]=month(0～11), int[2]=day）
      *
      * @return { year, month, day }
@@ -74,14 +65,6 @@ public class LastVisit {
         return MMLDate.getCalendarYMD(lastVisitInHistoryMML);
     }
 
-    /**
-     * 今日を除いた最終受診日（GlegorianCaledar 形式）
-     *
-     * @return DocumentHistory のテーブル上の最終受診日（GlegorianCaledar 形式）
-     */
-    public GregorianCalendar getLastVisitInHistoryGc() {
-        return lastVisitInHistoryGC;
-    }
 
     /**
      * 最終受診日を時間なしの mmlDate 形式（2008-02-01）で返す
