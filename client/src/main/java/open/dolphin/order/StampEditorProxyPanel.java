@@ -98,7 +98,7 @@ public class StampEditorProxyPanel extends JPanel {
     private class StampEditorLoader {
         // load した editor を保持する HashMap
         private final HashMap<String, IStampEditor> editorMap = new HashMap<>(14);
-        // load した editor につける PropertyChangeListener
+        // load した editor につける ValidityListener
         private final ValidListener listener;
         // load した editor を格納する panel (CardLayout)
         private final JPanel panel;
@@ -111,8 +111,8 @@ public class StampEditorProxyPanel extends JPanel {
         /**
          * entity に対応する StampEditor を作成する
          *
-         * @param entity
-         * @return
+         * @param entity Entiry
+         * @return StampEditor
          */
         public IStampEditor load(String entity) {
             IStampEditor editor = editorMap.get(entity);

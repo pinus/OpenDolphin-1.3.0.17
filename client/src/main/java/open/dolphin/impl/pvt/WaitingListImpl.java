@@ -82,16 +82,14 @@ public class WaitingListImpl extends AbstractMainComponent {
     private boolean sexRenderer;
     // 生年月日の元号表示
     private boolean ageDisplay;
-    // 来院患者数
-    private int pvtCount;
     // 選択されている患者情報
     private PatientVisitModel[] selectedPvt; // 複数行選択対応
     private int[] selectedIndex; // 複数行選択対応
-    // 定期チェックの runnable
+    // Pvt チェックの runnable
     private PvtChecker pvtChecker;
     // PvtChecker の臨時起動等, runnable を乗せるための ExecutorService
     private ExecutorService executor;
-    // PvtChecker を定期起動するための ExecutorService
+    // 時計を更新するための ExecutorService
     private ScheduledExecutorService schedule;
     // Logger
     private Logger logger = Logger.getLogger(WaitingListImpl.class);
@@ -117,13 +115,10 @@ public class WaitingListImpl extends AbstractMainComponent {
         connect();
 
         // 初回のチェック
-        checkFullPvt();
+        executor.submit(pvtChecker);
 
-        // １分ごとに showPvtCount() を呼んで待ち時間を更新して時計として使う
-        Runnable r = () -> {
-            showPvtCount();
-            setCheckedTime(LocalDateTime.now()); // これは時計になる
-        };
+        // １分ごとに setCheckedTime() を呼んで待ち時間を更新して時計として使う
+        Runnable r = () -> setCheckedTime(LocalDateTime.now());
         schedule.scheduleAtFixedRate(r, 0, 1, TimeUnit.MINUTES);
     }
 
@@ -250,8 +245,8 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         // 日付ラベルに値を設定する
         setOperationDate(LocalDateTime.now());
-        // 来院数を設定する
-        setPvtCount(0);
+        // 来院数を表示する
+        updatePvtCount();
     }
 
     /**
@@ -262,8 +257,8 @@ public class WaitingListImpl extends AbstractMainComponent {
         // ChartImpl から PatientVisitModel を受け取って update する.
         ChartImpl.addPvtListener(this::updateState);
 
-        // 靴のアイコンをクリックした時来院情報を検索する
-        view.getKutuBtn().addActionListener(e -> checkFullPvt());
+        // 靴のアイコンをクリックした時来院情報をフルチェックする
+        view.getKutuBtn().addActionListener(e -> executor.submit(pvtChecker));
 
         // コンテキストリスナを登録する
         pvtTable.addMouseListener(new ContextListener());
@@ -348,48 +343,37 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 来院数を設定する.
-     *
-     * @param cnt 来院数
-     */
-    public void setPvtCount(int cnt) {
-        pvtCount = cnt;
-        showPvtCount();
-    }
-
-    /**
      * 来院数, 待人数, 待時間表示.
      */
-    private void showPvtCount() {
+    private void updatePvtCount() {
+        List<PatientVisitModel> pvtList = pvtTableModel.getObjectList();
+        int pvtCount = pvtList.size();
         int waitingCount = 0;
         String waitingTime = "00:00";
-        List<PatientVisitModel> dataList = pvtTableModel.getObjectList();
 
-        if (pvtCount > 0) {
-            boolean found = false;
-            int continuousCount = 0;
+        boolean found = false; // 待ち患者がいるかどうか
+        int continuousCount = 0;
 
-            for (int i = 0; i < pvtCount; i++) {
-                PatientVisitModel pvt = dataList.get(i);
-                int state = pvt.getState();
-                if (state == KarteState.CLOSE_NONE || state == KarteState.OPEN_NONE) {
-                    // 診察未終了レコードをカウント, 最初に見つかった未終了レコードの時間から待ち時間を計算
-                    waitingCount++;
-                    // 診療未終了レコードの連続回数をカウント
-                    continuousCount++;
+        for (int i = 0; i < pvtCount; i++) {
+            PatientVisitModel pvt = pvtList.get(i);
+            int state = pvt.getState();
+            if (state == KarteState.CLOSE_NONE || state == KarteState.OPEN_NONE) {
+                // 診察未終了レコードをカウント, 最初に見つかった未終了レコードの時間から待ち時間を計算
+                waitingCount++;
+                // 診療未終了レコードの連続回数をカウント
+                continuousCount++;
 
-                    if (!found) {
-                        Date pvtDate = ModelUtils.getDateTimeAsObject(pvt.getPvtDate());
-                        waitingTime = DurationFormatUtils.formatPeriod(pvtDate.getTime(), new Date().getTime(), "HH:mm");
-                        found = true;
-                    }
-                } else {
-                    // 診療未終了レコードが２件以下しかなければ待ち時間に入れない（待合室にいなかった人と判断）
-                    if (continuousCount > 0 && continuousCount <= 2) {
-                        //System.out.println("continuous count: " + continuousCount);
-                        found = false;
-                        continuousCount = 0;
-                    }
+                if (!found) {
+                    Date pvtDate = ModelUtils.getDateTimeAsObject(pvt.getPvtDate());
+                    waitingTime = DurationFormatUtils.formatPeriod(pvtDate.getTime(), new Date().getTime(), "HH:mm");
+                    found = true;
+                }
+            } else {
+                // 診療未終了レコードが２件以下しかなければ待ち時間に入れない（待合室にいなかった人と判断）
+                if (continuousCount > 0 && continuousCount <= 2) {
+                    //System.out.println("continuous count: " + continuousCount);
+                    found = false;
+                    continuousCount = 0;
                 }
             }
         }
@@ -601,7 +585,7 @@ public class WaitingListImpl extends AbstractMainComponent {
             return false;
         } else {
             for (PatientVisitModel model : pvt) {
-                // 既に開かれているカルテを openKarte すると toFront になるので, 
+                // 既に開かれているカルテを openKarte すると toFront になるので,
                 // open できないカルテは cancel されたカルテのみである
                 if (isKarteCanceled(model)) {
                     return false;
@@ -637,7 +621,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      * ChartImpl の windowOpened, windowClosed で呼ばれる.
      * state, byomeiCount, byomeiCountToday が変化している可能性がある.
      *
-     * @param updated
+     * @param updated PatientVisitModel
      */
     public void updateState(final PatientVisitModel updated) {
 
@@ -676,7 +660,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * 終了時にカルテが OPEN になったまま残るのを防ぐためにすべて CLOSED に変換.
      *
-     * @return
+     * @return stoppingTask
      */
     @Override
     public Callable<Boolean> getStoppingTask() {
@@ -714,8 +698,8 @@ public class WaitingListImpl extends AbstractMainComponent {
      * 与えられた pvt に対応する TableModel の行を返す.
      * 要素が別オブジェクトになっている場合があるため, レコードIDで探す.
      *
-     * @param updated
-     * @return
+     * @param updated PatientVisitModel
+     * @return row
      */
     private int getRowForPvt(PatientVisitModel updated) {
         List<PatientVisitModel> pvtList = pvtTableModel.getObjectList();
@@ -732,14 +716,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     }
 
     /**
-     * 現在のテーブルより後の受付をチェックする.
-     */
-    public void checkFullPvt() {
-        executor.submit(pvtChecker);
-    }
-
-    /**
-     * PvtServer からの pvt message を受け取って pvtTableModel を更新する.
+     * Server からの pvt message を受け取って pvtTableModel を更新する.
      *
      * @param hostPvt
      */
@@ -748,8 +725,10 @@ public class WaitingListImpl extends AbstractMainComponent {
         // pvtDate & patientId で判定する → Patient ID が同じでも, pvtDate が違えば違う受付と判断する
         PatientVisitModel localPvt = null;
         int row = -1;
+        int totalRowCount = pvtTableModel.getObjectCount();
 
-        for (int i = 0; i < pvtTableModel.getObjectCount(); i++) {
+        // hostPvt と同じ localPvt を探す
+        for (int i = 0; i < totalRowCount; i++) {
             PatientVisitModel p = pvtTableModel.getObject(i);
             if (p.getPvtDate().equals(hostPvt.getPvtDate()) && p.getPatientId().equals(hostPvt.getPatientId())) {
                 localPvt = p;
@@ -759,17 +738,26 @@ public class WaitingListImpl extends AbstractMainComponent {
         }
 
         if (localPvt != null) {
-            logger.info("pvt state local = " + localPvt.getState() + ", server = " + hostPvt.getState());
+            // localPvt が見つかった場合
+            //logger.info("pvt state local = " + localPvt.getState() + ", server = " + hostPvt.getState());
 
-            // localPvt がみつかった場合, 更新である
-            hostPvt.setNumber(localPvt.getNumber());
-            pvtTableModel.getObjectList().set(row, hostPvt);
-            // changeRow を fire, ただしカルテが開いていたら fire しない
-            if (!ChartImpl.isKarteOpened(localPvt)) {
-                pvtTableModel.fireTableRowsUpdated(row, row);
+            // キャンセルかどうか
+            if (hostPvt.getState() == KarteState.CANCEL_PVT) {
+                // キャンセルの場合, 削除して番号を付け直す
+                pvtTableModel.deleteRow(row);
+                for (int i=row; i<pvtTableModel.getObjectCount(); i++) {
+                    pvtTableModel.getObject(i).setNumber(i+1);
+                }
+
+            } else {
+                // pvt を加える
+                hostPvt.setNumber(localPvt.getNumber());
+                pvtTableModel.getObjectList().set(row, hostPvt);
+                // changeRow を fire, ただしカルテが開いていたら fire しない
+                if (!ChartImpl.isKarteOpened(localPvt)) {
+                    pvtTableModel.fireTableRowsUpdated(row, row);
+                }
             }
-            // 待ち時間更新
-            showPvtCount();
 
         } else {
             // localPvt がなければ, それは追加である
@@ -778,15 +766,15 @@ public class WaitingListImpl extends AbstractMainComponent {
             hostPvt.setNumber(row + 1);
             pvtTableModel.addRow(hostPvt);
             //logger.info("pvt added at row " + row);
-            // 患者数セット
-            setPvtCount(row + 1);
             // 通知を表示
             ScriptExecutor.displayNotification(hostPvt.getPatientAgeBirthday(), "受付 " + (row + 1), hostPvt.getPatientName());
         }
+        // pvt count 更新
+        updatePvtCount();
     }
 
     /**
-     * 患者来院情報をチェックするタスク.
+     * 患者来院情報をフルチェックするタスク.
      */
     private class PvtChecker implements Runnable {
 
@@ -805,32 +793,24 @@ public class WaitingListImpl extends AbstractMainComponent {
             dateToSearch[0] = dateToSearch[2] = date.format(DateTimeFormatter.ISO_DATE);
             dateToSearch[1] = date.plusMonths(-2).format((DateTimeFormatter.ISO_DATE));
 
-            // 現在のテーブルサイズを firstResult とする
-            List<PatientVisitModel> dataList = pvtTableModel.getObjectList();
-            int firstResult = dataList != null ? dataList.size() : 0;
-            logger.info("check PVT at " + date + " firstResult = " + firstResult);
+            // フルチェックする
+            final List<PatientVisitModel> result = delegater.getPvt(dateToSearch, 0);
 
-            // 検索する
-            final List<PatientVisitModel> result = delegater.getPvt(dateToSearch, firstResult);
-            int newVisitCount = result != null ? result.size() : 0;
-            logger.info("new visits = " + newVisitCount);
-
-            // 結果を追加する
-            if (newVisitCount > 0) {
-                for (int i = 0; i < newVisitCount; i++) {
-                    pvt = result.get(i); // newVisitCount > 0 なので null ではない
-                    // 受付番号セット
-                    pvt.setNumber(firstResult + i + 1);
-                    // 受付リスト追加
-                    dataList.add(pvt);
-                }
-                pvtTableModel.fireTableRowsInserted(firstResult, firstResult + newVisitCount - 1);
+            // 結果を全部更新する
+            pvtTableModel.clear();
+            for (int i = 0; i < result.size(); i++) {
+                pvt = result.get(i);
+                // 受付番号セット
+                pvt.setNumber(i + 1);
+                // 受付リスト追加
+                pvtTableModel.addRow(pvt);
             }
 
             // pvtState をアップデート pvtStateList.size は table の ObjectCount と同じはず
             List<PvtStateSpec> pvtStateList = delegater.getPvtState();
 
             if (pvtStateList != null && (pvtStateList.size() == pvtTableModel.getObjectCount())) {
+                logger.info("pvt state update");
 
                 PatientVisitModel myPvt;
                 List<Integer> changedRows = new ArrayList<>();
@@ -863,16 +843,15 @@ public class WaitingListImpl extends AbstractMainComponent {
                         }
                     }
                 }
-                if (changedRows.size() > 0) {
-                    MinMax row = new MinMax(changedRows);
-                    pvtTableModel.fireTableRowsUpdated(row.min, row.max);
-                    //logger.info("row changed from " + row.min + " to " + row.max);
-                }
+            } else {
+                logger.info("object count and pvtState count discrepant??");
             }
+
+            pvtTableModel.fireTableDataChanged();
 
             SwingUtilities.invokeLater(() -> {
                 setCheckedTime(date);
-                setPvtCount(pvtTableModel.getObjectCount());
+                updatePvtCount();
                 setBusy(false);
             });
 

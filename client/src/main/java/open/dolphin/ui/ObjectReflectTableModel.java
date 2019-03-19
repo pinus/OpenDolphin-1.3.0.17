@@ -64,7 +64,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      * カラム名を返す.
      *
      * @param index カラムインデックス
-     * @return
+     * @return カラム名
      */
     @Override
     public String getColumnName(int index) {

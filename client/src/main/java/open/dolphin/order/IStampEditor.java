@@ -11,41 +11,41 @@ import open.dolphin.event.ValidListener;
  **/
 public interface IStampEditor<T> {
 
-    public void start();
+    void start();
 
-    public void enter();
+    void enter();
 
     /**
      * ダイアログのタイトルを返す.
      *
-     * @return
+     * @return タイトル
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * ダイアログのタイトルトルをセットする.
      *
-     * @param val
+     * @param title タイトル
      */
-    public void setTitle(String val);
+    void setTitle(String title);
 
-    public void setEntity(String entity);
+    void setEntity(String entity);
 
-    public T getValue();
+    T getValue();
 
-    public void setValue(T o);
+    void setValue(T o);
 
     /**
      * 編集中のデータが valid かどうかをリスンするリスナ.
      * これによりカルテに展開するボタンの制御を行う.
      *
-     * @param listener
+     * @param listener ValidListener
      */
-    public void addValidListener(ValidListener listener);
+    void addValidListener(ValidListener listener);
 
-    public boolean isValidModel();
+    boolean isValidModel();
 
-    public void setValid(boolean b);
+    void setValid(boolean b);
 
-    public void dispose();
+    void dispose();
 }

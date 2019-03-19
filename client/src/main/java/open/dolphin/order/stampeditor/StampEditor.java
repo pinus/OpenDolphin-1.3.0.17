@@ -178,9 +178,9 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     @Override
-    public void setTitle(String val) {
+    public void setTitle(String title) {
         StringBuilder buf = new StringBuilder();
-        buf.append(val);
+        buf.append(title);
         buf.append(ClientContext.getString("application.title.editorText"));
         buf.append(ClientContext.getString("application.title.separator"));
         buf.append(ClientContext.getString("application.title"));
