@@ -1,6 +1,7 @@
 package open.dolphin.inspector;
 
 import open.dolphin.client.ChartImpl;
+import open.dolphin.client.ClientContext;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientModel;
@@ -164,7 +165,8 @@ public class BasicInfoInspector implements IInspector {
         agePanel.setLayout(new BoxLayout(agePanel, BoxLayout.Y_AXIS));
         agePanel.add(Box.createVerticalStrut(1));
         agePanel.add(ageLabel);
-        agePanel.add(Box.createVerticalStrut(1));
+        int adjust = ClientContext.isMac() ? 1 : 2;
+        agePanel.add(Box.createVerticalStrut(adjust));
 
         ageLayout = new JPanel();
         ageLayout.setLayout(new BoxLayout(ageLayout, BoxLayout.Y_AXIS));
@@ -285,8 +287,9 @@ public class BasicInfoInspector implements IInspector {
         @Override
         public void paintBorder(Component c, Graphics graphics, int x, int y, int width, int height) {
             Graphics2D g = (Graphics2D) graphics.create();
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
+            if (ClientContext.isMac()) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            }
             g.setColor(color);
             // 全体を囲む
             g.fillRoundRect(0, 0, width - 1, height - 1, r, r);

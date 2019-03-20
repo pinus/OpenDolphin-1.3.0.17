@@ -1,5 +1,6 @@
 package open.dolphin.ui;
 
+import open.dolphin.client.ClientContext;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -620,8 +621,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             int w = this.getWidth();
             int h = this.getHeight();
 
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+            if (ClientContext.isMac()) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            }
 
             if (parent.isActive() && appForeground) {
                 if (this.isSelected()) {

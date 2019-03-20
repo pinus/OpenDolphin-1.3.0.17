@@ -66,9 +66,7 @@ public class ClientContext {
         return stub.getLaboTestLogger();
     }
 
-    public static boolean isMac() {
-        return stub.isMac();
-    }
+    public static boolean isMac() { return stub.isMac(); }
 
     public static boolean isWin() {
         return stub.isWin();

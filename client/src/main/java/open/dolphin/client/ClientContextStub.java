@@ -47,6 +47,7 @@ public final class ClientContextStub {
     private Logger claimLogger;
     private Logger mmlLogger;
     private HashMap<String, Color> eventColorTable;
+    private boolean isMac, isWin, isLinux;
 
     /**
      * ClientContextStub オブジェクトを生成する.
@@ -73,6 +74,12 @@ public final class ClientContextStub {
 
         // デフォルトの UI フォントを変更する
         setUIFonts();
+
+        // OS情報
+        String osname = System.getProperty("os.name").toLowerCase();
+        isMac = osname.startsWith("mac");
+        isWin = osname.startsWith("windows");
+        isLinux = osname.startsWith("linux");
     }
 
     private void generateLoggers() {
@@ -155,16 +162,14 @@ public final class ClientContextStub {
         return laboTestLogger;
     }
 
-    public boolean isMac() {
-        return System.getProperty("os.name").toLowerCase().startsWith("mac");
-    }
+    public boolean isMac() { return isMac; }
 
     public boolean isWin() {
-        return System.getProperty("os.name").toLowerCase().startsWith("windows");
+        return isWin;
     }
 
     public boolean isLinux() {
-        return System.getProperty("os.name").toLowerCase().startsWith("linux");
+        return isLinux;
     }
 
     public String getLocation(String dir) {
