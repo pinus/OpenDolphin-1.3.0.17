@@ -101,12 +101,12 @@ public class SettingForWin {
             UIDefaults uiDefaults = super.getDefaults();
 
             uiDefaults.putDefaults(new Object[]{
-                    "ListUI", "open.dolphin.ui.MyListUI",
-                    "TreeUI", "open.dolphin.ui.MyTreeUI",
-                    "TableUI", "open.dolphin.ui.MyTableUI",
-                    "TableHeaderUI", "open.dolphin.ui.MyTableHeaderUI",
-                    "TextFieldUI", "open.dolphin.ui.MyTextFieldUI",
-                    "PasswordFieldUI", "open.dolphin.ui.MyPasswordFieldUI",
+                    "ListUI", "open.dolphin.laf.MyListUI",
+                    "TreeUI", "open.dolphin.laf.MyTreeUI",
+                    "TableUI", "open.dolphin.laf.MyTableUI",
+                    "TableHeaderUI", "open.dolphin.laf.MyTableHeaderUI",
+                    "TextFieldUI", "open.dolphin.laf.MyTextFieldUI",
+                    "PasswordFieldUI", "open.dolphin.laf.MyPasswordFieldUI",
             });
 
             return uiDefaults;
