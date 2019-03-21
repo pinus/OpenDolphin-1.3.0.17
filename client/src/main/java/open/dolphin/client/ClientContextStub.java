@@ -38,7 +38,7 @@ public final class ClientContextStub {
     private final String RESOURCE = "Dolphin_ja";
     private final ResourceBundle resBundle;
     private final ClassLoader pluginClassLoader;
-    private final String DOCUMENT_LOCATION = isMac() ? "/Volumes/documents/" : "Z:\\";
+    private String documentFolder;
     private Logger bootLogger;
     private Logger part11Logger;
     private Logger delegaterLogger;
@@ -80,6 +80,9 @@ public final class ClientContextStub {
         isMac = osname.startsWith("mac");
         isWin = osname.startsWith("windows");
         isLinux = osname.startsWith("linux");
+
+        // Document フォルダの場所
+        documentFolder = isWin() ? "Z:\\" : "/Volumes/documents/";
     }
 
     private void generateLoggers() {
@@ -122,9 +125,7 @@ public final class ClientContextStub {
         bootLogger.info("Velocity を初期化しました");
     }
 
-    public String getDocumentDirectory() {
-        return DOCUMENT_LOCATION;
-    }
+    public String getDocumentDirectory() { return documentFolder; }
 
     public ClassLoader getPluginClassLoader() {
         return pluginClassLoader;

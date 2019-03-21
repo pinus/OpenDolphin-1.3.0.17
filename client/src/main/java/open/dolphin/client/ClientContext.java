@@ -220,7 +220,5 @@ public class ClientContext {
         return stub.getDiagnosisCategoryModel();
     }
 
-    public static String getDocumentDirectory() {
-        return stub.getDocumentDirectory();
-    }
+    public static String getDocumentDirectory() { return stub.getDocumentDirectory(); }
 }
