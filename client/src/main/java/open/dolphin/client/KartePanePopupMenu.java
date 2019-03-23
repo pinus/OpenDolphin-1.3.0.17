@@ -169,8 +169,11 @@ public class KartePanePopupMenu extends JPopupMenu {
         String insurance = document.getDocInfo().getHealthInsuranceGUID();
         String dept = document.getDocInfo().getDepartment();
 
-        LocalDate firstConfirmDate = document.getDocInfo().getFirstConfirmDate()
-                .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        // firstConfirm が null の場合がある (未保存新規カルテ)
+        LocalDate firstConfirmDate = Objects.isNull(document.getDocInfo().getFirstConfirmDate())
+                ? LocalDate.now()
+                : document.getDocInfo().getFirstConfirmDate()
+                    .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         String date = firstConfirmDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         SubjectivesSpec spec = new SubjectivesSpec();
