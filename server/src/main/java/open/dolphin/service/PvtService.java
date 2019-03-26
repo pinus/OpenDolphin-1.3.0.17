@@ -91,5 +91,5 @@ public interface PvtService {
      */
     @Path("getPvtOfPatient")
     @POST
-    public PatientVisitModel getPvtOf(PatientModel patient);
+    public List<PatientVisitModel> getPvtOf(PatientModel patient);
 }

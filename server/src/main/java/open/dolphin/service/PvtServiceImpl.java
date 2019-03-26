@@ -285,18 +285,16 @@ public class PvtServiceImpl extends DolphinService implements PvtService {
      * 引数の PatientModel をもつ今日の PatientVisitModel があれば取ってくる.
      *
      * @param patient PatientModel
-     * @return みつかった PatientVisitModel. ないばあいは null.
+     * @return PatientVisitModel のリスト. 複数の可能性あり.
      */
     @Override
-    public PatientVisitModel getPvtOf(PatientModel patient) {
+    public List<PatientVisitModel> getPvtOf(PatientModel patient) {
         String fid = getCallersFacilityId();
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        List<PatientVisitModel> result = em.createQuery(
+        return em.createQuery(
                 "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate >= :date and p.patient = :patient", PatientVisitModel.class)
                 .setParameter("fid", fid)
                 .setParameter("date", date)
                 .setParameter("patient", patient).getResultList();
-
-        return result.isEmpty() ? null : result.get(0);
     }
 }

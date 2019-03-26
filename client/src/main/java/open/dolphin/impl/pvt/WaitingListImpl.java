@@ -426,7 +426,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * 選択された来院情報を設定する.
      *
-     * @param selectedPvt
+     * @param selectedPvt selected PatientVisitModel
      */
     public void setSelectedPvt(PatientVisitModel[] selectedPvt) {
         this.selectedPvt = selectedPvt;
@@ -453,7 +453,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * 指定されたカルテを開く.
      *
-     * @param pvtModel
+     * @param pvtModel PatientVisitModel
      */
     public void openKarte(final PatientVisitModel pvtModel) {
 
@@ -718,7 +718,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     /**
      * Server からの pvt message を受け取って pvtTableModel を更新する.
      *
-     * @param hostPvt
+     * @param hostPvt host pvt
      */
     public void hostPvtReceiver(PatientVisitModel hostPvt) {
         // 送られてきた pvt と同じものを local で探す
@@ -750,7 +750,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 }
 
             } else {
-                // pvt を加える
+                // pvt を置き換える
                 hostPvt.setNumber(localPvt.getNumber());
                 pvtTableModel.getObjectList().set(row, hostPvt);
                 // changeRow を fire, ただしカルテが開いていたら fire しない
@@ -759,7 +759,7 @@ public class WaitingListImpl extends AbstractMainComponent {
                 }
             }
 
-        } else {
+        } else if (hostPvt.getState() != KarteState.CANCEL_PVT){
             // localPvt がなければ, それは追加である
             row = pvtTableModel.getObjectCount();
             // 番号付加
@@ -876,7 +876,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         /**
          * Show grids and markings.
          *
-         * @param graphics
+         * @param graphics Graphics
          */
         @Override
         public void paint(Graphics graphics) {
@@ -901,12 +901,12 @@ public class WaitingListImpl extends AbstractMainComponent {
         /**
          * Set background color.
          *
-         * @param table
-         * @param value
-         * @param isSelected
-         * @param isFocused
-         * @param row
-         * @param col
+         * @param table JTable
+         * @param value value
+         * @param isSelected isSelected
+         * @param isFocused isFocused
+         * @param row row
+         * @param col col
          */
         public void setBackground(JTable table,
                                   Object value,

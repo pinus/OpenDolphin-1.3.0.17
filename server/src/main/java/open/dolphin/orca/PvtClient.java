@@ -90,9 +90,12 @@ public class PvtClient {
                     switch (body.getPatient_Mode()) {
                         case "delete":
                             String ptId = body.getPatient_ID(); // 患者番号 002906
+                            String pvtTime = body.getAccept_Date() + 'T' + body.getAccept_Time(); // 2016-12-02T16:03:38
                             PatientModel patientModel = patientService.getPatient(ptId);
-                            PatientVisitModel pvt = pvtService.getPvtOf(patientModel);
-                            pvtService.removePvt(pvt.getId());
+                            List<PatientVisitModel> pvt = pvtService.getPvtOf(patientModel);
+                            long removePk = pvt.stream().filter(p -> p.getPvtDate().equals(pvtTime))
+                                    .map(PatientVisitModel::getId).findAny().get();
+                            pvtService.removePvt(removePk);
                             logger.info(("PvtClient: pvt removed [" + data.getBody().getPatient_ID() + "]"));
                             break;
 

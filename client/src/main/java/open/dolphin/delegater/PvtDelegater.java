@@ -47,10 +47,10 @@ public class PvtDelegater extends BusinessDelegater<PvtService> {
     /**
      * 引数の PatientModel をもつ今日の PatientVisitModel があれば取ってくる
      *
-     * @param patient
-     * @return
+     * @param patient PatientModel
+     * @return List of PatientVisitModel
      */
-    public PatientVisitModel getPvt(PatientModel patient) {
+    public List<PatientVisitModel> getPvt(PatientModel patient) {
         return getService().getPvtOf(patient);
     }
 
@@ -67,8 +67,8 @@ public class PvtDelegater extends BusinessDelegater<PvtService> {
     /**
      * 受付情報を更新する
      *
-     * @param pvt
-     * @return
+     * @param pvt PatientVisitModel
+     * @return 1
      */
     public int updatePvt(PatientVisitModel pvt) {
         return getService().updatePvt(pvt);
@@ -86,8 +86,8 @@ public class PvtDelegater extends BusinessDelegater<PvtService> {
     /**
      * PatientVisitModel pk の state を取ってくる
      *
-     * @param pk
-     * @return
+     * @param pk primary key
+     * @return state
      */
     public int getPvtState(long pk) {
         return getService().getPvtState(pk);

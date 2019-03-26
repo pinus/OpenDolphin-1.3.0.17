@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -113,12 +114,11 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
 
                 // pvt 情報があるかどうかチェック
                 PvtDelegater pvtdl = new PvtDelegater();
-                PatientVisitModel pvtModel = pvtdl.getPvt(patient);
+                List<PatientVisitModel> pvtModels = pvtdl.getPvt(patient);
 
-                // 来院がない場合
-                if (pvtModel == null) {
-                    // 来院情報を生成する
-                    pvtModel = new PatientVisitModel();
+                if (pvtModels.isEmpty()) {
+                    // 来院がない場合, 来院情報を生成する
+                    PatientVisitModel pvtModel = new PatientVisitModel();
                     pvtModel.setId(0L);
                     pvtModel.setNumber(getNewPvtNumber()); //10000から割り当て
                     pvtModel.setPatient(patient);
@@ -128,8 +128,9 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
                     pvtModel.setDepartment(constarctDept());
                     getContext().openKarte(pvtModel);
 
-                    // 来院している場合
                 } else {
+                    // 来院している場合, 最初の pvt を採用
+                    PatientVisitModel pvtModel = pvtModels.get(0);
                     int state = pvtModel.getState();
                     // すでに OPEN ならどっかで開いているということなので編集不可に設定
                     if (KarteState.isOpen(state)) {
@@ -153,8 +154,8 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     /**
      * ReadOnly でカルテを開く
      *
-     * @param pvtModel
-     * @param state
+     * @param pvtModel PatientVisitModel
+     * @param state KarteState
      */
     public void openReadOnlyKarte(final PatientVisitModel pvtModel, final int state) {
         // 元々 ReadOnly のユーザーならそのまま開いて OK
@@ -178,32 +179,32 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     /**
      * カルテを開くことが可能かどうかを返す.
      *
-     * @param patient
+     * @param patient PatientModel
      * @return 開くことが可能な時 true
      */
     public boolean canOpen(PatientModel patient) {
         return !ChartImpl.isKarteOpened(patient);
     }
 
+    /**
+     * department description を返す.
+     *
+     * @return "診療科名, 診療科コード, 医師名, 医師コード, dummy JMARI"
+     */
     public String constarctDept() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Project.getUserModel().getDepartmentModel().getDepartmentDesc());
-        sb.append(",");
-        sb.append(Project.getUserModel().getDepartmentModel().getDepartment());
-        sb.append(",");
-        sb.append(Project.getUserModel().getCommonName());
-        sb.append(",");
-        sb.append(Project.getUserModel().getUserId());
-        sb.append(",");
-        sb.append(Project.getJMARICode());
-        String ret = sb.toString();
-        return ret;
+        return String.join(",",
+                Project.getUserModel().getDepartmentModel().getDepartmentDesc(),
+                Project.getUserModel().getDepartmentModel().getDepartment(),
+                Project.getUserModel().getCommonName(),
+                Project.getUserModel().getUserId(),
+                Project.getJMARICode()
+        );
     }
 
     /**
-     * ニセの受付番号を連番で作成
+     * ニセの受付番号を連番で作成.
      *
-     * @return
+     * @return ニセの受付番号
      */
     public int getNewPvtNumber() {
         return number++;
@@ -226,14 +227,14 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
         /**
          * {@code ObjectReflectTableModel<T>} に格納されている T からカルテを開く.
          *
-         * @param value
+         * @param value PatientModel or PatientVisitModel
          */
         public abstract void openKarte(T value);
 
         /**
          * PopupMenu を表示する.
          *
-         * @param e
+         * @param e MouseEvent
          */
         public abstract void maybeShowPopup(MouseEvent e);
 
@@ -298,7 +299,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
         /**
          * フォーカス要求.
          *
-         * @param c
+         * @param c Component
          */
         private void requestFocus(Component c) {
             Focuser.requestFocus(c);
