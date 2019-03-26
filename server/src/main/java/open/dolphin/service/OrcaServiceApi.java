@@ -492,7 +492,6 @@ public class OrcaServiceApi {
         req.setDiagnosis_Information(diagnosisInfo);
 
         String classNum = Objects.isNull(karteUid) ? "01" : "03"; // 新規 or 変更
-        logger.info(String.format("medicalmodv2 ptId[%s] class[%s] karteId[%s]\n", ptId, classNum, karteUid));
 
         Medicalres res = api.post(req, classNum);
 
@@ -522,6 +521,8 @@ public class OrcaServiceApi {
             }
         }
 
+        logger.info(String.format("sendDocument [%s] class[%s] karteId[%s] apiResult[%s]",
+                ptId, classNum, karteUid, result.getApiResult()));
         return result;
     }
 
@@ -604,10 +605,7 @@ public class OrcaServiceApi {
             apiResult = result.getApiResult();
         }
 
-        String message = "90".equals(apiResult)
-                ? "Diagnosis NOT sent to ORCA: retry time out"
-                : "Diagnosis sent to ORCA";
-        logger.info("[" + ptId + "] " + message);
+        logger.info(String.format("sendDiagnosis [%s] User[%s] apiResult [%s]", ptId , orcaUserCode, apiResult));
         return result;
     }
 
