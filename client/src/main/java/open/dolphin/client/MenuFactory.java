@@ -15,8 +15,6 @@ import java.awt.event.KeyEvent;
  * @author pns
  */
 public class MenuFactory {
-
-    private static final boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
     private MenuSupport main;
     private MenuSupport chart; // ChartMediator
     private JMenuBar menuBar;
@@ -448,7 +446,7 @@ public class MenuFactory {
         setToolBar(fileBar, "print", GUIConst.ICON_PRINT_32);
 
         // 終了 - Window のみ
-        if (!isMac) {
+        if (ClientContext.isWin()) {
             JMenuItem exit = new JMenuItem();
             exit.setName("processExit");
             setAction(exit, "processExit", "終了", GUIConst.ICON_EMPTY_16, "プログラムを終了します");
@@ -855,7 +853,7 @@ public class MenuFactory {
         browseMedXml.setText("CLAIM 規格");
         help.add(browseMedXml);
 
-        if (!isMac) {
+        if (ClientContext.isWin()) {
             help.add(new JSeparator());
 
             JMenuItem showAbout = new JMenuItem();

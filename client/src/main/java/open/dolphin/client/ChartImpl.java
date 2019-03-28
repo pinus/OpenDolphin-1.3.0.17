@@ -1188,9 +1188,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * モデルをコピーする.
-     * ToDO 参照ではいけない.
-     * DocInfo の設定はない.
+     * モデルをコピーする. 参照ではいけない. DocInfo の設定はない.
      */
     private void copyModel(DocumentModel oldModel, DocumentModel newModel, boolean applyRp) {
 
