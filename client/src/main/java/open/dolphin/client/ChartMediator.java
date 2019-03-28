@@ -49,7 +49,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * Create ChartMediator.
      *
-     * @param owner
+     * @param owner Owner of this mediator
      */
     public ChartMediator(Chart owner) {
         super(owner);
@@ -116,7 +116,7 @@ public final class ChartMediator extends MenuSupport {
      * KarteComosite 層の Object を addChain する.
      * chain[0] に入る.
      *
-     * @param karteComposite
+     * @param karteComposite KarteComposite
      */
     public void addKarteCompositeChain(KarteComposite<?> karteComposite) {
         addChain(karteComposite);
@@ -125,7 +125,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * KarteComposite 層の Object を返す.
      *
-     * @return
+     * @return KarteComposite
      */
     public KarteComposite<?> getKarteCompositeChain() {
         return (KarteComposite) getChain();
@@ -135,7 +135,7 @@ public final class ChartMediator extends MenuSupport {
      * ChartDocument 層の Object を addChain する.
      * chain[1] に入る.
      *
-     * @param chartDocument
+     * @param chartDocument ChartDocument
      */
     public void addChartDocumentChain(ChartDocument chartDocument) {
         addChain2(chartDocument);
@@ -144,7 +144,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * ChartDocument 層の Object を返す.
      *
-     * @return
+     * @return ChartDocument
      */
     public ChartDocument getChartDocumentChain() {
         return (ChartDocument) getChain2();
@@ -168,7 +168,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * 現在の {@code KarteCompsite<T>} の中身の T (JComponent) を返す.
      *
-     * @return
+     * @return KarteComposite の中身の JComponent
      */
     private JComponent getCurrentComponent() {
         if (curKarteComposit != null) {
@@ -181,7 +181,7 @@ public final class ChartMediator extends MenuSupport {
      * メニューリスナの実装.
      * 挿入及びテキストメニューが選択された時の処理を行う.
      *
-     * @param e
+     * @param e MenuEvent
      */
     @Override
     public void menuSelected(MenuEvent e) {
@@ -240,8 +240,6 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * フォーマット関連メニューを調整する.
-     *
-     * @param kartePane
      */
     private void adjustStyleMenu() {
 
@@ -287,7 +285,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * スタンプTreeから傷病名メニューを構築する.
      *
-     * @param insertMenu テキストメニュー
+     * @param stampTree StampTree
      */
     private JMenu createDiagnosisMenu(StampTree stampTree) {
         //
@@ -316,7 +314,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * スタンプTreeからテキストメニューを構築する.
      *
-     * @param insertMenu テキストメニュー
+     * @param stampTree StampTree
      */
     private JMenu createTextMenu(StampTree stampTree) {
         //
@@ -369,7 +367,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * スタンプメニューを構築する.
      *
-     * @param insertMenu スタンプメニュー
+     * @param stampTree StampTree
      */
     private JMenu createStampMenu(StampTree stampTree) {
         //
@@ -508,7 +506,7 @@ public final class ChartMediator extends MenuSupport {
      * 引数のポップアップメニューへスタンプメニューを追加する.
      * このメソッドはツールバーの stamp icon の actionPerformed からコールされる.
      *
-     * @param popup
+     * @param popup JPopupMenu
      */
     public void addStampMenu(JPopupMenu popup) {
 
@@ -533,8 +531,8 @@ public final class ChartMediator extends MenuSupport {
     /**
      * 指定された entity の StampTree を返す.
      *
-     * @param entity
-     * @return
+     * @param entity Entity
+     * @return StampTree
      */
     public StampTree getStampTree(String entity) {
         return getStampBox().getStampTree(entity);
@@ -543,7 +541,7 @@ public final class ChartMediator extends MenuSupport {
     /**
      * StampBoxPlugin を返す.
      *
-     * @return
+     * @return StampBoxPlugin
      */
     public StampBoxPlugin getStampBox() {
         return (StampBoxPlugin) chart.getContext().getPlugin("stampBox");
@@ -552,8 +550,8 @@ public final class ChartMediator extends MenuSupport {
     /**
      * 指定された entity の StampTree が存在するかどうか.
      *
-     * @param entity
-     * @return
+     * @param entity Entity
+     * @return StampTree が存在すれば true
      */
     public boolean hasTree(String entity) {
         StampBoxPlugin stBox = (StampBoxPlugin) chart.getContext().getPlugin("stampBox");
@@ -739,11 +737,7 @@ public final class ChartMediator extends MenuSupport {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {
             Action a = new StyledEditorKit.ForegroundAction("color", color);
-            if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        "foreground"));
-            }
+            a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, "foreground"));
         }
     }
 

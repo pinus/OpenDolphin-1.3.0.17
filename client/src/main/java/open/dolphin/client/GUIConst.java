@@ -91,6 +91,8 @@ public class GUIConst {
     public static final String ACTION_BROWS_DOLPHIN_PROJECT = "browseDolphinProject";
     public static final String ACTION_BROWS_MEDXML = "browseMedXml";
     public static final String ACTION_SHOW_ABOUT = "showAbout";
+    public static final String ACTION_SHOW_WAITING_LIST = "showWaitingList";
+    public static final String ACTION_SHOW_PATIENT_SEARCH = "showPatientSearch";
 
     // Role
     public static final String ROLE_ADMIN = "admin";

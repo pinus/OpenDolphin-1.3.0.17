@@ -815,15 +815,21 @@ public class Dolphin implements MainWindow {
 
     /**
      * Waiting list を表示する.
+     * MenuSupport から呼ばれる.
      */
     public void showWaitingList() {
+        // Search field に focus させるためのトリック
+        tabbedPane.setSelectedIndex(1);
         tabbedPane.setSelectedIndex(0);
     }
 
     /**
      * Patient search を表示する.
+     * MenuSupport から呼ばれる.
      */
     public void showPatientSearch() {
+        // Search field に focus させるためのトリック
+        tabbedPane.setSelectedIndex(0);
         tabbedPane.setSelectedIndex(1);
     }
 
@@ -906,20 +912,13 @@ public class Dolphin implements MainWindow {
                     GUIConst.ACTION_BROWS_DOLPHIN_PROJECT,
                     GUIConst.ACTION_BROWS_MEDXML,
                     GUIConst.ACTION_SHOW_ABOUT,
-                    "showWaitingList",
-                    "showPatientSearch"
+                    GUIConst.ACTION_SHOW_WAITING_LIST,
+                    GUIConst.ACTION_SHOW_PATIENT_SEARCH,
             };
             mediator.enableMenus(enables);
 
             Action addUserAction = mediator.getAction(GUIConst.ACTION_ADD_USER);
-            boolean admin = false;
-            Collection<RoleModel> roles = Project.getUserModel().getRoles();
-            for (RoleModel model : roles) {
-                if (model.getRole().equals(GUIConst.ROLE_ADMIN)) {
-                    admin = true;
-                    break;
-                }
-            }
+            boolean admin = Project.getUserModel().getRoles().stream().map(RoleModel::getRole).anyMatch(GUIConst.ROLE_ADMIN::equals);
             addUserAction.setEnabled(admin);
         }
     }

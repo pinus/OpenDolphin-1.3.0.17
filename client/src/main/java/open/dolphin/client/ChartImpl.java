@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
-import java.awt.event.InputEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
@@ -655,7 +654,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // ctrl-return でもリターンキーの notify-field-accept が発生するようにする
         InputMap map = keywordFld.getInputMap();
         Object value = map.get(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
-        map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), value);
+        map.put(KeyStroke.getKeyStroke("ctrl ENTER"), value);
 
         // Document プラグインのタブを生成する
         tabbedPane = loadDocuments();
@@ -1624,6 +1623,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         public void controlMenu() {
             mediator.getAction(GUIConst.ACTION_NEW_KARTE).setEnabled(false);
             mediator.getAction(GUIConst.ACTION_MODIFY_KARTE).setEnabled(false);
+
         }
     }
 
