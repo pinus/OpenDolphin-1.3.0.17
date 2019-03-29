@@ -445,7 +445,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         myToolPanel = appMenu.getToolPanelProduct();
         //content.add(myToolPanel, BorderLayout.NORTH);
         myToolPanel.setOpaque(false);
-        comPanel.add(myToolPanel);
+        //comPanel.add(myToolPanel);
 
         //
         // このクラス固有のToolBarを生成する

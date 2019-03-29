@@ -332,7 +332,7 @@ public class MenuFactory {
         //
         // File メニュー
         //
-        JMenu file = createMenu("ファイル", "fileMenu");
+        JMenu file = createMenu("ファイル", GUIConst.ACTION_FILE_MENU);
 
         // 新規カルテ
         file.add(createMenuItem("新規カルテ...", GUIConst.ACTION_NEW_KARTE,
@@ -374,7 +374,7 @@ public class MenuFactory {
         //
         // Edit メニュー
         //
-        JMenu edit = createMenu("編集", "editMenu");
+        JMenu edit = createMenu("編集", GUIConst.ACTION_EDIT_MENU);
 
         // 修正
         edit.add(createMenuItem("修正", GUIConst.ACTION_MODIFY_KARTE,
@@ -420,7 +420,7 @@ public class MenuFactory {
         //
         // Karte メニュー
         //
-        JMenu karte = createMenu("カルテ", "karteMenu");
+        JMenu karte = createMenu("カルテ", GUIConst.ACTION_KARTE_MENU);
 
         // CLAIM 送信
         karte.add(createMenuItem("CLAIM 送信", GUIConst.ACTION_SEND_CLAIM,
@@ -446,74 +446,73 @@ public class MenuFactory {
         //
         // 挿入メニュー
         //
-        JMenu insert = createMenu(GUIConst.MENU_INSERT, "insertMenu");
+        JMenu insert = createMenu("挿 入", GUIConst.ACTION_INSERT_MENU);
         if (chart != null) {
             insert.addMenuListener(chart); // ChartMediator
         }
-        insert.add(createMenuItem("傷病名", "insertDisease"));
-        insert.add(createMenuItem("テキスト", "insertText"));
-        insert.add(createMenuItem("スタンプ", "insertStamp"));
-        insert.add(createMenuItem("シェーマ", "insertSchema"));
+        insert.add(createMenuItem("傷病名", GUIConst.ACTION_INSERT_DISEASE));
+        insert.add(createMenuItem("テキスト", GUIConst.ACTION_INSERT_TEXT));
+        insert.add(createMenuItem("スタンプ", GUIConst.ACTION_INSERT_STAMP));
+        insert.add(createMenuItem("シェーマ", GUIConst.ACTION_INSERT_SCHEMA));
 
         //
         // Text メニュー
         //
-        JMenu text = createMenu(GUIConst.MENU_TEXT, "textMenu");
+        JMenu text = createMenu("テキスト", GUIConst.ACTION_TEXT_MENU);
         if (chart != null) {
             text.addMenuListener(chart); // ChartMediator
         }
 
         // Size メニュー
-        JMenu size = createMenu("サイズ", "size");
-        size.add(createMenuItem("大きく", "fontLarger"));
-        size.add(createMenuItem("小さく", "fontSmaller"));
-        size.add(createMenuItem("標準サイズ", "fontStandard"));
+        JMenu size = createMenu("サイズ", GUIConst.ACTION_SIZE);
+        size.add(createMenuItem("大きく", GUIConst.ACTION_FONT_LARGER));
+        size.add(createMenuItem("小さく", GUIConst.ACTION_FONT_SMALLER));
+        size.add(createMenuItem("標準サイズ", GUIConst.ACTION_FONT_STANDARD));
         text.add(size);
 
         // Style メニュー
-        JMenu style = createMenu("スタイル", "style");
-        style.add(createMenuItem("ボールド", "fontBold", "B"));
-        style.add(createMenuItem("イタリック", "fontItalic", "I"));
-        style.add(createMenuItem("アンダーライン", "fontUnderline", "U"));
+        JMenu style = createMenu("スタイル", GUIConst.ACTION_STYLE);
+        style.add(createMenuItem("ボールド", GUIConst.ACTION_FONT_BOLD, "B"));
+        style.add(createMenuItem("イタリック", GUIConst.ACTION_FONT_ITALIC, "I"));
+        style.add(createMenuItem("アンダーライン", GUIConst.ACTION_FONT_UNDERLINE, "U"));
         text.add(style);
 
-
         // justify
-        JMenu justify = createMenu("行揃え", "justify");
-        justify.add(createMenuItem("左揃え", "leftJustify"));
-        justify.add(createMenuItem("中央揃え", "centerJustify"));
-        justify.add(createMenuItem("右揃え", "rightJustify"));
+        JMenu justify = createMenu("行揃え", GUIConst.ACTION_JUSTIFY);
+        justify.add(createMenuItem("左揃え", GUIConst.ACTION_LEFT_JUSTIFY));
+        justify.add(createMenuItem("中央揃え", GUIConst.ACTION_CENTER_JUSTIFY));
+        justify.add(createMenuItem("右揃え", GUIConst.ACTION_RIGHT_JUSTIFY));
         text.add(justify);
 
         // Color
-        JMenu color = createMenu("カラー", "color");
-        color.add(createMenuItem("赤", "fontRed"));
-        color.add(createMenuItem("橙", "fontOrange"));
-        color.add(createMenuItem("黄", "fontYellow"));
-        color.add(createMenuItem("緑", "fontGreen"));
-        color.add(createMenuItem("青", "fontBlue"));
-        color.add(createMenuItem("紫", "fontPurple"));
-        color.add(createMenuItem("灰色", "fontGray"));
-        color.add(createMenuItem("黒", "fontBlack"));
+        JMenu color = createMenu("カラー", GUIConst.ACTION_COLOR);
+        color.add(createMenuItem("赤", GUIConst.ACTION_FONT_RED));
+        color.add(createMenuItem("橙", GUIConst.ACTION_FONT_ORANGE));
+        color.add(createMenuItem("黄", GUIConst.ACTION_FONT_YELLOW));
+        color.add(createMenuItem("緑", GUIConst.ACTION_FONT_GREEN));
+        color.add(createMenuItem("青", GUIConst.ACTION_FONT_BLUE));
+        color.add(createMenuItem("紫", GUIConst.ACTION_FONT_PURPLE));
+        color.add(createMenuItem("灰色", GUIConst.ACTION_FONT_GRAY));
+        color.add(createMenuItem("黒", GUIConst.ACTION_FONT_BLACK));
         text.add(color);
 
         //
         // Tool メニュー
         //
-        JMenu tool = createMenu("ツール", "toolMenu");
+        JMenu tool = createMenu("ツール", GUIConst.ACTION_TOOL_MENU);
         tool.add(createMenuItem("スタンプ検索", GUIConst.ACTION_SEARCH_STAMP, "shift F"));
-        tool.add(createMenuItem("スタンプ箱", "showStampBox", "1"));
-        tool.add(createMenuItem("シェーマ箱", "showSchemaBox", "2"));
-        tool.add(createMenuItem("受付リスト", "showWaitingList", "3"));
-        tool.add(createMenuItem("患者検索", "showPatientSearch", "4"));
+        tool.add(createMenuItem("スタンプ箱", GUIConst.ACTION_SHOW_STAMPBOX, "1"));
+        tool.add(createMenuItem("シェーマ箱", GUIConst.ACTION_SHOW_SCHEMABOX, "2"));
+        tool.add(createMenuItem("受付リスト", GUIConst.ACTION_SHOW_WAITING_LIST, "3"));
+        tool.add(createMenuItem("患者検索", GUIConst.ACTION_SHOW_PATIENT_SEARCH, "4"));
         tool.addSeparator();
-        tool.add(createMenuItem("プロフィール変更", "changePassword"));
-        tool.add(createMenuItem("院内ユーザー登録", "addUser"));
+        tool.add(createMenuItem("プロフィール変更", GUIConst.ACTION_CHANGE_PASSWORD));
+        tool.add(createMenuItem("院内ユーザー登録", GUIConst.ACTION_ADD_USER));
 
         //
         // Help
         //
-        JMenu help = createMenu("ヘルプ", "helpMenu");
+        JMenu help = createMenu("ヘルプ", GUIConst.ACTION_HELP_MENU);
 
         if (ClientContext.isWin()) {
             help.add(createMenuItem("OpenDolphin について", GUIConst.ACTION_SHOW_ABOUT));
@@ -567,7 +566,7 @@ public class MenuFactory {
      *
      * @param menuName メニュー表示名
      * @param actionKey action key
-     * @return
+     * @return JMenu
      */
     private JMenu createMenu(String menuName, String actionKey) {
         JMenu menu = new JMenu();
@@ -601,7 +600,7 @@ public class MenuFactory {
      * @return JMenuItem
      */
     private JMenuItem createMenuItem(String menuName, String actionKey, String keyStroke) {
-        return createMenuItem(menuName, actionKey, null, null, keyStroke);
+        return createMenuItem(menuName, actionKey, keyStroke, null, null);
     }
 
     /**
@@ -621,7 +620,7 @@ public class MenuFactory {
         action.putValue(Action.NAME, menuName);
         action.putValue(Action.SMALL_ICON, icon);
         action.putValue(Action.SHORT_DESCRIPTION, toolTipText);
-        action.putValue(GUIConst.MENU_ITEM, item); // action から JMenuItem を取得できるようにする
+        action.putValue(GUIConst.KEY_MENU_ITEM, item); // action から JMenuItem を取得できるようにする
         item.setAction(action);
         if (Objects.nonNull(keyStroke)) {
             item.setAccelerator(KeyStroke.getKeyStroke(SHORT_CUT_KEY_MASK + " " + keyStroke));
@@ -642,7 +641,7 @@ public class MenuFactory {
 
         Action action = actionMap.get(actionKey);
         action.putValue(Action.NAME, menuName);
-        action.putValue(GUIConst.MENU_ITEM, item); // action から JRadioButtonMenuItem を取得できるようにする
+        action.putValue(GUIConst.KEY_MENU_ITEM, item); // action から JRadioButtonMenuItem を取得できるようにする
         item.setAction(action);
 
         return item;

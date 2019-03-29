@@ -186,8 +186,6 @@ public class Dolphin implements MainWindow {
 
         // 環境設定ダイアログで変更される場合があるので保存する
         saveEnv = new Properties();
-        saveEnv.put(GUIConst.KEY_PVT_SERVER, GUIConst.SERVICE_NOT_RUNNING);
-        saveEnv.put(GUIConst.KEY_SEND_MML, GUIConst.SERVICE_NOT_RUNNING);
     }
 
     /**
@@ -901,10 +899,10 @@ public class Dolphin implements MainWindow {
                     GUIConst.ACTION_SET_KARTE_ENVIROMENT,
                     GUIConst.ACTION_SHOW_STAMPBOX,
                     GUIConst.ACTION_SHOW_SCHEMABOX,
-                    GUIConst.ACTION_CHANGE_PASSWORD,
-                    GUIConst.ACTION_SHOW_ABOUT,
                     GUIConst.ACTION_SHOW_WAITING_LIST,
                     GUIConst.ACTION_SHOW_PATIENT_SEARCH,
+                    GUIConst.ACTION_CHANGE_PASSWORD,
+                    GUIConst.ACTION_SHOW_ABOUT,
             };
             mediator.enableMenus(enables);
 

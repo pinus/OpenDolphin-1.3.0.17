@@ -193,7 +193,7 @@ public final class ChartMediator extends MenuSupport {
         // 挿入メニューの時
         // StampBox のツリーをメニューにする
         //
-        if (cmd.equals(GUIConst.MENU_INSERT)) {
+        if (cmd.equals(GUIConst.ACTION_INSERT_MENU)) {
 
             selectedMenu.removeAll();
 
@@ -221,7 +221,7 @@ public final class ChartMediator extends MenuSupport {
                 }
             });
 
-        } else if (cmd.equals(GUIConst.MENU_TEXT)) {
+        } else if (cmd.equals(GUIConst.ACTION_TEXT_MENU)) {
             //
             // テキストメニューの場合，スタイルを制御する
             //
@@ -770,5 +770,9 @@ public final class ChartMediator extends MenuSupport {
 
     public void fontBlack() {
         colorAction(Color.BLACK);
+    }
+
+    public void searchStamp() {
+        System.out.println("---- searchStamp TODO ----");
     }
 }
