@@ -329,35 +329,6 @@ public class MenuFactory {
         actionMap = MenuActionManager.createActionMap(this);
         this.menuBar = menuBar;
 
-        // ToolBars
-        if (chart != null) {
-            JToolBar fileBar = new JToolBar();
-            fileBar.setName("fileBar");
-            fileBar.setFloatable(false);
-            fileBar.setOpaque(false);
-            fileBar.setBorderPainted(false);
-
-            JToolBar editBar = new JToolBar();
-            editBar.setName("editBar");
-            editBar.setFloatable(false);
-            editBar.setOpaque(false);
-            editBar.setBorderPainted(false);
-
-            fileBar.add(createButton(GUIConst.ACTION_SAVE, GUIConst.ICON_SAVE_32));
-            fileBar.add(createButton(GUIConst.ACTION_PRINT, GUIConst.ICON_PRINT_32));
-
-            editBar.add(createButton(GUIConst.ACTION_NEW_KARTE, GUIConst.ICON_FILE_32));
-            editBar.add(createButton(GUIConst.ACTION_MODIFY_KARTE, GUIConst.ICON_FILE_EDIT_32));
-            editBar.add(createButton(GUIConst.ACTION_UNDO, GUIConst.ICON_UNDO_32));
-            editBar.add(createButton(GUIConst.ACTION_REDO, GUIConst.ICON_REDO_32));
-
-            toolPanel = new JPanel();
-            BoxLayout layout = new BoxLayout(toolPanel, BoxLayout.X_AXIS);
-            toolPanel.setLayout(layout);
-            toolPanel.add(editBar);
-            toolPanel.add(fileBar);
-        }
-
         //
         // File メニュー
         //
@@ -558,6 +529,37 @@ public class MenuFactory {
         menuBar.add(tool, 4);
         // window menu = 5
         menuBar.add(help, 6);
+
+        //
+        // ToolBars
+        //
+        if (chart != null) {
+            JToolBar fileBar = new JToolBar();
+            fileBar.setName("fileBar");
+            fileBar.setFloatable(false);
+            fileBar.setOpaque(false);
+            fileBar.setBorderPainted(false);
+
+            JToolBar editBar = new JToolBar();
+            editBar.setName("editBar");
+            editBar.setFloatable(false);
+            editBar.setOpaque(false);
+            editBar.setBorderPainted(false);
+
+            fileBar.add(createButton(GUIConst.ACTION_SAVE, GUIConst.ICON_SAVE_32));
+            fileBar.add(createButton(GUIConst.ACTION_PRINT, GUIConst.ICON_PRINT_32));
+
+            //editBar.add(createButton(GUIConst.ACTION_NEW_KARTE, GUIConst.ICON_FILE_32));
+            //editBar.add(createButton(GUIConst.ACTION_MODIFY_KARTE, GUIConst.ICON_FILE_EDIT_32));
+            editBar.add(createButton(GUIConst.ACTION_UNDO, GUIConst.ICON_UNDO_32));
+            editBar.add(createButton(GUIConst.ACTION_REDO, GUIConst.ICON_REDO_32));
+
+            toolPanel = new JPanel();
+            BoxLayout layout = new BoxLayout(toolPanel, BoxLayout.X_AXIS);
+            toolPanel.setLayout(layout);
+            toolPanel.add(editBar);
+            toolPanel.add(fileBar);
+        }
     }
 
     /**
@@ -640,7 +642,7 @@ public class MenuFactory {
 
         Action action = actionMap.get(actionKey);
         action.putValue(Action.NAME, menuName);
-        action.putValue(GUIConst.MENU_ITEM, item); // action から JMenuItem を取得できるようにする
+        action.putValue(GUIConst.MENU_ITEM, item); // action から JRadioButtonMenuItem を取得できるようにする
         item.setAction(action);
 
         return item;
