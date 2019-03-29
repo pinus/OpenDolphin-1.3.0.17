@@ -11,7 +11,7 @@ public class GUIConst {
     // client package で使用する定数
     //
     // メニュー関連
-    public static final String SHOW_SCHEMA_BOX = "showSchemaBox";
+    public static final String MENU_ITEM = "menuItem"; // action に JMenuItem を埋め込むキー
     public static final String MENU_TEXT = "テキスト";
     public static final String MENU_SCHEMA = "シェーマ";
     public static final String MENU_STAMP = "スタンプ";
@@ -80,19 +80,14 @@ public class GUIConst {
     public static final String ACTION_RESET_STYLE = "resetStyle";
 
     public static final String ACTION_SHOW_STAMPBOX = "showStampBox";
-    public static final String ACTION_NEW_PATIENT = "addNewPatient";
     public static final String ACTION_SHOW_SCHEMABOX = "showSchemaBox";
     public static final String ACTION_CHANGE_PASSWORD = "changePassword";
     public static final String ACTION_ADD_USER = "addUser";
-    public static final String ACTION_CONFIRM_RUN = "confirmRun";
-    public static final String ACTION_SOFTWARE_UPDATE = "update1";
 
-    public static final String ACTION_BROWS_DOLPHIN = "browseDolphinSupport";
-    public static final String ACTION_BROWS_DOLPHIN_PROJECT = "browseDolphinProject";
-    public static final String ACTION_BROWS_MEDXML = "browseMedXml";
     public static final String ACTION_SHOW_ABOUT = "showAbout";
     public static final String ACTION_SHOW_WAITING_LIST = "showWaitingList";
     public static final String ACTION_SHOW_PATIENT_SEARCH = "showPatientSearch";
+    public static final String ACTION_SEARCH_STAMP = "searchStamp";
 
     // Role
     public static final String ROLE_ADMIN = "admin";

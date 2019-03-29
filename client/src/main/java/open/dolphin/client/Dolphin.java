@@ -466,13 +466,9 @@ public class Dolphin implements MainWindow {
      * com.apple.eawt.Application の handler から呼ばれる.
      */
     public void doPreference() {
-        //ログイン画面の段階で，メニューから環境設定を選択すると null のまま入ってくる
-        if (stateMgr == null) {
-            return;
-        }
         ProjectSettingDialog sd = new ProjectSettingDialog();
         sd.addValidListener(this::controlService);
-        sd.setLoginState(stateMgr.isLogin());
+        sd.setLoginState(Objects.nonNull(stateMgr)); // stateMgr nonNull ならログインしている
         sd.setProject(null);
         sd.start();
     }
@@ -906,11 +902,6 @@ public class Dolphin implements MainWindow {
                     GUIConst.ACTION_SHOW_STAMPBOX,
                     GUIConst.ACTION_SHOW_SCHEMABOX,
                     GUIConst.ACTION_CHANGE_PASSWORD,
-                    GUIConst.ACTION_CONFIRM_RUN,
-                    GUIConst.ACTION_SOFTWARE_UPDATE,
-                    GUIConst.ACTION_BROWS_DOLPHIN,
-                    GUIConst.ACTION_BROWS_DOLPHIN_PROJECT,
-                    GUIConst.ACTION_BROWS_MEDXML,
                     GUIConst.ACTION_SHOW_ABOUT,
                     GUIConst.ACTION_SHOW_WAITING_LIST,
                     GUIConst.ACTION_SHOW_PATIENT_SEARCH,

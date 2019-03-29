@@ -295,9 +295,8 @@ public class StampBoxPlugin extends AbstractMainTool {
             String[] enables = new String[]{
                     GUIConst.ACTION_SHOW_SCHEMABOX,
                     GUIConst.ACTION_SET_KARTE_ENVIROMENT,
-                    "showWaitingList",
-                    "showPatientSearch",
-                    "focusDiagnosisInspector"
+                    GUIConst.ACTION_SHOW_WAITING_LIST,
+                    GUIConst.ACTION_SHOW_PATIENT_SEARCH
             };
             mediator.enableMenus(enables);
 
@@ -921,16 +920,6 @@ public class StampBoxPlugin extends AbstractMainTool {
      */
     public List<ModuleInfoBean> getAllStamps(String entity) {
         return getCurrentBox().getAllStamps(entity);
-    }
-
-    /**
-     * ChartIml が開いていたら，DiagnosisInspector にフォーカスする.
-     */
-    public void focusDiagnosisInspector() {
-        if (!ChartImpl.getAllChart().isEmpty()) {
-            ChartImpl chart = ChartImpl.getAllChart().get(0);
-            chart.getChartMediator().focusDiagnosisInspector();
-        }
     }
 
     /**

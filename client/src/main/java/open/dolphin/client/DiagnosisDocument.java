@@ -209,7 +209,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         // ショートカット登録
         // Windows XP で全画面表示すると，getRootPane() が null になる
-        //ActionMap am = myPanel.getRootPane().getActionMap();
+        //ActionMap am = myPanel.getRootPane().createActionMap();
         //InputMap im = myPanel.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = myPanel.getActionMap();
         InputMap im = myPanel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);

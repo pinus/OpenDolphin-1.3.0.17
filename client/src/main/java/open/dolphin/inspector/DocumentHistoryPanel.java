@@ -28,6 +28,7 @@ public class DocumentHistoryPanel extends JPanel {
         this.setLayout(new BorderLayout(0, 0));
 
         table = new JTable();
+        table.putClientProperty("Quaqua.Table.style", "striped"); // MyTableUI で使ってる
         PNSScrollPane scroller = new PNSScrollPane(table);
         scroller.setBorder(BorderFactory.createEmptyBorder());
         scroller.putClientProperty("JComponent.sizeVariant", "small");

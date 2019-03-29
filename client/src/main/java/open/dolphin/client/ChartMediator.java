@@ -7,7 +7,6 @@ import open.dolphin.stampbox.DefaultStampTreeMenuListener;
 import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeMenuBuilder;
-import open.dolphin.ui.Focuser;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -771,19 +770,5 @@ public final class ChartMediator extends MenuSupport {
 
     public void fontBlack() {
         colorAction(Color.BLACK);
-    }
-
-    /**
-     * DiagnosisInspector にフォーカスする.
-     */
-    public void focusDiagnosisInspector() {
-        ChartImpl realChart = chart instanceof EditorFrame ?
-                (ChartImpl) ((EditorFrame) chart).getChart() : (ChartImpl) chart;
-        JList diagList = realChart.getDiagnosisInspector().getList();
-        if (diagList.getSelectedIndex() == -1) {
-            diagList.setSelectedIndex(0);
-        }
-        realChart.getFrame().toFront();
-        Focuser.requestFocus(diagList);
     }
 }
