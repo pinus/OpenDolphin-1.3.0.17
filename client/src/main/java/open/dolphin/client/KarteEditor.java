@@ -331,7 +331,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             sb.append(")");
         }
 
-        timeStampLabel.setText(sb.toString());
+        //timeStampLabel.setText(sb.toString());
+        getContext().getFrame().setTitle(sb.toString());
     }
 
     /**
