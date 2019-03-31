@@ -68,7 +68,7 @@ public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
 
 //        for (int y=0; y<getHeight();y++) {
 //            Graphics g = graphics.create();
-//            g.setColor(BGCOL[y]);
+//            g.setForegroundColor(BGCOL[y]);
 //            g.drawLine(0, y, getWidth()-1, y);
 //            g.dispose();
 //        }

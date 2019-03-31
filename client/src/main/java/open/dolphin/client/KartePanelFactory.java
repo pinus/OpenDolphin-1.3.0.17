@@ -202,6 +202,7 @@ public class KartePanelFactory {
             textPanePanel.add(pScrollPane);
 
             setLayout(new BorderLayout(0, 0));
+            // Editor では timeStampPanel 廃止
             //add(timeStampPanel, BorderLayout.NORTH);
             add(textPanePanel, BorderLayout.CENTER);
         }

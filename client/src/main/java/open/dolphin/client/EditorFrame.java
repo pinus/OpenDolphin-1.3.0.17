@@ -442,10 +442,11 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         appMenu.setMenuSupports(realChart.getContext().getMenuSupport(), mediator);
         appMenu.build(myMenuBar);
         mediator.registerActions(appMenu.getActionMap());
-        myToolPanel = appMenu.getToolPanelProduct();
+        //myToolPanel = appMenu.getToolPanelProduct();
         //content.add(myToolPanel, BorderLayout.NORTH);
+        JPanel myToolPanel = new JPanel();
         myToolPanel.setOpaque(false);
-        //comPanel.add(myToolPanel);
+        comPanel.add(myToolPanel);
 
         //
         // このクラス固有のToolBarを生成する
