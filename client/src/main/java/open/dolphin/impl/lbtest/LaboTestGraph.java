@@ -545,7 +545,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
 
         // X 軸のタイトル(検体採集日) を書く
         // g2.setFont(xTitleFont);
-        // g2.setForegroundColor(xTitleColor);
+        // g2.setColor(xTitleColor);
         // fm = g2.getFontMetrics(xTitleFont);
         // str = "検体採取日";
         // xp = ( getPixelsForSample(xMax) - getPixelsForSample(xMin) -

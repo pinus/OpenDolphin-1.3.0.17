@@ -143,16 +143,16 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
                 g.setColor(strokeColor);
                 g.setStroke(stroke);
                 g.draw(body);
-                //g2.setForegroundColor(colors[i]);
+                //g2.setColor(colors[i]);
                 //g2.fill(body);
                 //GradientPaint lightToDark = new GradientPaint((int)x, (int)y, Color.LIGHT_GRAY, (int)x, (int)y + size.height, colors[i]);
                 //g2.setPaint(lightToDark);
                 //g2.fill(body);
-                //g2.setForegroundColor(Color.DARK_GRAY);
+                //g2.setColor(Color.DARK_GRAY);
                 //g2.setStroke(new BasicStroke(2));
                 //g2.draw(body);
             } //else {
-            //g2.setForegroundColor(colors[i]);
+            //g2.setColor(colors[i]);
             //g2.fill(body);
             //}
         }

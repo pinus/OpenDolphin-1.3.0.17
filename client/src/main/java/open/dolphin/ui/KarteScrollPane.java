@@ -169,7 +169,7 @@ public class KarteScrollPane extends PNSScrollPane {
 
                 // 不透明で塗りつぶしてから
                 //g.setComposite(opaque);
-                //g.setForegroundColor(this.getBackground());
+                //g.setColor(this.getBackground());
                 //g.fillRect(0, 0, offset.width, viewRect.height);
                 // スナップショットを上書き
                 g.drawImage(headImg, 0, 0, null);
@@ -237,7 +237,7 @@ public class KarteScrollPane extends PNSScrollPane {
 
                 // 塗りつぶしてから
                 //g.setComposite(opaque);
-                //g.setForegroundColor(this.getBackground());
+                //g.setColor(this.getBackground());
                 //g.fillRect(0, 0, viewRect.width, offset.height);
                 // 上書き
                 g.drawImage(headImg, 0, 0, null);
