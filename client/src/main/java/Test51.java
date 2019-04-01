@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 /**
@@ -30,11 +32,14 @@ public class Test51 {
         content.add(cmdPanel);
         content.add(textArea);
 
-        JToggleButton boldButton = new BoldButton();
-        boldButton.setPreferredSize(new Dimension(22,22));
-        boldButton.setBorderPainted(false);
+        JToggleButton boldButton = new LetterButton("B", "bold left");
+        JToggleButton italicButton = new LetterButton("I", "italic");
+        JToggleButton underlineButton = new LetterButton("U", "underline right");
+
         buttonPanel.add(Box.createHorizontalStrut(10));
         buttonPanel.add(boldButton);
+        buttonPanel.add(italicButton);
+        buttonPanel.add(underlineButton);
         buttonPanel.add(Box.createHorizontalGlue());
 
         frame.add(content);
@@ -42,8 +47,16 @@ public class Test51 {
         frame.setVisible(true);
     }
 
+    static class LetterIcon extends ImageIcon implements ChangeListener {
 
-    static abstract class ButtonBase extends JToggleButton {
+        public void stateChanged(ChangeEvent e) {
+        }
+
+    }
+
+
+    static class LetterButton extends JToggleButton {
+
         private final Color INACTIVE_FRAME = new Color(219, 219, 219);
         private final Color INACTIVE_FILL_SELECTED = new Color(227, 227, 227);
         private final Color INACTIVE_FILL = new Color(246, 246, 246);
@@ -54,17 +67,31 @@ public class Test51 {
         private final Color INACTIVE_TEXT = new Color(180, 180, 180);
         private final Color INACTIVE_TEXT_SELECTED = new Color(50, 50, 50);
 
-        /**
-         * 親の Window
-         */
+        private Font boldFont = new Font("Courier", Font.BOLD, 16);
+        private Font italicFont = new Font("Courier", Font.ITALIC, 16);
+        private Font plainFont = new Font("Courier", Font.PLAIN, 16);
+
         protected Window parent = null;
-
-        /**
-         * Application が foreground かどうか
-         */
         protected boolean appForeground = true;
+        private String letter;
+        private boolean bold, italic, underline;
+        private int swingConstant;
 
-        protected Font font = new Font(Font.SANS_SERIF, Font.BOLD, 16);
+        public LetterButton(String letter, String format) {
+            this.letter = letter;
+            swingConstant = format.contains("right")
+                    ? SwingConstants.RIGHT
+                    : format.contains("left")
+                    ? SwingConstants.LEFT
+                    : SwingConstants.CENTER;
+            bold = format.contains("bold");
+            italic = format.contains("italic");
+            underline = format.contains("underline");
+
+            setPreferredSize(new Dimension(48,24));
+            setBorderPainted(false);
+            setSelected(false);
+        }
 
         @Override
         public void addNotify() {
@@ -92,10 +119,56 @@ public class Test51 {
             }
         }
 
-        protected void setForegroundColor(Graphics2D g) {
+        @Override
+        public void paintComponent(Graphics graphics) {
+            Graphics2D g = (Graphics2D) graphics;
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            FontMetrics fm = g.getFontMetrics();
+            int strW = fm.stringWidth(letter);
+            int strH = fm.getAscent() - 2;
+            int w = getWidth();
+            int h = getHeight();
+
+            if (bold) { g.setFont(boldFont); }
+            else if (italic) { g.setFont(italicFont); }
+            else { g.setFont(plainFont); }
+
+            // background and border
             if (parent.isActive() && appForeground) {
                 if (this.isSelected()) {
-                    g.setColor(Color.BLACK);
+                    g.setColor(ACTIVE_FILL_SELECTED);
+                    g.fillRect(0, 0, w, h);
+
+                    g.setColor(ACTIVE_FRAME_SELECTED);
+
+                } else {
+                    g.setColor(ACTIVE_FILL);
+                    g.fillRect(0, 0, w, h);
+
+                    g.setColor(ACTIVE_FRAME);
+                }
+
+            } else {
+                if (this.isSelected()) {
+                    g.setColor(INACTIVE_FILL_SELECTED);
+                    g.fillRect(0, 0, w, h);
+
+                    g.setColor(INACTIVE_FRAME);
+
+                } else {
+                    g.setColor(INACTIVE_FILL);
+                    g.fillRect(0, 0, w, h);
+
+                    g.setColor(INACTIVE_FRAME);
+
+                }
+            }
+
+            // foreground
+            if (parent.isActive() && appForeground) {
+                if (this.isSelected()) {
+                    g.setColor(Color.WHITE);
                 } else {
                     g.setColor(Color.BLACK);
                 }
@@ -106,50 +179,11 @@ public class Test51 {
                     g.setColor(INACTIVE_TEXT);
                 }
             }
-        }
 
-        protected void drawBorder(Graphics2D g, int swingConstant) {
-            if (parent.isActive() && appForeground) {
-                if (this.isSelected()) {
-                    g.setColor(ACTIVE_FILL_SELECTED);
+            g.drawString(letter, (w - strW) / 2, (h + strH) / 2);
 
-                    g.setColor(ACTIVE_FRAME_SELECTED);
 
-                } else {
-                    g.setColor(ACTIVE_FILL); }
 
-                    g.setColor(ACTIVE_FRAME);
-
-            } else {
-                if (this.isSelected()) {
-                    g.setColor(INACTIVE_FILL_SELECTED);
-
-                    g.setColor(INACTIVE_FRAME);
-                } else {
-                    g.setColor(INACTIVE_FILL);
-
-                    g.setColor(INACTIVE_FRAME);
-                }
-            }
-        }
-    }
-
-    static class BoldButton extends ButtonBase {
-        @Override
-        public void paintComponent(Graphics graphics) {
-            // super.paintComponent(graphics);
-            Graphics2D g = (Graphics2D) graphics;
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            FontMetrics fm = g.getFontMetrics();
-            int strW = fm.stringWidth("B");
-            int strH = fm.getHeight();
-            int w = getWidth();
-            int h = getHeight();
-
-            setForegroundColor(g);
-            g.drawString("B", (w + strW) / 2, (h + strH) / 2 );
-            drawBorder(g, SwingConstants.LEFT);
         }
     }
 }
