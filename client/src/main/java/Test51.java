@@ -1,5 +1,9 @@
+import open.dolphin.ui.PNSToggleButton;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.geom.AffineTransform;
 
 /**
  * @author pns
@@ -12,7 +16,7 @@ public class Test51 {
         frame.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
 
         JPanel cmdPanel = new JPanel();
-        cmdPanel.setPreferredSize(new Dimension(600, 26));
+        cmdPanel.setPreferredSize(new Dimension(600, 28));
         cmdPanel.setLayout(new BoxLayout(cmdPanel, BoxLayout.Y_AXIS));
 
         JPanel buttonPanel = new JPanel();
@@ -22,7 +26,7 @@ public class Test51 {
         cmdPanel.add(Box.createVerticalGlue());
 
         JTextArea textArea = new JTextArea();
-        textArea.setPreferredSize(new Dimension(600,500));
+        textArea.setPreferredSize(new Dimension(600, 500));
         textArea.setText("TEST");
 
         JPanel content = new JPanel();
@@ -32,12 +36,27 @@ public class Test51 {
 
         JToggleButton boldButton = new LetterButton("B", "bold left");
         JToggleButton italicButton = new LetterButton("I", "italic");
-        JToggleButton underlineButton = new LetterButton("U", "underline right");
+        JToggleButton underlineButton = new LetterButton("U", "underline center");
+        JToggleButton colorButton = new ColorButton("right");
+
+        JToggleButton leftJustify = new JustifyButton("left");
+        JToggleButton centerJustify = new JustifyButton("center");
+        JToggleButton rightJustify = new JustifyButton("right");
+        ButtonGroup justifyGroup = new ButtonGroup();
+        justifyGroup.add(leftJustify);
+        justifyGroup.add(centerJustify);
+        justifyGroup.add(rightJustify);
 
         buttonPanel.add(Box.createHorizontalStrut(10));
         buttonPanel.add(boldButton);
         buttonPanel.add(italicButton);
         buttonPanel.add(underlineButton);
+        buttonPanel.add(colorButton);
+        buttonPanel.add(Box.createHorizontalStrut(32));
+        buttonPanel.add(leftJustify);
+        buttonPanel.add(centerJustify);
+        buttonPanel.add(rightJustify);
+
         buttonPanel.add(Box.createHorizontalGlue());
 
         frame.add(content);
@@ -45,10 +64,62 @@ public class Test51 {
         frame.setVisible(true);
     }
 
+    static class ColorButton extends PNSToggleButton {
+        private static String LETTER = "A";
+        private double SCALE = 1.3d;
+        private Font font = new Font("Arial", Font.BOLD, 12)
+                .deriveFont(AffineTransform.getScaleInstance(SCALE, 1));
+        private Color color = Color.BLACK;
+
+        public ColorButton(String format) {
+            super(format);
+            setPreferredSize(new Dimension(48, 24));
+            setBorderPainted(false);
+            setSelected(false);
+            addActionListener(this::pressed);
+        }
+
+        public void pressed(ActionEvent ae) {
+            //ColorChooserComp ccl = new ColorChooserComp();
+            //ccl.addPropertyChangeListener(ColorChooserComp.SELECTED_COLOR, e -> {
+            //    Color selected = (Color) e.getNewValue();
+            //    Action action = new StyledEditorKit.ForegroundAction("selected", selected);
+                //action.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "foreground"));
+            //    setVisible(false);
+            //});
+            //JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+            //p.add(ccl);
+            //JPopupMenu menu = new JPopupMenu();
+            //menu.add(ccl);
+            //menu.setVisible(true);
+
+            setSelected(false);
+        }
+
+        @Override
+        public void paintIcon(Graphics2D g) {
+            g.setFont(font);
+            FontMetrics fm = g.getFontMetrics();
+            int strW = (int) ((double)fm.stringWidth(LETTER) * SCALE);
+            int strH = fm.getAscent()-4;
+            int w = getWidth();
+            int h = getHeight();
+
+            g.drawString(LETTER, (w - strW) / 2, (h + strH) / 2);
+            g.setColor(color);
+            g.fillRect((w - strW) / 2 - 1, h - 8, strW, 4);
+        }
+    }
+
+
     static class LetterButton extends PNSToggleButton {
-        private Font boldFont = new Font("Courier", Font.BOLD, 16);
-        private Font italicFont = new Font("Courier", Font.ITALIC, 16);
-        private Font plainFont = new Font("Courier", Font.PLAIN, 16);
+        private double SCALE = 1.3d;
+        private Font boldFont = new Font("Courier", Font.BOLD, 14)
+                .deriveFont(AffineTransform.getScaleInstance(SCALE, 1));
+        private Font italicFont = new Font("Courier", Font.ITALIC, 14)
+                .deriveFont(AffineTransform.getScaleInstance(SCALE, 1));
+        private Font plainFont = new Font("Courier", Font.PLAIN, 14)
+                .deriveFont(AffineTransform.getScaleInstance(SCALE, 1));
 
         private String letter;
         private boolean bold, italic, underline;
@@ -60,7 +131,7 @@ public class Test51 {
             italic = format.contains("italic");
             underline = format.contains("underline");
 
-            setPreferredSize(new Dimension(48,24));
+            setPreferredSize(new Dimension(48, 24));
             setBorderPainted(false);
             setSelected(false);
         }
@@ -68,137 +139,58 @@ public class Test51 {
         @Override
         public void paintIcon(Graphics2D g) {
             FontMetrics fm = g.getFontMetrics();
-            int strW = fm.stringWidth(letter);
-            int strH = fm.getAscent() - 2;
+            int strW = (int) ((double)fm.stringWidth(letter) * SCALE);
+            int strH = fm.getAscent()-4;
             int w = getWidth();
             int h = getHeight();
 
-            if (bold) { g.setFont(boldFont); }
-            else if (italic) { g.setFont(italicFont); }
-            else { g.setFont(plainFont); }
+            if (bold) {
+                g.setFont(boldFont);
+            } else if (italic) {
+                g.setFont(italicFont);
+            } else {
+                g.setFont(plainFont);
+            }
 
-            g.drawString(letter, (w - strW) / 2, (h + strH) / 2);
+            if (italic) {
+                g.drawString(letter, (w - strW) / 2 - (int) (4d * SCALE), (h + strH) / 2);
+            } else {
+                g.drawString(letter, (w - strW) / 2, (h + strH) / 2);
+            }
+            if (underline) {
+                g.drawLine((w - strW) / 2, h - 5, (w + strW) / 2, h - 5);
+            }
         }
     }
 
-    static class PNSToggleButton extends JToggleButton {
+    static class JustifyButton extends PNSToggleButton {
+        private int LONG = 20;
+        private int SHORT = 14;
 
-        private final Color INACTIVE_FRAME = new Color(219, 219, 219);
-        private final Color INACTIVE_FILL_SELECTED = new Color(227, 227, 227);
-        private final Color INACTIVE_FILL = new Color(246, 246, 246);
-        private final Color ACTIVE_FRAME = new Color(175, 175, 175);
-        private final Color ACTIVE_FRAME_SELECTED = new Color(91, 91, 91);
-        private final Color ACTIVE_FILL = new Color(240, 240, 240);
-        private final Color ACTIVE_FILL_SELECTED = new Color(100, 100, 100);
-        private final Color INACTIVE_TEXT = new Color(180, 180, 180);
-        private final Color INACTIVE_TEXT_SELECTED = new Color(50, 50, 50);
 
-        protected Window parent = null;
-        protected boolean appForeground = true;
-        private int swingConstant;
-
-        public PNSToggleButton(String format) {
-            swingConstant = format.contains("right")
-                    ? SwingConstants.RIGHT
-                    : format.contains("left")
-                    ? SwingConstants.LEFT
-                    : SwingConstants.CENTER;
+        public JustifyButton(String format) {
+            super(format);
+            setPreferredSize(new Dimension(48, 24));
+            setBorderPainted(false);
+            setSelected(false);
         }
 
         @Override
-        public void addNotify() {
-            super.addNotify();
+        public void paintIcon(Graphics2D g) {
+            int interval = 3;
+            int l = (getWidth() - LONG) / 2;
+            int s = swingConstant == SwingConstants.LEFT
+                    ? l
+                    : swingConstant == SwingConstants.RIGHT
+                    ? l + (LONG-SHORT)
+                    : (getWidth() - SHORT) / 2;
 
-            if (parent == null) {
-                parent = SwingUtilities.windowForComponent(this);
-
-                // AppForegroundListener
-                com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
-                app.addAppEventListener(new com.apple.eawt.AppForegroundListener() {
-                    @Override
-                    public void appRaisedToForeground(com.apple.eawt.AppEvent.AppForegroundEvent afe) {
-                        appForeground = true;
-                        repaint();
-                    }
-
-                    @Override
-                    public void appMovedToBackground(com.apple.eawt.AppEvent.AppForegroundEvent afe) {
-                        appForeground = false;
-                        repaint();
-                    }
-                });
-
-            }
+            int y = 6;
+            g.drawLine(l, y, l+LONG, y); y += interval;
+            g.drawLine(s, y, s+SHORT, y); y += interval;
+            g.drawLine(l, y, l+LONG, y); y += interval;
+            g.drawLine(s, y, s+SHORT, y); y += interval;
+            g.drawLine(l, y, l+LONG, y);
         }
-
-        @Override
-        public void paintComponent(Graphics graphics) {
-            Graphics2D g = (Graphics2D) graphics;
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            int w = getWidth();
-            int h = getHeight();
-
-            // background and border
-            if (parent.isActive() && appForeground) {
-                if (this.isSelected()) {
-                    g.setColor(ACTIVE_FILL_SELECTED);
-                    fill(g, w, h);
-
-                    g.setColor(ACTIVE_FRAME_SELECTED);
-
-                } else {
-                    g.setColor(ACTIVE_FILL);
-                    fill(g, w, h);
-
-                    g.setColor(ACTIVE_FRAME);
-                }
-
-            } else {
-                if (this.isSelected()) {
-                    g.setColor(INACTIVE_FILL_SELECTED);
-                    fill(g, w, h);
-
-                    g.setColor(INACTIVE_FRAME);
-
-                } else {
-                    g.setColor(INACTIVE_FILL);
-                    fill(g, w, h);
-
-                    g.setColor(INACTIVE_FRAME);
-
-                }
-            }
-
-            // foreground
-            if (parent.isActive() && appForeground) {
-                if (this.isSelected()) {
-                    g.setColor(Color.WHITE);
-                } else {
-                    g.setColor(Color.BLACK);
-                }
-            } else {
-                if (this.isSelected()) {
-                    g.setColor(INACTIVE_TEXT_SELECTED);
-                } else {
-                    g.setColor(INACTIVE_TEXT);
-                }
-            }
-            paintIcon(g);
-        }
-
-        private void fill(Graphics2D g, int w, int h) {
-            if (swingConstant == SwingConstants.LEFT) {
-                g.fillRoundRect(0, 0, w, h, 10, 10);
-                g.fillRect(w-10,0, w, h);
-            } else if (swingConstant == SwingConstants.RIGHT) {
-                g.fillRoundRect(0, 0, w, h, 10, 10);
-                g.fillRect(0,0,10, h);
-            } else {
-                g.fillRect(0, 0, w, h);
-            }
-        }
-
-        public void paintIcon(Graphics2D g) { }
     }
 }

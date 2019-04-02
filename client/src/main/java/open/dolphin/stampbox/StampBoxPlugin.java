@@ -79,7 +79,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     // mac でメニューが消えないようにするために使う
     private MenuSupport mediator;
     // ロックボタン
-    private PNSToggleButton lockBtn;
+    private PNSSafeToggleButton lockBtn;
     // ExtraMenu(gear) ボタン
     private JButton extraBtn;
     // ExtraMenu を押すと呼ばれる
@@ -444,7 +444,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         });
 
         // ロックボタンを生成する
-        lockBtn = new PNSToggleButton();
+        lockBtn = new PNSSafeToggleButton();
         lockBtn.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         //lockBtn.setIcon(GUIConst.ICON_LOCK_16);
         lockBtn.setIcon(GUIConst.ICON_PADLOCK_CLOSED_16);

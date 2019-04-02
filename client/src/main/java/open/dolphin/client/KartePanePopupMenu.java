@@ -25,6 +25,8 @@ import static open.dolphin.orca.ClaimConst.SubjectivesCodeMap;
 
 /**
  * KartePanePopupMenu. KartePane から独立.
+ *
+ * @author pns
  */
 public class KartePanePopupMenu extends JPopupMenu {
     private KartePane kartePane;
