@@ -1,6 +1,10 @@
+import open.dolphin.client.ClientContext;
+import open.dolphin.client.ClientContextStub;
+import open.dolphin.client.ColorChooserComp;
 import open.dolphin.ui.PNSToggleButton;
 
 import javax.swing.*;
+import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
@@ -11,6 +15,9 @@ import java.awt.geom.AffineTransform;
 public class Test51 {
 
     public static void main(String[] argv) {
+        ClientContextStub stub = new ClientContextStub();
+        ClientContext.setClientContextStub(stub);
+
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
@@ -65,11 +72,14 @@ public class Test51 {
     }
 
     static class ColorButton extends PNSToggleButton {
+
         private static String LETTER = "A";
         private double SCALE = 1.3d;
         private Font font = new Font("Arial", Font.BOLD, 12)
                 .deriveFont(AffineTransform.getScaleInstance(SCALE, 1));
         private Color color = Color.BLACK;
+        private ColorChooserComp chooser;
+        private JPopupMenu menu;
 
         public ColorButton(String format) {
             super(format);
@@ -77,22 +87,24 @@ public class Test51 {
             setBorderPainted(false);
             setSelected(false);
             addActionListener(this::pressed);
+
+            menu = new JPopupMenu();
+            chooser = new ColorChooserComp();
+            menu.add(chooser);
+            chooser.addPropertyChangeListener(ColorChooserComp.SELECTED_COLOR, e -> {
+                color = (Color) e.getNewValue();
+                repaint();
+                Action action = new StyledEditorKit.ForegroundAction("selected", color);
+                //action.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "foreground"));
+                menu.setVisible(false);
+            });
+
         }
 
         public void pressed(ActionEvent ae) {
-            //ColorChooserComp ccl = new ColorChooserComp();
-            //ccl.addPropertyChangeListener(ColorChooserComp.SELECTED_COLOR, e -> {
-            //    Color selected = (Color) e.getNewValue();
-            //    Action action = new StyledEditorKit.ForegroundAction("selected", selected);
-                //action.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "foreground"));
-            //    setVisible(false);
-            //});
-            //JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-            //p.add(ccl);
-            //JPopupMenu menu = new JPopupMenu();
-            //menu.add(ccl);
-            //menu.setVisible(true);
-
+            Point p = getLocationOnScreen();
+            menu.setLocation(p.x, p.y + getHeight());
+            menu.setVisible(true);
             setSelected(false);
         }
 
