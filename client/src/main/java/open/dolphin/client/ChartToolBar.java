@@ -13,9 +13,6 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.geom.AffineTransform;
 import java.util.prefs.Preferences;
 
@@ -27,7 +24,6 @@ import java.util.prefs.Preferences;
 public class ChartToolBar extends JToolBar {
     private static final long serialVersionUID = 1L;
 
-    private final MainWindow window;
     private final EditorFrame editorFrame;
     private final ChartMediator mediator;
     private final Preferences prefs;
@@ -41,11 +37,11 @@ public class ChartToolBar extends JToolBar {
     private JustifyButton centerJustify;
     private JustifyButton rightJustify;
 
-    private JTextPane focusedPane;
+    private JComboBox<Integer> sizeCombo;
+    private boolean pause = false;
 
     public ChartToolBar(final EditorFrame chart) {
         super();
-        window = chart.getContext();
         mediator = chart.getChartMediator();
         prefs = Preferences.userNodeForPackage(ChartToolBar.class).node(ChartToolBar.class.getName());
         editorFrame = chart;
@@ -65,36 +61,30 @@ public class ChartToolBar extends JToolBar {
 
         add(Box.createHorizontalStrut(10));
         add(createFontPanel());
-        add(Box.createHorizontalStrut(32));
+        add(createSizePanel());
+        add(Box.createHorizontalStrut(24));
         add(createJustifyPanel());
-        add(Box.createHorizontalStrut(32));
+        add(Box.createHorizontalStrut(24));
         add(createDiagnosisSearchPanel());
+        add(Box.createHorizontalStrut(10));
     }
 
     /**
      * リスナーの接続を行う.
      */
     private void connect() {
-        FocusListener focusListener = new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                focusedPane = (JTextPane) e.getSource();
-            }
-        };
-        editorFrame.getEditor().getSOAPane().getTextPane().addFocusListener(focusListener);
-        editorFrame.getEditor().getPPane().getTextPane().addFocusListener(focusListener);
 
         boldButton.addActionListener(e -> {
             mediator.fontBold();
-            Focuser.requestFocus(focusedPane);
+            Focuser.requestFocus(mediator.getCurrentComponent());
         });
         italicButton.addActionListener(e -> {
             mediator.fontItalic();
-            Focuser.requestFocus(focusedPane);
+            Focuser.requestFocus(mediator.getCurrentComponent());
         });
         underlineButton.addActionListener(e -> {
             mediator.fontUnderline();
-            Focuser.requestFocus(focusedPane);
+            Focuser.requestFocus(mediator.getCurrentComponent());
         });
 
         colorButton.addActionListener(e -> {
@@ -107,7 +97,7 @@ public class ChartToolBar extends JToolBar {
                 mediator.colorAction(color);
                 repaint();
                 menu.setVisible(false);
-                Focuser.requestFocus(focusedPane);
+                Focuser.requestFocus(mediator.getCurrentComponent());
             });
             menu.show(b, 0, b.getHeight());
             b.setSelected(false);
@@ -115,15 +105,22 @@ public class ChartToolBar extends JToolBar {
 
         leftJustify.addActionListener(e -> {
             mediator.leftJustify();
-            Focuser.requestFocus(focusedPane);
+            Focuser.requestFocus(mediator.getCurrentComponent());
         });
         centerJustify.addActionListener(e -> {
             mediator.centerJustify();
-            Focuser.requestFocus(focusedPane);
+            Focuser.requestFocus(mediator.getCurrentComponent());
         });
         rightJustify.addActionListener(e -> {
             mediator.rightJustify();
-            Focuser.requestFocus(focusedPane);
+            Focuser.requestFocus(mediator.getCurrentComponent());
+        });
+
+        sizeCombo.addItemListener(e -> {
+            if (pause) { return; }
+            int size = (int) e.getItem();
+            mediator.setFontSize(size);
+            Focuser.requestFocus(mediator.getCurrentComponent());
         });
 
         // caret を listen してボタンを制御する
@@ -141,9 +138,29 @@ public class ChartToolBar extends JToolBar {
             leftJustify.setSelected(align == StyleConstants.ALIGN_LEFT);
             centerJustify.setSelected(align == StyleConstants.ALIGN_CENTER);
             rightJustify.setSelected(align == StyleConstants.ALIGN_RIGHT);
+
+            int size = StyleConstants.getFontSize(a);
+            pause = true;
+            sizeCombo.setSelectedItem(size);
+            SwingUtilities.invokeLater(() -> pause = false);
         };
         editorFrame.getEditor().getSOAPane().getTextPane().addCaretListener(caretListener);
         editorFrame.getEditor().getPPane().getTextPane().addCaretListener(caretListener);
+    }
+
+    /**
+     * Font size 設定パネル.
+     *
+     * @return Size Panel
+     */
+    private JPanel createSizePanel() {
+        sizeCombo = new JComboBox<>(mediator.FONT_SIZE);
+        sizeCombo.setBorder(BorderFactory.createEmptyBorder());
+        sizeCombo.setSelectedItem(mediator.DEFAULT_FONT_SIZE);
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        panel.add(sizeCombo);
+        return panel;
     }
 
     /**
@@ -158,7 +175,7 @@ public class ChartToolBar extends JToolBar {
         colorButton = new ColorButton("right");
 
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         add(boldButton);
         add(italicButton);
         add(underlineButton);
@@ -182,7 +199,7 @@ public class ChartToolBar extends JToolBar {
         leftJustify.setSelected(true);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(0));
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         add(leftJustify);
         add(centerJustify);
         add(rightJustify);
@@ -331,7 +348,7 @@ public class ChartToolBar extends JToolBar {
      */
     private JPanel createDiagnosisSearchPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
         CompletableSearchField keywordFld = new CompletableSearchField(30);
         keywordFld.setLabel("病名検索");
@@ -371,11 +388,7 @@ public class ChartToolBar extends JToolBar {
         Object value = map.get(KeyStroke.getKeyStroke("ENTER"));
         map.put(KeyStroke.getKeyStroke("ctrl ENTER"), value);
 
-        panel.add(keywordFld, BorderLayout.CENTER);
-        //panel.add(Box.createVerticalStrut(9), BorderLayout.NORTH);
-        //panel.add(Box.createVerticalStrut(9), BorderLayout.SOUTH);
-        //panel.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-        //panel.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
+        panel.add(keywordFld);
 
         return panel;
     }

@@ -35,14 +35,13 @@ import java.util.List;
  * @author pns
  */
 public final class ChartMediator extends MenuSupport {
-
     // Font size
-    private static final int[] FONT_SIZE = {10, 12, 14, 16, 18, 24, 36};
-    // ChartPlugin
+    public static final Integer[] FONT_SIZE = {9, 11, 13, 16, 18, 24, 36};
+    public static final int DEFAULT_FONT_SIZE = FONT_SIZE[2];
+
     private final Chart chart;
     private final Logger logger;
-    private int curFontSize = 1;
-    // current KarteComposit
+    private int curFontSizeIndex = 2;
     private KarteComposite<?> curKarteComposit;
 
     /**
@@ -169,7 +168,7 @@ public final class ChartMediator extends MenuSupport {
      *
      * @return KarteComposite の中身の JComponent
      */
-    private JComponent getCurrentComponent() {
+    public JComponent getCurrentComponent() {
         if (curKarteComposit != null) {
             return (JComponent) curKarteComposit.getComponent();
         }
@@ -608,55 +607,36 @@ public final class ChartMediator extends MenuSupport {
     public void fontLarger() {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {
-            if (curFontSize < 6) {
-                curFontSize++;
+            if (curFontSizeIndex < 6) {
+                setFontSize(FONT_SIZE[++curFontSizeIndex]);
             }
-            int size = FONT_SIZE[curFontSize];
-            Action a = focusOwner.getActionMap().get("font-size-" + size);
-            if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        null));
-            }
-            if (curFontSize == 6) {
-                enableAction("fontLarger", false);
-            }
+            enableAction("fontLarger", curFontSizeIndex < 6);
         }
     }
 
     public void fontSmaller() {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {
-            if (curFontSize > 0) {
-                curFontSize--;
+            if (curFontSizeIndex > 0) {
+                setFontSize(FONT_SIZE[--curFontSizeIndex]);
             }
-            int size = FONT_SIZE[curFontSize];
-            Action a = focusOwner.getActionMap().get("font-size-" + size);
-            if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        null));
-            }
-            if (curFontSize == 0) {
-                enableAction("fontSmaller", false);
-            }
+            enableAction("fontSmaller", curFontSizeIndex > 0);
         }
     }
 
     public void fontStandard() {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {
-            curFontSize = 1;
-            int size = FONT_SIZE[curFontSize];
-            Action a = focusOwner.getActionMap().get("font-size-" + size);
-            if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        null));
-            }
+            setFontSize(DEFAULT_FONT_SIZE);
             enableAction("fontSmaller", true);
             enableAction("fontLarger", true);
         }
+    }
+
+    public void setFontSize(int size) {
+        JComponent focusOwner = getCurrentComponent();
+        Action a = new StyledEditorKit.FontSizeAction("font-size-" + size, size);
+        a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
     }
 
     public void fontBold() {
@@ -664,9 +644,7 @@ public final class ChartMediator extends MenuSupport {
         if (focusOwner != null) {
             Action a = focusOwner.getActionMap().get("font-bold");
             if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        null));
+                a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
             }
         }
     }
@@ -676,9 +654,7 @@ public final class ChartMediator extends MenuSupport {
         if (focusOwner != null) {
             Action a = focusOwner.getActionMap().get("font-italic");
             if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        null));
+                a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
             }
         }
     }
@@ -689,9 +665,7 @@ public final class ChartMediator extends MenuSupport {
         if (focusOwner != null) {
             Action a = focusOwner.getActionMap().get("font-underline");
             if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        null));
+                a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
             }
         }
     }
@@ -701,9 +675,7 @@ public final class ChartMediator extends MenuSupport {
         if (focusOwner != null) {
             Action a = focusOwner.getActionMap().get("left-justify");
             if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        null));
+                a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
             }
         }
     }
@@ -713,9 +685,7 @@ public final class ChartMediator extends MenuSupport {
         if (focusOwner != null) {
             Action a = focusOwner.getActionMap().get("center-justify");
             if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        null));
+                a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
             }
         }
     }
@@ -725,9 +695,7 @@ public final class ChartMediator extends MenuSupport {
         if (focusOwner != null) {
             Action a = focusOwner.getActionMap().get("right-justify");
             if (a != null) {
-                a.actionPerformed(new ActionEvent(focusOwner,
-                        ActionEvent.ACTION_PERFORMED,
-                        null));
+                a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
             }
         }
     }
