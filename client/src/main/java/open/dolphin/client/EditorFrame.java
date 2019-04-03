@@ -33,8 +33,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     private KarteViewer2 view;
     // このフレームに表示する KarteEditor オブジェクト
     private KarteEditor editor;
-    // ToolBar パネル
-    private JPanel myToolPanel;
     // スクローラコンポーネント
     private JScrollPane scroller;
     // Status パネル
@@ -442,17 +440,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         appMenu.setMenuSupports(realChart.getContext().getMenuSupport(), mediator);
         appMenu.build(myMenuBar);
         mediator.registerActions(appMenu.getActionMap());
-        //myToolPanel = appMenu.getToolPanelProduct();
-        //content.add(myToolPanel, BorderLayout.NORTH);
-        JPanel myToolPanel = new JPanel();
-        myToolPanel.setOpaque(false);
-        comPanel.add(myToolPanel);
-
-        //
-        // このクラス固有のToolBarを生成する
-        //
-        ChartToolBar toolBar = new ChartToolBar(this);
-        myToolPanel.add(toolBar);
 
         //statusPanel = new StatusPanel();
 
@@ -526,6 +513,11 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 editor.getUI().scrollRectToVisible(new Rectangle(0, 0, editor.getUI().getWidth(), 50));
             }
         });
+
+        //
+        // このクラス固有のToolBarを生成する
+        //
+        comPanel.add(new ChartToolBar(this));
     }
 
     /**

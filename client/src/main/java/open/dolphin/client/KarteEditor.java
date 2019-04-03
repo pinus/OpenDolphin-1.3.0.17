@@ -298,9 +298,34 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         String selecteIns = Arrays.stream(ins)
                 .filter(i -> Objects.nonNull(i.getGUID()))
                 .filter(i -> i.getGUID().equals(getDocument().getDocInfo().getHealthInsuranceGUID()))
-                .findAny().map(PVTHealthInsuranceModel::toString).orElse(null);
+                .findAny().map(m -> {
+                    StringBuilder sb = new StringBuilder();
+                    String insClass = m.getInsuranceClass();
+                    if (Objects.nonNull(insClass)) {
+                        if (insClass.length() > 2) { insClass = insClass.substring(0, 2); }
+                        sb.append(insClass);
+                    } else {
+                        sb.append("自費");
+                    }
+                    PVTPublicInsuranceItemModel[] pubs = m.getPVTPublicInsuranceItem();
+                    if (Objects.nonNull(pubs)) {
+                        sb.append(" ");
+                        String[] items = Arrays.stream(pubs)
+                                .map(PVTPublicInsuranceItemModel::toString)
+                                .map(str -> str.replaceAll("独自", ""))
+                                .map(str -> str.length() > 2 ? str.substring(0, 2) : str)
+                                .toArray(String[]::new);
+                        sb.append(String.join("・", items));
+                    }
+                    return sb.toString();
+                }).orElse(null);
 
         StringBuilder sb = new StringBuilder();
+        sb.append(getContext().getPatient().getKanaName().replaceAll("　", " "));
+        sb.append("：");
+        sb.append(getContext().getPatient().getPatientId());
+        sb.append(" ");
+
         sb.append(timeStamp);
         if (selecteIns != null) {
             sb.append(" (");
@@ -308,7 +333,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             sb.append(")");
         }
 
-        //timeStampLabel.setText(sb.toString());
         getContext().getFrame().setTitle(sb.toString());
     }
 

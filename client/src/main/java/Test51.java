@@ -102,9 +102,7 @@ public class Test51 {
         }
 
         public void pressed(ActionEvent ae) {
-            Point p = getLocationOnScreen();
-            menu.setLocation(p.x, p.y + getHeight());
-            menu.setVisible(true);
+            menu.show(this, 0, this.getHeight());
             setSelected(false);
         }
 

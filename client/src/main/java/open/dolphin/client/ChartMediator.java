@@ -732,7 +732,7 @@ public final class ChartMediator extends MenuSupport {
         }
     }
 
-    private void colorAction(Color color) {
+    public void colorAction(Color color) {
         JComponent focusOwner = getCurrentComponent();
         if (focusOwner != null) {
             Action a = new StyledEditorKit.ForegroundAction("color", color);
