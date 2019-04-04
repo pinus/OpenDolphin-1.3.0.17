@@ -3,10 +3,8 @@ package open.dolphin.client;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
-import open.dolphin.stampbox.DefaultStampTreeMenuListener;
-import open.dolphin.stampbox.StampBoxPlugin;
-import open.dolphin.stampbox.StampTree;
-import open.dolphin.stampbox.StampTreeMenuBuilder;
+import open.dolphin.stampbox.*;
+import open.dolphin.ui.Focuser;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -16,6 +14,7 @@ import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Mediator (MenuSupport) class to control ChartDocument menus.<br>
@@ -291,11 +290,10 @@ public final class ChartMediator extends MenuSupport {
         //
         JMenu myMenu;
         Object obj = getChartDocumentChain(); // chain の先頭
-        DiagnosisDocument diagnosis = obj instanceof DiagnosisDocument ?
-                (DiagnosisDocument) obj : null;
+        DiagnosisDocument diagnosis = obj instanceof DiagnosisDocument ? (DiagnosisDocument) obj : null;
 
         if (diagnosis == null) {
-            // cjainの先頭がDiagnosisでない場合はメニューを disable にする
+            // chainの先頭がDiagnosisでない場合はメニューを disable にする
             myMenu = new JMenu(stampTree.getTreeName());
             myMenu.setEnabled(false);
 
@@ -307,6 +305,35 @@ public final class ChartMediator extends MenuSupport {
             builder.build(myMenu);
         }
         return myMenu;
+    }
+
+    /**
+     * 引数のポップアップメニューへ傷病名メニューを追加する.
+     *
+     * @param popup 傷病名メニューを追加するポップアップメニュー
+     */
+    public void addDiseaseMenu(JPopupMenu popup) {
+        //
+        // Chain の ChartDocument層 が DiagnosisDocument の時のみ追加する
+        //
+        Object obj = getChartDocumentChain();
+        DiagnosisDocument diagnosis = obj instanceof DiagnosisDocument ? (DiagnosisDocument) obj : null;
+
+        StampTree stampTree = getStampBox().getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
+
+        if (stampTree != null) {
+
+            if (diagnosis == null) {
+                JMenu myMenu = new JMenu(stampTree.getTreeName());
+                myMenu.setEnabled(false);
+                popup.add(myMenu);
+
+            } else {
+                StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
+                builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(diagnosis.getDiagnosisTable()));
+                builder.build(popup);
+            }
+        }
     }
 
     /**
@@ -363,78 +390,6 @@ public final class ChartMediator extends MenuSupport {
     }
 
     /**
-     * スタンプメニューを構築する.
-     *
-     * @param stampTree StampTree
-     */
-    private JMenu createStampMenu(StampTree stampTree) {
-        //
-        // chain の先頭が KarteEditor でかつ Pane が編集可の場合のみメニューが使える
-        //
-        boolean enabled = false;
-
-        KartePane kartePane = null;
-        Object obj = getChartDocumentChain();
-
-        if (obj instanceof KarteEditor) {
-            KarteEditor editor = (KarteEditor) obj;
-            kartePane = editor.getPPane();
-            if (kartePane != null) {
-                enabled = kartePane.getTextPane().isEditable();
-            }
-        }
-
-        JMenu myMenu = null;
-
-        if (!enabled) {
-            myMenu = new JMenu(stampTree.getTreeName());
-            myMenu.setEnabled(false);
-
-        } else if (kartePane != null) {
-            // StampTree，JTextPane，Handler からメニューを構築する
-            StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
-            builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(kartePane.getTextPane()));
-            myMenu = new JMenu();
-            builder.build(myMenu);
-        }
-
-        return myMenu;
-    }
-
-    /**
-     * 引数のポップアップメニューへ傷病名メニューを追加する.
-     *
-     * @param popup 傷病名メニューを追加するポップアップメニュー
-     */
-    public void addDiseaseMenu(JPopupMenu popup) {
-        //
-        // Chain の ChartDocument層 が DiagnosisDocument の時のみ追加する
-        //
-        DiagnosisDocument diagnosis = null;
-        Object obj = getChartDocumentChain();
-
-        if (obj instanceof DiagnosisDocument) {
-            diagnosis = (DiagnosisDocument) obj;
-        }
-
-        StampTree stampTree = getStampBox().getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
-
-        if (stampTree != null) {
-
-            if (diagnosis == null) {
-                JMenu myMenu = new JMenu(stampTree.getTreeName());
-                myMenu.setEnabled(false);
-                popup.add(myMenu);
-
-            } else {
-                StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
-                builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(diagnosis.getDiagnosisTable()));
-                builder.build(popup);
-            }
-        }
-    }
-
-    /**
      * 引数のポップアップメニューへテキストメニューを追加する.
      *
      * @param popup テキストメニューを追加するポップアップメニュー
@@ -476,6 +431,45 @@ public final class ChartMediator extends MenuSupport {
                 }
             }
         }
+    }
+
+    /**
+     * スタンプメニューを構築する.
+     *
+     * @param stampTree StampTree
+     */
+    private JMenu createStampMenu(StampTree stampTree) {
+        //
+        // chain の先頭が KarteEditor でかつ Pane が編集可の場合のみメニューが使える
+        //
+        boolean enabled = false;
+
+        KartePane kartePane = null;
+        Object obj = getChartDocumentChain();
+
+        if (obj instanceof KarteEditor) {
+            KarteEditor editor = (KarteEditor) obj;
+            kartePane = editor.getPPane();
+            if (kartePane != null) {
+                enabled = kartePane.getTextPane().isEditable();
+            }
+        }
+
+        JMenu myMenu = null;
+
+        if (!enabled) {
+            myMenu = new JMenu(stampTree.getTreeName());
+            myMenu.setEnabled(false);
+
+        } else if (kartePane != null) {
+            // StampTree，JTextPane，Handler からメニューを構築する
+            StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
+            builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(kartePane.getTextPane()));
+            myMenu = new JMenu();
+            builder.build(myMenu);
+        }
+
+        return myMenu;
     }
 
     /**
@@ -524,6 +518,42 @@ public final class ChartMediator extends MenuSupport {
         if (enabled) {
             addStampMenu(popup, kartePane);
         }
+    }
+
+    /**
+     * search pattern に一致した diagnosis の popup menu を作る.
+     *
+     * @param searchPattern 検索パターン
+     * @param listener メニューが選択された場合に通知するリスナ
+     * @return JPopupMenu
+     */
+    public JPopupMenu createDiagnosisPopup(String searchPattern, StampTreeMenuListener listener) {
+
+        StampTree tree = getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
+        StampTreeMenuBuilder builder = new StampTreeMenuBuilder(tree, searchPattern);
+        builder.addStampTreeMenuListener(listener);
+
+        JPopupMenu popup = new JPopupMenu();
+        builder.buildRootless(popup);
+        return popup;
+    }
+
+    /**
+     * search pattern に一致した全スタンプの popup menu を作る.
+     *
+     * @param searchPattern 検索パターン
+     * @param listener メニューが選択された場合に通知するリスナ
+     * @return JPopupMenu
+     */
+    public JPopupMenu createAllStampPopup(String searchPattern, StampTreeMenuListener listener) {
+        List<StampTree> allTrees = getStampBox().getAllTrees();
+        StampTreeMenuBuilder builder = new StampTreeMenuBuilder(allTrees, searchPattern);
+        builder.addStampTreeMenuListener(listener);
+
+
+        JPopupMenu popup = new JPopupMenu();
+        builder.buildRootless(popup);
+        return popup;
     }
 
     /**
@@ -741,6 +771,15 @@ public final class ChartMediator extends MenuSupport {
     }
 
     public void searchStamp() {
-        System.out.println("---- searchStamp TODO ----");
+        ChartImpl chart = ChartImpl.getAllChart().stream().filter(c -> c.getFrame().isActive()).findAny().orElse(null);
+        if (Objects.nonNull(chart)) {
+            Focuser.requestFocus(chart.getStampSearchField());
+            return;
+        }
+
+        EditorFrame frame = EditorFrame.getAllEditorFrames().stream().filter(f -> f.getFrame().isActive()).findAny().orElse(null);
+        if (Objects.nonNull(frame)) {
+            Focuser.requestFocus(frame.getChartToolBar().getStampSearchField());
+        }
     }
 }

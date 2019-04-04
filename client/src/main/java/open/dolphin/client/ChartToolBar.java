@@ -1,9 +1,6 @@
 package open.dolphin.client;
 
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.stampbox.StampBoxPlugin;
-import open.dolphin.stampbox.StampTree;
-import open.dolphin.stampbox.StampTreeMenuBuilder;
 import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.PNSToggleButton;
@@ -14,6 +11,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
 /**
@@ -38,6 +36,8 @@ public class ChartToolBar extends JToolBar {
     private JustifyButton rightJustify;
 
     private JComboBox<Integer> sizeCombo;
+    private CompletableSearchField stampSearchField;
+
     private boolean pause = false;
 
     public ChartToolBar(final EditorFrame chart) {
@@ -59,14 +59,14 @@ public class ChartToolBar extends JToolBar {
         setBorderPainted(false);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
-        add(Box.createHorizontalStrut(10));
+        add(Box.createHorizontalStrut(4));
         add(createFontPanel());
         add(createSizePanel());
         add(Box.createHorizontalStrut(24));
         add(createJustifyPanel());
         add(Box.createHorizontalStrut(24));
         add(createDiagnosisSearchPanel());
-        add(Box.createHorizontalStrut(10));
+        add(Box.createHorizontalStrut(4));
     }
 
     /**
@@ -350,46 +350,77 @@ public class ChartToolBar extends JToolBar {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-        CompletableSearchField keywordFld = new CompletableSearchField(30);
-        keywordFld.setLabel("病名検索");
-        keywordFld.setPreferences(prefs);
-        keywordFld.putClientProperty("Quaqua.TextField.style", "search");
-        keywordFld.setPreferredSize(new Dimension(10, 26));
-        keywordFld.addActionListener(e -> {
-            String text = keywordFld.getText();
+        stampSearchField = new CompletableSearchField(30);
+        stampSearchField.setLabel("スタンプ検索");
+        stampSearchField.setPreferences(prefs);
+        stampSearchField.putClientProperty("Quaqua.TextField.style", "search");
+        stampSearchField.setPreferredSize(new Dimension(10, 26));
+        stampSearchField.addActionListener(e -> {
+            String text = stampSearchField.getText();
 
             if (text != null && !text.equals("")) {
-                JPopupMenu popup = new JPopupMenu();
-                String pattern = ".*" + keywordFld.getText() + ".*";
+                String pattern = ".*" + stampSearchField.getText() + ".*";
 
-                StampBoxPlugin stampBox = mediator.getStampBox();
-                StampTree tree = stampBox.getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
+                JPopupMenu popup = mediator.createAllStampPopup(pattern, ev -> {
 
-                StampTreeMenuBuilder builder = new StampTreeMenuBuilder(tree, pattern);
-                //builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(realChart.getDiagnosisDocument().getDiagnosisTable()));
-                builder.addStampTreeMenuListener(ev -> {
-                    JComponent c = ((ChartImpl)editorFrame.getChart()).getDiagnosisDocument().getDiagnosisTable();
-                    TransferHandler handler = c.getTransferHandler();
-                    handler.importData(c, ev.getTransferable());
+                    JComponent c = null;
+                    switch (ev.getEntity()) {
+                        case IInfoModel.ENTITY_DIAGNOSIS:
+                            c = ((ChartImpl) editorFrame.getChart()).getDiagnosisDocument().getDiagnosisTable();
+                            break;
+
+                        case IInfoModel.ENTITY_TEXT:
+                            c = mediator.getCurrentComponent();
+                            break;
+
+                        default:
+//                        case IInfoModel.ENTITY_PATH:
+//                        case IInfoModel.ENTITY_GENERAL_ORDER:
+//                        case IInfoModel.ENTITY_OTHER_ORDER:
+//                        case IInfoModel.ENTITY_TREATMENT:
+//                        case IInfoModel.ENTITY_SURGERY_ORDER:
+//                        case IInfoModel.ENTITY_RADIOLOGY_ORDER:
+//                        case IInfoModel.ENTITY_LABO_TEST:
+//                        case IInfoModel.ENTITY_PHYSIOLOGY_ORDER:
+//                        case IInfoModel.ENTITY_BACTERIA_ORDER:
+//                        case IInfoModel.ENTITY_INJECTION_ORDER:
+//                        case IInfoModel.ENTITY_MED_ORDER:
+//                        case IInfoModel.ENTITY_BASE_CHARGE_ORDER:
+//                        case IInfoModel.ENTITY_INSTRACTION_CHARGE_ORDER:
+                            c = editorFrame.getEditor().getPPane().getTextPane();
+                            break;
+                    }
+
+                    if (Objects.nonNull(c)) {
+                        TransferHandler handler = c.getTransferHandler();
+                        handler.importData(c, ev.getTransferable());
+                    }
+
                     // transfer 後にキーワードフィールドをクリアする
-                    keywordFld.setText("");
+                    stampSearchField.setText("");
                 });
-                builder.buildRootless(popup);
 
                 if (popup.getComponentCount() != 0) {
-                    Point loc = keywordFld.getLocation();
-                    popup.show(keywordFld.getParent(), loc.x, loc.y + keywordFld.getHeight());
+                    popup.show(stampSearchField, 0, stampSearchField.getHeight());
                 }
             }
         });
 
         // ctrl-return でもリターンキーの notify-field-accept が発生するようにする
-        InputMap map = keywordFld.getInputMap();
+        InputMap map = stampSearchField.getInputMap();
         Object value = map.get(KeyStroke.getKeyStroke("ENTER"));
         map.put(KeyStroke.getKeyStroke("ctrl ENTER"), value);
 
-        panel.add(keywordFld);
+        panel.add(stampSearchField);
 
         return panel;
+    }
+
+    /**
+     * stamp search field を返す.
+     * @return stamp search field
+     */
+    public CompletableSearchField getStampSearchField() {
+        return stampSearchField;
     }
 }

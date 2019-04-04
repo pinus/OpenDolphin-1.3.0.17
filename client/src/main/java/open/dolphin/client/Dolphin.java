@@ -525,8 +525,8 @@ public class Dolphin implements MainWindow {
         }
 
         // EditorFrameのチェックを行う
-        List<Chart> allEditorFrames = EditorFrame.getAllEditorFrames();
-        for (Chart chart : allEditorFrames) {
+        List<EditorFrame> allEditorFrames = EditorFrame.getAllEditorFrames();
+        for (EditorFrame chart : allEditorFrames) {
             if (chart.isDirty()) {
                 dirty = true;
                 dirtyChart = chart;
@@ -813,6 +813,7 @@ public class Dolphin implements MainWindow {
      */
     public void showWaitingList() {
         // Search field に focus させるためのトリック
+        windowSupport.getFrame().toFront();
         tabbedPane.setSelectedIndex(1);
         tabbedPane.setSelectedIndex(0);
     }
@@ -823,6 +824,7 @@ public class Dolphin implements MainWindow {
      */
     public void showPatientSearch() {
         // Search field に focus させるためのトリック
+        windowSupport.getFrame().toFront();
         tabbedPane.setSelectedIndex(0);
         tabbedPane.setSelectedIndex(1);
     }
