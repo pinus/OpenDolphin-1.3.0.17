@@ -142,7 +142,7 @@ public class KarteViewer2 extends AbstractChartDocument implements Comparable<Ka
 
             if (showModified && Objects.nonNull(parent)) {
                 timeStamp.append(" [");
-                timeStamp.append(UPDATE_MARK); // update マーク
+                timeStamp.append(MODIFY_MARK); // update マーク
                 timeStamp.append(modifyDate);
                 timeStamp.append("]");
             }

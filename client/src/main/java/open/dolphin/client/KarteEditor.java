@@ -15,6 +15,8 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.print.PageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -264,14 +266,14 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
      */
     private void displayModel() {
         // Timestamp を表示する
-        String now = DateUtils.todayToIsoDate();
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日(E) hh:mm"));
         String timeStamp;
 
         if (modify) {
             String firstConfirm = ModelUtils.getDateAsFormatString(getDocument().getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
-            timeStamp = String.format("%s%s [%s]", UPDATE_MARK, now, firstConfirm);
+            timeStamp = String.format("%s%s [%s]", MODIFY_MARK, now, firstConfirm);
         } else {
-            timeStamp = now;
+            timeStamp = ADD_MARK + now;
         }
 
         // 内容を表示する

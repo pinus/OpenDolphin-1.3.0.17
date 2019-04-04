@@ -16,7 +16,8 @@ import java.awt.*;
  */
 public abstract class AbstractChartDocument implements ChartDocument {
 
-    public static final String UPDATE_MARK = "Ⓤ";
+    public static final String ADD_MARK = "Ⓐ";
+    public static final String MODIFY_MARK = "Ⓜ";
 
     private static final String[] CHART_MENUS = {
             GUIConst.ACTION_OPEN_KARTE, GUIConst.ACTION_SAVE, GUIConst.ACTION_DELETE, GUIConst.ACTION_PRINT, GUIConst.ACTION_MODIFY_KARTE,
