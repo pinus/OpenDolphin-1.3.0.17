@@ -28,7 +28,7 @@ public class StampDelegater extends BusinessDelegater<StampService> {
      * User 個人のものとサブスクライブしている PublishedTree を混ぜて入れる
      *
      * @param userPk ログインユーザの primary key
-     * @return
+     * @return List of StampTreeBean
      */
     public List<StampTreeBean> getTrees(long userPk) {
         List<StampTreeBean> treeList = new ArrayList<>();
@@ -48,7 +48,7 @@ public class StampDelegater extends BusinessDelegater<StampService> {
     /**
      * 個人用の StampTree を保存し公開する.
      *
-     * @param model
+     * @param model PublishedTreeModel
      * @return 引数で持ってきた PersonalTreeModel の primary key
      */
     public long publishTree(PublishedTreeModel model) {
@@ -79,7 +79,7 @@ public class StampDelegater extends BusinessDelegater<StampService> {
      * 公開 Tree をサブスクライブする.
      *
      * @param subscribeList サブスクライブする SubscribedTreeModel の List
-     * @return
+     * @return サブスクライブされた SubscribedTreeModel pk の List
      */
     public List<Long> subscribeTrees(List<SubscribedTreeModel> subscribeList) {
         return getService().subscribeTreeList(subscribeList);
@@ -89,7 +89,7 @@ public class StampDelegater extends BusinessDelegater<StampService> {
      * 公開 Tree をアンサブスクライブする.
      *
      * @param removeList アンサブスクライブする PublishedTree の Id リスト
-     * @return
+     * @return unsubscribed number
      */
     public int unsubscribeTrees(List<SubscribedTreeModel> removeList) {
         return getService().unsubscribeTreeList(removeList);
