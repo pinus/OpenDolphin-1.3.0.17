@@ -192,6 +192,7 @@
                                 <copy todir="${distdir}/OpenDolphin.app/Contents/Java/schema">
                                     <fileset dir="${basedir}/schema"/>
                                 </copy>
+                                <mkdir dir="${distdir}/OpenDolphin.app/Contents/Resources/Japanese.lproj" />
 
                             </target>
                         </configuration>
