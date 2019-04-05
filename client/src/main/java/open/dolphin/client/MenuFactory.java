@@ -502,9 +502,9 @@ public class MenuFactory {
         JMenu tool = createMenu("ツール", GUIConst.ACTION_TOOL_MENU);
         tool.add(createMenuItem("スタンプ検索", GUIConst.ACTION_SEARCH_STAMP, "shift F"));
         tool.add(createMenuItem("受付リスト", GUIConst.ACTION_SHOW_WAITING_LIST, "1"));
-        tool.add(createMenuItem("患者検索", GUIConst.ACTION_SHOW_PATIENT_SEARCH, "2"));
-        tool.add(createMenuItem("スタンプ箱", GUIConst.ACTION_SHOW_STAMPBOX, "3"));
-        tool.add(createMenuItem("シェーマ箱", GUIConst.ACTION_SHOW_SCHEMABOX, "4"));
+        tool.add(createMenuItem("シェーマ箱", GUIConst.ACTION_SHOW_SCHEMABOX, "2"));
+        tool.add(createMenuItem("患者検索", GUIConst.ACTION_SHOW_PATIENT_SEARCH, "3"));
+        tool.add(createMenuItem("スタンプ箱", GUIConst.ACTION_SHOW_STAMPBOX, "4"));
         tool.addSeparator();
         tool.add(createMenuItem("プロフィール変更", GUIConst.ACTION_CHANGE_PASSWORD));
         tool.add(createMenuItem("院内ユーザー登録", GUIConst.ACTION_ADD_USER));

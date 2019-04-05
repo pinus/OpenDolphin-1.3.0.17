@@ -267,13 +267,11 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
     private void displayModel() {
         // Timestamp を表示する
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年M月d日(E) HH:mm"));
-        String timeStamp;
+        String timeStamp = MODIFY_MARK + now;
 
         if (modify) {
             String firstConfirm = ModelUtils.getDateAsFormatString(getDocument().getDocInfo().getFirstConfirmDate(), IInfoModel.KARTE_DATE_FORMAT);
-            timeStamp = String.format("%s%s [%s]", MODIFY_MARK, now, firstConfirm);
-        } else {
-            timeStamp = ADD_MARK + now;
+            timeStamp += ORIGINAL_MARK + firstConfirm;
         }
 
         // 内容を表示する
