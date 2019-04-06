@@ -10,6 +10,8 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.geom.AffineTransform;
 import java.util.Objects;
 import java.util.prefs.Preferences;
@@ -74,20 +76,32 @@ public class ChartToolBar extends JToolBar {
      */
     private void connect() {
 
+        TODO
+        boldButton.addItemListener(new MyItemListener() {
+            @Override
+            public void job() {
+                mediator.fontBold();
+            }
+        });
+
         boldButton.addActionListener(e -> {
+            if (pause) { return; }
             mediator.fontBold();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
         italicButton.addActionListener(e -> {
+            if (pause) { return; }
             mediator.fontItalic();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
         underlineButton.addActionListener(e -> {
+            if (pause) { return; }
             mediator.fontUnderline();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
 
         colorButton.addActionListener(e -> {
+            if (pause) { return; }
             ColorButton b = (ColorButton) e.getSource();
             JPopupMenu menu = new JPopupMenu();
             ColorChooserComp chooser = new ColorChooserComp();
@@ -104,14 +118,17 @@ public class ChartToolBar extends JToolBar {
         });
 
         leftJustify.addActionListener(e -> {
+            if (pause) { return; }
             mediator.leftJustify();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
         centerJustify.addActionListener(e -> {
+            if (pause) { return; }
             mediator.centerJustify();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
         rightJustify.addActionListener(e -> {
+            if (pause) { return; }
             mediator.rightJustify();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
@@ -125,9 +142,13 @@ public class ChartToolBar extends JToolBar {
 
         // caret を listen してボタンを制御する
         CaretListener caretListener = e -> {
+
             JTextPane pane = (JTextPane)e.getSource();
             int p = pane.getSelectionStart() - 1;
             AttributeSet a = pane.getStyledDocument().getCharacterElement(p).getAttributes();
+
+            // feedback 中は ActionEvent を抑制する
+            pause = true;
 
             boldButton.setSelected(StyleConstants.isBold(a));
             italicButton.setSelected(StyleConstants.isItalic(a));
@@ -140,12 +161,25 @@ public class ChartToolBar extends JToolBar {
             rightJustify.setSelected(align == StyleConstants.ALIGN_RIGHT);
 
             int size = StyleConstants.getFontSize(a);
-            pause = true;
             sizeCombo.setSelectedItem(size);
+
             SwingUtilities.invokeLater(() -> pause = false);
         };
         editorFrame.getEditor().getSOAPane().getTextPane().addCaretListener(caretListener);
         editorFrame.getEditor().getPPane().getTextPane().addCaretListener(caretListener);
+    }
+
+    private abstract class MyItemListener implements ItemListener {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (pause) { return; }
+            job();
+            Focuser.requestFocus(mediator.getCurrentComponent());
+        }
+
+        public void job() {
+
+        }
     }
 
     /**
