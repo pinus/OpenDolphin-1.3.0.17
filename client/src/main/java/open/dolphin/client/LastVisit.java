@@ -1,14 +1,20 @@
 package open.dolphin.client;
 
-import open.dolphin.util.MMLDate;
+import open.dolphin.infomodel.DocInfoModel;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
- * LastVisit. Chart#getkarte().getPvtDateEntry() から最終受診日を調べる.
+ * LastVisit. {@code Chart#getkarte().getPvtDateEntry()} から最終受診日を調べる.
  * このメソッドは KarteEditor を開いて閉じると, あとは null を返すようになるので，
  * ChartImpl が開かれたときにインスタンス作って使い回しする.
  * <p>
@@ -19,57 +25,59 @@ import java.util.List;
  */
 public class LastVisit {
 
+    // Chart
     private Chart context;
-    // 最新受診日の GregorianCalendar
-    private GregorianCalendar lastVisitGC = null;
-    // 最終受診日の時間なし ISO_DATE 形式
-    private String lastVisitIso = null;
-    // 今日の受診を除く最終受診日の GregorianCalendar
-    private GregorianCalendar lastVisitInHistoryGc = null;
-    // 今日の受診を除く最終受診日の時間なし ISO_DATE 形式
-    private String lastVisitInHistoryIso = null;
+    // 最終受診日
+    private LocalDate lastVisit = null;
+    // DocumentHistory の最終受診日
+    private LocalDate lastVisitInHistory = null;
     // ロガー
     private Logger logger = Logger.getLogger(LastVisit.class);
 
     public LastVisit(Chart context) {
         this.context = context;
-
-        // ISO_DATE_TIME 形式の受診歴リスト
-        List<String> list = context.getKarte().getPvtDateEntry();
-        if (list == null || list.isEmpty()) { return; }
-
-        list.sort(Comparator.naturalOrder());
-        String isoDateTime = list.get(list.size() - 1); // 最後の要素
-        lastVisitIso = MMLDate.trimTime(isoDateTime);
-        lastVisitGC = MMLDate.getCalendar(isoDateTime);
-
-        // lastVisit が今日なら今日を取り除く
-        String today = MMLDate.getDate();
-        if (today.equals(lastVisitIso)) { list.remove(list.size() - 1); }
-        if (list.isEmpty()) { return; }
-
-        // 今日の受診より１回前の受診
-        isoDateTime = list.get(list.size() - 1);
-        lastVisitInHistoryIso = MMLDate.trimTime(isoDateTime);
-        lastVisitInHistoryGc = MMLDate.getCalendar(isoDateTime);
     }
 
     /**
-     * 今日を除いた最終受診日（int 配列形式 int[0]=year, int[1]=month(0～11), int[2]=day）
+     * DocumentHistory inspector の updateHistory から呼んでもらって update する.
      *
-     * @return { year, month, day }
+     * @param docInfoModels List of DocInfoModel
      */
-    public int[] getLastVisitInHistoryYmd() {
-        return MMLDate.getCalendarYMD(lastVisitInHistoryIso);
+    public void update(List<DocInfoModel> docInfoModels) {
+        String pvtDate = context.getPatientVisit().getPvtDate();
+        logger.debug("pvt date = " + pvtDate);
+
+        // ISO_DATE 型式のリスト
+        List<String> docList = docInfoModels.stream()
+                .map(DocInfoModel::getFirstConfirmDateTrimTime)
+                .sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        logger.debug("doc list = " + docList);
+
+        lastVisitInHistory = docList.isEmpty() ? null
+                : LocalDate.parse(docList.get(0), DateTimeFormatter.ISO_DATE);
+
+        lastVisit = Objects.isNull(pvtDate) ? lastVisitInHistory
+                : LocalDate.parse(pvtDate, DateTimeFormatter.ISO_DATE_TIME);
     }
 
     /**
-     * 最終受診日を時間なしの mmlDate 形式（2008-02-01）で返す
+     * 最終受診日を返す.
      *
-     * @return ISO_DATE
+     * @return last visit in LocalDateTime
      */
-    public String getLastVisit() {
-        return lastVisitIso;
+    @Nullable
+    public LocalDate getLastVisit() {
+        return lastVisit;
+    }
+
+    /**
+     * 今日を除いた最終受診日を返す.
+     *
+     * @return last visit in LocalDateTime
+     */
+    @Nullable
+    public LocalDate getLastVisitInHistory() {
+        return lastVisitInHistory;
     }
 
     /**
@@ -77,8 +85,25 @@ public class LastVisit {
      *
      * @return { year, month, day }
      */
+    @Nullable
     public int[] getLastVisitYmd() {
-        return MMLDate.getCalendarYMD(lastVisitIso);
+        return Objects.isNull(lastVisit) ? null :
+                new int[]{lastVisit.getYear(),
+                        lastVisit.getMonthValue() - 1,
+                        lastVisit.getDayOfMonth()};
+    }
+
+    /**
+     * 今日を除いた最終受診日（int 配列形式 int[0]=year, int[1]=month(0～11), int[2]=day）
+     *
+     * @return { year, month, day }
+     */
+    @Nullable
+    public int[] getLastVisitInHistoryYmd() {
+        return Objects.isNull(lastVisitInHistory) ? null :
+                new int[]{lastVisitInHistory.getYear(),
+                        lastVisitInHistory.getMonthValue() - 1,
+                        lastVisitInHistory.getDayOfMonth()};
     }
 
     /**
@@ -86,7 +111,9 @@ public class LastVisit {
      *
      * @return GregorianCalendar
      */
+    @Nullable
     public GregorianCalendar getLastVisitGc() {
-        return lastVisitGC;
+        return Objects.isNull(lastVisit) ? null :
+                GregorianCalendar.from(lastVisit.atStartOfDay(ZoneId.systemDefault()));
     }
 }

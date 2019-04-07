@@ -558,9 +558,9 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
         List<RegisteredDiagnosisModel> ret;
 
-        // 疾患開始日を指定している
+        // ended が未設定 or 検索開始日より ended が新しいものを採択 (検索開始日より前に終了した病名を捨てる)
         if (spec.getFromDate() != null) {
-            ret = em.createQuery("select r from RegisteredDiagnosisModel r where r.karte.id = :karteId and r.started >= :fromDate", RegisteredDiagnosisModel.class)
+            ret = em.createQuery("select r from RegisteredDiagnosisModel r where r.karte.id = :karteId and (r.ended is null or r.ended >= :fromDate)", RegisteredDiagnosisModel.class)
                     .setParameter("karteId", spec.getKarteId())
                     .setParameter("fromDate", spec.getFromDate()).getResultList();
         } else {

@@ -357,9 +357,10 @@ public class DocumentHistory implements IInspector {
 
         // 文書履歴テーブルにデータを設定する
         tableModel.setObjectList(newHistory);
-
         // 束縛プロパティの通知を行う -> DocumetnBridgeImpl
         updateListener.updated(editDate);
+        // LastVisit update
+        context.getLastVisit().update(newHistory);
 
         if (newHistory != null && !newHistory.isEmpty()) {
             int historySize = newHistory.size();

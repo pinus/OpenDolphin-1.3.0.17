@@ -10,8 +10,6 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.geom.AffineTransform;
 import java.util.Objects;
 import java.util.prefs.Preferences;
@@ -76,24 +74,18 @@ public class ChartToolBar extends JToolBar {
      */
     private void connect() {
 
-        TODO
-        boldButton.addItemListener(new MyItemListener() {
-            @Override
-            public void job() {
-                mediator.fontBold();
-            }
-        });
-
         boldButton.addActionListener(e -> {
             if (pause) { return; }
             mediator.fontBold();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
+
         italicButton.addActionListener(e -> {
             if (pause) { return; }
             mediator.fontItalic();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
+
         underlineButton.addActionListener(e -> {
             if (pause) { return; }
             mediator.fontUnderline();
@@ -122,11 +114,13 @@ public class ChartToolBar extends JToolBar {
             mediator.leftJustify();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
+
         centerJustify.addActionListener(e -> {
             if (pause) { return; }
             mediator.centerJustify();
             Focuser.requestFocus(mediator.getCurrentComponent());
         });
+
         rightJustify.addActionListener(e -> {
             if (pause) { return; }
             mediator.rightJustify();
@@ -167,19 +161,6 @@ public class ChartToolBar extends JToolBar {
         };
         editorFrame.getEditor().getSOAPane().getTextPane().addCaretListener(caretListener);
         editorFrame.getEditor().getPPane().getTextPane().addCaretListener(caretListener);
-    }
-
-    private abstract class MyItemListener implements ItemListener {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            if (pause) { return; }
-            job();
-            Focuser.requestFocus(mediator.getCurrentComponent());
-        }
-
-        public void job() {
-
-        }
     }
 
     /**
