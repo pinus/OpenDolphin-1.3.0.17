@@ -359,8 +359,6 @@ public class DocumentHistory implements IInspector {
         tableModel.setObjectList(newHistory);
         // 束縛プロパティの通知を行う -> DocumetnBridgeImpl
         updateListener.updated(editDate);
-        // LastVisit update
-        context.getLastVisit().update(newHistory);
 
         if (newHistory != null && !newHistory.isEmpty()) {
             int historySize = newHistory.size();
@@ -403,6 +401,9 @@ public class DocumentHistory implements IInspector {
             }
 
             selectionModel.setValueIsAdjusting(false);
+
+            // LastVisit update
+            context.getLastVisit().update(newHistory);
 
         } else {
             // カルテが見つかるまで抽出期間を自動的に延ばす

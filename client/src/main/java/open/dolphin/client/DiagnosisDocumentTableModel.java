@@ -7,7 +7,6 @@ import open.dolphin.infomodel.DiagnosisOutcomeModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.ObjectReflectTableModel;
-import open.dolphin.util.MMLDate;
 
 import java.awt.*;
 import java.beans.PropertyChangeSupport;
@@ -23,12 +22,12 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     private static final long serialVersionUID = 1L;
 
     private final boolean isReadOnly;
-    private final int[] lastVisitYmd = new int[3];
     private final PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());
     // undo/redo 用 map（rd ごとに queue を作っておく）
     private final Map<Integer, Deque<DiagnosisLiteModel>> undoMap = new HashMap<>();
     private final Map<Integer, Deque<DiagnosisLiteModel>> redoMap = new HashMap<>();
     private DiagnosisDocumentTable diagTable;
+    private LastVisit lastVisit;
 
     public DiagnosisDocumentTableModel(List<PNSTriple<String, Class<?>, String>> triples, boolean readOnly) {
         super(triples);
@@ -39,17 +38,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
         return boundSupport;
     }
 
-    public void setLastVisit(int[] lastVisit) {
-        // 文書抽出期間 < 診断抽出期間の時，lastVisit が null になる
-        if (lastVisit == null) {
-            GregorianCalendar g = new GregorianCalendar();
-            lastVisitYmd[0] = g.get(Calendar.YEAR);
-            lastVisitYmd[1] = g.get(Calendar.MONTH);
-            lastVisitYmd[2] = g.get(Calendar.DATE);
-        } else {
-            System.arraycopy(lastVisit, 0, lastVisitYmd, 0, 3);
-        }
-    }
+    public void setLastVisit(LastVisit lastVisit) { this.lastVisit = lastVisit; }
 
     public void setDiagTable(DiagnosisDocumentTable table) {
         diagTable = table;
@@ -171,9 +160,8 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                 DiagnosisOutcomeModel dom = (DiagnosisOutcomeModel) value;
                 test = dom.getOutcome();
                 test = test != null && (!test.equals("")) ? test : null;
-                if (saveOutcome != null) {
                     if (test != null) {
-                        if (!saveOutcome.equals(test)) {
+                        if (Objects.isNull(saveOutcome) || !saveOutcome.equals(test)) {
                             // undo 用に保存
                             offerQueue(undoMap, rd);
                             rd.setOutcome(dom.getOutcome());
@@ -183,13 +171,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                             if (Project.getPreferences().getBoolean("autoOutcomeInput", false)) {
                                 String val = rd.getEndDate();
                                 if (val == null || val.equals("")) {
-                                    // 転帰日の自動入力の基準日を，lastVisit にする
-                                    GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
-                                    int offset = Project.getPreferences().getInt(Project.OFFSET_OUTCOME_DATE, -7);
-                                    gc.add(Calendar.DAY_OF_MONTH, offset);
-                                    gc.add(Calendar.DAY_OF_MONTH, offset);
-                                    String today = MMLDate.getDate(gc);
-                                    rd.setEndDate(today);
+                                    rd.setEndDate(lastVisit.getDiagnosisOutcomeDate(rd.getStartDate()));
                                 }
                             }
                             update(row, rd);
@@ -206,28 +188,6 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
 
                         insert(newRd);
                     }
-                } else {
-                    if (test != null) {
-                        // undo 用に保存
-                        offerQueue(undoMap, rd);
-                        rd.setOutcome(dom.getOutcome());
-                        rd.setOutcomeDesc(dom.getOutcomeDesc());
-                        rd.setOutcomeCodeSys(dom.getOutcomeCodeSys());
-                        // 疾患終了日を入れる
-                        if (Project.getPreferences().getBoolean("autoOutcomeInput", false)) {
-                            String val = rd.getEndDate();
-                            if (val == null || val.equals("")) {
-                                // 転帰日の自動入力の基準日を，lastVisit にする
-                                GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
-                                int offset = Project.getPreferences().getInt(Project.OFFSET_OUTCOME_DATE, -7);
-                                gc.add(Calendar.DAY_OF_MONTH, offset);
-                                String today = MMLDate.getDate(gc);
-                                rd.setEndDate(today);
-                            }
-                        }
-                        update(row, rd);
-                    }
-                }
                 break;
 
             case DiagnosisDocument.START_DATE_COL:

@@ -1,12 +1,15 @@
 package open.dolphin.client;
 
 import open.dolphin.infomodel.DocInfoModel;
+import open.dolphin.project.Project;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -14,11 +17,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * LastVisit. {@code Chart#getkarte().getPvtDateEntry()} から最終受診日を調べる.
- * このメソッドは KarteEditor を開いて閉じると, あとは null を返すようになるので，
- * ChartImpl が開かれたときにインスタンス作って使い回しする.
- * <p>
- * 今日受診していたら今日の日付, 今日受診していない場合は History の最終受診日になる.
+ * 最終受診日計算.
+ * 今日受診していたら今日, 今日受診していない場合は History の最終受診日になる.
  * 今日受診していても，History の最終受診日を知りたい場合は InHistory を使う.
  *
  * @author pns
@@ -36,6 +36,7 @@ public class LastVisit {
 
     public LastVisit(Chart context) {
         this.context = context;
+        logger.setLevel(Level.DEBUG);
     }
 
     /**
@@ -53,11 +54,44 @@ public class LastVisit {
                 .sorted(Comparator.reverseOrder()).collect(Collectors.toList());
         logger.debug("doc list = " + docList);
 
-        lastVisitInHistory = docList.isEmpty() ? null
-                : LocalDate.parse(docList.get(0), DateTimeFormatter.ISO_DATE);
+        if (docList.isEmpty()) {
+            // 新患でまだ保存していない状態 = pvtDate は null ではありえない
+            lastVisit = LocalDate.parse(pvtDate, DateTimeFormatter.ISO_DATE_TIME);
+            lastVisitInHistory = null;
 
-        lastVisit = Objects.isNull(pvtDate) ? lastVisitInHistory
-                : LocalDate.parse(pvtDate, DateTimeFormatter.ISO_DATE_TIME);
+        } else {
+            LocalDate test = LocalDate.parse(docList.get(0), DateTimeFormatter.ISO_DATE);
+            if (Objects.isNull(pvtDate)) {
+                // 今日の受診がなくて docList が空ではない
+                lastVisit = lastVisitInHistory = test;
+            } else {
+                // 今日の受診がある
+                lastVisit = LocalDate.parse(pvtDate, DateTimeFormatter.ISO_DATE_TIME);
+                lastVisitInHistory = !lastVisit.equals(test) ? test
+                        : docList.size() == 1 ? null
+                        : LocalDate.parse(docList.get(1), DateTimeFormatter.ISO_DATE);
+            }
+        }
+    }
+
+    /**
+     * 前回受診から1ヶ月以下なら offset 日戻した日付.
+     * 前回受診から2ヶ月以上なら, 前回受診から1ヶ月後の最終日.
+     *
+     * @return ISO_DATE 型式の outcome date
+     */
+    public String getDiagnosisOutcomeDate(String startDate) {
+        LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
+        long monthBetween = ChronoUnit.MONTHS.between(start.withDayOfMonth(1), lastVisit.withDayOfMonth(1));
+        logger.debug("monthBetween " + monthBetween);
+
+        int offset = Project.getPreferences().getInt(Project.OFFSET_OUTCOME_DATE, -1);
+        LocalDate endDate = monthBetween <= 1
+                ? lastVisit.plusDays(offset)
+                : start.plusMonths(1).withDayOfMonth(start.plusMonths(1).lengthOfMonth());
+
+        logger.debug("lastVisit = " + lastVisit + ", start = " + start + ", endDate = " + endDate);
+        return endDate.format(DateTimeFormatter.ISO_DATE);
     }
 
     /**

@@ -13,7 +13,6 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.DateUtils;
-import open.dolphin.util.MMLDate;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -32,6 +31,7 @@ import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.*;
 import java.util.function.Predicate;
@@ -98,7 +98,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     // 傷病名件数
     private int diagnosisCount;
     // 最終受診日＝今日受診している場合は今日，していないばあいは最後の受診日
-    private int[] lastVisitYmd = {2008, 2, 1};
+    private LastVisit lastVisit;
     // Stamp から drop を受け取る場合のアクション : DiagnosisInspector でも使うので，public にした
     private int dropAction; // 通常は MOVE で，ALT が押されていたら COPY になる
     // DiagnosisInspector
@@ -152,8 +152,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         return endDateField;
     }
 
-    public int[] getLastVisitYmd() {
-        return lastVisitYmd;
+    public LastVisit getLastVisit() {
+        return lastVisit;
     }
 
     public DiagnosisDocumentPopupMenu getDiagnosisDocumentPopup() {
@@ -198,10 +198,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         // Preference から昇順降順を設定する
         ascend = Project.getPreferences().getBoolean(Project.DIAGNOSIS_ASCENDING, false);
 
-        // 最終受診日をセット
-        LastVisit lv = ((ChartImpl) getContext()).getLastVisit();
-        lastVisitYmd = lv.getLastVisitYmd();
-
         // ポップアップメニュー用設定 (isReadOnly対応)
         if (!getContext().isReadOnly()) {
             popup = new DiagnosisDocumentPopupMenu(this);
@@ -223,7 +219,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         am.put("duplicate", new ProxyAction(this::duplicateDiagnosis));
 
         // tableModel 用設定
-        tableModel.setLastVisit(lastVisitYmd);
+        tableModel.setLastVisit(((ChartImpl) getContext()).getLastVisit());
         tableModel.getBoundSupport().addPropertyChangeListener(evt -> {
             String prop = evt.getPropertyName();
             // update があった場合
@@ -836,14 +832,11 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     private void insertDiagnosis(RegisteredDiagnosisModel module) {
         // 疾患開始日を lastVisit に設定
-        if (lastVisitYmd == null) {
+        if (lastVisit.getLastVisit() == null) {
             JSheet.showMessageDialog(getContext().getFrame(), "最終受診日が取得できません", "", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
-
-        String today = MMLDate.getDate(gc);
-        module.setStartDate(today);
+        module.setStartDate(lastVisit.getLastVisit().format(DateTimeFormatter.ISO_DATE));
 
         // diagnosis に「疑い」が入っていたら，疑いにセットする
         String diag = module.getDiagnosis();
@@ -916,8 +909,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         }
 
         boolean isAddedDiagnosis = (Boolean) e.getOldValue(); // openEditor2 からよばれると true になるようにした
-        GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
-        String today = MMLDate.getDate(gc);
+        String today = lastVisit.getLastVisit().format(DateTimeFormatter.ISO_DATE);
 
         for (int i = 0; i < list.size(); i++) { // list.size() は常に 1 では？
             // ここで get する rd には 病名とコードしか入っていない
@@ -1406,8 +1398,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
             // distRd.setStartDate(srcRd.getStartDate());
             // duplicate した場合は，startDate は LastVisit とする
-            GregorianCalendar gc = new GregorianCalendar(lastVisitYmd[0], lastVisitYmd[1], lastVisitYmd[2]);
-            distRd.setStartDate(MMLDate.getDate(gc));
+            distRd.setStartDate(lastVisit.getLastVisit().format(DateTimeFormatter.ISO_DATE));
 
             // endDate は消去
             // distRd.setEndDate(srcRd.getEndDate());

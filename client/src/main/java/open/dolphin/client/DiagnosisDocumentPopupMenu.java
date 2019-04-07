@@ -8,8 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeSupport;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 /**
  * DiagnosisDocument のポップアップメニューを一手に引き受ける
@@ -27,7 +25,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
     private JTextField endDateField;
     private DiagnosisDocument parent;
 
-    private int[] lastVisitYmd;
+    private LastVisit lastVisit;
     private JPopupMenu calendarPopup;
     private JPopupMenu diagPopup;
     private JPopupMenu categoryPopup;
@@ -49,7 +47,7 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
         diagTableModel = (DiagnosisDocumentTableModel) diagTable.getModel();
         startDateField = parent.getStartDateField();
         endDateField = parent.getEndDateField();
-        lastVisitYmd = parent.getLastVisitYmd();
+        lastVisit = parent.getLastVisit();
 
         addMouseListeners();
     }
@@ -163,18 +161,10 @@ public class DiagnosisDocumentPopupMenu extends MouseAdapter implements MouseMot
      * @param e
      */
     private void popupCalendar(MouseEvent e) {
-        calendarPopup = new JPopupMenu();
-        calendarPopup.setBorder(BorderFactory.createEmptyBorder());
-        GregorianCalendar gc = new GregorianCalendar();
-        int this_month = gc.get(Calendar.MONTH);
-        int dif = lastVisitYmd[1] - this_month; //lastVisit, this_month は gc なので，両者とも値が0-11 になる
-        if (dif > 0) {
-            dif -= 12;
-        }
-
         CalendarPanel cp = new CalendarPanel();
         cp.getTable().addCalendarListener(this::setDate);
-
+        calendarPopup = new JPopupMenu();
+        calendarPopup.setBorder(BorderFactory.createEmptyBorder());
         calendarPopup.insert(cp, 0);
         calendarPopup.show(e.getComponent(), e.getX(), e.getY());
     }
