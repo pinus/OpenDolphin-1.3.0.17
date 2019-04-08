@@ -315,8 +315,7 @@ public class KarteRenderer_2 {
         logicalStyle = true;
 
         if (alignStr != null) {
-            DefaultStyledDocument doc = (DefaultStyledDocument) thePane
-                    .getTextPane().getDocument();
+            DefaultStyledDocument doc = (DefaultStyledDocument) thePane.getTextPane().getDocument();
             Style style0 = doc.getStyle("default");
             Style style = doc.addStyle("alignment", style0);
             switch (alignStr) {
