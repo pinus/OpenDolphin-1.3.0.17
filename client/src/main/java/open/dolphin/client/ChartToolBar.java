@@ -8,6 +8,7 @@ import open.dolphin.ui.PNSToggleButton;
 import javax.swing.*;
 import javax.swing.event.CaretListener;
 import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -138,8 +139,17 @@ public class ChartToolBar extends JToolBar {
         CaretListener caretListener = e -> {
 
             JTextPane pane = (JTextPane)e.getSource();
-            int p = pane.getSelectionStart() - 1;
-            AttributeSet a = pane.getStyledDocument().getCharacterElement(p).getAttributes();
+            int start = pane.getSelectionStart();
+            int end = pane.getSelectionEnd();
+
+            String prevChar = "";
+            try {
+                prevChar = pane.getText(start - 1, 1);
+            } catch (BadLocationException ex) {}
+
+            // 選択されている場合, 前の文字が区切り文字の場合は先頭を feedback, それ以外は１文字前を feedback
+            int num = (start != end || prevChar.equals("\n")) ? start : start - 1;
+            AttributeSet a = pane.getStyledDocument().getCharacterElement(num).getAttributes();
 
             // feedback 中は ActionEvent を抑制する
             pause = true;
