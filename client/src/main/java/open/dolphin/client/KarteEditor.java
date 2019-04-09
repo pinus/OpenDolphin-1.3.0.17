@@ -278,8 +278,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         if (Objects.nonNull(getDocument().getModules())) {
             KarteRenderer_2 renderer = new KarteRenderer_2(soaPane, pPane);
             renderer.render(getDocument());
-            soaPane.setLogicalStyle("default");
-            pPane.setLogicalStyle("default");
         }
 
         // 健康保険を表示する

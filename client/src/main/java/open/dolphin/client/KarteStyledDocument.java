@@ -264,13 +264,10 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     public void insertTextStamp(String text) {
 
         try {
-            //System.out.println("insertTextStamp");
             clearLogicalStyle();
-            setLogicalStyle("default"); // mac 2207-03-31
             int pos = kartePane.getTextPane().getCaretPosition();
-            //System.out.println("pos = " + pos);
             insertString(pos, text, null);
-            //System.out.println("inserted TextStamp");
+
         } catch (BadLocationException e) {
             e.printStackTrace();
         }

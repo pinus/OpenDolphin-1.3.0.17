@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
@@ -13,6 +14,8 @@ import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.geom.AffineTransform;
 import java.util.Objects;
 import java.util.prefs.Preferences;
@@ -76,6 +79,8 @@ public class ChartToolBar extends JToolBar {
      * リスナーの接続を行う.
      */
     private void connect() {
+        KarteEditor karteEditor = editorFrame.getEditor();
+
         colorButton.addActionListener(e -> {
             if (pause) { return; }
             ColorButton b = (ColorButton) e.getSource();
@@ -88,7 +93,7 @@ public class ChartToolBar extends JToolBar {
                 repaint();
                 menu.setVisible(false);
                 Focuser.requestFocus(mediator.getCurrentComponent());
-                editorFrame.getEditor().setDirty(true);
+                karteEditor.setDirty(true);
             });
             menu.show(b, 0, b.getHeight());
             b.setSelected(false);
@@ -99,45 +104,71 @@ public class ChartToolBar extends JToolBar {
             int size = (int) e.getItem();
             mediator.setFontSize(size);
             Focuser.requestFocus(mediator.getCurrentComponent());
-            editorFrame.getEditor().setDirty(true);
+            karteEditor.setDirty(true);
         });
 
-        // caret を listen してボタンを制御する
-        CaretListener caretListener = e -> {
+        // CaretListener
+        CaretListener caretListener = e -> feedback((JTextPane) e.getSource());
+        karteEditor.getSOAPane().getTextPane().addCaretListener(caretListener);
+        karteEditor.getPPane().getTextPane().addCaretListener(caretListener);
 
-            JTextPane pane = (JTextPane)e.getSource();
-            int start = pane.getSelectionStart();
-            int end = pane.getSelectionEnd();
-
-            String prevChar = "";
-            try {
-                prevChar = pane.getText(start - 1, 1);
-            } catch (BadLocationException ex) {}
-
-            // 選択されている場合, 前の文字が区切り文字の場合は先頭を feedback, それ以外は１文字前を feedback
-            int num = (start != end || prevChar.equals("\n")) ? start : start - 1;
-            AttributeSet a = pane.getStyledDocument().getCharacterElement(num).getAttributes();
-
-            // feedback 中は ActionEvent を抑制する
-            pause = true;
-
-            boldButton.setSelected(StyleConstants.isBold(a));
-            italicButton.setSelected(StyleConstants.isItalic(a));
-            underlineButton.setSelected((StyleConstants.isUnderline(a)));
-            colorButton.setColor(StyleConstants.getForeground(a));
-
-            int align = StyleConstants.getAlignment(a);
-            leftJustify.setSelected(align == StyleConstants.ALIGN_LEFT);
-            centerJustify.setSelected(align == StyleConstants.ALIGN_CENTER);
-            rightJustify.setSelected(align == StyleConstants.ALIGN_RIGHT);
-
-            int size = StyleConstants.getFontSize(a);
-            sizeCombo.setSelectedItem(size);
-
-            SwingUtilities.invokeLater(() -> pause = false);
+        // DocumentListener
+        ProxyDocumentListener documentListener = e -> {
+            JTextPane pane = (JTextPane) mediator.getCurrentComponent();
+            if (Objects.nonNull(pane)) {
+                feedback(pane);
+            }
         };
-        editorFrame.getEditor().getSOAPane().getTextPane().addCaretListener(caretListener);
-        editorFrame.getEditor().getPPane().getTextPane().addCaretListener(caretListener);
+        karteEditor.getSOAPane().getTextPane().getDocument().addDocumentListener(documentListener);
+        karteEditor.getPPane().getTextPane().getDocument().addDocumentListener(documentListener);
+
+        // FocusListener
+        FocusListener focusListener = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                feedback((JTextPane) mediator.getCurrentComponent());
+            }
+            @Override
+            public void focusLost(FocusEvent e) { }
+        };
+        karteEditor.getSOAPane().getTextPane().addFocusListener(focusListener);
+        karteEditor.getPPane().getTextPane().addFocusListener(focusListener);
+    }
+
+    /**
+     * JTextPane が変更されたときにボタンにフィードバックする.
+     */
+    public void feedback(JTextPane pane) {
+        int start = pane.getSelectionStart();
+        int end = pane.getSelectionEnd();
+
+        String prevChar = "";
+        try {
+            prevChar = pane.getText(start - 1, 1);
+        } catch (BadLocationException ex) {}
+
+        // 選択されている場合, 前の文字が区切り文字の場合は先頭を feedback, それ以外は１文字前を feedback
+        int num = (start != end || prevChar.equals("\n")) ? start : start - 1;
+        num = num < 0 ? 0 : num;
+        AttributeSet a = pane.getStyledDocument().getCharacterElement(num).getAttributes();
+
+        // feedback 中は ActionEvent を抑制する
+        pause = true;
+
+        boldButton.setSelected(StyleConstants.isBold(a));
+        italicButton.setSelected(StyleConstants.isItalic(a));
+        underlineButton.setSelected((StyleConstants.isUnderline(a)));
+        colorButton.setColor(StyleConstants.getForeground(a));
+
+        int align = StyleConstants.getAlignment(a);
+        leftJustify.setSelected(align == StyleConstants.ALIGN_LEFT);
+        centerJustify.setSelected(align == StyleConstants.ALIGN_CENTER);
+        rightJustify.setSelected(align == StyleConstants.ALIGN_RIGHT);
+
+        int size = StyleConstants.getFontSize(a);
+        sizeCombo.setSelectedItem(size);
+
+        SwingUtilities.invokeLater(() -> pause = false);
     }
 
     /**
