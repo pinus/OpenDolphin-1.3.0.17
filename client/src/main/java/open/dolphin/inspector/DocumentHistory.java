@@ -17,9 +17,7 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.List;
 import java.util.*;
 
@@ -135,6 +133,16 @@ public class DocumentHistory implements IInspector {
         TableColumn column = view.getTable().getColumnModel().getColumn(1);
         column.setCellEditor(new PNSCellEditor(tf));
 
+        // ENTER で cell edit 開始
+        view.getTable().getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "startEditing");
+        view.getTable().addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                int row = view.getTable().getSelectedRow();
+                view.getTable().changeSelection(row, 1, false, false);
+            }
+        });
+
         // isReadOnly対応
         tf.setEnabled(!context.isReadOnly());
 
@@ -155,28 +163,12 @@ public class DocumentHistory implements IInspector {
      * Event 接続を行う.
      */
     private void connect() {
-
         // 履歴テーブルで選択された行の文書を表示する
-        ListSelectionModel slm = view.getTable().getSelectionModel();
-        slm.addListSelectionListener(e -> {
+        view.getTable().getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                JTable table = view.getTable();
-                int[] selectedRows = table.getSelectedRows();
-                if (selectedRows.length > 0) {
-                    List<DocInfoModel> list = new ArrayList<>(1);
-                    for (int i = 0; i < selectedRows.length; i++) {
-                        DocInfoModel obj = tableModel.getObject(selectedRows[i]);
-                        if (obj != null) {
-                            list.add(obj);
-                        }
-                    }
-                    DocInfoModel[] selected = list.toArray(new DocInfoModel[0]);
-                    if (selected.length > 0) {
-                        setSelectedHistories(selected);
-                    } else {
-                        setSelectedHistories(null);
-                    }
-                }
+                DocInfoModel[] selected = Arrays.stream(view.getTable().getSelectedRows()).boxed()
+                        .map(tableModel::getObject).filter(Objects::nonNull).toArray(DocInfoModel[]::new);
+                setSelectedHistories(selected.length > 0 ? selected : null);
             }
         });
 
