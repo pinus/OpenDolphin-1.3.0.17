@@ -10,7 +10,10 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
-import javax.swing.text.*;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,8 +87,9 @@ public class KarteRenderer_2 {
     private final Logger logger;
     private DocumentModel model;
     private KartePane thePane;
-    private boolean logicalStyle;
     private boolean bSoaPane;
+    private int paragraphStart;
+    private MutableAttributeSet paragraphAtts;
     private List<ModuleModel> soaModules;
     private List<ModuleModel> pModules;
 
@@ -310,37 +314,29 @@ public class KarteRenderer_2 {
     }
 
     private void startParagraph(String lStyle, String alignStr) {
-
-        thePane.setLogicalStyle("default");
-        logicalStyle = true;
+        DefaultStyledDocument doc = (DefaultStyledDocument) thePane.getTextPane().getDocument();
+        paragraphStart = doc.getLength();
+        paragraphAtts = new SimpleAttributeSet();
 
         if (alignStr != null) {
-            DefaultStyledDocument doc = (DefaultStyledDocument) thePane.getTextPane().getDocument();
-            Style style0 = doc.getStyle("default");
-            Style style = doc.addStyle("alignment", style0);
             switch (alignStr) {
                 case "0":
-                    StyleConstants.setAlignment(style, StyleConstants.ALIGN_LEFT);
+                    StyleConstants.setAlignment(paragraphAtts, StyleConstants.ALIGN_LEFT);
                     break;
                 case "1":
-                    StyleConstants.setAlignment(style, StyleConstants.ALIGN_CENTER);
+                    StyleConstants.setAlignment(paragraphAtts, StyleConstants.ALIGN_CENTER);
                     break;
                 case "2":
-                    StyleConstants.setAlignment(style, StyleConstants.ALIGN_RIGHT);
+                    StyleConstants.setAlignment(paragraphAtts, StyleConstants.ALIGN_RIGHT);
                     break;
             }
-            thePane.setLogicalStyle("alignment");
-            logicalStyle = true;
         }
     }
 
     private void endParagraph() {
-
-        //thePane.makeParagraph(); // trim() の廃止で廃止
-        if (logicalStyle) {
-            thePane.clearLogicalStyle();
-            logicalStyle = false;
-        }
+        DefaultStyledDocument doc = (DefaultStyledDocument) thePane.getTextPane().getDocument();
+        int pos = doc.getLength();
+        doc.setParagraphAttributes(paragraphStart, pos - paragraphStart - 1, paragraphAtts, false);
     }
 
     private void startContent(String foreground, String size, String bold,

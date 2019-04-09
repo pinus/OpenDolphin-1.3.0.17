@@ -76,15 +76,6 @@ public class ChartToolBar extends JToolBar {
      * リスナーの接続を行う.
      */
     private void connect() {
-
-        boldButton.addActionListener(new Listener(() -> mediator.fontBold()));
-        italicButton.addActionListener(new Listener(() -> mediator.fontItalic()));
-        underlineButton.addActionListener(new Listener(() -> mediator.fontUnderline()));
-
-        leftJustify.addActionListener(new Listener(() -> mediator.leftJustify()));
-        centerJustify.addActionListener(new Listener(() -> mediator.centerJustify()));
-        rightJustify.addActionListener(new Listener(() -> mediator.rightJustify()));
-
         colorButton.addActionListener(e -> {
             if (pause) { return; }
             ColorButton b = (ColorButton) e.getSource();
@@ -149,20 +140,6 @@ public class ChartToolBar extends JToolBar {
         editorFrame.getEditor().getPPane().getTextPane().addCaretListener(caretListener);
     }
 
-    private class Listener implements ActionListener {
-        private Runnable runnable;
-        public Listener (Runnable r) {
-            runnable = r;
-        }
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (pause) { return; }
-            runnable.run();
-            Focuser.requestFocus(mediator.getCurrentComponent());
-            editorFrame.getEditor().setDirty(true);
-        }
-    }
-
     /**
      * Font size 設定パネル.
      *
@@ -184,9 +161,9 @@ public class ChartToolBar extends JToolBar {
      * @return Font Panel
      */
     private JPanel createFontPanel() {
-        boldButton = new FontButton("B", "bold left");
-        italicButton = new FontButton("I", "italic");
-        underlineButton = new FontButton("U", "underline center");
+        boldButton = new FontButton("B", "bold left", mediator::fontBold);
+        italicButton = new FontButton("I", "italic", mediator::fontItalic);
+        underlineButton = new FontButton("U", "underline center", mediator::fontUnderline);
         colorButton = new ColorButton("right");
 
         JPanel panel = new JPanel();
@@ -204,9 +181,9 @@ public class ChartToolBar extends JToolBar {
      * @return Justification Panel
      */
     private JPanel createJustifyPanel() {
-        leftJustify = new JustifyButton("left");
-        centerJustify = new JustifyButton("center");
-        rightJustify = new JustifyButton("right");
+        leftJustify = new JustifyButton("left", mediator::leftJustify);
+        centerJustify = new JustifyButton("center", mediator::centerJustify);
+        rightJustify = new JustifyButton("right", mediator::rightJustify);
         ButtonGroup justifyGroup = new ButtonGroup();
         justifyGroup.add(leftJustify);
         justifyGroup.add(centerJustify);
@@ -261,9 +238,35 @@ public class ChartToolBar extends JToolBar {
     }
 
     /**
+     * ToggelButton の共通設定.
+     */
+    private class ToggleButtonBase extends PNSToggleButton implements ActionListener {
+        private Runnable runnable;
+
+        public ToggleButtonBase(String format, Runnable r) {
+            super(format);
+            runnable = r;
+            setPreferredSize(new Dimension(48, 24));
+            setMaximumSize(new Dimension(48, 24));
+            setMinimumSize(new Dimension(48, 24));
+            setBorderPainted(false);
+            setSelected(false);
+            addActionListener(this);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (pause) { return; }
+            runnable.run();
+            Focuser.requestFocus(mediator.getCurrentComponent());
+            editorFrame.getEditor().setDirty(true);
+        }
+    }
+
+    /**
      * Bold, Italic, Underline ボタン.
      */
-    private class FontButton extends PNSToggleButton {
+    private class FontButton extends ToggleButtonBase  {
         private double SCALE = 1.3d;
         private Font boldFont = new Font("Courier", Font.BOLD, 14)
                 .deriveFont(AffineTransform.getScaleInstance(SCALE, 1));
@@ -275,18 +278,12 @@ public class ChartToolBar extends JToolBar {
         private String letter;
         private boolean bold, italic, underline;
 
-        public FontButton(String letter, String format) {
-            super(format);
+        public FontButton(String letter, String format, Runnable r) {
+            super(format, r);
             this.letter = letter;
             bold = format.contains("bold");
             italic = format.contains("italic");
             underline = format.contains("underline");
-
-            setPreferredSize(new Dimension(48, 24));
-            setMaximumSize(new Dimension(48, 24));
-            setMinimumSize(new Dimension(48, 24));
-            setBorderPainted(false);
-            setSelected(false);
         }
 
         @Override
@@ -324,17 +321,12 @@ public class ChartToolBar extends JToolBar {
     /**
      * 書式ボタン.
      */
-    private class JustifyButton extends PNSToggleButton {
+    private class JustifyButton extends ToggleButtonBase {
         private int LONG = 20;
         private int SHORT = 14;
 
-        public JustifyButton(String format) {
-            super(format);
-            setPreferredSize(new Dimension(48, 24));
-            setMaximumSize(new Dimension(48, 24));
-            setMinimumSize(new Dimension(48, 24));
-            setBorderPainted(false);
-            setSelected(false);
+        public JustifyButton(String format, Runnable r) {
+            super(format, r);
         }
 
         @Override

@@ -81,7 +81,7 @@ public class KartePaneDumper_2 {
             // 出力バッファーをフラッシュしペインのXML定義を生成する
             writer.flush();
             spec = sw.toString();
-System.out.println("---Dumper " + spec);
+
         } catch (IOException | BadLocationException ex) {
             ex.printStackTrace(System.err);
         }
