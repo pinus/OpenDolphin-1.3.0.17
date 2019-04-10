@@ -60,7 +60,7 @@ public class PvtClient {
 
     @PostConstruct
     public void subscribe() {
-        pushApi.subscribe(SubscriptionEvent.ACCEPT);
+        pushApi.subscribe(SubscriptionEvent.ALL);
     }
 
     @PreDestroy
@@ -96,7 +96,7 @@ public class PvtClient {
                             long removePk = pvt.stream().filter(p -> p.getPvtDate().equals(pvtTime))
                                     .map(PatientVisitModel::getId).findAny().get();
                             pvtService.removePvt(removePk);
-                            logger.info(("PvtClient: pvt removed [" + data.getBody().getPatient_ID() + "]"));
+                            logger.info("PvtClient: pvt removed [" + data.getBody().getPatient_ID() + "]");
                             break;
 
                         case "add":
@@ -106,6 +106,15 @@ public class PvtClient {
                             pvtService.addPvt(model);
                             logger.info("PvtClient: addPvt [" + model.getPatient().getPatientId() + "]");
                             break;
+                    }
+
+                } else if (event.equals(SubscriptionEvent.INFORMATION.eventName())) {
+                    // 患者登録通知
+                    if ("modify".equals(body.getPatient_Mode())) {
+                        DummyHeader.set();
+                        logger.info("patient info changed [" + data.getBody().getPatient_ID() + "]");
+                        String ptId = body.getPatient_ID(); // 患者番号 002906
+                        TODO
                     }
                 }
                 break;
