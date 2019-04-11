@@ -138,8 +138,10 @@ public class DocumentHistory implements IInspector {
         view.getTable().addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                int row = view.getTable().getSelectedRow();
-                view.getTable().changeSelection(row, 1, false, false);
+                int[] row = view.getTable().getSelectedRows();
+                if (row.length == 1) {
+                    view.getTable().changeSelection(row[0], 1, false, false);
+                }
             }
         });
 
