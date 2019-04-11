@@ -114,10 +114,8 @@ public class ChartToolBar extends JToolBar {
 
         // DocumentListener
         ProxyDocumentListener documentListener = e -> {
-            JTextPane pane = (JTextPane) mediator.getCurrentComponent();
-            if (Objects.nonNull(pane)) {
-                feedback(pane);
-            }
+            JComponent c = mediator.getCurrentComponent();
+            if (c instanceof JTextPane) { feedback((JTextPane) c); }
         };
         karteEditor.getSOAPane().getTextPane().getDocument().addDocumentListener(documentListener);
         karteEditor.getPPane().getTextPane().getDocument().addDocumentListener(documentListener);
@@ -126,7 +124,8 @@ public class ChartToolBar extends JToolBar {
         FocusListener focusListener = new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                feedback((JTextPane) mediator.getCurrentComponent());
+                Object c = e.getSource();
+                if (c instanceof JTextPane) { feedback((JTextPane) c); }
             }
             @Override
             public void focusLost(FocusEvent e) { }
@@ -177,9 +176,9 @@ public class ChartToolBar extends JToolBar {
      * @return Size Panel
      */
     private JPanel createSizePanel() {
-        sizeCombo = new JComboBox<>(mediator.FONT_SIZE);
+        sizeCombo = new JComboBox<>(ChartMediator.FONT_SIZE);
         sizeCombo.setBorder(BorderFactory.createEmptyBorder());
-        sizeCombo.setSelectedItem(mediator.DEFAULT_FONT_SIZE);
+        sizeCombo.setSelectedItem(ChartMediator.DEFAULT_FONT_SIZE);
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         panel.add(sizeCombo);
