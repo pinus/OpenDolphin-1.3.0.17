@@ -1,5 +1,7 @@
 package open.dolphin.service;
 
+import open.dolphin.JsonConverter;
+import open.dolphin.WebSocket;
 import open.dolphin.dto.PatientVisitSpec;
 import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.infomodel.*;
@@ -130,6 +132,9 @@ public class PvtServiceImpl extends DolphinService implements PvtService {
 
         em.merge(pvt); // record がなければ persist 動作になる
 
+        // Websocket に通知
+        sendToWebsocket(pvt);
+
         return 1;
     }
 
@@ -174,6 +179,7 @@ public class PvtServiceImpl extends DolphinService implements PvtService {
     @Override
     public int updatePvt(PatientVisitModel pvt) {
         em.merge(pvt);
+        sendToWebsocket(pvt);
         return 1;
     }
 
@@ -237,8 +243,11 @@ public class PvtServiceImpl extends DolphinService implements PvtService {
     public int removePvt(Long id) {
         try {
             PatientVisitModel exist = em.find(PatientVisitModel.class, id);
+            exist.setState(KarteState.CANCEL_PVT);
+            sendToWebsocket(exist);
             em.remove(exist);
             return 1;
+
         } catch (IllegalArgumentException e) {
         }
         return 0;
@@ -296,5 +305,13 @@ public class PvtServiceImpl extends DolphinService implements PvtService {
                 .setParameter("fid", fid)
                 .setParameter("date", date)
                 .setParameter("patient", patient).getResultList();
+    }
+
+    /**
+     * Websocket に pvt を通知する.
+     * @param pvt PatientVisitModel
+     */
+    private void sendToWebsocket(PatientVisitModel pvt) {
+        WebSocket.getSessions().forEach(session -> session.getAsyncRemote().sendText(JsonConverter.toJson(pvt)));
     }
 }
