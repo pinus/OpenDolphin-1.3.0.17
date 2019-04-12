@@ -98,9 +98,10 @@ public class PvtClient {
                             long removePk = getPvtListToday().stream()
                                     .filter(pvt -> pvt.getPatientId().equals(ptId))
                                     .filter(pvt -> pvt.getPvtDate().equals(pvtTime))
-                                    .map(PatientVisitModel::getId).findAny().get();
-
-                            pvtService.removePvt(removePk);
+                                    .map(PatientVisitModel::getId).findAny().orElse(0L);
+                            if (removePk != 0) {
+                                pvtService.removePvt(removePk);
+                            }
                             logger.info("pvt removed [" + ptId + "]");
                             break;
 

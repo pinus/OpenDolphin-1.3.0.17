@@ -18,6 +18,8 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.*;
 
@@ -67,6 +69,13 @@ public class DocumentHistory implements IInspector {
      */
     public DocumentHistory(PatientInspector parent) {
         context = parent.getContext();
+        // Preference から自動文書取得数を設定する
+        autoFetchCount = Project.getPreferences().getInt(Project.DOC_HISTORY_FETCHCOUNT, 1);
+        // Preference から昇順降順を設定する
+        ascending = Project.getPreferences().getBoolean(Project.DIAGNOSIS_ASCENDING, false);
+        // Preference から修正履歴表示を設定する
+        showModified = Project.getPreferences().getBoolean(Project.DOC_HISTORY_SHOWMODIFIED, false);
+
         initComponent();
         connect();
     }
@@ -83,7 +92,7 @@ public class DocumentHistory implements IInspector {
         view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 350));
 
         // selectAll (command-A) を横取りするため削除
-        view.getInputMap().remove(KeyStroke.getKeyStroke('A', java.awt.event.InputEvent.META_MASK));
+        view.getInputMap().remove(KeyStroke.getKeyStroke("meta A"));
 
         // 履歴テーブルのパラメータを取得する
         List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
@@ -133,18 +142,6 @@ public class DocumentHistory implements IInspector {
         TableColumn column = view.getTable().getColumnModel().getColumn(1);
         column.setCellEditor(new PNSCellEditor(tf));
 
-        // ENTER で cell edit 開始
-        view.getTable().getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "startEditing");
-        view.getTable().addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                int[] row = view.getTable().getSelectedRows();
-                if (row.length == 1) {
-                    view.getTable().changeSelection(row[0], 1, false, false);
-                }
-            }
-        });
-
         // isReadOnly対応
         tf.setEnabled(!context.isReadOnly());
 
@@ -174,6 +171,31 @@ public class DocumentHistory implements IInspector {
             }
         });
 
+        // ENTER で cell edit 開始
+        view.getTable().getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "startEditing");
+        view.getTable().addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                int[] row = view.getTable().getSelectedRows();
+                if (row.length == 1) {
+                    view.getTable().changeSelection(row[0], 1, false, false);
+                }
+            }
+        });
+
+        // column 0 をクリックした場合は column 1 を選択
+        view.getTable().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point p = e.getPoint();
+                int col = view.getTable().columnAtPoint(p);
+                if (col == 0) {
+                    int row = view.getTable().rowAtPoint(p);
+                    view.getTable().changeSelection(row, 1, false, false);
+                }
+            }
+        });
+
         // 抽出期間コンボボックスの選択を処理する
         extractionCombo.addItemListener(this::periodChanged);
 
@@ -181,23 +203,10 @@ public class DocumentHistory implements IInspector {
         int past = Project.getPreferences().getInt(Project.DOC_HISTORY_PERIOD, -12);
         int index = PNSPair.getIndex(past, ComboBoxFactory.getDocumentExtractionPeriodModel());
         extractionCombo.setSelectedIndex(index);
-        GregorianCalendar today = new GregorianCalendar();
-        today.add(GregorianCalendar.MONTH, past);
-        today.clear(Calendar.HOUR_OF_DAY);
-        today.clear(Calendar.MINUTE);
-        today.clear(Calendar.SECOND);
-        today.clear(Calendar.MILLISECOND);
+
+        LocalDate startDate = LocalDate.now().plusMonths(past);
         // ここで update がかかる
-        setExtractionPeriod(today.getTime());
-
-        // Preference から自動文書取得数を設定する
-        autoFetchCount = Project.getPreferences().getInt(Project.DOC_HISTORY_FETCHCOUNT, 1);
-
-        // Preference から昇順降順を設定する
-        ascending = Project.getPreferences().getBoolean(Project.DIAGNOSIS_ASCENDING, false);
-
-        // Preference から修正履歴表示を設定する
-        showModified = Project.getPreferences().getBoolean(Project.DOC_HISTORY_SHOWMODIFIED, false);
+        setExtractionPeriod(Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
     /**
