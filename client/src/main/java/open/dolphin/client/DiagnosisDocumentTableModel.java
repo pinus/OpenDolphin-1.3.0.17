@@ -171,7 +171,11 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                             if (Project.getPreferences().getBoolean("autoOutcomeInput", false)) {
                                 String val = rd.getEndDate();
                                 if (val == null || val.equals("")) {
-                                    rd.setEndDate(lastVisit.getDiagnosisOutcomeDate());
+                                    if (dom.getOutcome().equals(DiagnosisOutcome.fullyRecovered.name())) {
+                                        rd.setEndDate(lastVisit.getDiagnosisOutcomeDate());
+                                    } else if (dom.getOutcome().equals(DiagnosisOutcome.pause.name())) {
+                                        rd.setEndDate(lastVisit.getDiagnosisOutcomeDate(0));
+                                    }
                                 }
                             }
                             update(row, rd);
