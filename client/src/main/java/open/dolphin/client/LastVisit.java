@@ -78,22 +78,13 @@ public class LastVisit {
      * @return ISO_DATE 型式の outcome date
      */
     public String getDiagnosisOutcomeDate() {
-        return getDiagnosisOutcomeDate(1);
-    }
-
-    /**
-     * 前回受診から N ヶ月以下なら offset 日戻した日付.
-     * 前回受診から N ヶ月以上なら, 前回受診から N ヶ月後の最終日.
-     *
-     * @param n month interval
-     * @return ISO_DATE 型式の outcome date
-     */
-    public String getDiagnosisOutcomeDate(int n) {
         LocalDate startDate = Objects.nonNull(lastVisitInHistory) ? lastVisitInHistory : lastVisit;
         long monthBetween = ChronoUnit.MONTHS.between(startDate.withDayOfMonth(1), lastVisit.withDayOfMonth(1));
         logger.debug("monthBetween " + monthBetween);
 
         int offset = Project.getPreferences().getInt(Project.OFFSET_OUTCOME_DATE, -1);
+        int n = 1; // month interval
+
         LocalDate endDate = monthBetween <= n
                 ? lastVisit.plusDays(offset)
                 : startDate.plusMonths(n).withDayOfMonth(startDate.plusMonths(n).lengthOfMonth());
