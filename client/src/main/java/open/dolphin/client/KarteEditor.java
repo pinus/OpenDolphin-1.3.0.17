@@ -307,13 +307,15 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                     }
                     PVTPublicInsuranceItemModel[] pubs = m.getPVTPublicInsuranceItem();
                     if (Objects.nonNull(pubs)) {
-                        sb.append(" ");
                         String[] items = Arrays.stream(pubs)
                                 .map(PVTPublicInsuranceItemModel::toString)
                                 .map(str -> str.replaceAll("独自", ""))
                                 .map(str -> str.length() > 2 ? str.substring(0, 2) : str)
                                 .toArray(String[]::new);
-                        sb.append(String.join("・", items));
+                        if (items.length > 0) {
+                            sb.append(PUB_MARK);
+                            sb.append(String.join("・", items));
+                        }
                     }
                     return sb.toString();
                 }).orElse(null);
