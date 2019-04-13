@@ -313,7 +313,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                                 .map(str -> str.length() > 2 ? str.substring(0, 2) : str)
                                 .toArray(String[]::new);
                         if (items.length > 0) {
-                            sb.append(PUB_MARK);
+                            sb.append("-");
                             sb.append(String.join("・", items));
                         }
                     }
@@ -321,6 +321,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 }).orElse(null);
 
         StringBuilder sb = new StringBuilder();
+        if (selecteIns.contains("-")) { sb.append(PUB_MARK); }
         sb.append(getContext().getPatient().getKanaName().replaceAll("　", " "));
         sb.append("：");
         sb.append(getContext().getPatient().getPatientId());
