@@ -321,9 +321,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 }).orElse(null);
 
         StringBuilder sb = new StringBuilder();
-        if (selecteIns.contains("-")) { sb.append(PUB_MARK); }
         sb.append(getContext().getPatient().getKanaName().replaceAll("　", " "));
-        sb.append("：");
+        sb.append(Objects.nonNull(selecteIns) && selecteIns.contains("-")? PUB_MARK : "：");
         sb.append(getContext().getPatient().getPatientId());
         sb.append(" ");
 
