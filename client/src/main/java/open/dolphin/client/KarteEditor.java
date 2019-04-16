@@ -313,8 +313,14 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                                 .map(str -> str.length() > 2 ? str.substring(0, 2) : str)
                                 .toArray(String[]::new);
                         if (items.length > 0) {
-                            sb.append("-");
+                            sb.append(PUB_MARK);
                             sb.append(String.join("・", items));
+
+                            Chart realChart = ((EditorFrame) getContext()).getChart();
+                            String realTitle = realChart.getFrame().getTitle();
+                            if (!realTitle.contains(PUB_MARK)) {
+                                realChart.getFrame().setTitle(realTitle + PUB_MARK);
+                            }
                         }
                     }
                     return sb.toString();
@@ -322,7 +328,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
         StringBuilder sb = new StringBuilder();
         sb.append(getContext().getPatient().getKanaName().replaceAll("　", " "));
-        sb.append(Objects.nonNull(selecteIns) && selecteIns.contains("-")? PUB_MARK : "：");
+        sb.append("：");
         sb.append(getContext().getPatient().getPatientId());
         sb.append(" ");
 
