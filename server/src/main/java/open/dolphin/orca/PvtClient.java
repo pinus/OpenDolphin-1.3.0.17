@@ -125,7 +125,9 @@ public class PvtClient {
                         pvts.stream().forEach(pvt -> {
                             pvtBuilder.build(body);
                             PatientVisitModel model = pvtBuilder.getProduct();
-                            model.setPvtDate(pvt.getPvtDate());
+                            model.setPvtDate(pvt.getPvtDate()); // 受付時間を戻す
+                            model.setState(pvt.getState()); // 受付状態を戻す
+                            model.setInsuranceUid(pvt.getInsuranceUid()); // 主保険を戻す
                             pvtService.addPvt(model);
                         });
                         logger.info("modify patient info [" + ptId + "]");

@@ -310,6 +310,10 @@ public class PatientSearchImpl extends AbstractMainComponent {
                 }
             }
         });
+
+        // ENTER でカルテオープン
+        table.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "openKarte");
+        table.getActionMap().put("openKarte", new ProxyAction(this::openKarte));
     }
 
     /**

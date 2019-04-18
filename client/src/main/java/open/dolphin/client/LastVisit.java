@@ -61,8 +61,8 @@ public class LastVisit {
         }
 
         if (docList.isEmpty()) {
-            // 新患でまだ保存していない状態では pvtDate は null ではありえない
-            lastVisit = LocalDate.parse(pvtDate, DateTimeFormatter.ISO_DATE_TIME);
+            // ここに入ってくるのは (1)新患受付の場合, (2)久しぶりの受診で DocumentHistory で最終受診をスキャンしている途中
+            lastVisit = Objects.isNull(pvtDate) ? null : LocalDate.parse(pvtDate, DateTimeFormatter.ISO_DATE_TIME);
             lastVisitInHistory = null;
 
         } else {
