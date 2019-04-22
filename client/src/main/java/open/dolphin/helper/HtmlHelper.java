@@ -55,7 +55,7 @@ public class HtmlHelper {
                 titleTr("RP", stampName, memo, hints.getWidth(), hints.getLabelColorAs16String())
             ),
             // 項目部分 列数=5
-            table().attr(BORDER, 0).attr(CELLPADDING, "1").attr(CELLSPACING, 0).with(
+            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(CELLSPACING, 0).with(
                 each(Arrays.stream(bundleMedTr(bundle.getClaimItem(), hints.getWidth(), hints.getCommentColorAs16String()))),
                 // 用法部分
                 adminTr(bundle, hints)
@@ -101,7 +101,7 @@ public class HtmlHelper {
                 || item.getCode().matches("0992099[0-9]{2}")) {
                 trs.add(tr().with(
                     td("　"),
-                    td(item.getName()).attr("COLSPAN=", "3").attr(WIDTH, width),
+                    td(item.getName()).attr(COLSPAN, 3).attr(WIDTH, width),
                     td(" ")));
 
             } else if (item.getCode().matches("810000001")) {
@@ -193,7 +193,7 @@ public class HtmlHelper {
      *
      * @param bundle BundleDolphin
      * @param width  width
-     * @param fold   折り返すかどうか
+     * @param fold   折りたたむかどうか
      * @return array of TR
      */
     public static Tag[] bundleDolphinTr(BundleDolphin bundle, int width, boolean fold) {
