@@ -318,7 +318,7 @@ public class CalendarTable extends JTable {
         int year = Integer.valueOf(split[0].substring(1));
         String nengo = Gengo.gengoAlphabetToHalfKanji(nengoAlphabet);
 
-        return String.format("%s%2d", nengo, year);
+        return year == 1 ? String.format("%s元", nengo) : String.format("%s%d", nengo, year);
     }
 
     /**
