@@ -168,6 +168,8 @@ public class KartePanePopupMenu extends JPopupMenu {
         String insurance = document.getDocInfo().getHealthInsuranceGUID();
         String dept = document.getDocInfo().getDepartment();
 
+        TODO: dept が null ？？
+
         // firstConfirm が null の場合がある (未保存新規カルテ)
         LocalDate firstConfirmDate = Objects.isNull(document.getDocInfo().getFirstConfirmDate())
                 ? LocalDate.now()
