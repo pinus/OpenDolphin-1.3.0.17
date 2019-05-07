@@ -487,11 +487,11 @@ public class DiagnosisInspector implements IInspector {
                 } else if (today && list.isFocusOwner()) {
                     setForeground(DiagnosisDocument.NEW_SELECTED_COLOR);
                 } else {
-                        if (list.isFocusOwner()) {
-                            setForeground(list.getSelectionForeground());
-                        } else {
-                            setForeground(list.getForeground());
-                        }
+                    if (list.isFocusOwner()) {
+                        setForeground(list.getSelectionForeground());
+                    } else {
+                        setForeground(list.getForeground());
+                    }
                 }
                 // background
                 if (list.isFocusOwner()) {
