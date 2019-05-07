@@ -12,6 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -464,6 +466,9 @@ public class DiagnosisInspector implements IInspector {
             boolean deleted = DiagnosisDocument.DELETED_RECORD.equals(rd.getStatus());
             boolean ended = rd.getEndDate() != null;
             boolean ikou = DiagnosisDocument.IKOU_BYOMEI_RECORD.equals(rd.getStatus());
+            LocalDate started = rd.getStarted().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate lastVisit = context.getLastVisit().getLastVisit();
+            boolean today = started.equals(lastVisit);
 
             if (isSelected) {
                 // foreground
@@ -479,12 +484,14 @@ public class DiagnosisInspector implements IInspector {
                     setForeground(new Color(rgb));
                 } else if (ikou) {
                     setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR);
+                } else if (today && list.isFocusOwner()) {
+                    setForeground(DiagnosisDocument.NEW_SELECTED_COLOR);
                 } else {
-                    if (list.isFocusOwner()) {
-                        setForeground(list.getSelectionForeground());
-                    } else {
-                        setForeground(list.getForeground());
-                    }
+                        if (list.isFocusOwner()) {
+                            setForeground(list.getSelectionForeground());
+                        } else {
+                            setForeground(list.getForeground());
+                        }
                 }
                 // background
                 if (list.isFocusOwner()) {
@@ -500,6 +507,8 @@ public class DiagnosisInspector implements IInspector {
                     setForeground(DiagnosisDocument.ENDED_COLOR);
                 } else if (ikou) {
                     setForeground(DiagnosisDocument.IKOU_BYOMEI_COLOR);
+                } else if (today) {
+                    setForeground(DiagnosisDocument.NEW_COLOR);
                 } else {
                     setForeground(list.getForeground());
                 }

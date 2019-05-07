@@ -62,6 +62,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     public static final String DELETED_RECORD = "DELETED"; // 削除病名
     public static final String IKOU_BYOMEI_RECORD = "IKOU_BYOMEI"; // 移行病名
     public static final Color IKOU_BYOMEI_COLOR = Color.red;
+    public static final Color NEW_COLOR = Color.BLUE;
+    public static final Color NEW_SELECTED_COLOR = new Color(230,255,255);
     public static final Color DELETED_COLOR = new Color(192, 192, 192); // silver
     public static final Color ENDED_COLOR = new Color(119, 136, 153); // light slate gray
     public static final Color ENDED_SELECTION_COLOR = new Color(220, 220, 220);// grains boro
