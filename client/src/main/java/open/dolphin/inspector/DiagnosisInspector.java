@@ -141,16 +141,7 @@ public class DiagnosisInspector implements IInspector {
                     // 診断が一つでもある場合はこちらに入る
                     // ダブルクリックならエディタを立ち上げる
                     else if (e.getClickCount() == 2) {
-
-                        int sel = diagList.getSelectedIndex();
-                        if (sel < 0) {
-                            // 項目のないところダブルクリックした場合
-                            doc.openEditor2();
-                        } else {
-                            // 項目があるところをダブルクリックした場合
-                            RegisteredDiagnosisModel model = listModel.get(sel);
-                            doc.openEditor3(model);
-                        }
+                        openEditor();
                     }
                 }
 
@@ -412,11 +403,25 @@ public class DiagnosisInspector implements IInspector {
         doc.getDiagnosisDocumentPopup().doClickDiagPopup("の二次感染");
     }
 
+    @MenuAction
+    public void openEditor() {
+        int sel = diagList.getSelectedIndex();
+        if (sel < 0) {
+            // 項目のないところダブルクリックした場合
+            doc.openEditor2();
+        } else {
+            // 項目があるところをダブルクリックした場合
+            RegisteredDiagnosisModel model = listModel.get(sel);
+            doc.openEditor3(model);
+        }
+    }
+
     /**
      * ショートカットキー定義.
      * MenuSupport には依存せず，全て独自実装している.
      */
     private enum Shortcut {
+        openEditor("SPACE"),
         undo("meta Z"),
         redo("shift meta Z"),
         addLeft("shift S"), // sinistro

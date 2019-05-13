@@ -311,8 +311,8 @@ public class PatientSearchImpl extends AbstractMainComponent {
             }
         });
 
-        // ENTER でカルテオープン
-        table.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "openKarte");
+        // SPACE でカルテオープン
+        table.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "openKarte");
         table.getActionMap().put("openKarte", new ProxyAction(this::openKarte));
 
         // command-F で search field にフォーカスする裏コマンド

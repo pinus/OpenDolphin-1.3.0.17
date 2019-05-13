@@ -280,8 +280,8 @@ public class WaitingListImpl extends AbstractMainComponent {
             }
         });
 
-        // ENTER でカルテオープン
-        pvtTable.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "openKarte");
+        // SPACE でカルテオープン
+        pvtTable.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "openKarte");
         pvtTable.getActionMap().put("openKarte", new ProxyAction(this::openKarte));
 
         // command-F で search field にフォーカスする裏コマンド
