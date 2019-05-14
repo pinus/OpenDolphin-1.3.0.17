@@ -4,14 +4,17 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.dto.OrcaEntry;
 import open.dolphin.event.OrderListener;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.orca.ClaimConst;
+import open.dolphin.order.stampeditor.StampEditor;
 import open.dolphin.ui.*;
 import open.dolphin.util.ModelUtils;
 
+import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -109,6 +112,21 @@ public class MasterSearchPanel extends JPanel {
     }
 
     /**
+     * Table にフォーカスを取る.
+     */
+    public void requestFocusOnTable() {
+        if (table.getModel().getRowCount() == 0) {
+            // 先送り
+            SwingUtilities.invokeLater(() -> FocusManager.getCurrentManager().focusNextComponent(table));
+        }
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            table.getSelectionModel().setSelectionInterval(0, 0);
+        }
+        Focuser.requestFocus(table);
+    }
+
+    /**
      * ItemTablePanel に MasterItem を伝えるリスナ.
      *
      * @param listener OrderListener
@@ -168,6 +186,7 @@ public class MasterSearchPanel extends JPanel {
         };
 
         keywordField = new CompletableSearchField(KEYWORD_FIELD_LENGTH);
+        keywordField.setName(StampEditor.MASTER_SEARCH_FIELD);
         keywordField.setLabel("マスタ検索");
 
         keywordField.setMaximumSize(new Dimension(10, 22));
@@ -243,6 +262,7 @@ public class MasterSearchPanel extends JPanel {
         int[] width = new int[]{90, 200, 50, 60, 80, 100, 100};
 
         table = new JTable(tableModel);
+        table.setName(StampEditor.MASTER_TABLE);
         table.putClientProperty("Quaqua.Table.style", "striped");
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowSelectionAllowed(true);
@@ -250,48 +270,25 @@ public class MasterSearchPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 int viewRow = table.rowAtPoint(e.getPoint());
-                if (viewRow == -1) {
-                    return;
-                }
+                if (viewRow == -1) { return; }
+
                 table.getSelectionModel().setSelectionInterval(viewRow, viewRow);
-                OrcaEntry o = tableModel.getObject(table.convertRowIndexToModel(viewRow));
-                if (o != null) {
-                    MasterItem mItem = new MasterItem();
-
-                    // claim 003 コード
-                    String code = o.getCode();
-                    if (code.startsWith(ClaimConst.ADMIN_CODE_START)) {
-                        // 部位コード 001000800-999，コメント 0010000 00-99 は薬剤コードで登録する
-                        if (code.matches("^001000[089].*")) {
-                            mItem.setClassCode(ClaimConst.YAKUZAI);
-                        } else {
-                            mItem.setClassCode(ClaimConst.ADMIN);
-                        }
-                    } else if (code.startsWith(ClaimConst.YAKUZAI_CODE_START)) {
-                        mItem.setClassCode(ClaimConst.YAKUZAI);
-                    } else if (code.startsWith(ClaimConst.ZAIRYO_CODE_START)) {
-                        mItem.setClassCode(ClaimConst.ZAIRYO);
-                    } else {
-                        mItem.setClassCode(ClaimConst.SYUGI);
-                    }
-
-                    mItem.setCode(code);
-                    mItem.setName(o.getName());
-                    mItem.setUnit(o.getUnit());
-                    mItem.setClaimClassCode(o.getClaimClassCode());
-                    mItem.setYkzKbn(o.getYkzkbn());
-
-                    if (IInfoModel.ENTITY_DIAGNOSIS.equals(entity)) {
-                        mItem.setMasterTableId(ClaimConst.DISEASE_MASTER_TABLE_ID);
-                    }
-                    // ItemTablePanel に通知
-                    orderListener.order(mItem);
-
-                    // 用法コンボを元に戻す
-                    adminCombo.setSelectedIndex(0);
-                }
+                sendSelectedToItemTablePanel();
             }
         });
+
+        // ENTER で選択データを ItemTablePanel に送る
+        InputMap im = table.getInputMap();
+        ActionMap am = table.getActionMap();
+        im.put(KeyStroke.getKeyStroke("ENTER"), "sendData");
+        am.put("sendData", new ProxyAction(this::sendSelectedToItemTablePanel));
+
+        // focus 移動
+        im.put(KeyStroke.getKeyStroke("TAB"), "focusNext");
+        am.put("focusNext", new ProxyAction(FocusManager.getCurrentManager()::focusNextComponent));
+        im.put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
+        am.put("focusPrevious", new ProxyAction(FocusManager.getCurrentManager()::focusPreviousComponent));
+
         // 列幅を設定する
         TableColumn column;
         int len = width.length;
@@ -310,6 +307,51 @@ public class MasterSearchPanel extends JPanel {
         table.setRowSorter(new MasterTableSorter(tableModel));
 
         return table;
+    }
+
+    /**
+     * 選択された OrcaEntry を MasterItem に変換して ItemTablePanel に送る.
+     */
+    private void sendSelectedToItemTablePanel() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow < 0) { return; }
+
+        OrcaEntry o = tableModel.getObject(table.convertRowIndexToModel(selectedRow));
+        if (o != null) {
+            MasterItem mItem = new MasterItem();
+
+            // claim 003 コード
+            String code = o.getCode();
+            if (code.startsWith(ClaimConst.ADMIN_CODE_START)) {
+                // 部位コード 001000800-999，コメント 0010000 00-99 は薬剤コードで登録する
+                if (code.matches("^001000[089].*")) {
+                    mItem.setClassCode(ClaimConst.YAKUZAI);
+                } else {
+                    mItem.setClassCode(ClaimConst.ADMIN);
+                }
+            } else if (code.startsWith(ClaimConst.YAKUZAI_CODE_START)) {
+                mItem.setClassCode(ClaimConst.YAKUZAI);
+            } else if (code.startsWith(ClaimConst.ZAIRYO_CODE_START)) {
+                mItem.setClassCode(ClaimConst.ZAIRYO);
+            } else {
+                mItem.setClassCode(ClaimConst.SYUGI);
+            }
+
+            mItem.setCode(code);
+            mItem.setName(o.getName());
+            mItem.setUnit(o.getUnit());
+            mItem.setClaimClassCode(o.getClaimClassCode());
+            mItem.setYkzKbn(o.getYkzkbn());
+
+            if (IInfoModel.ENTITY_DIAGNOSIS.equals(entity)) {
+                mItem.setMasterTableId(ClaimConst.DISEASE_MASTER_TABLE_ID);
+            }
+            // ItemTablePanel に通知
+            orderListener.order(mItem);
+
+            // 用法コンボを元に戻す
+            adminCombo.setSelectedIndex(0);
+        }
     }
 
     /**

@@ -12,13 +12,12 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Stamp 編集用の外枠を提供する Dialog.
@@ -122,13 +121,11 @@ public class StampEditorDialog {
 
         //ESC で編集内容破棄してクローズ
         InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        im.put(key, "cancel");
+        im.put(KeyStroke.getKeyStroke("ESCAPE"), "cancel");
         dialog.getRootPane().getActionMap().put("cancel", new ProxyAction(cancelButton::doClick));
 
         // commnad-w で，保存ダイアログを出してから終了
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.META_DOWN_MASK);
-        im.put(key, "close-window");
+        im.put(KeyStroke.getKeyStroke("meta W"), "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new ProxyAction(() -> {
             int ans = JSheet.showOptionDialog(dialog, "カルテに展開しますか？", "",
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null,
@@ -141,9 +138,56 @@ public class StampEditorDialog {
         }));
 
         // Command + ENTER で入力
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.META_DOWN_MASK);
-        im.put(key, "done");
+        im.put(KeyStroke.getKeyStroke("meta ENTER"), "done");
         dialog.getRootPane().getActionMap().put("done", new ProxyAction(okButton::doClick));
+
+        // フォーカス処理: tab で search field -> search panel -> table panel の順番にフォーカス移動する
+        dialog.setFocusTraversalPolicy(new FocusTraversalPolicy() {
+            @Override
+            public Component getComponentAfter(Container aContainer, Component aComponent) {
+                switch (Objects.isNull(aComponent.getName()) ? "" : aComponent.getName()) {
+                    case StampEditor.MASTER_SEARCH_FIELD:
+                        editor.getMasterSearchPanel().requestFocusOnTable();
+                        break;
+
+                    case StampEditor.MASTER_TABLE:
+                        editor.getTablePanel().requestFocusOnTable();
+                        break;
+
+                    default:
+                        editor.enter();
+                        break;
+                }
+                return null;
+            }
+
+            @Override
+            public Component getComponentBefore(Container aContainer, Component aComponent) {
+                switch (Objects.isNull(aComponent.getName()) ? "" : aComponent.getName()) {
+                    case StampEditor.MASTER_SEARCH_FIELD:
+                        editor.getTablePanel().requestFocusOnTable();
+                        break;
+
+                    case StampEditor.ITEM_TABLE:
+                        editor.getMasterSearchPanel().requestFocusOnTable();
+                        break;
+
+                    default:
+                        editor.enter();
+                        break;
+                }
+                return null;
+            }
+
+            @Override
+            public Component getFirstComponent(Container aContainer) { return null; }
+
+            @Override
+            public Component getLastComponent(Container aContainer) { return null; }
+
+            @Override
+            public Component getDefaultComponent(Container aContainer) { return null; }
+        });
 
         dialog.setVisible(true);
         editor.enter(); // フォーカスとる

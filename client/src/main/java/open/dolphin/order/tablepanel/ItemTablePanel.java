@@ -8,18 +8,16 @@ import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
+import open.dolphin.order.stampeditor.StampEditor;
 import open.dolphin.project.Project;
-import open.dolphin.ui.IMEControl;
-import open.dolphin.ui.ObjectReflectTableModel;
-import open.dolphin.ui.PNSCellEditor;
-import open.dolphin.ui.PNSScrollPane;
+import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
 
+import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.Arrays;
@@ -171,13 +169,13 @@ public class ItemTablePanel extends JPanel {
     private void createCommonComponents() {
 
         table = new JTable(tableModel);
+        table.setName(StampEditor.ITEM_TABLE);
         table.putClientProperty("Quaqua.Table.style", "striped");
         table.setTransferHandler(new MasterItemTransferHandler()); // TransferHandler
         table.setDropMode(DropMode.INSERT_ROWS);
         table.setDefaultRenderer(Object.class, new TablePanelRenderer());
-        final int[] columnWidth = getTableColumnWidth();
 
-        // columnWidth の固定
+        final int[] columnWidth = getTableColumnWidth();
 
         table.addMouseMotionListener(new MouseMotionListener() {
             @Override
@@ -259,8 +257,14 @@ public class ItemTablePanel extends JPanel {
         //　delete key で remove ボタンを押す
         InputMap im = table.getInputMap();
         ActionMap am = table.getActionMap();
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "remove");
+        im.put(KeyStroke.getKeyStroke("BACK_SPACE"), "remove");
         am.put("remove", new ProxyAction(removeButton::doClick));
+
+        // focus 移動
+        im.put(KeyStroke.getKeyStroke("TAB"), "focusNext");
+        am.put("focusNext", new ProxyAction(FocusManager.getCurrentManager()::focusNextComponent));
+        im.put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
+        am.put("focusPrevious", new ProxyAction(FocusManager.getCurrentManager()::focusPreviousComponent));
 
         // クリアボタンを生成する
         clearButton = new JButton(CLEAR_BUTTON_IMAGE);
@@ -315,6 +319,21 @@ public class ItemTablePanel extends JPanel {
         panel.add(clearButton);
 
         return panel;
+    }
+
+    /**
+     * Table にフォーカスを取る.
+     */
+    public void requestFocusOnTable() {
+        if (table.getModel().getRowCount() == 0) {
+            // 先送り
+            SwingUtilities.invokeLater(() -> FocusManager.getCurrentManager().focusNextComponent(table));
+        }
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            table.getSelectionModel().setSelectionInterval(0, 0);
+        }
+        Focuser.requestFocus(table);
     }
 
     /**

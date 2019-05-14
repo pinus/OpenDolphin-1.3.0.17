@@ -22,6 +22,9 @@ import javax.swing.*;
  */
 public class StampEditor extends JPanel implements IStampEditor {
     private static final long serialVersionUID = 1L;
+    public static final String MASTER_SEARCH_FIELD = "masterSearchField";
+    public static final String MASTER_TABLE = "masterTable";
+    public static final String ITEM_TABLE = "itemTable";
 
     private ValidListener validListener;
     private boolean isValidModel;
@@ -86,7 +89,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * TablePanel を返す.
+     * ItemTablePanel を返す.
      *
      * @return ItemTablePanel
      */
@@ -95,7 +98,7 @@ public class StampEditor extends JPanel implements IStampEditor {
     }
 
     /**
-     * TablePanel をセットする.
+     * ItemTablePanel をセットする.
      *
      * @param tablePanel ItemTablePanel
      */
@@ -103,13 +106,19 @@ public class StampEditor extends JPanel implements IStampEditor {
         this.tablePanel = tablePanel;
     }
 
-    public MasterSearchPanel getMasterSearchPanel() {
-        return masterSearchPanel;
-    }
+    /**
+     * MasterSearchPanel を返す.
+     *
+     * @return MasterSearchPanel
+     */
+    public MasterSearchPanel getMasterSearchPanel() { return masterSearchPanel; }
 
-    public void setMasterSearchPanel(MasterSearchPanel panel) {
-        masterSearchPanel = panel;
-    }
+    /**
+     * MasterSearchPanel をセットする.
+     *
+     * @param panel MasterSearchPanel
+     */
+    public void setMasterSearchPanel(MasterSearchPanel panel) { masterSearchPanel = panel; }
 
     /**
      * セットされたエンティティーを返す.
