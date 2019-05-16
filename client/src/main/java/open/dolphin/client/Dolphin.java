@@ -1,9 +1,6 @@
 package open.dolphin.client;
 
-import open.dolphin.helper.ComponentBoundsManager;
-import open.dolphin.helper.MenuSupport;
-import open.dolphin.helper.Task;
-import open.dolphin.helper.WindowSupport;
+import open.dolphin.helper.*;
 import open.dolphin.impl.labrcv.LaboTestImporter;
 import open.dolphin.impl.login.LoginDialog;
 import open.dolphin.impl.psearch.PatientSearchImpl;
@@ -40,6 +37,7 @@ import java.util.List;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 /**
  * アプリケーションのメインウインドウクラス.
@@ -83,21 +81,43 @@ public class Dolphin implements MainWindow {
      * システムの出力を console.log にリダイレクトする.
      */
     private static void redirectConsole() {
-        try {
-            String logName = System.getProperty("user.dir") + "/console.log";
-            PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
-            System.setOut(ps);
-            System.setErr(ps);
-            System.out.println("Console redirected to " + logName);
-        } catch (FileNotFoundException ex) {
+        if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
+            try {
+                String logName = System.getProperty("user.dir") + "/console.log";
+                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
+                System.setOut(ps);
+                System.setErr(ps);
+                System.out.println("Console redirected to " + logName);
+            } catch (FileNotFoundException ex) {
+            }
+        }
+    }
+
+    /**
+     * bash script "startup.sh" を実行する.
+     */
+    private static void executeStartupScript() {
+        String scriptName = System.getProperty("user.dir") + "/startup.sh";
+        Path path = Paths.get(scriptName);
+        if (Files.exists(path)) {
+            try {
+                List<String> script = Files.readAllLines(path);
+                String command = script.stream().collect(Collectors.joining("\n"));
+
+                List<String> response = ScriptExecutor.executeShellScriptWithResponce(new String[] {"bash", "-c", command});
+                response.stream().forEach(System.out::println);
+
+            } catch (IOException e) {
+            }
         }
     }
 
     public static void main(String[] args) {
         // コンソールのリダイレクト
-        if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
-            redirectConsole();
-        }
+        redirectConsole();
+
+        // startup script
+        executeStartupScript();
 
         // Dolphin 本体の実行
         Dolphin d = new Dolphin();

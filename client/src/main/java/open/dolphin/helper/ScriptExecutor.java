@@ -104,7 +104,7 @@ public class ScriptExecutor {
      * @param command Commands in a string array
      * @return outPut Result strings in List
      */
-    private static List<String> executeShellScriptWithResponce(String[] command) {
+    public static List<String> executeShellScriptWithResponce(String[] command) {
         List<String> output = new ArrayList<>();
 
         try {
