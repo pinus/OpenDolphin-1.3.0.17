@@ -20,10 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -192,7 +189,20 @@ public class MasterSearchPanel extends JPanel {
         keywordField.setMaximumSize(new Dimension(10, 22));
         keywordField.setToolTipText(TOOLTIP_KEYWORD);
         keywordField.addActionListener(listener);
-        IMEControl.setImeOnIfFocused(keywordField);
+
+        // 上下キーでフォーカス移動
+        keywordField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == 38) {
+                    // upper key
+                    FocusManager.getCurrentManager().focusPreviousComponent();
+                } else if (e.getKeyCode() == 40) {
+                    // down key
+                    FocusManager.getCurrentManager().focusNextComponent();
+                }
+            }
+        });
 
         partialMatchBox = new JCheckBox("部分一致");
         partialMatchBox.addActionListener(listener);

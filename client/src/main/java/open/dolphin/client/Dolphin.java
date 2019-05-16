@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 
 /**
  * アプリケーションのメインウインドウクラス.
@@ -101,9 +100,7 @@ public class Dolphin implements MainWindow {
         Path path = Paths.get(scriptName);
         if (Files.exists(path)) {
             try {
-                List<String> script = Files.readAllLines(path);
-                String command = script.stream().collect(Collectors.joining("\n"));
-
+                String command = String.join("\n", Files.readAllLines(path));
                 List<String> response = ScriptExecutor.executeShellScriptWithResponce(new String[] {"bash", "-c", command});
                 response.stream().forEach(System.out::println);
 

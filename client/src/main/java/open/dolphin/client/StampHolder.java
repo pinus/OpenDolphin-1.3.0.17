@@ -10,14 +10,13 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.PNSBorderFactory;
 import org.apache.log4j.Logger;
 
+import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 
@@ -75,7 +74,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * Focusされた場合のメニュー制御とボーダーを表示する.
      *
-     * @param map
+     * @param map ActionMap
      */
     @Override
     public void enter(ActionMap map) {
@@ -98,7 +97,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * Focusがはずれた場合のメニュー制御とボーダーの非表示を行う.
      *
-     * @param map
+     * @param map ActionMap
      */
     @Override
     public void exit(ActionMap map) {
@@ -110,7 +109,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * Popupメニューを表示する.
      *
-     * @param e
+     * @param e MouseEvent
      */
     @Override
     public void maybeShowPopup(MouseEvent e) {
@@ -140,7 +139,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * このスタンプホルダのKartePaneを返す.
      *
-     * @return
+     * @return KartePane
      */
     @Override
     public KartePane getKartePane() {
@@ -150,7 +149,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * スタンプホルダのコンテントタイプを返す.
      *
-     * @return
+     * @return ContentType
      */
     @Override
     public ContentType getContentType() {
@@ -160,7 +159,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * このホルダのモデルを返す.
      *
-     * @return
+     * @return ModuleModel
      */
     public ModuleModel getStamp() {
         return stamp;
@@ -169,7 +168,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * このホルダのモデルを設定する.
      *
-     * @param model
+     * @param model ModuleModel
      */
     public void setStamp(ModuleModel model) {
         stamp = model;
@@ -248,7 +247,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * エディタで編集した値を受け取り内容を表示する.
      *
-     * @param e
+     * @param e MouseEvent
      */
     @Override
     public void propertyChange(PropertyChangeEvent e) {
@@ -274,7 +273,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * スタンプの内容を置き換える.
      *
-     * @param newStamp
+     * @param newStamp ModuleModel
      */
     public void importStamp(ModuleModel newStamp) {
         // 「月　日」の自動挿入：replace の場合はここに入る
@@ -290,8 +289,8 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * TextPane内での開始と終了ポジションを保存する.
      *
-     * @param start
-     * @param end
+     * @param start Position
+     * @param end Position
      */
     @Override
     public void setEntry(Position start, Position end) {
@@ -302,7 +301,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * 開始ポジションを返す.
      *
-     * @return
+     * @return position
      */
     @Override
     public int getStartPos() {
@@ -312,7 +311,7 @@ public final class StampHolder extends AbstractComponentHolder {
     /**
      * 終了ポジションを返す.
      *
-     * @return
+     * @return position
      */
     @Override
     public int getEndPos() {
@@ -378,14 +377,16 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * Shift-commnad-C ショートカットでクリップボードにスタンプをコピーする.
+     * ショートカットキー.
      */
     private void addHiddenCommand() {
 
         InputMap im = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        im.put(KeyStroke.getKeyStroke("shift meta C"), "copyAsText");
+        ActionMap am = this.getActionMap();
 
-        this.getActionMap().put("copyAsText", new ProxyAction(() -> {
+        // Shift-commnad-C ショートカットでクリップボードにスタンプをコピーする.
+        im.put(KeyStroke.getKeyStroke("shift meta C"), "copyAsText");
+        am.put("copyAsText", new ProxyAction(() -> {
 
             if (getStamp().getModel() instanceof BundleMed) {
                 BundleMed bundle = (BundleMed) getStamp().getModel();
@@ -418,6 +419,12 @@ public final class StampHolder extends AbstractComponentHolder {
                 clipboard.setContents(new StringSelection(text.toString()), null);
             }
         }));
+
+        // tab でフォーカス移動
+        im.put(KeyStroke.getKeyStroke("TAB"), "focusNext");
+        am.put("focusNext", new ProxyAction(() -> SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusNextComponent)));
+        im.put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
+        am.put("focusPrevious", new ProxyAction(() -> SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusPreviousComponent)));
     }
 
     /**
@@ -426,6 +433,6 @@ public final class StampHolder extends AbstractComponentHolder {
     private void removeHiddenCommand() {
         // Shift+command C
         InputMap im = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        im.remove(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        im.remove(KeyStroke.getKeyStroke("shift meta C"));
     }
 }

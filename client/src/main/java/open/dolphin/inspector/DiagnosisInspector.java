@@ -187,6 +187,7 @@ public class DiagnosisInspector implements IInspector {
         diagPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, 100));
         diagPanel.setMinimumSize(new Dimension(DEFAULT_WIDTH, 100));
 
+        diagList.setName(diagPanel.getName());
         PNSScrollPane scrollPane = new PNSScrollPane(diagList);
         scrollPane.putClientProperty("JComponent.sizeVariant", "small");
         diagPanel.add(scrollPane);

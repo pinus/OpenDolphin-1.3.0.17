@@ -5,6 +5,7 @@ import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.DocumentSearchSpec;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.PNSTriple;
@@ -14,6 +15,7 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import org.apache.log4j.Logger;
 
+import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -128,6 +130,7 @@ public class DocumentHistory implements IInspector {
             }
         };
         view.getTable().setModel(tableModel);
+        view.getTable().setName(view.getName());
 
         // カラム幅を調整する
         // カラム幅は日付の入る１カラム目だけを固定にする
@@ -171,8 +174,12 @@ public class DocumentHistory implements IInspector {
             }
         });
 
+        // key map
+        InputMap im = view.getTable().getInputMap();
+        ActionMap am = view.getTable().getActionMap();
+
         // ENTER で cell edit 開始
-        view.getTable().getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "startEditing");
+        im.put(KeyStroke.getKeyStroke("ENTER"), "startEditing");
         view.getTable().addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -195,6 +202,12 @@ public class DocumentHistory implements IInspector {
                 }
             }
         });
+
+        // Tab でフォーカス移動
+        im.put(KeyStroke.getKeyStroke("TAB"), "focusNext");
+        am.put("focusNext", new ProxyAction(FocusManager.getCurrentManager()::focusNextComponent));
+        im.put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
+        am.put("focusPrevious", new ProxyAction(FocusManager.getCurrentManager()::focusPreviousComponent));
 
         // 抽出期間コンボボックスの選択を処理する
         extractionCombo.addItemListener(this::periodChanged);

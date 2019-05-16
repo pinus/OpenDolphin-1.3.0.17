@@ -8,6 +8,7 @@ import javax.swing.event.CaretListener;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.util.Objects;
 
 /**
  * CompositeArea.
@@ -65,6 +66,7 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
 
     @Override
     public void caretUpdate(CaretEvent e) {
+        if (Objects.isNull(map)) { return; }
         boolean newSelection = (e.getDot() != e.getMark());
 
         if (newSelection != hasSelection) {

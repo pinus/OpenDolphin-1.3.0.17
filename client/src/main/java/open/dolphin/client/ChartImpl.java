@@ -11,10 +11,7 @@ import open.dolphin.impl.lbtest.LaboTestBean;
 import open.dolphin.impl.pinfo.PatientInfoDocument;
 import open.dolphin.impl.pvt.PvtListener;
 import open.dolphin.infomodel.*;
-import open.dolphin.inspector.DiagnosisInspector;
-import open.dolphin.inspector.DocumentHistory;
-import open.dolphin.inspector.IInspector;
-import open.dolphin.inspector.PatientInspector;
+import open.dolphin.inspector.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
@@ -540,14 +537,50 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
             @Override
             public Component getComponentAfter(Container aContainer, Component aComponent) {
-                // 余計な focus 移動を行わない
-                return aComponent;
+                if (InspectorCategory.メモ.name().equals(aComponent.getName())) {
+                    JList list = inspector.getDiagnosisInspector().getList();
+                    if (list.getModel().getSize() == 0) {
+                        // リストが空なら document history へ
+                        Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
+                    } else {
+                        // 選択がない場合は選択してフォーカス
+                        if (list.getSelectedIndex() < 0) { list.setSelectedIndex(0); }
+                        Focuser.requestFocus(list);
+                    }
+
+                } else if (InspectorCategory.文書履歴.name().equals(aComponent.getName())) {
+                    JTextArea memoArea = inspector.getMemoInspector().getMemoArea();
+                    memoArea.selectAll();
+                    Focuser.requestFocus(memoArea);
+
+                } else {
+                    Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
+                }
+                return null;
             }
 
             @Override
             public Component getComponentBefore(Container aContainer, Component aComponent) {
-                // 余計な focus 移動を行わない
-                return aComponent;
+                if (InspectorCategory.病名.name().equals(aComponent.getName())) {
+                    JTextArea memoArea = inspector.getMemoInspector().getMemoArea();
+                    memoArea.selectAll();
+                    Focuser.requestFocus(memoArea);
+
+                } else if (InspectorCategory.文書履歴.name().equals(aComponent.getName())) {
+                    JList list = inspector.getDiagnosisInspector().getList();
+                    if (list.getModel().getSize() == 0) {
+                        // リストが空なら document history へ
+                        Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
+                    } else {
+                        // 選択がない場合は選択してフォーカス
+                        if (list.getSelectedIndex() < 0) { list.setSelectedIndex(0); }
+                        Focuser.requestFocus(list);
+                    }
+
+                } else {
+                    Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
+                }
+                return inspector.getMemoInspector().getPanel();
             }
 
             @Override

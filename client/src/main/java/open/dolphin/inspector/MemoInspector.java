@@ -4,16 +4,17 @@ import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.CompositeArea;
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientMemoModel;
 import open.dolphin.project.Project;
-import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.log4j.Logger;
 
+import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -63,7 +64,7 @@ public class MemoInspector implements IInspector {
     /**
      * MemoInspectorオブジェクトを生成する.
      *
-     * @param parent
+     * @param parent PatientInspector
      */
     public MemoInspector(PatientInspector parent) {
         context = parent.getContext();
@@ -78,12 +79,19 @@ public class MemoInspector implements IInspector {
     private void initComponents() {
 
         memoArea = new CompositeArea(5, 10);
-
+        memoArea.setName(CATEGORY.name());
         memoArea.setLineWrap(true);
         memoArea.setMargin(new java.awt.Insets(3, 3, 2, 2));
         memoArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
 
-        IMEControl.setImeOnIfFocused(memoArea);
+        // Tab でフォーカス移動
+        InputMap im = memoArea.getInputMap();
+        ActionMap am = memoArea.getActionMap();
+        im.put(KeyStroke.getKeyStroke("TAB"), "focusNext");
+        am.put("focusNext", new ProxyAction(FocusManager.getCurrentManager()::focusNextComponent));
+        im.put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
+        am.put("focusPrevious", new ProxyAction(FocusManager.getCurrentManager()::focusPreviousComponent));
+
         // isReadOnly対応
         memoArea.setEnabled(!context.isReadOnly());
 
@@ -148,10 +156,12 @@ public class MemoInspector implements IInspector {
         return CATEGORY.title();
     }
 
+    public JTextArea getMemoArea() { return memoArea; }
+
     /**
      * 関連文書に応じた Border を返す.
      *
-     * @return
+     * @return Border
      */
     @Override
     public Border getBorder() {
@@ -270,7 +280,7 @@ public class MemoInspector implements IInspector {
     /**
      * メモ内容に禁忌等の注意事項があるかどうか.
      *
-     * @return
+     * @return contains or not
      */
     public boolean containsContraindication() {
         String text = memoArea.getText();
