@@ -1,5 +1,7 @@
 package open.dolphin.laf;
 
+import open.dolphin.event.ProxyAction;
+
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTableUI;
@@ -78,6 +80,14 @@ public class MyTableUI extends BasicTableUI {
                 //}
             }
         });
+
+        // Goto Bottom by 'G'
+        t.getInputMap().put(KeyStroke.getKeyStroke("shift G"), "gotoBottom");
+        t.getActionMap().put("gotoBottom", new ProxyAction(() -> {
+            int r = t.getRowCount() - 1;
+            t.getSelectionModel().setSelectionInterval(r, r);
+            t.scrollRectToVisible(t.getCellRect(r, 0, false));
+        }));
     }
 
     @Override
