@@ -318,6 +318,11 @@ public class PatientSearchImpl extends AbstractMainComponent {
         // command-F で search field にフォーカスする裏コマンド
         table.getInputMap().put(KeyStroke.getKeyStroke("meta F"), "showWaitingList");
         table.getActionMap().put("showWaitingList", new ProxyAction(((Dolphin)getContext())::showPatientSearch));
+
+        // ENTER の行送りをやめる
+        table.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "doNothing");
+        table.getInputMap().put(KeyStroke.getKeyStroke("shift ENTER"), "doNothing");
+        table.getActionMap().put("doNothing", new ProxyAction(() -> {}));
     }
 
     /**

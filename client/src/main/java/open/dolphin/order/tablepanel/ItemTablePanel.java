@@ -23,6 +23,7 @@ import java.awt.event.MouseMotionListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * ItemTablePanel.
@@ -226,10 +227,13 @@ public class ItemTablePanel extends JPanel {
             de.setClickCountToStart(ccts);
             column.setCellEditor(de);
 
+            // カラム幅を固定しないカラム
+            String[] openColumn = new String[] {"診療内容", "疾患名"};
+
             // カラム幅を設定する
             column.setPreferredWidth(columnWidth[i]);
-            if (!tableModel.getColumnName(i).contains("診療内容")) {
-                column.setMaxWidth(columnWidth[i]); // 診療内容コラム以外のコラム幅を固定する
+            if (Stream.of(openColumn).noneMatch(tableModel.getColumnName(i)::contains)) {
+                column.setMaxWidth(columnWidth[i]); // 固定する
             }
         }
 
@@ -265,6 +269,51 @@ public class ItemTablePanel extends JPanel {
         am.put("focusNext", new ProxyAction(FocusManager.getCurrentManager()::focusNextComponent));
         im.put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
         am.put("focusPrevious", new ProxyAction(FocusManager.getCurrentManager()::focusPreviousComponent));
+
+        // ENTER キーで cell editor を activate する
+        im.put(KeyStroke.getKeyStroke("ENTER"), "startEditing");
+        am.put("startEditing", new ProxyAction(() -> {
+            int row = table.getSelectedRow();
+            if (row < 0) { return; }
+            MasterItem item = tableModel.getObject(row);
+
+            int activeCol = item.getCode().startsWith("810")
+                ? 1 // コメントコードの場合 col=1 (診療内容) を activate
+                : item.getCode().startsWith("6")
+                ? 2 // 薬剤コードの場合 col=2 (数量)
+                : item.getCode().startsWith("001000")
+                ? 5 // 用法コードの場合 col=5 (回数)
+                : 0;
+
+            if (table.isCellEditable(row, activeCol)) {
+                PNSCellEditor editor = (PNSCellEditor) table.getColumnModel().getColumn(activeCol).getCellEditor();
+                Focuser.requestFocus(editor.getComponent());
+                table.editCellAt(row, activeCol);
+            }
+        }));
+
+        im.put(KeyStroke.getKeyStroke("shift UP"), "moveUp");
+        am.put("moveUp", new ProxyAction(() -> {
+            int row = table.getSelectedRow();
+            if (row <= 0) { return; }
+            // 上の項目と入れ替えて，選択を1つあげる
+            MasterItem target = tableModel.getObject(row);
+            tableModel.deleteRow(row);
+            tableModel.addRow(row - 1, target);
+            table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
+        }));
+
+        im.put(KeyStroke.getKeyStroke("shift DOWN"), "moveDown");
+        am.put("moveDown", new ProxyAction(() -> {
+            int row = table.getSelectedRow();
+            if (row < 0 || row >= table.getRowCount() - 1) { return; }
+            // 下の項目と入れ替えて，選択を1つさげる
+            MasterItem target = tableModel.getObject(row);
+            tableModel.deleteRow(row);
+            tableModel.addRow(row + 1, target);
+
+            table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
+        }));
 
         // クリアボタンを生成する
         clearButton = new JButton(CLEAR_BUTTON_IMAGE);

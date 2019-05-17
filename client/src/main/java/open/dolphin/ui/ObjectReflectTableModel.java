@@ -107,7 +107,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      *
      * @param row 行インデックス
      * @param col 列インデックス
-     * @return
+     * @return Value
      */
     @Override
     public Object getValueAt(int row, int col) {
@@ -227,7 +227,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
 
     public void addRow(int index, T item) {
         if (item != null && index > -1 && objectList != null) {
-            if ((objectList.isEmpty() && index == 0) || (index < objectList.size())) {
+            if ((objectList.isEmpty() && index == 0) || (index <= objectList.size())) {
                 objectList.add(index, item);
                 fireTableRowsInserted(index, index);
             }

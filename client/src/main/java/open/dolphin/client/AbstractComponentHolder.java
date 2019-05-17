@@ -1,8 +1,10 @@
 package open.dolphin.client;
 
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.MouseHelper;
 import open.dolphin.ui.Focuser;
 
+import javax.swing.FocusManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -34,10 +36,21 @@ public abstract class AbstractComponentHolder extends JLabel implements Componen
         addMouseListener(this);
         addMouseMotionListener(this);
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        ActionMap map = this.getActionMap();
-        map.put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
-        map.put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
-        map.put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
+        ActionMap am = this.getActionMap();
+        am.put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
+        am.put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
+        am.put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
+
+        // tab でフォーカス移動
+        InputMap im = this.getInputMap();
+        im.put(KeyStroke.getKeyStroke("TAB"), "focusNext");
+        am.put("focusNext", new ProxyAction(() -> SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusNextComponent)));
+        im.put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
+        am.put("focusPrevious", new ProxyAction(() -> SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusPreviousComponent)));
+
+        // SPACE で edit
+        im.put(KeyStroke.getKeyStroke("SPACE"), "startEdit");
+        am.put("startEdit", new ProxyAction(this::edit));
     }
 
     public boolean isEditable() {

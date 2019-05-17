@@ -10,7 +10,6 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.PNSBorderFactory;
 import org.apache.log4j.Logger;
 
-import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.Position;
@@ -419,12 +418,6 @@ public final class StampHolder extends AbstractComponentHolder {
                 clipboard.setContents(new StringSelection(text.toString()), null);
             }
         }));
-
-        // tab でフォーカス移動
-        im.put(KeyStroke.getKeyStroke("TAB"), "focusNext");
-        am.put("focusNext", new ProxyAction(() -> SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusNextComponent)));
-        im.put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
-        am.put("focusPrevious", new ProxyAction(() -> SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusPreviousComponent)));
     }
 
     /**

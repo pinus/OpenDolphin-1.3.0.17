@@ -4,12 +4,15 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.dto.OrcaEntry;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.ui.PNSCellEditor;
 import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
@@ -55,6 +58,18 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     private void init() {
         // フィールド変数のコピー
         table = getTable();
+        table.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "startEdit");
+        table.getActionMap().put("startEdit", new ProxyAction(() -> {
+            int row = table.getSelectedRow();
+            int col = 2; // エリアス
+
+            if (row >= 0 && table.isCellEditable(row, col)) {
+                PNSCellEditor editor = (PNSCellEditor) table.getColumnModel().getColumn(col).getCellEditor();
+                Focuser.requestFocus(editor.getComponent());
+                table.editCellAt(row, col);
+            }
+        }));
+
         tableModel = getTableModel();
         removeButton = getRemoveButton();
         clearButton = getClearButton();
