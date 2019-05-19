@@ -287,11 +287,24 @@ public class MasterSearchPanel extends JPanel {
             }
         });
 
-        // ENTER で選択データを ItemTablePanel に送る
+        // ENTER/SPACE で選択データを ItemTablePanel に送る
         InputMap im = table.getInputMap();
         ActionMap am = table.getActionMap();
         im.put(KeyStroke.getKeyStroke("ENTER"), "sendData");
+        im.put(KeyStroke.getKeyStroke("SPACE"), "sendData");
         am.put("sendData", new ProxyAction(this::sendSelectedToItemTablePanel));
+
+        // UP キーでシームレスに search field へ移動する
+        im.put(KeyStroke.getKeyStroke("UP"), "selectPreviousRow");
+        Action up = am.get("selectPreviousRow");
+        am.put("selectPreviousRow", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = table.getSelectedRow();
+                if (row == 0) { FocusManager.getCurrentManager().focusPreviousComponent(); }
+                else { up.actionPerformed(e); }
+            }
+        });
 
         // focus 移動
         im.put(KeyStroke.getKeyStroke("TAB"), "focusNext");

@@ -17,6 +17,7 @@ import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -258,11 +259,25 @@ public class ItemTablePanel extends JPanel {
         removeButton.addActionListener(e -> removeSelectedItem());
         removeButton.setToolTipText(TOOLTIP_DELETE_TEXT);
 
-        //　delete key で remove ボタンを押す
+        //　DELETE キーで remove ボタンを押す
         InputMap im = table.getInputMap();
         ActionMap am = table.getActionMap();
         im.put(KeyStroke.getKeyStroke("BACK_SPACE"), "remove");
         am.put("remove", new ProxyAction(removeButton::doClick));
+
+        // DOWN キーでシームレスに search field へ移動する
+        im.put(KeyStroke.getKeyStroke("DOWN"), "selectNextRow");
+        Action down = am.get("selectNextRow");
+        am.put("selectNextRow", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (table.getSelectedRow() == table.getRowCount() - 1) {
+                    FocusManager.getCurrentManager().focusNextComponent();
+                } else {
+                    down.actionPerformed(e);
+                }
+            }
+        });
 
         // focus 移動
         im.put(KeyStroke.getKeyStroke("TAB"), "focusNext");
@@ -292,6 +307,7 @@ public class ItemTablePanel extends JPanel {
             }
         }));
 
+        // SHIFT+UP/DOWN で項目を上下に移動する
         im.put(KeyStroke.getKeyStroke("shift UP"), "moveUp");
         am.put("moveUp", new ProxyAction(() -> {
             int row = table.getSelectedRow();

@@ -1,7 +1,5 @@
 package open.dolphin.laf;
 
-import open.dolphin.event.ProxyAction;
-
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTableUI;
@@ -15,7 +13,7 @@ import java.awt.event.MouseEvent;
 /**
  * ストライプなテーブルUI.
  *
- * @autho pns
+ * @author pns
  */
 public class MyTableUI extends BasicTableUI {
 
@@ -82,12 +80,7 @@ public class MyTableUI extends BasicTableUI {
         });
 
         // Goto Bottom by 'G'
-        t.getInputMap().put(KeyStroke.getKeyStroke("shift G"), "gotoBottom");
-        t.getActionMap().put("gotoBottom", new ProxyAction(() -> {
-            int r = t.getRowCount() - 1;
-            t.getSelectionModel().setSelectionInterval(r, r);
-            t.scrollRectToVisible(t.getCellRect(r, 0, false));
-        }));
+        t.getInputMap().put(KeyStroke.getKeyStroke("shift G"), "selectLastRow");
     }
 
     @Override
@@ -117,21 +110,21 @@ public class MyTableUI extends BasicTableUI {
     /**
      * ClipBound.y を越えた初めての Cell の Y 座標とその行数.
      *
-     * @param clipY
-     * @return
+     * @param clipY ClipBound.y
+     * @return array { Y, row }
      */
     private int[] getTopY(int clipY) {
 
         if (table.getRowCount() > 0) {
             int rowHeight = table.getRowHeight();
             int row = 0;
-            int ｙ = table.getCellRect(0, 0, true).y;
+            int y = table.getCellRect(0, 0, true).y;
 
-            while (ｙ < clipY) {
-                ｙ += rowHeight;
+            while (y < clipY) {
+                y += rowHeight;
                 row++;
             }
-            return new int[]{ｙ, row};
+            return new int[]{y, row};
 
         } else {
             return new int[]{0, 0};
