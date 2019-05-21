@@ -96,18 +96,19 @@ public class HtmlHelper {
         List<Tag> trs = new ArrayList<>();
 
         for (ClaimItem item : items) {
-            if (item.getCode().matches("0085[0-9]{5}")
-                || item.getCode().matches("001000[0-9]{3}")
-                || item.getCode().matches("0992099[0-9]{2}")) {
-                trs.add(tr().with(
-                    td("　"),
-                    td(item.getName()).attr(COLSPAN, 3).attr(WIDTH, width),
-                    td(" ")));
-
-            } else if (item.getCode().matches("810000001")) {
+            if (item.getCode().matches("810000001")) {
                 trs.add(tr().with(
                     td("　"),
                     td().attr(COLSPAN, 3).with(tag(FONT).attr(COLOR, color).withText(item.getName())),
+                    td(" ")));
+
+            } else if (item.getCode().matches("008[0-9]{6}") // コメントコード 008xxxxxx
+                || item.getCode().startsWith("8") // コメントコード 8xxxxxxxx
+                || item.getCode().matches("0992099[0-9]{2}") // 一般名記載, 後発変更不可, etc
+                || item.getCode().matches("001000[0-9]{3}")) { // 用法
+                trs.add(tr().with(
+                    td("　"),
+                    td(item.getName()).attr(COLSPAN, 3).attr(WIDTH, width),
                     td(" ")));
 
             } else {
