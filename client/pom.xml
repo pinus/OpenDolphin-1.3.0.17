@@ -174,7 +174,10 @@
                                            displayname="${macosx.app.name}"
                                            identifier="${macosx.app.name}"
                                            mainclassname="open.dolphin.client.Dolphin"
-                                           icon="${basedir}/icons/${icon.name}">
+                                           icon="${basedir}/icons/${icon.name}"
+                                           shortversion="${maven.build.timestamp}"
+                                           version="${project.version}-${maven.build.timestamp}"
+                                           >
                                     <!--
                                                         <runtime dir="${env.JAVA_HOME}" />
                                         -->
