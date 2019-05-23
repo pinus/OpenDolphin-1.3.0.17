@@ -621,11 +621,7 @@ public class MenuFactory {
         action.putValue(GUIConst.KEY_MENU_ITEM, item); // action から JMenuItem を取得できるようにする
         item.setAction(action);
         if (Objects.nonNull(keyStroke)) {
-            if (keyStroke.contains("ctrl")) {
-                 if (ClientContext.isMac()) {
-                     item.setAccelerator(KeyStroke.getKeyStroke(keyStroke));
-                 }
-            } else {
+            if (!keyStroke.contains("ctrl") || ClientContext.isMac()) {
                 item.setAccelerator(KeyStroke.getKeyStroke(String.join(" ", SHORT_CUT_KEY_MASK, keyStroke)));
             }
        }
