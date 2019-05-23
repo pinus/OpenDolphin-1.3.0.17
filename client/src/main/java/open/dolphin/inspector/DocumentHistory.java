@@ -93,9 +93,6 @@ public class DocumentHistory implements IInspector {
         // サイズ
         view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 350));
 
-        // selectAll (command-A) を横取りするため削除
-        view.getInputMap().remove(KeyStroke.getKeyStroke("meta A"));
-
         // 履歴テーブルのパラメータを取得する
         List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" 確定日", String.class, "getFirstConfirmDateTrimTime"),
@@ -177,6 +174,9 @@ public class DocumentHistory implements IInspector {
         // key map
         InputMap im = view.getTable().getInputMap();
         ActionMap am = view.getTable().getActionMap();
+
+        // selectAll (command-A) を横取りするため削除
+        im.remove(KeyStroke.getKeyStroke("meta A"));
 
         // ENTER で cell edit 開始
         im.put(KeyStroke.getKeyStroke("ENTER"), "startEditing");

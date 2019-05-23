@@ -320,9 +320,7 @@ public class MenuFactory {
     }
 
     @MenuAction
-    public void searchStamp() {
-        chart.sendToChain(GUIConst.ACTION_SEARCH_STAMP);
-    }
+    public void searchStamp() { chart.sendToChain(GUIConst.ACTION_SEARCH_STAMP); }
 
     public void build(JMenuBar menuBar) {
 
@@ -500,7 +498,7 @@ public class MenuFactory {
         // Tool メニュー
         //
         JMenu tool = createMenu("ツール", GUIConst.ACTION_TOOL_MENU);
-        tool.add(createMenuItem("スタンプ検索", GUIConst.ACTION_SEARCH_STAMP, "shift F"));
+        tool.add(createMenuItem("スタンプ検索", GUIConst.ACTION_SEARCH_STAMP, "ctrl F"));
         tool.add(createMenuItem("受付リスト", GUIConst.ACTION_SHOW_WAITING_LIST, "1"));
         tool.add(createMenuItem("シェーマ箱", GUIConst.ACTION_SHOW_SCHEMABOX, "2"));
         tool.add(createMenuItem("患者検索", GUIConst.ACTION_SHOW_PATIENT_SEARCH, "3"));
@@ -623,8 +621,14 @@ public class MenuFactory {
         action.putValue(GUIConst.KEY_MENU_ITEM, item); // action から JMenuItem を取得できるようにする
         item.setAction(action);
         if (Objects.nonNull(keyStroke)) {
-            item.setAccelerator(KeyStroke.getKeyStroke(SHORT_CUT_KEY_MASK + " " + keyStroke));
-        }
+            if (keyStroke.contains("ctrl")) {
+                 if (ClientContext.isMac()) {
+                     item.setAccelerator(KeyStroke.getKeyStroke(keyStroke));
+                 }
+            } else {
+                item.setAccelerator(KeyStroke.getKeyStroke(String.join(" ", SHORT_CUT_KEY_MASK, keyStroke)));
+            }
+       }
         return item;
     }
 
