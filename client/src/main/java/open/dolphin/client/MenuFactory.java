@@ -498,7 +498,7 @@ public class MenuFactory {
         // Tool メニュー
         //
         JMenu tool = createMenu("ツール", GUIConst.ACTION_TOOL_MENU);
-        tool.add(createMenuItem("スタンプ検索", GUIConst.ACTION_SEARCH_STAMP, "ctrl F"));
+        tool.add(createMenuItem("スタンプ検索", GUIConst.ACTION_SEARCH_STAMP, "shift F"));
         tool.add(createMenuItem("受付リスト", GUIConst.ACTION_SHOW_WAITING_LIST, "1"));
         tool.add(createMenuItem("シェーマ箱", GUIConst.ACTION_SHOW_SCHEMABOX, "2"));
         tool.add(createMenuItem("患者検索", GUIConst.ACTION_SHOW_PATIENT_SEARCH, "3"));
