@@ -2,6 +2,7 @@ package open.dolphin.client;
 
 import com.sun.glass.events.KeyEvent;
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.GUIDGenerator;
 import open.dolphin.helper.PreferencesUtils;
 import open.dolphin.helper.Task;
@@ -764,8 +765,13 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         frame.setVisible(true);
 
-        // IME off
-        IMEControl.setImeOff(getFrame());
+        // command ctrl F で検索フィールドにフォーカスする裏コマンド
+        if (ClientContext.isMac()) {
+            InputMap im = windowSupport.getFrame().getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+            ActionMap am = windowSupport.getFrame().getRootPane().getActionMap();
+            im.put(KeyStroke.getKeyStroke("meta ctrl F"), GUIConst.ACTION_SEARCH_STAMP);
+            am.put(GUIConst.ACTION_SEARCH_STAMP, new ProxyAction(mediator::searchStamp));
+        }
     }
 
     /**
