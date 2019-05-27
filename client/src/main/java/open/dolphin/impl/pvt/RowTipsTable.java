@@ -7,6 +7,8 @@ import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 
 import javax.swing.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 
@@ -16,6 +18,18 @@ import java.util.Date;
  */
 public class RowTipsTable extends JTable {
     private static final long serialVersionUID = 1L;
+
+    public RowTipsTable() {
+        // フォーカス取ったら選択する
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (getRowCount() > 0 && getSelectedRow() < 0) {
+                    getSelectionModel().setSelectionInterval(0, 0);
+                }
+            }
+        });
+    }
 
     @Override
     public String getToolTipText(MouseEvent e) {

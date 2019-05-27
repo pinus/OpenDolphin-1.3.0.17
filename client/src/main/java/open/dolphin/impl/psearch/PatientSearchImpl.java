@@ -323,6 +323,11 @@ public class PatientSearchImpl extends AbstractMainComponent {
         table.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "doNothing");
         table.getInputMap().put(KeyStroke.getKeyStroke("shift ENTER"), "doNothing");
         table.getActionMap().put("doNothing", new ProxyAction(() -> {}));
+
+        // Tab キー
+        table.getInputMap().put(KeyStroke.getKeyStroke("TAB"), "focusPrevious");
+        table.getInputMap().put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
+        table.getActionMap().put("focusPrevious", new ProxyAction(KeyboardFocusManager.getCurrentKeyboardFocusManager()::focusPreviousComponent));
     }
 
     /**

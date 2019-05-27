@@ -293,6 +293,11 @@ public class WaitingListImpl extends AbstractMainComponent {
         pvtTable.getInputMap().put(KeyStroke.getKeyStroke("shift ENTER"), "doNothing");
         pvtTable.getActionMap().put("doNothing", new ProxyAction(() -> {}));
 
+        // Tab キー
+        pvtTable.getInputMap().put(KeyStroke.getKeyStroke("TAB"), "focusPrevious");
+        pvtTable.getInputMap().put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
+        pvtTable.getActionMap().put("focusPrevious", new ProxyAction(KeyboardFocusManager.getCurrentKeyboardFocusManager()::focusPreviousComponent));
+
         // pvt 受信待ち endpoint
         PvtEndpoint endpoint = new PvtEndpoint();
         DolphinClientContext.getContext().setEndpoint(endpoint);

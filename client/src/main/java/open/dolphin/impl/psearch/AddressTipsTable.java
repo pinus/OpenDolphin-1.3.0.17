@@ -4,6 +4,8 @@ import open.dolphin.infomodel.PatientModel;
 import open.dolphin.ui.ObjectReflectTableModel;
 
 import javax.swing.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
 
 /**
@@ -12,6 +14,18 @@ import java.awt.event.MouseEvent;
  */
 public class AddressTipsTable extends JTable {
     private static final long serialVersionUID = -1150173229895931042L;
+
+    public AddressTipsTable() {
+        // フォーカス取ったら選択する
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (getRowCount() > 0 && getSelectedRow() < 0) {
+                    getSelectionModel().setSelectionInterval(0, 0);
+                }
+            }
+        });
+    }
 
     @Override
     public String getToolTipText(MouseEvent e) {
