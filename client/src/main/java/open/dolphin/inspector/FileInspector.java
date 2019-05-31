@@ -153,7 +153,7 @@ public class FileInspector implements IInspector {
     private class FileSelectionListener extends MouseAdapter {
 
         @Override
-        public void mouseClicked(MouseEvent e) {
+        public void mousePressed(MouseEvent e) {
             Point mousePoint = e.getPoint();
             int index = list.locationToIndex(mousePoint);
             if (index == -1) {

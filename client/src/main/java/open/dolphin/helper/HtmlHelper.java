@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static j2html.TagCreator.*;
 
@@ -201,9 +203,18 @@ public class HtmlHelper {
         List<Tag> trs = new ArrayList<>();
 
         if (fold) {
+            String itemNames = bundle.getClaimItem() == null
+                ? null
+                : Stream.of(bundle.getClaimItem()).map(item -> {
+                String num = item.getNumber();
+                if (num == null || "".equals(num) || "1".equals(num)) { num = ""; }
+                else { num = "(" + num + ")"; }
+                return item.getName() + num;
+            }).collect(Collectors.joining(","));
+
             trs.add(tr().with(
                 td("・").attr(VALIGN, TOP),
-                td(bundle.getItemNames()).attr(COLSPAN, 2).attr(WIDTH, width),
+                td(itemNames).attr(COLSPAN, 2).attr(WIDTH, width),
                 td(" ")
             ));
         } else {

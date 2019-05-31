@@ -294,8 +294,8 @@ public class ItemTablePanel extends JPanel {
 
             int activeCol = item.getCode().startsWith("810")
                 ? 1 // コメントコードの場合 col=1 (診療内容) を activate
-                : item.getCode().startsWith("6")
-                ? 2 // 薬剤コードの場合 col=2 (数量)
+                : item.getCode().startsWith("6") || item.getCode().startsWith("160")
+                ? 2 // 薬剤 or 検査コードの場合 col=2 (数量)
                 : item.getCode().startsWith("001000")
                 ? 5 // 用法コードの場合 col=5 (回数)
                 : 0;
