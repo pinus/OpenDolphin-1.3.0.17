@@ -117,19 +117,35 @@ public class PvtClient {
 
                 } else if (event.equals(SubscriptionEvent.INFORMATION.eventName())) {
                     // 患者登録通知 - pvt にある患者情報が orca で書き換えられた場合の対応
-                    if ("modify".equals(body.getPatient_Mode())) {
-                        DummyHeader.set();
-                        String ptId = body.getPatient_ID(); // 患者番号 002906
-                        List<PatientVisitModel> pvts = getPvtListToday().stream()
+                    DummyHeader.set();
+                    String ptId = body.getPatient_ID(); // 患者番号 002906
+
+                    switch (body.getPatient_Mode()) {
+                        // pvt にある患者情報が orca で書き換えられた場合の対応
+                        case "modify":
+                            List<PatientVisitModel> pvts = getPvtListToday().stream()
                                 .filter(pvt -> pvt.getPatientId().equals(ptId)).collect(Collectors.toList());
 
-                        pvts.stream().forEach(pvt -> {
-                            pvtBuilder.build(body);
-                            PatientModel patientModel = pvtBuilder.getProduct().getPatient();
-                            pvt.setPatient(patientModel);
-                            pvtService.addPvt(pvt);
-                        });
-                        logger.info("modify patient info [" + ptId + "]");
+                            pvts.stream().forEach(pvt -> {
+                                pvtBuilder.build(body);
+                                PatientModel patientModel = pvtBuilder.getProduct().getPatient();
+                                pvt.setPatient(patientModel);
+                                pvtService.addPvt(pvt);
+                                logger.info("modify patient info pvt state = " + pvt.getState());
+                            });
+                            logger.info("modify patient info [" + ptId + "]");
+                            break;
+
+                        // pvt にある患者情報が orca で削除された場合の対応
+                        case "delete":
+                            long removePk = getPvtListToday().stream()
+                                .filter(pvt -> pvt.getPatientId().equals(ptId))
+                                .map(PatientVisitModel::getId).findAny().orElse(0L);
+                            if (removePk != 0) {
+                                pvtService.removePvt(removePk);
+                            }
+                            logger.info("pvt patient deleted [" + ptId + "]");
+                            break;
                     }
                 }
                 break;
