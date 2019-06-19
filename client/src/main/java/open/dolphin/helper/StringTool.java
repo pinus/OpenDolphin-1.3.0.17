@@ -149,7 +149,7 @@ public final class StringTool {
      */
     public static boolean isZenkakuNumber(char c) {
         Character test = c;
-        return (test.compareTo(ZENKAKU_NUMBER[0]) >= 0 && test.compareTo(ZENKAKU_NUMBER[1]) <= 0 || test == '．');
+        return (test.compareTo(ZENKAKU_NUMBER[0]) >= 0 && test.compareTo(ZENKAKU_NUMBER[1]) <= 0);
     }
 
     /**
@@ -182,7 +182,7 @@ public final class StringTool {
      */
     public static boolean isHankakuNumber(char c) {
         Character test = c;
-        return (test.compareTo(HANKAKU_NUMBER[0]) >= 0 && test.compareTo(HANKAKU_NUMBER[1]) <= 0 || test == '.');
+        return test.compareTo(HANKAKU_NUMBER[0]) >= 0 && test.compareTo(HANKAKU_NUMBER[1]) <= 0;
     }
 
     /**

@@ -75,7 +75,7 @@ public class DailyDoseStringTool {
         // 数字の始まりを検出
         for (int i = str.indexOf("日量") + "日量".length(); i < str.length(); i++) {
             char c = str.charAt(i);
-            if (StringTool.isZenkakuNumber(c) || StringTool.isHankakuNumber(c)) {
+            if (StringTool.isZenkakuNumber(c) || StringTool.isHankakuNumber(c) || c == '.' || c == '．') {
                 index[0] = i;
                 break;
             }
@@ -83,7 +83,7 @@ public class DailyDoseStringTool {
         // 数字の終了を検出
         for (int i = index[0]; i < str.length(); i++) {
             char c = str.charAt(i);
-            if (!StringTool.isZenkakuNumber(c) && !StringTool.isHankakuNumber(c)) {
+            if (!StringTool.isZenkakuNumber(c) && !StringTool.isHankakuNumber(c) && c != '.' && c != '．') {
                 index[1] = i;
                 break;
             }
