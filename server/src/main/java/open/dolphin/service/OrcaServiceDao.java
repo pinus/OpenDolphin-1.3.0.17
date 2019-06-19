@@ -175,8 +175,8 @@ public class OrcaServiceDao {
      * @return RegisteredDiagnosisModel のリスト
      */
     public List<OrcaEntry> findDiagnosis(String keyword) {
-        String sql = "select byomeicd, byomei, byomeikana, syusaiymd, haisiymd, icd10_1 from tbl_byomei "
-                + "where (byomei ~ ? or byomeikana ~ ? or byomeicd ~ ?) and haisiymd >= ? order by icd10_1, byomeicd";
+        String sql = "select byomeicd, byomei, byomeikana, syusaiymd, haisiymd, icd10_1_2 from tbl_byomei "
+                + "where (byomei ~ ? or byomeikana ~ ? or byomeicd ~ ?) and haisiymd >= ? order by icd10_1_2, byomeicd";
 
         List<OrcaEntry> ret = new ArrayList<>();
 
@@ -204,8 +204,8 @@ public class OrcaServiceDao {
             return ret;
         } // 空の場合
 
-        String sql = "select byomeicd, byomei, byomeikana, syusaiymd, haisiymd, icd10_1 from tbl_byomei "
-                + "where byomeicd in (?) order by icd10_1, byomeicd";
+        String sql = "select byomeicd, byomei, byomeikana, syusaiymd, haisiymd, icd10_1_2 from tbl_byomei "
+                + "where byomeicd in (?) order by icd10_1_2, byomeicd";
 
         if (srycds.size() > 1) {
             sql = sql.replace("?", "?" + StringUtils.repeat(",?", srycds.size() - 1));
