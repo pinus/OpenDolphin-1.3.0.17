@@ -69,6 +69,11 @@ public class PublicinsuranceInformation {
     private String PublicInsurance_Paykbn_Number;
 
     /**
+     * 確認日付(公費) (例: 2016-06-12)
+     */
+    private String Certificate_CheckDate;
+
+    /**
      * 公費の種類 (例: 019).
      * ※２：一箇所でも設定されていれば、一致する保険組合せが対象に設定されます.
      * 公費単独の場合は、主保険情報は設定する必要はありません。
@@ -286,5 +291,23 @@ public class PublicinsuranceInformation {
      */
     public void setPublicInsurance_Paykbn_Number(String PublicInsurance_Paykbn_Number) {
         this.PublicInsurance_Paykbn_Number = PublicInsurance_Paykbn_Number;
+    }
+
+    /**
+     * Certificate_CheckDate
+     *
+     * @return Certificate_CheckDate
+     */
+    public String getCertificate_CheckDate() {
+        return Certificate_CheckDate;
+    }
+
+    /**
+     * Certificate_CheckDate
+     *
+     * @param Certificate_CheckDate to set
+     */
+    public void setCertificate_CheckDate(String Certificate_CheckDate) {
+        this.Certificate_CheckDate = Certificate_CheckDate;
     }
 }

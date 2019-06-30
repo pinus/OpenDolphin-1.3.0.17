@@ -124,6 +124,11 @@ public class Patientmodreq {
     private HealthInsuranceInformation HealthInsurance_Information;
 
     /**
+     * 支払情報 (例:  )
+     */
+    private PaymentInformation Payment_Information;
+
+    /**
      * 変更キー (例: 2)
      *
      * @return the Mod_Key

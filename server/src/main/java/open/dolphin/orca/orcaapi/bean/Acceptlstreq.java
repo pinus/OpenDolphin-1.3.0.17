@@ -22,9 +22,14 @@ public class Acceptlstreq {
     private String Physician_Code;
 
     /**
-     * 診療内容区分※３(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断 、07:予防注射、99:該当なし) (例: 01)
+     * 診療内容区分※３(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断、07:予防注射、99:該当なし) (例: 01)
      */
     private String Medical_Information;
+
+    /**
+     * 受付画面順指示 (例: True)
+     */
+    private String Display_Order_Sort;
 
     /**
      * 受付日 (例: 2010-12-20)
@@ -96,5 +101,23 @@ public class Acceptlstreq {
      */
     public void setMedical_Information(String Medical_Information) {
         this.Medical_Information = Medical_Information;
+    }
+
+    /**
+     * Display_Order_Sort
+     *
+     * @return Display_Order_Sort
+     */
+    public String getDisplay_Order_Sort() {
+        return Display_Order_Sort;
+    }
+
+    /**
+     * Display_Order_Sort
+     *
+     * @param Display_Order_Sort to set
+     */
+    public void setDisplay_Order_Sort(String Display_Order_Sort) {
+        this.Display_Order_Sort = Display_Order_Sort;
     }
 }

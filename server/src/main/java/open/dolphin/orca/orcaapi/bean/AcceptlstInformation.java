@@ -37,7 +37,7 @@ public class AcceptlstInformation {
     private String Physician_WholeName;
 
     /**
-     * 診療内容区分※５(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断 、07:予防注射、99:該当なし) (例: 01)
+     * 診療内容区分※５(01:診察１、02:薬のみ、03:注射のみ、04:検査のみ、05:リハビリテーション、06:健康診断、07:予防注射、99:該当なし) (例: 01)
      */
     private String Medical_Information;
 
@@ -75,6 +75,11 @@ public class AcceptlstInformation {
      * メモ登録情報 (例:  )
      */
     private PatientMemoInformation Patient_Memo_Information;
+
+    /**
+     * 並び順情報 (例:  )
+     */
+    private DisplayOrder Display_Order;
 
     /**
      * 受付時間 (例: 15:30:00)
@@ -326,5 +331,23 @@ public class AcceptlstInformation {
      */
     public void setPatient_Memo_Information(PatientMemoInformation Patient_Memo_Information) {
         this.Patient_Memo_Information = Patient_Memo_Information;
+    }
+
+    /**
+     * Display_Order
+     *
+     * @return Display_Order
+     */
+    public DisplayOrder getDisplay_Order() {
+        return Display_Order;
+    }
+
+    /**
+     * Display_Order
+     *
+     * @param Display_Order to set
+     */
+    public void setDisplay_Order(DisplayOrder Display_Order) {
+        this.Display_Order = Display_Order;
     }
 }
