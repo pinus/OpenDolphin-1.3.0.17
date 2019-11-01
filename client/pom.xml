@@ -13,10 +13,10 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- versions -->
-        <version.org.jboss.resteasy>3.0.19.Final</version.org.jboss.resteasy>
-        <version.org.hibernate>5.0.10.Final</version.org.hibernate>
-        <version.org.glassfish.tyrus.bundles>1.13</version.org.glassfish.tyrus.bundles>
-        <version.org.postgresql>42.1.4</version.org.postgresql>
+        <version.org.jboss.resteasy>3.9.0.Final</version.org.jboss.resteasy>
+        <version.org.hibernate>5.3.12.Final</version.org.hibernate>
+        <version.org.glassfish.tyrus.bundles>1.15</version.org.glassfish.tyrus.bundles>
+        <version.org.postgresql>42.2.8</version.org.postgresql>
 
     </properties>
 
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
+            <version>1.2.17</version>
         </dependency>
         <dependency>
             <groupId>com.j2html</groupId>
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
-            <version>1.4.5</version>
+            <version>1.4.7</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.intellij</groupId>
             <artifactId>annotations</artifactId>
-            <version>9.0.4</version>
+            <version>12.0</version>
         </dependency>
     </dependencies>
 
