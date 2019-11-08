@@ -16,8 +16,6 @@
         <version.org.jboss.resteasy>3.9.0.Final</version.org.jboss.resteasy>
         <version.org.hibernate>5.3.12.Final</version.org.hibernate>
         <version.org.glassfish.tyrus.bundles>1.15</version.org.glassfish.tyrus.bundles>
-        <version.org.postgresql>42.2.8</version.org.postgresql>
-
     </properties>
 
     <dependencies>
