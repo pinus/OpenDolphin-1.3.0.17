@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- versions -->
-        <version.com.fasterxml.jackson>2.10.0</version.com.fasterxml.jackson>
+        <version.com.fasterxml.jackson>2.9.10</version.com.fasterxml.jackson>
         <version.com.fasterxml.jackson-databind>2.9.10.1</version.com.fasterxml.jackson-databind>
         <version.org.jboss.resteasy>3.9.0.Final</version.org.jboss.resteasy>
         <version.org.hibernate>5.3.13.Final</version.org.hibernate>
