@@ -16,8 +16,9 @@
 
         <!-- versions -->
         <version.com.fasterxml.jackson>2.10.0</version.com.fasterxml.jackson>
+        <version.com.fasterxml.jackson-databind>2.9.10.1</version.com.fasterxml.jackson-databind>
         <version.org.jboss.resteasy>3.9.0.Final</version.org.jboss.resteasy>
-        <version.org.hibernate>5.3.12.Final</version.org.hibernate>
+        <version.org.hibernate>5.3.13.Final</version.org.hibernate>
         <version.org.hibernate.search>5.10.7.Final</version.org.hibernate.search>
         <version.org.apache.lucene>5.5.5</version.org.apache.lucene>
         <version.commons-lang3>3.9</version.commons-lang3>
@@ -81,7 +82,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${version.com.fasterxml.jackson}</version>
+            <version>${version.com.fasterxml.jackson-databind}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
