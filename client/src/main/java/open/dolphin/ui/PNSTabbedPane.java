@@ -104,12 +104,10 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             // ButtonPanel がうまく repaint されないことがある
             parent.addWindowListener(new WindowAdapter() {
                 @Override
-                public void windowActivated(WindowEvent e) {
-                    buttonPanel.repaint();
-                }
-
-                @Override
-                public void windowDeactivated(WindowEvent e) {
+                public void windowOpened(WindowEvent e) {
+                    if (buttonPanel.getComponentCount() != 0) {
+                        buttonPanel.getComponent(0).invalidate();
+                    }
                     buttonPanel.repaint();
                 }
             });
@@ -701,7 +699,9 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
                 // debug code
                 if (((JFrame)parent).getTitle().startsWith("インスペクタ") && buttonCount == 5) {
-                    logger.info(String.format("line:%d,width:%d,visible:%b,%s", lineCount, width, parent.isVisible(), ((JFrame)parent).getTitle()));
+                    logger.info(String.format("line:%d,width:%d,visible:%b,active:%b,showing:%b,valid:%b-%b, %s",
+                        lineCount, width, parent.isVisible(), parent.isActive(), parent.isShowing(),
+                        buttonPanel.isValid(), buttonPanel.getComponent(0).isValid(), ((JFrame)parent).getTitle()));
                 }
 
                 // １行だったら
