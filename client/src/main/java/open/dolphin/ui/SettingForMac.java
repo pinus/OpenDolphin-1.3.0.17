@@ -3,6 +3,7 @@ package open.dolphin.ui;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import open.dolphin.client.Dolphin;
+import open.dolphin.ui.desktop.Desktop;
 import open.dolphin.laf.*;
 
 import javax.swing.*;
@@ -56,18 +57,16 @@ public class SettingForMac {
 
     private static void setMacApplication(final Dolphin context) {
 
-        // Mac Application Menu
-        com.apple.eawt.Application fApplication = com.apple.eawt.Application.getApplication();
-
         // ...について
-        fApplication.setAboutHandler(ae -> context.showAbout());
+        Desktop.getDesktop().setAboutHandler(ae -> context.showAbout());
+
         // 終了
-        fApplication.setQuitHandler((qe, qr) -> {
+        Desktop.getDesktop().setQuitHandler((qe, qr) -> {
             context.processExit();
             qr.cancelQuit();
         });
         // 環境設定
-        fApplication.setPreferencesHandler(pe -> context.doPreference());
+        Desktop.getDesktop().setPreferencesHandler(pe -> context.doPreference());
     }
 
     private static class MyLookAndFeel extends com.apple.laf.AquaLookAndFeel {

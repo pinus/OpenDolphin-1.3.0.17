@@ -1,6 +1,9 @@
 package open.dolphin.ui;
 
 import open.dolphin.client.ClientContext;
+import open.dolphin.ui.desktop.AppForegroundListener;
+import open.dolphin.ui.desktop.AppForegroundEvent;
+import open.dolphin.ui.desktop.Desktop;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -101,33 +104,36 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         if (parent == null) {
             parent = SwingUtilities.windowForComponent(this);
 
-            // ButtonPanel がうまく repaint されないことがある
-            parent.addWindowListener(new WindowAdapter() {
+            AppForegroundListener appForegroundListener = new AppForegroundListener() {
                 @Override
-                public void windowOpened(WindowEvent e) {
-                    if (buttonPanel.getComponentCount() != 0) {
-                        buttonPanel.getComponent(0).invalidate();
-                    }
-                    buttonPanel.repaint();
-                }
-            });
-
-            // AppForegroundListener
-            com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
-            app.addAppEventListener(new com.apple.eawt.AppForegroundListener() {
-                @Override
-                public void appRaisedToForeground(com.apple.eawt.AppEvent.AppForegroundEvent afe) {
+                public void appRaisedToForeground(AppForegroundEvent e) {
                     appForeground = true;
                     buttonPanel.repaint();
                 }
 
                 @Override
-                public void appMovedToBackground(com.apple.eawt.AppEvent.AppForegroundEvent afe) {
+                public void appMovedToBackground(AppForegroundEvent e) {
                     appForeground = false;
                     buttonPanel.repaint();
                 }
-            });
+            };
 
+            parent.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowOpened(WindowEvent e) {
+                    Desktop.getDesktop().addAppEventListener(appForegroundListener);
+
+                    // ButtonPanel がうまく repaint されないことがある
+                    if (buttonPanel.getComponentCount() != 0) {
+                        buttonPanel.getComponent(0).invalidate();
+                    }
+                    buttonPanel.repaint();
+                }
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    Desktop.getDesktop().removeAppEventListener(appForegroundListener);
+                }
+            });
         }
     }
 

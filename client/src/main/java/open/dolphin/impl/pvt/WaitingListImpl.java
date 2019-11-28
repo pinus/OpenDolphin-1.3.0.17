@@ -18,6 +18,7 @@ import open.dolphin.ui.IndentTableCellRenderer;
 import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.sheet.JSheet;
+import open.dolphin.ui.desktop.Taskbar;
 import open.dolphin.util.Gengo;
 import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -405,8 +406,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         pane.setBadge(e);
 
         // Dock のアイコンにバッジを出す
-        com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
-        app.setDockIconBadge(waitingCount == 0 ? null : String.valueOf(waitingCount));
+        Taskbar.getTaskbar().setIconBadge(waitingCount == 0 ? null : String.valueOf(waitingCount));
     }
 
     /**

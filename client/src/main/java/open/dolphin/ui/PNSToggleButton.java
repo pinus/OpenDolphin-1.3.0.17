@@ -1,7 +1,13 @@
 package open.dolphin.ui;
 
+import open.dolphin.ui.desktop.AppForegroundListener;
+import open.dolphin.ui.desktop.AppForegroundEvent;
+import open.dolphin.ui.desktop.Desktop;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Mac風デザインの ToggleButton.
@@ -38,22 +44,29 @@ public class PNSToggleButton extends JToggleButton implements IPNSButton {
         if (parent == null) {
             parent = SwingUtilities.windowForComponent(this);
 
-            // AppForegroundListener
-            com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
-            app.addAppEventListener(new com.apple.eawt.AppForegroundListener() {
+            AppForegroundListener appForegroundListener = new AppForegroundListener() {
                 @Override
-                public void appRaisedToForeground(com.apple.eawt.AppEvent.AppForegroundEvent afe) {
+                public void appRaisedToForeground(AppForegroundEvent e) {
                     appForeground = true;
                     repaint();
                 }
-
                 @Override
-                public void appMovedToBackground(com.apple.eawt.AppEvent.AppForegroundEvent afe) {
+                public void appMovedToBackground(AppForegroundEvent e) {
                     appForeground = false;
                     repaint();
                 }
-            });
+            };
 
+            parent.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowOpened(WindowEvent e) {
+                    Desktop.getDesktop().addAppEventListener(appForegroundListener);
+                }
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    Desktop.getDesktop().removeAppEventListener(appForegroundListener);
+                }
+            });
         }
     }
 
