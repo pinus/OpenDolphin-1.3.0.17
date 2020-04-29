@@ -1,10 +1,19 @@
 package open.dolphin.helper;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataFormatImpl;
+import javax.imageio.metadata.IIOMetadataNode;
+import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -145,5 +154,51 @@ public class ImageHelper {
         } else {
             return icon;
         }
+    }
+
+    /**
+     * javax_imageio_1.0 - Chroma, Compression, Data, Dimension, Transparency
+     *
+     *
+     * @param bytes
+     * @param key
+     * @return
+     */
+    public static String extractMetadata(byte[] bytes, String key) {
+
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
+            ImageReader reader = (ImageReader) ImageIO.getImageReadersByFormatName("png").next();
+            ImageInputStream iis = ImageIO.createImageInputStream(bis);
+            reader.setInput(iis, true);
+
+            IIOMetadata metadata = reader.getImageMetadata(0);
+
+            IIOMetadataNode pnsData = new IIOMetadataNode("PnsData");
+            pnsData.setAttribute("key", key);
+            pnsData.setAttribute("value", "==val==");
+
+            IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
+            root.appendChild(pnsData);
+            ???
+
+            metadata.mergeTree(IIOMetadataFormatImpl.standardMetadataFormatName, root);
+
+            System.out.println("r length " + root.getLength());
+
+            for (int i=0; i < root.getLength(); i++) {
+                System.out.println("node name = " + root.getChildNodes().item(i).getNodeName());
+            }
+
+            IIOMetadataNode r = (IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
+            for (int i=0; i < r.getLength(); i++) {
+                System.out.println("new node name = " + r.getChildNodes().item(i).getNodeName());
+            }
+
+
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
