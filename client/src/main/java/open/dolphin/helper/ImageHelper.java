@@ -1,7 +1,5 @@
 package open.dolphin.helper;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.imageio.*;
@@ -28,11 +26,10 @@ import java.io.InputStream;
 public class ImageHelper {
 
     /**
-     * ImageIcon から BufferedImage に変換.
-     * alpha 対応.
+     * ImageIcon から BufferedImage に変換. alpha 対応.
      *
-     * @param src
-     * @return
+     * @param src source ImageIcon
+     * @return BufferedImage
      */
     public static BufferedImage imageToBufferedImage(ImageIcon src) {
         if (src == null) {
@@ -55,9 +52,9 @@ public class ImageHelper {
     /**
      * inImage の幅と高さの長い方が maxDim になるように縮小する.
      *
-     * @param inImage
-     * @param maxDim
-     * @return
+     * @param inImage BufferedImage
+     * @param maxDim Dimension
+     * @return BufferedImage
      */
     public static BufferedImage getFirstScaledInstance(BufferedImage inImage, int maxDim) {
 
@@ -99,8 +96,8 @@ public class ImageHelper {
     /**
      * Convert Image to ByteArray.
      *
-     * @param image
-     * @return
+     * @param image java.awt.Image
+     * @return byte array in png
      */
     public static byte[] imageToByteArray(Image image) {
 
@@ -128,9 +125,9 @@ public class ImageHelper {
     /**
      * ImageIcon のサイズを dim サイズ以内になるように調節する.
      *
-     * @param icon
-     * @param dim
-     * @return
+     * @param icon ImageIcon
+     * @param dim Dimension
+     * @return adjusted ImageIcon
      */
     public static ImageIcon adjustImageSize(ImageIcon icon, Dimension dim) {
 
@@ -159,13 +156,31 @@ public class ImageHelper {
     }
 
     /**
-     * Extract Metadata by means of ImageIO.
-     * Format Name: javax_imageio_1.0
-     * PNG: Chroma, Compression, Data, Dimension, Transparency
-     * JPEG: Chroma, ColoSpaceType, NumChannels, Compression, CompressionTypeName, NumProgressiveScans, PixelAspectRatio, ImageOrientation
+     * Convert jpeg byte array to png byte array.
+     *
+     * @param jpegBytes JPEG byte array
+     * @return PNG byte array
+     */
+    public static byte[] toPngBytes(byte[] jpegBytes) {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(jpegBytes);
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            BufferedImage bImage = ImageIO.read(bis);
+            ImageIO.write(bImage, "png", bos);
+            return bos.toByteArray();
+
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Extract PNG Metadata.
+     *
+     * Format Name: javax_imageio_png_1.0 (nativeMetadataFormatClassName)
      * NodeType : ELEMENT_NODE = 1, ATTRIBUTE_NODE = 2, TEXT_NODE = 3
      *
-     * @param bytes image bytes
+     * @param bytes png bytes
      * @param key key
      * @return value for key
      */
@@ -176,7 +191,9 @@ public class ImageHelper {
             reader.setInput(iis, true);
 
             IIOMetadata metadata = reader.getImageMetadata(0);
-            IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
+            IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree("javax_imageio_png_1.0");
+
+            showNode(root);
 
             NodeList nlist = root.getElementsByTagName(key);
             if (nlist.getLength() > 0) {
@@ -269,17 +286,21 @@ public class ImageHelper {
         } catch (IOException ex) {
         }
 
-        String key = "Text";
+        byte[] pngBytes = toPngBytes(buf);
+        String val = extractMetadata(pngBytes, "IHDR");
+
+        //String key = "Text";
         //String key = "CompressionTypeName";
 
-        byte[] buf2 = addMetadata(buf, key, "testValue");
+        //byte[] buf2 = addMetadata(buf, key, "testValue");
 
-        String val = extractMetadata(buf2, key);
+        //String val = extractMetadata(buf2, key);
 
         System.out.println("buf length = " + buf.length);
-        System.out.println("buf2 length = " + buf2.length);
+        System.out.println("buf length = " + pngBytes.length);
+        //System.out.println("buf2 length = " + buf2.length);
 
-        System.out.println("key = " + key);
+        //System.out.println("key = " + key);
         System.out.println("value = " + val);
     }
 }
