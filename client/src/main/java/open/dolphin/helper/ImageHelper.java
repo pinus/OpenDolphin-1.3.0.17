@@ -4,12 +4,12 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
+import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataFormatImpl;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -159,38 +159,88 @@ public class ImageHelper {
     }
 
     /**
-     * javax_imageio_1.0 - Chroma, Compression, Data, Dimension, Transparency
-     * nodeType : ELEMENT_NODE = 1, ATTRIBUTE_NODE = 2, TEXT_NODE = 3
+     * Extract Metadata by means of ImageIO.
+     * Format Name: javax_imageio_1.0
+     * PNG: Chroma, Compression, Data, Dimension, Transparency
+     * JPEG: Chroma, ColoSpaceType, NumChannels, Compression, CompressionTypeName, NumProgressiveScans, PixelAspectRatio, ImageOrientation
+     * NodeType : ELEMENT_NODE = 1, ATTRIBUTE_NODE = 2, TEXT_NODE = 3
      *
-     * @param bytes
-     * @param key
-     * @return
+     * @param bytes image bytes
+     * @param key key
+     * @return value for key
      */
     public static String extractMetadata(byte[] bytes, String key) {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
             ImageInputStream iis = ImageIO.createImageInputStream(bis);
-
-
             ImageReader reader = (ImageReader) ImageIO.getImageReaders(iis).next();
-            System.out.println("format name: " + reader.getFormatName());
-
             reader.setInput(iis, true);
+
             IIOMetadata metadata = reader.getImageMetadata(0);
             IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
 
-            showNode(root);
+            NodeList nlist = root.getElementsByTagName(key);
+            if (nlist.getLength() > 0) {
+                IIOMetadataNode target = (IIOMetadataNode) nlist.item(0);
+                if (target.getAttributes().getLength() > 0) {
+                    return target.getAttributes().item(0).getNodeValue();
+                }
+            }
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static byte[] addMetadata(byte[] bytes, String key, String value) {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+
+            ImageInputStream iis = ImageIO.createImageInputStream(bis);
+            ImageReader reader = (ImageReader) ImageIO.getImageReaders(iis).next();
+            reader.setInput(iis, true);
+            IIOImage image = reader.readAll(0, null);
+
+            IIOMetadataNode node = new IIOMetadataNode(key);
+            node.setAttribute("value", value);
+            IIOMetadataNode root = new IIOMetadataNode(IIOMetadataFormatImpl.standardMetadataFormatName);
+            root.appendChild(node);
+
+            ImageWriter writer = ImageIO.getImageWritersByFormatName("png").next();
+            ImageWriteParam param = writer.getDefaultWriteParam();
+            ImageTypeSpecifier typeSpecifier = ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_INT_RGB);
+            IIOMetadata metadata = writer.getDefaultImageMetadata(typeSpecifier, param);
+
+            System.out.println("metadata = " + metadata);
+
+            // com.sun.imageio.plugins.png.PNGMetadata
+            // node name = "Text", child node name = "TextEntry", attribute "keyword", "language", "compression"
+            metadata.mergeTree(IIOMetadataFormatImpl.standardMetadataFormatName, root);
+            image.setMetadata(metadata);
+
+            //showNode(root);
+            //showNode((IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName));
+
+            ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
+            writer.setOutput(ios);
+            writer.write(metadata, image, param);
+
+            return bos.toByteArray();
 
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
+    /**
+     * Show all Nodes.
+     * @param node
+     */
     private static void showNode(IIOMetadataNode node) {
         System.out.println("node name = " + node.getNodeName());
         System.out.println("node value = " + node.getNodeValue());
         System.out.println("node type = " + node.getNodeType());
+        System.out.println("node attribute size = " + node.getAttributes().getLength());
 
         for (int i=0; i<node.getAttributes().getLength(); i++) {
             System.out.println("attribute node name = " + node.getAttributes().item(i).getNodeName());
@@ -218,8 +268,18 @@ public class ImageHelper {
             for (int i = 0; i < n; i++) buf[i] = (byte) in.read();
         } catch (IOException ex) {
         }
-        System.out.println("buf length = " + buf.length);
 
-        String val = extractMetadata(buf, "test");
+        String key = "Text";
+        //String key = "CompressionTypeName";
+
+        byte[] buf2 = addMetadata(buf, key, "testValue");
+
+        String val = extractMetadata(buf2, key);
+
+        System.out.println("buf length = " + buf.length);
+        System.out.println("buf2 length = " + buf2.length);
+
+        System.out.println("key = " + key);
+        System.out.println("value = " + val);
     }
 }
