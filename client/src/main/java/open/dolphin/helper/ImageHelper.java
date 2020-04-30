@@ -1,5 +1,6 @@
 package open.dolphin.helper;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -16,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * ImageHelper
@@ -158,47 +160,66 @@ public class ImageHelper {
 
     /**
      * javax_imageio_1.0 - Chroma, Compression, Data, Dimension, Transparency
-     *
+     * nodeType : ELEMENT_NODE = 1, ATTRIBUTE_NODE = 2, TEXT_NODE = 3
      *
      * @param bytes
      * @param key
      * @return
      */
     public static String extractMetadata(byte[] bytes, String key) {
-
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
-            ImageReader reader = (ImageReader) ImageIO.getImageReadersByFormatName("png").next();
             ImageInputStream iis = ImageIO.createImageInputStream(bis);
+
+
+            ImageReader reader = (ImageReader) ImageIO.getImageReaders(iis).next();
+            System.out.println("format name: " + reader.getFormatName());
+
             reader.setInput(iis, true);
-
             IIOMetadata metadata = reader.getImageMetadata(0);
-
-            IIOMetadataNode pnsData = new IIOMetadataNode("PnsData");
-            pnsData.setAttribute("key", key);
-            pnsData.setAttribute("value", "==val==");
-
             IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
-            root.appendChild(pnsData);
-            ???
 
-            metadata.mergeTree(IIOMetadataFormatImpl.standardMetadataFormatName, root);
-
-            System.out.println("r length " + root.getLength());
-
-            for (int i=0; i < root.getLength(); i++) {
-                System.out.println("node name = " + root.getChildNodes().item(i).getNodeName());
-            }
-
-            IIOMetadataNode r = (IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
-            for (int i=0; i < r.getLength(); i++) {
-                System.out.println("new node name = " + r.getChildNodes().item(i).getNodeName());
-            }
-
+            showNode(root);
 
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
 
         return null;
+    }
+
+    private static void showNode(IIOMetadataNode node) {
+        System.out.println("node name = " + node.getNodeName());
+        System.out.println("node value = " + node.getNodeValue());
+        System.out.println("node type = " + node.getNodeType());
+
+        for (int i=0; i<node.getAttributes().getLength(); i++) {
+            System.out.println("attribute node name = " + node.getAttributes().item(i).getNodeName());
+            System.out.println("attribute node value = " + node.getAttributes().item(i).getNodeValue());
+            System.out.println("attribute node type = " + node.getAttributes().item(i).getNodeType());
+        }
+
+        int len = node.getChildNodes().getLength();
+        if (len > 0) {
+            for (int i=0; i<len; i++) {
+                showNode((IIOMetadataNode) node.getChildNodes().item(i));
+            }
+        }
+    }
+
+    public static void main (String[] arg) {
+        String sample1 = "/schemaeditor/Sample-square.JPG";
+
+        InputStream in = ImageHelper.class.getResourceAsStream(sample1);
+
+        byte[] buf = null;
+        try {
+            int n = in.available();
+            buf = new byte[n];
+            for (int i = 0; i < n; i++) buf[i] = (byte) in.read();
+        } catch (IOException ex) {
+        }
+        System.out.println("buf length = " + buf.length);
+
+        String val = extractMetadata(buf, "test");
     }
 }

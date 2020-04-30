@@ -78,11 +78,6 @@ public class DocumentDelegater extends BusinessDelegater<KarteService> {
         // ByteArray をアイコンへ戻す (getSchema() は必ず non null)
         ret.stream().map(DocumentModel::getSchema).forEach(sc -> {
             sc.stream().forEach(schema -> {
-
-                System.out.println("DocumentDelegater.getDocuments ..............");
-                String val = ImageHelper.extractMetadata(schema.getJpegByte(), "testKey");
-                System.out.println("value = " + val);
-
                 ImageIcon icon = new ImageIcon(schema.getJpegByte());
                 schema.setIcon(icon);
                 schema.setJpegByte(null);
