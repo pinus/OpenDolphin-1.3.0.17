@@ -16,9 +16,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.stream.Stream;
 
 /**
- * ImageHelper
+ * ImageHelper.
  *
  * @author kazm
  * @author pns
@@ -94,7 +95,7 @@ public class ImageHelper {
     }
 
     /**
-     * Convert Image to ByteArray.
+     * Convert Image to PNG ByteArray.
      *
      * @param image java.awt.Image
      * @return byte array in png
@@ -156,12 +157,12 @@ public class ImageHelper {
     }
 
     /**
-     * Convert jpeg byte array to png byte array.
+     * Convert JPEG ByteArray to PNG ByteArray.
      *
-     * @param jpegBytes JPEG byte array
-     * @return PNG byte array
+     * @param jpegBytes JPEG ByteArray
+     * @return PNG ByteArray
      */
-    public static byte[] toPngBytes(byte[] jpegBytes) {
+    public static byte[] toPngByteArray(byte[] jpegBytes) {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(jpegBytes);
              ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             BufferedImage bImage = ImageIO.read(bis);
@@ -175,67 +176,82 @@ public class ImageHelper {
     }
 
     /**
-     * Extract PNG Metadata.
-     *
+     * Extract PNG Metadata "UnknownChunk".
      * Format Name: javax_imageio_png_1.0 (nativeMetadataFormatClassName)
-     * NodeType : ELEMENT_NODE = 1, ATTRIBUTE_NODE = 2, TEXT_NODE = 3
      *
-     * @param bytes png bytes
-     * @param key key
-     * @return value for key
+     * @param bytes PNG ByteArray
+     * @param type type (4 chars)
+     * @return value for the type
      */
-    public static String extractMetadata(byte[] bytes, String key) {
+    public static String extractMetadata(byte[] bytes, String type) {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
             ImageInputStream iis = ImageIO.createImageInputStream(bis);
-            ImageReader reader = (ImageReader) ImageIO.getImageReaders(iis).next();
+            ImageReader reader = ImageIO.getImageReaders(iis).next();
             reader.setInput(iis, true);
 
             IIOMetadata metadata = reader.getImageMetadata(0);
             IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree("javax_imageio_png_1.0");
 
-            showNode(root);
+            // UnknownChunks は 1つのみで, その中に UnknownChunk が複数入る
+            IIOMetadataNode chunks = (IIOMetadataNode) root.getElementsByTagName("UnknownChunks").item(0);
 
-            NodeList nlist = root.getElementsByTagName(key);
-            if (nlist.getLength() > 0) {
-                IIOMetadataNode target = (IIOMetadataNode) nlist.item(0);
-                if (target.getAttributes().getLength() > 0) {
-                    return target.getAttributes().item(0).getNodeValue();
+            for (int i=0; i<chunks.getLength(); i++) {
+                IIOMetadataNode chunk = (IIOMetadataNode) chunks.item(i);
+                String chunkType = chunk.getAttributes().getNamedItem("type").getNodeValue();
+                if (chunkType.equals(type)) {
+                    return new String((byte[]) chunk.getUserObject());
                 }
             }
+
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static byte[] addMetadata(byte[] bytes, String key, String value) {
+    /**
+     * Add optional data to UnknownChunks. (Metadata = com.sun.imageio.plugins.png.PNGMetadata)
+     * "javax_imageio_png_1.0" > UnknownChunks > UnknownChunk [type (4 chars), UserObject (byte[])]
+     *
+     * @param bytes PNG ByteArray
+     * @param type type (4 chars)
+     * @param value UserObject for the type
+     * @return PNG ByteArray with added metadata
+     */
+    public static byte[] addMetadata(byte[] bytes, String type, String value) {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
              ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 
             ImageInputStream iis = ImageIO.createImageInputStream(bis);
-            ImageReader reader = (ImageReader) ImageIO.getImageReaders(iis).next();
+            ImageReader reader = ImageIO.getImageReaders(iis).next();
             reader.setInput(iis, true);
+
+            // if not PNG bytes, throw exception
+            if (!reader.getFormatName().equals("png")) {
+                throw new IOException("not png bytes");
+            }
+
             IIOImage image = reader.readAll(0, null);
 
-            IIOMetadataNode node = new IIOMetadataNode(key);
-            node.setAttribute("value", value);
-            IIOMetadataNode root = new IIOMetadataNode(IIOMetadataFormatImpl.standardMetadataFormatName);
-            root.appendChild(node);
+            // preparing nodes
+            IIOMetadataNode root = new IIOMetadataNode("javax_imageio_png_1.0");
+            IIOMetadataNode chunks = new IIOMetadataNode("UnknownChunks");
+            IIOMetadataNode chunk = new IIOMetadataNode("UnknownChunk");
+
+            chunk.setAttribute("type", type);
+            chunk.setUserObject(value.getBytes());
+
+            chunks.appendChild(chunk);
+            root.appendChild(chunks);
 
             ImageWriter writer = ImageIO.getImageWritersByFormatName("png").next();
             ImageWriteParam param = writer.getDefaultWriteParam();
             ImageTypeSpecifier typeSpecifier = ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_INT_RGB);
             IIOMetadata metadata = writer.getDefaultImageMetadata(typeSpecifier, param);
 
-            System.out.println("metadata = " + metadata);
-
-            // com.sun.imageio.plugins.png.PNGMetadata
-            // node name = "Text", child node name = "TextEntry", attribute "keyword", "language", "compression"
-            metadata.mergeTree(IIOMetadataFormatImpl.standardMetadataFormatName, root);
+            // mergeNativeTree(root)
+            metadata.mergeTree("javax_imageio_png_1.0", root);
             image.setMetadata(metadata);
-
-            //showNode(root);
-            //showNode((IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName));
 
             ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
             writer.setOutput(ios);
@@ -251,7 +267,8 @@ public class ImageHelper {
 
     /**
      * Show all Nodes.
-     * @param node
+     *
+     * @param node node to show
      */
     private static void showNode(IIOMetadataNode node) {
         System.out.println("node name = " + node.getNodeName());
@@ -286,21 +303,15 @@ public class ImageHelper {
         } catch (IOException ex) {
         }
 
-        byte[] pngBytes = toPngBytes(buf);
-        String val = extractMetadata(pngBytes, "IHDR");
+        byte[] pngBytes = toPngByteArray(buf);
 
-        //String key = "Text";
-        //String key = "CompressionTypeName";
+        String type = "DSIZ";
+        String value = "100x200";
 
-        //byte[] buf2 = addMetadata(buf, key, "testValue");
+        byte[] buf2 = addMetadata(pngBytes, type, value);
+        String val = extractMetadata(buf2, type);
 
-        //String val = extractMetadata(buf2, key);
-
-        System.out.println("buf length = " + buf.length);
-        System.out.println("buf length = " + pngBytes.length);
-        //System.out.println("buf2 length = " + buf2.length);
-
-        //System.out.println("key = " + key);
+        System.out.println("type = " + type);
         System.out.println("value = " + val);
     }
 }
