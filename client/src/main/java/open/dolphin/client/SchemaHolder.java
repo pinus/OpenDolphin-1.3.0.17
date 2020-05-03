@@ -59,19 +59,23 @@ public final class SchemaHolder extends AbstractComponentHolder {
 
         SwingUtilities.invokeLater(() -> {
             Dimension initialSize = INITIAL_SIZE;
-
-            // jpegByte にサイズ情報が入っていたら scale する
             byte[] jpegByte = schema.getJpegByte();
-            String dispSize = ImageHelper.extractMetadata(jpegByte, "DSIZ");
-            logger.info("display size = " + dispSize);
 
-            if (Objects.nonNull(dispSize)) {
-                String[] split = dispSize.split("x");
-                if (split.length == 2) {
-                    initialSize = new Dimension(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+            if (Objects.isNull(jpegByte)) {
+                schema.setJpegByte(ImageHelper.imageToByteArray(icon.getImage()));
+
+            } else {
+                // jpegByte にサイズ情報が入っていたら scale する
+                String dispSize = ImageHelper.extractMetadata(jpegByte, "DSIZ");
+                logger.info("display size = " + dispSize);
+
+                if (Objects.nonNull(dispSize)) {
+                    String[] split = dispSize.split("x");
+                    if (split.length == 2) {
+                        initialSize = new Dimension(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+                    }
                 }
             }
-
             setIcon(ImageHelper.adjustImageSize(icon, initialSize));
             imgRatio = getIcon().getIconWidth() / (float) icon.getIconWidth();
             logger.debug("initial img ratio = " + imgRatio);
