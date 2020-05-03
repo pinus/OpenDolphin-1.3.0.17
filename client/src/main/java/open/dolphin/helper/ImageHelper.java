@@ -98,10 +98,9 @@ public class ImageHelper {
      * Convert Image to PNG ByteArray.
      *
      * @param image java.awt.Image
-     * @return byte array in png
+     * @return PNG ByteArray
      */
     public static byte[] imageToByteArray(Image image) {
-
         byte[] ret = null;
 
         try (ByteArrayOutputStream bo = new ByteArrayOutputStream()) {
@@ -131,7 +130,6 @@ public class ImageHelper {
      * @return adjusted ImageIcon
      */
     public static ImageIcon adjustImageSize(ImageIcon icon, Dimension dim) {
-
         if ((icon.getIconHeight() > dim.height) || (icon.getIconWidth() > dim.width)) {
 
             Image img = icon.getImage();
@@ -163,16 +161,18 @@ public class ImageHelper {
      * @return PNG ByteArray
      */
     public static byte[] toPngByteArray(byte[] jpegBytes) {
+        byte[] ret = null;
+
         try (ByteArrayInputStream bis = new ByteArrayInputStream(jpegBytes);
              ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             BufferedImage bImage = ImageIO.read(bis);
             ImageIO.write(bImage, "png", bos);
-            return bos.toByteArray();
+            ret = bos.toByteArray();
 
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
-        return null;
+        return ret;
     }
 
     /**
@@ -192,14 +192,16 @@ public class ImageHelper {
             IIOMetadata metadata = reader.getImageMetadata(0);
             IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree("javax_imageio_png_1.0");
 
-            // UnknownChunks は 1つのみで, その中に UnknownChunk が複数入る
-            IIOMetadataNode chunks = (IIOMetadataNode) root.getElementsByTagName("UnknownChunks").item(0);
-
-            for (int i=0; i<chunks.getLength(); i++) {
-                IIOMetadataNode chunk = (IIOMetadataNode) chunks.item(i);
-                String chunkType = chunk.getAttributes().getNamedItem("type").getNodeValue();
-                if (chunkType.equals(type)) {
-                    return new String((byte[]) chunk.getUserObject());
+            // UnknownChunks length = 0 or 1, 1の場合その中に UnknownChunk が複数入る
+            NodeList chunksList = root.getElementsByTagName("UnknownChunks");
+            if (chunksList.getLength() > 0) {
+                IIOMetadataNode chunks = (IIOMetadataNode) root.getElementsByTagName("UnknownChunks").item(0);
+                for (int i = 0; i < chunks.getLength(); i++) {
+                    IIOMetadataNode chunk = (IIOMetadataNode) chunks.item(i);
+                    String chunkType = chunk.getAttributes().getNamedItem("type").getNodeValue();
+                    if (chunkType.equals(type)) {
+                        return new String((byte[]) chunk.getUserObject());
+                    }
                 }
             }
 
@@ -219,6 +221,8 @@ public class ImageHelper {
      * @return PNG ByteArray with added metadata
      */
     public static byte[] addMetadata(byte[] bytes, String type, String value) {
+        byte[] ret = null;
+
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
              ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 
@@ -257,12 +261,12 @@ public class ImageHelper {
             writer.setOutput(ios);
             writer.write(metadata, image, param);
 
-            return bos.toByteArray();
+            ret = bos.toByteArray();
 
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
-        return null;
+        return ret;
     }
 
     /**
