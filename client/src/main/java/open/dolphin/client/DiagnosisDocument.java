@@ -121,7 +121,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      * @param item  targetItem
      * @return index
      */
-    public static int itemToIndex(JComboBox combo, String item) {
+    public static int itemToIndex(JComboBox<?> combo, String item) {
         int index = 0;
         for (int i = 0; i < combo.getItemCount(); i++) {
             if (item.equals(combo.getItemAt(i).toString())) {
@@ -773,7 +773,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         final StampDelegater sdl = new StampDelegater();
 
-        DBTask task = new DBTask<List<StampModel>>(getContext()) {
+        DBTask<List<StampModel>> task = new DBTask<List<StampModel>>(getContext()) {
             @Override
             protected List<StampModel> doInBackground() {
                 return sdl.getStamp(stampList);
@@ -885,7 +885,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         StampEditorDialog stampEditor = new StampEditorDialog("diagnosis", rd);
 
         // 編集終了，値の受け取りにこのオブジェクトを設定する
-        stampEditor.addPropertyChangeListener(StampEditorDialog.VALUE_PROP, this);
+        stampEditor.addPropertyChangeListener(this);
         stampEditor.start();
     }
 
@@ -903,7 +903,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             return;
         }
 
-        List<RegisteredDiagnosisModel> list = (List) e.getNewValue();
+        List<RegisteredDiagnosisModel> list = (List<RegisteredDiagnosisModel>) e.getNewValue();
         if (list == null || list.isEmpty()) {
             return;
         }
@@ -911,9 +911,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         boolean isAddedDiagnosis = (Boolean) e.getOldValue(); // openEditor2 からよばれると true になるようにした
         String today = lastVisit.getLastVisit().format(DateTimeFormatter.ISO_DATE);
 
-        for (int i = 0; i < list.size(); i++) { // list.size() は常に 1 では？
+        for (RegisteredDiagnosisModel rd : list) { // list.size() は常に 1 では？
             // ここで get する rd には 病名とコードしか入っていない
-            RegisteredDiagnosisModel rd = list.get(i);
             if (isAddedDiagnosis) {
                 // エディタから新規に挿入された場合（openEditor2）
                 rd.setStartDate(today); // startDate は LastVisit に設定
@@ -1151,7 +1150,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         final DocumentDelegater ddl = new DocumentDelegater();
 
-        DBTask task = new DBTask<List<RegisteredDiagnosisModel>>(getContext()) {
+        DBTask<List<RegisteredDiagnosisModel>> task = new DBTask<List<RegisteredDiagnosisModel>>(getContext()) {
 
             @Override
             protected List<RegisteredDiagnosisModel> doInBackground() {
@@ -1619,9 +1618,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     private class MyCellEditor extends PNSCellEditor {
         private static final long serialVersionUID = 1L;
 
-        JComboBox combo;
+        JComboBox<?> combo;
 
-        public MyCellEditor(JComboBox c) {
+        public MyCellEditor(JComboBox<?> c) {
             super(c);
             int clkCountToStart = Project.getPreferences().getInt("diagnosis.table.clickCountToStart", 1);
             setClickCountToStart(clkCountToStart);
