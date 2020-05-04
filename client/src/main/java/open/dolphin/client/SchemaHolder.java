@@ -89,7 +89,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
         Dimension ret = null;
 
         String size = ImageHelper.extractMetadata(bytes, "DSIZ");
-        logger.info("display size = " + size);
+        logger.debug("display size = " + size);
         if (Objects.nonNull(size)) {
             String[] split = size.split("x");
             if (split.length == 2) {
@@ -234,7 +234,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
 
     @Override
     public void propertyChange(PropertyChangeEvent e) {
-        logger.info("SchemaHolder propertyChange");
+        logger.debug("SchemaHolder propertyChange");
 
         // 二重起動の解除
         this.setEditable(true);
