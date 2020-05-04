@@ -742,12 +742,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             }
         }
 
-        // 病名数セット
-        PatientVisitModel pvt = getContext().getPatientVisit();
-        if (pvt.getId() != 0L) { // 今日の受診がなければ(PatientSearchから開いた場合) id=0 になる
-            pvt.setByomeiCount(diagnosisCount);
-            pvt.setByomeiCountToday(diagnosisCountToday);
-        }
         // countField にセット
         try {
             String val = String.valueOf(diagnosisCount);
