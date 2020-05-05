@@ -1,11 +1,10 @@
 package open.dolphin.ui.sheet;
 
-import open.dolphin.event.ProxyAction;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -13,7 +12,7 @@ import java.util.Objects;
  *
  * @author pns
  */
-public class JSheet extends JDialog implements ActionListener {
+public class JSheet extends JWindow implements ActionListener {
 
     public static final int MENU_BAR_HEIGHT = 22;
     public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
@@ -26,11 +25,17 @@ public class JSheet extends JDialog implements ActionListener {
     private static final long serialVersionUID = 1L;
     // Owner window
     private Window owner;
-
     // 表示する JOptionPane / JFileChooser を入れる JPanel
     private JComponent sourcePane;
     // JSheet の ContentPane
     private JPanel content;
+    // glass pane
+    private JPanel glassPane;
+    private Component originalGlassPane;
+    // キー入力を横取りするための KeyEventDispatcher
+    private static SheetKeyEventDispatcher sheetKeyEventDispatcher;
+    // Modal にするための SecondaryLoop
+    private SecondaryLoop secondaryLoop;
     // 徐々に大きくなる JPanel
     private AnimatingSheet animatingSheet;
 
@@ -55,9 +60,9 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * JOptionPane を source とする JSheet を作成する.
      *
-     * @param pane
-     * @param parentComponent
-     * @return
+     * @param pane JOptionPane
+     * @param parentComponent parent window or component
+     * @return JSheet
      */
     public static JSheet createDialog(final JOptionPane pane, Component parentComponent) {
         // create corresponding dialog
@@ -70,6 +75,9 @@ public class JSheet extends JDialog implements ActionListener {
         JSheet js = Objects.nonNull(owner) ? new JSheet((Frame) owner) : new JSheet((Dialog) owner);
         js.setSourceDialog(dialog);
         js.setParentComponent(parentComponent);
+
+        // SheetKeyEventDispatcher に JOptionPane を登録
+        sheetKeyEventDispatcher.setJOptionPane(pane);
 
         return js;
     }
@@ -91,10 +99,10 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * JFileChooser を Sheet で表示する.
      *
-     * @param chooser
-     * @param parentComponent
-     * @param approveButtonText
-     * @param listener
+     * @param chooser JFileChooser
+     * @param parentComponent parent window or component
+     * @param approveButtonText "保存" "開く" 等
+     * @param listener SheetListener
      */
     public static void showSheet(JFileChooser chooser, Component parentComponent, String approveButtonText, SheetListener listener) {
         // create corresponding dialog
@@ -120,9 +128,9 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * 保存 JFileChooser を表示する.
      *
-     * @param chooser
-     * @param parent
-     * @param listener
+     * @param chooser JFileChooser
+     * @param parent parent window or component
+     * @param listener SheetListener
      */
     public static void showSaveSheet(JFileChooser chooser, Component parent, SheetListener listener) {
         chooser.setDialogType(JFileChooser.SAVE_DIALOG);
@@ -132,9 +140,9 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * 開く JFileChooser を表示する.
      *
-     * @param chooser
-     * @param parent
-     * @param listener
+     * @param chooser JFileChooser
+     * @param parent parent window or component
+     * @param listener SheetListener
      */
     public static void showOpenSheet(JFileChooser chooser, Component parent, SheetListener listener) {
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
@@ -144,11 +152,11 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * JOptionPane.showConfirmDialog 互換.
      *
-     * @param parentComponent
-     * @param message
-     * @param title
-     * @param optionType
-     * @param messageType
+     * @param parentComponent parent
+     * @param message message
+     * @param title title
+     * @param optionType option type
+     * @param messageType message type
      * @return answer int
      */
     public static int showConfirmDialog(Component parentComponent, Object message, String title, int optionType, int messageType) {
@@ -158,26 +166,26 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * JOptionPane.showMessageDialog 互換.
      *
-     * @param parentComponent
-     * @param message
-     * @param title
-     * @param messageType
+     * @param parentComponent parent
+     * @param message message
+     * @param title title
+     * @param messageType message type
      */
     public static void showMessageDialog(Component parentComponent, Object message, String title, int messageType) {
         showOptionDialog(parentComponent, message, title, JOptionPane.DEFAULT_OPTION, messageType, null, null, null);
     }
 
     /**
-     * JOptionPane.showOptionDialog 互換
+     * JOptionPane.showOptionDialog 互換.
      *
-     * @param parentComponent
-     * @param message
-     * @param title
-     * @param optionType
-     * @param messageType
-     * @param icon
-     * @param options
-     * @param initialValue
+     * @param parentComponent parent
+     * @param message message
+     * @param title title
+     * @param optionType option type
+     * @param messageType message type
+     * @param icon icon
+     * @param options options
+     * @param initialValue initial value
      * @return answer int
      */
     public static int showOptionDialog(Component parentComponent, Object message, String title,
@@ -187,18 +195,16 @@ public class JSheet extends JDialog implements ActionListener {
         pane.setInitialValue(initialValue);
         pane.selectInitialValue();
         final int[] answer = new int[1];
-        JSheet.showSheet(pane, parentComponent, se -> {
-            answer[0] = se.getOption();
-        });
+        JSheet.showSheet(pane, parentComponent, se -> answer[0] = se.getOption());
 
         return answer[0];
     }
 
     /**
-     * その component に既に JSheet が表示されているかどうか
+     * その component に既に JSheet が表示されているかどうか.
      *
-     * @param parentComponent
-     * @return
+     * @param parentComponent parent
+     * @return true if already shown
      */
     public static boolean isAlreadyShown(Component parentComponent) {
         Window window = JOptionPane.getFrameForComponent(parentComponent);
@@ -214,15 +220,10 @@ public class JSheet extends JDialog implements ActionListener {
 
     private void init(Window owner) {
         this.owner = owner;
+        sheetKeyEventDispatcher = new SheetKeyEventDispatcher();
 
-        setUndecorated(true);
         setBackground(new Color(0, 0, 0, 0));
-        setResizable(false);
         getRootPane().putClientProperty("Window.shadow", Boolean.FALSE);
-
-        // modal にセット
-        setModal(true);
-        setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
 
         content = (JPanel) getContentPane();
         content.setLayout(new BorderLayout());
@@ -231,34 +232,33 @@ public class JSheet extends JDialog implements ActionListener {
         // リアルタイムの書き直しにならない.
         owner.addComponentListener(new ComponentListener() {
             @Override
-            public void componentResized(ComponentEvent e) {
-                locateSheet();
-            }
-
+            public void componentResized(ComponentEvent e) { locateSheet(); }
             @Override
-            public void componentMoved(ComponentEvent e) {
-                locateSheet();
-            }
-
+            public void componentMoved(ComponentEvent e) { locateSheet(); }
             @Override
-            public void componentShown(ComponentEvent e) {
-            }
-
+            public void componentShown(ComponentEvent e) { }
             @Override
-            public void componentHidden(ComponentEvent e) {
+            public void componentHidden(ComponentEvent e) { }
+        });
+
+        // blocking glass 登録
+        glassPane = new JPanel();
+        glassPane.setOpaque(false);
+        glassPane.addMouseMotionListener(new MouseMotionAdapter(){});
+        glassPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JSheet.this.toFront();
             }
         });
 
-        // キー入力で割り込み
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (isActive() && animating && animationDirection == INCOMING) {
-                    stopAnimation();
-                    finishShowingSheet();
-                }
-            }
-        });
+        if (owner instanceof JDialog) {
+            originalGlassPane =((JDialog)owner).getGlassPane();
+            ((JDialog)owner).setGlassPane(glassPane);
+        } else if (owner instanceof JFrame) {
+            originalGlassPane =((JFrame)owner).getGlassPane();
+            ((JFrame)owner).setGlassPane(glassPane);
+        }
     }
 
     /**
@@ -284,6 +284,7 @@ public class JSheet extends JDialog implements ActionListener {
         }
 
         setBounds(loc.x, loc.y, sourcePaneSize.width, sourcePaneSize.height);
+        JSheet.this.toFront();
     }
 
     /**
@@ -301,7 +302,7 @@ public class JSheet extends JDialog implements ActionListener {
      * <li>ERROR_OPTION = -1;
      * </ul>
      *
-     * @param listener
+     * @param listener SheetListener
      */
     public void addSheetListener(SheetListener listener) {
         sheetListener = listener;
@@ -310,7 +311,7 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * Parent をセットする.
      *
-     * @param c
+     * @param c parent component
      */
     public void setParentComponent(Component c) {
         parentComponent = c;
@@ -319,7 +320,7 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * ソースとなる Dialog をセットしてリスナを付ける.
      *
-     * @param dialog
+     * @param dialog JDialog
      */
     public void setSourceDialog(JDialog dialog) {
         sourcePane = (JComponent) dialog.getContentPane();
@@ -330,7 +331,7 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * SourcePane の背景を透明にする.
      *
-     * @param c
+     * @param c component to be transparent
      */
     public void setTransparent(Component c) {
         if (c instanceof JComponent) {
@@ -346,7 +347,7 @@ public class JSheet extends JDialog implements ActionListener {
     /**
      * リスナを SheetListener にブリッジする.
      *
-     * @param c
+     * @param c component to listen
      */
     private void connectListeners(Component c) {
         if (c instanceof JOptionPane) {
@@ -355,15 +356,16 @@ public class JSheet extends JDialog implements ActionListener {
                     // SheetEvent の設定
                     SheetEvent se = new SheetEvent(e.getSource());
 
-                    // 戻り値
+                    // 戻り値: int の場合と String の場合がある
                     Object val = e.getNewValue();
                     Object[] options = ((JOptionPane) c).getOptions();
 
-                    if (options == null || val instanceof Integer) {
+                    if (val instanceof Integer) {
+                        // intで返ってきたとき
                         se.setOption((int) val);
 
                     } else {
-                        // オプションがある場合は，何番目かを返す.
+                        // String で返ってきたときは, 何番目かを返す
                         for (int i = 0; i < options.length; i++) {
                             if (options[i].equals(val)) {
                                 se.setOption(i);
@@ -395,20 +397,50 @@ public class JSheet extends JDialog implements ActionListener {
     }
 
     /**
-     * Sheet を表示／消去する. modal 動作のために synchronized(this) する.
+     * Sheet を表示／消去する. SecondaryLoop を使って modal にする.
      *
-     * @param visible
+     * @param visible true to show, false to hide
      */
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
-            SwingUtilities.invokeLater(() -> showSheet());
-            // setModal(true) なのでここで止まるが，アニメーションは EDT で表示される.
+            // アニメーションは EDT で表示される.
+            SwingUtilities.invokeLater(this::showSheet);
             super.setVisible(true);
+            glassPane.setVisible(true);
+
+            // キー入力を横取りする
+            KeyboardFocusManager
+                .getCurrentKeyboardFocusManager().addKeyEventDispatcher(sheetKeyEventDispatcher);
+
+            // modal にするために SecondaryLoop に入る
+            Toolkit tk = Toolkit.getDefaultToolkit();
+            EventQueue eq = tk.getSystemEventQueue();
+            secondaryLoop = eq.createSecondaryLoop();
+            if (!secondaryLoop.enter()) {
+                secondaryLoop = null;
+                throw new RuntimeException("Could not enter secondary loop.");
+            }
 
         } else {
             // hideSheet -> animation -> super.setVisible(false) となる
             hideSheet();
+
+            // GlassPane を元に戻す
+            glassPane.setVisible(false);
+            if (owner instanceof JDialog) {
+                ((JDialog)owner).setGlassPane(originalGlassPane);
+            } else if (owner instanceof JFrame) {
+                ((JFrame)owner).setGlassPane(originalGlassPane);
+            }
+
+            KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .removeKeyEventDispatcher(sheetKeyEventDispatcher);
+
+            if (Objects.nonNull(secondaryLoop)) {
+                secondaryLoop.exit();
+                secondaryLoop = null;
+            }
         }
     }
 
@@ -462,18 +494,23 @@ public class JSheet extends JDialog implements ActionListener {
     private void finishShowingSheet() {
         content.removeAll();
         content.add(sourcePane, BorderLayout.CENTER);
-
-        if (!isActive()) {
-            // たまに owner が active になって，JSheet が inactive になることあり
-            System.out.println("JSheet: isActive() is false");
-        }
         repaint();
+    }
+
+    /**
+     * isActive を偽装する.
+     *
+     * @return always true
+     */
+    @Override
+    public boolean isActive() {
+        return true;
     }
 
     /**
      * Timer で呼ばれて animatingSheet を描画する.
      *
-     * @param e
+     * @param e ActionEvent
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -563,6 +600,72 @@ public class JSheet extends JDialog implements ActionListener {
         }
     }
 
+    /**
+     * キー入力を横取りして使う.
+     */
+    private class SheetKeyEventDispatcher implements KeyEventDispatcher {
+        private JOptionPane optionPane;
+        private JButton defaultButton;
+
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent e) {
+            // アニメーション途中でキー入力があった場合の処理
+            if (JSheet.this.isActive() && animating && animationDirection == INCOMING) {
+                stopAnimation();
+                finishShowingSheet();
+            }
+
+            if (Objects.nonNull(optionPane)) {
+                KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
+
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE && e.getModifiers() == 0) {
+                    // ESCAPE
+                    optionPane.setValue(JOptionPane.CLOSED_OPTION);
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER && e.getModifiers() == 0) {
+                    // ENTER
+                    defaultButton.doClick();
+                } else {
+                    // InputMap に入っているキーは次に回す
+                    KeyStroke strokeForEvent = KeyStroke.getKeyStrokeForEvent(e);
+                    InputMap map = JSheet.this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+                    KeyStroke[] allKeys = map.allKeys();
+                    if (Objects.nonNull(allKeys)) {
+                        for (KeyStroke key : allKeys) {
+                            if (strokeForEvent.equals(key)) {
+                                // false を返すと次の KeyEventDispatcher に回る
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            // キーブロック
+            return true;
+        }
+
+        public void setJOptionPane(JOptionPane pane) {
+            optionPane = pane;
+
+            // JOptionPane からボタンを取り出して, default ボタンをセットする
+            Component[] components = pane.getComponents();
+            java.util.List<Component> cc = java.util.Arrays.asList(components);
+            while (!cc.isEmpty()) {
+                java.util.List<Component> stack = new ArrayList<>();
+                for (Component c : cc) {
+                    if (c instanceof JButton) {
+                        JButton button = (JButton) c;
+                        if (button.isDefaultButton()) { defaultButton = button; }
+
+                    } else if (c instanceof JComponent) {
+                        components = ((JComponent) c).getComponents();
+                        stack.addAll(java.util.Arrays.asList(components));
+                    }
+                }
+                cc = stack;
+            }
+        }
+    }
+
     public static void main(String[] arg) {
         JFrame frame = new JFrame();
         frame.setLayout(new BorderLayout());
@@ -572,22 +675,14 @@ public class JSheet extends JDialog implements ActionListener {
 
         JButton b1 = new JButton("Create Dialog");
         b1.addActionListener(e -> {
-            JButton ok = new JButton("OK");
-            JButton cancel = new JButton("キャンセル");
-            JButton dispose = new JButton("破棄");
-
             JOptionPane optionPane = new JOptionPane("JSheet.createDialog", JOptionPane.INFORMATION_MESSAGE,
-                    JOptionPane.OK_CANCEL_OPTION, (Icon) null, new JButton[]{ok, cancel, dispose}, ok);
+                    JOptionPane.OK_CANCEL_OPTION, null, new String[]{"OK", "キャンセル", "破棄"}, "OK");
+
             JSheet sheet = JSheet.createDialog(optionPane, frame);
             sheet.addSheetListener(se -> {
-                // Escape を押したときだけ JOptionPane.CLOSED_OPTION (=-1) が返る
+                // Escape を押したときは JOptionPane.CLOSED_OPTION (=-1) が返る
                 System.out.println("option = " + se.getOption());
             });
-
-            ok.setAction(new ProxyAction("OK", () -> sheet.setVisible(false)));
-            cancel.setAction(new ProxyAction("キャンセル", () -> sheet.setVisible(false)));
-            dispose.setAction(new ProxyAction("破棄", () -> sheet.setVisible(false)));
-
             sheet.setVisible(true);
             System.out.println("Create Dialog ended");
         });
@@ -609,6 +704,7 @@ public class JSheet extends JDialog implements ActionListener {
             JFileChooser chooser = new JFileChooser();
             JSheet.showSaveSheet(chooser, frame, se -> {
                 System.out.println("option = " + se.getOption());
+                System.out.println("selected file = " + chooser.getSelectedFile());
             });
             System.out.println("Show Save ended");
         });
@@ -618,6 +714,7 @@ public class JSheet extends JDialog implements ActionListener {
             JFileChooser chooser = new JFileChooser();
             JSheet.showOpenSheet(chooser, frame, se -> {
                 System.out.println("option = " + se.getOption());
+                System.out.println("selected file = " + chooser.getSelectedFile());
             });
             System.out.println("Show Open ended");
         });
