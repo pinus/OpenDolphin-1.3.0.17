@@ -1,5 +1,7 @@
 package open.dolphin.ui.sheet;
 
+import open.dolphin.helper.WindowSupport;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -15,6 +17,7 @@ import java.util.Objects;
 public class JSheet extends JWindow implements ActionListener {
 
     public static final int MENU_BAR_HEIGHT = 22;
+    public static String MENUBAR_HEIGHT_OFFSET_PROP = WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP;
     public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
@@ -46,6 +49,7 @@ public class JSheet extends JWindow implements ActionListener {
 
     private SheetListener sheetListener;
     private Component parentComponent;
+    private int displayOffsetY = 0;
 
     public JSheet(Frame owner) {
         super(owner);
@@ -241,7 +245,7 @@ public class JSheet extends JWindow implements ActionListener {
             public void componentHidden(ComponentEvent e) { }
         });
 
-        // blocking glass 登録
+        // JFrame と JDialog で分けざるを得ない処理
         glassPane = new JPanel();
         glassPane.setOpaque(false);
         glassPane.addMouseMotionListener(new MouseMotionAdapter(){});
@@ -252,12 +256,23 @@ public class JSheet extends JWindow implements ActionListener {
             }
         });
 
-        if (owner instanceof JDialog) {
-            originalGlassPane =((JDialog)owner).getGlassPane();
-            ((JDialog)owner).setGlassPane(glassPane);
-        } else if (owner instanceof JFrame) {
-            originalGlassPane =((JFrame)owner).getGlassPane();
-            ((JFrame)owner).setGlassPane(glassPane);
+        if (owner instanceof JFrame) {
+            JFrame w = (JFrame) owner;
+            originalGlassPane = w.getGlassPane();
+            w.setGlassPane(glassPane);
+            Object menubarHeightOffset = w.getRootPane().getClientProperty(MENUBAR_HEIGHT_OFFSET_PROP);
+            if (Objects.nonNull(menubarHeightOffset) && menubarHeightOffset instanceof Integer) {
+                displayOffsetY = (Integer) menubarHeightOffset;
+            }
+
+        } else {
+            JDialog w = (JDialog) owner;
+            originalGlassPane = w.getGlassPane();
+            w.setGlassPane(glassPane);
+            Object menubarHeightOffset = w.getRootPane().getClientProperty(MENUBAR_HEIGHT_OFFSET_PROP);
+            if (Objects.nonNull(menubarHeightOffset) && menubarHeightOffset instanceof Integer) {
+                displayOffsetY = (Integer) menubarHeightOffset;
+            }
         }
     }
 
@@ -265,6 +280,8 @@ public class JSheet extends JWindow implements ActionListener {
      * JSheet の表示位置を設定する.
      */
     private void locateSheet() {
+        if (!owner.isShowing()) { return; }
+
         Point loc = owner.getLocationOnScreen();
         Dimension ownerSize = owner.getSize();
         Dimension sourcePaneSize = sourcePane.getSize();
@@ -283,7 +300,7 @@ public class JSheet extends JWindow implements ActionListener {
             loc.x = screenSize.width - sourcePaneSize.width;
         }
 
-        setBounds(loc.x, loc.y, sourcePaneSize.width, sourcePaneSize.height);
+        setBounds(loc.x, loc.y + displayOffsetY, sourcePaneSize.width, sourcePaneSize.height);
         JSheet.this.toFront();
     }
 
@@ -643,6 +660,11 @@ public class JSheet extends JWindow implements ActionListener {
             return true;
         }
 
+        /**
+         * JOptionPane を登録する.
+         *
+         * @param pane JOptionPane
+         */
         public void setJOptionPane(JOptionPane pane) {
             optionPane = pane;
 
