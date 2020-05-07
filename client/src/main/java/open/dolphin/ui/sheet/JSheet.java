@@ -227,6 +227,7 @@ public class JSheet extends JWindow implements ActionListener {
         this.owner = owner;
         sheetKeyEventDispatcher = new SheetKeyEventDispatcher();
 
+        setAlwaysOnTop(true);
         setBackground(new Color(0, 0, 0, 0));
         getRootPane().putClientProperty("Window.shadow", Boolean.FALSE);
 
@@ -250,12 +251,7 @@ public class JSheet extends JWindow implements ActionListener {
         glassPane = new JPanel();
         glassPane.setOpaque(false);
         glassPane.addMouseMotionListener(new MouseMotionAdapter(){});
-        glassPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                JSheet.this.toFront();
-            }
-        });
+        glassPane.addMouseListener(new MouseAdapter(){});
 
         if (owner instanceof JFrame) {
             JFrame w = (JFrame) owner;
@@ -302,7 +298,6 @@ public class JSheet extends JWindow implements ActionListener {
         }
 
         setBounds(loc.x, loc.y + displayOffsetY, sourcePaneSize.width, sourcePaneSize.height);
-        JSheet.this.toFront();
     }
 
     /**
