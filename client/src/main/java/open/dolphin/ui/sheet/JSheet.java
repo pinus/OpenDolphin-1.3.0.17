@@ -50,6 +50,7 @@ public class JSheet extends JWindow implements ActionListener {
     private SheetListener sheetListener;
     private Component parentComponent;
     private int displayOffsetY = 0;
+    private Component focusOwner;
 
     public JSheet(Frame owner) {
         super(owner);
@@ -423,12 +424,16 @@ public class JSheet extends JWindow implements ActionListener {
         if (visible) {
             // アニメーションは EDT で表示される.
             SwingUtilities.invokeLater(this::showSheet);
-            super.setVisible(true);
-            glassPane.setVisible(true);
 
+            // フォーカス解除
+            focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
             // キー入力を横取りする
             KeyboardFocusManager
                 .getCurrentKeyboardFocusManager().addKeyEventDispatcher(sheetKeyEventDispatcher);
+
+            super.setVisible(true);
+            glassPane.setVisible(true);
 
             // modal にするために SecondaryLoop に入る
             Toolkit tk = Toolkit.getDefaultToolkit();
@@ -451,8 +456,9 @@ public class JSheet extends JWindow implements ActionListener {
                 ((JFrame)owner).setGlassPane(originalGlassPane);
             }
 
-            KeyboardFocusManager.getCurrentKeyboardFocusManager()
-                .removeKeyEventDispatcher(sheetKeyEventDispatcher);
+            // キー入力横取りの中止と, フォーカス返還
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
+            focusOwner.requestFocusInWindow();
 
             if (Objects.nonNull(secondaryLoop)) {
                 secondaryLoop.exit();
@@ -623,6 +629,8 @@ public class JSheet extends JWindow implements ActionListener {
     private class SheetKeyEventDispatcher implements KeyEventDispatcher {
         private JOptionPane optionPane;
         private JButton defaultButton;
+        private KeyStroke escapeKey = KeyStroke.getKeyStroke("ESCAPE");
+        private KeyStroke enterKey = KeyStroke.getKeyStroke("ENTER");
 
         @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
@@ -633,17 +641,16 @@ public class JSheet extends JWindow implements ActionListener {
             }
 
             if (Objects.nonNull(optionPane)) {
-                KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
+                KeyStroke strokeForEvent = KeyStroke.getKeyStrokeForEvent(e);
 
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE && e.getModifiers() == 0) {
+                if (strokeForEvent.equals(escapeKey)) {
                     // ESCAPE
                     optionPane.setValue(JOptionPane.CLOSED_OPTION);
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER && e.getModifiers() == 0) {
+                } else if (strokeForEvent.equals(enterKey)) {
                     // ENTER
                     defaultButton.doClick();
                 } else {
                     // InputMap に入っているキーは次に回す
-                    KeyStroke strokeForEvent = KeyStroke.getKeyStrokeForEvent(e);
                     InputMap map = JSheet.this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
                     KeyStroke[] allKeys = map.allKeys();
                     if (Objects.nonNull(allKeys)) {

@@ -301,14 +301,14 @@ public class FindAndView {
     }
 
     private void showNotFoundDialog(String title, String message) {
-        JSheet.showMessageDialog(scrollerPanel.getParent(),
-                "「" + searchText + "」" + message,
-                title,
-                JOptionPane.ERROR_MESSAGE);
+        JSheet.showMessageDialog(SwingUtilities.windowForComponent(scrollerPanel),
+            "「" + searchText + "」" + message,
+            title,
+            JOptionPane.ERROR_MESSAGE);
     }
 
     private int showConfirmDialog(String message) {
-        return JSheet.showConfirmDialog(scrollerPanel.getParent(),
+        return JSheet.showConfirmDialog(SwingUtilities.windowForComponent(scrollerPanel),
                 message,
                 "",
                 JOptionPane.YES_NO_OPTION,

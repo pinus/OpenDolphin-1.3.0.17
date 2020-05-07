@@ -12,14 +12,15 @@ import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
 
 /**
- * FindDialog の JSheet バージョン
+ * FindDialog の Dialog バージョン. JSheet (JWindow) だと JTextField に入力できない.
  *
  * @author pns
  */
 public class FindDialog {
 
     private final Frame parent;
-    private JSheet sheet;
+    //private JSheet sheet;
+    private JDialog dialog;
     private boolean isSearchReady;
     private boolean isTextReady;
     private boolean isSoapBoxReady;
@@ -41,7 +42,8 @@ public class FindDialog {
     public void start() {
         initComponents();
         connect();
-        sheet.setVisible(true);
+        //sheet.setVisible(true);
+        dialog.setVisible(true);
     }
 
     private void initComponents() {
@@ -74,12 +76,15 @@ public class FindDialog {
                 options,
                 searchButton);
 
-        sheet = JSheet.createDialog(jop, parent);
-        sheet.addSheetListener(se -> {
-            if (se.getOption() == JOptionPane.CLOSED_OPTION) {
-                cancelButton.doClick();
-            }
-        });
+        //sheet = JSheet.createDialog(jop, parent);
+        //sheet.addSheetListener(se -> {
+        //    if (se.getOption() == JOptionPane.CLOSED_OPTION) {
+        //        cancelButton.doClick();
+        //    }
+        //});
+        dialog = jop.createDialog(parent, "カルテ検索");
+        Rectangle r = parent.getBounds();
+        dialog.setLocation(r.x + (r.width - dialog.getWidth())/2, r.y);
 
         // 初期値設定
         soaBox.setSelected(true);
@@ -91,7 +96,8 @@ public class FindDialog {
 
     private void connect() {
 
-        sheet.addWindowListener(new WindowAdapter() {
+        //sheet.addWindowListener(new WindowAdapter() {
+        dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
                 requestFocus();
@@ -168,8 +174,10 @@ public class FindDialog {
     }
 
     private void close() {
-        sheet.setVisible(false);
-        sheet.dispose();
+        //sheet.setVisible(false);
+        //sheet.dispose();
+        dialog.setVisible(false);
+        dialog.dispose();
     }
 
     /**
