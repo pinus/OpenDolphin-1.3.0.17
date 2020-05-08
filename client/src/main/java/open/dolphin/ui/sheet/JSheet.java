@@ -52,12 +52,7 @@ public class JSheet extends JWindow implements ActionListener {
     private int displayOffsetY = 0;
     private Component focusOwner;
 
-    public JSheet(Frame owner) {
-        super(owner);
-        init(owner);
-    }
-
-    public JSheet(Dialog owner) {
+    public JSheet(Window owner) {
         super(owner);
         init(owner);
     }
@@ -77,7 +72,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         // create JSheet
         Window owner = JOptionPane.getFrameForComponent(parentComponent);
-        JSheet js = Objects.nonNull(owner) ? new JSheet((Frame) owner) : new JSheet((Dialog) owner);
+        JSheet js = new JSheet(owner);
         js.setSourceDialog(dialog);
         js.setParentComponent(parentComponent);
 
@@ -123,7 +118,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         // create JSheet
         Window owner = JOptionPane.getFrameForComponent(parentComponent);
-        JSheet js = (owner instanceof Frame) ? new JSheet((Frame) owner) : new JSheet((Dialog) owner);
+        JSheet js = new JSheet(owner);
         js.setSourceDialog(dialog);
         js.addSheetListener(listener);
         js.setParentComponent(parentComponent);
@@ -227,7 +222,6 @@ public class JSheet extends JWindow implements ActionListener {
         this.owner = owner;
         sheetKeyEventDispatcher = new SheetKeyEventDispatcher();
 
-        setAlwaysOnTop(true);
         setBackground(new Color(0, 0, 0, 0));
         getRootPane().putClientProperty("Window.shadow", Boolean.FALSE);
 
@@ -247,12 +241,15 @@ public class JSheet extends JWindow implements ActionListener {
             public void componentHidden(ComponentEvent e) { }
         });
 
-        // JFrame と JDialog で分けざるを得ない処理
         glassPane = new JPanel();
         glassPane.setOpaque(false);
         glassPane.addMouseMotionListener(new MouseMotionAdapter(){});
-        glassPane.addMouseListener(new MouseAdapter(){});
+        glassPane.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e) { toFront(); }
+        });
 
+        // JFrame と JDialog で分けざるを得ない処理
         if (owner instanceof JFrame) {
             JFrame w = (JFrame) owner;
             originalGlassPane = w.getGlassPane();
@@ -298,6 +295,7 @@ public class JSheet extends JWindow implements ActionListener {
         }
 
         setBounds(loc.x, loc.y + displayOffsetY, sourcePaneSize.width, sourcePaneSize.height);
+        toFront();
     }
 
     /**
@@ -717,9 +715,7 @@ public class JSheet extends JWindow implements ActionListener {
                     JOptionPane.QUESTION_MESSAGE,
                     JOptionPane.YES_NO_OPTION);
 
-            JSheet.showSheet(optionPane, frame, se -> {
-                System.out.println("option = " + se.getOption());
-            });
+            JSheet.showSheet(optionPane, frame, se -> System.out.println("option = " + se.getOption()));
             System.out.println("Show Sheet ended");
         });
 
