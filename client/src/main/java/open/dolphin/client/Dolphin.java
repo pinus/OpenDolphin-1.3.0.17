@@ -227,6 +227,7 @@ public class Dolphin implements MainWindow {
         String title = ClientContext.getFrameTitle(windowTitle);
         // System.out.println(title);
         windowSupport = WindowSupport.create(title);
+        windowSupport.getFrame().getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 36);
         MainFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
         JMenuBar myMenuBar = windowSupport.getMenuBar();    // MainWindow の JMenuBar
 
