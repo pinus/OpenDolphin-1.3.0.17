@@ -7,6 +7,8 @@ import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
+import open.dolphin.ui.CompletableSearchField;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.ModelUtils;
@@ -97,6 +99,15 @@ public class KarteDocumentViewer extends AbstractChartDocument {
      * 表示されているカルテの中身を検索する
      */
     public void findFirst() {
+        ChartImpl chart = (ChartImpl) getContext();
+        ChartSearchPanel panel = chart.getChartSearchPanel();
+        panel.setParams(findAndView, scrollerPanel);
+        panel.show(ChartSearchPanel.Card.KARTE);
+
+        CompletableSearchField searchField = panel.getKarteSearchField();
+        searchField.setText("");
+        Focuser.requestFocus(searchField);
+ /*
         // すでに JSheet が出ている場合は，toFront してリターン
         Frame parent = getContext().getFrame();
         if (JSheet.isAlreadyShown(parent)) {
@@ -109,6 +120,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         if (searchText != null && !searchText.equals("")) {
             findAndView.showFirst(searchText, sheet.isSoaBoxOn(), sheet.isPBoxOn(), scrollerPanel);
         }
+*/
     }
 
     public void findNext() {
