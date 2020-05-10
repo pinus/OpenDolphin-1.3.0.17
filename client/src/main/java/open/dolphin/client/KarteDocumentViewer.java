@@ -95,13 +95,22 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         }
     }
 
+    @Override
+    public void setContext(Chart ctx) {
+        super.setContext(ctx);
+
+        // カルテ検索のためのパラメータセット
+        ChartImpl chart = (ChartImpl) ctx;
+        ChartSearchPanel panel = chart.getChartSearchPanel();
+        panel.setParams(findAndView, scrollerPanel);
+    }
+
     /**
      * 表示されているカルテの中身を検索する
      */
     public void findFirst() {
         ChartImpl chart = (ChartImpl) getContext();
         ChartSearchPanel panel = chart.getChartSearchPanel();
-        panel.setParams(findAndView, scrollerPanel);
         panel.show(ChartSearchPanel.Card.KARTE);
 
         CompletableSearchField searchField = panel.getKarteSearchField();
