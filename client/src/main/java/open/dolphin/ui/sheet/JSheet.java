@@ -15,6 +15,7 @@ import java.util.Objects;
  * @author pns
  */
 public class JSheet extends JWindow implements ActionListener {
+    private static final long serialVersionUID = 1L;
 
     public static final int MENU_BAR_HEIGHT = 22;
     public static String MENUBAR_HEIGHT_OFFSET_PROP = WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP;
@@ -25,7 +26,6 @@ public class JSheet extends JWindow implements ActionListener {
     public static final float ANIMATION_DURATION = 50;
     // 書き換えの周期 msec
     public static final int ANIMATION_SLEEP = 10;
-    private static final long serialVersionUID = 1L;
     // Owner window
     private Window owner;
     // 表示する JOptionPane / JFileChooser を入れる JPanel
