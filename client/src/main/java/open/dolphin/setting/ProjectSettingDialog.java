@@ -196,7 +196,7 @@ public final class ProjectSettingDialog {
         dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
 
         // Container の background が黒になってしまうので直す
-        setContainerBackground(dialog);
+        if (ClientContext.isMac()) { setContainerBackground(dialog); }
 
         dialog.setResizable(false);
         dialog.setSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));

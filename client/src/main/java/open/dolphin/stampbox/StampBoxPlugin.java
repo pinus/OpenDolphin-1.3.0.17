@@ -115,7 +115,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         } else {
             // lock が外れていたら注意マークを出す
             int spaces = 0;
-            if (stampBoxWidth != 0) {
+            if (isMac && stampBoxWidth != 0) {
                 // stamp maker が起動していたらタイトルを右の方に出す
                 spaces = (int) ((frame.getWidth() - stampBoxWidth) * 0.27f);
             }
