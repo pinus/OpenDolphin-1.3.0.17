@@ -451,7 +451,9 @@ public class JSheet extends JWindow implements ActionListener {
 
             // キー入力横取りの中止と, フォーカス返還
             KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
-            focusOwner.requestFocusInWindow();
+            if (Objects.nonNull(focusOwner)) {
+                focusOwner.requestFocusInWindow();
+            }
 
             if (Objects.nonNull(secondaryLoop)) {
                 secondaryLoop.exit();
