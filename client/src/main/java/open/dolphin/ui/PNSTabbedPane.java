@@ -4,7 +4,8 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.ui.desktop.AppForegroundListener;
 import open.dolphin.ui.desktop.AppForegroundEvent;
 import open.dolphin.ui.desktop.Desktop;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -88,7 +89,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     /**
      * Logger
      */
-    private Logger logger = Logger.getLogger(PNSTabbedPane.class);
+    private Logger logger = LoggerFactory.getLogger(PNSTabbedPane.class);
 
     public PNSTabbedPane() {
         initComponents();

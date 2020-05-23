@@ -3,8 +3,8 @@ package open.dolphin.ui;
 import com.alderstone.multitouch.mac.touchpad.Finger;
 import com.alderstone.multitouch.mac.touchpad.FingerState;
 import com.alderstone.multitouch.mac.touchpad.TouchpadObservable;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.Observable;
@@ -19,7 +19,7 @@ public class TouchpadTest implements Observer {
     // 指の最大数
     private static final int MAX_FINGER_BLOBS = 20;
     // それぞれの指を入れておく配列
-    private static Finger blobs[] = new Finger[MAX_FINGER_BLOBS];
+    private static Finger[] blobs = new Finger[MAX_FINGER_BLOBS];
     // Observer（自分）のインスタンス
     private static TouchpadTest me = new TouchpadTest();
     // TouchpadObservable
@@ -34,8 +34,8 @@ public class TouchpadTest implements Observer {
     private static Logger logger;
 
     private TouchpadTest() {
-        logger = Logger.getLogger(TouchpadTest.class);
-        logger.setLevel(Level.DEBUG);
+        logger = LoggerFactory.getLogger(TouchpadTest.class);
+        ((ch.qos.logback.classic.Logger)logger).setLevel(ch.qos.logback.classic.Level.DEBUG);
     }
 
     /**
@@ -55,7 +55,7 @@ public class TouchpadTest implements Observer {
     /**
      * マウスの背中に触っているかどうかを返す.
      *
-     * @return
+     * @return touched?
      */
     public static boolean isPressed() {
         return pressed;
@@ -64,7 +64,7 @@ public class TouchpadTest implements Observer {
     /**
      * X 軸方向の速度　右がプラス.
      *
-     * @return
+     * @return x velocity
      */
     public static float getXVelocity() {
         return xVelocity;
@@ -73,7 +73,7 @@ public class TouchpadTest implements Observer {
     /**
      * Y 軸方向の速度　上がプラス.
      *
-     * @return
+     * @return y velocity
      */
     public static float getYVelocity() {
         return yVelocity;
@@ -82,8 +82,8 @@ public class TouchpadTest implements Observer {
     /**
      * TouchpadObservable からデータ（Finger）がここに送られてくる.
      *
-     * @param o
-     * @param arg
+     * @param o TouchpadObservable
+     * @param arg Finger
      */
     @Override
     public void update(Observable o, Object arg) {

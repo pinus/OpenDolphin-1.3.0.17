@@ -22,7 +22,8 @@ import open.dolphin.ui.desktop.Taskbar;
 import open.dolphin.util.Gengo;
 import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -93,7 +94,7 @@ public class WaitingListImpl extends AbstractMainComponent {
     // 時計を更新するための ExecutorService
     private ScheduledExecutorService schedule;
     // Logger
-    private Logger logger = Logger.getLogger(WaitingListImpl.class);
+    private Logger logger = LoggerFactory.getLogger(WaitingListImpl.class);
 
     /**
      * Creates new WaitingList.

@@ -17,7 +17,8 @@ import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -78,7 +79,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * Create new ChartImpl.
      */
     public ChartImpl() {
-        logger = Logger.getLogger(ChartImpl.class);
+        logger = LoggerFactory.getLogger(ChartImpl.class);
         prefs = Project.getPreferences();
     }
 
