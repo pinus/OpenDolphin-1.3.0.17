@@ -156,6 +156,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
                 Calendar service = new Calendar.Builder(httpTransport, JSON_FACTORY, credential)
                     .setApplicationName(APPLICATION_NAME).build();
 
+                // 前後 1年部のデータを読み込む
                 LocalDate today = LocalDate.now();
                 Date nextYear = Date.from(today.plusYears(1L).atStartOfDay(ZoneId.systemDefault()).toInstant());
                 Date prevYear = Date.from(today.minusYears(1L).atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -206,7 +207,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
 
                 // additional day がある場合は event を増やす
                 long diff = end.getValue() - start.getValue();
-                long additionalDays = Math.floorDiv(diff, 86400000L) - 1;
+                long additionalDays = Math.floorDiv(diff, DAY_LENGTH) - 1;
                 for (long i=0; i<additionalDays; i++) {
                     Event add = event.clone();
                     long startValue = add.getStart().getDate().getValue();
