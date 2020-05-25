@@ -13,23 +13,24 @@ import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 import com.google.api.services.calendar.model.Event;
 
+import open.dolphin.JsonConverter;
 import open.dolphin.client.GUIConst;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.helper.Task;
 import open.dolphin.ui.CompletableJTextField;
+import open.dolphin.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Collections;
 import java.util.prefs.Preferences;
 import java.awt.event.ActionEvent;
 import java.io.*;
@@ -45,27 +46,28 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
     private static final String ID = "calendarSetting";
     private static final String TITLE = "カレンダー";
     private static final ImageIcon ICON = GUIConst.ICON_CALENDAR_32;
-    private static final int TEXTFIELD_WIDTH = 40;
+    private static final int TEXT_FIELD_WIDTH = 40;
+    private static long DAY_LENGTH = 86400000L;
 
     // Google Calendar
     private static final String APPLICATION_NAME = "open.dolphin";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
     private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
-    private static final String TOKENS_DIRECTORY_PATH = TMP_DIR + "google.calendar.tokens";
+    private static final String TOKENS_DIRECTORY_PATH = TMP_DIR + "com.google.calendar.tokens";
 
     // Keys for preferences
     private static String CALENDAR_ID = "calendarId";
     private static String HOLIDAY_CALENDAR_ID = "holidayCalendarId";
     private static String CREDENTIAL = "calendarCredential";
-    private static String CALENDAR_DATA = "calendarData";
+    public static String CALENDAR_DATA = "calendarData";
 
     // GUI
     private CompletableJTextField holidayCalendarIdField;
     private CompletableJTextField calendarIdField;
     private JTextField credentialField;
 
-    private String calendarData = "";
+    private String calendarJsonData = "";
     private final Preferences prefs = Preferences.userNodeForPackage(CalendarSettingPanel.class);
     private final Logger logger = LoggerFactory.getLogger(CalendarSettingPanel.class);
 
@@ -89,11 +91,11 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
         int row = 0;
 
         JLabel calendarLabel = new JLabel("カレンダーID");
-        calendarIdField = new CompletableJTextField(TEXTFIELD_WIDTH);
+        calendarIdField = new CompletableJTextField(TEXT_FIELD_WIDTH);
         JLabel holidayCalendarLabel = new JLabel("休日カレンダーID");
-        holidayCalendarIdField = new CompletableJTextField(TEXTFIELD_WIDTH);
+        holidayCalendarIdField = new CompletableJTextField(TEXT_FIELD_WIDTH);
         JLabel credentialLabel = new JLabel("証明書データ");
-        credentialField = new JTextField(TEXTFIELD_WIDTH);
+        credentialField = new JTextField(TEXT_FIELD_WIDTH);
 
         JButton updateButton = new JButton("アップデート");
 
@@ -111,15 +113,11 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
         updateButton.addActionListener(this::updateAction);
     }
 
-    private boolean isValid() {
-        return !StringUtils.isEmpty(holidayCalendarIdField.getText())
-            && !StringUtils.isEmpty(calendarIdField.getText())
-            && !StringUtils.isEmpty(credentialField.getText());
-    }
-
     public void updateAction(ActionEvent e) {
-        if (!isValid()) {
-            showError("必要項目が入力されていません");
+        if (StringUtils.isEmpty(holidayCalendarIdField.getText())
+            || StringUtils.isEmpty(calendarIdField.getText())
+            || StringUtils.isEmpty(credentialField.getText())) {
+            showMessage("必要項目が入力されていません", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -128,14 +126,17 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
         task.execute();
     }
 
-    private class GoogleTask extends Task<String> {
+    /**
+     * Google Calendar API にアクセスする実務.
+     */
+    private class GoogleTask extends Task<List<Event>> {
 
         public GoogleTask(Component parent, Object message, String note) {
             super(parent, message, note);
         }
 
         @Override
-        protected String doInBackground() throws Exception {
+        protected List<Event> doInBackground() throws Exception {
             try (InputStream in = new ByteArrayInputStream(credentialField.getText().getBytes());
                  InputStreamReader reader = new InputStreamReader(in)) {
 
@@ -147,6 +148,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
                     httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
                     .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
                     .setAccessType("offline").build();
+                logger.info("tokens path = " + TOKENS_DIRECTORY_PATH);
 
                 LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
                 Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
@@ -170,59 +172,94 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
                     .setOrderBy("startTime")
                     .setSingleEvents(true).execute();
 
-                List<Event> items = events.getItems();
-                items.addAll(holidays.getItems());
+                List<Event> eventList = events.getItems();
+                eventList.addAll(holidays.getItems());
 
-                if (items.isEmpty()) {
-                    logger.info("No upcoming events found.");
-
-                } else {
-                    String[][] dataArray = new String[items.size()][2];
-
-                    for (Event event : items) {
-                        DateTime start = event.getStart().getDateTime();
-                        if (start == null) {
-                            start = event.getStart().getDate();
-                        }
-                        System.out.printf("%s (%s)\n", event.getSummary(), start);
-                    }
-                }
+                return eventList;
             }
-            return null;
         }
 
         @Override
-        protected void succeeded(String result) {
+        protected void succeeded(List<Event> eventList) {
 
+            // 連続日のイベントを解析して, 単日イベントに分解する
+            List<Event> additionalEvent = new ArrayList<>();
+
+            for (Event event : eventList) {
+
+                // DateTime で設定されていた場合, Date に揃える.
+                // Date は 86,400,000 (1日の msec) の倍数なので，余りをカットする.
+                DateTime start = event.getStart().getDateTime();
+                if (start != null) {
+                    long floordiv = Math.floorDiv(start.getValue(), DAY_LENGTH);
+                    event.getStart().setDate(new DateTime(true, floordiv, 0));
+                }
+                DateTime end = event.getEnd().getDateTime();
+                if (end != null) {
+                    long floordiv = Math.floorDiv(start.getValue(), DAY_LENGTH);
+                    event.getEnd().setDate(new DateTime(true, floordiv, 0));
+                }
+
+                // Date に揃ってるはず
+                start = event.getStart().getDate();
+                end = event.getEnd().getDate();
+
+                // additional day がある場合は event を増やす
+                long diff = end.getValue() - start.getValue();
+                long additionalDays = Math.floorDiv(diff, 86400000L) - 1;
+                for (long i=0; i<additionalDays; i++) {
+                    Event add = event.clone();
+                    long startValue = add.getStart().getDate().getValue();
+                    add.getStart().setDate(new DateTime(true, startValue + DAY_LENGTH * (1L + i), 0));
+                    add.getEnd().setDate(new DateTime(true, startValue + DAY_LENGTH * (2L + i), 0));
+                    additionalEvent.add(add);
+                    //logger.info("additional day = " + add.getStart().getDate() + "  " + add.getSummary());
+                }
+            }
+            eventList.addAll(additionalEvent);
+
+            if (eventList.isEmpty()) {
+                logger.info("No upcoming events found.");
+
+            } else {
+                String[][] dataArray = new String[eventList.size()][2];
+
+                for (int i=0; i<eventList.size(); i++) {
+                    Event event = eventList.get(i);
+                    DateTime start = event.getStart().getDate();
+
+                    // 2019-05-26 -> 20190526
+                    dataArray[i][0] = start.toString().substring(0,10).replaceAll("-", "");
+                    dataArray[i][1] = event.getSummary();
+                }
+
+                calendarJsonData = JsonConverter.toJson(dataArray);
+                logger.info("Event fetch succeeded.");
+            }
+
+            showMessage("休日データを更新しました\n保存後再起動が必要です", JOptionPane.WARNING_MESSAGE);
         }
 
         @Override
         protected void cancelled() {
-            System.out.println("Canceled");
+            logger.info("Canceled");
         }
 
         @Override
         protected void failed(Throwable cause) {
-            System.out.println("failed " + cause);
+            logger.error("failed " + cause);
+            showMessage("データ取得に失敗しました", JOptionPane.ERROR_MESSAGE);
         }
 
         @Override
         protected void interrupted(InterruptedException ex) {
-            System.out.println("interrupted " + ex);
+            logger.info("interrupted " + ex);
         }
     }
 
     @Override
     public void save() {
         bindViewToModel();
-    }
-
-    private void showInfo(String message) {
-        showMessage(message, JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private void showError(String message) {
-        showMessage(message, JOptionPane.ERROR_MESSAGE);
     }
 
     private void showMessage(String message, int type) {
@@ -239,6 +276,6 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
         prefs.put(CALENDAR_ID, calendarIdField.getText());
         prefs.put(HOLIDAY_CALENDAR_ID, holidayCalendarIdField.getText());
         prefs.put(CREDENTIAL, credentialField.getText());
-        prefs.put(CALENDAR_DATA, calendarData);
+        prefs.put(CALENDAR_DATA, calendarJsonData);
     }
 }
