@@ -20,6 +20,7 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.PnsDelegater;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.GridBagBuilder;
+import open.dolphin.helper.Holiday;
 import open.dolphin.helper.Task;
 import open.dolphin.ui.CompletableJTextField;
 import org.apache.commons.lang3.StringUtils;
@@ -242,7 +243,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
                 logger.info("Event fetch succeeded.");
             }
 
-            showMessage("休日データを更新しました\n保存後再起動が必要です", JOptionPane.WARNING_MESSAGE);
+            showMessage("Google Calendar からデータを取得しました", JOptionPane.INFORMATION_MESSAGE);
         }
 
         @Override
@@ -293,6 +294,9 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
             @Override
             protected void succeeded(Void result) {
                 logger.info("Calendar data post to host.");
+
+                // holiday database 更新
+                Holiday.setupCalendarData();
             }
         };
         task.execute();

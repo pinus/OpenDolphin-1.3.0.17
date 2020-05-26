@@ -20,7 +20,7 @@ public class Holiday {
     private static final HashMap<String, String> DATABASE = new HashMap<>();
 
     /**
-     * ホストからデータを取得してカレンダーデータベースを作成する.
+     * サーバからデータを取得してカレンダーデータベースを作成する.
      */
     public static void setupCalendarData() {
         DBTask<Void> setup = new DBTask<Void>() {
