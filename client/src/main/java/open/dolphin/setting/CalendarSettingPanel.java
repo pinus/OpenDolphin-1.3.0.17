@@ -16,8 +16,9 @@ import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Events;
 import com.google.api.services.calendar.model.Event;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.client.GUIConst;
+import open.dolphin.delegater.PnsDelegater;
+import open.dolphin.helper.DBTask;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.helper.Task;
 import open.dolphin.ui.CompletableJTextField;
@@ -65,7 +66,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
     private CompletableJTextField calendarIdField;
     private JTextField credentialField;
 
-    private String calendarJsonData = "";
+    private String[][] calendarData = null;
     private final Preferences prefs = Preferences.userNodeForPackage(CalendarSettingPanel.class);
     private final Logger logger = LoggerFactory.getLogger(CalendarSettingPanel.class);
 
@@ -109,6 +110,8 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
 
         // connect
         updateButton.addActionListener(this::updateAction);
+        // ログインしていないとサーバにデータが送れない
+        updateButton.setEnabled(isLoginState());
     }
 
     public void updateAction(ActionEvent e) {
@@ -226,18 +229,16 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
                 logger.info("No upcoming events found.");
 
             } else {
-                String[][] dataArray = new String[eventList.size()][2];
+                calendarData = new String[eventList.size()][2];
 
                 for (int i=0; i<eventList.size(); i++) {
                     Event event = eventList.get(i);
                     DateTime start = event.getStart().getDate();
 
                     // 2019-05-26 -> 20190526
-                    dataArray[i][0] = start.toString().substring(0,10).replaceAll("-", "");
-                    dataArray[i][1] = event.getSummary();
+                    calendarData[i][0] = start.toString().substring(0,10).replaceAll("-", "");
+                    calendarData[i][1] = event.getSummary();
                 }
-
-                calendarJsonData = JsonConverter.toJson(dataArray);
                 logger.info("Event fetch succeeded.");
             }
 
@@ -280,6 +281,20 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
         prefs.put(CALENDAR_ID, calendarIdField.getText());
         prefs.put(HOLIDAY_CALENDAR_ID, holidayCalendarIdField.getText());
         prefs.put(CREDENTIAL, credentialField.getText());
-        prefs.put(CALENDAR_DATA, calendarJsonData);
+
+        // サーバにデータを保存する
+        DBTask<Void> task = new DBTask<Void>() {
+            @Override
+            protected Void doInBackground() {
+                PnsDelegater dlg = new PnsDelegater();
+                dlg.saveCalendarData(calendarData);
+                return null;
+            }
+            @Override
+            protected void succeeded(Void result) {
+                logger.info("Calendar data post to host.");
+            }
+        };
+        task.execute();
     }
 }
