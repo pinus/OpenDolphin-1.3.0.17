@@ -8,7 +8,6 @@ import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
-import open.dolphin.ui.CompletableJTextField;
 import open.dolphin.ui.PNSBorderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +90,7 @@ public final class StampHolder extends AbstractComponentHolder {
             dialog.setUndecorated(true);
 
             // text field を作って, 最初の1文字を入力する
-            CompletableJTextField tf = new CompletableJTextField(5);
+            JTextField tf = new JTextField(5);
             tf.setText(String.valueOf(keyEvent.getKeyChar()));
 
             // enter key でスタンプの数量を変更する
