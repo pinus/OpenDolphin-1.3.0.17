@@ -5,8 +5,10 @@ import open.dolphin.helper.HtmlHelper;
 import open.dolphin.helper.PreferencesUtils;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
+import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
+import open.dolphin.ui.CompletableJTextField;
 import open.dolphin.ui.PNSBorderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,8 @@ import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 
@@ -67,8 +71,91 @@ public final class StampHolder extends AbstractComponentHolder {
         setForeground(FOREGROUND);
         setBackground(BACKGROUND);
         setBorder(MY_CLEAR_BORDER);
+        addKeyListener(new NumberInputListener());
 
         setStamp(model);
+    }
+
+    /**
+     * 数字キー入力を検知して, スタンプ数量を変更するリスナ.
+     */
+    private class NumberInputListener extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent keyEvent) {
+            if (keyEvent.getKeyChar() < '0' || keyEvent.getKeyChar() > '9'
+                || !kartePane.getTextPane().isEditable()
+                || !StampHolder.this.isEditable()) { return; }
+
+            // 数字キー入力のための minimal な dialog を作る
+            JDialog dialog = new JDialog((Frame) null, true);
+            dialog.setUndecorated(true);
+
+            // text field を作って, 最初の1文字を入力する
+            CompletableJTextField tf = new CompletableJTextField(5);
+            tf.setText(String.valueOf(keyEvent.getKeyChar()));
+
+            // enter key でスタンプの数量を変更する
+            tf.addActionListener(e -> {
+                try {
+                    // 数字が入力されたかどうか
+                    String num = tf.getText();
+                    Float.parseFloat(num);
+
+                    BundleMed bundle = (BundleMed) stamp.getModel();
+                    if (ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode()) ||
+                        ClaimConst.RECEIPT_CODE_TONYO.equals(bundle.getClassCode())) {
+                        // 投与日数を変更する
+                        String old = bundle.getBundleNumber();
+                        if (!old.equals(num)) {
+                            bundle.setBundleNumber(num);
+                            setMyText();
+                            kartePane.setDirty(true);
+                            logger.info("bundle number changed to " + num);
+                        }
+
+                    } else {
+                        // 外用剤の量を変更する
+                        boolean dirty = false;
+                        for (ClaimItem item : bundle.getClaimItem()) {
+                            if (item.getCode().startsWith("6")) {
+                                String old = item.getNumber();
+                                if (!old.equals(num)) {
+                                    item.setNumber(num);
+                                    dirty = true;
+                                }
+                            }
+                        }
+                        if (dirty) {
+                            setMyText();
+                            kartePane.setDirty(true);
+                            logger.info("item number changed to " + num);
+                        }
+                    }
+                } catch (NumberFormatException ex) {
+                    logger.error("wrong input");
+                }
+                dialog.setVisible(false);
+            });
+            dialog.add(tf);
+            dialog.pack();
+
+            // escape or command-w to cancel
+            InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+            im.put(KeyStroke.getKeyStroke("ESCAPE"), "dialog-close");
+            im.put(KeyStroke.getKeyStroke("meta W"), "dialog-close");
+            ActionMap am = dialog.getRootPane().getActionMap();
+            am.put("dialog-close", new ProxyAction(() -> dialog.setVisible(false)));
+
+            // centering
+            Point stampLocation = StampHolder.this.getLocationOnScreen();
+            Dimension stampSize = StampHolder.this.getSize();
+            Dimension dialogSize = dialog.getSize();
+            int dispX = stampLocation.x + (stampSize.width - dialogSize.width) / 2;
+            int dispY = stampLocation.y + (stampSize.height - dialogSize.height) / 2;
+            dialog.setLocation(dispX, dispY);
+
+            dialog.setVisible(true);
+        }
     }
 
     /**
@@ -78,7 +165,6 @@ public final class StampHolder extends AbstractComponentHolder {
      */
     @Override
     public void enter(ActionMap map) {
-
         map.get(GUIConst.ACTION_COPY).setEnabled(true);
         map.get(GUIConst.ACTION_CUT).setEnabled(kartePane.getTextPane().isEditable());
         map.get(GUIConst.ACTION_PASTE).setEnabled(false);
