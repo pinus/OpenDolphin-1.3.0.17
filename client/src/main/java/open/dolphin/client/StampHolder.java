@@ -79,18 +79,30 @@ public final class StampHolder extends AbstractComponentHolder {
      * 数字キー入力を検知して, スタンプ数量を変更するリスナ.
      */
     private class NumberInputListener extends KeyAdapter {
+        private JDialog dialog;
+        private Color translucent = new Color(0, 0, 0, 0);
+        private Color lightGray = new Color(238, 238, 238);
+        private Color origColor;
+
         @Override
         public void keyPressed(KeyEvent keyEvent) {
             if (keyEvent.getKeyChar() < '0' || keyEvent.getKeyChar() > '9'
                 || !kartePane.getTextPane().isEditable()
-                || !StampHolder.this.isEditable()) { return; }
+                || !StampHolder.this.isEditable()
+                || !(stamp.getModel() instanceof BundleMed)) { return; }
 
             // 数字キー入力のための minimal な dialog を作る
-            JDialog dialog = new JDialog((Frame) null, true);
+            dialog = new JDialog((Frame) null, true);
             dialog.setUndecorated(true);
+            dialog.setBackground(translucent);
+
+            // 入力中はスタンプの背景を暗くする
+            origColor = getBackground();
+            setBackground(lightGray);
+            setOpaque(true);
 
             // text field を作って, 最初の1文字を入力する
-            JTextField tf = new JTextField(5);
+            JTextField tf = new JTextField(3);
             tf.setText(String.valueOf(keyEvent.getKeyChar()));
 
             // enter key でスタンプの数量を変更する
@@ -133,7 +145,7 @@ public final class StampHolder extends AbstractComponentHolder {
                 } catch (NumberFormatException ex) {
                     logger.error("wrong input");
                 }
-                dialog.setVisible(false);
+                closeDialog();
             });
             dialog.add(tf);
             dialog.pack();
@@ -143,7 +155,7 @@ public final class StampHolder extends AbstractComponentHolder {
             im.put(KeyStroke.getKeyStroke("ESCAPE"), "dialog-close");
             im.put(KeyStroke.getKeyStroke("meta W"), "dialog-close");
             ActionMap am = dialog.getRootPane().getActionMap();
-            am.put("dialog-close", new ProxyAction(() -> dialog.setVisible(false)));
+            am.put("dialog-close", new ProxyAction(this::closeDialog));
 
             // centering
             Point stampLocation = StampHolder.this.getLocationOnScreen();
@@ -154,6 +166,12 @@ public final class StampHolder extends AbstractComponentHolder {
             dialog.setLocation(dispX, dispY);
 
             dialog.setVisible(true);
+        }
+
+        private void closeDialog() {
+            dialog.setVisible(false);
+            setBackground(origColor);
+            setOpaque(false);
         }
     }
 

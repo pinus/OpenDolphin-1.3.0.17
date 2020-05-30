@@ -438,9 +438,6 @@ public class JSheet extends JWindow implements ActionListener {
             }
 
         } else {
-            // hideSheet -> animation -> super.setVisible(false) となる
-            hideSheet();
-
             // GlassPane を元に戻す
             glassPane.setVisible(false);
             if (owner instanceof JDialog) {
@@ -459,6 +456,8 @@ public class JSheet extends JWindow implements ActionListener {
                 secondaryLoop.exit();
                 secondaryLoop = null;
             }
+            // hideSheet -> animation -> super.setVisible(false) となる
+            hideSheet();
         }
     }
 
