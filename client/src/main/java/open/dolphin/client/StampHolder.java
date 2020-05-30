@@ -84,8 +84,6 @@ public final class StampHolder extends AbstractComponentHolder {
         map.get(GUIConst.ACTION_PASTE).setEnabled(false);
 
         setSelected(true);
-        // 隠しコマンドセット
-        addHiddenCommand();
     }
 
     /**
@@ -96,8 +94,6 @@ public final class StampHolder extends AbstractComponentHolder {
     @Override
     public void exit(ActionMap map) {
         setSelected(false);
-        // 隠しコマンド除去
-        removeHiddenCommand();
     }
 
     /**
@@ -371,56 +367,38 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * ショートカットキー.
+     * Stamp のコピー.
      */
-    private void addHiddenCommand() {
+    public void copy() {
+        if (getStamp().getModel() instanceof BundleMed) {
+            BundleMed bundle = (BundleMed) getStamp().getModel();
 
-        InputMap im = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = this.getActionMap();
+            StringBuilder sb = new StringBuilder();
 
-        // Shift-commnad-C ショートカットでクリップボードにスタンプをコピーする.
-        im.put(KeyStroke.getKeyStroke("shift meta C"), "copyAsText");
-        am.put("copyAsText", new ProxyAction(() -> {
+            for (ClaimItem item : bundle.getClaimItem()) {
+                if (!item.getCode().matches("099[0-9]{6}")) {
+                    sb.append(item.getName());
+                    sb.append(" ");
 
-            if (getStamp().getModel() instanceof BundleMed) {
-                BundleMed bundle = (BundleMed) getStamp().getModel();
-
-                StringBuilder sb = new StringBuilder();
-
-                for (ClaimItem item : bundle.getClaimItem()) {
-                    if (!item.getCode().matches("099[0-9]{6}")) {
-                        sb.append(item.getName());
-                        sb.append(" ");
-
-                        if (!item.getCode().matches("0085[0-9]{5}")
-                            && !item.getCode().matches("001000[0-9]{3}")
-                            && !item.getCode().matches("810000001")) {
-                            sb.append(item.getNumber());
-                            sb.append(item.getUnit());
-                        }
+                    if (!item.getCode().matches("0085[0-9]{5}")
+                        && !item.getCode().matches("001000[0-9]{3}")
+                        && !item.getCode().matches("810000001")) {
+                        sb.append(item.getNumber());
+                        sb.append(item.getUnit());
                     }
                 }
-                sb.append(bundle.getAdminDisplayString());
-
-                // 全角数字とスペースを直す
-                String text = sb.toString();
-                text = StringTool.toHankakuNumber(text);
-                text = StringTool.toHankakuUpperLower(text);
-                text = text.replaceAll("　", " ");
-                text = text.replace("\n", " ");
-
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(new StringSelection(text), null);
             }
-        }));
-    }
+            sb.append(bundle.getAdminDisplayString());
 
-    /**
-     * 登録した Shift-command-C ショートカットを削除する.
-     */
-    private void removeHiddenCommand() {
-        // Shift+command C
-        InputMap im = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        im.remove(KeyStroke.getKeyStroke("shift meta C"));
+            // 全角数字とスペースを直す
+            String text = sb.toString();
+            text = StringTool.toHankakuNumber(text);
+            text = StringTool.toHankakuUpperLower(text);
+            text = text.replaceAll("　", " ");
+            text = text.replace("\n", " ");
+
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(new StringSelection(text), null);
+        }
     }
 }
