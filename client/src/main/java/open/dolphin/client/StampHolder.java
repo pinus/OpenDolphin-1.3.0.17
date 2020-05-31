@@ -9,21 +9,18 @@ import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
-import open.dolphin.ui.Focuser;
 import open.dolphin.ui.PNSBorderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
-import java.util.Objects;
 
 /**
  * KartePane に Component　として挿入されるスタンプを保持するクラス.
@@ -42,8 +39,6 @@ public final class StampHolder extends AbstractComponentHolder {
     private final KartePane kartePane;
     private ModuleModel stamp;
     private StampRenderingHints hints;
-    private Position start;
-    private Position end;
     private boolean selected;
     // 検索語にマークする
     private String searchText = null;
@@ -384,38 +379,6 @@ public final class StampHolder extends AbstractComponentHolder {
         kartePane.setDirty(true);
         kartePane.getTextPane().validate();
         kartePane.getTextPane().repaint();
-    }
-
-    /**
-     * TextPane内での開始と終了ポジションを保存する.
-     *
-     * @param start Position
-     * @param end Position
-     */
-    @Override
-    public void setEntry(Position start, Position end) {
-        this.start = start;
-        this.end = end;
-    }
-
-    /**
-     * 開始ポジションを返す.
-     *
-     * @return position
-     */
-    @Override
-    public int getStartPos() {
-        return start.getOffset();
-    }
-
-    /**
-     * 終了ポジションを返す.
-     *
-     * @return position
-     */
-    @Override
-    public int getEndPos() {
-        return end.getOffset();
     }
 
     /**

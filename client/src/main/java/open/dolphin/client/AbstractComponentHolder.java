@@ -5,6 +5,7 @@ import open.dolphin.ui.Focuser;
 
 import javax.swing.FocusManager;
 import javax.swing.*;
+import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -21,6 +22,11 @@ public abstract class AbstractComponentHolder extends JLabel
 
     // 親の KartePane
     private KartePane kartePane;
+
+    // TextPane内での開始と終了ポジション
+    private Position start;
+    private Position end;
+
     // エディタの二重起動を防ぐためのフラグ
     private boolean isEditable = true;
 
@@ -53,6 +59,7 @@ public abstract class AbstractComponentHolder extends JLabel
     @Override
     public void keyPressed(KeyEvent e) {
         KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
+
         if (KeyStroke.getKeyStroke("TAB").equals(key)) {
             // TAB キーでフォーカス次移動
             SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusNextComponent);
@@ -68,7 +75,7 @@ public abstract class AbstractComponentHolder extends JLabel
         } else if (KeyStroke.getKeyStroke("UP").equals(key)
             || KeyStroke.getKeyStroke("LEFT").equals(key)) {
             // JTextPane position １つ前に戻る
-            int pos = kartePane.getTextPane().getCaretPosition();
+            int pos = getStartPos();
             if (pos != 0) {
                 Focuser.requestFocus(kartePane.getTextPane());
                 kartePane.getTextPane().setCaretPosition(pos - 1);
@@ -77,8 +84,8 @@ public abstract class AbstractComponentHolder extends JLabel
         } else if (KeyStroke.getKeyStroke("DOWN").equals(key)
             || KeyStroke.getKeyStroke("RIGHT").equals(key)) {
             // JTextPane position １つ後ろに行く
-            int pos = kartePane.getTextPane().getCaretPosition();
-            if (pos != kartePane.getDocument().getLength() - 1) {
+            int pos = getStartPos();
+            if (pos != kartePane.getDocument().getLength()) {
                 Focuser.requestFocus(kartePane.getTextPane());
                 kartePane.getTextPane().setCaretPosition(pos + 1);
             }
@@ -93,7 +100,6 @@ public abstract class AbstractComponentHolder extends JLabel
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // requestFocus はここの方がいい. mouseClicked だと，mouseRelease されるまで focus とれないから
         Focuser.requestFocus(this);
         // 右クリックで popup 表示
         if (e.isPopupTrigger()) {
@@ -139,6 +145,18 @@ public abstract class AbstractComponentHolder extends JLabel
 
     @Override
     public void mouseExited(MouseEvent e) { }
+
+    @Override
+    public void setEntry(Position start, Position end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    public int getStartPos() { return start.getOffset(); }
+
+    @Override
+    public int getEndPos() { return end.getOffset(); }
 
     @Override
     public abstract void edit();
