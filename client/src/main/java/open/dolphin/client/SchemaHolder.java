@@ -28,7 +28,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
     private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
     private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
     private final KartePane kartePane;
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(SchemaHolder.class);
     private SchemaModel schema;
     private ImageIcon icon;
     private float imgRatio = 1.0f;
@@ -37,8 +37,7 @@ public final class SchemaHolder extends AbstractComponentHolder {
     private Position end;
 
     public SchemaHolder(KartePane kartePane, SchemaModel schema) {
-        logger = LoggerFactory.getLogger(SchemaHolder.class);
-        logger.debug("SchemaHolder constructor");
+        super(kartePane);
 
         this.kartePane = kartePane;
         this.schema = schema;

@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.MouseHelper;
 import open.dolphin.ui.Focuser;
 
@@ -20,12 +19,13 @@ public abstract class AbstractComponentHolder extends JLabel
     implements ComponentHolder<JLabel>, MouseListener, MouseMotionListener, KeyListener {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * エディタの二重起動を防ぐためのフラグ
-     */
+    // 親の KartePane
+    private KartePane kartePane;
+    // エディタの二重起動を防ぐためのフラグ
     private boolean isEditable = true;
 
-    public AbstractComponentHolder() {
+    public AbstractComponentHolder(KartePane kartePane) {
+        this.kartePane = kartePane;
         initialize();
     }
 
@@ -56,12 +56,32 @@ public abstract class AbstractComponentHolder extends JLabel
         if (KeyStroke.getKeyStroke("TAB").equals(key)) {
             // TAB キーでフォーカス次移動
             SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusNextComponent);
+
         } else if (KeyStroke.getKeyStroke("shift TAB").equals(key)) {
             // shift TAB キーでフォーカス前移動
             SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusPreviousComponent);
+
         } else if (KeyStroke.getKeyStroke("SPACE").equals(key)) {
             // SPACE で編集
             edit();
+
+        } else if (KeyStroke.getKeyStroke("UP").equals(key)
+            || KeyStroke.getKeyStroke("LEFT").equals(key)) {
+            // JTextPane position １つ前に戻る
+            int pos = kartePane.getTextPane().getCaretPosition();
+            if (pos != 0) {
+                Focuser.requestFocus(kartePane.getTextPane());
+                kartePane.getTextPane().setCaretPosition(pos - 1);
+            }
+
+        } else if (KeyStroke.getKeyStroke("DOWN").equals(key)
+            || KeyStroke.getKeyStroke("RIGHT").equals(key)) {
+            // JTextPane position １つ後ろに行く
+            int pos = kartePane.getTextPane().getCaretPosition();
+            if (pos != kartePane.getDocument().getLength() - 1) {
+                Focuser.requestFocus(kartePane.getTextPane());
+                kartePane.getTextPane().setCaretPosition(pos + 1);
+            }
         }
     }
 

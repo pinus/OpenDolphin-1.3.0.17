@@ -53,7 +53,7 @@ public final class StampHolder extends AbstractComponentHolder {
     private Logger logger = LoggerFactory.getLogger(StampHolder.class);
 
     public StampHolder(final KartePane kartePane, final ModuleModel model) {
-        super();
+        super(kartePane);
         //logger.setLevel(Level.DEBUG);
 
         this.kartePane = kartePane;
@@ -76,14 +76,13 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * 数字キーでスタンプ数量を変更する. 上下キーでスタンプのフォーカスを移動する.
+     * 数字キーでスタンプ数量を変更する.
      *
      * @param e KeyEvent
      */
     @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
-        KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
 
         if (e.getKeyChar() > '0' && e.getKeyChar() < '9') {
             //
@@ -180,70 +179,6 @@ public final class StampHolder extends AbstractComponentHolder {
             dialog.setLocation(dispX, dispY);
 
             dialog.setVisible(true);
-
-        } else if (KeyStroke.getKeyStroke("UP").equals(key)) {
-            //
-            // 自分より上のスタンプを探して移動する
-            //
-            int myY = getLocationOnScreen().y;
-            StampHolder found = null;
-            StampHolder last = this;
-            for (StampHolder h : kartePane.getAllStamps()) {
-                int y = h.getLocationOnScreen().y;
-                if (y < myY) {
-                    if (Objects.isNull(found)) {
-                        found = h;
-                    } else {
-                        if (myY - found.getLocationOnScreen().y > myY - y) {
-                            // より近いのが見つかった
-                            found = h;
-                        }
-                    }
-                }
-                if (last.getLocationOnScreen().y < h.getLocationOnScreen().y) {
-                    last = h;
-                }
-            }
-            if (Objects.nonNull(found)) {
-                // 上のスタンプに移動
-                Focuser.requestFocus(found);
-
-            } else {
-                // 一番上の場合, 一番下のスタンプに移動
-                Focuser.requestFocus(last);
-            }
-
-        } else if (KeyStroke.getKeyStroke("DOWN").equals(key)) {
-            //
-            // 自分より下のスタンプを探して移動する
-            //
-            int myY = getLocationOnScreen().y;
-            StampHolder found = null;
-            StampHolder top = this;
-            for (StampHolder h : kartePane.getAllStamps()) {
-                int y = h.getLocationOnScreen().y;
-                if (y > myY) {
-                    if (Objects.isNull(found)) {
-                        found = h;
-                    } else {
-                        if (found.getLocationOnScreen().y - myY > y - myY) {
-                            // より近いのが見つかった
-                            found = h;
-                        }
-                    }
-                }
-                if (top.getLocationOnScreen().y > h.getLocationOnScreen().y) {
-                    top = h;
-                }
-            }
-            if (Objects.nonNull(found)) {
-                // 下のスタンプに移動
-                Focuser.requestFocus(found);
-
-            } else {
-                // 一番下の場合, 一番上のスタンプに移動
-                Focuser.requestFocus(top);
-            }
         }
     }
 
