@@ -1,6 +1,7 @@
 package open.dolphin.client;
 
 import open.dolphin.event.ProxyAction;
+import open.dolphin.event.ProxyActionListener;
 import open.dolphin.helper.HtmlHelper;
 import open.dolphin.helper.PreferencesUtils;
 import open.dolphin.helper.StringTool;
@@ -8,6 +9,7 @@ import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.PNSBorderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +20,10 @@ import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
+import java.util.Objects;
 
 /**
  * KartePane に Component　として挿入されるスタンプを保持するクラス.
@@ -70,29 +72,33 @@ public final class StampHolder extends AbstractComponentHolder {
         setForeground(FOREGROUND);
         setBackground(BACKGROUND);
         setBorder(MY_CLEAR_BORDER);
-        addKeyListener(new NumberInputListener());
-
         setStamp(model);
     }
 
     /**
-     * 数字キー入力を検知して, スタンプ数量を変更するリスナ.
+     * 数字キーでスタンプ数量を変更する. 上下キーでスタンプのフォーカスを移動する.
+     *
+     * @param e KeyEvent
      */
-    private class NumberInputListener extends KeyAdapter {
-        private JDialog dialog;
-        private Color translucent = new Color(0, 0, 0, 0);
-        private Color lightGray = new Color(238, 238, 238);
-        private Color origColor;
+    @Override
+    public void keyPressed(KeyEvent e) {
+        super.keyPressed(e);
+        KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
 
-        @Override
-        public void keyPressed(KeyEvent keyEvent) {
-            if (keyEvent.getKeyChar() < '0' || keyEvent.getKeyChar() > '9'
-                || !kartePane.getTextPane().isEditable()
+        if (e.getKeyChar() > '0' && e.getKeyChar() < '9') {
+            //
+            // 数字キー入力処理編集は editable でないと意味が無い
+            //
+            if (!kartePane.getTextPane().isEditable()
                 || !StampHolder.this.isEditable()
                 || !(stamp.getModel() instanceof BundleMed)) { return; }
 
+            Color translucent = new Color(0, 0, 0, 0);
+            Color lightGray = new Color(238, 238, 238);
+            Color origColor;
+
             // 数字キー入力のための minimal な dialog を作る
-            dialog = new JDialog((Frame) null, true);
+            JDialog dialog = new JDialog((Frame) null, true);
             dialog.setUndecorated(true);
             dialog.setBackground(translucent);
 
@@ -101,12 +107,19 @@ public final class StampHolder extends AbstractComponentHolder {
             setBackground(lightGray);
             setOpaque(true);
 
+            // dialog closing procedure
+            ProxyActionListener closeDialog = () -> {
+                dialog.setVisible(false);
+                setBackground(origColor);
+                setOpaque(false);
+            };
+
             // text field を作って, 最初の1文字を入力する
             JTextField tf = new JTextField(3);
-            tf.setText(String.valueOf(keyEvent.getKeyChar()));
+            tf.setText(String.valueOf(e.getKeyChar()));
 
             // enter key でスタンプの数量を変更する
-            tf.addActionListener(e -> {
+            tf.addActionListener(actionEvent -> {
                 try {
                     // 数字が入力されたかどうか
                     String num = tf.getText();
@@ -145,7 +158,8 @@ public final class StampHolder extends AbstractComponentHolder {
                 } catch (NumberFormatException ex) {
                     logger.error("wrong input");
                 }
-                closeDialog();
+                // dialog-close
+                closeDialog.actionPerformed();
             });
             dialog.add(tf);
             dialog.pack();
@@ -155,7 +169,7 @@ public final class StampHolder extends AbstractComponentHolder {
             im.put(KeyStroke.getKeyStroke("ESCAPE"), "dialog-close");
             im.put(KeyStroke.getKeyStroke("meta W"), "dialog-close");
             ActionMap am = dialog.getRootPane().getActionMap();
-            am.put("dialog-close", new ProxyAction(this::closeDialog));
+            am.put("dialog-close", new ProxyAction(closeDialog));
 
             // centering
             Point stampLocation = StampHolder.this.getLocationOnScreen();
@@ -166,12 +180,70 @@ public final class StampHolder extends AbstractComponentHolder {
             dialog.setLocation(dispX, dispY);
 
             dialog.setVisible(true);
-        }
 
-        private void closeDialog() {
-            dialog.setVisible(false);
-            setBackground(origColor);
-            setOpaque(false);
+        } else if (KeyStroke.getKeyStroke("UP").equals(key)) {
+            //
+            // 自分より上のスタンプを探して移動する
+            //
+            int myY = getLocationOnScreen().y;
+            StampHolder found = null;
+            StampHolder last = this;
+            for (StampHolder h : kartePane.getAllStamps()) {
+                int y = h.getLocationOnScreen().y;
+                if (y < myY) {
+                    if (Objects.isNull(found)) {
+                        found = h;
+                    } else {
+                        if (myY - found.getLocationOnScreen().y > myY - y) {
+                            // より近いのが見つかった
+                            found = h;
+                        }
+                    }
+                }
+                if (last.getLocationOnScreen().y < h.getLocationOnScreen().y) {
+                    last = h;
+                }
+            }
+            if (Objects.nonNull(found)) {
+                // 上のスタンプに移動
+                Focuser.requestFocus(found);
+
+            } else {
+                // 一番上の場合, 一番下のスタンプに移動
+                Focuser.requestFocus(last);
+            }
+
+        } else if (KeyStroke.getKeyStroke("DOWN").equals(key)) {
+            //
+            // 自分より下のスタンプを探して移動する
+            //
+            int myY = getLocationOnScreen().y;
+            StampHolder found = null;
+            StampHolder top = this;
+            for (StampHolder h : kartePane.getAllStamps()) {
+                int y = h.getLocationOnScreen().y;
+                if (y > myY) {
+                    if (Objects.isNull(found)) {
+                        found = h;
+                    } else {
+                        if (found.getLocationOnScreen().y - myY > y - myY) {
+                            // より近いのが見つかった
+                            found = h;
+                        }
+                    }
+                }
+                if (top.getLocationOnScreen().y > h.getLocationOnScreen().y) {
+                    top = h;
+                }
+            }
+            if (Objects.nonNull(found)) {
+                // 下のスタンプに移動
+                Focuser.requestFocus(found);
+
+            } else {
+                // 一番下の場合, 一番上のスタンプに移動
+                Focuser.requestFocus(top);
+            }
         }
     }
 
