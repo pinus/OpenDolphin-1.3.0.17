@@ -415,6 +415,8 @@ public class JSheet extends JWindow implements ActionListener {
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
+            owner.toFront();
+
             // アニメーションは EDT で表示される.
             SwingUtilities.invokeLater(this::showSheet);
 
