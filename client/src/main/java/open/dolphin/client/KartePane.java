@@ -45,7 +45,7 @@ import java.util.prefs.Preferences;
 /**
  * KarteComposite の一つで，内部に JTextPane を１つ保持している.
  * 保持している JTextPane は，{@link open.dolphin.client.KartePane#setTextPane setTextPane} されるときに
- * client property "kartePane" に親の KartePane を入れる.<br>
+ * client property "kartePane" に親の KartePane を入れる.
  * ２号カルテはこれを２枚 KarteViewer / KarteEditor に入れて使う.
  *
  * @author Kazushi Minagawa, Digital Globe, inc.
@@ -286,9 +286,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      *
      * @return このPaneからDragされたスタンプ配列
      */
-    protected ComponentHolder<?>[] getDraggedStamp() {
-        return draggedStamp;
-    }
+    protected ComponentHolder<?>[] getDraggedStamp() { return draggedStamp; }
 
     /**
      * このPaneからDragされたスタンプを設定（記録）する.

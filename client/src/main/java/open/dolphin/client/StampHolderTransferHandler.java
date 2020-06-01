@@ -41,9 +41,9 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
     @Override
     protected Transferable createTransferable(JComponent c) {
         StampHolder source = (StampHolder) c;
-        KartePane context = source.getKartePane();
-        context.setDraggedStamp(new ComponentHolder[]{source});
-        context.setDraggedCount(1);
+        KartePane kartePane = source.getKartePane();
+        kartePane.setDraggedStamp(new ComponentHolder[]{source});
+        kartePane.setDraggedCount(1);
         ModuleModel stamp = source.getStamp();
         OrderList list = new OrderList(new ModuleModel[]{stamp});
 
@@ -195,14 +195,16 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
 
         if (action == MOVE) {
             StampHolder test = (StampHolder) c;
-            KartePane context = test.getKartePane();
+            KartePane kartePane = test.getKartePane();
 
-            if (context.getComponent().isEditable()) {
-                context.removeStamp(test);
+            // 同一 KartePane 内の DnD の場合だけ移動, それ以外はコピー
+            logger.info("dropped count = " + kartePane.getDroppedCount());
+            if (kartePane.getComponent().isEditable() && kartePane.getDroppedCount() > 0) {
+                kartePane.removeStamp(test);
             }
-            context.setDraggedStamp(null);
-            context.setDraggedCount(0);
-            context.setDroppedCount(0);
+            kartePane.setDraggedStamp(null);
+            kartePane.setDraggedCount(0);
+            kartePane.setDroppedCount(0);
         }
     }
 
