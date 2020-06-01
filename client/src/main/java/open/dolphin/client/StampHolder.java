@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -437,41 +435,5 @@ public final class StampHolder extends AbstractComponentHolder {
         this.startTag = null;
         this.endTag = null;
         setMyText();
-    }
-
-    /**
-     * Stamp のコピー.
-     */
-    public void copy() {
-        if (getStamp().getModel() instanceof BundleMed) {
-            BundleMed bundle = (BundleMed) getStamp().getModel();
-
-            StringBuilder sb = new StringBuilder();
-
-            for (ClaimItem item : bundle.getClaimItem()) {
-                if (!item.getCode().matches("099[0-9]{6}")) {
-                    sb.append(item.getName());
-                    sb.append(" ");
-
-                    if (!item.getCode().matches("0085[0-9]{5}")
-                        && !item.getCode().matches("001000[0-9]{3}")
-                        && !item.getCode().matches("810000001")) {
-                        sb.append(item.getNumber());
-                        sb.append(item.getUnit());
-                    }
-                }
-            }
-            sb.append(bundle.getAdminDisplayString());
-
-            // 全角数字とスペースを直す
-            String text = sb.toString();
-            text = StringTool.toHankakuNumber(text);
-            text = StringTool.toHankakuUpperLower(text);
-            text = text.replaceAll("　", " ");
-            text = text.replace("\n", " ");
-
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(new StringSelection(text), null);
-        }
     }
 }
