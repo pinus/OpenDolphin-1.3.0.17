@@ -13,12 +13,13 @@ import open.dolphin.ui.PNSBorderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import java.util.List;
+import java.beans.PropertyChangeEvent;
 import javax.swing.border.Border;
-import java.awt.*;
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
+import java.awt.*;
 
 /**
  * KartePane に Component　として挿入されるスタンプを保持するクラス.
@@ -321,7 +322,7 @@ public final class StampHolder extends AbstractComponentHolder {
 
         } else {
             // ダブルクリックで EditorFrame に入力
-            java.util.List<EditorFrame> allFrames = EditorFrame.getAllEditorFrames();
+            List<EditorFrame> allFrames = EditorFrame.getAllEditorFrames();
             if (!allFrames.isEmpty()) {
                 EditorFrame frame = allFrames.get(0);
                 if (this.isEditable()) {
@@ -380,47 +381,46 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * Velocity を利用してスタンプの内容を表示する.
+     * j2html を利用してスタンプの内容を表示する.
      */
     private void setMyText() {
 
-            IInfoModel bundle = getStamp().getModel(); // BundleMed > BundleDolphin > ClaimBundle
-            String stampName = getStamp().getModuleInfo().getStampName();
-            logger.debug("bundle = " + bundle.getClass().getName() + ", stampName = " + stampName);
+        IInfoModel bundle = getStamp().getModel(); // BundleMed > BundleDolphin > ClaimBundle
+        String stampName = getStamp().getModuleInfo().getStampName();
+        logger.debug("bundle = " + bundle.getClass().getName() + ", stampName = " + stampName);
 
-            String text;
+        String text;
 
-            if (bundle instanceof BundleMed) {
-                text = HtmlHelper.bundleMed2Html((BundleMed) bundle, stampName, hints);
+        if (bundle instanceof BundleMed) {
+            text = HtmlHelper.bundleMed2Html((BundleMed) bundle, stampName, hints);
 
-            } else if (getStamp().getModuleInfo().getEntity().equals(IInfoModel.ENTITY_LABO_TEST)
-                && Project.getPreferences().getBoolean("laboFold", true)) {
-                text = HtmlHelper.bundleDolphin2Html((BundleDolphin) bundle, stampName, hints, true);
+        } else if (getStamp().getModuleInfo().getEntity().equals(IInfoModel.ENTITY_LABO_TEST)
+            && Project.getPreferences().getBoolean("laboFold", true)) {
+            text = HtmlHelper.bundleDolphin2Html((BundleDolphin) bundle, stampName, hints, true);
 
-            } else {
-                text = HtmlHelper.bundleDolphin2Html((BundleDolphin) bundle, stampName, hints);
+        } else {
+            text = HtmlHelper.bundleDolphin2Html((BundleDolphin) bundle, stampName, hints);
+        }
+
+
+        text = StringTool.toHankakuNumber(text);
+        text = StringTool.toHankakuUpperLower(text);
+        text = text.replaceAll("　", " ");
+
+        // 検索語の attribute をセットする
+        if (searchText != null) {
+            String taggedText = startTag + searchText + endTag;
+            int pos = text.indexOf(searchText);
+            while (pos != -1) {
+                text = text.substring(0, pos) + taggedText + text.substring(pos + searchText.length());
+                pos = text.indexOf(searchText, pos + taggedText.length());
             }
+        }
 
+        this.setText(text);
 
-            text = StringTool.toHankakuNumber(text);
-            text = StringTool.toHankakuUpperLower(text);
-            text = text.replaceAll("　", " ");
-
-            // 検索語の attribute をセットする
-            if (searchText != null) {
-                String taggedText = startTag + searchText + endTag;
-                int pos = text.indexOf(searchText);
-                while (pos != -1) {
-                    text = text.substring(0, pos) + taggedText + text.substring(pos + searchText.length());
-                    pos = text.indexOf(searchText, pos + taggedText.length());
-                }
-            }
-
-            this.setText(text);
-
-            // カルテペインへ展開された時広がるのを防ぐ
-            this.setMaximumSize(this.getPreferredSize());
-
+        // カルテペインへ展開された時広がるのを防ぐ
+        this.setMaximumSize(this.getPreferredSize());
     }
 
     public void setAttr(String searchText, String startTag, String endTag) {
