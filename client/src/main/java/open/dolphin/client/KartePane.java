@@ -5,6 +5,7 @@ import open.dolphin.codehelper.PCodeHelper;
 import open.dolphin.codehelper.SOACodeHelper;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
+import open.dolphin.dnd.*;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.ImageHelper;
 import open.dolphin.helper.TextComponentUndoManager;
@@ -26,7 +27,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -250,7 +250,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      *
      * @return このPaneからDragされたスタンプ数
      */
-    protected int getDraggedCount() {
+    public int getDraggedCount() {
         return draggedCount;
     }
 
@@ -259,7 +259,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      *
      * @param draggedCount このPaneからDragされたスタンプ数
      */
-    protected void setDraggedCount(int draggedCount) {
+    public void setDraggedCount(int draggedCount) {
         this.draggedCount = draggedCount;
     }
 
@@ -268,7 +268,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      *
      * @return このPaneにDropされたスタンプ数
      */
-    protected int getDroppedCount() {
+    public int getDroppedCount() {
         return droppedCount;
     }
 
@@ -277,7 +277,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      *
      * @param droppedCount このPaneにDropされたスタンプ数
      */
-    protected void setDroppedCount(int droppedCount) {
+    public void setDroppedCount(int droppedCount) {
         this.droppedCount = droppedCount;
     }
 
@@ -286,14 +286,14 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      *
      * @return このPaneからDragされたスタンプ配列
      */
-    protected ComponentHolder<?>[] getDraggedStamp() { return draggedStamp; }
+    public ComponentHolder<?>[] getDraggedStamp() { return draggedStamp; }
 
     /**
      * このPaneからDragされたスタンプを設定（記録）する.
      *
      * @param drragedStamp このPaneからDragされたスタンプ配列
      */
-    protected void setDraggedStamp(ComponentHolder<?>[] drragedStamp) {
+    public void setDraggedStamp(ComponentHolder<?>[] drragedStamp) {
         this.draggedStamp = drragedStamp;
     }
 
@@ -1066,9 +1066,9 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
 
         return Objects.nonNull(t) &&
-                (t.isDataFlavorSupported(DataFlavor.stringFlavor)
-                || (getMyRole().equals(IInfoModel.ROLE_P) && t.isDataFlavorSupported(OrderListTransferable.orderListFlavor))
-                || (getMyRole().equals(IInfoModel.ROLE_SOA) && t.isDataFlavorSupported(SchemaListTransferable.schemaListFlavor)));
+                (t.isDataFlavorSupported(DolphinDataFlavor.stringFlavor)
+                || (getMyRole().equals(IInfoModel.ROLE_P) && t.isDataFlavorSupported(DolphinDataFlavor.stampListFlavor))
+                || (getMyRole().equals(IInfoModel.ROLE_SOA) && t.isDataFlavorSupported(DolphinDataFlavor.schemaListFlavor)));
     }
 
     /**

@@ -7,7 +7,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
 import open.dolphin.ui.ObjectReflectTableModel;
-import open.dolphin.ui.PNSTransferHandler;
+import open.dolphin.dnd.DolphinTransferHandler;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  * @author Minagawa, Kazushi
  * @author pns
  */
-public class DiagnosisTransferHandler extends PNSTransferHandler {
+public class DiagnosisTransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = 1L;
     private final DiagnosisDocument parent;
     private JTable sourceTable;
@@ -75,7 +75,7 @@ public class DiagnosisTransferHandler extends PNSTransferHandler {
             // canImport で得た選択行に挿入（DiagnosisDocument#importStamp では使ってないんだけど）
             JTable dropTable = (JTable) c;
             int index = dropTable.getSelectedRow();
-            index = index < 0 ? 0 : index;
+            index = Math.max(index, 0);
 
             // Dropされたノードを取得する
             StampTreeNode droppedNode = (StampTreeNode) t.getTransferData(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor);

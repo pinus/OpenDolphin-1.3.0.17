@@ -2,7 +2,7 @@ package open.dolphin.order.tablepanel;
 
 import open.dolphin.order.MasterItem;
 import open.dolphin.ui.ObjectReflectTableModel;
-import open.dolphin.ui.PNSTransferHandler;
+import open.dolphin.dnd.DolphinTransferHandler;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -17,7 +17,7 @@ import java.io.IOException;
  * @author Minagawa, Kazushi
  * @author pns
  */
-public class MasterItemTransferHandler extends PNSTransferHandler {
+public class MasterItemTransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = 4871088750931696219L;
 
     private final DataFlavor masterItemFlavor = MasterItemTransferable.masterItemFlavor;

@@ -1,12 +1,12 @@
-package open.dolphin.client;
+package open.dolphin.dnd;
 
+import open.dolphin.client.*;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.project.Project;
 import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
-import open.dolphin.ui.PNSTransferHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,12 +25,11 @@ import java.io.IOException;
  * @author Kazushi Minagawa
  * @author pns
  */
-public class StampHolderTransferHandler extends PNSTransferHandler {
+public class StampHolderTransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = -9182879162438446790L;
     private Logger logger = LoggerFactory.getLogger(StampHolderTransferHandler.class);
 
-    public StampHolderTransferHandler() {
-    }
+    public StampHolderTransferHandler() { }
 
     /**
      * OrderListTransferable を作る.
@@ -47,7 +46,7 @@ public class StampHolderTransferHandler extends PNSTransferHandler {
         ModuleModel stamp = source.getStamp();
         OrderList list = new OrderList(new ModuleModel[]{stamp});
 
-        return new OrderListTransferable(list);
+        return new StampListTransferable(list);
     }
 
     @Override

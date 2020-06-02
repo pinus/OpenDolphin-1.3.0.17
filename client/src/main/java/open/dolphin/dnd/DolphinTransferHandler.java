@@ -1,4 +1,4 @@
-package open.dolphin.ui;
+package open.dolphin.dnd;
 
 import open.dolphin.client.ClientContext;
 
@@ -11,16 +11,15 @@ import java.awt.image.BufferedImage;
  *
  * @author pns
  */
-public class PNSTransferHandler extends TransferHandler {
+public class DolphinTransferHandler extends TransferHandler {
     private static final long serialVersionUID = 1L;
-
     private final boolean isWin = ClientContext.isWin();
     private final Point offset = new Point(0, 0);
 
     /**
-     * JLabel から DragImage を作る.
+     * JLabel から DragImage を作ってセットする.
      *
-     * @param label
+     * @param label JLabel
      */
     protected void setDragImage(JLabel label) {
         Point mousePosition = label.getMousePosition();
@@ -32,9 +31,9 @@ public class PNSTransferHandler extends TransferHandler {
     }
 
     /**
-     * JLabel から DragImage を作る.
+     * JLabel から DragImage を作ってセットする. 文字ラベル対応.
      *
-     * @param label
+     * @param label JLabel
      * @param clip  true の場合，文字幅に合わせて clipping する
      */
     protected void setDragImage(JLabel label, boolean clip) {
@@ -68,7 +67,7 @@ public class PNSTransferHandler extends TransferHandler {
     /**
      * DragImageOffset を設定してから setDragImage する.
      *
-     * @param image
+     * @param image drag image
      */
     @Override
     public void setDragImage(Image image) {

@@ -1,5 +1,6 @@
-package open.dolphin.client;
+package open.dolphin.dnd;
 
+import open.dolphin.client.OrderList;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.BundleMed;
 import open.dolphin.infomodel.ClaimItem;
@@ -15,21 +16,22 @@ import java.util.stream.Stream;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
-public final class OrderListTransferable implements Transferable, ClipboardOwner {
-    public static DataFlavor orderListFlavor = new DataFlavor(OrderList.class, "Order List");
-    public static final DataFlavor[] flavors = {OrderListTransferable.orderListFlavor, DataFlavor.stringFlavor};
+public final class StampListTransferable implements Transferable, ClipboardOwner {
+    public static final DataFlavor[] flavors = { DolphinDataFlavor.stampListFlavor, DolphinDataFlavor.stringFlavor };
 
     // contains array of ModuleModel (stamp)
     private OrderList list;
 
-    public OrderListTransferable(OrderList list) {
+    public StampListTransferable(OrderList list) {
         this.list = list;
     }
 
+    @Override
     public synchronized DataFlavor[] getTransferDataFlavors() {
         return flavors;
     }
 
+    @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
         return Stream.of(flavors).anyMatch(flavor::equals);
     }
@@ -38,7 +40,7 @@ public final class OrderListTransferable implements Transferable, ClipboardOwner
     @Override
     public synchronized Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
 
-        if (flavor.equals(orderListFlavor)) {
+        if (flavor.equals(DolphinDataFlavor.stampListFlavor)) {
             // Stamp が要求されている場合
             return list;
 
@@ -56,6 +58,7 @@ public final class OrderListTransferable implements Transferable, ClipboardOwner
      *
      * @return string expression of the stamp
      */
+    @NotNull
     private String getStampText(ModuleModel stamp) {
         if (stamp.getModel() instanceof BundleMed) {
             BundleMed bundle = (BundleMed) stamp.getModel();

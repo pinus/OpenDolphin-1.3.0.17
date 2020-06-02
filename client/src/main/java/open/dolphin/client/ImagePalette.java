@@ -3,7 +3,7 @@ package open.dolphin.client;
 import open.dolphin.helper.MouseHelper;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSScrollPane;
-import open.dolphin.ui.PNSTransferHandler;
+import open.dolphin.dnd.DolphinTransferHandler;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -57,7 +57,7 @@ public class ImagePalette extends JPanel {
         this(null, DEFAULT_COLUMN_COUNT, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT);
     }
 
-    public List getImageList() {
+    public List<ImageEntry> getImageList() {
         return imageTableModel.getImageList();
     }
 
@@ -224,8 +224,8 @@ public class ImagePalette extends JPanel {
         public boolean accept(File dir, String name) {
 
             boolean accept = false;
-            for (int i = 0; i < suffix.length; i++) {
-                if (name.toLowerCase().endsWith(suffix[i])) {
+            for (String s : suffix) {
+                if (name.toLowerCase().endsWith(s)) {
                     accept = true;
                     break;
                 }
@@ -284,7 +284,7 @@ public class ImagePalette extends JPanel {
     /**
      * TransferHandler by pns.
      */
-    private class ImageTransferHandler extends PNSTransferHandler {
+    private class ImageTransferHandler extends DolphinTransferHandler {
         private static final long serialVersionUID = 1L;
 
         @Override

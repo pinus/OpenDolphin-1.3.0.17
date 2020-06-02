@@ -1,28 +1,21 @@
-package open.dolphin.client;
+package open.dolphin.dnd;
+
+import open.dolphin.client.SchemaList;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.datatransfer.*;
 import java.io.IOException;
 
 /**
- * Transferable class of the Icon list.
+ * Transferable class of the Schema list.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public final class SchemaListTransferable implements Transferable, ClipboardOwner {
+    private static final DataFlavor[] flavors = { DolphinDataFlavor.schemaListFlavor };
 
-    /**
-     * Data Flavor of this class
-     */
-    public static DataFlavor schemaListFlavor = new DataFlavor(open.dolphin.client.SchemaList.class, "Schema List");
-    private static final DataFlavor[] flavors = {SchemaListTransferable.schemaListFlavor};
+    private SchemaList list;
 
-    private final SchemaList list;
-
-    /**
-     * Creates new SchemaListTransferable.
-     *
-     * @param list
-     */
     public SchemaListTransferable(SchemaList list) {
         this.list = list;
     }
@@ -34,15 +27,16 @@ public final class SchemaListTransferable implements Transferable, ClipboardOwne
 
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-        return flavor.equals(schemaListFlavor);
+        return flavor.equals(DolphinDataFlavor.schemaListFlavor);
     }
 
+    @NotNull
     @Override
-    public synchronized Object getTransferData(DataFlavor flavor)
-            throws UnsupportedFlavorException, IOException {
+    public synchronized Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
 
-        if (flavor.equals(schemaListFlavor)) {
+        if (flavor.equals(DolphinDataFlavor.schemaListFlavor)) {
             return list;
+
         } else {
             throw new UnsupportedFlavorException(flavor);
         }
@@ -55,5 +49,6 @@ public final class SchemaListTransferable implements Transferable, ClipboardOwne
 
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        list = null;
     }
 }

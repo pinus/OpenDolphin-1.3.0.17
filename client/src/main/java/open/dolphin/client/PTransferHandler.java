@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.dnd.DolphinDataFlavor;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
@@ -65,7 +66,7 @@ public class PTransferHandler extends TransferHandler {
                 shouldRemove = false;
                 return doStampInfoDrop(tr);
 
-            } else if (tr.isDataFlavorSupported(OrderListTransferable.orderListFlavor)) {
+            } else if (tr.isDataFlavorSupported(DolphinDataFlavor.stampListFlavor)) {
                 // KartePaneからのオーダスタンプをインポートする
                 return doStampDrop(tr);
 
@@ -156,7 +157,7 @@ public class PTransferHandler extends TransferHandler {
                 return true;
             }
             // OrderStamp List OK
-            if (OrderListTransferable.orderListFlavor.equals(flavor)) {
+            if (DolphinDataFlavor.stampListFlavor.equals(flavor)) {
                 return true;
             }
         }
@@ -242,7 +243,7 @@ public class PTransferHandler extends TransferHandler {
 
         try {
             // スタンプのリストを取得する
-            OrderList list = (OrderList) tr.getTransferData(OrderListTransferable.orderListFlavor);
+            OrderList list = (OrderList) tr.getTransferData(DolphinDataFlavor.stampListFlavor);
             ModuleModel[] stamps = list.getOrderList();
 
             // pPaneにスタンプを挿入する

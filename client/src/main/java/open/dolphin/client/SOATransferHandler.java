@@ -1,10 +1,14 @@
 package open.dolphin.client;
 
+import open.dolphin.dnd.DolphinDataFlavor;
+import open.dolphin.dnd.DolphinTransferHandler;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -22,9 +26,9 @@ import java.util.List;
  *
  * @author Minagawa, Kazushi
  */
-public class SOATransferHandler extends TransferHandler {
-
+public class SOATransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = -7891004155072724783L;
+    private Logger logger = LoggerFactory.getLogger(SOATransferHandler.class);
     // Start and end position in the source text.
     // We need this information when performing a MOVE
     // in order to remove the dragged text from the source.
@@ -67,7 +71,7 @@ public class SOATransferHandler extends TransferHandler {
                 // シェーマボックスからのDnDを受け入れる
                 return doImageEntryDrop(tr);
 
-            } else if (tr.isDataFlavorSupported(SchemaListTransferable.schemaListFlavor)) {
+            } else if (tr.isDataFlavorSupported(DolphinDataFlavor.schemaListFlavor)) {
                 // Paneからのシェーマを受け入れる
                 return doSchemaDrop(tr);
 
@@ -77,10 +81,8 @@ public class SOATransferHandler extends TransferHandler {
                 shouldRemove = (tc == source);
                 return true;
             }
-        } catch (UnsupportedFlavorException ufe) {
-            System.out.println("SOATranferHandler.java: " + ufe);
-        } catch (IOException ioe) {
-            System.out.println("SOATranferHandler.java: " + ioe);
+        } catch (UnsupportedFlavorException | IOException ex) {
+            logger.error(ex.getMessage());
         }
 
         return false;
@@ -156,7 +158,7 @@ public class SOATransferHandler extends TransferHandler {
                 return true;
             }
             // Schema OK
-            if (SchemaListTransferable.schemaListFlavor.equals(flavor)) {
+            if (DolphinDataFlavor.schemaListFlavor.equals(flavor)) {
                 return true;
             }
             // Image OK
@@ -224,28 +226,26 @@ public class SOATransferHandler extends TransferHandler {
     }
 
     /**
-     * Dropされたシェーマをインポーオする.
+     * Dropされたシェーマをインポートする.
      *
-     * @param tr
-     * @return
+     * @param tr Transferable
+     * @return succeeded
      */
     private boolean doSchemaDrop(Transferable tr) {
 
         try {
             // Schemaリストを取得する
-            SchemaList list = (SchemaList) tr.getTransferData(SchemaListTransferable.schemaListFlavor);
+            SchemaList list = (SchemaList) tr.getTransferData(DolphinDataFlavor.schemaListFlavor);
             SchemaModel[] schemas = list.getSchemaList();
-            for (int i = 0; i < schemas.length; i++) {
-                soaPane.stampSchema(schemas[i]);
+            for (SchemaModel schema : schemas) {
+                soaPane.stampSchema(schema);
             }
             if (soaPane.getDraggedCount() > 0 && soaPane.getDraggedStamp() != null) {
                 soaPane.setDroppedCount(schemas.length);
             }
             return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnsupportedFlavorException ex) {
-            System.out.println("PTransferHandler.java: " + ex);
+        } catch (IOException | UnsupportedFlavorException ex) {
+            logger.info(ex.getMessage());
         }
         return false;
     }

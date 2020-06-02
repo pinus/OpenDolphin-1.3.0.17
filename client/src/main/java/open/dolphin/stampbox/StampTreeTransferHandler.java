@@ -1,12 +1,12 @@
 package open.dolphin.stampbox;
 
 import open.dolphin.client.OrderList;
-import open.dolphin.client.OrderListTransferable;
+import open.dolphin.dnd.DolphinDataFlavor;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.InfoModelTransferable;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.ui.PNSTransferHandler;
+import open.dolphin.dnd.DolphinTransferHandler;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
@@ -25,14 +25,14 @@ import java.io.IOException;
  * @author Minagawa, Kazushi
  * @author pns
  */
-public class StampTreeTransferHandler extends PNSTransferHandler {
+public class StampTreeTransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = 1205897976539749194L;
 
     // StampTreeNode Flavor
     private final DataFlavor stampTreeNodeFlavor = LocalStampTreeNodeTransferable.localStampTreeNodeFlavor;
 
     // KartePaneからDropされるオーダのFlavor
-    private final DataFlavor orderFlavor = OrderListTransferable.orderListFlavor;
+    private final DataFlavor orderFlavor = DolphinDataFlavor.stampListFlavor;
 
     // KartePaneからDropされるテキストFlavor
     private final DataFlavor stringFlavor = DataFlavor.stringFlavor;
@@ -183,7 +183,7 @@ public class StampTreeTransferHandler extends PNSTransferHandler {
                     // KartePaneからDropされたオーダをインポートする
                 } else if (tr.isDataFlavorSupported(orderFlavor)) {
 
-                    OrderList list = (OrderList) tr.getTransferData(OrderListTransferable.orderListFlavor);
+                    OrderList list = (OrderList) tr.getTransferData(DolphinDataFlavor.stampListFlavor);
                     ModuleModel droppedStamp = list.getOrderList()[0];
 
                     // 同一エンティティの場合，選択は必ず起っている
