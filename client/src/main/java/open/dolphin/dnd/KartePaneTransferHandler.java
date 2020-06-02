@@ -16,7 +16,7 @@ import java.io.IOException;
 public class KartePaneTransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = 1L;
 
-    public enum Pane { SOA, P };
+    public enum Pane { SOA, P }
     private Logger logger = LoggerFactory.getLogger(SOATransferHandler.class);
 
     private KartePane kartePane;
@@ -33,7 +33,7 @@ public class KartePaneTransferHandler extends DolphinTransferHandler {
         kartePane = kp;
         pane = p;
     }
-tochu
+
     /**
      * Create a Transferable implementation that contains the selected text.
      *
