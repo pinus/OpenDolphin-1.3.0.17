@@ -2,6 +2,7 @@ package open.dolphin.stampbox;
 
 import open.dolphin.client.ClientContext;
 import open.dolphin.delegater.StampDelegater;
+import open.dolphin.dnd.StampTreeNodeTransferHandler;
 import open.dolphin.helper.GUIDGenerator;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
@@ -348,8 +349,8 @@ public class StampTree extends JTree implements TreeModelListener {
     }
 
     public void addInfoToTree(ModuleInfoBean info, StampTreeNode selected, boolean isReplace) {
-        StampTreeTransferHandler handler = (StampTreeTransferHandler) this.getTransferHandler();
-        StampTreeTransferHandler.Insert insertPosition = handler.getInsertPosition();
+        StampTreeNodeTransferHandler handler = (StampTreeNodeTransferHandler) this.getTransferHandler();
+        StampTreeNodeTransferHandler.Insert insertPosition = handler.getInsertPosition();
 
         // StampInfo から新しい StampTreeNode を生成する
         StampTreeNode node = new StampTreeNode(info);
@@ -563,10 +564,10 @@ public class StampTree extends JTree implements TreeModelListener {
                         if (target != null) {
                             if (target.isLeaf()) {
                                 // 葉の時は後ろに挿入する
-                                ((StampTreeTransferHandler) getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.AFTER);
+                                ((StampTreeNodeTransferHandler) getTransferHandler()).setPosition(StampTreeNodeTransferHandler.Insert.AFTER);
                             } else {
                                 // フォルダの時は中に挿入する
-                                ((StampTreeTransferHandler) getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.INTO_FOLDER);
+                                ((StampTreeNodeTransferHandler) getTransferHandler()).setPosition(StampTreeNodeTransferHandler.Insert.INTO_FOLDER);
                             }
                         }
                         addInfoToTree(info, target);

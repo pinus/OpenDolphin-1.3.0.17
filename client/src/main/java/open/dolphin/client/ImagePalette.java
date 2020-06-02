@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.dnd.ImageEntryTransferable;
 import open.dolphin.helper.MouseHelper;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSScrollPane;

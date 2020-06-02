@@ -1,13 +1,11 @@
-package open.dolphin.client;
+package open.dolphin.dnd;
 
+import open.dolphin.client.DiagnosisDocument;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.InfoModelTransferable;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
 import open.dolphin.ui.ObjectReflectTableModel;
-import open.dolphin.dnd.DolphinTransferHandler;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -44,7 +42,7 @@ public class DiagnosisTransferHandler extends DolphinTransferHandler {
         ObjectReflectTableModel<RegisteredDiagnosisModel> tableModel
                 = (ObjectReflectTableModel<RegisteredDiagnosisModel>) sourceTable.getModel();
         dragItem = tableModel.getObject(sourceTable.getSelectedRow());
-        return dragItem != null ? new InfoModelTransferable(dragItem) : null;
+        return dragItem != null ? new DiagnosisTransferable(dragItem) : null;
     }
 
     @Override
@@ -78,7 +76,7 @@ public class DiagnosisTransferHandler extends DolphinTransferHandler {
             index = Math.max(index, 0);
 
             // Dropされたノードを取得する
-            StampTreeNode droppedNode = (StampTreeNode) t.getTransferData(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor);
+            StampTreeNode droppedNode = (StampTreeNode) t.getTransferData(DolphinDataFlavor.stampTreeNodeFlavor);
 
             // Import するリストを生成する
             List<ModuleInfoBean> importList = new ArrayList<>(3);
@@ -149,6 +147,6 @@ public class DiagnosisTransferHandler extends DolphinTransferHandler {
         support.setShowDropLocation(false);
 
         return Stream.of(support.getDataFlavors())
-                .anyMatch(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor::equals);
+                .anyMatch(DolphinDataFlavor.stampTreeNodeFlavor::equals);
     }
 }

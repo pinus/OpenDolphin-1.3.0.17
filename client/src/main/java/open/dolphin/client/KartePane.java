@@ -70,7 +70,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     // この KartePaneのオーナ
     private ChartDocument parent;
     // StampHolderのTransferHandler
-    private StampHolderTransferHandler stampHolderTransferHandler;
+    private StampListTransferHandler stampListTransferHandler;
     // SchemaHolderのTransferHandler
     private SchemaHolderTransferHandler schemaHolderTransferHandler;
     // SchemaModel にファイル名を付けるときの Id (インクリメントする)
@@ -213,7 +213,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             this.textPane.putClientProperty("kartePane", this);
 
             doc.setParent(this);
-            stampHolderTransferHandler = new StampHolderTransferHandler();
+            stampListTransferHandler = new StampListTransferHandler();
             schemaHolderTransferHandler = new SchemaHolderTransferHandler();
         }
     }
@@ -585,7 +585,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             StampModifier.modify(stamp);
             EventQueue.invokeLater(() -> {
                 StampHolder h = new StampHolder(KartePane.this, stamp);
-                h.setTransferHandler(stampHolderTransferHandler);
+                h.setTransferHandler(stampListTransferHandler);
                 KarteStyledDocument doc = getDocument();
                 doc.stamp(h);
             });
@@ -612,7 +612,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             // 外用剤の bundleNumber を補正する
             StampModifier.adjustNumber(stamp);
             StampHolder h = new StampHolder(this, stamp);
-            h.setTransferHandler(stampHolderTransferHandler);
+            h.setTransferHandler(stampListTransferHandler);
             KarteStyledDocument doc = getDocument();
             doc.flowStamp(h);
         }

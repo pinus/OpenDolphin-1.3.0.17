@@ -4,7 +4,6 @@ import open.dolphin.dnd.DolphinDataFlavor;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
-import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +60,7 @@ public class PTransferHandler extends TransferHandler {
         }
 
         try {
-            if (tr.isDataFlavorSupported(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor)) {
+            if (tr.isDataFlavorSupported(DolphinDataFlavor.stampTreeNodeFlavor)) {
                 // スタンプボックスからのスタンプをインポートする
                 shouldRemove = false;
                 return doStampInfoDrop(tr);
@@ -153,7 +152,7 @@ public class PTransferHandler extends TransferHandler {
                 return true;
             }
             // StampTreeNode(FromStampTree) OK
-            if (LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavor)) {
+            if (DolphinDataFlavor.stampTreeNodeFlavor.equals(flavor)) {
                 return true;
             }
             // OrderStamp List OK
@@ -174,7 +173,7 @@ public class PTransferHandler extends TransferHandler {
 
         try {
             // DropされたTreeNodeを取得する
-            StampTreeNode droppedNode = (StampTreeNode) tr.getTransferData(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor);
+            StampTreeNode droppedNode = (StampTreeNode) tr.getTransferData(DolphinDataFlavor.stampTreeNodeFlavor);
 
             // 葉の場合
             if (droppedNode.isLeaf()) {

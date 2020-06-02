@@ -2,8 +2,8 @@ package open.dolphin.inspector;
 
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.DiagnosisDocument;
-import open.dolphin.client.DiagnosisTransferHandler;
-import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
+import open.dolphin.dnd.DiagnosisTransferHandler;
+import open.dolphin.dnd.DolphinDataFlavor;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
@@ -39,7 +39,7 @@ public class DiagnosisInspectorTransferHandler extends TransferHandler {
 
         DataFlavor[] flavors = support.getDataFlavors();
         for (DataFlavor flavor : flavors) {
-            if (LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavor)) {
+            if (DolphinDataFlavor.stampTreeNodeFlavor.equals(flavor)) {
                 return true;
             }
         }

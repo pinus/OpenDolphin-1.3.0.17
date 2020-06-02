@@ -5,7 +5,6 @@ import open.dolphin.delegater.StampDelegater;
 import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.project.Project;
-import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +24,11 @@ import java.io.IOException;
  * @author Kazushi Minagawa
  * @author pns
  */
-public class StampHolderTransferHandler extends DolphinTransferHandler {
+public class StampListTransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = -9182879162438446790L;
-    private Logger logger = LoggerFactory.getLogger(StampHolderTransferHandler.class);
+    private Logger logger = LoggerFactory.getLogger(StampListTransferHandler.class);
 
-    public StampHolderTransferHandler() { }
+    public StampListTransferHandler() { }
 
     /**
      * OrderListTransferable を作る.
@@ -155,7 +154,7 @@ public class StampHolderTransferHandler extends DolphinTransferHandler {
             StampTreeNode droppedNode;
 
             try {
-                droppedNode = (StampTreeNode) tr.getTransferData(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor);
+                droppedNode = (StampTreeNode) tr.getTransferData(DolphinDataFlavor.stampTreeNodeFlavor);
 
             } catch (UnsupportedFlavorException e) {
                logger.error(e.getMessage());
@@ -223,7 +222,7 @@ public class StampHolderTransferHandler extends DolphinTransferHandler {
 
     protected boolean hasFlavor(DataFlavor[] flavors) {
         for (DataFlavor flavor : flavors) {
-            if (LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavor)) {
+            if (DolphinDataFlavor.stampTreeNodeFlavor.equals(flavor)) {
                 return true;
             }
         }

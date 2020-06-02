@@ -2,6 +2,7 @@ package open.dolphin.stampbox;
 
 import open.dolphin.client.*;
 import open.dolphin.delegater.StampDelegater;
+import open.dolphin.dnd.StampTreeNodeTransferHandler;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.WindowSupport;
@@ -926,17 +927,17 @@ public class StampBoxPlugin extends AbstractMainTool {
                                     "「" + targetName + "」を上書きしますか？", "上書き確認",
                                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
                             if (confirm == JOptionPane.OK_OPTION) {
-                                ((StampTreeTransferHandler) tree.getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.AFTER);
+                                ((StampTreeNodeTransferHandler) tree.getTransferHandler()).setPosition(StampTreeNodeTransferHandler.Insert.AFTER);
                                 tree.replaceStamp(stamp, target);
                             }
                         } else {
                             // 名前が違えば選択された項目の下に入れる
-                            ((StampTreeTransferHandler) tree.getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.AFTER);
+                            ((StampTreeNodeTransferHandler) tree.getTransferHandler()).setPosition(StampTreeNodeTransferHandler.Insert.AFTER);
                             tree.addStamp(stamp, target);
                         }
                     } else {
                         // Folder ならその中に入れる
-                        ((StampTreeTransferHandler) tree.getTransferHandler()).setPosition(StampTreeTransferHandler.Insert.INTO_FOLDER);
+                        ((StampTreeNodeTransferHandler) tree.getTransferHandler()).setPosition(StampTreeNodeTransferHandler.Insert.INTO_FOLDER);
                         tree.addStamp(stamp, target);
                     }
                 }

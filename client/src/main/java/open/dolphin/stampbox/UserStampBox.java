@@ -1,6 +1,7 @@
 package open.dolphin.stampbox;
 
 import open.dolphin.client.*;
+import open.dolphin.dnd.StampTreeNodeTransferHandler;
 import open.dolphin.helper.MouseHelper;
 import open.dolphin.helper.StampTreeUtils;
 import open.dolphin.infomodel.IInfoModel;
@@ -63,7 +64,7 @@ public class UserStampBox extends AbstractStampBox {
         List<StampTree> userTrees = StampTreeUtils.xmlDecode(treeXml);
 
         // StampTreeへ設定するPopupMenuとTransferHandlerを生成する
-        StampTreeTransferHandler transferHandler = new StampTreeTransferHandler();
+        StampTreeNodeTransferHandler transferHandler = new StampTreeNodeTransferHandler();
 
         // userTrees を順番に並べ替える
         userTrees.sort(Comparator.comparingInt(o -> tabMap.get(o.getTreeName())));

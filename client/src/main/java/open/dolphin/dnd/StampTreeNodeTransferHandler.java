@@ -1,12 +1,14 @@
-package open.dolphin.stampbox;
+package open.dolphin.dnd;
 
 import open.dolphin.client.OrderList;
-import open.dolphin.dnd.DolphinDataFlavor;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.InfoModelTransferable;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.dnd.DolphinTransferHandler;
+import open.dolphin.stampbox.StampTree;
+import open.dolphin.stampbox.StampTreeNode;
+import open.dolphin.stampbox.StampTreeRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
@@ -19,26 +21,26 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 /**
- * StampTreeTransferHandler.<br>
- * {@code getVisualRepresentation(Transferable t) } 対応.
+ * StampTreeTransferHandler.
  *
  * @author Minagawa, Kazushi
  * @author pns
  */
-public class StampTreeTransferHandler extends DolphinTransferHandler {
+public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = 1205897976539749194L;
+    private Logger logger = LoggerFactory.getLogger(StampTreeNodeTransferHandler.class);
 
-    // StampTreeNode Flavor
-    private final DataFlavor stampTreeNodeFlavor = LocalStampTreeNodeTransferable.localStampTreeNodeFlavor;
+    // StampTreeNode
+    private final DataFlavor stampTreeNodeFlavor = DolphinDataFlavor.stampTreeNodeFlavor;
 
-    // KartePaneからDropされるオーダのFlavor
+    // KartePane から　Drop される StampList
     private final DataFlavor orderFlavor = DolphinDataFlavor.stampListFlavor;
 
-    // KartePaneからDropされるテキストFlavor
-    private final DataFlavor stringFlavor = DataFlavor.stringFlavor;
+    // KartePane から Drop されるテキスト Flavor
+    private final DataFlavor stringFlavor = DolphinDataFlavor.stringFlavor;
 
-    // 病名エディタからDropされるRegisteredDiagnosis Flavor
-    private final DataFlavor infoModelFlavor = InfoModelTransferable.infoModelFlavor;
+    // 病名エディタから Drop される Registered Diagnosis Flavor
+    private final DataFlavor infoModelFlavor = DolphinDataFlavor.diagnosisFlavor;
 
     // Drop する target の path
     private TreePath targetPath;
@@ -59,13 +61,13 @@ public class StampTreeTransferHandler extends DolphinTransferHandler {
     /**
      * 選択されたノードでDragを開始する.
      *
-     * @return
+     * @return StampTreeNodeTransferable
      */
     @Override
     protected Transferable createTransferable(JComponent c) {
         StampTree sourceTree = (StampTree) c;
         StampTreeNode dragNode = (StampTreeNode) sourceTree.getLastSelectedPathComponent();
-        return new LocalStampTreeNodeTransferable(dragNode);
+        return new StampTreeNodeTransferable(dragNode);
     }
 
     @Override
@@ -96,19 +98,19 @@ public class StampTreeTransferHandler extends DolphinTransferHandler {
     /**
      * DropされたFlavorをStampTreeにインポートする.
      *
-     * @param c
-     * @param tr
-     * @return
+     * @param c StampTree
+     * @param tr Transferable
+     * @return succeeded
      */
     @Override
     public boolean importData(JComponent c, Transferable tr) {
 
         if (targetPath == null) {
-            System.out.println("StampTreeTransferHandler: targetPath is null");
+            logger.error("targetPath is null");
             return false;
         }
         if (insertPosition == null) {
-            System.out.println("StampTreeTransferHandler: insertPosition is null");
+            logger.error("insertPosition is null");
             return false;
         }
 
@@ -123,10 +125,10 @@ public class StampTreeTransferHandler extends DolphinTransferHandler {
                 StampTreeNode targetNode = (StampTreeNode) targetPath.getLastPathComponent();
 
                 // StampTree 内の DnD
-                if (tr.isDataFlavorSupported(stampTreeNodeFlavor)) {
+                if (tr.isDataFlavorSupported(DolphinDataFlavor.stampTreeNodeFlavor)) {
 
                     // ソースのノードを取得する
-                    StampTreeNode sourceNode = (StampTreeNode) tr.getTransferData(stampTreeNodeFlavor);
+                    StampTreeNode sourceNode = (StampTreeNode) tr.getTransferData(DolphinDataFlavor.stampTreeNodeFlavor);
 
                     // Drop 位置の親
                     StampTreeNode newParent = (StampTreeNode) targetNode.getParent();
@@ -137,7 +139,7 @@ public class StampTreeTransferHandler extends DolphinTransferHandler {
                     TreeNode[] parents = model.getPathToRoot(targetNode);
                     boolean exist = false;
                     for (TreeNode parent : parents) {
-                        if (parent == (TreeNode) sourceNode) {
+                        if (parent == sourceNode) {
                             exist = true;
                             Toolkit.getDefaultToolkit().beep();
                             //System.out.println("new Child is ancestor");
@@ -215,7 +217,8 @@ public class StampTreeTransferHandler extends DolphinTransferHandler {
                     // DiagnosisEditorからDropされた病名をインポートする
                 } else if (tr.isDataFlavorSupported(infoModelFlavor)) {
 
-                    RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) tr.getTransferData(InfoModelTransferable.infoModelFlavor);
+                    RegisteredDiagnosisModel rd =
+                        (RegisteredDiagnosisModel) tr.getTransferData(DolphinDataFlavor.diagnosisFlavor);
                     if (targetEntity.equals(IInfoModel.ENTITY_DIAGNOSIS)) {
                         return tree.addDiagnosis(rd, targetNode);
                     } else {
@@ -245,9 +248,9 @@ public class StampTreeTransferHandler extends DolphinTransferHandler {
     /**
      * インポート可能かどうかを返す.
      *
-     * @param c
-     * @param flavors
-     * @return
+     * @param c StampTree
+     * @param flavors flavors
+     * @return can import
      */
     @Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {

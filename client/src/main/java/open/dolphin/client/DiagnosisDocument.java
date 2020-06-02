@@ -3,6 +3,7 @@ package open.dolphin.client;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
+import open.dolphin.dnd.DiagnosisTransferHandler;
 import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.*;

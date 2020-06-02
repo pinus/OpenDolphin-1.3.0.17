@@ -1,11 +1,11 @@
-package open.dolphin.client;
+package open.dolphin.dnd;
 
-import open.dolphin.dnd.DolphinDataFlavor;
-import open.dolphin.dnd.DolphinTransferHandler;
+import open.dolphin.client.ImageEntry;
+import open.dolphin.client.KartePane;
+import open.dolphin.client.SchemaList;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.SchemaModel;
-import open.dolphin.stampbox.LocalStampTreeNodeTransferable;
 import open.dolphin.stampbox.StampTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +29,13 @@ import java.util.List;
 public class SOATransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = -7891004155072724783L;
     private Logger logger = LoggerFactory.getLogger(SOATransferHandler.class);
+
     // Start and end position in the source text.
     // We need this information when performing a MOVE
     // in order to remove the dragged text from the source.
     Position p0 = null, p1 = null;
+
     private KartePane soaPane;
-    private DataFlavor stringFlavor = DataFlavor.stringFlavor;
     private JTextPane source;
     private boolean shouldRemove;
 
@@ -47,27 +48,25 @@ public class SOATransferHandler extends DolphinTransferHandler {
      */
     @Override
     public boolean importData(JComponent c, Transferable tr) {
-
-        JTextPane tc = (JTextPane) c;
-
+        JTextPane textPane = (JTextPane) c;
         if (!canImport(c, tr.getTransferDataFlavors())) {
             return false;
         }
 
-        if (tc.equals(source) &&
-                (tc.getCaretPosition() >= p0.getOffset()) &&
-                (tc.getCaretPosition() <= p1.getOffset())) {
+        if (textPane.equals(source)
+            && (textPane.getCaretPosition() >= p0.getOffset())
+            && (textPane.getCaretPosition() <= p1.getOffset())) {
             shouldRemove = false;
             return true;
         }
 
         try {
-            if (tr.isDataFlavorSupported(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor)) {
+            if (tr.isDataFlavorSupported(DolphinDataFlavor.stampTreeNodeFlavor)) {
                 // StampTreeNodeを受け入れる
                 shouldRemove = false;
                 return doStampInfoDrop(tr);
 
-            } else if (tr.isDataFlavorSupported(ImageEntryTransferable.imageEntryFlavor)) {
+            } else if (tr.isDataFlavorSupported(DolphinDataFlavor.imageEntryFlavor)) {
                 // シェーマボックスからのDnDを受け入れる
                 return doImageEntryDrop(tr);
 
@@ -75,10 +74,10 @@ public class SOATransferHandler extends DolphinTransferHandler {
                 // Paneからのシェーマを受け入れる
                 return doSchemaDrop(tr);
 
-            } else if (tr.isDataFlavorSupported(stringFlavor)) {
-                String str = (String) tr.getTransferData(stringFlavor);
-                tc.replaceSelection(str);
-                shouldRemove = (tc == source);
+            } else if (tr.isDataFlavorSupported(DolphinDataFlavor.stringFlavor)) {
+                String str = (String) tr.getTransferData(DolphinDataFlavor.stringFlavor);
+                textPane.replaceSelection(str);
+                shouldRemove = (textPane == source);
                 return true;
             }
         } catch (UnsupportedFlavorException | IOException ex) {
@@ -88,8 +87,12 @@ public class SOATransferHandler extends DolphinTransferHandler {
         return false;
     }
 
-    // Create a Transferable implementation that contains the
-    // selected text.
+    /**
+     * Create a Transferable implementation that contains the selected text.
+     *
+     * @param c JTextPane
+     * @return Transferable of String
+     */
     @Override
     protected Transferable createTransferable(JComponent c) {
         source = (JTextPane) c;
@@ -103,7 +106,7 @@ public class SOATransferHandler extends DolphinTransferHandler {
             p0 = doc.createPosition(start);
             p1 = doc.createPosition(end);
         } catch (BadLocationException e) {
-            System.out.println("SOATransferHandler.java: " + e);
+            logger.error(e.getMessage());
         }
         String data = source.getSelectedText();
         return new StringSelection(data);
@@ -127,7 +130,7 @@ public class SOATransferHandler extends DolphinTransferHandler {
                     tc.getDocument().remove(p0.getOffset(),
                             p1.getOffset() - p0.getOffset());
                 } catch (BadLocationException e) {
-                    System.out.println("SOATransferHandler.java: " + e);
+                    logger.error(e.getMessage());
                 }
             }
         }
@@ -137,6 +140,10 @@ public class SOATransferHandler extends DolphinTransferHandler {
 
     /**
      * インポート可能かどうかを返す.
+     *
+     * @param c JTextPane
+     * @param flavors array of flavors
+     * @return can import
      */
     @Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {
@@ -145,16 +152,19 @@ public class SOATransferHandler extends DolphinTransferHandler {
 
     /**
      * Flavorリストのなかに受け入れられものがあるかどうかを返す.
+     *
+     * @param flavors flavors to check
+     * @return acceptable
      */
     protected boolean hasFlavor(DataFlavor[] flavors) {
 
         for (DataFlavor flavor : flavors) {
             // String ok
-            if (stringFlavor.equals(flavor)) {
+            if (DolphinDataFlavor.stringFlavor.equals(flavor)) {
                 return true;
             }
             // StampTreeNode OK
-            if (LocalStampTreeNodeTransferable.localStampTreeNodeFlavor.equals(flavor)) {
+            if (DolphinDataFlavor.stampTreeNodeFlavor.equals(flavor)) {
                 return true;
             }
             // Schema OK
@@ -162,7 +172,7 @@ public class SOATransferHandler extends DolphinTransferHandler {
                 return true;
             }
             // Image OK
-            if (ImageEntryTransferable.imageEntryFlavor.equals(flavor)) {
+            if (DolphinDataFlavor.imageEntryFlavor.equals(flavor)) {
                 return true;
             }
         }
@@ -176,10 +186,9 @@ public class SOATransferHandler extends DolphinTransferHandler {
      * @return 成功した時 true
      */
     private boolean doStampInfoDrop(Transferable tr) {
-
         try {
             // DropされたTreeNodeを取得する
-            StampTreeNode droppedNode = (StampTreeNode) tr.getTransferData(LocalStampTreeNodeTransferable.localStampTreeNodeFlavor);
+            StampTreeNode droppedNode = (StampTreeNode) tr.getTransferData(DolphinDataFlavor.stampTreeNodeFlavor);
 
             // 葉の場合
             if (droppedNode.isLeaf()) {
@@ -217,10 +226,8 @@ public class SOATransferHandler extends DolphinTransferHandler {
                 soaPane.stampInfoDropped(addList);
             }
             return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnsupportedFlavorException ex) {
-            System.out.println("PTransferHandler.java: " + ex);
+        } catch (IOException | UnsupportedFlavorException ex) {
+            logger.info(ex.getMessage());
         }
         return false;
     }
@@ -232,7 +239,6 @@ public class SOATransferHandler extends DolphinTransferHandler {
      * @return succeeded
      */
     private boolean doSchemaDrop(Transferable tr) {
-
         try {
             // Schemaリストを取得する
             SchemaList list = (SchemaList) tr.getTransferData(DolphinDataFlavor.schemaListFlavor);
@@ -254,16 +260,13 @@ public class SOATransferHandler extends DolphinTransferHandler {
      * Dropされたイメージをインポートする.
      */
     private boolean doImageEntryDrop(final Transferable tr) {
-
         try {
             // Imageを取得する
-            ImageEntry entry = (ImageEntry) tr.getTransferData(ImageEntryTransferable.imageEntryFlavor);
+            ImageEntry entry = (ImageEntry) tr.getTransferData(DolphinDataFlavor.imageEntryFlavor);
             soaPane.imageEntryDropped(entry);
             return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnsupportedFlavorException ex) {
-            System.out.println("PTransferHandler.java: " + ex);
+        } catch (IOException | UnsupportedFlavorException e) {
+            logger.error(e.getMessage());
         }
         return false;
     }
