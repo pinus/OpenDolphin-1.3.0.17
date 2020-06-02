@@ -78,7 +78,7 @@ public final class StampHolder extends AbstractComponentHolder {
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
 
-        if (e.getKeyChar() > '0' && e.getKeyChar() < '9') {
+        if (Character.isDigit(e.getKeyChar())) {
             //
             // 数字キー入力処理編集は editable でないと意味が無い
             //

@@ -5,6 +5,7 @@ import open.dolphin.ui.Focuser;
 
 import javax.swing.FocusManager;
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.event.*;
@@ -71,6 +72,30 @@ public abstract class AbstractComponentHolder extends JLabel
         } else if (KeyStroke.getKeyStroke("SPACE").equals(key)) {
             // SPACE で編集
             edit();
+
+        } else if (KeyStroke.getKeyStroke("ENTER").equals(key)) {
+            // Enter で改行入力
+            try {
+                JTextPane pane = kartePane.getTextPane();
+                pane.setCaretPosition(start.getOffset());
+                pane.replaceSelection("\n");
+                start = pane.getDocument().createPosition(pane.getCaretPosition());
+            } catch (BadLocationException badLocationException) {
+                badLocationException.printStackTrace(System.err);
+            }
+
+        } else if (KeyStroke.getKeyStroke("BACK_SPACE").equals(key)) {
+            // Delete で前を削除
+            if (start.getOffset() > 0) {
+                try {
+                    JTextPane pane = kartePane.getTextPane();
+                    pane.setCaretPosition(start.getOffset());
+                    pane.getDocument().remove(start.getOffset()-1, 1);
+                    start = pane.getDocument().createPosition(pane.getCaretPosition());
+                } catch (BadLocationException badLocationException) {
+                    badLocationException.printStackTrace(System.err);
+                }
+            }
 
         } else if (KeyStroke.getKeyStroke("UP").equals(key)
             || KeyStroke.getKeyStroke("LEFT").equals(key)) {

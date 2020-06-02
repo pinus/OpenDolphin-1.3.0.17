@@ -1,6 +1,8 @@
-package open.dolphin.client;
+package open.dolphin.dnd;
 
-import open.dolphin.dnd.DolphinDataFlavor;
+import open.dolphin.client.KartePane;
+import open.dolphin.client.OrderList;
+import open.dolphin.client.StampModifier;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
@@ -26,7 +28,6 @@ import java.util.List;
  */
 public class PTransferHandler extends TransferHandler {
     private static final long serialVersionUID = -7891004155072724783L;
-    private DataFlavor stringFlavor = DataFlavor.stringFlavor;
     private Logger logger = LoggerFactory.getLogger(PTransferHandler.class);
 
     // KartePane
@@ -69,8 +70,8 @@ public class PTransferHandler extends TransferHandler {
                 // KartePaneからのオーダスタンプをインポートする
                 return doStampDrop(tr);
 
-            } else if (tr.isDataFlavorSupported(stringFlavor)) {
-                String str = (String) tr.getTransferData(stringFlavor);
+            } else if (tr.isDataFlavorSupported(DolphinDataFlavor.stringFlavor)) {
+                String str = (String) tr.getTransferData(DolphinDataFlavor.stringFlavor);
                 tc.replaceSelection(str);
                 shouldRemove = (tc == source);
                 return true;
@@ -148,7 +149,7 @@ public class PTransferHandler extends TransferHandler {
 
         for (DataFlavor flavor : flavors) {
             // String OK
-            if (stringFlavor.equals(flavor)) {
+            if (DolphinDataFlavor.stringFlavor.equals(flavor)) {
                 return true;
             }
             // StampTreeNode(FromStampTree) OK
