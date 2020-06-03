@@ -4,13 +4,13 @@ import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeNode;
 
 import javax.swing.*;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 
 /**
  * AspStampTreeTransferHandler.
  *
  * @author Minagawa, Kazushi
+ * @author pns
  */
 public class AspStampTreeNodeTransferHandler extends StampTreeNodeTransferHandler {
     private static final long serialVersionUID = 1L;
@@ -23,7 +23,7 @@ public class AspStampTreeNodeTransferHandler extends StampTreeNodeTransferHandle
     }
 
     @Override
-    public boolean importData(JComponent c, Transferable tr) {
+    public boolean importData(TransferSupport support) {
         return false;
     }
 
@@ -31,7 +31,7 @@ public class AspStampTreeNodeTransferHandler extends StampTreeNodeTransferHandle
     protected void exportDone(JComponent c, Transferable data, int action) { }
 
     @Override
-    public boolean canImport(JComponent c, DataFlavor[] flavors) {
+    public boolean canImport(TransferSupport support) {
         return false;
     }
 }

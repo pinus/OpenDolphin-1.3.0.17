@@ -1,17 +1,17 @@
-package open.dolphin.inspector;
+package open.dolphin.dnd;
 
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.DiagnosisDocument;
-import open.dolphin.dnd.DiagnosisTransferHandler;
-import open.dolphin.dnd.DolphinDataFlavor;
 
 import javax.swing.*;
-import java.awt.datatransfer.DataFlavor;
+import java.util.stream.Stream;
 
 /**
+ * DiagnosisInspecterTransferHandler.
+ *
  * @author pns
  */
-public class DiagnosisInspectorTransferHandler extends TransferHandler {
+public class DiagnosisInspectorTransferHandler extends DolphinTransferHandler {
     private static final long serialVersionUID = 1L;
     private final ChartImpl context;
 
@@ -26,23 +26,17 @@ public class DiagnosisInspectorTransferHandler extends TransferHandler {
         }
 
         DiagnosisDocument doc = context.getDiagnosisDocument();
-        DiagnosisTransferHandler handler = (DiagnosisTransferHandler) doc.getDiagnosisTable().getTransferHandler();
+        TransferHandler handler = doc.getDiagnosisTable().getTransferHandler();
         JComponent target = doc.getDiagnosisTable();
 
-        return handler.importData(target, support.getTransferable());
+        // DiagnosisTable の Transferhandler に丸投げ
+        return handler.importData(new TransferSupport(target, support.getTransferable()));
     }
 
     @Override
     public boolean canImport(TransferSupport support) {
         // drop position の選択をしないようにする
         support.setShowDropLocation(false);
-
-        DataFlavor[] flavors = support.getDataFlavors();
-        for (DataFlavor flavor : flavors) {
-            if (DolphinDataFlavor.stampTreeNodeFlavor.equals(flavor)) {
-                return true;
-            }
-        }
-        return false;
+        return Stream.of(support.getDataFlavors()).anyMatch(DolphinDataFlavor.stampTreeNodeFlavor::equals);
     }
 }

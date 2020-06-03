@@ -2,8 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
-import open.dolphin.dnd.PTransferHandler;
-import open.dolphin.dnd.SOATransferHandler;
+import open.dolphin.dnd.KartePaneTransferHandler;
 import open.dolphin.event.CompletionListener;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.StringTool;
@@ -211,7 +210,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         soaPane.setTextPane(kartePanel.getSoaTextPane());
         soaPane.setParent(this);
         soaPane.setRole(ROLE_SOA);
-        soaPane.getTextPane().setTransferHandler(new SOATransferHandler(soaPane));
+        soaPane.getTextPane().setTransferHandler(new KartePaneTransferHandler(soaPane));
         if (Objects.nonNull(getDocument())) {
             // Schema 画像にファイル名を付けるのために必要
             String docId = getDocument().getDocInfo().getDocId();
@@ -223,7 +222,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         pPane.setTextPane(kartePanel.getPTextPane());
         pPane.setParent(this);
         pPane.setRole(ROLE_P);
-        pPane.getTextPane().setTransferHandler(new PTransferHandler(pPane));
+        pPane.getTextPane().setTransferHandler(new KartePaneTransferHandler(pPane));
 
         setUI(kartePanel);
 

@@ -7,13 +7,16 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.FocusManager;
 import javax.swing.*;
+import javax.swing.event.CaretEvent;
 import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.event.*;
 
 /**
- * ComponentHolder.
- * StampHolder と SchemaHolder.
+ * ComponentHolder. StampHolder と SchemaHolder.
+ * マウス選択および {@link open.dolphin.client.KartePane#caretUpdate(CaretEvent) KartePane#caretUpdate} で
+ * キャレットが Component 位置にきたときにフォーカスを取る. フォーカスを取ると
+ * {@link open.dolphin.client.KarteComposite#enter(ActionMap) enter(ActionMap)} が呼ばれる.
  *
  * @author Kazushi Minagawa
  * @author pns
@@ -141,7 +144,7 @@ public abstract class AbstractComponentHolder extends JLabel
 
     /**
      * KarteStyledDocument の createPosition で作成される.
-     * 実体は {@link javax.swing.text.GapContent.StickyPosition GapContent の StickyPosition} への参照.
+     * 実体は {@link javax.swing.text.GapContent GapContent.StickyPosition} への参照.
      * Document の変更に応じて自動更新される.
      * @see javax.swing.text.GapContent#createPosition(int)
      *

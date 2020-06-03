@@ -127,7 +127,7 @@ public final class StampHolder extends AbstractComponentHolder {
                             bundle.setBundleNumber(num);
                             setMyText();
                             kartePane.setDirty(true);
-                            logger.info("bundle number changed to " + num);
+                            logger.debug("bundle number changed to " + num);
                         }
 
                     } else {
@@ -145,7 +145,7 @@ public final class StampHolder extends AbstractComponentHolder {
                         if (dirty) {
                             setMyText();
                             kartePane.setDirty(true);
-                            logger.info("item number changed to " + num);
+                            logger.debug("item number changed to " + num);
                         }
                     }
                 } catch (NumberFormatException ex) {
@@ -177,7 +177,8 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     /**
-     * Focusされた場合のメニュー制御とボーダーを表示する.
+     * Focus されると {@link open.dolphin.client.ChartMediator ChartMediator} から呼ばれる.
+     * メニュー制御とボーダーを表示する.
      *
      * @param map ActionMap
      */

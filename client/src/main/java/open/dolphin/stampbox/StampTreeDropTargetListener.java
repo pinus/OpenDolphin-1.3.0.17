@@ -2,6 +2,7 @@ package open.dolphin.stampbox;
 
 import open.dolphin.dnd.StampTreeNodeTransferHandler;
 
+import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.dnd.DropTargetDragEvent;
@@ -159,8 +160,7 @@ public class StampTreeDropTargetListener implements DropTargetListener {
 
     @Override
     public void drop(DropTargetDropEvent dtde) {
-
-        handler.importData(tree, dtde.getTransferable());
+        handler.importData(new TransferHandler.TransferSupport(tree, dtde.getTransferable()));
         dtde.dropComplete(true); // これをしないとドラッグしてきたアイコンが逃げる
 
         renderer.setTargetNode(null); // あとしまつ

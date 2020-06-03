@@ -1,17 +1,14 @@
 package open.dolphin.client;
 
-import open.dolphin.dnd.ImageEntryTransferable;
+import open.dolphin.dnd.ImageEntryTransferHandler;
 import open.dolphin.helper.MouseHelper;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSScrollPane;
-import open.dolphin.dnd.DolphinTransferHandler;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -128,7 +125,7 @@ public class ImagePalette extends JPanel {
         imageTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         imageTable.setCellSelectionEnabled(true);
         imageTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        imageTable.setTransferHandler(new ImageTransferHandler());
+        imageTable.setTransferHandler(new ImageEntryTransferHandler());
 
         // ドラッグ処理
         imageTable.addMouseMotionListener(new MouseMotionAdapter() {
@@ -279,44 +276,6 @@ public class ImagePalette extends JPanel {
                 l.setText(null);
             }
             return compo;
-        }
-    }
-
-    /**
-     * TransferHandler by pns.
-     */
-    private class ImageTransferHandler extends DolphinTransferHandler {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        protected Transferable createTransferable(JComponent c) {
-            int row = imageTable.getSelectedRow();
-            int col = imageTable.getSelectedColumn();
-
-            ImageEntry entry = null;
-            if (row != -1 && col != -1) {
-                entry = (ImageEntry) imageTable.getValueAt(row, col);
-            }
-            return new ImageEntryTransferable(entry);
-        }
-
-        @Override
-        public int getSourceActions(JComponent c) {
-            JTable table = (JTable) c;
-            int row = table.getSelectedRow();
-            int column = table.getSelectedColumn();
-            TableCellRenderer r = table.getCellRenderer(row, column);
-
-            Object value = table.getValueAt(row, column);
-            boolean isSelected = false;
-            boolean hasFocus = true;
-
-            JLabel draggedComp = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            draggedComp.setSize(table.getColumnModel().getColumn(0).getWidth(), table.getRowHeight(row));
-
-            setDragImage(draggedComp);
-
-            return COPY_OR_MOVE;
         }
     }
 }

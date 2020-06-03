@@ -5,11 +5,10 @@ import open.dolphin.infomodel.SchemaModel;
 
 import javax.swing.*;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 
 /**
- * SchemaHolderTransferHandler
+ * SchemaHolder に付ける TransferHandler.
  *
  * @author Kazushi Minagawa
  * @author pns
@@ -57,8 +56,14 @@ public class SchemaHolderTransferHandler extends DolphinTransferHandler {
         }
     }
 
+    /**
+     * SchemaHolder の上への Drop はできない.
+     *
+     * @param support TransferSupport
+     * @return can import
+     */
     @Override
-    public boolean canImport(JComponent c, DataFlavor[] flavors) {
+    public boolean canImport(TransferSupport support) {
         return false;
     }
 

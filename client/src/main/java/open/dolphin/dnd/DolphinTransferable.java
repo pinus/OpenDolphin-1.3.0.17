@@ -33,11 +33,10 @@ public class DolphinTransferable<T> implements Transferable, ClipboardOwner {
     @NotNull
     @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-        if (flavor.equals(flavors[0])) {
+        if (Stream.of(flavors).anyMatch(flavor::equals)) {
             return targetData;
-        } else {
-            throw new UnsupportedFlavorException(flavor);
         }
+        throw new UnsupportedFlavorException(flavor);
     }
 
     @Override
