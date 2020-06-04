@@ -112,31 +112,30 @@ public class IMEControl {
 
         JLabel l1 = new JLabel("TF1");
         JLabel l2 = new JLabel("TF2");
-        JLabel l3 = new JLabel("LABEL");
-        JTextField tf1 = new JTextField(30);
-        JTextField tf2 = new JTextField(30);
+        JList list = new JList(new String[] { "ITEM1", "ITEM2" });
+        list.setSelectedIndex(0);
 
-        JButton b1 = new JButton("Get Focus");
-        b1.addActionListener(e -> {
-            SwingUtilities.invokeLater(tf1::requestFocusInWindow);
+        JTextField tf1 = new JTextField(30);
+        tf1.addActionListener(e -> {
+            list.requestFocusInWindow();
+            list.enableInputMethods(false);
+            tf1.enableInputMethods(false);
         });
-        JButton b2 = new JButton("Get Focus");
-        b2.addActionListener(e -> {
-            SwingUtilities.invokeLater(tf2::requestFocusInWindow);
+        JTextField tf2 = new JTextField(30);
+        tf2.addActionListener(e -> {
+            list.requestFocusInWindow();
         });
 
         JPanel p1 = new JPanel();
         p1.setLayout(new BoxLayout(p1, BoxLayout.X_AXIS));
         p1.add(l1);
         p1.add(tf1);
-        p1.add(b1);
         JPanel p2 = new JPanel();
         p2.setLayout(new BoxLayout(p2, BoxLayout.X_AXIS));
         p2.add(l2);
         p2.add(tf2);
-        p2.add(b2);
         JPanel p3 = new JPanel();
-        p3.add(l3);
+        p3.add(list);
 
         f.getRootPane().setLayout(new BoxLayout(f.getRootPane(), BoxLayout.Y_AXIS));
         f.getRootPane().add(p1);
