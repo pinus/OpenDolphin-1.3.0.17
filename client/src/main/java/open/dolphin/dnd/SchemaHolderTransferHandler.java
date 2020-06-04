@@ -56,6 +56,11 @@ public class SchemaHolderTransferHandler extends DolphinTransferHandler {
         }
     }
 
+    @Override
+    public boolean importData(TransferSupport support) {
+        return false;
+    }
+
     /**
      * SchemaHolder の上への Drop はできない.
      *

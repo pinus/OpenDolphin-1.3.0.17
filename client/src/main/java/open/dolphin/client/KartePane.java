@@ -810,14 +810,10 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         task.execute();
     }
 
-    private void showNoStampModelMessage() {
-        JOptionPane.showMessageDialog(null, "実体のないスタンプです。削除してください。",
-            ClientContext.getFrameTitle("実体のないスタンプ"),
-            JOptionPane.WARNING_MESSAGE);
-    }
-
     /**
      * ORCA の入力セットを取得してこのペインに展開する.
+     *
+     * @param stampInfo ModuleInfoBean
      */
     private void applyOrcaSet(final ModuleInfoBean stampInfo) {
 
@@ -839,15 +835,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         };
 
         task.execute();
-    }
-
-    private void showMetaDataMessage() {
-
-        Window w = SwingUtilities.getWindowAncestor(getTextPane());
-        JOptionPane.showMessageDialog(w,
-            "画像のメタデータが取得できず、読み込むことができません。",
-            ClientContext.getFrameTitle("画像インポート"),
-            JOptionPane.WARNING_MESSAGE);
     }
 
     private boolean showMaxSizeMessage() {
@@ -1035,6 +1022,20 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         imageEntryDropped(entry);
     }
 
+    private void showNoStampModelMessage() {
+        JOptionPane.showMessageDialog(null, "実体のないスタンプです。削除してください。",
+            ClientContext.getFrameTitle("実体のないスタンプ"),
+            JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void showMetaDataMessage() {
+        Window w = SwingUtilities.getWindowAncestor(getTextPane());
+        JOptionPane.showMessageDialog(w,
+            "画像のメタデータが取得できず、読み込むことができません。",
+            ClientContext.getFrameTitle("画像インポート"),
+            JOptionPane.WARNING_MESSAGE);
+    }
+
     /**
      * StampEditor の編集が終了するとここへ通知される.
      * 通知されたスタンプをペインに挿入する.
@@ -1073,11 +1074,8 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      */
     protected boolean canPaste() {
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-
-        return Objects.nonNull(t) &&
-            (t.isDataFlavorSupported(DolphinDataFlavor.stringFlavor)
-                || (getMyRole().equals(IInfoModel.ROLE_P) && t.isDataFlavorSupported(DolphinDataFlavor.stampListFlavor))
-                || (getMyRole().equals(IInfoModel.ROLE_SOA) && t.isDataFlavorSupported(DolphinDataFlavor.schemaListFlavor)));
+        return getTextPane().getTransferHandler().canImport(
+            new TransferHandler.TransferSupport(getTextPane(), t));
     }
 
     /**

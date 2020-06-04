@@ -182,9 +182,7 @@ public class StampListTransferHandler extends DolphinTransferHandler {
 
     @Override
     protected void exportDone(JComponent c, Transferable tr, int action) {
-        if (action == NONE) {
-            return;
-        }
+        if (action == NONE) { return; }
 
         if (action == MOVE) {
             StampHolder test = (StampHolder) c;

@@ -21,9 +21,7 @@ public class DiagnosisInspectorTransferHandler extends DolphinTransferHandler {
 
     @Override
     public boolean importData(TransferSupport support) {
-        if (!support.isDrop()) {
-            return false;
-        }
+        if (!canImport(support) || !support.isDrop()) { return false; }
 
         DiagnosisDocument doc = context.getDiagnosisDocument();
         TransferHandler handler = doc.getDiagnosisTable().getTransferHandler();

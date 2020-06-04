@@ -60,28 +60,28 @@ public class MasterItemTransferHandler extends DolphinTransferHandler {
 
     @Override
     public boolean importData(TransferSupport support) {
-        if (canImport(support)) {
-            try {
-                MasterItem dropItem =
-                    (MasterItem) support.getTransferable().getTransferData(DolphinDataFlavor.masterItemFlavor);
-                JTable dropTable = (JTable) support.getComponent();
-                ObjectReflectTableModel<MasterItem> tableModel = (ObjectReflectTableModel<MasterItem>) dropTable.getModel();
-                JTable.DropLocation dropLocation = (JTable.DropLocation) support.getDropLocation();
+        if (!canImport(support)) { return false; }
 
-                toIndex = dropLocation.getRow();
-                shouldRemove = (dropTable == sourceTable);
+        try {
+            MasterItem dropItem =
+                (MasterItem) support.getTransferable().getTransferData(DolphinDataFlavor.masterItemFlavor);
+            JTable dropTable = (JTable) support.getComponent();
+            ObjectReflectTableModel<MasterItem> tableModel = (ObjectReflectTableModel<MasterItem>) dropTable.getModel();
+            JTable.DropLocation dropLocation = (JTable.DropLocation) support.getDropLocation();
 
-                if (shouldRemove) {
-                    tableModel.moveRow(fromIndex, (toIndex > fromIndex) ? --toIndex : toIndex);
-                } else {
-                    tableModel.addRow(toIndex, dropItem);
-                }
-                sourceTable.getSelectionModel().setSelectionInterval(toIndex, toIndex);
-                return true;
+            toIndex = dropLocation.getRow();
+            shouldRemove = (dropTable == sourceTable);
 
-            } catch (IOException | UnsupportedFlavorException ex) {
-                logger.error(ex.getMessage());
+            if (shouldRemove) {
+                tableModel.moveRow(fromIndex, (toIndex > fromIndex) ? --toIndex : toIndex);
+            } else {
+                tableModel.addRow(toIndex, dropItem);
             }
+            sourceTable.getSelectionModel().setSelectionInterval(toIndex, toIndex);
+            return true;
+
+        } catch (IOException | UnsupportedFlavorException ex) {
+            logger.error(ex.getMessage());
         }
         return false;
     }

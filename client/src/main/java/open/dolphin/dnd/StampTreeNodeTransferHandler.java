@@ -40,7 +40,7 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
     private final DataFlavor stringFlavor = DolphinDataFlavor.stringFlavor;
 
     // 病名エディタから Drop される Registered Diagnosis Flavor
-    private final DataFlavor infoModelFlavor = DolphinDataFlavor.diagnosisFlavor;
+    private final DataFlavor diagnosisFlavor = DolphinDataFlavor.diagnosisFlavor;
 
     // Drop する target の path
     private TreePath targetPath;
@@ -216,7 +216,7 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
                 }
 
                 // DiagnosisEditorからDropされた病名をインポートする
-            } else if (tr.isDataFlavorSupported(infoModelFlavor)) {
+            } else if (tr.isDataFlavorSupported(diagnosisFlavor)) {
 
                 RegisteredDiagnosisModel rd =
                     (RegisteredDiagnosisModel) tr.getTransferData(DolphinDataFlavor.diagnosisFlavor);
@@ -235,11 +235,6 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
         return false;
     }
 
-    /**
-     * TODO: DnD 後，Drag したノードを元の Stamptree から削除する.
-     *
-     * @param c target component
-     */
     @Override
     protected void exportDone(JComponent c, Transferable data, int action) {
     }
@@ -267,7 +262,7 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
             if (stringFlavor.equals(flavor)) {
                 return true;
             }
-            if (infoModelFlavor.equals(flavor)) {
+            if (diagnosisFlavor.equals(flavor)) {
                 return true;
             }
         }

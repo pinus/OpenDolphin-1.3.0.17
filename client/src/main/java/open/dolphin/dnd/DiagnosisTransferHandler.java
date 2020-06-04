@@ -71,6 +71,8 @@ public class DiagnosisTransferHandler extends DolphinTransferHandler {
 
     @Override
     public boolean importData(TransferSupport support) {
+        if (!canImport(support)) { return false; }
+
         try {
             // 病名の挿入位置を決めておく
             // canImport で得た選択行に挿入（DiagnosisDocument#importStamp では使ってないんだけど）

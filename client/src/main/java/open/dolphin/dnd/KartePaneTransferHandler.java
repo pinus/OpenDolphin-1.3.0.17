@@ -64,6 +64,8 @@ public class KartePaneTransferHandler extends DolphinTransferHandler {
 
     @Override
     public boolean importData(TransferSupport support) {
+        if (!canImport(support)) { return false; }
+
         JTextPane textPane = (JTextPane) support.getComponent();
         // 元の選択を消去するかどうか
         shouldRemove = false;
