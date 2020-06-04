@@ -689,30 +689,33 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             Toolkit.getDefaultToolkit().beep();
             return;
         }
-        // Text スタンプを挿入する
-        if (entity.equals(IInfoModel.ENTITY_TEXT)) {
-            stampInfoDropped(list);
-            return;
-        }
         // ORCA 入力セットの場合
         if (role.equals(IInfoModel.ROLE_ORCA_SET)) {
             applyOrcaSet(stampInfo);
             return;
         }
-        // データベースに保存されているスタンプを挿入する
-        if (stampInfo.isSerialized()) {
+        // Serialized のものと Text スタンプは挿入する
+        if (stampInfo.isSerialized() || entity.equals(IInfoModel.ENTITY_TEXT)) {
             stampInfoDropped(list);
-            return;
+        } else {
+            // serialize されていない場合 Stamp エディタを起動する
+            editStamp(stampInfo);
         }
-        // Stamp エディタを起動する
-        logger.debug("launch stampEditor = " + entity);
+    }
+
+    /**
+     * スタンプエディタを起動する.
+     *
+     * @param stampInfo ModuleInfoBean
+     */
+    private void editStamp(ModuleInfoBean stampInfo) {
+        logger.info("launch stampEditor entity: " + stampInfo.getEntity());
         ModuleModel stamp = new ModuleModel();
         stamp.setModuleInfo(stampInfo);
 
-        StampEditorDialog stampEditor = new StampEditorDialog(entity, stamp);
+        StampEditorDialog stampEditor = new StampEditorDialog(stampInfo.getEntity(), stamp);
         stampEditor.addPropertyChangeListener(this);
         stampEditor.start();
-        logger.debug("stampEditor started");
     }
 
     /**
@@ -732,14 +735,24 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
                 return;
             }
         }
-        // ORCA は複数ドロップに対応していない
-        String role = addList.get(0).getStampRole();
-        if (InfoModel.ROLE_ORCA_SET.equals(role)) {
-            addList.stream().forEach(this::stampInfoDropped);
+
+        // リストの最初の StampInfo を取り出す
+        ModuleInfoBean stampInfo = addList.get(0);
+
+        // serialize されていなければエディタを起動
+        if (!stampInfo.isSerialized()) {
+            editStamp(stampInfo);
             return;
         }
 
-        // ORCA 以外
+        // ORCA は複数ドロップに対応していない
+        String role = stampInfo.getStampRole();
+        if (InfoModel.ROLE_ORCA_SET.equals(role)) {
+            addList.forEach(this::applyOrcaSet);
+            return;
+        }
+
+        // ORCA 以外で serialize されているものはサーバに問い合わせる
         DBTask<List<StampModel>> task = new DBTask<List<StampModel>>(parent.getContext()) {
             private StampDelegater sdl = new StampDelegater();
 

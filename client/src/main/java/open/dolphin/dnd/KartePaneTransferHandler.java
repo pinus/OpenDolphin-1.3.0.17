@@ -152,6 +152,8 @@ public class KartePaneTransferHandler extends DolphinTransferHandler {
      */
     @Override
     public boolean canImport(TransferSupport support) {
+        if (!kartePane.getTextPane().isEditable()) { return false; }
+
         String myRole = kartePane.getMyRole();
 
         for (DataFlavor flavor : support.getDataFlavors()) {
