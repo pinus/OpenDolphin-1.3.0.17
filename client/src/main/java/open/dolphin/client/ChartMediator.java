@@ -368,10 +368,6 @@ public final class ChartMediator extends MenuSupport {
         } else {
             //
             // TextTree，JTextPane，handler からメニューを構築する
-            // PPane にも落とさなければならない TODO
-            // JComponent comp = kartePane.getTextPane();
-            // TransferHandler handler = comp.getTransferHandler();
-
             // 2007-03-31
             // 直近でフォーカスを得ているコンポーネント(JTextPan）へ挿入する
             //

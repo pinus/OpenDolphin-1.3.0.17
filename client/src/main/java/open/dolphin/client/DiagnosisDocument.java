@@ -1069,7 +1069,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 logger.debug("id = " + rd.getId());
 
                 // 開始日，終了日はテーブルから取得している
-                // TODO confirmed, recorded
                 rd.setKarte(getContext().getKarte());           // Karte
                 rd.setCreator(Project.getUserModel());          // Creator
                 rd.setConfirmed(confirmed);                     // 確定日
@@ -1081,7 +1080,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                     rd.setStarted(confirmed);
                 }
 
-                // TODO トラフィック
                 rd.setPatientLiteModel(getContext().getPatient().patientAsLiteModel());
                 rd.setUserLiteModel(Project.getUserModel().getLiteModel());
 
@@ -1112,7 +1110,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 rd.setRecorded(confirmed);
                 rd.setStatus(IInfoModel.STATUS_FINAL);
 
-                // TODO トラフィック
                 rd.setPatientLiteModel(getContext().getPatient().patientAsLiteModel());
                 rd.setUserLiteModel(Project.getUserModel().getLiteModel());
 

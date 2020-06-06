@@ -80,9 +80,16 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         completionListener = listener;
     }
 
+    /**
+     * Save 時ではなくメニューから CLAIM 送信する.
+     * EditorFrame で編集中の場合はここが呼ばれる.
+     */
+    public void sendClaim() {
+        logger.error("sendClaim() in KarteEditor called.");
+    }
+
     public void selectAll() {
-        //KarteEditor.getInputMap().remove(KeyStroke.getKeyStroke('A',java.awt.event.InputEvent.META_MASK));
-        System.out.println("---- selectAll in KarteEditor.java ----");//TODO
+        logger.error("selectAll selected");
     }
 
     /**
@@ -595,7 +602,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         // titleを設定する
         docInfo.setTitle(params.getTitle());
 
-        // デフォルトのアクセス権を設定をする TODO
+        // デフォルトのアクセス権を設定をする
         AccessRightModel ar = new AccessRightModel();
         ar.setPermission(PERMISSION_ALL);
         ar.setLicenseeCode(ACCES_RIGHT_CREATOR);
@@ -814,17 +821,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 number++;
             }
         }
-    }
-
-    /**
-     * Save 時ではなくメニューから CLAIM 送信する.
-     * EditorFrame で編集中の場合はここが呼ばれる.
-     */
-    public void sendClaim() {
-        logger.error("sendClaim() in KarteEditor called.");
-        /*
-        ToDO Edit 中の内容が送られるようにしたい
-        */
     }
 
     /**
