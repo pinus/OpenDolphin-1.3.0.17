@@ -282,8 +282,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         // Sheet をセンタリング
         loc.x += (ownerSize.width - sourcePaneSize.width) / 2;
-        int vOffset = parentComponent.getLocationOnScreen().y - owner.getLocationOnScreen().y;
-        loc.y += vOffset == 0 ? MENU_BAR_HEIGHT : vOffset;
+        loc.y += MENU_BAR_HEIGHT;
 
         // 右端，左端の処理
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

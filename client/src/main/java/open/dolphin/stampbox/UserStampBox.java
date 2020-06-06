@@ -10,6 +10,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.inspector.DiagnosisInspector;
 
 import javax.swing.*;
+import javax.swing.tree.TreePath;
 import java.awt.event.*;
 import java.util.*;
 
@@ -109,6 +110,14 @@ public class UserStampBox extends AbstractStampBox {
                  * スタンプを右クリックポップメニューからカルテに入力できるようにする
                  */
                 private void showPopup(MouseEvent e) {
+                    // popup を出す前に選択する
+                    TreePath path = stampTree.getPathForLocation(e.getX(), e.getY());
+                    if (Objects.nonNull(path)) {
+                        stampTree.setSelectionPath(path);
+                    } else {
+                        stampTree.clearSelection();
+                    }
+
                     // ToolTipWindow を消す
                     MouseHelper.hideToolTipWindow();
 

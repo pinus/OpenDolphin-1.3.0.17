@@ -7,6 +7,7 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.stampbox.StampTree;
 import open.dolphin.stampbox.StampTreeNode;
 import open.dolphin.stampbox.StampTreeRenderer;
+import open.dolphin.ui.sheet.JSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,7 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
     // Drop する target の path
     private TreePath targetPath;
     private Insert insertPosition;
+    private StampTree tree;
 
     public void setTargetPath(TreePath t) {
         targetPath = t;
@@ -65,8 +67,8 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
      */
     @Override
     protected Transferable createTransferable(JComponent c) {
-        StampTree sourceTree = (StampTree) c;
-        StampTreeNode dragNode = (StampTreeNode) sourceTree.getLastSelectedPathComponent();
+        tree = (StampTree) c;
+        StampTreeNode dragNode = (StampTreeNode) tree.getLastSelectedPathComponent();
         return new StampTreeNodeTransferable(dragNode);
     }
 
@@ -74,7 +76,7 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
     public int getSourceActions(JComponent c) {
         insertPosition = null;
 
-        JTree tree = (JTree) c;
+        StampTree tree = (StampTree) c;
         TreePath path = tree.getSelectionPath();
 
         if (path != null) {
@@ -129,7 +131,9 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
             if (tr.isDataFlavorSupported(DolphinDataFlavor.stampTreeNodeFlavor)) {
 
                 // ソースのノードを取得する
-                StampTreeNode sourceNode = (StampTreeNode) tr.getTransferData(DolphinDataFlavor.stampTreeNodeFlavor);
+                // transferHandler からとると root が入ってこない
+                //StampTreeNode sourceNode = (StampTreeNode) tr.getTransferData(DolphinDataFlavor.stampTreeNodeFlavor);
+                StampTreeNode sourceNode = tree.getSelectedNode();
 
                 // Drop 位置の親
                 StampTreeNode newParent = (StampTreeNode) targetNode.getParent();
@@ -152,7 +156,7 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
                 if (!exist) {
                     int index = newParent.getIndex(targetNode);
                     if (index == -1) {
-                        System.out.println("StampTreeTransferHandler: index is -1");
+                        logger.error("StampTreeTransferHandler: index is -1");
                         return false;
                     }
 
@@ -248,6 +252,7 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
     @Override
     public boolean canImport(TransferSupport support) {
         boolean isLocked = ((StampTree) support.getComponent()).getStampBox().isLocked();
+        logger.info("stamp box is locked");
         return isFlavorMatched(support.getDataFlavors()) && !isLocked && targetPath != null;
     }
 
@@ -267,6 +272,10 @@ public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
             }
         }
         return false;
+    }
+
+    private void showMessage(String message) {
+        JSheet.showMessageDialog(tree, message, "", JOptionPane.WARNING_MESSAGE);
     }
 
     // target の中に入れるか，前に挿入するか，後ろに挿入するかの情報（StampTreeDropTargetListener でセットする）

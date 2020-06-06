@@ -287,6 +287,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         if (isMac) {
             WindowSupport windowSupport = WindowSupport.create(title);
             frame = windowSupport.getFrame();
+            frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 105);
             javax.swing.JMenuBar myMenuBar = windowSupport.getMenuBar();
             mediator = new MenuSupport(this);
             MenuFactory appMenu = new MenuFactory();

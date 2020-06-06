@@ -64,14 +64,14 @@ public class StampTreeMenuBuilder {
             HashMap<StampTreeNode, JMenu> parentMap = new HashMap<>();
 
             DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
-            Enumeration e = rootNode.preorderEnumeration();
+            Enumeration<StampTreeNode> e = rootNode.preorderEnumeration();
 
             // スタンプをスキャンする
             e.nextElement(); // consume root
 
             while (e.hasMoreElements()) {
                 // 調査対象のノードを得る
-                StampTreeNode node = (StampTreeNode) e.nextElement();
+                StampTreeNode node = e.nextElement();
                 // その親を得る
                 StampTreeNode parent = (StampTreeNode) node.getParent();
 
