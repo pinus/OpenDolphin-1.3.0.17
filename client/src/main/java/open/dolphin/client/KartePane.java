@@ -5,7 +5,6 @@ import open.dolphin.codehelper.PCodeHelper;
 import open.dolphin.codehelper.SOACodeHelper;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
-import open.dolphin.dnd.DolphinDataFlavor;
 import open.dolphin.dnd.SchemaHolderTransferHandler;
 import open.dolphin.dnd.StampListTransferHandler;
 import open.dolphin.helper.DBTask;
@@ -205,14 +204,14 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     /**
      * JTextPaneを設定する.
      *
-     * @param textPane JTextPane
+     * @param tp JTextPane
      */
-    public void setTextPane(JTextPane textPane) {
-        this.textPane = textPane;
-        if (this.textPane != null) {
+    public void setTextPane(JTextPane tp) {
+        textPane = tp;
+        if (textPane != null) {
             KarteStyledDocument doc = new KarteStyledDocument();
-            this.textPane.setDocument(doc);
-            this.textPane.putClientProperty("kartePane", this);
+            textPane.setDocument(doc);
+            textPane.putClientProperty("kartePane", this);
 
             doc.setParent(this);
             stampListTransferHandler = new StampListTransferHandler();
@@ -365,6 +364,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     public void changedUpdate(DocumentEvent e) {
     }
 
+    private int dotBefore = 0;
     @Override
     public void caretUpdate(CaretEvent e) {
         boolean newSelection = e.getDot() != e.getMark();
@@ -379,12 +379,25 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
             }
             controlMenus(mediator.getActions());
         }
+
         // カーソル移動で Component 部に来たら, Component にフォーカスする
         if (!newSelection) {
             KarteStyledDocument doc = getDocument();
             Component c = StyleConstants.getComponent(doc.getCharacterElement(e.getDot()).getAttributes());
+
             if (Objects.nonNull(c)) {
-                Focuser.requestFocus(c);
+                if (e.getDot() == 0
+                    // IME 変換中は c が一つ前の component と同じものが返ってくるのをごまかす
+                    || !c.equals(StyleConstants.getComponent(doc.getCharacterElement(e.getDot() - 1).getAttributes()))) {
+                    Focuser.requestFocus(c);
+                }
+            }
+
+            // デリートで行頭に戻ったときに, キャレットが前の行の最後に行ってしまうのを setCaret で直す
+            if (dotBefore != e.getDot()) {
+                dotBefore = e.getDot();
+                textPane.setCaretPosition(e.getDot());
+                //logger.info("dot = " + e.getDot());
             }
         }
     }

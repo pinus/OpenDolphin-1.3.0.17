@@ -62,6 +62,7 @@ public final class StampListTransferable extends DolphinTransferable<OrderList> 
                         sb.append(item.getNumber());
                         sb.append(item.getUnit());
                     }
+                    sb.append(" ");
                 }
             }
             sb.append(bundle.getAdminDisplayString());

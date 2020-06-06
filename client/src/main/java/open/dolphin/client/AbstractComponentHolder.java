@@ -47,6 +47,7 @@ public abstract class AbstractComponentHolder extends JLabel
         addMouseMotionListener(this);
         addKeyListener(this);
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        setFocusTraversalKeysEnabled(false); // これをしないと TAB キーを取られる
 
         ActionMap am = this.getActionMap();
         am.put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
@@ -68,11 +69,15 @@ public abstract class AbstractComponentHolder extends JLabel
 
         if (KeyStroke.getKeyStroke("TAB").equals(key)) {
             // TAB キーでフォーカス次移動
-            SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusNextComponent);
+            if (!kartePane.getTextPane().isEditable()) {
+                SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusNextComponent);
+            }
 
         } else if (KeyStroke.getKeyStroke("shift TAB").equals(key)) {
             // shift TAB キーでフォーカス前移動
-            SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusPreviousComponent);
+            if (!kartePane.getTextPane().isEditable()) {
+                SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusPreviousComponent);
+            }
 
         } else if (KeyStroke.getKeyStroke("SPACE").equals(key)) {
             // SPACE で編集

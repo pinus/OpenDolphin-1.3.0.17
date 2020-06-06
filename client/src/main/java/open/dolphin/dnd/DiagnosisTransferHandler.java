@@ -147,7 +147,7 @@ public class DiagnosisTransferHandler extends DolphinTransferHandler {
     @Override
     public boolean canImport(TransferSupport support) {
         // drop position の選択をしないようにする
-        support.setShowDropLocation(false);
+        if (support.isDrop()) { support.setShowDropLocation(false); }
         return Stream.of(support.getDataFlavors())
                 .anyMatch(DolphinDataFlavor.stampTreeNodeFlavor::equals);
     }

@@ -9,6 +9,7 @@ import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
+import open.dolphin.ui.Focuser;
 import open.dolphin.ui.PNSBorderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +106,7 @@ public final class StampHolder extends AbstractComponentHolder {
                 dialog.setVisible(false);
                 setBackground(origColor);
                 setOpaque(false);
+                Focuser.requestFocus(this);
             };
 
             // text field を作って, 最初の1文字を入力する
