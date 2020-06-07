@@ -419,7 +419,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             diagTable.addMouseMotionListener(new MouseMotionAdapter() {
                 @Override
                 public void mouseDragged(MouseEvent e) {
-                    diagTable.getTransferHandler().exportAsDrag((JComponent) e.getSource(), e, TransferHandler.COPY);
+                    if (diagTable.getSelectedRow() != -1) {
+                        diagTable.getTransferHandler().exportAsDrag((JComponent) e.getSource(), e, TransferHandler.COPY);
+                    }
                 }
             });
         }

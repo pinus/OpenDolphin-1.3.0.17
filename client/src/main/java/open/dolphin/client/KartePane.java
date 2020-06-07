@@ -384,21 +384,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
         if (!newSelection) {
             KarteStyledDocument doc = getDocument();
             Component c = StyleConstants.getComponent(doc.getCharacterElement(e.getDot()).getAttributes());
-
-            if (Objects.nonNull(c)) {
-                if (e.getDot() == 0
-                    // IME 変換中は c が一つ前の component と同じものが返ってくるのをごまかす
-                    || !c.equals(StyleConstants.getComponent(doc.getCharacterElement(e.getDot() - 1).getAttributes()))) {
-                    Focuser.requestFocus(c);
-                }
-            }
-
-            // デリートで行頭に戻ったときに, キャレットが前の行の最後に行ってしまうのを setCaret で直す
-            if (dotBefore != e.getDot()) {
-                dotBefore = e.getDot();
-                textPane.setCaretPosition(e.getDot());
-                //logger.info("dot = " + e.getDot());
-            }
+            if (Objects.nonNull(c)) { Focuser.requestFocus(c); }
         }
     }
 
