@@ -1,6 +1,9 @@
 package open.dolphin.client;
 
 import open.dolphin.project.Project;
+import open.dolphin.project.ProjectStub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.text.*;
 import java.util.ArrayList;
@@ -15,13 +18,15 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     private static final long serialVersionUID = 1L;
     private static final String STAMP_STYLE = "stampHolder";
     private static final String SCHEMA_STYLE = "schemaHolder";
+    private Logger logger = LoggerFactory.getLogger(KarteStyledDocument.class);
+
     // スタンプの先頭を改行する
     private boolean putTopCr;
     // KartePane
     private KartePane kartePane;
 
     public KarteStyledDocument() {
-        putTopCr = Project.getPreferences().getBoolean("stampSpace", true);
+        putTopCr = Project.getProjectStub().isStampSpace();
     }
 
     public void setParent(KartePane kartePane) {
@@ -37,7 +42,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     }
 
     /**
-     * Stamp を挿入する.
+     * Stamp を挿入する. DnD の場合.
      *
      * @param sh 挿入するスタンプホルダ
      */
@@ -72,12 +77,11 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     }
 
     /**
-     * Stamp を挿入する.
+     * Stamp を挿入する. Rendering の場合.
      *
      * @param sh 挿入するスタンプホルダ
      */
     public void flowStamp(final StampHolder sh) {
-
 
         try {
             Style runStyle = this.getStyle(STAMP_STYLE);
@@ -85,15 +89,18 @@ public class KarteStyledDocument extends DefaultStyledDocument {
                 runStyle = addStyle(STAMP_STYLE, null);
             }
             // このスタンプ用のスタイルを動的に生成する
-            //Style runStyle = addStyle(STAMP_STYLE, null);
             StyleConstants.setComponent(runStyle, sh);
 
             // キャレット位置を取得する
             int start = kartePane.getTextPane().getCaretPosition();
 
             // Stamp を挿入する
-            insertString(start, " ", runStyle);
-
+            if (putTopCr) {
+                insertString(start, " ", runStyle);
+                insertString(start + 1, "\n", null);
+            } else {
+                insertString(start, " ", runStyle);
+            }
             // スタンプの開始と終了位置を生成して保存する
             sh.setEntry(createPosition(start), createPosition(start + 1));
 
@@ -274,9 +281,9 @@ public class KarteStyledDocument extends DefaultStyledDocument {
                 }
                 if (crPos != 0 && !"\n".equals(getText(pos, 1))) {
                     int len = pos - crPos;
-                    if (len > 1) {
-                        remove(crPos + 1, len - 1);
-                        pos -= (len - 1);
+                    if (len > 2) {
+                        remove(crPos + 1, len - 2);
+                        pos -= (len - 2);
                     }
                     crPos = 0;
                 }

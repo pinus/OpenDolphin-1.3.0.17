@@ -59,6 +59,7 @@ public final class StampHolder extends AbstractComponentHolder {
         Rectangle bounds = PreferencesUtils.getRectangle(Project.getPreferences(), ChartImpl.PN_FRAME, new Rectangle(0, 0, 0, 0));
         int w = (bounds.width + 1) / 2 - 168; // 実験から連立方程式で求めた
         hints.setWidth(Math.max(320, w));
+        hints.setWidth(250);
 
         init(model);
     }
