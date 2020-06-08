@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.event.*;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.beans.PropertyChangeEvent;
 import javax.swing.border.Border;
@@ -59,16 +60,16 @@ public final class StampHolder extends AbstractComponentHolder {
     private void initialize() {
         // text pane の幅は ComponentListener から取得する
         MyComponentListener listener = new MyComponentListener();
-        kartePane.getParent().getUI().addComponentListener(listener);
+        kartePane.getTextPane().addComponentListener(listener);
         // 実際の値は後で component listener で決定される
-        hints.setWidth(400);
+        hints.setWidth(listener.getWidth());
         hints.setCommentColor(COMMENT_COLOR);
 
         setForeground(FOREGROUND);
         setBackground(BACKGROUND);
         setBorder(MY_CLEAR_BORDER);
 
-        setMyText();
+        //setMyText();
     }
 
     /**
@@ -80,6 +81,7 @@ public final class StampHolder extends AbstractComponentHolder {
         }
         @Override
         public void componentShown(ComponentEvent e) {
+            logger.info("component event = " + e);
             hints.setWidth(getWidth());
             setMyText();
         }
@@ -439,9 +441,6 @@ public final class StampHolder extends AbstractComponentHolder {
         }
 
         this.setText(text);
-
-        // カルテペインへ展開された時広がるのを防ぐ
-        this.setMaximumSize(this.getPreferredSize());
     }
 
     public void setAttr(String searchText, String startTag, String endTag) {

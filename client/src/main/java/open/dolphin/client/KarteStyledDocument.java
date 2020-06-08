@@ -34,6 +34,7 @@ public class KarteStyledDocument extends DefaultStyledDocument {
     }
 
     public void makeParagraph() {
+        logger.info("--- paragraph ---");
         try {
             insertString(getLength(), "\n", null);
         } catch (BadLocationException ex) {
@@ -59,16 +60,15 @@ public class KarteStyledDocument extends DefaultStyledDocument {
             int start = kartePane.getTextPane().getCaretPosition();
 
             // Stamp を挿入する
-            if (putTopCr) {
-                insertString(start, "\n", null);
-                insertString(start + 1, " ", runStyle);
-                insertString(start + 2, "\n", null);                           // 改行をつけないとテキスト入力制御がやりにくくなる
-                sh.setEntry(createPosition(start + 1), createPosition(start + 2)); // スタンプの開始と終了位置を生成して保存する
-            } else {
-                insertString(start, " ", runStyle);
-                insertString(start + 1, "\n", null);                           // 改行をつけないとテキスト入力制御がやりにくくなる
-                sh.setEntry(createPosition(start), createPosition(start + 1)); // スタンプの開始と終了位置を生成して保存する
-            }
+            if (putTopCr) { insertString(start++, "\n", null); }
+            insertString(start, " ", runStyle);
+
+            // 改行をつけないとテキスト入力制御がやりにくくなる
+            insertString(start + 1, "\n", null);
+
+            // スタンプの開始と終了位置を生成して保存する
+            sh.setEntry(createPosition(start), createPosition(start + 1));
+
             removeRepeatedCr();
 
         } catch (BadLocationException | NullPointerException ex) {
@@ -96,9 +96,8 @@ public class KarteStyledDocument extends DefaultStyledDocument {
 
             // Stamp を挿入する
             insertString(start, " ", runStyle);
-
-            // スタンプの開始と終了位置を生成して保存する
             sh.setEntry(createPosition(start), createPosition(start + 1));
+            if (putTopCr) { insertString(start + 1, "\n", null); }
 
         } catch (BadLocationException | NullPointerException ex) {
             ex.printStackTrace(System.err);
@@ -202,22 +201,6 @@ public class KarteStyledDocument extends DefaultStyledDocument {
             }
         }
         return list;
-    }
-
-    // StampHolder直後の改行がない場合は補う
-    public void fixCrAfterStamp() {
-        try {
-            int i = 0;
-            while (i < getLength()) {
-                StampHolder sh = (StampHolder) StyleConstants.getComponent(getCharacterElement(i).getAttributes());
-                String strNext = getText(++i, 1);
-                if (sh != null && !"\n".equals(strNext)) {
-                    insertString(i, "\n", null);
-                }
-
-            }
-        } catch (BadLocationException ex) {
-        }
     }
 
     // 最終の改行を取り除く

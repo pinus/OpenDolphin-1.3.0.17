@@ -43,7 +43,7 @@ public class HtmlHelper {
 
     private static final int MARKER_WIDTH = 16;
     private static final int AMOUNT_WIDTH = 32;
-    private static final int UNIT_WIDTH = 16;
+    private static final int UNIT_WIDTH = 24;
     private static final int UNIT_MARGIN = 8;
 
     /**
@@ -84,8 +84,7 @@ public class HtmlHelper {
      */
     public static Tag titleTr(String orderName, String stampName, String memo, int width, String color) {
         return tr().attr(BGCOLOR, color).with(
-            td(orderName + "）").attr(VALIGN, TOP).attr(NOWRAP),
-            td(stampName).attr(VALIGN, TOP),
+            td(orderName + "）" + stampName).attr(VALIGN, TOP).attr(NOWRAP),
             td().with(tag(FONT).attr(SIZE, -2).withText(memo))
                 .attr(ALIGN, RIGHT).attr(VALIGN, BOTTOM).attr(NOWRAP)
         );
@@ -152,8 +151,8 @@ public class HtmlHelper {
         return tr().with(
             td("　"),
             td(bundle.getAdmin()),
-            td(admin).attr(COLSPAN, 2).attr(NOWRAP),
-            td(" "));
+            td(admin).attr(COLSPAN, 2).attr(NOWRAP).attr(ALIGN, RIGHT),
+            td(" ").attr(WIDTH, UNIT_MARGIN));
     }
 
     /**
@@ -241,8 +240,6 @@ public class HtmlHelper {
                         td( number + unit).attr(NOWRAP).attr(WIDTH, AMOUNT_WIDTH + UNIT_WIDTH),
                         td(" ").attr(WIDTH, UNIT_MARGIN)
                     ));
-                    logger.info("=------num   " + item.getNumber());
-                    logger.info("=------unit   " + item.getUnit());
                 }
             }
         }
