@@ -95,12 +95,8 @@ public class KarteStyledDocument extends DefaultStyledDocument {
             int start = kartePane.getTextPane().getCaretPosition();
 
             // Stamp を挿入する
-            if (putTopCr) {
-                insertString(start, " ", runStyle);
-                insertString(start + 1, "\n", null);
-            } else {
-                insertString(start, " ", runStyle);
-            }
+            insertString(start, " ", runStyle);
+
             // スタンプの開始と終了位置を生成して保存する
             sh.setEntry(createPosition(start), createPosition(start + 1));
 

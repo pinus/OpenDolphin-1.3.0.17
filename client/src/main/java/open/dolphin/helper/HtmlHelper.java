@@ -41,6 +41,11 @@ public class HtmlHelper {
     public static final String VALIGN = "valign";
     public static final String WIDTH = Attr.WIDTH;
 
+    private static final int MARKER_WIDTH = 16;
+    private static final int AMOUNT_WIDTH = 32;
+    private static final int UNIT_WIDTH = 16;
+    private static final int UNIT_MARGIN = 8;
+
     /**
      * BundleMed を html 化する.
      *
@@ -53,11 +58,11 @@ public class HtmlHelper {
         String memo = bundle.getMemo().replace("処方", "");
         String html = html().with(body().with(
             // タイトル部分
-            table().attr(BORDER, 0).attr(CELLPADDING, 1).with(
+            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(WIDTH, hints.getWidth()).with(
                 titleTr("RP", stampName, memo, hints.getWidth(), hints.getLabelColorAs16String())
             ),
             // 項目部分 列数=5
-            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(CELLSPACING, 0).with(
+            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(CELLSPACING, 0).attr(WIDTH, hints.getWidth()).with(
                 each(Arrays.stream(bundleMedTr(bundle.getClaimItem(), hints.getWidth(), hints.getCommentColorAs16String()))),
                 // 用法部分
                 adminTr(bundle, hints)
@@ -80,9 +85,9 @@ public class HtmlHelper {
     public static Tag titleTr(String orderName, String stampName, String memo, int width, String color) {
         return tr().attr(BGCOLOR, color).with(
             td(orderName + "）").attr(VALIGN, TOP).attr(NOWRAP),
-            td(stampName).attr(VALIGN, TOP).attr(WIDTH, width),
+            td(stampName).attr(VALIGN, TOP),
             td().with(tag(FONT).attr(SIZE, -2).withText(memo))
-                .attr(ALIGN, RIGHT).attr(ALIGN, BOTTOM).attr(NOWRAP)
+                .attr(ALIGN, RIGHT).attr(VALIGN, BOTTOM).attr(NOWRAP)
         );
     }
 
@@ -110,16 +115,16 @@ public class HtmlHelper {
                 || item.getCode().matches("001000[0-9]{3}")) { // 用法
                 trs.add(tr().with(
                     td("　"),
-                    td(item.getName()).attr(COLSPAN, 3).attr(WIDTH, width),
+                    td(item.getName()).attr(COLSPAN, 3),
                     td(" ")));
 
             } else {
                 trs.add(tr().with(
-                    td("・").attr(VALIGN, TOP).attr(WIDTH, 12),
-                    td(item.getName()).attr(WIDTH, width),
-                    td(item.getNumber()).attr(ALIGN, RIGHT).attr(VALIGN, BOTTOM).attr(NOWRAP),
-                    td(item.getUnit() + " ").attr(ALIGN, RIGHT).attr(VALIGN, BOTTOM).attr(NOWRAP),
-                    td(" ")));
+                    td("・").attr(VALIGN, TOP).attr(WIDTH, MARKER_WIDTH),
+                    td(item.getName()),
+                    td(item.getNumber()).attr(ALIGN, RIGHT).attr(VALIGN, BOTTOM).attr(NOWRAP).attr(WIDTH, AMOUNT_WIDTH),
+                    td(item.getUnit()).attr(ALIGN, RIGHT).attr(VALIGN, BOTTOM).attr(NOWRAP).attr(WIDTH, UNIT_WIDTH),
+                    td(" ").attr(WIDTH, UNIT_MARGIN)));
             }
         }
         return trs.toArray(new Tag[0]);
@@ -138,7 +143,7 @@ public class HtmlHelper {
             && "1".equals(bundle.getBundleNumber())) {
             return tr().with(
                 td("　"),
-                td(bundle.getAdmin()).attr(COLSPAN, 3).attr(WIDTH, hints.getWidth()),
+                td(bundle.getAdmin()).attr(COLSPAN, 3),
                 td(" "));
         }
         // それ以外は "日分/回分" を付ける
@@ -146,7 +151,7 @@ public class HtmlHelper {
             + (bundle.getClassCode().startsWith(IInfoModel.RECEIPT_CODE_NAIYO.substring(0, 2)) ? " 日分" : " 回分");
         return tr().with(
             td("　"),
-            td(bundle.getAdmin()).attr(WIDTH, hints.getWidth()),
+            td(bundle.getAdmin()),
             td(admin).attr(COLSPAN, 2).attr(NOWRAP),
             td(" "));
     }
@@ -178,11 +183,11 @@ public class HtmlHelper {
 
         String html = html().with(body().with(
             // タイトル部分
-            table().attr(BORDER, 0).attr(CELLPADDING, 1).with(
+            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(WIDTH, hints.getWidth()).with(
                 titleTr(bundle.getOrderName(), stampName, memo, hints.getWidth(), hints.getLabelColorAs16String())
             ),
             // 項目部分
-            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(CELLSPACING, 0).with(
+            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(WIDTH, hints.getWidth()).attr(CELLSPACING, 0).with(
                 bundleDolphinTr(bundle, hints.getWidth(), fold))
 
         )).render();
@@ -213,16 +218,16 @@ public class HtmlHelper {
             }).collect(Collectors.joining(","));
 
             trs.add(tr().with(
-                td("・").attr(VALIGN, TOP),
-                td(itemNames).attr(COLSPAN, 2).attr(WIDTH, width),
+                td("・").attr(VALIGN, TOP).attr(WIDTH, MARKER_WIDTH),
+                td(itemNames).attr(COLSPAN, 2).attr(WIDTH, width - 16), // trial and error
                 td(" ")
             ));
         } else {
             for (ClaimItem item : bundle.getClaimItem()) {
                 if (StringTool.isEmpty(item.getNumber())) {
                     trs.add(tr().with(
-                        td("・").attr(VALIGN, TOP),
-                        td(item.getName()).attr(COLSPAN, 2).attr(WIDTH, width),
+                        td("・").attr(VALIGN, TOP).attr(WIDTH, MARKER_WIDTH),
+                        td(item.getName()).attr(COLSPAN, 2),
                         td(" ")
                     ));
                 } else {
@@ -231,12 +236,13 @@ public class HtmlHelper {
                     if ("1".equals(number) && "".equals(unit)) { number = ""; }
 
                     trs.add(tr().with(
-                        td("・").attr(VALIGN, TOP),
-                        td(item.getName()).attr(WIDTH, width),
-                        td( number +  " " + unit).attr(NOWRAP),
-                        td(" ")
+                        td("・").attr(VALIGN, TOP).attr(WIDTH, MARKER_WIDTH),
+                        td(item.getName()),
+                        td( number + unit).attr(NOWRAP).attr(WIDTH, AMOUNT_WIDTH + UNIT_WIDTH),
+                        td(" ").attr(WIDTH, UNIT_MARGIN)
                     ));
-
+                    logger.info("=------num   " + item.getNumber());
+                    logger.info("=------unit   " + item.getUnit());
                 }
             }
         }

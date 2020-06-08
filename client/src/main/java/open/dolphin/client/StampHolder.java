@@ -3,7 +3,6 @@ package open.dolphin.client;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyActionListener;
 import open.dolphin.helper.HtmlHelper;
-import open.dolphin.helper.PreferencesUtils;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
@@ -14,12 +13,11 @@ import open.dolphin.ui.PNSBorderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.event.*;
 import java.util.List;
 import java.beans.PropertyChangeEvent;
 import javax.swing.border.Border;
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.awt.*;
 
 /**
@@ -36,6 +34,8 @@ public final class StampHolder extends AbstractComponentHolder {
     private static final Color COMMENT_COLOR = new Color(120, 20, 140);
     private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
     private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
+    private static final int MARGIN = 30; // JTextPane より MARGIN 分だけ小さくする
+
     private final KartePane kartePane;
     private ModuleModel stamp;
     private StampRenderingHints hints;
@@ -49,26 +49,48 @@ public final class StampHolder extends AbstractComponentHolder {
 
     public StampHolder(final KartePane kartePane, final ModuleModel model) {
         super(kartePane);
-        //logger.setLevel(Level.DEBUG);
 
         this.kartePane = kartePane;
+        stamp = model;
         hints = new StampRenderingHints();
-        hints.setCommentColor(COMMENT_COLOR);
-
-        // スタンプの初期幅は ChartImpl の幅から決定する
-        Rectangle bounds = PreferencesUtils.getRectangle(Project.getPreferences(), ChartImpl.PN_FRAME, new Rectangle(0, 0, 0, 0));
-        int w = (bounds.width + 1) / 2 - 168; // 実験から連立方程式で求めた
-        hints.setWidth(Math.max(320, w));
-        hints.setWidth(250);
-
-        init(model);
+        initialize();
     }
 
-    private void init(ModuleModel model) {
+    private void initialize() {
+        // text pane の幅は ComponentListener から取得する
+        MyComponentListener listener = new MyComponentListener();
+        kartePane.getParent().getUI().addComponentListener(listener);
+        // 実際の値は後で component listener で決定される
+        hints.setWidth(400);
+        hints.setCommentColor(COMMENT_COLOR);
+
         setForeground(FOREGROUND);
         setBackground(BACKGROUND);
         setBorder(MY_CLEAR_BORDER);
-        setStamp(model);
+
+        setMyText();
+    }
+
+    /**
+     * 親の幅を取得してスタンプ幅を決定するリスナ.
+     */
+    private class MyComponentListener implements ComponentListener {
+        public int getWidth() {
+            return kartePane.getTextPane().getWidth() - MARGIN;
+        }
+        @Override
+        public void componentShown(ComponentEvent e) {
+            hints.setWidth(getWidth());
+            setMyText();
+        }
+        @Override
+        public void componentResized(ComponentEvent e) {
+            componentShown(e);
+        }
+        @Override
+        public void componentMoved(ComponentEvent e) { }
+        @Override
+        public void componentHidden(ComponentEvent e) { }
     }
 
     /**
@@ -263,16 +285,6 @@ public final class StampHolder extends AbstractComponentHolder {
         return stamp;
     }
 
-    /**
-     * このホルダのモデルを設定する.
-     *
-     * @param model ModuleModel
-     */
-    public void setStamp(ModuleModel model) {
-        stamp = model;
-        setMyText();
-    }
-
     public StampRenderingHints getHints() {
         return hints;
     }
@@ -377,8 +389,9 @@ public final class StampHolder extends AbstractComponentHolder {
         // 「月　日」の自動挿入：replace の場合はここに入る
         // replace でない場合は，KartePane でセット
         StampModifier.modify(newStamp);
+        stamp = newStamp;
+        setMyText();
 
-        setStamp(newStamp);
         kartePane.setDirty(true);
         kartePane.getTextPane().validate();
         kartePane.getTextPane().repaint();
@@ -397,19 +410,23 @@ public final class StampHolder extends AbstractComponentHolder {
 
         if (bundle instanceof BundleMed) {
             text = HtmlHelper.bundleMed2Html((BundleMed) bundle, stampName, hints);
+            //logger.info("bundleMed = " + text);
 
         } else if (getStamp().getModuleInfo().getEntity().equals(IInfoModel.ENTITY_LABO_TEST)
             && Project.getPreferences().getBoolean("laboFold", true)) {
             text = HtmlHelper.bundleDolphin2Html((BundleDolphin) bundle, stampName, hints, true);
+            //logger.info("labo = " + text);
 
         } else {
             text = HtmlHelper.bundleDolphin2Html((BundleDolphin) bundle, stampName, hints);
+            //logger.info("bundleDolphin = " + text);
         }
 
 
         text = StringTool.toHankakuNumber(text);
         text = StringTool.toHankakuUpperLower(text);
         text = text.replaceAll("　", " ");
+        text = text.replaceAll("．", ".");
 
         // 検索語の attribute をセットする
         if (searchText != null) {
