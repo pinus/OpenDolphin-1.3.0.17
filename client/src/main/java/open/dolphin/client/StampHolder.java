@@ -35,7 +35,7 @@ public final class StampHolder extends AbstractComponentHolder {
     private static final Color COMMENT_COLOR = new Color(120, 20, 140);
     private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
     private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
-    private static final int MARGIN = 30; // JTextPane より MARGIN 分だけ小さくする
+    private static final int MARGIN = 24; // JTextPane より MARGIN 分だけ小さくする
 
     private final KartePane kartePane;
     private ModuleModel stamp;
@@ -58,41 +58,13 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     private void initialize() {
-        // text pane の幅は ComponentListener から取得する
-        MyComponentListener listener = new MyComponentListener();
-        kartePane.getTextPane().addComponentListener(listener);
-        // 実際の値は後で component listener で決定される
-        hints.setWidth(listener.getWidth());
+        hints.setWidth(Math.max(320, kartePane.getTextPaneWidth() - MARGIN));
         hints.setCommentColor(COMMENT_COLOR);
 
         setForeground(FOREGROUND);
         setBackground(BACKGROUND);
         setBorder(MY_CLEAR_BORDER);
-
-        //setMyText();
-    }
-
-    /**
-     * 親の幅を取得してスタンプ幅を決定するリスナ.
-     */
-    private class MyComponentListener implements ComponentListener {
-        public int getWidth() {
-            return kartePane.getTextPane().getWidth() - MARGIN;
-        }
-        @Override
-        public void componentShown(ComponentEvent e) {
-            logger.info("component event = " + e);
-            hints.setWidth(getWidth());
-            setMyText();
-        }
-        @Override
-        public void componentResized(ComponentEvent e) {
-            componentShown(e);
-        }
-        @Override
-        public void componentMoved(ComponentEvent e) { }
-        @Override
-        public void componentHidden(ComponentEvent e) { }
+        setMyText();
     }
 
     /**
@@ -429,6 +401,8 @@ public final class StampHolder extends AbstractComponentHolder {
         text = StringTool.toHankakuUpperLower(text);
         text = text.replaceAll("　", " ");
         text = text.replaceAll("．", ".");
+        // グラムは全角で
+        text = text.replaceAll(">g<", ">ｇ<"); // ℊ
 
         // 検索語の attribute をセットする
         if (searchText != null) {
@@ -441,6 +415,9 @@ public final class StampHolder extends AbstractComponentHolder {
         }
 
         this.setText(text);
+
+        // カルテペインへ展開された時広がるのを防ぐ
+        this.setMaximumSize(this.getPreferredSize());
     }
 
     public void setAttr(String searchText, String startTag, String endTag) {

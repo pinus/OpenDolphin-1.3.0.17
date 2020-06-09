@@ -104,18 +104,16 @@ public class HtmlHelper {
         for (ClaimItem item : items) {
             if (item.getCode().matches("810000001")) {
                 trs.add(tr().with(
-                    td("　"),
-                    td().attr(COLSPAN, 3).with(tag(FONT).attr(COLOR, color).withText(item.getName())),
-                    td(" ")));
+                    td("　").attr(WIDTH, MARKER_WIDTH),
+                    td().with(tag(FONT).attr(COLOR, color).withText(item.getName())))); // 列数分用意しなくても大丈夫
 
             } else if (item.getCode().matches("008[0-9]{6}") // コメントコード 008xxxxxx
                 || item.getCode().startsWith("8") // コメントコード 8xxxxxxxx
                 || item.getCode().matches("0992099[0-9]{2}") // 一般名記載, 後発変更不可, etc
                 || item.getCode().matches("001000[0-9]{3}")) { // 用法
                 trs.add(tr().with(
-                    td("　"),
-                    td(item.getName()).attr(COLSPAN, 3),
-                    td(" ")));
+                    td("　").attr(WIDTH, MARKER_WIDTH),
+                    td(item.getName()))); // 列数分用意しなくても大丈夫
 
             } else {
                 trs.add(tr().with(
@@ -237,7 +235,7 @@ public class HtmlHelper {
                     trs.add(tr().with(
                         td("・").attr(VALIGN, TOP).attr(WIDTH, MARKER_WIDTH),
                         td(item.getName()),
-                        td( number + unit).attr(NOWRAP).attr(WIDTH, AMOUNT_WIDTH + UNIT_WIDTH),
+                        td( number + " " + unit).attr(NOWRAP).attr(WIDTH, AMOUNT_WIDTH + UNIT_WIDTH).attr(ALIGN, RIGHT),
                         td(" ").attr(WIDTH, UNIT_MARGIN)
                     ));
                 }
