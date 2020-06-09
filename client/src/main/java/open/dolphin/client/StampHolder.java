@@ -2,6 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyActionListener;
+import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.HtmlHelper;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
@@ -14,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.event.*;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.beans.PropertyChangeEvent;
 import javax.swing.border.Border;
@@ -58,13 +58,35 @@ public final class StampHolder extends AbstractComponentHolder {
     }
 
     private void initialize() {
-        hints.setWidth(Math.max(320, kartePane.getTextPaneWidth() - MARGIN));
-        hints.setCommentColor(COMMENT_COLOR);
-
         setForeground(FOREGROUND);
         setBackground(BACKGROUND);
         setBorder(MY_CLEAR_BORDER);
-        setMyText();
+
+        // hints
+        hints.setCommentColor(COMMENT_COLOR);
+
+        int width = kartePane.getTextPane().getWidth();
+        // 幅が未定の場合推定値を設定
+        if (width <= 1) {
+            width = kartePane.getParent().getContext() instanceof ChartImpl
+                ? (ComponentBoundsManager.getWidth(ChartImpl.class) - 280) / 2
+                : (ComponentBoundsManager.getWidth(EditorFrame.class) -10) / 2;
+            hints.setWidth(Math.max(320, width - MARGIN));
+        } else {
+            // 決定している場合
+            hints.setWidth(Math.max(320, width - MARGIN));
+            setMyText();
+        }
+
+        // component の変化に応じて stamp を書き換えるリスナ
+        addHierarchyBoundsListener(new HierarchyBoundsAdapter() {
+            @Override
+            public void ancestorResized(HierarchyEvent e) {
+                int width = kartePane.getTextPane().getWidth();
+                hints.setWidth(Math.max(320, width - MARGIN));
+                setMyText();
+            }
+        });
     }
 
     /**

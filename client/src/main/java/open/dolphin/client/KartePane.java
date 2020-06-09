@@ -9,12 +9,10 @@ import open.dolphin.dnd.SchemaHolderTransferHandler;
 import open.dolphin.dnd.StampListTransferHandler;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.ImageHelper;
-import open.dolphin.helper.PreferencesUtils;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.StampEditorDialog;
-import open.dolphin.project.Project;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.sheet.JSheet;
@@ -68,8 +66,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     private State curState;
     // JTextPane
     private JTextPane textPane;
-    // JTextPane の幅
-    private int textPaneWidth;
     // SOA または P のロール
     private String myRole;
     // この KartePaneのオーナ
@@ -100,11 +96,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     public KartePane() {
         undoManager = new TextComponentUndoManager();
         undoListener = undoManager::listener;
-
-        // JTextPane width の推定値を設定
-        Rectangle bounds = PreferencesUtils.getRectangle(
-            Project.getPreferences(), ChartImpl.PN_FRAME, new Rectangle());
-        textPaneWidth = Math.max(1, (bounds.width - 280) / 2);
     }
 
     /**
@@ -222,15 +213,6 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
      */
     public KarteStyledDocument getDocument() {
         return (KarteStyledDocument) getTextPane().getDocument();
-    }
-
-    /**
-     * JTextPane の推定幅を返す.
-     *
-     * @return width of JTextPane
-     */
-    public int getTextPaneWidth() {
-        return textPaneWidth;
     }
 
     /**
