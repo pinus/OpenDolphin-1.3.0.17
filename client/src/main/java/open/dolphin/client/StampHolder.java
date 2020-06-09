@@ -2,7 +2,6 @@ package open.dolphin.client;
 
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyActionListener;
-import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.HtmlHelper;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
@@ -62,31 +61,29 @@ public final class StampHolder extends AbstractComponentHolder {
         setBackground(BACKGROUND);
         setBorder(MY_CLEAR_BORDER);
 
-        // hints
+        MyHierarchyBoundsListener listener = new MyHierarchyBoundsListener();
+        addHierarchyBoundsListener(listener);
+
+        // コメント用の色をセット
         hints.setCommentColor(COMMENT_COLOR);
 
-        int width = kartePane.getTextPane().getWidth();
-        // 幅が未定の場合推定値を設定
-        if (width <= 1) {
-            width = kartePane.getParent().getContext() instanceof ChartImpl
-                ? (ComponentBoundsManager.getWidth(ChartImpl.class) - 280) / 2
-                : (ComponentBoundsManager.getWidth(EditorFrame.class) -10) / 2;
-            hints.setWidth(Math.max(320, width - MARGIN));
-        } else {
-            // 決定している場合
+        // 幅が決定していれば hint にセットして描画, 未定ならパスして HierarchyBoundsListener に任せる
+        if (kartePane.getTextPane().getWidth() > 1) { listener.repaintStamp(); }
+    }
+
+    /**
+     * Component の変化に乗じて stamp を書き換える.
+     */
+    private class MyHierarchyBoundsListener extends HierarchyBoundsAdapter {
+        public void repaintStamp() {
+            int width = kartePane.getTextPane().getWidth();
             hints.setWidth(Math.max(320, width - MARGIN));
             setMyText();
         }
-
-        // component の変化に応じて stamp を書き換えるリスナ
-        addHierarchyBoundsListener(new HierarchyBoundsAdapter() {
-            @Override
-            public void ancestorResized(HierarchyEvent e) {
-                int width = kartePane.getTextPane().getWidth();
-                hints.setWidth(Math.max(320, width - MARGIN));
-                setMyText();
-            }
-        });
+        @Override
+        public void ancestorResized(HierarchyEvent e) {
+            repaintStamp();
+        }
     }
 
     /**

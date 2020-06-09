@@ -86,17 +86,6 @@ public class ComponentBoundsManager implements ComponentListener {
     }
 
     /**
-     * 幅情報を無理矢理取る.
-     *
-     * @return width 幅
-     */
-    public static int getWidth(Class c) {
-        String key = c.getName();
-        Preferences p = Preferences.userNodeForPackage(c);
-        return p.getInt(key + "_width", 1);
-    }
-
-    /**
      * target component を画面中央に設定する.
      */
     public void putCenter() {
