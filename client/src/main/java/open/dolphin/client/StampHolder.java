@@ -9,6 +9,7 @@ import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
 import open.dolphin.ui.Focuser;
+import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBorderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,6 +208,7 @@ public final class StampHolder extends AbstractComponentHolder {
         map.get(GUIConst.ACTION_PASTE).setEnabled(false);
 
         setSelected(true);
+        IMEControl.off();
     }
 
     /**
