@@ -356,9 +356,7 @@ public class DiagnosisInspector implements IInspector {
     }
 
     @MenuAction
-    public void discontinue() {
-        doc.getDiagnosisDocumentPopup().doClickOutcomePopup("中止");
-    }
+    public void discontinue() { doc.getDiagnosisDocumentPopup().doClickOutcomePopup("中止"); }
 
     @MenuAction
     public void renew() {
