@@ -186,12 +186,11 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                                 if (StringUtils.isEmpty(val)) {
                                     outcomeGenerator.setParams(rd, lastVisit);
                                     if (dom.getOutcome().equals(DiagnosisOutcome.fullyRecovered.name())) {
-                                        // 終了の場合は lastVisit のロジックに従う
-                                        rd.setEndDate(outcomeGenerator.getDiagnosisOutcomeDate());
+                                        // 終了の場合
+                                        rd.setEndDate(outcomeGenerator.standard());
                                     } else if (dom.getOutcome().equals(DiagnosisOutcome.pause.name())) {
-                                        // 中止の場合，開始月の最終日に終了
-                                        LocalDate startMonth = rd.getStarted().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                                        rd.setEndDate(startMonth.withDayOfMonth(startMonth.lengthOfMonth()).format(DateTimeFormatter.ISO_DATE));
+                                        // 中止の場合
+                                        rd.setEndDate(outcomeGenerator.special());
                                     }
                                 }
                             }
