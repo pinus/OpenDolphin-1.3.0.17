@@ -6,13 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+/**
+ * 転帰日を計算.
+ *
+ * @author pns
+ */
 public class DiagnosisOutcomeGenerator {
     private static int OFFSET = Project.getPreferences().getInt(Project.OFFSET_OUTCOME_DATE, -1);
     private static String[] ACUTE_DISEASE = { "ヘルペス", "単純疱疹" };
@@ -49,22 +53,20 @@ public class DiagnosisOutcomeGenerator {
     }
 
     /**
-     * 前回受診月の末日に
+     * 急性疾患は started 月の末日. それ以外は最終受診日の月の末日.
      *
-     * @return
+     * @return ISO_DATE
      */
     public String special() {
         LocalDate lastVisit = lv.getLastVisit();
         LocalDate endDate = Stream.of(ACUTE_DISEASE).anyMatch(rd.getDiagnosis()::contains)
-            ? rd.getStarted().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            // 急性病名. plusDays(1) は started が末日だった場合対応
+            ? rd.getStarted().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1)
+            // その他
             : Objects.nonNull(lv.getLastVisitInHistory()) ? lv.getLastVisitInHistory() : lv.getLastVisit();
 
-        // 月末に設定. ただし受診日がその月の場合は offset 日戻す
-        endDate = endDate.getYear() == lastVisit.getYear() && endDate.getMonthValue() == lastVisit.getMonthValue()
-            ? lastVisit.plusDays(OFFSET)
-            : endDate.withDayOfMonth(endDate.lengthOfMonth());
-
-        // startDate が月末で, endDate と同じか後ろになってしまったら
+        // 月末に設定.  started が当月の場合とか面倒くさいので無視.
+        endDate = endDate.withDayOfMonth(endDate.lengthOfMonth());
 
         return endDate.format(DateTimeFormatter.ISO_DATE);
     }

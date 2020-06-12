@@ -1365,7 +1365,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         MainFrame parent = getContext().getFrame();
         String message;
-        int messageType = JOptionPane.PLAIN_MESSAGE;
+        int messageType = JOptionPane.INFORMATION_MESSAGE;
 
         if (!diagList.isEmpty()) {
             OrcaDelegater delegater = new OrcaDelegater();
