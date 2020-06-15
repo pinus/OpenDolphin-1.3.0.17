@@ -390,6 +390,7 @@ public final class StampHolder extends AbstractComponentHolder {
         kartePane.setDirty(true);
         kartePane.getTextPane().validate();
         kartePane.getTextPane().repaint();
+        Focuser.requestFocus(this);
     }
 
     /**
