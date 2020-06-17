@@ -678,13 +678,16 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
             List<ClaimItem> list = new ArrayList<>();
 
-            // 薬を検索して，最初に見つかった薬の後に一般名処方を入れる
-            boolean found = false;
-            for (ClaimItem src : srcBundle.getClaimItem()) {
+            // 薬の後に一般名処方を入れる
+            for (int i=0; i<srcBundle.getClaimItem().length; i++) {
+                ClaimItem src = srcBundle.getClaimItem()[i];
                 list.add(createClaimItem(src));
-                if (!found && src.getCode().startsWith("6")) {
-                    list.add(generic);
-                    found = true;
+                if (src.getCode().startsWith("6")) {
+                    // 次の項目に一般名処方が入っていなかったら入れる
+                    if (i == srcBundle.getClaimItem().length - 1
+                        || !srcBundle.getClaimItem()[i+1].getName().equals("一般名記載")) {
+                        list.add(generic);
+                    }
                 }
             }
 

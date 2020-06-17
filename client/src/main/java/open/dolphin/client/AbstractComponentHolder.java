@@ -83,7 +83,14 @@ public abstract class AbstractComponentHolder extends JLabel
             // SPACE で編集
             edit();
 
-        } else if (!e.isMetaDown() && !e.isShiftDown() && !e.isAltDown()){
+        } else if (KeyStroke.getKeyStroke("ctrl ENTER").equals(key)) {
+            // ctrl-ENTER でポップアップ表示
+            Point p = getLocationOnScreen();
+            MouseEvent me = new MouseEvent(this, 0, 0, 0,
+                10, this.getHeight(), 0, true, 0);
+            maybeShowPopup(me);
+
+        } else if (!e.isControlDown() && !e.isMetaDown() && !e.isShiftDown() && !e.isAltDown()){
             // その他のキーは親の JTextPane に丸投げ
             JTextPane pane = kartePane.getTextPane();
             pane.requestFocusInWindow();
