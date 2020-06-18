@@ -176,6 +176,7 @@ public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
 
     @Override
     public void enter(ActionMap map) {
+        super.enter(map);
         map.get(GUIConst.ACTION_COPY).setEnabled(true);
         map.get(GUIConst.ACTION_CUT).setEnabled(kartePane.getTextPane().isEditable());
         map.get(GUIConst.ACTION_PASTE).setEnabled(false);

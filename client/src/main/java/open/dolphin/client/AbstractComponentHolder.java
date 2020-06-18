@@ -9,6 +9,7 @@ import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.text.Position;
+import javax.swing.undo.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -30,13 +31,15 @@ public abstract class AbstractComponentHolder<T> extends JLabel
 
     // 親の KartePane
     private KartePane kartePane;
-
     // JTextPane 内での開始と終了ポジション. 自動更新される.
     private Position start;
     private Position end;
-
     // エディタの二重起動を防ぐためのフラグ
     private boolean isEditable = true;
+    // ActionMap
+    private ActionMap actionMap;
+    // UndoSupport
+    private UndoableEditSupport undoSupport;
 
     public AbstractComponentHolder(KartePane kartePane) {
         this.kartePane = kartePane;
@@ -55,7 +58,13 @@ public abstract class AbstractComponentHolder<T> extends JLabel
         am.put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
         am.put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
         am.put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
+
+        undoSupport = new UndoableEditSupport(this);
+        UndoManager undoManager = new UndoManager();
+        undoSupport.addUndoableEditListener(undoManager);
     }
+
+    public UndoableEditSupport getUndoSupport() { return undoSupport; }
 
     public boolean isEditable() {
         return isEditable;
@@ -64,6 +73,9 @@ public abstract class AbstractComponentHolder<T> extends JLabel
     public void setEditable(boolean b) {
         isEditable = b;
     }
+
+    @Override
+    public void enter(ActionMap map) { actionMap = map; }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -181,4 +193,32 @@ public abstract class AbstractComponentHolder<T> extends JLabel
     public abstract void edit();
 
     public abstract void maybeShowPopup(MouseEvent e);
+
+    public abstract<T> void update(T value);
+
+    public class UndoableEdit<T> extends AbstractUndoableEdit {
+        private T oldValue;
+        private T newValue;
+
+        public UndoableEdit(T oldValue, T newValue) {
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+        }
+
+        @Override
+        public void undo() throws CannotUndoException {
+            super.undo();
+            update(oldValue);
+        }
+        @Override
+        public void redo() throws CannotRedoException {
+            super.redo();
+            update(newValue);
+        }
+        @Override
+        public void die() {
+            super.die();
+            oldValue = newValue = null;
+        }
+    }
 }

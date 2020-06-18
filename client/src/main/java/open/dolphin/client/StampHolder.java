@@ -37,7 +37,6 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
     private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
     private static final int MARGIN = 24; // JTextPane より MARGIN 分だけ小さくする
 
-    private ActionMap actionMap;
     private final KartePane kartePane;
     private ModuleModel stamp;
     private StampRenderingHints hints;
@@ -204,7 +203,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      */
     @Override
     public void enter(ActionMap map) {
-        actionMap = map;
+        super.enter(map);
         map.get(GUIConst.ACTION_COPY).setEnabled(true);
         map.get(GUIConst.ACTION_CUT).setEnabled(kartePane.getTextPane().isEditable());
         map.get(GUIConst.ACTION_PASTE).setEnabled(false);
