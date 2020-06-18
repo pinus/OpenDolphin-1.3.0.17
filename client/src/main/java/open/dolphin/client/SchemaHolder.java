@@ -21,7 +21,7 @@ import java.util.Objects;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
-public final class SchemaHolder extends AbstractComponentHolder {
+public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
     private static final long serialVersionUID = 1777560751402251092L;
     private static final Dimension INITIAL_SIZE = new Dimension(192, 192);
     private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();

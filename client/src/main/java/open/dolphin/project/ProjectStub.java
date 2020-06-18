@@ -691,25 +691,24 @@ public class ProjectStub implements java.io.Serializable {
      * @return encrypted password
      */
     public String encryptPassword(String key, String pass) {
-        try (ByteArrayOutputStream bo = new ByteArrayOutputStream();
-             OutputStream outputStream = MimeUtility.encode(bo, "base64")) {
+        ByteArrayOutputStream bo = new ByteArrayOutputStream();
 
+        try (OutputStream outputStream = MimeUtility.encode(bo, "base64")) {
             SecretKeySpec spec = new SecretKeySpec(key.getBytes(), "Blowfish");
             Cipher cipher = Cipher.getInstance("Blowfish");
             cipher.init(Cipher.ENCRYPT_MODE, spec);
 
             outputStream.write(cipher.doFinal(pass.getBytes()));
 
-            //System.out.println("input password: " + pass);
-            //System.out.println("encrypted password: " + bo.toString());
-
-            return bo.toString();
-
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IOException
-            | IllegalBlockSizeException | BadPaddingException | MessagingException ex) {
-            ex.printStackTrace(System.err);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
+            | IOException | IllegalBlockSizeException | BadPaddingException | MessagingException ex) {
+            System.out.println("ProjectStub.java:" + ex);
         }
-        return "";
+
+        //System.out.println("input password: " + pass);
+        //System.out.println("encrypted password: " + bo.toString());
+
+        return bo.toString();
     }
 
     /**

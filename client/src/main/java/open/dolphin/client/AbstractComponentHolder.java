@@ -18,10 +18,12 @@ import java.awt.event.*;
  * キャレットが Component 位置にきたときにフォーカスを取る. フォーカスを取ると
  * {@link open.dolphin.client.KarteComposite#enter(ActionMap) enter(ActionMap)} が呼ばれる.
  *
+ * @param <T> ComponentHolder の扱うデータ型 (StampHolder = ModuleModel, SchemaHolder = SchemaModel)
+ *
  * @author Kazushi Minagawa
  * @author pns
  */
-public abstract class AbstractComponentHolder extends JLabel
+public abstract class AbstractComponentHolder<T> extends JLabel
     implements ComponentHolder<JLabel>, MouseListener, MouseMotionListener, KeyListener {
     private static final long serialVersionUID = 1L;
     private Logger logger = LoggerFactory.getLogger(AbstractComponentHolder.class);

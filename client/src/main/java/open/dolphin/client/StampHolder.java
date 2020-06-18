@@ -27,7 +27,7 @@ import java.awt.*;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
-public final class StampHolder extends AbstractComponentHolder {
+public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
     public static final String STAMP_MODIFIED = "stampModified";
     private static final long serialVersionUID = 5853431116398862958L;
     private static final Color FOREGROUND = new Color(20, 20, 140);
@@ -37,6 +37,7 @@ public final class StampHolder extends AbstractComponentHolder {
     private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
     private static final int MARGIN = 24; // JTextPane より MARGIN 分だけ小さくする
 
+    private ActionMap actionMap;
     private final KartePane kartePane;
     private ModuleModel stamp;
     private StampRenderingHints hints;
@@ -203,6 +204,7 @@ public final class StampHolder extends AbstractComponentHolder {
      */
     @Override
     public void enter(ActionMap map) {
+        actionMap = map;
         map.get(GUIConst.ACTION_COPY).setEnabled(true);
         map.get(GUIConst.ACTION_CUT).setEnabled(kartePane.getTextPane().isEditable());
         map.get(GUIConst.ACTION_PASTE).setEnabled(false);
@@ -454,5 +456,13 @@ public final class StampHolder extends AbstractComponentHolder {
         this.startTag = null;
         this.endTag = null;
         setMyText();
+    }
+
+    public void undo() {
+        logger.info("==== undo ====");
+    }
+
+    public void redo() {
+        logger.info("==== redo ====");
     }
 }
