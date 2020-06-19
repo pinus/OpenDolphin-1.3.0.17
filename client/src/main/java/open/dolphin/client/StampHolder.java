@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * KartePane に Component　として挿入されるスタンプを保持するクラス.
@@ -81,9 +82,12 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      */
     private class MyHierarchyBoundsListener extends HierarchyBoundsAdapter {
         public void repaintStamp() {
-            int width = kartePane.getTextPane().getWidth();
-            hints.setWidth(Math.max(320, width - MARGIN));
-            setMyText();
+            logger.info("kartePane = " + kartePane);
+            if (Objects.nonNull(kartePane)) {
+                int width = kartePane.getTextPane().getWidth();
+                hints.setWidth(Math.max(320, width - MARGIN));
+                setMyText();
+            }
         }
         @Override
         public void ancestorResized(HierarchyEvent e) {
