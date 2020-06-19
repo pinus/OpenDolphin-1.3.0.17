@@ -5,6 +5,7 @@ import open.dolphin.helper.ImageHelper;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -216,7 +217,8 @@ public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
             // JavaFX thread
             Platform.runLater(() -> {
                 SchemaEditor editor = new SchemaEditorImpl();
-                editor.setSchema(schema);
+                SchemaModel toEdit = ModelUtils.clone(schema);
+                editor.setSchema(toEdit);
                 editor.setEditable(kartePane.getTextPane().isEditable());
                 editor.addPropertyChangeListener(SchemaHolder.this);
                 editor.start();
@@ -253,8 +255,9 @@ public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
             size = extractImageSize(newBytes);
         }
 
+        schema = newSchema;
         schema.setJpegByte(newBytes);
-        icon = newSchema.getIcon();
+        icon = schema.getIcon();
         setIcon(ImageHelper.adjustImageSize(icon, size));
 
         // dirty セット

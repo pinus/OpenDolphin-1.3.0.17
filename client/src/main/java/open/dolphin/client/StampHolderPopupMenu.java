@@ -234,11 +234,8 @@ public class StampHolderPopupMenu extends JPopupMenu {
             }
 
             // コピーして stamp を新たに作成
-            ModuleModel stamp = ModelUtils.clone(ctx.getModel());
+            ModuleModel stamp = ModelUtils.deepClone(ctx.getModel());
             BundleMed bundle = (BundleMed) stamp.getModel();
-            // ClaimItem をコピー
-            ClaimItem[] src = ((BundleMed) ctx.getModel().getModel()).getClaimItem();
-            bundle.setClaimItem(ModelUtils.clone(src));
             // 何日分の部分をセット
             bundle.setBundleNumber(String.valueOf(value));
 
@@ -319,13 +316,10 @@ public class StampHolderPopupMenu extends JPopupMenu {
                 return;
             }
 
-            ModuleModel stamp = ModelUtils.clone(ctx.getModel());
+            ModuleModel stamp = ModelUtils.deepClone(ctx.getModel());
             BundleMed bundle = (BundleMed) stamp.getModel();
             bundle.setAdmin(admin.str);
             bundle.setAdminCode(admin.code);
-
-            ClaimItem[] src = ((BundleMed) ctx.getModel().getModel()).getClaimItem();
-            bundle.setClaimItem(ModelUtils.clone(src));
 
             propertyChanged(stamp);
         }

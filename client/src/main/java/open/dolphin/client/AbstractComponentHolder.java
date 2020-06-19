@@ -40,7 +40,7 @@ public abstract class AbstractComponentHolder<T> extends JLabel
     private ActionMap actionMap;
     // UndoSupport
     private UndoManager undoManager;
-    private boolean undoOrRedoing = false;
+    private boolean undoing = false;
 
     public AbstractComponentHolder(KartePane kartePane) {
         this.kartePane = kartePane;
@@ -226,15 +226,15 @@ public abstract class AbstractComponentHolder<T> extends JLabel
      * @param newValue ModuleModel or SchemaModel
      */
     public void updateModel(T newValue) {
-        if (!undoOrRedoing) {
+        if (!undoing) {
             UndoableEdit edit = new UndoableEdit(getModel(), newValue);
             undoManager.addEdit(edit);
             updateMenuState();
-            undoOrRedoing = false;
         }
+        undoing = false;
     }
 
-    public class UndoableEdit extends AbstractUndoableEdit {
+    private class UndoableEdit extends AbstractUndoableEdit {
         private T oldValue;
         private T newValue;
 
@@ -246,13 +246,13 @@ public abstract class AbstractComponentHolder<T> extends JLabel
         @Override
         public void undo() throws CannotUndoException {
             super.undo();
-            undoOrRedoing = true;
+            undoing = true;
             updateModel(oldValue);
         }
         @Override
         public void redo() throws CannotRedoException {
             super.redo();
-            undoOrRedoing = true;
+            undoing = true;
             updateModel(newValue);
         }
         @Override

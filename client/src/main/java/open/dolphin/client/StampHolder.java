@@ -82,12 +82,13 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      */
     private class MyHierarchyBoundsListener extends HierarchyBoundsAdapter {
         public void repaintStamp() {
-            logger.info("kartePane = " + kartePane);
-            if (Objects.nonNull(kartePane)) {
-                int width = kartePane.getTextPane().getWidth();
-                hints.setWidth(Math.max(320, width - MARGIN));
-                setMyText();
+            if (Objects.isNull(kartePane)) {
+                logger.error("KartePane is null");
+                return;
             }
+            int width = kartePane.getTextPane().getWidth();
+            hints.setWidth(Math.max(320, width - MARGIN));
+            setMyText();
         }
         @Override
         public void ancestorResized(HierarchyEvent e) {
@@ -151,8 +152,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
                         // 投与日数を変更する
                         String old = bundle.getBundleNumber();
                         if (!old.equals(num)) {
-                            これだと claimItem がクローンされない
-                            ModuleModel distModel = ModelUtils.clone(stamp);
+                            ModuleModel distModel = ModelUtils.deepClone(stamp);
                             BundleMed distBundle = (BundleMed) distModel.getModel();
                             distBundle.setBundleNumber(num);
                             updateModel(distModel);
@@ -162,7 +162,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
 
                     } else {
                         // 外用剤の量を変更する
-                        ModuleModel distModel = ModelUtils.clone(stamp);
+                        ModuleModel distModel = ModelUtils.deepClone(stamp);
                         boolean dirty = false;
                         for (ClaimItem item : ((BundleMed) distModel.getModel()).getClaimItem()) {
                             if (item.getCode().startsWith("6")) {
