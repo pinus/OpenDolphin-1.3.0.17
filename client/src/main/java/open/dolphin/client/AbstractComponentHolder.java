@@ -39,7 +39,8 @@ public abstract class AbstractComponentHolder<T> extends JLabel
     // ActionMap
     private ActionMap actionMap;
     // UndoSupport
-    private UndoableEditSupport undoSupport;
+    private UndoManager undoManager;
+    private boolean undoOrRedoing = false;
 
     public AbstractComponentHolder(KartePane kartePane) {
         this.kartePane = kartePane;
@@ -59,12 +60,8 @@ public abstract class AbstractComponentHolder<T> extends JLabel
         am.put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
         am.put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
 
-        undoSupport = new UndoableEditSupport(this);
-        UndoManager undoManager = new UndoManager();
-        undoSupport.addUndoableEditListener(undoManager);
+        undoManager = new UndoManager();
     }
-
-    public UndoableEditSupport getUndoSupport() { return undoSupport; }
 
     public boolean isEditable() {
         return isEditable;
@@ -75,7 +72,10 @@ public abstract class AbstractComponentHolder<T> extends JLabel
     }
 
     @Override
-    public void enter(ActionMap map) { actionMap = map; }
+    public void enter(ActionMap map) {
+        actionMap = map;
+        updateMenuState();
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -192,11 +192,49 @@ public abstract class AbstractComponentHolder<T> extends JLabel
     @Override
     public abstract void edit();
 
+    /**
+     * この ComponentHolder が扱うモデルを返す.
+     *
+     * @return ModuleModel or SchemaModel
+     */
+    public abstract T getModel();
+
     public abstract void maybeShowPopup(MouseEvent e);
 
-    public abstract<T> void update(T value);
+    public void undo() {
+        undoManager.undo();
+        updateMenuState();
+    }
 
-    public class UndoableEdit<T> extends AbstractUndoableEdit {
+    public void redo() {
+        undoManager.redo();
+        updateMenuState();
+    }
+
+    /**
+     * Undo / Redo 関連のメニューを update する.
+     */
+    public void updateMenuState() {
+        actionMap.get(GUIConst.ACTION_UNDO).setEnabled(undoManager.canUndo());
+        actionMap.get(GUIConst.ACTION_REDO).setEnabled(undoManager.canRedo());
+    }
+
+    /**
+     * この ComponentHolder のモデルを update する. その際，UndoableEdit も登録する.
+     * ただし undo, redo の操作の場合は UndoableEdit は作らない.
+     *
+     * @param newValue ModuleModel or SchemaModel
+     */
+    public void updateModel(T newValue) {
+        if (!undoOrRedoing) {
+            UndoableEdit edit = new UndoableEdit(getModel(), newValue);
+            undoManager.addEdit(edit);
+            updateMenuState();
+            undoOrRedoing = false;
+        }
+    }
+
+    public class UndoableEdit extends AbstractUndoableEdit {
         private T oldValue;
         private T newValue;
 
@@ -208,12 +246,14 @@ public abstract class AbstractComponentHolder<T> extends JLabel
         @Override
         public void undo() throws CannotUndoException {
             super.undo();
-            update(oldValue);
+            undoOrRedoing = true;
+            updateModel(oldValue);
         }
         @Override
         public void redo() throws CannotRedoException {
             super.redo();
-            update(newValue);
+            undoOrRedoing = true;
+            updateModel(newValue);
         }
         @Override
         public void die() {

@@ -11,15 +11,19 @@ import open.dolphin.project.Project;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.event.*;
-import java.util.List;
-import java.beans.PropertyChangeEvent;
-import javax.swing.border.Border;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.HierarchyBoundsAdapter;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.util.List;
 
 /**
  * KartePane に Component　として挿入されるスタンプを保持するクラス.
@@ -143,16 +147,20 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
                         // 投与日数を変更する
                         String old = bundle.getBundleNumber();
                         if (!old.equals(num)) {
-                            bundle.setBundleNumber(num);
-                            setMyText();
+                            これだと claimItem がクローンされない
+                            ModuleModel distModel = ModelUtils.clone(stamp);
+                            BundleMed distBundle = (BundleMed) distModel.getModel();
+                            distBundle.setBundleNumber(num);
+                            updateModel(distModel);
                             kartePane.setDirty(true);
-                            logger.debug("bundle number changed to " + num);
+                            logger.info("bundle number changed to " + num);
                         }
 
                     } else {
                         // 外用剤の量を変更する
+                        ModuleModel distModel = ModelUtils.clone(stamp);
                         boolean dirty = false;
-                        for (ClaimItem item : bundle.getClaimItem()) {
+                        for (ClaimItem item : ((BundleMed) distModel.getModel()).getClaimItem()) {
                             if (item.getCode().startsWith("6")) {
                                 String old = item.getNumber();
                                 if (!old.equals(num)) {
@@ -162,9 +170,9 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
                             }
                         }
                         if (dirty) {
-                            setMyText();
+                            updateModel(distModel);
                             kartePane.setDirty(true);
-                            logger.debug("item number changed to " + num);
+                            logger.info("item number changed to " + num);
                         }
                     }
                 } catch (NumberFormatException ex) {
@@ -277,9 +285,8 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      *
      * @return ModuleModel
      */
-    public ModuleModel getStamp() {
-        return stamp;
-    }
+    @Override
+    public ModuleModel getModel() { return stamp; }
 
     public StampRenderingHints getHints() {
         return hints;
@@ -357,7 +364,6 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      */
     @Override
     public void propertyChange(PropertyChangeEvent e) {
-
         String prop = e.getPropertyName();
 
         // StampEditor から値がセットされた場合 or StampHolderPopupMenu からセットされた場合
@@ -371,7 +377,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
             ModuleModel newStamp = (ModuleModel) e.getNewValue();
             if (newStamp != null) {
                 // スタンプを置き換える
-                importStamp(newStamp);
+                updateModel(newStamp);
             }
         }
     }
@@ -381,7 +387,10 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      *
      * @param newStamp ModuleModel
      */
-    public void importStamp(ModuleModel newStamp) {
+    @Override
+    public void updateModel(ModuleModel newStamp) {
+        super.updateModel(newStamp);
+
         // 「月　日」の自動挿入：replace の場合はここに入る
         // replace でない場合は，KartePane でセット
         StampModifier.modify(newStamp);
@@ -399,8 +408,8 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      */
     private void setMyText() {
 
-        IInfoModel bundle = getStamp().getModel(); // BundleMed > BundleDolphin > ClaimBundle
-        String stampName = getStamp().getModuleInfo().getStampName();
+        IInfoModel bundle = getModel().getModel(); // BundleMed > BundleDolphin > ClaimBundle
+        String stampName = getModel().getModuleInfo().getStampName();
         logger.debug("bundle = " + bundle.getClass().getName() + ", stampName = " + stampName);
 
         String text;
@@ -409,7 +418,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
             text = HtmlHelper.bundleMed2Html((BundleMed) bundle, stampName, hints);
             //logger.info("bundleMed = " + text);
 
-        } else if (getStamp().getModuleInfo().getEntity().equals(IInfoModel.ENTITY_LABO_TEST)
+        } else if (getModel().getModuleInfo().getEntity().equals(IInfoModel.ENTITY_LABO_TEST)
             && Project.getPreferences().getBoolean("laboFold", true)) {
             text = HtmlHelper.bundleDolphin2Html((BundleDolphin) bundle, stampName, hints, true);
             //logger.info("labo = " + text);
@@ -455,13 +464,5 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
         this.startTag = null;
         this.endTag = null;
         setMyText();
-    }
-
-    public void undo() {
-        logger.info("==== undo ====");
-    }
-
-    public void redo() {
-        logger.info("==== redo ====");
     }
 }

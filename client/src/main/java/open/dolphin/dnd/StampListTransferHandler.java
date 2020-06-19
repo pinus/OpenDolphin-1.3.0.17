@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
@@ -46,7 +45,7 @@ public class StampListTransferHandler extends DolphinTransferHandler {
         KartePane kartePane = source.getKartePane();
         kartePane.setDraggedStamp(new ComponentHolder[]{source});
         kartePane.setDraggedCount(1);
-        ModuleModel stamp = source.getStamp();
+        ModuleModel stamp = source.getModel();
         OrderList list = new OrderList(new ModuleModel[]{stamp});
 
         return new StampListTransferable(list);
@@ -73,7 +72,7 @@ public class StampListTransferHandler extends DolphinTransferHandler {
                 if (module.getModel() instanceof BundleMed) {
                     // 内服薬同士で置き換えの場合，bundle number を保存する
                     BundleMed bundle = (BundleMed) module.getModel();
-                    BundleMed orgBundle = (BundleMed) target.getStamp().getModel();
+                    BundleMed orgBundle = (BundleMed) target.getModel().getModel();
                     if ((ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode()) &&
                             ClaimConst.RECEIPT_CODE_NAIYO.equals(orgBundle.getClassCode())) ||
                             (ClaimConst.RECEIPT_CODE_TONYO.equals(bundle.getClassCode()) &&
@@ -123,7 +122,7 @@ public class StampListTransferHandler extends DolphinTransferHandler {
                         }
                     }
                 }
-                target.importStamp(module);
+                target.updateModel(module);
             });
         });
         t.start();
