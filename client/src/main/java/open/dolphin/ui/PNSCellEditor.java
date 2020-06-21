@@ -33,7 +33,7 @@ public class PNSCellEditor extends DefaultCellEditor {
         textField.addFocusListener(new TextFieldFocusListener());
 
         // UndoManager 登録
-        undoManager = TextComponentUndoManager.getManager(textField);
+        undoManager = TextComponentUndoManager.createManager(textField);
     }
 
     /**

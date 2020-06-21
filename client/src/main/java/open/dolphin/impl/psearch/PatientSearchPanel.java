@@ -89,7 +89,7 @@ public class PatientSearchPanel extends MainComponentPanel {
         keywordFld = new CompletableSearchField(20);
         keywordFld.setLabel("患者検索");
 
-        TextComponentUndoManager undoManager = TextComponentUndoManager.getManager(keywordFld);
+        TextComponentUndoManager undoManager = TextComponentUndoManager.createManager(keywordFld);
 
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
 

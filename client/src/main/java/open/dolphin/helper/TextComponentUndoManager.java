@@ -1,44 +1,35 @@
 package open.dolphin.helper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 import java.awt.event.ActionEvent;
+import java.util.Objects;
 
 /**
  * JTextComponent に Undo 機能を付ける.<br>
  * 使用例:
  * <pre>{@code
- * TextComponentUndoManager manager = new TextComponentUndoManager();
- * JTextPane textComponent = new JTextPane();
- * manager.addUndoActionTo(textComponent);
- * textComponent.getDocument().addUndoableEditListener(manager::listener);
+ * JTextPane c = new JTextPane();
+ * UndoManager manager = TextComponentUndoManager.createManager(c);
  * }</pre>
  *
  * @author pns
  */
 public class TextComponentUndoManager extends UndoManager {
     private static final long serialVersionUID = 1L;
+    private Logger logger = LoggerFactory.getLogger(TextComponentUndoManager.class);
 
+    private JTextComponent textComponent;
     private Action undoAction;
     private Action redoAction;
 
-    public TextComponentUndoManager() {
-        // default undo action
-        undoAction = new AbstractAction("undo") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                undo();
-            }
-        };
-        // default redo action
-        redoAction = new AbstractAction("redo") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                redo();
-            }
-        };
+    public TextComponentUndoManager(JTextComponent c) {
+        textComponent = c;
     }
 
     /**
@@ -47,20 +38,33 @@ public class TextComponentUndoManager extends UndoManager {
      * @param c JTextComponent
      * @return TextComponentUndoManager
      */
-    public static TextComponentUndoManager getManager(JTextComponent c) {
-        TextComponentUndoManager manager = new TextComponentUndoManager();
-        manager.addUndoActionTo(c);
-        c.getDocument().addUndoableEditListener(manager::listener);
-        return manager;
-    }
+    public static TextComponentUndoManager createManager(JTextComponent c) {
+        TextComponentUndoManager manager = new TextComponentUndoManager(c);
 
-    public void addUndoActionTo(JTextComponent c) {
+        // default undo/redo action
+        Action undo = new AbstractAction("undo") {
+            @Override
+            public void actionPerformed(ActionEvent e) { manager.undo(); }
+        };
+        Action redo = new AbstractAction("redo") {
+            @Override
+            public void actionPerformed(ActionEvent e) { manager.redo(); }
+        };
+        manager.setUndoAction(undo);
+        manager.setRedoAction(redo);
+
+        // short cut を付ける
         ActionMap am = c.getActionMap();
         InputMap im = c.getInputMap();
-        am.put("undo", undoAction);
+        am.put("undo", undo);
         im.put(KeyStroke.getKeyStroke("meta Z"), "undo");
-        am.put("redo", redoAction);
+        am.put("redo", redo);
         im.put(KeyStroke.getKeyStroke("shift meta Z"), "redo");
+
+        // listener 登録
+        c.getDocument().addUndoableEditListener(manager::listener);
+
+        return manager;
     }
 
     public void setUndoAction(Action action) {
@@ -72,6 +76,8 @@ public class TextComponentUndoManager extends UndoManager {
     }
 
     public void listener(UndoableEditEvent e) {
+        System.out.println("source = " + e.getSource());
+
         addEdit(e.getEdit());
         updateActionStatus(); // 文字入力毎に action が enable/disable される
     }
@@ -89,6 +95,7 @@ public class TextComponentUndoManager extends UndoManager {
     }
 
     private void updateActionStatus() {
+        if (Objects.isNull(undoAction) || Objects.isNull(redoAction)) { return; }
         undoAction.setEnabled(canUndo());
         redoAction.setEnabled(canRedo());
     }
