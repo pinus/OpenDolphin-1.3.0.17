@@ -93,9 +93,7 @@ public class KartePane implements KarteComposite<JTextPane>,
     private int draggedCount;
     private int droppedCount;
 
-    public KartePane() {
-        undoManager = new TextComponentUndoManager(getTextPane());
-    }
+    public KartePane() { }
 
     /**
      * このPaneのオーナを返す.
@@ -294,10 +292,10 @@ public class KartePane implements KarteComposite<JTextPane>,
      * @param chartMediator チャートメディエータ（メニューサポート）
      */
     public void init(boolean editable, ChartMediator chartMediator) {
-
+        // undo manager
+        undoManager = new TextComponentUndoManager(getTextPane());
         // Mediatorを保存する
         mediator = chartMediator;
-
         // 入れておかないと最初に focus 取る前に Drop したときヌルポが出る
         enter(mediator.getActions());
 
@@ -348,7 +346,6 @@ public class KartePane implements KarteComposite<JTextPane>,
     public void changedUpdate(DocumentEvent e) {
     }
 
-    private int dotBefore = 0;
     @Override
     public void caretUpdate(CaretEvent e) {
         boolean newSelection = e.getDot() != e.getMark();

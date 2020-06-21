@@ -76,8 +76,6 @@ public class TextComponentUndoManager extends UndoManager {
     }
 
     public void listener(UndoableEditEvent e) {
-        System.out.println("source = " + e.getSource());
-
         addEdit(e.getEdit());
         updateActionStatus(); // 文字入力毎に action が enable/disable される
     }
