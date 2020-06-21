@@ -5,7 +5,6 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 /**
  * JTextComponent に Undo 機能を付ける.<br>
@@ -28,8 +27,6 @@ public class TextComponentUndoManager extends UndoManager {
     public TextComponentUndoManager() {
         // default undo action
         undoAction = new AbstractAction("undo") {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 undo();
@@ -37,8 +34,6 @@ public class TextComponentUndoManager extends UndoManager {
         };
         // default redo action
         redoAction = new AbstractAction("redo") {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 redo();
@@ -83,17 +78,13 @@ public class TextComponentUndoManager extends UndoManager {
 
     @Override
     public void undo() {
-        if (canUndo()) {
-            super.undo();
-        }
+        if (canUndo()) { super.undo(); }
         updateActionStatus();
     }
 
     @Override
     public void redo() {
-        if (canRedo()) {
-            super.redo();
-        }
+        if (canRedo()) { super.redo(); }
         updateActionStatus();
     }
 

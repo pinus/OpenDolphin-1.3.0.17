@@ -443,6 +443,7 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     public void enter(ActionMap map) {
         curState = getMyRole().equals(IInfoModel.ROLE_SOA) ? State.SOA : State.P;
 
+        // UndoManager 内で enable/disable してもらうために登録
         undoManager.setUndoAction(map.get(GUIConst.ACTION_UNDO));
         undoManager.setRedoAction(map.get(GUIConst.ACTION_REDO));
 
@@ -1108,13 +1109,9 @@ public class KartePane implements DocumentListener, MouseListener, CaretListener
     /**
      * ChartMediator で addChain されてここが呼ばれる.
      */
-    public void undo() {
-        undoManager.undo();
-    }
+    public void undo() { undoManager.undo(); }
 
-    public void redo() {
-        undoManager.redo();
-    }
+    public void redo() { undoManager.redo(); }
 
     // KartePane の状態　(_TEXT はテキストが選択された状態)
     private enum State {
