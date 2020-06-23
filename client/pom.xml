@@ -204,7 +204,9 @@
                                            shortversion="${maven.build.timestamp}"
                                            version="${project.version}-${maven.build.timestamp}">
 
+                                    <!-- include java runtime into pacakge
                                     <runtime dir="${runtime}"/>
+                                    -->
                                     <classpath file="${distdir}/opendolphin.jar"/>
                                     <option value="-Xdock:icon=Contents/Resources/${icon.name}"/>
                                     <option value="-Dapple.laf.useScreenMenuBar=true"/>
