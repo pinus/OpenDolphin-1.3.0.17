@@ -32,7 +32,7 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
         putClientProperty("Quaqua.TextComponent.showPopup ", false);
         addCaretListener(this);
         undoManager = new TextComponentUndoManager(this);
-        getDocument().addUndoableEditListener(undoManager::listener);
+        getDocument().addUndoableEditListener(undoManager);
     }
 
     public TextComponentUndoManager getUndoManager() {

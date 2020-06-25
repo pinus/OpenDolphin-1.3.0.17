@@ -51,8 +51,7 @@ import java.util.prefs.Preferences;
  * @author Kazushi Minagawa, Digital Globe, inc.
  * @author pns
  */
-public class KartePane implements KarteComposite<JTextPane>,
-    DocumentListener, UndoableEditListener, MouseListener, CaretListener, PropertyChangeListener {
+public class KartePane implements KarteComposite<JTextPane>, DocumentListener, MouseListener, CaretListener, PropertyChangeListener {
     private final Logger logger = LoggerFactory.getLogger(KartePane.class);
 
     // 編集不可時の背景色
@@ -306,7 +305,7 @@ public class KartePane implements KarteComposite<JTextPane>,
         getTextPane().addMouseListener(this);
         getTextPane().addCaretListener(this);
         getTextPane().getDocument().addDocumentListener(this);
-        getTextPane().getDocument().addUndoableEditListener(this);
+        getTextPane().getDocument().addUndoableEditListener(undoManager);
 
         getTextPane().setEditable(editable);
         // ChartImpl で DocumentHistory が focus を取れないことがあるのの workaround
@@ -379,7 +378,7 @@ public class KartePane implements KarteComposite<JTextPane>,
         }
 
         pane.getDocument().removeDocumentListener(this);
-        pane.getDocument().removeUndoableEditListener(this);
+        pane.getDocument().removeUndoableEditListener(undoManager);
         pane.removeMouseListener(this);
         pane.removeCaretListener(this);
 
@@ -1109,9 +1108,6 @@ public class KartePane implements KarteComposite<JTextPane>,
     public void undo() { undoManager.undo(); }
 
     public void redo() { undoManager.redo(); }
-
-    @Override
-    public void undoableEditHappened(UndoableEditEvent e) { undoManager.listener(e); }
 
     // KartePane の状態　(_TEXT はテキストが選択された状態)
     private enum State {

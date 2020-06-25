@@ -62,7 +62,7 @@ public class TextComponentUndoManager extends UndoManager {
         im.put(KeyStroke.getKeyStroke("shift meta Z"), "redo");
 
         // listener 登録
-        c.getDocument().addUndoableEditListener(manager::listener);
+        c.getDocument().addUndoableEditListener(manager);
 
         return manager;
     }
@@ -75,7 +75,8 @@ public class TextComponentUndoManager extends UndoManager {
         redoAction = action;
     }
 
-    public void listener(UndoableEditEvent e) {
+    @Override
+    public void undoableEditHappened(UndoableEditEvent e) {
         addEdit(e.getEdit());
         updateActionStatus(); // 文字入力毎に action が enable/disable される
     }
