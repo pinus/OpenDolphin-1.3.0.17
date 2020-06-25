@@ -6,6 +6,7 @@ import open.dolphin.infomodel.ClaimItem;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.ui.Focuser;
+import open.dolphin.ui.IMEControl;
 import open.dolphin.util.ModelUtils;
 
 import javax.swing.*;
@@ -499,13 +500,13 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
             final JTextField tf = new JTextField(10);
             tf.setPreferredSize(new Dimension(100, 26));
+            IMEControl.on(tf);
+
             String[] options = {"追加", "上書き", "キャンセル"};
             JOptionPane pane = new JOptionPane(tf,
                     JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null,
                     options, options[0]) {
                 // 初期状態でボタンでなく，tf にフォーカスを取る
-                private static final long serialVersionUID = 1L;
-
                 @Override
                 public void selectInitialValue() {
                     Focuser.requestFocus(tf);
