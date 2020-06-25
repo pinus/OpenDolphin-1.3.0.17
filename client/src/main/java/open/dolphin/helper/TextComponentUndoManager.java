@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.JTextComponent;
+import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
 import java.awt.event.ActionEvent;
 import java.util.Objects;
@@ -27,9 +28,15 @@ public class TextComponentUndoManager extends UndoManager {
     private JTextComponent textComponent;
     private Action undoAction;
     private Action redoAction;
+    // 連続する UndoableEditEvent をまとめる
+    private CompoundEdit current = new CompoundEdit();
+    // delay msec 以内に起きた UndoableEditEvent はまとめて1つにする
+    private Timer timer;
+    private int delay = 100;
 
     public TextComponentUndoManager(JTextComponent c) {
         textComponent = c;
+        timer = new Timer(delay, e -> flush());
     }
 
     /**
@@ -77,8 +84,23 @@ public class TextComponentUndoManager extends UndoManager {
 
     @Override
     public void undoableEditHappened(UndoableEditEvent e) {
-        addEdit(e.getEdit());
+        timer.restart();
+        current.addEdit(e.getEdit());
         updateActionStatus(); // 文字入力毎に action が enable/disable される
+    }
+
+    /**
+     * まとめた UndoableEdit を addEdit する.
+     */
+    private void flush() {
+        logger.info("flush");
+
+        timer.stop();
+        current.end();
+        addEdit(current);
+
+        current = new CompoundEdit();
+        updateActionStatus();
     }
 
     @Override

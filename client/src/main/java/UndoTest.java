@@ -1,13 +1,15 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledEditorKit;
+import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.util.Objects;
 
 public class UndoTest {
@@ -18,9 +20,23 @@ public class UndoTest {
         private JTextComponent textComponent;
         private Action undoAction;
         private Action redoAction;
+        private CompoundEdit current = new CompoundEdit();
+        private Timer timer;
 
         public TextComponentUndoManager(JTextComponent c) {
             textComponent = c;
+            timer = new Timer(100, e -> flush());
+            c.addInputMethodListener(new InputMethodListener() {
+                @Override
+                public void inputMethodTextChanged(InputMethodEvent event) {
+                    logger.info("textchanged " + event);
+                }
+
+                @Override
+                public void caretPositionChanged(InputMethodEvent event) {
+                    logger.info("caretchanged " + event);
+                }
+            });
         }
 
         public void setUndoAction(Action action) {
@@ -33,12 +49,24 @@ public class UndoTest {
 
         @Override
         public void undoableEditHappened(UndoableEditEvent e) {
-            addEdit(e.getEdit());
-            updateActionStatus(); // 文字入力毎に action が enable/disable される
+            timer.restart();
+            current.addEdit(e.getEdit());
+            updateActionStatus();
+        }
+
+        private void flush() {
+            timer.stop();
+
+            logger.info("flush");
+            current.end();
+            addEdit(current);
+            current = new CompoundEdit();
+            updateActionStatus();
         }
 
         @Override
         public void undo() {
+            logger.info("undo");
             if (canUndo()) { super.undo(); }
             updateActionStatus();
         }
