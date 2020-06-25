@@ -28,8 +28,10 @@ public class TextComponentUndoManager extends UndoManager {
     private JTextComponent textComponent;
     private Action undoAction;
     private Action redoAction;
-    // 連続する UndoableEditEvent をまとめる
-    private CompoundEdit current = new CompoundEdit();
+
+    // 連続する UndoableEditEvent をまとめる CompoundEdit
+    private CompoundEdit current;
+
     // delay msec 以内に起きた UndoableEditEvent はまとめて1つにする
     private Timer timer;
     private int delay = 100;
@@ -37,49 +39,7 @@ public class TextComponentUndoManager extends UndoManager {
     public TextComponentUndoManager(JTextComponent c) {
         textComponent = c;
         timer = new Timer(delay, e -> flush());
-    }
-
-    /**
-     * JTextComponent に Undo 機能を付ける utility static method.
-     *
-     * @param c JTextComponent
-     * @return TextComponentUndoManager
-     */
-    public static TextComponentUndoManager createManager(JTextComponent c) {
-        TextComponentUndoManager manager = new TextComponentUndoManager(c);
-
-        // default undo/redo action
-        Action undo = new AbstractAction("undo") {
-            @Override
-            public void actionPerformed(ActionEvent e) { manager.undo(); }
-        };
-        Action redo = new AbstractAction("redo") {
-            @Override
-            public void actionPerformed(ActionEvent e) { manager.redo(); }
-        };
-        manager.setUndoAction(undo);
-        manager.setRedoAction(redo);
-
-        // short cut を付ける
-        ActionMap am = c.getActionMap();
-        InputMap im = c.getInputMap();
-        am.put("undo", undo);
-        im.put(KeyStroke.getKeyStroke("meta Z"), "undo");
-        am.put("redo", redo);
-        im.put(KeyStroke.getKeyStroke("shift meta Z"), "redo");
-
-        // listener 登録
-        c.getDocument().addUndoableEditListener(manager);
-
-        return manager;
-    }
-
-    public void setUndoAction(Action action) {
-        undoAction = action;
-    }
-
-    public void setRedoAction(Action action) {
-        redoAction = action;
+        current = new CompoundEdit();
     }
 
     @Override
@@ -90,11 +50,9 @@ public class TextComponentUndoManager extends UndoManager {
     }
 
     /**
-     * まとめた UndoableEdit を addEdit する.
+     * まとめた UndoableEdit を addEdit する. Timer から呼ばれる.
      */
     private void flush() {
-        logger.info("flush");
-
         timer.stop();
         current.end();
         addEdit(current);
@@ -119,5 +77,50 @@ public class TextComponentUndoManager extends UndoManager {
         if (Objects.isNull(undoAction) || Objects.isNull(redoAction)) { return; }
         undoAction.setEnabled(canUndo());
         redoAction.setEnabled(canRedo());
+    }
+
+    /**
+     * enable/disable を update するために action を登録する.
+     *
+     * @param undo
+     * @param redo
+     */
+    public void setActions(Action undo, Action redo) {
+        undoAction = undo;
+        redoAction = redo;
+    }
+
+    /**
+     * JTextComponent に Undo 機能を付ける utility static method.
+     *
+     * @param c JTextComponent
+     * @return TextComponentUndoManager
+     */
+    public static TextComponentUndoManager createManager(JTextComponent c) {
+        TextComponentUndoManager manager = new TextComponentUndoManager(c);
+
+        // default undo/redo action
+        Action undo = new AbstractAction("undo") {
+            @Override
+            public void actionPerformed(ActionEvent e) { manager.undo(); }
+        };
+        Action redo = new AbstractAction("redo") {
+            @Override
+            public void actionPerformed(ActionEvent e) { manager.redo(); }
+        };
+        manager.setActions(undo, redo);
+
+        // short cut を付ける
+        ActionMap am = c.getActionMap();
+        InputMap im = c.getInputMap();
+        am.put("undo", undo);
+        im.put(KeyStroke.getKeyStroke("meta Z"), "undo");
+        am.put("redo", redo);
+        im.put(KeyStroke.getKeyStroke("shift meta Z"), "redo");
+
+        // listener 登録
+        c.getDocument().addUndoableEditListener(manager);
+
+        return manager;
     }
 }

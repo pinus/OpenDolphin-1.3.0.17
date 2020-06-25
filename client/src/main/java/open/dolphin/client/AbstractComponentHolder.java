@@ -202,13 +202,21 @@ public abstract class AbstractComponentHolder<T> extends JLabel
     public abstract void maybeShowPopup(MouseEvent e);
 
     public void undo() {
-        undoManager.undo();
-        updateMenuState();
+        if (undoManager.canUndo()) {
+            undoManager.undo();
+            updateMenuState();
+        } else {
+            kartePane.undo();
+        }
     }
 
     public void redo() {
-        undoManager.redo();
-        updateMenuState();
+        if (undoManager.canRedo()) {
+            undoManager.redo();
+            updateMenuState();
+        } else {
+            kartePane.redo();
+        }
     }
 
     /**

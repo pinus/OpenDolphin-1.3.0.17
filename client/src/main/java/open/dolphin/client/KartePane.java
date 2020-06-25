@@ -440,8 +440,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
         curState = getMyRole().equals(IInfoModel.ROLE_SOA) ? State.SOA : State.P;
 
         // UndoManager 内で enable/disable してもらうために登録
-        undoManager.setUndoAction(map.get(GUIConst.ACTION_UNDO));
-        undoManager.setRedoAction(map.get(GUIConst.ACTION_REDO));
+        undoManager.setActions(map.get(GUIConst.ACTION_UNDO), map.get(GUIConst.ACTION_REDO));
 
         controlMenus(map);
     }

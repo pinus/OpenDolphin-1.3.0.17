@@ -45,8 +45,7 @@ public class CompositeArea extends JTextArea implements KarteComposite<JTextArea
         map.get(GUIConst.ACTION_PASTE).setEnabled(canPaste());
 
         // undo / redo の enable/disabel を設定してもらう
-        undoManager.setUndoAction(map.get(GUIConst.ACTION_UNDO));
-        undoManager.setRedoAction(map.get(GUIConst.ACTION_REDO));
+        undoManager.setActions(map.get(GUIConst.ACTION_UNDO), map.get(GUIConst.ACTION_REDO));
 
         JPopupMenu menu = new JPopupMenu();
         menu.add(map.get(GUIConst.ACTION_COPY));
