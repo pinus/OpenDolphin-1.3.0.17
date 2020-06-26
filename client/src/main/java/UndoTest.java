@@ -1,12 +1,16 @@
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Objects;
@@ -23,6 +27,7 @@ public class UndoTest {
         private Timer timer;
         private boolean ctrlBackspace = false;
         private boolean doubleKana = false;
+        private boolean isAlphanumeric = false;
 
         public TextComponentUndoManager(JTextComponent c) {
             textComponent = c;
@@ -65,7 +70,7 @@ public class UndoTest {
                 @Override
                 public void keyPressed(KeyEvent e) {
                     KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
-                    logger.info("keyevent = " + key);
+                    //logger.info("keyevent = " + key);
 
                     if (key.equals(KeyStroke.getKeyStroke("ctrl pressed BACK_SPACE"))) {
                         logger.info("CTRL BACK_SPACE PRESSED ================");
@@ -102,14 +107,27 @@ public class UndoTest {
         @Override
         public void undoableEditHappened(UndoableEditEvent e) {
             timer.restart();
+
+            if (e.getEdit() instanceof AbstractDocument.DefaultDocumentEvent) {
+                try {
+                    AbstractDocument.DefaultDocumentEvent event=(AbstractDocument.DefaultDocumentEvent) e.getEdit();
+                    int start = event.getOffset();
+                    int len = event.getLength();
+                    String text = event.getDocument().getText(start, len);
+                    isAlphanumeric = StringUtils.isAlphanumeric(text);
+
+                } catch (BadLocationException ex) {
+                    ex.printStackTrace();
+                }
+            }
             current.addEdit(e.getEdit());
             updateActionStatus();
         }
 
         private void flush() {
-            timer.stop();
+            logger.info("alphanumeric: " + isAlphanumeric);
 
-            logger.info("flush");
+            timer.stop();
             current.end();
             addEdit(current);
             current = new CompoundEdit();
