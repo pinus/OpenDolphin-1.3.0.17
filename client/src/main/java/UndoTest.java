@@ -1,7 +1,6 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.JTextComponent;
@@ -22,19 +21,72 @@ public class UndoTest {
         private Action redoAction;
         private CompoundEdit current = new CompoundEdit();
         private Timer timer;
+        private boolean ctrlBackspace = false;
+        private boolean doubleKana = false;
 
         public TextComponentUndoManager(JTextComponent c) {
             textComponent = c;
             timer = new Timer(100, e -> flush());
+
             c.addInputMethodListener(new InputMethodListener() {
+                private long lap;
                 @Override
                 public void inputMethodTextChanged(InputMethodEvent event) {
+                    lap = System.currentTimeMillis() - lap;
                     logger.info("textchanged " + event);
+                    logger.info("lap = " + lap + ", ctrl-backspace = " + ctrlBackspace + ", doubleKana = " + doubleKana);
+
+                    if (ctrlBackspace) {
+                        undo();
+                        ctrlBackspace = false;
+                    }
+                    if (lap < 10) {
+                        // 2回以上 ctrl-backspace を押すと ctrl-backspace は検出できない
+                        // が，lap が非常に短く入ってくるので検出できる
+                        undo();
+                    }
+                    if (doubleKana) {
+                        logger.info("double kana detected");
+
+                        doubleKana = false;
+                    }
+
+                    lap = System.currentTimeMillis();
                 }
 
                 @Override
                 public void caretPositionChanged(InputMethodEvent event) {
                     logger.info("caretchanged " + event);
+                }
+            });
+
+            c.addKeyListener(new KeyAdapter() {
+                private long lap;
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
+                    logger.info("keyevent = " + key);
+
+                    if (key.equals(KeyStroke.getKeyStroke("ctrl pressed BACK_SPACE"))) {
+                        logger.info("CTRL BACK_SPACE PRESSED ================");
+                        ctrlBackspace = true;
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    // かなキーは release のみ検出される
+                    KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
+                    if (key.equals(KeyStroke.getKeyStroke("released KATAKANA"))) {
+                        lap = System.currentTimeMillis() - lap;
+                        //logger.info("lap = " + lap + "  KATAKANA RELEASED ================");
+                        if (lap < 300) {
+                            logger.info("double KATAKANA detected");
+                            doubleKana = true;
+                        }
+
+                        lap = System.currentTimeMillis();
+                    }
                 }
             });
         }

@@ -82,10 +82,10 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      */
     private class MyHierarchyBoundsListener extends HierarchyBoundsAdapter {
         public void repaintStamp() {
-            if (Objects.isNull(kartePane)) {
-                logger.error("KartePane is null");
-                return;
-            }
+            // debug
+            logger.info("kartePane is null? " + Objects.isNull(kartePane));
+            logger.info("textPane is null? " + Objects.isNull(kartePane.getTextPane()));
+
             int width = kartePane.getTextPane().getWidth();
             hints.setWidth(Math.max(320, width - MARGIN));
             setMyText();
