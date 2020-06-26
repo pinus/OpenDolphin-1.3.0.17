@@ -87,9 +87,6 @@ public class KartePanelFactory {
         textPanePanel.setLayout(new GridLayout(1, 2, 2, 0));
         textPanePanel.setOpaque(true); // KarteScrollPane で snap 取るとき，境界が黒くならないように
         textPanePanel.setPreferredSize(new Dimension(682, 500));
-
-        IMEControl.on(soaTextPane);
-        IMEControl.on(pTextPane);
     }
 
     /**
