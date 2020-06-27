@@ -26,6 +26,7 @@ public class UndoTest {
         private CompoundEdit current = new CompoundEdit();
         private Timer timer;
         private boolean ctrlBackspace = false;
+        private boolean inKakuteiUndo = false;
         private boolean doubleKana = false;
         private boolean isAlphanumeric = false;
 
@@ -41,19 +42,23 @@ public class UndoTest {
                     logger.info("textchanged " + event);
                     logger.info("lap = " + lap + ", ctrl-backspace = " + ctrlBackspace + ", doubleKana = " + doubleKana);
 
+                    // 確定アンドゥは commit されたら終了
+                    if (inKakuteiUndo && event.getCommittedCharacterCount() > 0) {
+                        logger.info("Kakutei-undo done: " + event.getCommittedCharacterCount());
+                        inKakuteiUndo = false;
+                    }
+
+                    // 確定アンドゥ 1回目
                     if (ctrlBackspace) {
+                        logger.info("Kakutei-undo start");
                         undo();
                         ctrlBackspace = false;
-                    }
-                    if (lap < 10) {
-                        // 2回以上 ctrl-backspace を押すと ctrl-backspace は検出できない
-                        // が，lap が非常に短く入ってくるので検出できる
+                        inKakuteiUndo = true;
+                    } else if (inKakuteiUndo && lap < 10) {
+                        // 2回目以降の ctrl-backspace キーは ATOK に取られて検出できないが，
+                        // lap が非常に短く入ってくるので検出できる
+                        logger.info("Kakutei-undo cont'd: " + lap);
                         undo();
-                    }
-                    if (doubleKana) {
-                        logger.info("double kana detected");
-
-                        doubleKana = false;
                     }
 
                     lap = System.currentTimeMillis();

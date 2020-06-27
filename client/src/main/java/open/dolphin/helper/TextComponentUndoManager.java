@@ -39,6 +39,7 @@ public class TextComponentUndoManager extends UndoManager {
     // ATOK 確定アンドゥ
     private static KeyStroke CTRL_BACKSPACE = KeyStroke.getKeyStroke("ctrl pressed BACK_SPACE");
     private boolean ctrlBackspace = false;
+    private boolean inKakuteiUndo = false;
 
     public TextComponentUndoManager(JTextComponent c) {
         textComponent = c;
@@ -52,15 +53,22 @@ public class TextComponentUndoManager extends UndoManager {
             public void inputMethodTextChanged(InputMethodEvent event) {
                 lap = System.currentTimeMillis() - lap;
 
-                // 確定アンドゥ
+                // 確定アンドゥは commit されたら終了
+                if (inKakuteiUndo && event.getCommittedCharacterCount() > 0) {
+                    logger.info("Kakutei-undo done: " + event.getCommittedCharacterCount());
+                    inKakuteiUndo = false;
+                }
+
+                // 確定アンドゥ 1回目
                 if (ctrlBackspace) {
+                    logger.info("Kakutei-undo start");
                     undo();
                     ctrlBackspace = false;
-                }
-                // 確定アンドゥ 2回目以降
-                if (lap < 10) {
-                    // 2回目以降の ctrl-backspace は検出できないが，
+                    inKakuteiUndo = true;
+                } else if (inKakuteiUndo && lap < 10) {
+                    // 2回目以降の ctrl-backspace キーは ATOK に取られて検出できないが，
                     // lap が非常に短く入ってくるので検出できる
+                    logger.info("Kakutei-undo cont'd: " + lap);
                     undo();
                 }
 
