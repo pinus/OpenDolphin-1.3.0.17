@@ -1,22 +1,24 @@
+import open.dolphin.helper.StringTool;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.StyledEditorKit;
+import javax.swing.text.*;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEdit;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.AttributedCharacterIterator;
+import java.text.CharacterIterator;
 import java.util.Objects;
 
 public class UndoTest {
     private Logger logger = LoggerFactory.getLogger(UndoTest.class);
+    private static KeyStroke CTRL_BACKSPACE = KeyStroke.getKeyStroke("ctrl pressed BACK_SPACE");
+    private static KeyStroke KANA = KeyStroke.getKeyStroke("released KATAKANA");
+    private static KeyStroke EISU = KeyStroke.getKeyStroke("released ALPHANUMERIC");
 
     public class TextComponentUndoManager extends UndoManager {
 
@@ -25,80 +27,180 @@ public class UndoTest {
         private Action redoAction;
         private CompoundEdit current = new CompoundEdit();
         private Timer timer;
-        private boolean ctrlBackspace = false;
-        private boolean inKakuteiUndo = false;
-        private boolean doubleKana = false;
         private boolean isAlphanumeric = false;
 
         public TextComponentUndoManager(JTextComponent c) {
             textComponent = c;
             timer = new Timer(100, e -> flush());
+            AtokListener listener = new AtokListener();
+            c.addInputMethodListener(listener);
+            c.addKeyListener(listener);
 
-            c.addInputMethodListener(new InputMethodListener() {
-                private long lap;
-                @Override
-                public void inputMethodTextChanged(InputMethodEvent event) {
-                    lap = System.currentTimeMillis() - lap;
-                    logger.info("textchanged " + event);
-                    logger.info("lap = " + lap + ", ctrl-backspace = " + ctrlBackspace + ", doubleKana = " + doubleKana);
+        }
 
-                    // 確定アンドゥは commit されたら終了
-                    if (inKakuteiUndo && event.getCommittedCharacterCount() > 0) {
-                        logger.info("Kakutei-undo done: " + event.getCommittedCharacterCount());
-                        inKakuteiUndo = false;
-                    }
+        private class AtokListener implements KeyListener, InputMethodListener {
+            // 確定アンドゥのキーが押されたかどうか
+            private boolean ctrlBackspace = false;
+            // 確定アンドゥ中かどうか
+            private boolean isInKakuteiUndo = false;
+            // かなキー2度押しされたかどうか
+            private boolean doubleKana = false;
+            // 英数キー2度押しされたかどうか
+            private boolean doubleEisu = false;
+            // IME 開始された時間
+            private long timeImeTextChanged;
+            // KeyPressed があった時間
+            private long timeKeyPressed;
+            // KeyReleased があった時間
+            private long timeKeyReleased;
+            // 変換前文字列と変換後文字
+            private String textInProcess = "", textCommitted = "";
 
-                    // 確定アンドゥ 1回目
-                    if (ctrlBackspace) {
-                        logger.info("Kakutei-undo start");
-                        undo();
-                        ctrlBackspace = false;
-                        inKakuteiUndo = true;
-                    } else if (inKakuteiUndo && lap < 10) {
-                        // 2回目以降の ctrl-backspace キーは ATOK に取られて検出できないが，
-                        // lap が非常に短く入ってくるので検出できる
-                        logger.info("Kakutei-undo cont'd: " + lap);
-                        undo();
-                    }
+            @Override
+            public void inputMethodTextChanged(InputMethodEvent event) {
+                long timeFromImeTextChange = System.currentTimeMillis() - timeImeTextChanged;
+                long timeFromKeyPress = System.currentTimeMillis() - timeKeyPressed;
 
-                    lap = System.currentTimeMillis();
-                }
+                // KeyReleased からここを null で呼ぶ
+                if (event == null) {
+                    logger.info("timeFromImeTextChange = " + timeFromImeTextChange + ": doubleKana:" + doubleKana + ", doubleEisu:" + doubleEisu );
+                    if (timeFromImeTextChange > 300) { return; }
 
-                @Override
-                public void caretPositionChanged(InputMethodEvent event) {
-                    logger.info("caretchanged " + event);
-                }
-            });
+                    try {
+                        int pos = textComponent.getCaretPosition();
+                        logger.info("pos = " + pos + " before = " + textInProcess + ", after = " + textCommitted);
 
-            c.addKeyListener(new KeyAdapter() {
-                private long lap;
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
-                    //logger.info("keyevent = " + key);
+                        // 再変換元の文字列の最後
+                        int end = pos - textInProcess.length();
 
-                    if (key.equals(KeyStroke.getKeyStroke("ctrl pressed BACK_SPACE"))) {
-                        logger.info("CTRL BACK_SPACE PRESSED ================");
-                        ctrlBackspace = true;
-                    }
-                }
+                        if (doubleKana) {
+                            // そこからたどって, alphanumeric 以外の文字が出てくるところを検出
+                            int start = end;
+                            while(start-- > 0) {
+                                char c = textComponent.getText(start, 1).charAt(0);
+                                logger.info(start + ": " + c);
+                                if (!StringTool.isHanakuLower(c) && !StringTool.isHankakuUpper(c)) { break; }
+                            }
+                            start++;
+                            logger.info("start = " + start + ", end = " + end);
+                            textComponent.getDocument().remove(start, end - start);
 
-                @Override
-                public void keyReleased(KeyEvent e) {
-                    // かなキーは release のみ検出される
-                    KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
-                    if (key.equals(KeyStroke.getKeyStroke("released KATAKANA"))) {
-                        lap = System.currentTimeMillis() - lap;
-                        //logger.info("lap = " + lap + "  KATAKANA RELEASED ================");
-                        if (lap < 300) {
-                            logger.info("double KATAKANA detected");
-                            doubleKana = true;
+                            textInProcess = "";
+                            textCommitted = "";
                         }
 
-                        lap = System.currentTimeMillis();
+                    } catch (BadLocationException e) {
+                        logger.error(e.getMessage());
                     }
+
+
+
+
+                    doubleKana = doubleEisu = false;
+                    return;
                 }
-            });
+
+                logger.info("textchanged " + event);
+                logger.info("time from key press = " + timeFromKeyPress + ", time from text change = " + timeFromImeTextChange +
+                    ", ctrl-backspace = " + ctrlBackspace + ", doubleKana = " + doubleKana);
+
+                // キー押してすぐ入ってきてなかったら無視
+                ctrlBackspace = ctrlBackspace && timeFromKeyPress < 300;
+
+                // 確定アンドゥは commit されたら終了
+                if (isInKakuteiUndo && event.getCommittedCharacterCount() > 0) {
+                    logger.info("Kakutei-undo done: " + event.getCommittedCharacterCount());
+                    isInKakuteiUndo = false;
+                }
+
+                // 確定アンドゥ 1回目
+                if (ctrlBackspace) {
+                    logger.info("Kakutei-undo start");
+                    undo();
+                    ctrlBackspace = false;
+                    isInKakuteiUndo = true;
+
+                } else if (isInKakuteiUndo && timeFromImeTextChange < 10) {
+                    // 2回目以降の ctrl-backspace キーは ATOK に取られて検出できないが，
+                    // timeFromTextChange が非常に短く入ってくるので検出できる
+                    logger.info("Kakutei-undo cont'd: " + timeFromImeTextChange);
+                    undo();
+                }
+
+                // 実行時間記録
+                timeImeTextChanged = System.currentTimeMillis();
+
+                // 処理文字列保存
+                AttributedCharacterIterator iter = event.getText();
+                StringBuilder sb = new StringBuilder();
+                int count = event.getCommittedCharacterCount();
+                char c = iter.first();
+                while (count-- > 0) {
+                    sb.append(c);
+                    c = iter.next();
+                }
+                if (!StringUtils.isEmpty(sb.toString())) {
+                    textCommitted = sb.toString();
+                }
+                sb = new StringBuilder();
+                while (c != CharacterIterator.DONE) {
+                    sb.append(c);
+                    c = iter.next();
+                }
+                if (!StringUtils.isEmpty(sb.toString())) {
+                    textInProcess = sb.toString();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
+                //logger.info("keyevent = " + key);
+
+                if (key.equals(KeyStroke.getKeyStroke("ctrl pressed BACK_SPACE"))) {
+                    logger.info("CTRL BACK_SPACE PRESSED ================");
+                    ctrlBackspace = true;
+                }
+
+                // timeKeyPressed 記録
+                timeKeyPressed = System.currentTimeMillis();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // かなキー, 英数キーの2度打ち検出
+                KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
+                long lap = System.currentTimeMillis() - timeKeyReleased;
+
+                if (key.equals(KANA)) {
+                    if (doubleKana && lap < 300) {
+                        inputMethodTextChanged(null);
+                        doubleKana = false;
+                    } else {
+                        doubleKana = true;
+                    }
+                } else if (key.equals(EISU)) {
+                    if (doubleEisu && lap < 300) {
+                        inputMethodTextChanged(null);
+                        doubleEisu = false;
+                    } else {
+                        doubleEisu = true;
+                    }
+                } else {
+                    doubleKana = false; doubleEisu = false;
+                }
+
+                // timeKeyReleased 記録
+                timeKeyReleased = System.currentTimeMillis();
+            }
+
+            @Override
+            public void caretPositionChanged(InputMethodEvent event) {
+                logger.info("caretchanged " + event);
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) { }
         }
 
         public void setUndoAction(Action action) {
@@ -112,25 +214,12 @@ public class UndoTest {
         @Override
         public void undoableEditHappened(UndoableEditEvent e) {
             timer.restart();
-
-            if (e.getEdit() instanceof AbstractDocument.DefaultDocumentEvent) {
-                try {
-                    AbstractDocument.DefaultDocumentEvent event=(AbstractDocument.DefaultDocumentEvent) e.getEdit();
-                    int start = event.getOffset();
-                    int len = event.getLength();
-                    String text = event.getDocument().getText(start, len);
-                    isAlphanumeric = StringUtils.isAlphanumeric(text);
-
-                } catch (BadLocationException ex) {
-                    ex.printStackTrace();
-                }
-            }
             current.addEdit(e.getEdit());
             updateActionStatus();
         }
 
         private void flush() {
-            logger.info("alphanumeric: " + isAlphanumeric);
+            logger.info("flush");
 
             timer.stop();
             current.end();

@@ -36,60 +36,15 @@ public class TextComponentUndoManager extends UndoManager {
     private Timer timer;
     private int delay = 100;
 
-    // ATOK 確定アンドゥ
-    private static KeyStroke CTRL_BACKSPACE = KeyStroke.getKeyStroke("ctrl pressed BACK_SPACE");
-    private boolean ctrlBackspace = false;
-    private boolean inKakuteiUndo = false;
-
     public TextComponentUndoManager(JTextComponent c) {
         textComponent = c;
         timer = new Timer(delay, e -> flush());
         current = new CompoundEdit();
 
         // ATOK 関連
-        c.addInputMethodListener(new InputMethodListener() {
-            private long lap;
-            @Override
-            public void inputMethodTextChanged(InputMethodEvent event) {
-                lap = System.currentTimeMillis() - lap;
-
-                // 確定アンドゥは commit されたら終了
-                if (inKakuteiUndo && event.getCommittedCharacterCount() > 0) {
-                    logger.info("Kakutei-undo done: " + event.getCommittedCharacterCount());
-                    inKakuteiUndo = false;
-                }
-
-                // 確定アンドゥ 1回目
-                if (ctrlBackspace) {
-                    logger.info("Kakutei-undo start");
-                    undo();
-                    ctrlBackspace = false;
-                    inKakuteiUndo = true;
-                } else if (inKakuteiUndo && lap < 10) {
-                    // 2回目以降の ctrl-backspace キーは ATOK に取られて検出できないが，
-                    // lap が非常に短く入ってくるので検出できる
-                    logger.info("Kakutei-undo cont'd: " + lap);
-                    undo();
-                }
-
-                lap = System.currentTimeMillis();
-            }
-
-            @Override
-            public void caretPositionChanged(InputMethodEvent event) { }
-        });
-
-        // ATOK 関連動作のためにキーを調べる
-        c.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                // ATOK 確定アンドゥ (ctrl-backspace) の検出
-                KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
-                if (key.equals(CTRL_BACKSPACE)) {
-                    ctrlBackspace = true;
-                }
-            }
-        });
+        AtokListener atokListener = new AtokListener(c, this);
+        c.addKeyListener(atokListener);
+        c.addInputMethodListener(atokListener);
     }
 
     @Override
