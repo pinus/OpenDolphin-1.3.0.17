@@ -133,16 +133,20 @@ public class AtokListener implements KeyListener, InputMethodListener {
                 textComponent.getDocument().remove(start, end - start);
 
             }
-            // 英数２度打ちの処理. この時点で変換は終了しており, 未 flush の状態になっている
+            // 英数２度打ちの処理. (1)確定前に入ってくる場合と (2)確定直後に入ってくる場合がある.
+            // (1) は何もしなくていい (textCommitted != textInProcess)
+            // (2) は確定終了, 未 flush の状態になっている
             else if (doubleEisu) {
-                logger.error("double eisu detected: " + textCommitted);
-                // flush すると "tうぃってrtwitter" の状態になる
-                undoManager.flush();
-                // これを２回 undo すると "twitter", "tをってr" の順に消える
-                undoManager.undo();
-                undoManager.undo();
-                // そこに改めて twitter を挿入する
-                textComponent.getDocument().insertString(textComponent.getCaretPosition(), textCommitted, null);
+                logger.error("double eisu detected: " + textCommitted + "/"+ textInProcess);
+                if (textCommitted.equals(textInProcess)) {
+                    // flush すると "tうぃってrtwitter" の状態になる
+                    undoManager.flush();
+                    // これを２回 undo すると "twitter" → "tうぃってr" の順に消える
+                    undoManager.undo();
+                    undoManager.undo();
+                    // そこに改めて "twitter" を挿入する
+                    textComponent.getDocument().insertString(textComponent.getCaretPosition(), textCommitted, null);
+                }
             }
 
         } catch (BadLocationException e) {
