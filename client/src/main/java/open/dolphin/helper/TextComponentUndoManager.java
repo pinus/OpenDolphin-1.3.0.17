@@ -25,7 +25,6 @@ public class TextComponentUndoManager extends UndoManager {
     private static final long serialVersionUID = 1L;
     private Logger logger = LoggerFactory.getLogger(TextComponentUndoManager.class);
 
-    private JTextComponent textComponent;
     private Action undoAction;
     private Action redoAction;
 
@@ -33,11 +32,10 @@ public class TextComponentUndoManager extends UndoManager {
     private CompoundEdit current;
 
     // delay msec 以内に起きた UndoableEditEvent はまとめて1つにする
-    private Timer timer;
-    private int delay = 100;
+    private final Timer timer;
+    private final int delay = 100;
 
     public TextComponentUndoManager(JTextComponent c) {
-        textComponent = c;
         timer = new Timer(delay, e -> flush());
         current = new CompoundEdit();
 

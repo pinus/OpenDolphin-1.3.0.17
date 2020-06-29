@@ -118,12 +118,12 @@ public class UndoTest {
                 if (System.currentTimeMillis() - timeImeTextChanged > 300) { return; }
 
                 try {
-                    // 再変換元の文字列の最後を検出
-                    int pos = textComponent.getCaretPosition();
-                    int end = pos - textInProcess.length();
-
                     // かなキー２度打ちの処理
                     if (doubleKana) {
+                        // 再変換元の文字列の最後を検出
+                        int pos = textComponent.getCaretPosition();
+                        int end = pos - textInProcess.length();
+
                         // end から逆にたどって, alphanumeric 以外の文字が出てくるところを検出
                         int start = end;
                         while (start-- > 0) {
