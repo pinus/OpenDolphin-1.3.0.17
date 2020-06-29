@@ -16,7 +16,7 @@ import java.util.Objects;
  * 使用例:
  * <pre>{@code
  * JTextPane c = new JTextPane();
- * UndoManager manager = TextComponentUndoManager.createManager(c);
+ * c.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(c));
  * }</pre>
  *
  * @author pns
@@ -57,7 +57,7 @@ public class TextComponentUndoManager extends UndoManager {
     /**
      * まとめた UndoableEdit を addEdit する. Timer から呼ばれる.
      */
-    private void flush() {
+    public void flush() {
         timer.stop();
         current.end();
         addEdit(current);
@@ -122,9 +122,6 @@ public class TextComponentUndoManager extends UndoManager {
         im.put(KeyStroke.getKeyStroke("meta Z"), "undo");
         am.put("redo", redo);
         im.put(KeyStroke.getKeyStroke("shift meta Z"), "redo");
-
-        // listener 登録
-        c.getDocument().addUndoableEditListener(manager);
 
         return manager;
     }

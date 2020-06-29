@@ -34,6 +34,7 @@ public class PNSCellEditor extends DefaultCellEditor {
 
         // UndoManager 登録
         undoManager = TextComponentUndoManager.createManager(textField);
+        textField.getDocument().addUndoableEditListener(undoManager);
     }
 
     /**

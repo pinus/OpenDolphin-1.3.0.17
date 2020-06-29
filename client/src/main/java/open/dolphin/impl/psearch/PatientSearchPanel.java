@@ -87,10 +87,8 @@ public class PatientSearchPanel extends MainComponentPanel {
         popup.add(hibernateIndexItem);
 
         keywordFld = new CompletableSearchField(20);
+        keywordFld.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(keywordFld));
         keywordFld.setLabel("患者検索");
-
-        TextComponentUndoManager undoManager = TextComponentUndoManager.createManager(keywordFld);
-
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
 
         keywordFld.addMouseListener(new MouseAdapter() {

@@ -133,9 +133,16 @@ public class AtokListener implements KeyListener, InputMethodListener {
                 textComponent.getDocument().remove(start, end - start);
 
             }
-            // 英数２度打ちの処理
+            // 英数２度打ちの処理. この時点で変換は終了しており, 未 flush の状態になっている
             else if (doubleEisu) {
-                logger.error("double eisu detected");
+                logger.error("double eisu detected: " + textCommitted);
+                // flush すると "tうぃってrtwitter" の状態になる
+                undoManager.flush();
+                // これを２回 undo すると "twitter", "tをってr" の順に消える
+                undoManager.undo();
+                undoManager.undo();
+                // そこに改めて twitter を挿入する
+                textComponent.getDocument().insertString(textComponent.getCaretPosition(), textCommitted, null);
             }
 
         } catch (BadLocationException e) {

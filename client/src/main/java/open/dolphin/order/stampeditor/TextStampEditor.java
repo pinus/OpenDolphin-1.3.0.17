@@ -56,7 +56,9 @@ public final class TextStampEditor extends JPanel implements IStampEditor<Module
 
         // Undo
         paneUndoManager = TextComponentUndoManager.createManager(textPane);
+        textPane.getDocument().addUndoableEditListener(paneUndoManager);
         fieldUndoManager = TextComponentUndoManager.createManager(headerField);
+        headerField.getDocument().addUndoableEditListener(fieldUndoManager);
 
         HorizontalPanel headerPanel = new HorizontalPanel();
         headerPanel.setPreferredSize(new Dimension(10, 30));

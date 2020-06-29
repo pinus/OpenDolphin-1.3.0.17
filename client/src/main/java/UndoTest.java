@@ -138,9 +138,16 @@ public class UndoTest {
                         textComponent.getDocument().remove(start, end - start);
 
                     }
-                    // 英数２度打ちの処理
+                    // 英数２度打ちの処理. この時点で変換は終了しており, 未 flush の状態になっている
                     else if (doubleEisu) {
-                        logger.error("double eisu detected");
+                        logger.error("double eisu detected: " + textCommitted);
+                        // flush すると tうぃってrtwitter の状態になる
+                        flush();
+                        // これを２回 undo すると twitter → tをってr の順に消える
+                        undo();
+                        undo();
+                        // そこに改めて twitter を挿入する
+                        textComponent.getDocument().insertString(textComponent.getCaretPosition(), textCommitted, null);
                     }
 
                 } catch (BadLocationException e) {
@@ -212,6 +219,18 @@ public class UndoTest {
 
         @Override
         public void undoableEditHappened(UndoableEditEvent e) {
+//            logger.info("edit = " + e.getEdit());
+//            try {
+//                AbstractDocument.DefaultDocumentEvent event=(AbstractDocument.DefaultDocumentEvent) e.getEdit();
+//                int start = event.getOffset();
+//                int len = event.getLength();
+//                String text = event.getDocument().getText(start, len);
+//                logger.info("edit text = " + text);
+//
+//            } catch (BadLocationException e1) {
+//                e1.printStackTrace();
+//            }
+
             timer.restart();
             current.addEdit(e.getEdit());
             updateActionStatus();
