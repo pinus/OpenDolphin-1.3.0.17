@@ -61,45 +61,6 @@ public class UndoTest {
                 long timeFromImeTextChange = System.currentTimeMillis() - timeImeTextChanged;
                 long timeFromKeyPress = System.currentTimeMillis() - timeKeyPressed;
 
-                // KeyReleased からここを null で呼ぶ
-                if (event == null) {
-                    logger.info("timeFromImeTextChange = " + timeFromImeTextChange + ": doubleKana:" + doubleKana + ", doubleEisu:" + doubleEisu );
-                    if (timeFromImeTextChange > 300) { return; }
-
-                    try {
-                        int pos = textComponent.getCaretPosition();
-                        logger.info("pos = " + pos + " before = " + textInProcess + ", after = " + textCommitted);
-
-                        // 再変換元の文字列の最後
-                        int end = pos - textInProcess.length();
-
-                        if (doubleKana) {
-                            // そこからたどって, alphanumeric 以外の文字が出てくるところを検出
-                            int start = end;
-                            while(start-- > 0) {
-                                char c = textComponent.getText(start, 1).charAt(0);
-                                logger.info(start + ": " + c);
-                                if (!StringTool.isHanakuLower(c) && !StringTool.isHankakuUpper(c)) { break; }
-                            }
-                            start++;
-                            logger.info("start = " + start + ", end = " + end);
-                            textComponent.getDocument().remove(start, end - start);
-
-                            textInProcess = "";
-                            textCommitted = "";
-                        }
-
-                    } catch (BadLocationException e) {
-                        logger.error(e.getMessage());
-                    }
-
-
-
-
-                    doubleKana = doubleEisu = false;
-                    return;
-                }
-
                 logger.info("textchanged " + event);
                 logger.info("time from key press = " + timeFromKeyPress + ", time from text change = " + timeFromImeTextChange +
                     ", ctrl-backspace = " + ctrlBackspace + ", doubleKana = " + doubleKana);
@@ -152,6 +113,44 @@ public class UndoTest {
                 }
             }
 
+            private void processDoubleKey() {
+                // ２度打ちは KeyReleased でしか検出できないので, inputMethodTextChanged の後の処理になる
+                if (System.currentTimeMillis() - timeImeTextChanged > 300) { return; }
+
+                try {
+                    // 再変換元の文字列の最後を検出
+                    int pos = textComponent.getCaretPosition();
+                    int end = pos - textInProcess.length();
+
+                    // かなキー２度打ちの処理
+                    if (doubleKana) {
+                        // end から逆にたどって, alphanumeric 以外の文字が出てくるところを検出
+                        int start = end;
+                        while (start-- > 0) {
+                            char c = textComponent.getText(start, 1).charAt(0);
+                            logger.info(start + ": " + c);
+                            if (!StringTool.isHanakuLower(c) && !StringTool.isHankakuUpper(c)) {
+                                break;
+                            }
+                        }
+                        start++;
+                        // 変換元の文字列を削除
+                        textComponent.getDocument().remove(start, end - start);
+
+                    }
+                    // 英数２度打ちの処理
+                    else if (doubleEisu) {
+                        logger.error("double eisu detected");
+                    }
+
+                } catch (BadLocationException e) {
+                    logger.error(e.getMessage());
+                }
+
+                textInProcess = "";
+                textCommitted = "";
+            }
+
             @Override
             public void keyPressed(KeyEvent e) {
                 KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
@@ -174,14 +173,14 @@ public class UndoTest {
 
                 if (key.equals(KANA)) {
                     if (doubleKana && lap < 300) {
-                        inputMethodTextChanged(null);
+                        processDoubleKey();
                         doubleKana = false;
                     } else {
                         doubleKana = true;
                     }
                 } else if (key.equals(EISU)) {
                     if (doubleEisu && lap < 300) {
-                        inputMethodTextChanged(null);
+                        processDoubleKey();
                         doubleEisu = false;
                     } else {
                         doubleEisu = true;

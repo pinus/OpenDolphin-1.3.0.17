@@ -57,42 +57,6 @@ public class AtokListener implements KeyListener, InputMethodListener {
         long timeFromImeTextChange = System.currentTimeMillis() - timeImeTextChanged;
         long timeFromKeyPress = System.currentTimeMillis() - timeKeyPressed;
 
-        // かな/英数は KeyReleased でしか検出できないのでで間に合わない
-        // 2度打ちが検出されたら, KeyReleased からここを null で呼ぶ
-        if (event == null) {
-            if (timeFromImeTextChange > 300) { return; }
-            try {
-                // 再変換元の文字列の最後を検出
-                int pos = textComponent.getCaretPosition();
-                int end = pos - textInProcess.length();
-
-                // かなキー2度打ちの処理
-                if (doubleKana) {
-                    // end から逆にたどって, alphanumeric 以外の文字が出てくるところを検出
-                    int start = end;
-                    while(start-- > 0) {
-                        char c = textComponent.getText(start, 1).charAt(0);
-                        logger.info(start + ": " + c);
-                        if (!StringTool.isHanakuLower(c) && !StringTool.isHankakuUpper(c)) { break; }
-                    }
-                    start++;
-                    // 変換元の文字列を削除
-                    textComponent.getDocument().remove(start, end - start);
-
-                } else if (doubleEisu) {
-                    logger.error("double eisu detected");
-                }
-
-            } catch (BadLocationException e) {
-                logger.error(e.getMessage());
-            }
-
-            textInProcess = "";
-            textCommitted = "";
-
-            return;
-        }
-
         // ctrl-backspace は, 押してすぐ入ってこなかったら無視
         ctrlBackspace = ctrlBackspace && timeFromKeyPress < 100;
 
@@ -141,6 +105,47 @@ public class AtokListener implements KeyListener, InputMethodListener {
         }
     }
 
+    /**
+     * かな/英数２度打ちプロセス.
+     */
+    private void processDoubleKey() {
+        // ２度打ちは KeyReleased でしか検出できないので, inputMethodTextChanged の後の処理になる
+        if (System.currentTimeMillis() - timeImeTextChanged > 300) { return; }
+
+        try {
+            // 再変換元の文字列の最後を検出
+            int pos = textComponent.getCaretPosition();
+            int end = pos - textInProcess.length();
+
+            // かなキー２度打ちの処理
+            if (doubleKana) {
+                // end から逆にたどって, alphanumeric 以外の文字が出てくるところを検出
+                int start = end;
+                while (start-- > 0) {
+                    char c = textComponent.getText(start, 1).charAt(0);
+                    logger.info(start + ": " + c);
+                    if (!StringTool.isHanakuLower(c) && !StringTool.isHankakuUpper(c)) {
+                        break;
+                    }
+                }
+                start++;
+                // 変換元の文字列を削除
+                textComponent.getDocument().remove(start, end - start);
+
+            }
+            // 英数２度打ちの処理
+            else if (doubleEisu) {
+                logger.error("double eisu detected");
+            }
+
+        } catch (BadLocationException e) {
+            logger.error(e.getMessage());
+        }
+
+        textInProcess = "";
+        textCommitted = "";
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
@@ -159,14 +164,14 @@ public class AtokListener implements KeyListener, InputMethodListener {
 
         if (key.equals(KANA)) {
             if (doubleKana && lap < 300) {
-                inputMethodTextChanged(null);
+                processDoubleKey();
                 doubleKana = false;
             } else {
                 doubleKana = true;
             }
         } else if (key.equals(EISU)) {
             if (doubleEisu && lap < 300) {
-                inputMethodTextChanged(null);
+                processDoubleKey();
                 doubleEisu = false;
             } else {
                 doubleEisu = true;
