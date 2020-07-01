@@ -8,6 +8,7 @@ import open.dolphin.helper.DBTask;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
+import open.dolphin.ui.Focuser;
 import open.dolphin.util.DateUtils;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
@@ -16,6 +17,9 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.print.PageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -230,6 +234,20 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         pPane.setParent(this);
         pPane.setRole(ROLE_P);
         pPane.getTextPane().setTransferHandler(new KartePaneTransferHandler(pPane));
+
+        // alt-TAB で soaPane, PPane 間を移動する
+        KeyListener l = new KeyAdapter() {
+            KeyStroke ALT_TAB = KeyStroke.getKeyStroke("alt TAB");
+            JTextPane SOA = kartePanel.getSoaTextPane(), P = kartePanel.getPTextPane();
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (KeyStroke.getKeyStrokeForEvent(e).equals(ALT_TAB)) {
+                    Focuser.requestFocus(e.getSource() == SOA ? P : SOA);
+                }
+            }
+        };
+        kartePanel.getSoaTextPane().addKeyListener(l);
+        kartePanel.getPTextPane().addKeyListener(l);
 
         setUI(kartePanel);
 
