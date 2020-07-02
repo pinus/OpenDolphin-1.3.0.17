@@ -5,9 +5,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
-import javax.swing.text.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.StyledEditorKit;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.AttributedCharacterIterator;
@@ -25,9 +29,8 @@ public class UndoTest {
         private JTextComponent textComponent;
         private Action undoAction;
         private Action redoAction;
-        private CompoundEdit current = new CompoundEdit();
+        private TextComponentUndoableEdit current = new TextComponentUndoableEdit(this);
         private Timer timer;
-        private boolean isAlphanumeric = false;
 
         public TextComponentUndoManager(JTextComponent c) {
             textComponent = c;
@@ -213,6 +216,10 @@ public class UndoTest {
             public void keyTyped(KeyEvent e) { }
         }
 
+
+        public UndoableEdit getLastEdit() {
+            return lastEdit();
+        }
         public void setUndoAction(Action action) {
             undoAction = action;
         }
@@ -246,7 +253,7 @@ public class UndoTest {
             timer.stop();
             current.end();
             addEdit(current);
-            current = new CompoundEdit();
+            current = new TextComponentUndoableEdit(this);
             updateActionStatus();
         }
 
@@ -267,6 +274,51 @@ public class UndoTest {
             if (Objects.isNull(undoAction) || Objects.isNull(redoAction)) { return; }
             undoAction.setEnabled(canUndo());
             redoAction.setEnabled(canRedo());
+        }
+    }
+
+    private class TextComponentUndoableEdit extends CompoundEdit {
+        TextComponentUndoManager undoManager;
+        boolean isSignificant = false;
+        UndoableEdit lastEdit;
+        String text = "nothing";
+
+        public TextComponentUndoableEdit(TextComponentUndoManager manager) {
+            undoManager = manager;
+        }
+
+        @Override
+        public boolean addEdit(UndoableEdit edit) {
+            logger.info(text + ": edit = " + edit.getClass().getName() + " isSignificant? " + edit.isSignificant()) ;
+
+            lastEdit = undoManager.getLastEdit();
+            if (lastEdit == null) { isSignificant = true; }
+
+            if (edit instanceof AbstractDocument.DefaultDocumentEvent) {
+                try {
+                    AbstractDocument.DefaultDocumentEvent event = (AbstractDocument.DefaultDocumentEvent) edit;
+                    int start = event.getOffset();
+                    int len = event.getLength();
+                    text = event.getDocument().getText(start, len);
+                    logger.info("edit text = " + text);
+                    if (!text.matches("[a-z,A-Z]")) {
+                        isSignificant = true;
+                    }
+
+                } catch (BadLocationException ex) {
+                    logger.error(ex.getMessage());
+                }
+            }
+            return super.addEdit(edit);
+        }
+
+        public boolean isSignificant() {
+            return isSignificant;
+//            if (text.equals("a")) { return true; }
+//            return false;
+        }
+        public String toString() {
+            return ">>> " + text + " : isSignificant: " + isSignificant;
         }
     }
 
