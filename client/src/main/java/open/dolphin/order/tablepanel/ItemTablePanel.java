@@ -248,8 +248,6 @@ public class ItemTablePanel extends JPanel {
         // スタンプ名フィールドを生成する
         stampNameField = new JTextField(20);
         stampNameField.setMaximumSize(new Dimension(10, 22));
-        // stampNameField.setOpaque(true); opaque にすると，色が枠からはみ出す
-        //stampNameField.setBackground(new Color(251, 239, 128));  // TODO
 
         // 削除ボタンを生成する
         removeButton = new JButton(REMOVE_BUTTON_IMAGE);
@@ -986,8 +984,8 @@ public class ItemTablePanel extends JPanel {
         for (Object i : tableModel.getObjectList()) {
             MasterItem mItem = (MasterItem) i;
 
-            // コードが 84xxxxxxx コメントの場合，number にパラメータを入れるので，number チェックしない
-            if (mItem.getCode().startsWith("84")) {
+            // コードが 84xxxxxxx, 85xxxxxxx コメントの場合，number にパラメータを入れるので，number チェックしない
+            if (mItem.getCode().startsWith("84") || mItem.getCode().startsWith("85")) {
                 return true;
             }
             //System.out.println("---- code= " + mItem.getCode().substring(0,2));
