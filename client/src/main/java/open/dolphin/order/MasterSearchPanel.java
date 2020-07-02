@@ -1,6 +1,5 @@
 package open.dolphin.order;
 
-import javassist.compiler.ast.Keyword;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.dto.OrcaEntry;
@@ -9,6 +8,7 @@ import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.StringTool;
+import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.stampeditor.StampEditor;
@@ -192,6 +192,7 @@ public class MasterSearchPanel extends JPanel {
         };
 
         keywordField = new CompletableSearchField(KEYWORD_FIELD_LENGTH);
+        keywordField.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(keywordField));
         keywordField.setName(StampEditor.MASTER_SEARCH_FIELD);
         keywordField.setLabel("マスタ検索");
 

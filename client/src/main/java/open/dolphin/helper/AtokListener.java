@@ -119,12 +119,12 @@ public class AtokListener implements KeyListener, InputMethodListener {
                 int pos = textComponent.getCaretPosition();
                 int end = pos - textInProcess.length();
 
-                // end から逆にたどって, alphanumeric 以外の文字が出てくるところを検出
+                // end から逆にたどって, alphanumeric or - 以外の文字が出てくるところを検出
                 int start = end;
                 while (start-- > 0) {
                     char c = textComponent.getText(start, 1).charAt(0);
                     logger.info(start + ": " + c);
-                    if (!StringTool.isHanakuLower(c) && !StringTool.isHankakuUpper(c)) {
+                    if (!StringTool.isHanakuLower(c) && !StringTool.isHankakuUpper(c) && c != '-') {
                         break;
                     }
                 }
