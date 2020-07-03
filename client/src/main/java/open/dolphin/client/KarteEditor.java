@@ -235,13 +235,13 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         pPane.setRole(ROLE_P);
         pPane.getTextPane().setTransferHandler(new KartePaneTransferHandler(pPane));
 
-        // alt-TAB で soaPane, PPane 間を移動する
+        // ctrl-¥ で soaPane, PPane 間を移動する
         KeyListener l = new KeyAdapter() {
-            KeyStroke ALT_TAB = KeyStroke.getKeyStroke("alt TAB");
+            KeyStroke CTRL_YEN = KeyStroke.getKeyStroke("ctrl BACK_SLASH");
             JTextPane SOA = kartePanel.getSoaTextPane(), P = kartePanel.getPTextPane();
             @Override
             public void keyPressed(KeyEvent e) {
-                if (KeyStroke.getKeyStrokeForEvent(e).equals(ALT_TAB)) {
+                if (KeyStroke.getKeyStrokeForEvent(e).equals(CTRL_YEN)) {
                     Focuser.requestFocus(e.getSource() == SOA ? P : SOA);
                 }
             }
