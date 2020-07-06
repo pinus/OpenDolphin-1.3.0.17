@@ -2,6 +2,7 @@ package open.dolphin.order.tablepanel;
 
 import open.dolphin.client.GUIConst;
 import open.dolphin.dnd.MasterItemTransferHandler;
+import open.dolphin.dnd.StampTreeNodeTransferHandler;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.StringTool;
@@ -13,10 +14,14 @@ import open.dolphin.order.stampeditor.StampEditor;
 import open.dolphin.project.Project;
 import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.table.TableColumn;
+import javax.swing.undo.CompoundEdit;
+import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -49,6 +54,8 @@ import java.util.stream.Stream;
  * @author pns
  */
 public class ItemTablePanel extends JPanel {
+    private Logger logger = LoggerFactory.getLogger(ItemTablePanel.class);
+
     public static final String DEFAULT_STAMP_NAME = "新規スタンプ";
     public static final String FROM_EDITOR_STAMP_NAME = "エディタから";
     public static final String DEFAULT_NUMBER = "1";
@@ -81,6 +88,9 @@ public class ItemTablePanel extends JPanel {
     private JComboBox<String> numberCombo;
     private JButton removeButton;
     private JButton clearButton;
+    // UndoManager
+    private UndoManager undoManager;
+    private boolean undoing = false;
 
     private IStampEditor parent;
 
@@ -95,6 +105,7 @@ public class ItemTablePanel extends JPanel {
     public ItemTablePanel(IStampEditor parent) {
         super(new BorderLayout());
         this.parent = parent;
+        undoManager = new UndoManager();
         initComponents();
     }
 
@@ -327,6 +338,12 @@ public class ItemTablePanel extends JPanel {
             table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
         }));
 
+        // Undo/Redo
+        im.put(KeyStroke.getKeyStroke("meta Z"), "undo");
+        am.put("undo", new ProxyAction(this::undo));
+        im.put(KeyStroke.getKeyStroke("shift meta Z"), "redo");
+        am.put("redo", new ProxyAction(this::redo));
+
         // クリアボタンを生成する
         clearButton = new JButton(CLEAR_BUTTON_IMAGE);
         clearButton.setEnabled(false);
@@ -341,6 +358,41 @@ public class ItemTablePanel extends JPanel {
         });
         clearButton.setToolTipText(TOOLTIP_CLEAR_TEXT);
     }
+
+    public void undo() {
+        if (undoManager.canUndo()) {
+            undoing = true;
+            undoManager.undo();
+        }
+    }
+
+    public void redo() {
+        logger.info("redo");
+        if (undoManager.canRedo()) {
+            undoing = true;
+            undoManager.redo();
+        }
+    }
+
+    private class InsertEdit extends CompoundEdit {
+        private int row;
+        private MasterItem item;
+
+        public InsertEdit(int r, MasterItem toBeInserted) {
+            row = r; item = toBeInserted;
+        }
+        @Override
+        public void undo() {
+            logger.info("UndoableEdit undo");
+            tableModel.deleteRow(row);
+        }
+        @Override
+        public void redo() {
+            logger.info("UndoableEdit redo");
+            tableModel.insertRow(row, item);
+        }
+    }
+
 
     /**
      * テーブルを含むパネルを作成.

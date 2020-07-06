@@ -179,7 +179,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
      * @param otherList データリスト
      */
     public void setObjectList(List<T> otherList) {
-        objectList = otherList; // 参照しているのみ
+        this.objectList = otherList; // 参照しているのみ
         fireTableDataChanged();
     }
 
