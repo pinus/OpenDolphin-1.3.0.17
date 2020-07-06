@@ -91,6 +91,7 @@ public class ItemTablePanel extends JPanel {
     // UndoManager
     private UndoManager undoManager;
     private boolean undoing = false;
+    private CompoundEdit current = new CompoundEdit();
 
     private IStampEditor parent;
 
