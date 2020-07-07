@@ -418,7 +418,7 @@ public class ItemTablePanel extends JPanel {
         private MasterItem item;
 
         public DeleteEdit(int r) {
-            row = r; item = tableModel.getObject(r);
+            row = r; item = getTableModel().getObject(r);
         }
         @Override
         public void undo() {
