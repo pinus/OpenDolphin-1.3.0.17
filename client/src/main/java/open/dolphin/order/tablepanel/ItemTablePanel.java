@@ -894,7 +894,7 @@ public class ItemTablePanel extends JPanel {
     public void setValue(Object theStamp) {
 
         // 連続して編集される場合があるのでテーブル内容等をクリアする
-        clear();
+        tableModel.clear();
         tableModel.discardAllUndoableEdits();
 
         // null であればリターンする

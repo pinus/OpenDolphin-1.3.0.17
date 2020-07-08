@@ -295,6 +295,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     @Override
     public void setValue(Object o) {
         if (o == null) { return; }
+        tableModel.clear();
         tableModel.discardAllUndoableEdits();
 
         RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) o;

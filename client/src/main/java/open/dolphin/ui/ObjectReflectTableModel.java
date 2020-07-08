@@ -129,7 +129,7 @@ public class ObjectReflectTableModel<T> extends AbstractTableModel {
     }
 
     /**
-     * Method 名を帰す
+     * Method 名を返す.
      *
      * @param index インデックス
      * @return そのインデックスのメソッド名
