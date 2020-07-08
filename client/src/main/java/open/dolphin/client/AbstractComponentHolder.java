@@ -237,8 +237,8 @@ public abstract class AbstractComponentHolder<T> extends JLabel
         if (!undoing) {
             UndoableEdit edit = new UndoableEdit(getModel(), newValue);
             undoManager.addEdit(edit);
-            undoing = false;
         }
+        undoing = false;
         updateMenuState();
     }
 
