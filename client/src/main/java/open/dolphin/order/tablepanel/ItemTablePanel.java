@@ -324,8 +324,7 @@ public class ItemTablePanel extends JPanel {
             MasterItem target = tableModel.getObject(row);
             // undo 処理挿入
             tableModel.undoableDeleteRow(row);
-            tableModel.undoableAddRow(row - 1, target);
-            tableModel.undoFlush();
+            tableModel.undoableInsertRow(row - 1, target);
 
             table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
         }));
@@ -338,8 +337,7 @@ public class ItemTablePanel extends JPanel {
             MasterItem target = tableModel.getObject(row);
             // undo 処理挿入
             tableModel.undoableDeleteRow(row);
-            tableModel.undoableAddRow(row + 1, target);
-            tableModel.undoFlush();
+            tableModel.undoableInsertRow(row + 1, target);
 
             table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
         }));
@@ -469,7 +467,7 @@ public class ItemTablePanel extends JPanel {
      *
      * @return ObjectTableModel
      */
-    public ObjectReflectTableModel<MasterItem> getTableModel() {
+    public UndoableObjectReflectTableModel<MasterItem> getTableModel() {
         return tableModel;
     }
 
@@ -681,7 +679,6 @@ public class ItemTablePanel extends JPanel {
         // undo 処理後にクリア
         int row = tableModel.getRowCount();
         while (row-- > 0) { tableModel.undoableDeleteRow(row); }
-        tableModel.undoFlush();
     }
 
     /**
@@ -697,7 +694,6 @@ public class ItemTablePanel extends JPanel {
             }
             // undo 処理
             tableModel.undoableDeleteRow(row);
-            tableModel.undoFlush();
         }
     }
 
@@ -770,9 +766,7 @@ public class ItemTablePanel extends JPanel {
         }
 
         // undo 処理
-        int rowCount = tableModel.getRowCount();
-        tableModel.undoableAddRow(rowCount, item);
-        tableModel.undoFlush();
+        tableModel.undoableAddRow(item);
         scrollRectToVisible();
     }
 
@@ -901,6 +895,7 @@ public class ItemTablePanel extends JPanel {
 
         // 連続して編集される場合があるのでテーブル内容等をクリアする
         clear();
+        tableModel.discardAllUndoableEdits();
 
         // null であればリターンする
         if (theStamp == null) { return; }

@@ -11,16 +11,18 @@ import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.ui.UndoableObjectReflectTableModel;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * ItemTablePanel を extend して作った DiagnosisTablePanel.
@@ -32,6 +34,7 @@ import java.util.List;
  */
 public class DiagnosisTablePanel extends ItemTablePanel {
     private static final long serialVersionUID = 1L;
+    Logger logger = LoggerFactory.getLogger(DiagnosisTablePanel.class);
 
     // 傷病名の修飾語コード
     private static final String MODIFIER_CODE = "ZZZ";
@@ -47,7 +50,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
     private JLabel stateLabel;
     // ItemTableModel のフィールド変数
     private JTable table;
-    private ObjectReflectTableModel<MasterItem> tableModel;
+    private UndoableObjectReflectTableModel<MasterItem> tableModel;
     private JButton removeButton;
     private JButton clearButton;
 
@@ -111,11 +114,17 @@ public class DiagnosisTablePanel extends ItemTablePanel {
 
             @Override
             public void setValueAt(Object o, int row, int col) {
-                if (o == null) {
-                    return;
-                }
-                String value = (String) o;
+                super.setValueAt(o, row, col); // undo 登録
+                updateTable(o, row, col);
+            }
 
+            @Override
+            public void undoSetValueAt(Object o, int row, int col) {
+                updateTable(o, row, col);
+            }
+
+            private void updateTable(Object o, int row, int col) {
+                String value = Objects.isNull(o) ? "" : (String) o;
                 MasterItem model = getObject(row);
 
                 if (col == 1) {
@@ -126,7 +135,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                             model = new MasterItem();
                             model.setName(value);
                             model.setCode(HAND_CODE);
-                            addRow(model);
+                            undoableAddRow(model);
 
                             // 登録されている MasterItem があれば，HAND_CODE に変更する
                         } else {
@@ -134,7 +143,6 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                             model.setCode(HAND_CODE);
                             fireTableCellUpdated(row, col);
                         }
-                        checkState();
                     }
                 } else if (col == 2) {
                     // エリアスコラムは　MasterItem の dummy を間借り
@@ -142,6 +150,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                         model.setDummy(value);
                     }
                 }
+                fireTableCellUpdated(row, col);
             }
         };
     }
@@ -187,20 +196,14 @@ public class DiagnosisTablePanel extends ItemTablePanel {
      */
     @Override
     public void receiveMaster(MasterItem mItem) {
-
-        if (mItem == null) {
-            return;
-        }
+        if (mItem == null) { return; }
 
         // ZZZ コードなら，接頭語（ZZZ1~7）なら頭から挿入
         if (mItem.getCode().matches("^ZZZ[1-7].*")) {
-            tableModel.insertRow(0, mItem);
+            tableModel.undoableInsertRow(0, mItem);
         } else {
-            tableModel.addRow(mItem);
+            tableModel.undoableAddRow(mItem);
         }
-
-        // ボタンコントロールと通知
-        checkState();
     }
 
     /**
@@ -291,9 +294,8 @@ public class DiagnosisTablePanel extends ItemTablePanel {
      */
     @Override
     public void setValue(Object o) {
-        if (o == null) {
-            return;
-        }
+        if (o == null) { return; }
+        tableModel.discardAllUndoableEdits();
 
         RegisteredDiagnosisModel rd = (RegisteredDiagnosisModel) o;
         // . で区切られたコードを分解してコード配列を作る
@@ -346,8 +348,6 @@ public class DiagnosisTablePanel extends ItemTablePanel {
                         }
                     }
                 }
-                // ボタンコントロールと通知
-                checkState();
             }
         };
         // task.setMillisToPopup(200);

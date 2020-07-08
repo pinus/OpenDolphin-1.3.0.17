@@ -4,6 +4,7 @@ import open.dolphin.helper.PNSTriple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
@@ -24,6 +25,7 @@ public class UndoableObjectReflectTableModel<T> extends ObjectReflectTableModel<
     // UndoManager
     private UndoManager undoManager = new UndoManager();
     private CompoundEdit current = new CompoundEdit();
+    private Timer timer = new Timer(30, e -> undoFlush());
 
     public UndoableObjectReflectTableModel(List<PNSTriple<String, Class<?>, String>> reflectionList) {
         super(reflectionList);
@@ -60,13 +62,23 @@ public class UndoableObjectReflectTableModel<T> extends ObjectReflectTableModel<
     /**
      * Undo 可能な addRow.
      *
+     * @param item item to add
+     */
+    public void undoableAddRow(T item) {
+        undoableInsertRow(getRowCount(), item);
+    }
+
+    /**
+     * Undo 可能な addRow.
+     *
      * @param row row to add at
      * @param item item to add
      */
-    public void undoableAddRow(int row, T item) {
+    public void undoableInsertRow(int row, T item) {
         editingRow = row;
+        timer.restart();
         current.addEdit(new InsertEdit(row, item));
-        addRow(row, item);
+        insertRow(row, item);
     }
 
     /**
@@ -76,14 +88,16 @@ public class UndoableObjectReflectTableModel<T> extends ObjectReflectTableModel<
      */
     public void undoableDeleteRow(int row) {
         editingRow = row;
+        timer.restart();
         current.addEdit(new DeleteEdit(row));
         deleteRow(row);
     }
 
     /**
-     * UndoManager に UndoableEdit を登録する.
+     * Timer で呼ばれて UndoManager に UndoableEdit を登録する.
      */
-    public void undoFlush() {
+    private void undoFlush() {
+        timer.stop();
         current.end();
         undoManager.addEdit(current);
         current = new CompoundEdit();
@@ -177,5 +191,12 @@ public class UndoableObjectReflectTableModel<T> extends ObjectReflectTableModel<
         if (undoManager.canRedo()) {
             undoManager.redo();
         }
+    }
+
+    /**
+     * Undo 情報の破棄.
+     */
+    public void discardAllUndoableEdits() {
+        undoManager.discardAllEdits();
     }
 }
