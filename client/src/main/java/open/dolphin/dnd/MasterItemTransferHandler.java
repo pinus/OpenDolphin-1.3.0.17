@@ -1,7 +1,7 @@
 package open.dolphin.dnd;
 
 import open.dolphin.order.MasterItem;
-import open.dolphin.helper.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

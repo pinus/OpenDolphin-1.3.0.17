@@ -8,7 +8,7 @@ import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.LaboImportSummary;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.ui.IndentTableCellRenderer;
-import open.dolphin.helper.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.StatusPanel;
 

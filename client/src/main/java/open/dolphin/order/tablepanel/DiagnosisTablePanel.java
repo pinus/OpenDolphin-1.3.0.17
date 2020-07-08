@@ -12,7 +12,7 @@ import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.PNSCellEditor;
-import open.dolphin.helper.UndoableObjectReflectTableModel;
+import open.dolphin.ui.UndoableObjectReflectTableModel;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

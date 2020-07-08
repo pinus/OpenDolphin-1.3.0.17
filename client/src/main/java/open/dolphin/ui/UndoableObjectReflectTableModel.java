@@ -1,5 +1,6 @@
-package open.dolphin.helper;
+package open.dolphin.ui;
 
+import open.dolphin.helper.PNSTriple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

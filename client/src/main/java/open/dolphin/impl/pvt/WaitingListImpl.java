@@ -14,7 +14,7 @@ import open.dolphin.infomodel.KarteState;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IndentTableCellRenderer;
-import open.dolphin.helper.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.ui.desktop.Taskbar;

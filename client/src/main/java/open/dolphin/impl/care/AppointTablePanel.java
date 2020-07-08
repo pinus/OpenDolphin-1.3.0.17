@@ -2,7 +2,7 @@ package open.dolphin.impl.care;
 
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.project.Project;
-import open.dolphin.helper.ObjectReflectTableModel;
+import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSCellEditor;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.util.MMLDate;
