@@ -11,7 +11,7 @@ import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.infomodel.PhysicalModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IndentTableCellRenderer;
-import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.helper.ObjectReflectTableModel;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;

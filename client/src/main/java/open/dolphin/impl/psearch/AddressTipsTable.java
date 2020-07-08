@@ -1,7 +1,7 @@
 package open.dolphin.impl.psearch;
 
 import open.dolphin.infomodel.PatientModel;
-import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.helper.ObjectReflectTableModel;
 
 import javax.swing.*;
 import java.awt.event.FocusAdapter;

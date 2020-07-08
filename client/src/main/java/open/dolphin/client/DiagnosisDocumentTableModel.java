@@ -6,14 +6,11 @@ import open.dolphin.infomodel.DiagnosisLiteModel;
 import open.dolphin.infomodel.DiagnosisOutcomeModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.project.Project;
-import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.helper.ObjectReflectTableModel;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.beans.PropertyChangeSupport;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.*;
 

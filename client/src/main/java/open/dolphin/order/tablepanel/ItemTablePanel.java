@@ -5,6 +5,7 @@ import open.dolphin.dnd.MasterItemTransferHandler;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.StringTool;
+import open.dolphin.helper.UndoableObjectReflectTableModel;
 import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.IStampEditor;

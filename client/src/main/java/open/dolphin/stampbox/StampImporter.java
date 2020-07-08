@@ -11,7 +11,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.infomodel.SubscribedTreeModel;
 import open.dolphin.project.Project;
-import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.helper.ObjectReflectTableModel;
 import open.dolphin.ui.PNSScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

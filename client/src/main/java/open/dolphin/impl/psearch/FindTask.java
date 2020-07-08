@@ -4,7 +4,7 @@ import open.dolphin.delegater.PatientDelegater;
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.PatientModel;
-import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.helper.ObjectReflectTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

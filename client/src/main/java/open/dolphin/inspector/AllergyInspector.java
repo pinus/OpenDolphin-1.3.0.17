@@ -13,7 +13,7 @@ import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IndentTableCellRenderer;
 import open.dolphin.ui.PNSScrollPane;
-import open.dolphin.ui.UndoableObjectReflectTableModel;
+import open.dolphin.helper.UndoableObjectReflectTableModel;
 import open.dolphin.util.ModelUtils;
 
 import javax.swing.*;

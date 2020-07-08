@@ -8,8 +8,7 @@ import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
 import open.dolphin.project.Project;
-import open.dolphin.ui.ObjectReflectTableModel;
-import open.dolphin.ui.UndoableObjectReflectTableModel;
+import open.dolphin.helper.UndoableObjectReflectTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

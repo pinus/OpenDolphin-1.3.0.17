@@ -5,7 +5,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.stampbox.StampTreeNode;
-import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.helper.ObjectReflectTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

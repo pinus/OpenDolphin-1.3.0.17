@@ -10,7 +10,7 @@ import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IndentTableCellRenderer;
-import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.helper.ObjectReflectTableModel;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.PNSTabbedPane;
 import org.slf4j.Logger;

@@ -2,7 +2,7 @@ package open.dolphin.impl.pvt;
 
 import open.dolphin.infomodel.KarteState;
 import open.dolphin.infomodel.PatientVisitModel;
-import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.helper.ObjectReflectTableModel;
 import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
