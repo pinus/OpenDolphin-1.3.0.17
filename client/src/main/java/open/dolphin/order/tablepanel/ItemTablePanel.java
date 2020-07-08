@@ -11,10 +11,7 @@ import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
 import open.dolphin.order.stampeditor.StampEditor;
 import open.dolphin.project.Project;
-import open.dolphin.ui.Focuser;
-import open.dolphin.ui.ObjectReflectTableModel;
-import open.dolphin.ui.PNSCellEditor;
-import open.dolphin.ui.PNSScrollPane;
+import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +19,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.FocusManager;
 import javax.swing.*;
 import javax.swing.table.TableColumn;
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CompoundEdit;
-import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -84,16 +78,13 @@ public class ItemTablePanel extends JPanel {
     public final ImageIcon CLEAR_BUTTON_IMAGE = GUIConst.ICON_ERASER_16;
     // GUI コンポーネント
     private JTable table;
-    private ObjectReflectTableModel<MasterItem> tableModel;
+    private UndoableObjectReflectTableModel<MasterItem> tableModel;
     private int[] tableColumnWidth;
     private JTextField stampNameField;
     private JTextField commentField;
     private JComboBox<String> numberCombo;
     private JButton removeButton;
     private JButton clearButton;
-    // UndoManager
-    private UndoManager undoManager;
-    private CompoundEdit current = new CompoundEdit();
 
     private IStampEditor parent;
 
@@ -108,7 +99,6 @@ public class ItemTablePanel extends JPanel {
     public ItemTablePanel(IStampEditor parent) {
         super(new BorderLayout());
         this.parent = parent;
-        undoManager = new UndoManager();
         initComponents();
     }
 
@@ -119,6 +109,7 @@ public class ItemTablePanel extends JPanel {
 
         // テーブルモデル作成
         tableModel = createTableModel();
+        tableModel.addTableModelListener(e -> checkState());
         // 共通コンポネント作成
         createCommonComponents();
         // テーブル部分（RadItemTablePanel では，RadiologyMethod が加わる
@@ -138,7 +129,7 @@ public class ItemTablePanel extends JPanel {
      *
      * @return {@code ObjectReflectTableModel<MasterItem>}
      */
-    public ObjectReflectTableModel<MasterItem> createTableModel() {
+    public UndoableObjectReflectTableModel<MasterItem> createTableModel() {
         // セットテーブルのモデルを生成する
         List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" コード", String.class, "getCode"),
@@ -148,7 +139,7 @@ public class ItemTablePanel extends JPanel {
         );
         setTableColumnWidth(new int[]{90, 200, 60, 60});
 
-        return new ObjectReflectTableModel<MasterItem>(reflectList) {
+        return new UndoableObjectReflectTableModel<MasterItem>(reflectList) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -161,21 +152,28 @@ public class ItemTablePanel extends JPanel {
 
             @Override
             public void setValueAt(Object o, int row, int col) {
-                //if (o == null || ((String) o).trim().equals("")) return;
+                super.setValueAt(o, row, col); // undo 情報保存
+                updateTable(o, row, col);
+            }
+
+            @Override
+            public void undoSetValueAt(Object o, int row, int col) {
+                // undo ではこちらが呼ばれる
+                updateTable(o, row, col);
+            }
+
+            private void updateTable(Object o, int row, int col) {
                 // MasterItem に数量を設定する
                 MasterItem mItem = getObject(row);
 
                 if (col == 2 && mItem != null) {
                     mItem.setNumber((String) o);
-                    // 状態をチェックして，ボタン制御＋parent に伝える
-                    checkState();
                 }
                 // MasterItem に診療内容（入力したコメント）を設定する
                 if (col == 1 && mItem != null) {
                     mItem.setName((String) o);
-                    // 状態をチェックして，ボタン制御＋parent に伝える
-                    checkState();
                 }
+                fireTableCellUpdated(row, col);
             }
         };
     }
@@ -325,9 +323,9 @@ public class ItemTablePanel extends JPanel {
             // 上の項目と入れ替えて，選択を1つあげる
             MasterItem target = tableModel.getObject(row);
             // undo 処理挿入
-            undoableDeleteRow(row);
-            undoableAddRow(row - 1, target);
-            undoFlush();
+            tableModel.undoableDeleteRow(row);
+            tableModel.undoableAddRow(row - 1, target);
+            tableModel.undoFlush();
 
             table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
         }));
@@ -339,9 +337,9 @@ public class ItemTablePanel extends JPanel {
             // 下の項目と入れ替えて，選択を1つさげる
             MasterItem target = tableModel.getObject(row);
             // undo 処理挿入
-            undoableDeleteRow(row);
-            undoableAddRow(row + 1, target);
-            undoFlush();
+            tableModel.undoableDeleteRow(row);
+            tableModel.undoableAddRow(row + 1, target);
+            tableModel.undoFlush();
 
             table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
         }));
@@ -362,88 +360,16 @@ public class ItemTablePanel extends JPanel {
      * Undo. StampEditorDialog から呼ばれる.
      */
     public void undo() {
-        if (undoManager.canUndo()) {
-            undoManager.undo();
-        }
+        tableModel.undo();
+        scrollRectToVisible();
     }
 
     /**
      * Redo. StampEditorDialog から呼ばれる.
      */
     public void redo() {
-        if (undoManager.canRedo()) {
-            undoManager.redo();
-        }
-    }
-
-    /**
-     * Undo 可能な addRow.
-     *
-     * @param row row to add at
-     * @param item item to add
-     */
-    protected void undoableAddRow(int row, MasterItem item) {
-        current.addEdit(new InsertEdit(row));
-        getTableModel().addRow(row, item);
-    }
-
-    /**
-     * Undo 可能な deleteRow.
-     *
-     * @param row row to delete
-     */
-    protected void undoableDeleteRow(int row) {
-        current.addEdit(new DeleteEdit(row));
-        getTableModel().deleteRow(row);
-    }
-
-    /**
-     * UndoManager に UndoableEdit を登録する.
-     */
-    protected void undoFlush() {
-        current.end();
-        undoManager.addEdit(current);
-        current = new CompoundEdit();
-    }
-
-    /**
-     * Insert の UndoableEdit.
-     */
-    protected class InsertEdit extends AbstractUndoableEdit {
-        private int row;
-        private MasterItem item;
-
-        public InsertEdit(int r) {
-            row = r; item = getTableModel().getObject(r);
-        }
-        @Override
-        public void undo() {
-            getTableModel().deleteRow(row);
-        }
-        @Override
-        public void redo() {
-            getTableModel().insertRow(row, item);
-        }
-    }
-
-    /**
-     * Delete の UndoableEdit
-     */
-    protected class DeleteEdit extends AbstractUndoableEdit {
-        private int row;
-        private MasterItem item;
-
-        public DeleteEdit(int r) {
-            row = r; item = getTableModel().getObject(r);
-        }
-        @Override
-        public void undo() {
-            getTableModel().insertRow(row, item);
-        }
-        @Override
-        public void redo() {
-            getTableModel().deleteRow(row);
-        }
+        tableModel.redo();
+        scrollRectToVisible();
     }
 
     /**
@@ -552,7 +478,7 @@ public class ItemTablePanel extends JPanel {
      *
      * @param tableModel ObjectReflectTableModel
      */
-    public void setTableModel(ObjectReflectTableModel<MasterItem> tableModel) {
+    public void setTableModel(UndoableObjectReflectTableModel<MasterItem> tableModel) {
         this.tableModel = tableModel;
     }
 
@@ -754,11 +680,8 @@ public class ItemTablePanel extends JPanel {
     public void clear() {
         // undo 処理後にクリア
         int row = tableModel.getRowCount();
-        while (row-- > 0) { undoableDeleteRow(row); }
-        undoFlush();
-
-        // 状態をチェックして，ボタン制御＋parent に伝える
-        checkState();
+        while (row-- > 0) { tableModel.undoableDeleteRow(row); }
+        tableModel.undoFlush();
     }
 
     /**
@@ -772,12 +695,9 @@ public class ItemTablePanel extends JPanel {
             if (ce != null) {
                 ce.cancelCellEditing();
             }
-            // undo 処理後に削除
-            undoableDeleteRow(row);
-            undoFlush();
-
-            // 状態をチェックして，ボタン制御＋parent に伝える
-            checkState();
+            // undo 処理
+            tableModel.undoableDeleteRow(row);
+            tableModel.undoFlush();
         }
     }
 
@@ -850,11 +770,10 @@ public class ItemTablePanel extends JPanel {
         }
 
         // undo 処理
-        undoableAddRow(tableModel.getRowCount(), item);
-        undoFlush();
-
-        // 状態をチェックして，ボタン制御＋parent に伝える
-        checkState();
+        int rowCount = tableModel.getRowCount();
+        tableModel.undoableAddRow(rowCount, item);
+        tableModel.undoFlush();
+        scrollRectToVisible();
     }
 
     /**
@@ -984,11 +903,7 @@ public class ItemTablePanel extends JPanel {
         clear();
 
         // null であればリターンする
-        if (theStamp == null) {
-            // 状態をチェックして，ボタン制御＋parent に伝える
-            checkState();
-            return;
-        }
+        if (theStamp == null) { return; }
 
         // 引数で渡された Stamp をキャストする
         ModuleModel target = (ModuleModel) theStamp;
@@ -1061,9 +976,6 @@ public class ItemTablePanel extends JPanel {
             number = StringTool.toHankakuNumber(number);
             numberCombo.setSelectedItem(number);
         }
-
-        // 状態をチェックするして，parent に伝える
-        checkState();
     }
 
     /**
@@ -1086,6 +998,13 @@ public class ItemTablePanel extends JPanel {
 
             setValid(hasSyugi() && isNumberOk());
         }
+    }
+
+    /**
+     * table を editing row まで scroll する.
+     */
+    public void scrollRectToVisible() {
+        table.scrollRectToVisible(table.getCellRect(tableModel.editingRow(), 0, false));
     }
 
     // 手技を含んでいる必要がある

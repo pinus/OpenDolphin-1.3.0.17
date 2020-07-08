@@ -9,6 +9,7 @@ import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
 import open.dolphin.project.Project;
 import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.ui.UndoableObjectReflectTableModel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -63,7 +64,7 @@ public class RecipeTablePanel extends ItemTablePanel {
      * @return
      */
     @Override
-    public ObjectReflectTableModel<MasterItem> createTableModel() {
+    public UndoableObjectReflectTableModel<MasterItem> createTableModel() {
         List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" コード", String.class, "getCode"),
                 new PNSTriple<>("　診療内容", String.class, "getName"),
@@ -74,7 +75,7 @@ public class RecipeTablePanel extends ItemTablePanel {
         );
         setTableColumnWidth(new int[]{90, 200, 50, 80, 30, 50});
 
-        return new ObjectReflectTableModel<MasterItem>(reflectList) {
+        return new UndoableObjectReflectTableModel<MasterItem>(reflectList) {
             private static final long serialVersionUID = 1L;
 
             @Override

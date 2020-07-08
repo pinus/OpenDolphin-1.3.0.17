@@ -13,6 +13,7 @@ import open.dolphin.order.MasterItem;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.ui.PNSCellEditor;
+import open.dolphin.ui.UndoableObjectReflectTableModel;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -82,7 +83,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
      * @return {@code ObjectReflectTableModel<MasterItem>}
      */
     @Override
-    public ObjectReflectTableModel<MasterItem> createTableModel() {
+    public UndoableObjectReflectTableModel<MasterItem> createTableModel() {
         List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" コード", String.class, "getCode"),
                 new PNSTriple<>("　疾患名/修飾語", String.class, "getName"),
@@ -90,7 +91,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         );
         setTableColumnWidth(new int[]{90, 200, 200});
 
-        return new ObjectReflectTableModel<MasterItem>(reflectList) {
+        return new UndoableObjectReflectTableModel<MasterItem>(reflectList) {
             private static final long serialVersionUID = 1L;
 
             @Override
