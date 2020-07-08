@@ -4,6 +4,7 @@ import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.AllergyModel;
@@ -11,15 +12,17 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IndentTableCellRenderer;
-import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.ui.UndoableObjectReflectTableModel;
 import open.dolphin.util.ModelUtils;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * AllergyInspector.
@@ -27,12 +30,12 @@ import java.util.*;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
-public class AllergyInspector implements IInspector {
+public class AllergyInspector implements IInspector, TableModelListener {
     public static final InspectorCategory CATEGORY = InspectorCategory.アレルギー;
     // Chart
     private final ChartImpl context;
     // TableModel
-    private ObjectReflectTableModel<AllergyModel> tableModel;
+    private UndoableObjectReflectTableModel<AllergyModel> tableModel;
     // コンテナパネル
     private AllergyView view;
 
@@ -65,7 +68,8 @@ public class AllergyInspector implements IInspector {
                 new PNSTriple<>("　同定日", String.class, "getIdentifiedDate")
         );
 
-        tableModel = new ObjectReflectTableModel<>(reflectList);
+        tableModel = new UndoableObjectReflectTableModel<>(reflectList);
+        tableModel.addTableModelListener(this);
         table.setModel(tableModel);
         table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -125,6 +129,22 @@ public class AllergyInspector implements IInspector {
                 mabeShowPopup(e);
             }
         });
+
+        InputMap im = table.getInputMap();
+        ActionMap am = table.getActionMap();
+
+        // undo
+        im.put(KeyStroke.getKeyStroke("meta Z"), "undo");
+        am.put("undo", new ProxyAction(tableModel::undo));
+        im.put(KeyStroke.getKeyStroke("shift meta Z"), "redo");
+        am.put("redo", new ProxyAction(tableModel::redo));
+
+        // delete
+        im.put(KeyStroke.getKeyStroke("BACK_SPACE"), "remove");
+        am.put("remove", new ProxyAction(() -> {
+            int row = view.getTable().getSelectedRow();
+            if (row >= 0) { delete(row); }
+        }));
     }
 
     public Chart getContext() {
@@ -149,10 +169,6 @@ public class AllergyInspector implements IInspector {
     @Override
     public String getTitle() {
         return CATEGORY.title();
-    }
-
-    public void clear() {
-        tableModel.clear();
     }
 
     private void scroll(boolean ascending) {
@@ -191,50 +207,13 @@ public class AllergyInspector implements IInspector {
      * @param model AllergyModel
      */
     public void add(final AllergyModel model) {
-
-        // GUI の同定日をTimeStampに変更する
-        Date date = ModelUtils.getDateTimeAsObject(model.getIdentifiedDate() + "T00:00:00");
-
-        final List<ObservationModel> addList = new ArrayList<>(1);
-
-        ObservationModel observation = new ObservationModel();
-        observation.setKarte(context.getKarte());
-        observation.setCreator(Project.getUserModel());
-        observation.setObservation(IInfoModel.OBSERVATION_ALLERGY);
-        observation.setPhenomenon(model.getFactor());
-        observation.setCategoryValue(model.getSeverity());
-        observation.setConfirmed(date);
-        observation.setRecorded(new Date());
-        observation.setStarted(date);
-        observation.setStatus(IInfoModel.STATUS_FINAL);
-        observation.setMemo(model.getMemo());
-        addList.add(observation);
-
-        DBTask task = new DBTask<List<Long>>(context) {
-
-            @Override
-            protected List<Long> doInBackground() {
-                //logger.debug("allergy add doInBackground");
-                DocumentDelegater ddl = new DocumentDelegater();
-                List<Long> ids = ddl.addObservations(addList);
-                return ids;
-            }
-
-            @Override
-            protected void succeeded(List<Long> result) {
-                //logger.debug("allergy add succeeded");
-                model.setObservationId(result.get(0));
-                boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
-                if (asc) {
-                    tableModel.addRow(model);
-                } else {
-                    tableModel.addRow(0, model);
-                }
-                scroll(asc);
-            }
-        };
-
-        task.execute();
+        boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
+        if (asc) {
+            tableModel.addRow(model);
+        } else {
+            tableModel.addRow(0, model);
+        }
+        scroll(asc);
     }
 
     /**
@@ -243,33 +222,55 @@ public class AllergyInspector implements IInspector {
      * @param row 削除行
      */
     public void delete(final int row) {
+        tableModel.undoableDeleteRow(row);
+    }
 
-        AllergyModel model = tableModel.getObject(row);
+    @Override
+    public void tableChanged(TableModelEvent e) {
 
-        if (model == null) {
-            return;
+        DocumentDelegater delegater = new DocumentDelegater();
+
+        if (e.getType() == TableModelEvent.DELETE) {
+            List<Long> ids = new ArrayList<>();
+            ids.add(tableModel.getLastDeleted().getObservationId());
+            DBTask task = new DBTask<Void>(this.context) {
+                @Override
+                protected Void doInBackground() {
+                    delegater.removeObservations(ids);
+                    return null;
+                }
+            };
+            task.execute();
+
+        } else if (e.getType() == TableModelEvent.INSERT) {
+            AllergyModel model = tableModel.getObject(e.getFirstRow());
+
+            // GUI の同定日をTimeStampに変更する
+            Date date = ModelUtils.getDateTimeAsObject(model.getIdentifiedDate() + "T00:00:00");
+
+            ObservationModel observation = new ObservationModel();
+            observation.setKarte(context.getKarte());
+            observation.setCreator(Project.getUserModel());
+            observation.setObservation(IInfoModel.OBSERVATION_ALLERGY);
+            observation.setPhenomenon(model.getFactor());
+            observation.setCategoryValue(model.getSeverity());
+            observation.setConfirmed(date);
+            observation.setRecorded(new Date());
+            observation.setStarted(date);
+            observation.setStatus(IInfoModel.STATUS_FINAL);
+            observation.setMemo(model.getMemo());
+
+            List<ObservationModel> observations = new ArrayList<>();
+            observations.add(observation);
+
+            DBTask task = new DBTask<Void>(context) {
+                @Override
+                protected Void doInBackground() {
+                    delegater.addObservations(observations);
+                    return null;
+                }
+            };
+            task.execute();
         }
-
-        final List<Long> list = new ArrayList<>(1);
-        list.add(model.getObservationId());
-
-        DBTask task = new DBTask<Void>(this.context) {
-
-            @Override
-            protected Void doInBackground() {
-                // logger.debug("allergy delete doInBackground");
-                DocumentDelegater ddl = new DocumentDelegater();
-                ddl.removeObservations(list);
-                return null;
-            }
-
-            @Override
-            protected void succeeded(Void result) {
-                //logger.debug("allergy delete succeeded");
-                tableModel.deleteRow(row);
-            }
-        };
-
-        task.execute();
     }
 }
