@@ -12,6 +12,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ObservationModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IndentTableCellRenderer;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.UndoableObjectReflectTableModel;
 import open.dolphin.util.ModelUtils;
 
@@ -37,7 +38,8 @@ public class AllergyInspector implements IInspector, TableModelListener {
     // TableModel
     private UndoableObjectReflectTableModel<AllergyModel> tableModel;
     // コンテナパネル
-    private AllergyView view;
+    private JPanel view;
+    private JTable table;
 
     /**
      * AllergyInspectorオブジェクトを生成する.
@@ -54,12 +56,18 @@ public class AllergyInspector implements IInspector, TableModelListener {
      */
     private void initComponents() {
 
-        view = new AllergyView();
+        view = new JPanel(new BorderLayout());
         view.setName(CATEGORY.name());
         view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
+        view.setMinimumSize(new Dimension(DEFAULT_WIDTH, 110));
 
-        JTable table = view.getTable();
+        table = new JTable();
         table.putClientProperty("Quaqua.Table.style", "striped");
+        PNSScrollPane scrollPane = new PNSScrollPane();
+        scrollPane.putClientProperty("JComponent.sizeVariant", "small");
+        scrollPane.setViewportView(table);
+
+        view.add(scrollPane);
 
         // アレルギーテーブルを設定する
         List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
@@ -107,7 +115,7 @@ public class AllergyInspector implements IInspector, TableModelListener {
                 item.addActionListener(ae -> AllergyEditor.show(AllergyInspector.this));
 
                 // 削除
-                final int row = view.getTable().rowAtPoint(e.getPoint());
+                final int row = table.rowAtPoint(e.getPoint());
                 if (tableModel.getObject(row) != null) {
                     pop.add(new JSeparator());
                     JMenuItem item2 = new JMenuItem("削除");
@@ -142,7 +150,7 @@ public class AllergyInspector implements IInspector, TableModelListener {
         // delete
         im.put(KeyStroke.getKeyStroke("BACK_SPACE"), "remove");
         am.put("remove", new ProxyAction(() -> {
-            int row = view.getTable().getSelectedRow();
+            int row = table.getSelectedRow();
             if (row >= 0) { delete(row); }
         }));
     }
@@ -178,8 +186,8 @@ public class AllergyInspector implements IInspector, TableModelListener {
             if (ascending) {
                 row = cnt - 1;
             }
-            Rectangle r = view.getTable().getCellRect(row, row, true);
-            view.getTable().scrollRectToVisible(r);
+            Rectangle r = table.getCellRect(row, row, true);
+            table.scrollRectToVisible(r);
         }
     }
 

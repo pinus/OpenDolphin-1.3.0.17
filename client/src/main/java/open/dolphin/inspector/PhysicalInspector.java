@@ -2,7 +2,6 @@ package open.dolphin.inspector;
 
 import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.helper.DBTask;
@@ -13,6 +12,7 @@ import open.dolphin.infomodel.PhysicalModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IndentTableCellRenderer;
 import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,8 @@ public class PhysicalInspector implements IInspector {
     private final ChartImpl context;
     private final Logger logger;
     private ObjectReflectTableModel<PhysicalModel> tableModel;
-    private PhysicalView view;
+    private JPanel view;
+    private JTable table;
 
     /**
      * PhysicalInspectorオブジェクトを生成する.
@@ -55,8 +56,16 @@ public class PhysicalInspector implements IInspector {
      */
     private void initComponents() {
 
-        view = new PhysicalView();
+        view = new JPanel(new BorderLayout());
         view.setName(CATEGORY.name());
+        table = new JTable();
+        PNSScrollPane scrollPane = new PNSScrollPane();
+        scrollPane.setViewportView(table);
+        scrollPane.putClientProperty("JComponent.sizeVariant", "small");
+        view.add(scrollPane);
+
+        // インスペクタのサイズ調整
+        view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
 
         List<PNSTriple<String, Class<?>, String>> reflectList = Arrays.asList(
                 new PNSTriple<>(" 身長", String.class, "getHeight"),
@@ -67,23 +76,21 @@ public class PhysicalInspector implements IInspector {
 
         // 身長体重テーブルを生成する
         tableModel = new ObjectReflectTableModel<>(reflectList);
-        view.getTable().setModel(tableModel);
-        view.getTable().putClientProperty("Quaqua.Table.style", "striped");
-        view.getTable().setDefaultRenderer(Object.class, new IndentTableCellRenderer(IndentTableCellRenderer.NARROW));
-        view.getTable().getColumnModel().getColumn(2).setCellRenderer(new BMIRenderer());
-        view.getTable().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        // インスペクタのサイズ調整
-        view.setPreferredSize(new Dimension(DEFAULT_WIDTH, 110));
+        table.setModel(tableModel);
+        table.putClientProperty("Quaqua.Table.style", "striped");
+        table.setDefaultRenderer(Object.class, new IndentTableCellRenderer(IndentTableCellRenderer.NARROW));
+        table.getColumnModel().getColumn(2).setCellRenderer(new BMIRenderer());
+        table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // 列幅を調整する カット&トライ
         int[] cellWidth = new int[]{50, 50, 50, 110};
         for (int i = 0; i < cellWidth.length; i++) {
-            TableColumn column = view.getTable().getColumnModel().getColumn(i);
+            TableColumn column = table.getColumnModel().getColumn(i);
             column.setPreferredWidth(cellWidth[i]);
         }
 
         // 右クリックによる追加削除のメニューを登録する
-        view.getTable().addMouseListener(new MouseAdapter() {
+        table.addMouseListener(new MouseAdapter() {
             private void mabeShowPopup(MouseEvent e) {
                 // isReadOnly対応
                 if (context.isReadOnly() || !e.isPopupTrigger()) {
@@ -96,7 +103,7 @@ public class PhysicalInspector implements IInspector {
                 pop.add(item);
                 item.addActionListener(ae -> PhysicalEditor.show(PhysicalInspector.this));
 
-                final int row = view.getTable().rowAtPoint(e.getPoint());
+                final int row = table.rowAtPoint(e.getPoint());
 
                 if (tableModel.getObject(row) != null) {
                     pop.add(new JSeparator());
@@ -166,8 +173,8 @@ public class PhysicalInspector implements IInspector {
         int cnt = tableModel.getObjectCount();
         if (cnt > 0) {
             int row = ascending ? cnt - 1 : 0;
-            Rectangle r = view.getTable().getCellRect(row, row, true);
-            view.getTable().scrollRectToVisible(r);
+            Rectangle r = table.getCellRect(row, row, true);
+            table.scrollRectToVisible(r);
         }
     }
 
