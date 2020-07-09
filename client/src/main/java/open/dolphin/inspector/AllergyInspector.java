@@ -229,21 +229,13 @@ public class AllergyInspector implements IInspector, TableModelListener {
      * @param model AllergyModel
      */
     public void add(final AllergyModel model) {
+        // 選択があって add が呼ばれたら即ちそれは置換
+        int row = table.getSelectedRow();
+        if (row >= 0) {
+            delete(row);
+            tableModel.undoableInsertRow(row, model);
 
-        // 既にあれば削除して新たに加える
-        int row = 0;
-        if (model.getObservationId() != 0) {
-            for (int r = 0; r < tableModel.getRowCount(); r++) {
-                if (model.getObservationId() == tableModel.getObject(r).getObservationId()) {
-                    このじてんでもう変更されてるから戻せない
-                    delete(r);
-                    row = r;
-                    break;
-                }
-            }
-        }
-
-        if (row == 0) {
+        } else {
             boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
             if (asc) {
                 tableModel.undoableAddRow(model);
@@ -251,8 +243,6 @@ public class AllergyInspector implements IInspector, TableModelListener {
                 tableModel.undoableInsertRow(0, model);
             }
             scroll(asc);
-        } else {
-            tableModel.undoableInsertRow(row, model);
         }
     }
 

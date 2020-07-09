@@ -4,6 +4,7 @@ import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.AllergyModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.SimpleDate;
@@ -16,7 +17,6 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * アレルギデータを編集するエディタクラス.
@@ -26,33 +26,71 @@ import java.util.Objects;
  */
 public class AllergyEditor {
     private Logger logger = LoggerFactory.getLogger(AllergyEditor.class);
+    private static final KeyStroke META_W = KeyStroke.getKeyStroke("meta W");
 
     private final AllergyInspector inspector;
+    private static AllergyEditor editor;
     private AllergyModel model;
     private final JDialog dialog;
     private final JButton addBtn;
     private final JButton clearBtn;
-    private AllergyEditorView view;
+    private JTextField factorFld;
+    private JTextField identifiedFld;
+    private JTextField memoFld;
+    private JComboBox<String> reactionCombo;
     private boolean ok;
     private String todayString;
 
     public AllergyEditor(AllergyInspector inspector) {
         this.inspector = inspector;
 
+        // 今日の日付
         Date today = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(IInfoModel.DATE_WITHOUT_TIME);
         todayString = sdf.format(today);
 
-        if (Objects.isNull(model = inspector.getSelectedModel())) {
-            model = new AllergyModel();
+        // モデルの準備
+        model = new AllergyModel();
+        if (inspector.getSelectedModel() != null) {
+            // コピー
+            AllergyModel src = inspector.getSelectedModel();
+            model.setFactor(src.getFactor());
+            model.setIdentifiedDate(src.getIdentifiedDate());
+            model.setMemo(src.getMemo());
+            model.setSeverity(src.getSeverity());
+            model.setSeverityTableId(src.getSeverityTableId());
         }
 
         // init components
-        view = new AllergyEditorView();
-        view.getFactorFld().getDocument().addDocumentListener((ProxyDocumentListener) e -> checkBtn());
-        view.getIdentifiedFld().addMouseListener(new PopupListener());
-        view.getIdentifiedFld().putClientProperty("Quaqua.TextComponent.showPopup", false);
+        JLabel causeLbl = new JLabel("要因：");
+        JLabel levelLbl = new JLabel("反応：");
+        JLabel memoLbl = new JLabel("メモ：");
+        JLabel dateLbl = new JLabel("同定日：");
 
+        factorFld = new JTextField(30);
+        identifiedFld = new JTextField();
+        memoFld = new JTextField(30);
+        reactionCombo = new JComboBox<>();
+        reactionCombo.setModel(new DefaultComboBoxModel<>(new String[]{"severe", "moderate", "mild", "none"}));
+
+        JPanel causePanel = new JPanel();
+        causePanel.setLayout(new BoxLayout(causePanel, BoxLayout.X_AXIS));
+        causePanel.add(causeLbl); causePanel.add(factorFld);
+
+        JPanel datePanel = new JPanel();
+        datePanel.setLayout(new BoxLayout(datePanel, BoxLayout.X_AXIS));
+        datePanel.add(levelLbl); datePanel.add(reactionCombo); datePanel.add(Box.createHorizontalStrut(70));
+        datePanel.add(dateLbl);datePanel.add(identifiedFld);
+
+        JPanel memoPanel = new JPanel();
+        memoPanel.setLayout(new BoxLayout(memoPanel, BoxLayout.X_AXIS));
+        memoPanel.add(memoLbl); memoPanel.add(memoFld);
+
+        JPanel view = new JPanel();
+        view.setLayout(new BoxLayout(view, BoxLayout.Y_AXIS));
+        view.add(causePanel); view.add(memoPanel); view.add(datePanel);
+
+        // compose dialog
         addBtn = new JButton("OK");
         addBtn.addActionListener(e -> add());
         addBtn.setEnabled(false);
@@ -73,40 +111,54 @@ public class AllergyEditor {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
-                Focuser.requestFocus(view.getFactorFld());
+                Focuser.requestFocus(factorFld);
             }
         });
 
         // command-w でウインドウクローズ
         InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        KeyStroke key = KeyStroke.getKeyStroke("meta W");
-        im.put(key, "close-window");
+        im.put(META_W, "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new ProxyAction(dialog::dispose));
 
         // model to view
-        view.getFactorFld().setText(model.getFactor());
-        view.getMemoFld().setText(model.getMemo());
+        factorFld.setText(model.getFactor());
+        memoFld.setText(model.getMemo());
         if (StringUtils.isEmpty(model.getSeverity())) {
-            model.setSeverity(view.getReactionCombo().getItemAt(0));
+            model.setSeverity(reactionCombo.getItemAt(0));
         }
-        view.getReactionCombo().setSelectedItem(model.getSeverity());
+        reactionCombo.setSelectedItem(model.getSeverity());
         if (StringUtils.isEmpty(model.getIdentifiedDate())) {
             model.setIdentifiedDate(todayString);
         }
-        view.getIdentifiedFld().setText(model.getIdentifiedDate());
+        identifiedFld.setText(model.getIdentifiedDate());
+
+        // connect
+        factorFld.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkBtn());
+        factorFld.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(factorFld));
+
+        identifiedFld.addMouseListener(new PopupListener());
+        identifiedFld.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkBtn());
+        identifiedFld.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(identifiedFld));
+        identifiedFld.putClientProperty("Quaqua.TextComponent.showPopup", false);
+
+        memoFld.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkBtn());
+        memoFld.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(memoFld));
 
         // show dialogs
         dialog.setVisible(true);
     }
 
+    // デザインパターン
     public static void show(AllergyInspector inspector) {
-        AllergyEditor editor = new AllergyEditor(inspector);
+        editor = new AllergyEditor(inspector);
     }
 
+    /**
+     * Button enable/disable check.
+     */
     private void checkBtn() {
-
-        String factor = view.getFactorFld().getText().trim();
-        String date = view.getIdentifiedFld().getText().trim();
+        String factor = factorFld.getText().trim();
+        String date = identifiedFld.getText().trim();
 
         boolean newOk = !factor.equals("") && !date.equals("");
 
@@ -117,39 +169,42 @@ public class AllergyEditor {
         }
     }
 
+    /**
+     * Add model to inspector.
+     */
     private void add() {
         // view to model
-        model.setFactor(view.getFactorFld().getText().trim());
-        model.setSeverity((String) view.getReactionCombo().getSelectedItem());
-        String memo = view.getMemoFld().getText().trim();
+        model.setFactor(factorFld.getText().trim());
+        model.setSeverity((String) reactionCombo.getSelectedItem());
+        String memo = memoFld.getText().trim();
         if (!memo.equals("")) {
             model.setMemo(memo);
         }
-        String dateStr = view.getIdentifiedFld().getText().trim();
+        String dateStr = identifiedFld.getText().trim();
         if (!dateStr.equals("")) {
             model.setIdentifiedDate(dateStr);
         }
-        clear();
 
-        addBtn.setEnabled(false);
-        clearBtn.setEnabled(false);
         inspector.add(model);
-        // renewal
+
+        // renewal for next edit
         model = new AllergyModel();
-        model.setIdentifiedDate(todayString);
+        clear();
     }
 
     private void clear() {
-        view.getFactorFld().setText("");
-        view.getMemoFld().setText("");
+        addBtn.setEnabled(false);
+        clearBtn.setEnabled(false);
+        factorFld.setText("");
+        memoFld.setText("");
+        model.setIdentifiedDate(todayString);
     }
 
     private class PopupListener extends MouseAdapter {
 
         private JPopupMenu popup;
 
-        public PopupListener() {
-        }
+        public PopupListener() { }
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -167,7 +222,7 @@ public class AllergyEditor {
                 popup = new JPopupMenu();
                 CalendarPanel cp = new CalendarPanel();
                 cp.getTable().addCalendarListener(date -> {
-                    view.getIdentifiedFld().setText(SimpleDate.simpleDateToMmldate(date));
+                    identifiedFld.setText(SimpleDate.simpleDateToMmldate(date));
                     popup.setVisible(false);
                     popup = null;
                 });
