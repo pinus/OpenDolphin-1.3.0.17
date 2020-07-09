@@ -146,13 +146,13 @@ public class AllergyInspector implements IInspector, TableModelListener {
         ActionMap am = table.getActionMap();
 
         // undo
-        im.put(KeyStroke.getKeyStroke("meta Z"), "undo");
+        im.put(META_Z, "undo");
         am.put("undo", new ProxyAction(tableModel::undo));
-        im.put(KeyStroke.getKeyStroke("shift meta Z"), "redo");
+        im.put(SHIFT_META_Z, "redo");
         am.put("redo", new ProxyAction(tableModel::redo));
 
         // delete
-        im.put(KeyStroke.getKeyStroke("BACK_SPACE"), "remove");
+        im.put(BACK_SPACE, "remove");
         am.put("remove", new ProxyAction(() -> {
             int row = table.getSelectedRow();
             if (row >= 0) { delete(row); }

@@ -164,6 +164,16 @@ public class PhysicalInspector implements IInspector {
     }
 
     /**
+     * 選択された PhysicalModel を返す.
+     *
+     * @return PhysicalModel selected or null
+     */
+    public PhysicalModel getSelectedModel() {
+        int row = table.getSelectedRow();
+        return row >= 0 ? tableModel.getObject(row) : null;
+    }
+
+    /**
      * データ部分までスクロールする.
      *
      * @param ascending ascending=true

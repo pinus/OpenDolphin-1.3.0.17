@@ -6,7 +6,6 @@ import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.AllergyModel;
-import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.Focuser;
 import org.apache.commons.lang3.StringUtils;
@@ -15,8 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * アレルギデータを編集するエディタクラス.
@@ -26,7 +23,6 @@ import java.util.Date;
  */
 public class AllergyEditor {
     private Logger logger = LoggerFactory.getLogger(AllergyEditor.class);
-    private static final KeyStroke META_W = KeyStroke.getKeyStroke("meta W");
 
     private final AllergyInspector inspector;
     private static AllergyEditor editor;
@@ -39,15 +35,9 @@ public class AllergyEditor {
     private JTextField memoFld;
     private JComboBox<String> reactionCombo;
     private boolean ok;
-    private String todayString;
 
     public AllergyEditor(AllergyInspector inspector) {
         this.inspector = inspector;
-
-        // 今日の日付
-        Date today = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat(IInfoModel.DATE_WITHOUT_TIME);
-        todayString = sdf.format(today);
 
         // モデルの準備
         model = new AllergyModel();
@@ -117,7 +107,7 @@ public class AllergyEditor {
 
         // command-w でウインドウクローズ
         InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        im.put(META_W, "close-window");
+        im.put(inspector.META_W, "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new ProxyAction(dialog::dispose));
 
         // model to view
@@ -128,7 +118,7 @@ public class AllergyEditor {
         }
         reactionCombo.setSelectedItem(model.getSeverity());
         if (StringUtils.isEmpty(model.getIdentifiedDate())) {
-            model.setIdentifiedDate(todayString);
+            model.setIdentifiedDate(inspector.today());
         }
         identifiedFld.setText(model.getIdentifiedDate());
 
@@ -154,7 +144,7 @@ public class AllergyEditor {
     }
 
     /**
-     * Button enable/disable check.
+     * Button enable/disable.
      */
     private void checkBtn() {
         String factor = factorFld.getText().trim();
@@ -181,8 +171,10 @@ public class AllergyEditor {
             model.setMemo(memo);
         }
         String dateStr = identifiedFld.getText().trim();
-        if (!dateStr.equals("")) {
+        if (dateStr.matches("[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]")) {
             model.setIdentifiedDate(dateStr);
+        } else {
+            model.setIdentifiedDate(inspector.today());
         }
 
         inspector.add(model);
@@ -197,7 +189,8 @@ public class AllergyEditor {
         clearBtn.setEnabled(false);
         factorFld.setText("");
         memoFld.setText("");
-        model.setIdentifiedDate(todayString);
+        identifiedFld.setText(inspector.today());
+        model.setIdentifiedDate(inspector.today());
     }
 
     private class PopupListener extends MouseAdapter {
