@@ -8,11 +8,15 @@ import open.dolphin.infomodel.AllergyModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.Focuser;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * アレルギデータを編集するエディタクラス.
@@ -21,33 +25,35 @@ import java.util.Date;
  * @author pns
  */
 public class AllergyEditor {
+    private Logger logger = LoggerFactory.getLogger(AllergyEditor.class);
 
     private final AllergyInspector inspector;
+    private AllergyModel model;
     private final JDialog dialog;
     private final JButton addBtn;
     private final JButton clearBtn;
     private AllergyEditorView view;
     private boolean ok;
+    private String todayString;
 
     public AllergyEditor(AllergyInspector inspector) {
-
         this.inspector = inspector;
-        view = new AllergyEditorView();
 
-        // factor field
-        view.getFactorFld().getDocument().addDocumentListener((ProxyDocumentListener) e -> checkBtn());
-
-        // memo field
-
-        // identified field
-        Date date = new Date();
+        Date today = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(IInfoModel.DATE_WITHOUT_TIME);
-        String todayString = sdf.format(date);
-        view.getIdentifiedFld().setText(todayString);
+        todayString = sdf.format(today);
+
+        if (Objects.isNull(model = inspector.getSelectedModel())) {
+            model = new AllergyModel();
+        }
+
+        // init components
+        view = new AllergyEditorView();
+        view.getFactorFld().getDocument().addDocumentListener((ProxyDocumentListener) e -> checkBtn());
         view.getIdentifiedFld().addMouseListener(new PopupListener());
         view.getIdentifiedFld().putClientProperty("Quaqua.TextComponent.showPopup", false);
 
-        addBtn = new JButton("追加");
+        addBtn = new JButton("OK");
         addBtn.addActionListener(e -> add());
         addBtn.setEnabled(false);
 
@@ -55,13 +61,11 @@ public class AllergyEditor {
         clearBtn.addActionListener(e -> clear());
         clearBtn.setEnabled(false);
 
-        Object[] options = new Object[]{addBtn, clearBtn, "閉じる"};
-
         JOptionPane pane = new JOptionPane(view,
-                JOptionPane.PLAIN_MESSAGE,
-                JOptionPane.DEFAULT_OPTION,
-                null,
-                options, addBtn);
+            JOptionPane.PLAIN_MESSAGE,
+            JOptionPane.DEFAULT_OPTION,
+            null,
+            new Object[]{addBtn, clearBtn, "キャンセル"}, addBtn);
         dialog = pane.createDialog(inspector.getContext().getFrame(), "アレルギー登録");
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
@@ -79,6 +83,19 @@ public class AllergyEditor {
         im.put(key, "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new ProxyAction(dialog::dispose));
 
+        // model to view
+        view.getFactorFld().setText(model.getFactor());
+        view.getMemoFld().setText(model.getMemo());
+        if (StringUtils.isEmpty(model.getSeverity())) {
+            model.setSeverity(view.getReactionCombo().getItemAt(0));
+        }
+        view.getReactionCombo().setSelectedItem(model.getSeverity());
+        if (StringUtils.isEmpty(model.getIdentifiedDate())) {
+            model.setIdentifiedDate(todayString);
+        }
+        view.getIdentifiedFld().setText(model.getIdentifiedDate());
+
+        // show dialogs
         dialog.setVisible(true);
     }
 
@@ -101,8 +118,7 @@ public class AllergyEditor {
     }
 
     private void add() {
-
-        final AllergyModel model = new AllergyModel();
+        // view to model
         model.setFactor(view.getFactorFld().getText().trim());
         model.setSeverity((String) view.getReactionCombo().getSelectedItem());
         String memo = view.getMemoFld().getText().trim();
@@ -118,6 +134,9 @@ public class AllergyEditor {
         addBtn.setEnabled(false);
         clearBtn.setEnabled(false);
         inspector.add(model);
+        // renewal
+        model = new AllergyModel();
+        model.setIdentifiedDate(todayString);
     }
 
     private void clear() {

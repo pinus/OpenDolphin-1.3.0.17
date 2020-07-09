@@ -183,6 +183,16 @@ public class AllergyInspector implements IInspector, TableModelListener {
         return CATEGORY.title();
     }
 
+    /**
+     * 選択された AllergyModel を返す.
+     *
+     * @return AllergyModel selected or null
+     */
+    public AllergyModel getSelectedModel() {
+        int row = table.getSelectedRow();
+        return row >= 0 ? tableModel.getObject(row) : null;
+    }
+
     private void scroll(boolean ascending) {
         int cnt = tableModel.getObjectCount();
         if (cnt > 0) {
@@ -214,18 +224,36 @@ public class AllergyInspector implements IInspector, TableModelListener {
     }
 
     /**
-     * アレルギーデータを追加する.
+     * アレルギーデータを追加する. AllergyEditor から呼ばれる.
      *
      * @param model AllergyModel
      */
     public void add(final AllergyModel model) {
-        boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
-        if (asc) {
-            tableModel.addRow(model);
-        } else {
-            tableModel.addRow(0, model);
+
+        // 既にあれば削除して新たに加える
+        int row = 0;
+        if (model.getObservationId() != 0) {
+            for (int r = 0; r < tableModel.getRowCount(); r++) {
+                if (model.getObservationId() == tableModel.getObject(r).getObservationId()) {
+                    このじてんでもう変更されてるから戻せない
+                    delete(r);
+                    row = r;
+                    break;
+                }
+            }
         }
-        scroll(asc);
+
+        if (row == 0) {
+            boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
+            if (asc) {
+                tableModel.undoableAddRow(model);
+            } else {
+                tableModel.undoableInsertRow(0, model);
+            }
+            scroll(asc);
+        } else {
+            tableModel.undoableInsertRow(row, model);
+        }
     }
 
     /**
@@ -241,9 +269,9 @@ public class AllergyInspector implements IInspector, TableModelListener {
     public void tableChanged(TableModelEvent e) {
 
         DocumentDelegater delegater = new DocumentDelegater();
+        AllergyModel model = tableModel.getObject(e.getFirstRow());
 
         if (e.getType() == TableModelEvent.INSERT) {
-            AllergyModel model = tableModel.getObject(e.getFirstRow());
 
             // GUI の同定日をTimeStampに変更する
             Date date = ModelUtils.getDateTimeAsObject(model.getIdentifiedDate() + "T00:00:00");
