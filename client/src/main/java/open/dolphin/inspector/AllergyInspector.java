@@ -15,6 +15,8 @@ import open.dolphin.ui.IndentTableCellRenderer;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.UndoableObjectReflectTableModel;
 import open.dolphin.util.ModelUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -33,6 +35,8 @@ import java.util.List;
  */
 public class AllergyInspector implements IInspector, TableModelListener {
     public static final InspectorCategory CATEGORY = InspectorCategory.アレルギー;
+    private Logger logger = LoggerFactory.getLogger(AllergyInspector.class);
+
     // Chart
     private final ChartImpl context;
     // TableModel
@@ -238,19 +242,7 @@ public class AllergyInspector implements IInspector, TableModelListener {
 
         DocumentDelegater delegater = new DocumentDelegater();
 
-        if (e.getType() == TableModelEvent.DELETE) {
-            List<Long> ids = new ArrayList<>();
-            ids.add(tableModel.getLastDeleted().getObservationId());
-            DBTask task = new DBTask<Void>(this.context) {
-                @Override
-                protected Void doInBackground() {
-                    delegater.removeObservations(ids);
-                    return null;
-                }
-            };
-            task.execute();
-
-        } else if (e.getType() == TableModelEvent.INSERT) {
+        if (e.getType() == TableModelEvent.INSERT) {
             AllergyModel model = tableModel.getObject(e.getFirstRow());
 
             // GUI の同定日をTimeStampに変更する
@@ -271,10 +263,27 @@ public class AllergyInspector implements IInspector, TableModelListener {
             List<ObservationModel> observations = new ArrayList<>();
             observations.add(observation);
 
-            DBTask task = new DBTask<Void>(context) {
+            DBTask<Long> task = new DBTask<Long>(context) {
+                @Override
+                protected Long doInBackground() {
+                    List<Long> ids = delegater.addObservations(observations);
+                    return ids.get(0);
+                }
+                @Override
+                protected void succeeded(Long id) {
+                    model.setObservationId(id);
+                }
+            };
+            task.execute();
+
+        } else if (e.getType() == TableModelEvent.DELETE) {
+            List<Long> ids = new ArrayList<>();
+            ids.add(tableModel.getLastDeleted().getObservationId());
+
+            DBTask<Void> task = new DBTask<Void>(this.context) {
                 @Override
                 protected Void doInBackground() {
-                    delegater.addObservations(observations);
+                    delegater.removeObservations(ids);
                     return null;
                 }
             };
