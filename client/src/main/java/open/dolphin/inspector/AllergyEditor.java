@@ -1,9 +1,11 @@
 package open.dolphin.inspector;
 
 import open.dolphin.calendar.CalendarPanel;
+import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.helper.ImageHelper;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.AllergyModel;
 import open.dolphin.infomodel.SimpleDate;
@@ -95,6 +97,8 @@ public class AllergyEditor {
             null,
             new Object[]{addBtn, clearBtn, "キャンセル"}, addBtn);
         dialog = pane.createDialog(inspector.getContext().getFrame(), "アレルギー登録");
+        dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
+        if (ClientContext.isMac()) { ImageHelper.setContainerTransparent(dialog); }
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         // dialog が開いたら FactorFld にフォーカスを当てる

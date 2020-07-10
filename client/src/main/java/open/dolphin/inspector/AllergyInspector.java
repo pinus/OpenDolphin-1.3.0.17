@@ -159,9 +159,7 @@ public class AllergyInspector implements IInspector, TableModelListener {
         }));
     }
 
-    public Chart getContext() {
-        return context;
-    }
+    public Chart getContext() { return context; }
 
     /**
      * レイアウトパネルを返す.
@@ -169,19 +167,13 @@ public class AllergyInspector implements IInspector, TableModelListener {
      * @return JPanel
      */
     @Override
-    public JPanel getPanel() {
-        return view;
-    }
+    public JPanel getPanel() { return view; }
 
     @Override
-    public String getName() {
-        return CATEGORY.name();
-    }
+    public String getName() { return CATEGORY.name(); }
 
     @Override
-    public String getTitle() {
-        return CATEGORY.title();
-    }
+    public String getTitle() { return CATEGORY.title(); }
 
     /**
      * 選択された AllergyModel を返す.
@@ -193,6 +185,11 @@ public class AllergyInspector implements IInspector, TableModelListener {
         return row >= 0 ? tableModel.getObject(row) : null;
     }
 
+    /**
+     * データ部分までスクロールする.
+     *
+     * @param ascending ascending=true
+     */
     private void scroll(boolean ascending) {
         int cnt = tableModel.getObjectCount();
         if (cnt > 0) {
@@ -255,17 +252,23 @@ public class AllergyInspector implements IInspector, TableModelListener {
         tableModel.undoableDeleteRow(row);
     }
 
+    /**
+     * TableModel 操作後に呼ばれる. 操作内容をデータベースに記録する.
+     *
+     * @param e TableModelEvent
+     */
     @Override
     public void tableChanged(TableModelEvent e) {
 
         DocumentDelegater delegater = new DocumentDelegater();
-        AllergyModel model = tableModel.getObject(e.getFirstRow());
 
         if (e.getType() == TableModelEvent.INSERT) {
+            AllergyModel model = tableModel.getObject(e.getFirstRow());
 
             // GUI の同定日をTimeStampに変更する
             Date date = ModelUtils.getDateTimeAsObject(model.getIdentifiedDate() + "T00:00:00");
 
+            List<ObservationModel> observations = new ArrayList<>(1);
             ObservationModel observation = new ObservationModel();
             observation.setKarte(context.getKarte());
             observation.setCreator(Project.getUserModel());
@@ -278,7 +281,6 @@ public class AllergyInspector implements IInspector, TableModelListener {
             observation.setStatus(IInfoModel.STATUS_FINAL);
             observation.setMemo(model.getMemo());
 
-            List<ObservationModel> observations = new ArrayList<>();
             observations.add(observation);
 
             DBTask<Long> task = new DBTask<Long>(context) {
