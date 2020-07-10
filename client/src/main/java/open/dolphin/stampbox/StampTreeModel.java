@@ -5,8 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.undo.CompoundEdit;
+import javax.swing.undo.UndoManager;
 
 /**
  * スタンプツリーのモデルクラス.
@@ -15,21 +18,27 @@ import javax.swing.tree.TreePath;
  */
 public class StampTreeModel extends DefaultTreeModel {
     private static final long serialVersionUID = -2227174337081687786L;
-    Logger logger = LoggerFactory.getLogger(StampTreeModel.class);
+    private Logger logger = LoggerFactory.getLogger(StampTreeModel.class);
+    private UndoManager undoManager = new UndoManager();
 
-    /**
-     * デフォルトコンストラクタ.
-     *
-     * @param node TreeNode
-     */
     public StampTreeModel(TreeNode node) {
         super(node);
+    }
+
+    public void insertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) {
+        logger.info("child = " + newChild + ", parent = " + parent + ", index = " + index);
+        super.insertNodeInto(newChild, parent, index);
+    }
+
+    public void removeNodeFromParent(MutableTreeNode node) {
+        logger.info("parent = " + node.getParent() + ", index = " + node.getParent().getIndex(node));
+        super.removeNodeFromParent(node);
     }
 
     /**
      * ノード名の変更をインターセプトして処理する.
      *
-     * @param path tree path
+     * @param path     tree path
      * @param newValue stamp name
      */
     @Override
@@ -55,5 +64,23 @@ public class StampTreeModel extends DefaultTreeModel {
 
         // リスナへ通知する
         nodeChanged(node);
+    }
+
+    public void undo() {
+        logger.info("undo");
+        if (undoManager.canUndo()) { undoManager.undo(); }
+    }
+
+    public void redo() {
+        logger.info("redo");
+        if (undoManager.canRedo()) { undoManager.redo(); }
+    }
+
+    private class InsertEdit extends CompoundEdit {
+
+    }
+
+    private class RemoveEdit extends CompoundEdit {
+
     }
 }
