@@ -39,9 +39,9 @@ public class StampTreeModel extends DefaultTreeModel {
         StampTreeNode node = (StampTreeNode) path.getLastPathComponent();
 
         // Debug
-        String oldString = node.toString ();
+        //String oldString = node.toString ();
         String newString = (String) newValue;
-        logger.info(oldString + " -> " + newString);
+        //logger.info(oldString + " -> " + newString);
 
         // 葉ノードの場合は StampInfo の name を変更する.
         // そうでない場合は新しい文字列を userObject に設定する.

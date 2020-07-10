@@ -3,6 +3,7 @@ package open.dolphin.stampbox;
 import open.dolphin.client.ClientContext;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dnd.StampTreeNodeTransferHandler;
+import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.GUIDGenerator;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
@@ -117,6 +118,10 @@ public class StampTree extends JTree implements TreeModelListener {
 
         // Enable ToolTips
         enableToolTips(true);
+
+        // ENTER で cell editing
+        getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "start-editing");
+        getActionMap().put("start-editing", new ProxyAction(() -> startEditingAtPath(getSelectionPath())));
     }
 
     /**
