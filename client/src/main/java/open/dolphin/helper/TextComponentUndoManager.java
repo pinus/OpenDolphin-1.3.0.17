@@ -117,6 +117,19 @@ public class TextComponentUndoManager extends UndoManager {
         return false;
     }
 
+    /**
+     * If timer is running,
+     * stop timer, discard current, and then discardAllEdits.
+     */
+    @Override
+    public void discardAllEdits() {
+        if (timer.isRunning()) {
+            timer.stop();
+            current = new TextComponentUndoableEdit();
+        }
+        super.discardAllEdits();
+    }
+
     @Override
     public void undo() {
         if (canUndo()) { super.undo(); }

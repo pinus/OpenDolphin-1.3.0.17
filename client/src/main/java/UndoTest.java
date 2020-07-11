@@ -34,10 +34,11 @@ public class UndoTest {
         private Action redoAction;
         private TextComponentUndoableEdit current = new TextComponentUndoableEdit();
         private Timer timer;
+        private int delay = 30;
 
         public TextComponentUndoManager(JTextComponent c) {
             textComponent = c;
-            timer = new Timer(100, e -> flush());
+            timer = new Timer(delay, e -> flush());
             AtokListener listener = new AtokListener();
             c.addInputMethodListener(listener);
             c.addKeyListener(listener);
@@ -267,6 +268,20 @@ public class UndoTest {
         }
 
         /**
+         * While timer is running,
+         * stop timer, discard current, and then discardAllEdits.
+         */
+        @Override
+        public void discardAllEdits() {
+            logger.info("timer running: " + timer.isRunning());
+            if (timer.isRunning()) {
+                timer.stop();
+                current = new TextComponentUndoableEdit();
+            }
+            super.discardAllEdits();
+        }
+
+        /**
          * 指定した UndoableEdit を前の UndoableEdit に merge するかどうか.
          *
          * @param e UndoableEdit to merge
@@ -415,6 +430,10 @@ public class UndoTest {
         frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        pane.setText("初期文字列");
+        pane.setCaretPosition(pane.getDocument().getLength());
+        undoManager.discardAllEdits();
     }
 
     public static void main(String[] arg) {

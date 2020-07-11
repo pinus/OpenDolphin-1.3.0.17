@@ -8,7 +8,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import javax.swing.undo.CompoundEdit;
+import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoManager;
 
 /**
@@ -76,11 +76,11 @@ public class StampTreeModel extends DefaultTreeModel {
         if (undoManager.canRedo()) { undoManager.redo(); }
     }
 
-    private class InsertEdit extends CompoundEdit {
+    private class InsertEdit extends AbstractUndoableEdit {
 
     }
 
-    private class RemoveEdit extends CompoundEdit {
+    private class RemoveEdit extends AbstractUndoableEdit {
 
     }
 }
