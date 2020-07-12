@@ -371,6 +371,10 @@ public class ItemTablePanel extends JPanel {
         scrollRectToVisible();
     }
 
+    public boolean canUndo() { return tableModel.canUndo(); }
+
+    public boolean canRedo() { return tableModel.canRedo(); }
+
     /**
      * テーブルを含むパネルを作成.
      * RadiologyTablePanel の RadiologyMethod はここで加える.

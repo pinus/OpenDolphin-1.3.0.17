@@ -865,21 +865,35 @@ public class StampBoxPlugin extends AbstractMainTool {
         return getCurrentBox().getAllStamps(entity);
     }
 
+    /**
+     * StampTree 編集の undo.
+     * StampMaker が起動しているときは StampMaker の undo.
+     */
     public void undo() {
-        logger.info("undo");
-        if (Objects.nonNull(stampMaker)) {
-            if (stampMaker.getEditor() instanceof StampEditor) {
+        if (Objects.nonNull(stampMaker)
+            && stampMaker.getEditor() instanceof StampEditor
+            && ((StampEditor) stampMaker.getEditor()).getTablePanel().canUndo()) {
                 ((StampEditor) stampMaker.getEditor()).getTablePanel().undo();
-            }
+        } else {
+            int index = userBox.getSelectedIndex();
+            StampTree tree = userBox.getStampTree(index);
+            ((StampTreeModel) tree.getModel()).undo();
         }
     }
 
+    /**
+     * StampTree 編集の redo.
+     * StampMaker が起動しているときは StampMaker の redo.
+     */
     public void redo() {
-        logger.info("redo");
-        if (Objects.nonNull(stampMaker)) {
-            if (stampMaker.getEditor() instanceof StampEditor) {
+        if (Objects.nonNull(stampMaker)
+            && stampMaker.getEditor() instanceof StampEditor
+            && ((StampEditor) stampMaker.getEditor()).getTablePanel().canRedo()) {
                 ((StampEditor) stampMaker.getEditor()).getTablePanel().redo();
-            }
+        } else {
+            int index = userBox.getSelectedIndex();
+            StampTree tree = userBox.getStampTree(index);
+            ((StampTreeModel) tree.getModel()).redo();
         }
     }
 

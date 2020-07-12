@@ -4,35 +4,54 @@ import open.dolphin.infomodel.ModuleInfoBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.undo.AbstractUndoableEdit;
+import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
 
 /**
  * スタンプツリーのモデルクラス.
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
+ * @author pns
  */
 public class StampTreeModel extends DefaultTreeModel {
     private static final long serialVersionUID = -2227174337081687786L;
     private Logger logger = LoggerFactory.getLogger(StampTreeModel.class);
     private UndoManager undoManager = new UndoManager();
+    private CompoundEdit current = new CompoundEdit();
+    private Timer timer = new Timer(30, e -> flush());
 
     public StampTreeModel(TreeNode node) {
         super(node);
     }
 
-    public void insertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) {
-        logger.info("child = " + newChild + ", parent = " + parent + ", index = " + index);
-        super.insertNodeInto(newChild, parent, index);
+    /**
+     * Undoable insert.
+     *
+     * @param newChild to insert
+     * @param parent to insert into
+     * @param index to insert at
+     */
+    public void undoableInsertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) {
+        current.addEdit(new InsertEdit(newChild, parent, index));
+        timer.restart();
+        insertNodeInto(newChild, parent, index);
     }
 
-    public void removeNodeFromParent(MutableTreeNode node) {
-        logger.info("parent = " + node.getParent() + ", index = " + node.getParent().getIndex(node));
-        super.removeNodeFromParent(node);
+    /**
+     * Undoable remove.
+     *
+     * @param node to remove
+     */
+    public void undoableRemoveNodeFromParent(MutableTreeNode node) {
+        current.addEdit(new RemoveEdit(node));
+        timer.restart();
+        removeNodeFromParent(node);
     }
 
     /**
@@ -43,27 +62,46 @@ public class StampTreeModel extends DefaultTreeModel {
      */
     @Override
     public void valueForPathChanged(TreePath path, Object newValue) {
-
         // 変更ノードを取得する
         StampTreeNode node = (StampTreeNode) path.getLastPathComponent();
+        String oldValue = null;
+        if (node.isLeaf()) {
+            oldValue = ((ModuleInfoBean) node.getUserObject()).getStampName();
+        } else {
+            oldValue = (String) node.getUserObject();
+        }
+        current.addEdit(new RenameEdit(path, oldValue, (String) newValue));
+        timer.restart();
+        setName(path, (String) newValue);
+    }
 
-        // Debug
-        //String oldString = node.toString ();
-        String newString = (String) newValue;
-        //logger.info(oldString + " -> " + newString);
-
+    /**
+     * ノート名を設定する.
+     *
+     * @param path TreePath
+     * @param name to set
+     */
+    private void setName(TreePath path, String name) {
+        // 変更ノードを取得する
+        StampTreeNode node = (StampTreeNode) path.getLastPathComponent();
         // 葉ノードの場合は StampInfo の name を変更する.
         // そうでない場合は新しい文字列を userObject に設定する.
         if (node.isLeaf()) {
             ModuleInfoBean info = (ModuleInfoBean) node.getUserObject();
-            info.setStampName(newString);
+            info.setStampName(name);
 
         } else {
-            node.setUserObject(newString);
+            node.setUserObject(name);
         }
-
         // リスナへ通知する
         nodeChanged(node);
+    }
+
+    public void flush() {
+        timer.stop();
+        current.end();
+        undoManager.addEdit(current);
+        current = new CompoundEdit();
     }
 
     public void undo() {
@@ -76,11 +114,52 @@ public class StampTreeModel extends DefaultTreeModel {
         if (undoManager.canRedo()) { undoManager.redo(); }
     }
 
-    private class InsertEdit extends AbstractUndoableEdit {
-
+    /**
+     * UndoableEdit for rename.
+     */
+    private class RenameEdit extends AbstractUndoableEdit {
+        private TreePath path;
+        private String oldName, newName;
+        public RenameEdit(TreePath path, String oldValue, String newValue) {
+            this.path = path; oldName = oldValue; newName = newValue;
+        }
+        @Override
+        public void undo() { setName(path, oldName); }
+        @Override
+        public void redo() { setName(path, newName); }
     }
 
-    private class RemoveEdit extends AbstractUndoableEdit {
+    /**
+     * UndoableEdit for insert.
+     */
+    private class InsertEdit extends AbstractUndoableEdit {
+        protected MutableTreeNode child, parent;
+        protected int index;
 
+        public InsertEdit(MutableTreeNode child, MutableTreeNode parent, int index) {
+            this.child = child; this.parent = parent; this.index = index;
+        }
+        @Override
+        public void undo() { removeNodeFromParent(child); }
+        @Override
+        public void redo() { insertNodeInto(child, parent, index); }
+    }
+
+    /**
+     * UndoableEdit for remove.
+     */
+    private class RemoveEdit extends AbstractUndoableEdit {
+        protected MutableTreeNode child, parent;
+        protected int index;
+
+        public RemoveEdit(MutableTreeNode child) {
+            this.child = child;
+            parent = (MutableTreeNode) child.getParent();
+            index = child.getParent().getIndex(child);
+        }
+        @Override
+        public void undo() { insertNodeInto(child, parent, index); }
+        @Override
+        public void redo() { removeNodeFromParent(child); }
     }
 }

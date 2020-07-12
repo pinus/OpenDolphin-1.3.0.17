@@ -179,24 +179,34 @@ public class UndoableObjectReflectTableModel<T> extends ObjectReflectTableModel<
      * Undo.
      */
     public void undo() {
-        if (undoManager.canUndo()) {
-            undoManager.undo();
-        }
+        if (canUndo()) { undoManager.undo(); }
     }
 
     /**
      * Redo.
      */
     public void redo() {
-        if (undoManager.canRedo()) {
-            undoManager.redo();
-        }
+        if (canRedo()) { undoManager.redo(); }
+    }
+
+    public boolean canUndo() {
+        return undoManager.canUndo();
+    }
+
+    public boolean canRedo() {
+        return undoManager.canRedo();
     }
 
     /**
      * Undo 情報の破棄.
+     * If timer is running,
+     * stop timer, discard current, and then discardAllEdits.
      */
     public void discardAllUndoableEdits() {
+        if (timer.isRunning()) {
+            timer.stop();
+            current = new CompoundEdit();
+        }
         undoManager.discardAllEdits();
     }
 }
