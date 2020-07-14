@@ -27,7 +27,7 @@ public class UndoTest {
     private static KeyStroke CTRL_BACKSPACE = KeyStroke.getKeyStroke("ctrl pressed BACK_SPACE");
     private static KeyStroke KANA = KeyStroke.getKeyStroke("released KATAKANA");
     private static KeyStroke EISU = KeyStroke.getKeyStroke("released ALPHANUMERIC");
-    private static Predicate<String> IS_ALPHABET = s -> Pattern.compile("^[a-z,A-Z]*$").matcher(s).matches();
+    private static Pattern ALPHABET = Pattern.compile("^[a-z,A-Z]*$");
 
     public class TextComponentUndoManager extends UndoManager {
 
@@ -291,12 +291,18 @@ public class UndoTest {
          * @return true to merge
          */
         private boolean toMergeEdit(UndoableEdit cur, UndoableEdit last) {
+            // last が canUndo でなければ merge しない
+            logger.info("last undoable? " + (last ==null? "null" : last.canUndo()));
+            if (last == null || !last.canUndo()) { return false; }
+
+            // 両方とも TextComponentUndoableEdit でなければ merge しない
             if (!(cur instanceof TextComponentUndoableEdit)
                 || !(last instanceof TextComponentUndoableEdit)) { return false; }
 
             UndoableEdit curEdit = ((TextComponentUndoableEdit) cur).lastEdit();
             UndoableEdit lastEdit = ((TextComponentUndoableEdit) last).lastEdit();
 
+            // 内容が　DefaultDocumentEvent でなければ merge しない
             if (!(curEdit instanceof AbstractDocument.DefaultDocumentEvent)
                 || !(lastEdit instanceof AbstractDocument.DefaultDocumentEvent)) { return false; }
 
@@ -304,21 +310,20 @@ public class UndoTest {
             AbstractDocument.DefaultDocumentEvent lastEvent = (AbstractDocument.DefaultDocumentEvent) lastEdit;
 
             try {
-
                 if (curEvent.getType() == DocumentEvent.EventType.REMOVE) {
-                    logger.info("curEvent = REMOVE");
+                    logger.info("curEvent = REMOVE, " + " lastEvent = " + lastEvent.getType());
                     // REMOVE が続いている場合はまとめる
                     if (lastEvent.getType() == DocumentEvent.EventType.REMOVE) { return true; }
 
                 } else {
                     if (lastEvent.getType() == DocumentEvent.EventType.INSERT) {
-                        // alphabet 入力が続いていたらまとめる
+                        // Alphabet 入力が続いていたらまとめる
                         String curText = curEvent.getDocument().getText(curEvent.getOffset(), curEvent.getLength());
                         String lastText = lastEvent.getDocument().getText(lastEvent.getOffset(), lastEvent.getLength());
-                        logger.info("curText = " + curText + " match " + IS_ALPHABET.test(curText)
-                            + ", lastText = " + lastText + " match " + IS_ALPHABET.test(lastText)
+                        logger.info("curText = " + curText + " match " + ALPHABET.matcher(curText).matches()
+                            + ", lastText = " + lastText + " match " + ALPHABET.matcher(lastText).matches()
                         );
-                        if (IS_ALPHABET.test(curText) && (IS_ALPHABET.test(lastText))) { return true; }
+                        if (ALPHABET.matcher(curText).matches() && ALPHABET.matcher(lastText).matches()) { return true; }
                     }
                 }
             } catch (BadLocationException ex) {
@@ -448,8 +453,8 @@ public class UndoTest {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        pane.setText("初期文字列");
-        pane.setCaretPosition(pane.getDocument().getLength());
+        //pane.setText("初期文字列");
+        //pane.setCaretPosition(pane.getDocument().getLength());
         undoManager.discardAllEdits();
     }
 

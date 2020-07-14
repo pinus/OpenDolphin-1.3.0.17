@@ -15,7 +15,6 @@ import javax.swing.undo.UndoableEdit;
 import java.awt.event.*;
 import java.lang.reflect.Field;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
@@ -31,7 +30,7 @@ import java.util.regex.Pattern;
 public class TextComponentUndoManager extends UndoManager {
     private static final long serialVersionUID = 1L;
     private Logger logger = LoggerFactory.getLogger(TextComponentUndoManager.class);
-    private static Predicate<String> IS_ALPHABET = s -> Pattern.compile("^[a-z,A-Z]*$").matcher(s).matches();
+    private static Pattern ALPHABET = Pattern.compile("^[a-z,A-Z]*$");
 
     private Action undoAction;
     private Action redoAction;
@@ -98,12 +97,17 @@ public class TextComponentUndoManager extends UndoManager {
      * @return true to merge
      */
     private boolean toMergeEdit(UndoableEdit cur, UndoableEdit last) {
+        // last が canUndo でなければ merge しない
+        if (last == null || !last.canUndo()) { return false; }
+
+        // 両方とも TextComponentUndoableEdit でなければ merge しない
         if (!(cur instanceof TextComponentUndoableEdit)
             || !(last instanceof TextComponentUndoableEdit)) { return false; }
 
         UndoableEdit curEdit = ((TextComponentUndoableEdit) cur).lastEdit();
         UndoableEdit lastEdit = ((TextComponentUndoableEdit) last).lastEdit();
 
+        // 内容が　DefaultDocumentEvent でなければ merge しない
         if (!(curEdit instanceof AbstractDocument.DefaultDocumentEvent)
             || !(lastEdit instanceof AbstractDocument.DefaultDocumentEvent)) { return false; }
 
@@ -112,16 +116,15 @@ public class TextComponentUndoManager extends UndoManager {
 
         try {
             if (curEvent.getType() == DocumentEvent.EventType.REMOVE) {
-                logger.info("curEvent = REMOVE");
                 // REMOVE が続いている場合はまとめる
                 if (lastEvent.getType() == DocumentEvent.EventType.REMOVE) { return true; }
 
             } else {
                 if (lastEvent.getType() == DocumentEvent.EventType.INSERT) {
-                    // alphabet 入力が続いていたらまとめる
+                    // Alphabet 入力が続いていたらまとめる
                     String curText = curEvent.getDocument().getText(curEvent.getOffset(), curEvent.getLength());
                     String lastText = lastEvent.getDocument().getText(lastEvent.getOffset(), lastEvent.getLength());
-                    if (IS_ALPHABET.test(curText) && (IS_ALPHABET.test(lastText))) { return true; }
+                    if (ALPHABET.matcher(curText).matches() && ALPHABET.matcher(lastText).matches()) { return true; }
                 }
             }
         } catch (BadLocationException ex) {
