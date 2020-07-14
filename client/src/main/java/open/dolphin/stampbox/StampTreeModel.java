@@ -12,6 +12,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
 
 /**
  * スタンプツリーのモデルクラス.
@@ -38,8 +39,7 @@ public class StampTreeModel extends DefaultTreeModel {
      * @param index to insert at
      */
     public void undoableInsertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) {
-        current.addEdit(new InsertEdit(newChild, parent, index));
-        timer.restart();
+        undoableEditHappened(new InsertEdit(newChild, parent, index));
         insertNodeInto(newChild, parent, index);
     }
 
@@ -49,8 +49,7 @@ public class StampTreeModel extends DefaultTreeModel {
      * @param node to remove
      */
     public void undoableRemoveNodeFromParent(MutableTreeNode node) {
-        current.addEdit(new RemoveEdit(node));
-        timer.restart();
+        undoableEditHappened(new RemoveEdit(node));
         removeNodeFromParent(node);
     }
 
@@ -64,14 +63,10 @@ public class StampTreeModel extends DefaultTreeModel {
     public void valueForPathChanged(TreePath path, Object newValue) {
         // 変更ノードを取得する
         StampTreeNode node = (StampTreeNode) path.getLastPathComponent();
-        String oldValue = null;
-        if (node.isLeaf()) {
-            oldValue = ((ModuleInfoBean) node.getUserObject()).getStampName();
-        } else {
-            oldValue = (String) node.getUserObject();
-        }
-        current.addEdit(new RenameEdit(path, oldValue, (String) newValue));
-        timer.restart();
+        String oldValue = node.isLeaf()
+            ? ((ModuleInfoBean) node.getUserObject()).getStampName()
+            : (String) node.getUserObject();
+        undoableEditHappened(new RenameEdit(path, oldValue, (String) newValue));
         setName(path, (String) newValue);
     }
 
@@ -102,6 +97,11 @@ public class StampTreeModel extends DefaultTreeModel {
         current.end();
         undoManager.addEdit(current);
         current = new CompoundEdit();
+    }
+
+    public void undoableEditHappened(UndoableEdit edit) {
+        timer.restart();
+        current.addEdit(edit);
     }
 
     public void undo() {

@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
 import java.util.List;
 
 /**
@@ -76,8 +77,7 @@ public class UndoableObjectReflectTableModel<T> extends ObjectReflectTableModel<
      */
     public void undoableInsertRow(int row, T item) {
         editingRow = row;
-        timer.restart();
-        current.addEdit(new InsertEdit(row, item));
+        undoableEditHappened(new InsertEdit(row, item));
         insertRow(row, item);
     }
 
@@ -88,8 +88,7 @@ public class UndoableObjectReflectTableModel<T> extends ObjectReflectTableModel<
      */
     public void undoableDeleteRow(int row) {
         editingRow = row;
-        timer.restart();
-        current.addEdit(new DeleteEdit(row));
+        undoableEditHappened(new DeleteEdit(row));
         deleteRow(row);
     }
 
@@ -101,6 +100,11 @@ public class UndoableObjectReflectTableModel<T> extends ObjectReflectTableModel<
         current.end();
         undoManager.addEdit(current);
         current = new CompoundEdit();
+    }
+
+    public void undoableEditHappened(UndoableEdit edit) {
+        timer.restart();
+        current.addEdit(edit);
     }
 
     /**
