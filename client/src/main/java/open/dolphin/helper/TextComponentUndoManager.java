@@ -15,6 +15,8 @@ import javax.swing.undo.UndoableEdit;
 import java.awt.event.*;
 import java.lang.reflect.Field;
 import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 /**
  * JTextComponent に Undo 機能を付ける.<br>
@@ -29,6 +31,7 @@ import java.util.Objects;
 public class TextComponentUndoManager extends UndoManager {
     private static final long serialVersionUID = 1L;
     private Logger logger = LoggerFactory.getLogger(TextComponentUndoManager.class);
+    private static Predicate<String> IS_ALPHABET = s -> Pattern.compile("^[a-z,A-Z]*$").matcher(s).matches();
 
     private Action undoAction;
     private Action redoAction;
@@ -77,7 +80,7 @@ public class TextComponentUndoManager extends UndoManager {
      */
     @Override
     public boolean addEdit(UndoableEdit e) {
-        if (toMergeEdit(e)) {
+        if (toMergeEdit(e, lastEdit())) {
             TextComponentUndoableEdit last = (TextComponentUndoableEdit) lastEdit();
             TextComponentUndoableEdit toMerge = (TextComponentUndoableEdit) e;
             return last.mergeEdit(toMerge.lastEdit());
@@ -89,28 +92,38 @@ public class TextComponentUndoManager extends UndoManager {
 
     /**
      * 指定した UndoableEdit を前の UndoableEdit に merge するかどうか.
-     * undo を word 単位でまとめるために使う.
      *
-     * @param e UndoableEdit to merge
+     * @param cur TextComponentUndoableEdit which contains current DocumentEvent
+     * @param last TextComponentUndoableEdit which contains last DocumentEvent
      * @return true to merge
      */
-    private boolean toMergeEdit(UndoableEdit e) {
-        TextComponentUndoableEdit edit = (TextComponentUndoableEdit) e;
-        // DocumentEvent でなければ merge しない
-        if (!(edit.lastEdit() instanceof AbstractDocument.DefaultDocumentEvent)) { return false; }
+    private boolean toMergeEdit(UndoableEdit cur, UndoableEdit last) {
+        if (!(cur instanceof TextComponentUndoableEdit)
+            || !(last instanceof TextComponentUndoableEdit)) { return false; }
+
+        UndoableEdit curEdit = ((TextComponentUndoableEdit) cur).lastEdit();
+        UndoableEdit lastEdit = ((TextComponentUndoableEdit) last).lastEdit();
+
+        if (!(curEdit instanceof AbstractDocument.DefaultDocumentEvent)
+            || !(lastEdit instanceof AbstractDocument.DefaultDocumentEvent)) { return false; }
+
+        AbstractDocument.DefaultDocumentEvent curEvent = (AbstractDocument.DefaultDocumentEvent) curEdit;
+        AbstractDocument.DefaultDocumentEvent lastEvent = (AbstractDocument.DefaultDocumentEvent) lastEdit;
 
         try {
-            AbstractDocument.DefaultDocumentEvent last = (AbstractDocument.DefaultDocumentEvent) edit.lastEdit();
-            int start = last.getOffset();
-            int len = last.getLength();
-            String text = last.getDocument().getText(start, len);
+            if (curEvent.getType() == DocumentEvent.EventType.REMOVE) {
+                logger.info("curEvent = REMOVE");
+                // REMOVE が続いている場合はまとめる
+                if (lastEvent.getType() == DocumentEvent.EventType.REMOVE) { return true; }
 
-            // 1文字で, アルファベット or 削除で, undo 可能の場合, undo を1つにまとめる
-            return (edit.size() == 1
-                && (text.matches("[A-Z,a-z]") || last.getType() == DocumentEvent.EventType.REMOVE)
-                && lastEdit() instanceof TextComponentUndoableEdit
-                && lastEdit().canUndo());
-
+            } else {
+                if (lastEvent.getType() == DocumentEvent.EventType.INSERT) {
+                    // alphabet 入力が続いていたらまとめる
+                    String curText = curEvent.getDocument().getText(curEvent.getOffset(), curEvent.getLength());
+                    String lastText = lastEvent.getDocument().getText(lastEvent.getOffset(), lastEvent.getLength());
+                    if (IS_ALPHABET.test(curText) && (IS_ALPHABET.test(lastText))) { return true; }
+                }
+            }
         } catch (BadLocationException ex) {
             logger.error(ex.getMessage());
         }
