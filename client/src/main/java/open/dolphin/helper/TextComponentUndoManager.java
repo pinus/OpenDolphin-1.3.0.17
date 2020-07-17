@@ -104,6 +104,9 @@ public class TextComponentUndoManager extends UndoManager {
         if (!(cur instanceof TextComponentUndoableEdit)
             || !(last instanceof TextComponentUndoableEdit)) { return false; }
 
+        // cur size > 1 なら merge しない (CodeHelper 入力で cur size > 1 になる)
+        if (((TextComponentUndoableEdit)cur).size() > 1) { return false; }
+
         UndoableEdit curEdit = ((TextComponentUndoableEdit) cur).lastEdit();
         UndoableEdit lastEdit = ((TextComponentUndoableEdit) last).lastEdit();
 
