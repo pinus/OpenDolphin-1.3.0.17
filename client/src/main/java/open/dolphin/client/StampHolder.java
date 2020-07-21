@@ -84,7 +84,10 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
         public void repaintStamp() {
             JTextPane tp = kartePane.getTextPane();
             if (Objects.nonNull(tp)) {
-                int width = tp.getWidth();
+                int width = tp.getParent() instanceof JViewport
+                    ? tp.getParent().getWidth()
+                    : tp.getWidth();
+
                 if (width > 1) {
                     hints.setWidth(Math.max(320, width - MARGIN));
                     setMyText();

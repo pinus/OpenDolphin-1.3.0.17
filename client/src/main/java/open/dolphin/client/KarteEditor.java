@@ -267,8 +267,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
         SwingUtilities.invokeLater(() -> {
             // キャレットを先頭にリセット.
+            getPPane().getTextPane().setCaretPosition(0);
             getSOAPane().getTextPane().setCaretPosition(0);
-            //getPPane().getTextPane().setCaretPosition(0); // これを入れると PPane にフォーカス取られる
+            Focuser.requestFocus(getSOAPane().getTextPane());
         });
         enter();
 
