@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.prefs.Preferences;
 
@@ -46,7 +47,7 @@ public class ComponentBoundsManager implements ComponentListener {
     }
 
     @Override
-    public void componentMoved(java.awt.event.ComponentEvent e) {
+    public void componentMoved(ComponentEvent e) {
         Point loc = target.getLocation();
         if (prefs != null) {
             prefs.putInt(key + "_x", loc.x);
@@ -56,21 +57,21 @@ public class ComponentBoundsManager implements ComponentListener {
     }
 
     @Override
-    public void componentResized(java.awt.event.ComponentEvent e) {
+    public void componentResized(ComponentEvent e) {
         int width = target.getWidth();
         int height = target.getHeight();
         if (prefs != null) {
             prefs.putInt(key + "_width", width);
             prefs.putInt(key + "_height", height);
         }
-        logger.debug(String.format("%s size=(%d,%d)", key, width, height));
+        logger.info(String.format("%s size=(%d,%d)", key, width, height));
     }
 
     @Override
-    public void componentShown(java.awt.event.ComponentEvent e) { }
+    public void componentShown(ComponentEvent e) { }
 
     @Override
-    public void componentHidden(java.awt.event.ComponentEvent e) { }
+    public void componentHidden(ComponentEvent e) { }
 
     /**
      * Preferences に記録された Bounds に戻す.
