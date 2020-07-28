@@ -34,20 +34,20 @@ public class IMEControl {
      * IME-off. Shift-Control-C で英字
      */
     public static void off() {
-//        if (isMac) {
-//            logger.info("atok eiji mode");
-//            type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_C);
-//        }
+        if (isMac) {
+            logger.info("atok eiji mode");
+            type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_C);
+        }
     }
 
     /**
      * IME-on. Shift-Control-Z でひらがな
      */
     public static void on() {
-//        if (isMac) {
-//            logger.info("atok hiragana mode");
-//            type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_Z);
-//        }
+        if (isMac) {
+            logger.info("atok hiragana mode");
+            type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_Z);
+        }
     }
 
     private static void type(int... keys) {
@@ -61,10 +61,10 @@ public class IMEControl {
      * @param c component to add focus listener
      */
     public static void off(final Component c) {
-//        c.addFocusListener(new FocusAdapter() {
-//            @Override
-//            public void focusGained(FocusEvent e) { off(); }
-//        });
+        c.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) { off(); }
+        });
     }
 
     /**
@@ -73,10 +73,10 @@ public class IMEControl {
      * @param c component to add focus listener
      */
     public static void on(final Component c) {
-//        c.addFocusListener(new FocusAdapter() {
-//            @Override
-//            public void focusGained(FocusEvent e) { on(); }
-//        });
+        c.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) { on(); }
+        });
     }
 
     public static void main(String[] argv) {
