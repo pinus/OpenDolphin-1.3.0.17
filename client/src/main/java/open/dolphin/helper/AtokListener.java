@@ -124,7 +124,8 @@ public class AtokListener implements KeyListener, InputMethodListener {
                 while (start-- > 0) {
                     char c = textComponent.getText(start, 1).charAt(0);
                     logger.debug(start + ": " + c);
-                    if (!StringTool.isHanakuLower(c) && !StringTool.isHankakuUpper(c) && c != '-') {
+                    if (!StringTool.isHanakuLower(c) && !StringTool.isHankakuUpper(c)
+                        && !StringTool.isHankakuNumber(c) && c != '-') {
                         break;
                     }
                 }
