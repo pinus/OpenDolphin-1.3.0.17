@@ -132,7 +132,6 @@ public class AtokListener implements KeyListener, InputMethodListener {
                 start++;
                 // 変換元の文字列を削除
                 textComponent.getDocument().remove(start, end - start);
-
             }
             // 英数２度打ちの処理. (1)確定前に入ってくる場合と (2)確定直後に入ってくる場合がある.
             // (1) は何もしなくていい (textCommitted != textInProcess)

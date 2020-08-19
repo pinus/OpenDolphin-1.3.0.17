@@ -91,7 +91,9 @@ public class KarteStyledDocument extends DefaultStyledDocument {
             // Stamp を挿入する
             insertString(start, " ", runStyle);
             sh.setEntry(createPosition(start), createPosition(start + 1));
-            if (toPutTopCr(start)) { insertString(start + 1, "\n", null); }
+            if (Project.getProjectStub().isStampSpace()) {
+                insertString(start + 1, "\n", null);
+            }
 
         } catch (BadLocationException | NullPointerException ex) {
             logger.error(ex.getMessage());
