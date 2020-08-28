@@ -4,6 +4,7 @@ import j2html.attributes.Attr;
 import j2html.tags.Tag;
 import open.dolphin.client.StampRenderingHints;
 import open.dolphin.infomodel.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,6 +152,53 @@ public class HtmlHelper {
             td(bundle.getAdmin()),
             td(admin).attr(COLSPAN, 2).attr(NOWRAP).attr(ALIGN, RIGHT),
             td(" ").attr(WIDTH, UNIT_MARGIN));
+    }
+
+    /**
+     * BundleMed を html 化する. 簡易表示バージョン.
+     *
+     * @param bundle    BundleMed
+     * @param stampName スタンプ名
+     * @param hints     StampRenderingHints
+     * @return html
+     */
+    public static String bundleMed2HtmlLight(BundleMed bundle, String stampName, StampRenderingHints hints) {
+        String memo = bundle.getMemo().replace("処方", "");
+        String html = html().with(body().with(
+            // タイトル部分
+            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(WIDTH, hints.getWidth()).with(
+                titleTr("RP", stampName, memo, hints.getWidth(), hints.getLabelColorAs16String())
+            ),
+            // 項目部分
+            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(CELLSPACING, 0).attr(WIDTH, hints.getWidth()).with(
+                bundleMedTrLight(bundle, hints)
+            )
+        )).render();
+
+        return html;
+    }
+
+    /**
+     * ClaimItem 簡易表示用の TR Tag を作る.
+     *
+     * @param bundle ClaimBundle
+     * @param hints  StampRenderingHints
+     * @return TR Tag
+     */
+    public static Tag bundleMedTrLight(BundleMed bundle, StampRenderingHints hints) {
+        String name = Stream.of(bundle.getClaimItem())
+            .filter(item -> item.getCode().startsWith("6"))
+            .map(item -> StringUtils.abbreviate(item.getName(),15))
+            .collect(Collectors.joining(", "));
+
+        String num = bundle.getClassCode().startsWith(IInfoModel.RECEIPT_CODE_GAIYO)
+            ? bundle.getClaimItem()[0].getNumber()
+            : bundle.getBundleNumber();
+
+        return tr().with(
+            td("・").attr(VALIGN, TOP).attr(WIDTH, MARKER_WIDTH),
+            td(name),
+            td(num).attr(ALIGN, RIGHT).attr(VALIGN, BOTTOM).attr(NOWRAP).attr(WIDTH, AMOUNT_WIDTH));
     }
 
     /**

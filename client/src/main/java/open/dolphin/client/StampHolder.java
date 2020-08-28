@@ -423,7 +423,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
         String text;
 
         if (bundle instanceof BundleMed) {
-            text = HtmlHelper.bundleMed2Html((BundleMed) bundle, stampName, hints);
+            text = HtmlHelper.bundleMed2HtmlLight((BundleMed) bundle, stampName, hints);
             //logger.info("bundleMed = " + text);
 
         } else if (getModel().getModuleInfo().getEntity().equals(IInfoModel.ENTITY_LABO_TEST)
