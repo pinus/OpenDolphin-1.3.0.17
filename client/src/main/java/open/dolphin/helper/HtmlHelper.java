@@ -8,10 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -188,8 +185,29 @@ public class HtmlHelper {
     public static Tag bundleMedTrLight(BundleMed bundle, StampRenderingHints hints) {
         String name = Stream.of(bundle.getClaimItem())
             .filter(item -> item.getCode().startsWith("6"))
-            .map(item -> StringUtils.abbreviate(item.getName(),15))
+            .map(ClaimItem::getName)
             .collect(Collectors.joining(", "));
+
+        name = name.replaceAll("[．０-９.0-9]*[％]", "")
+            .replaceAll("「.*」", "")
+            .replaceAll("（.*）", "")
+            .replaceAll("ＭＹＫ", "")
+            .replaceAll("エステル", "")
+            .replaceAll("ｍｇ", "")
+            .replaceAll("酪酸", "B")
+            .replaceAll("吉草酸", "V")
+            .replaceAll("プロピオン酸", "P")
+            .replaceAll("酢酸", "A")
+            .replaceAll("アセトニド", "A")
+            ;
+        name = StringUtils.truncate(name, 15);
+
+        String admin = bundle.getClassCode().startsWith(IInfoModel.RECEIPT_CODE_GAIYO)
+            ? StringUtils.truncate(Stream.of(bundle.getClaimItem())
+                .filter(item -> item.getCode().equals("810000001") || item.getCode().matches("001000[7-9][0-9][0-9]"))
+                .map(ClaimItem::getName).collect(Collectors.joining(",")), 4)
+            : StringUtils.truncate(bundle.getAdmin()
+                .replace("１日", "").replace("回", "x"), 4);
 
         String num = bundle.getClassCode().startsWith(IInfoModel.RECEIPT_CODE_GAIYO)
             ? bundle.getClaimItem()[0].getNumber()
@@ -198,6 +216,7 @@ public class HtmlHelper {
         return tr().with(
             td("・").attr(VALIGN, TOP).attr(WIDTH, MARKER_WIDTH),
             td(name),
+            td(admin).attr(ALIGN, RIGHT).attr(VALIGN, BOTTOM).attr(NOWRAP),
             td(num).attr(ALIGN, RIGHT).attr(VALIGN, BOTTOM).attr(NOWRAP).attr(WIDTH, AMOUNT_WIDTH));
     }
 
@@ -299,6 +318,62 @@ public class HtmlHelper {
         }
 
         return trs.toArray(new Tag[0]);
+    }
+
+    /**
+     * BundleDolphin を html 化する. 簡易表示バージョン.
+     *
+     * @param bundle    BundleDolphin
+     * @param stampName スタンプ名
+     * @param hints     StampRenderingHints
+     * @return html
+     */
+    public static String bundleDolphin2HtmlLight(BundleDolphin bundle, String stampName, StampRenderingHints hints) {
+        String memo = bundle.getClassCode();
+        logger.debug("bundle class code = " + memo);
+
+        String html = html().with(body().with(
+            // タイトル部分
+            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(WIDTH, hints.getWidth()).with(
+                titleTr(bundle.getOrderName(), stampName, memo, hints.getWidth(), hints.getLabelColorAs16String())
+            ),
+            // 項目部分
+            table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(WIDTH, hints.getWidth()).attr(CELLSPACING, 0).with(
+                bundleDolphinTrLight(bundle, hints.getWidth()))
+
+        )).render();
+
+        logger.debug(html);
+        return html;
+    }
+
+    /**
+     * DolphinBundle 簡易表示用の TR tag を作る.
+     *
+     * @param bundle BundleDolphin
+     * @param width  width
+     * @return array of TR
+     */
+    public static Tag bundleDolphinTrLight(BundleDolphin bundle, int width) {
+
+        String itemNames = bundle.getClaimItem() == null
+            ? null
+            : Stream.of(bundle.getClaimItem()).map(item -> {
+            String num = item.getNumber();
+            if (num == null || "".equals(num) || "1".equals(num)) {
+                num = "";
+            } else {
+                num = "(" + num + ")";
+            }
+            return item.getName() + num;
+        }).collect(Collectors.joining(","));
+        itemNames = StringUtils.truncate(itemNames, 30);
+
+        return tr().with(
+            td("・").attr(VALIGN, TOP).attr(WIDTH, MARKER_WIDTH),
+            td(itemNames).attr(COLSPAN, 2).attr(WIDTH, width - 16), // trial and error
+            td(" ")
+        );
     }
 }
 
