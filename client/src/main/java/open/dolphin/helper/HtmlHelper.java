@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -189,18 +190,20 @@ public class HtmlHelper {
             .collect(Collectors.joining(", "));
 
         name = name.replaceAll("[．０-９.0-9]*[％]", "")
-            .replaceAll("「.*」", "")
-            .replaceAll("（.*）", "")
+            .replaceAll("「[^,]*」", "")
+            .replaceAll("（[^,]*）", "")
             .replaceAll("ＭＹＫ", "")
             .replaceAll("エステル", "")
-            .replaceAll("ｍｇ", "")
+            .replaceAll("塩酸塩", "")
+            .replaceAll("硫酸塩", "")
+            .replaceAll("硝酸塩", "")
+            .replaceAll("[０-９]*ｍｇ", "")
             .replaceAll("酪酸", "B")
             .replaceAll("吉草酸", "V")
             .replaceAll("プロピオン酸", "P")
             .replaceAll("酢酸", "A")
             .replaceAll("アセトニド", "A")
             ;
-        name = StringUtils.truncate(name, 15);
 
         String admin = bundle.getClassCode().startsWith(IInfoModel.RECEIPT_CODE_GAIYO)
             ? StringUtils.truncate(Stream.of(bundle.getClaimItem())
