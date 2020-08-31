@@ -313,9 +313,11 @@ public class ItemTablePanel extends JPanel {
                 JTextField tf = (JTextField) editor.getComponent();
                 table.editCellAt(row, col);
                 // 初期値設定
-                if (initialChar != null && (col == 2 || col == 5)) {
+                if (initialChar != null) {
                     editor.setShouldSelectAll(false);
                     tf.setText(initialChar.toString());
+                } else {
+                    editor.setShouldSelectAll(true);
                 }
                 Focuser.requestFocus(tf);
             }
