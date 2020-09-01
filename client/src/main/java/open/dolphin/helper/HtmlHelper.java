@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -197,7 +198,9 @@ public class HtmlHelper {
             .replaceAll("塩酸塩", "")
             .replaceAll("硫酸塩", "")
             .replaceAll("硝酸塩", "")
-            .replaceAll("[０-９]*ｍｇ", "")
+            .replaceAll("マレイン酸塩", "")
+            .replaceAll("ベシル酸塩", "")
+            .replaceAll("[．０-９]*ｍｇ", "")
             .replaceAll("酪酸", "B")
             .replaceAll("吉草酸", "V")
             .replaceAll("プロピオン酸", "P")
@@ -205,12 +208,20 @@ public class HtmlHelper {
             .replaceAll("アセトニド", "A")
             ;
 
-        String admin = bundle.getClassCode().startsWith(IInfoModel.RECEIPT_CODE_GAIYO)
-            ? StringUtils.truncate(Stream.of(bundle.getClaimItem())
-                .filter(item -> item.getCode().equals("810000001") || item.getCode().matches("001000[7-9][0-9][0-9]"))
-                .map(ClaimItem::getName).collect(Collectors.joining(",")), 4)
-            : StringUtils.truncate(bundle.getAdmin()
+        String admin;
+        if (bundle.getClassCode().startsWith(IInfoModel.RECEIPT_CODE_GAIYO)) {
+            admin = Stream.of(bundle.getClaimItem())
+                .filter(item -> item.getCode().matches("001000[7-9][0-9][0-9]"))
+                .map(ClaimItem::getName).collect(Collectors.joining(","));
+            admin += Stream.of(bundle.getClaimItem())
+                .filter(item -> item.getCode().equals("810000001"))
+                .map(ClaimItem::getName).collect(Collectors.joining(","));
+            admin = StringUtils.truncate(admin, 4);
+
+        } else {
+            admin = StringUtils.truncate(bundle.getAdmin()
                 .replace("１日", "").replace("回", "x"), 4);
+        }
 
         String num = bundle.getClassCode().startsWith(IInfoModel.RECEIPT_CODE_GAIYO)
             ? bundle.getClaimItem()[0].getNumber()
