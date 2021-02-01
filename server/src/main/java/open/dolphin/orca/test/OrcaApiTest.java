@@ -27,13 +27,13 @@ public class OrcaApiTest {
         //test.acceptmodv2();
         //test.acceptlstacceptlstv2();
         //test.appointlstv2();
-        //test.medicationmodv2();
+        test.medicationmodv2();
         //test.patientlst1v2();
         //test.patientlst2v2();
         //test.patientlst3v2();
         //test.system01lstv2();
         //test.medicalgetv2();
-        test.diseasegetv2();
+        //test.diseasegetv2();
         //test.patientmodv2();
         //test.appointlst2v2();
         //test.acsimulatev2();;
