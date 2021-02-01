@@ -21,13 +21,13 @@ public class OrcaApiTest {
         System.setProperty("jboss.server.base.dir", userDir);
 
         OrcaApiTest test = new OrcaApiTest();
-        //test.patientgetv2();
+        test.patientgetv2();
         //test.appointmodv2();
         //test.medicalmodv2();
         //test.acceptmodv2();
         //test.acceptlstacceptlstv2();
         //test.appointlstv2();
-        test.medicationmodv2();
+        //test.medicationmodv2();
         //test.patientlst1v2();
         //test.patientlst2v2();
         //test.patientlst3v2();
