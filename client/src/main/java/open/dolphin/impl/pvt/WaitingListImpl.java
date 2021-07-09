@@ -687,6 +687,9 @@ public class WaitingListImpl extends AbstractMainComponent {
             //logger.info("pvt added at row " + row);
             // 通知を表示
             ScriptExecutor.displayNotification(hostPvt.getPatientAgeBirthday(), "受付 " + (row + 1), hostPvt.getPatientName());
+            // 追加行までスクロール
+            int viewRow = pvtTable.convertRowIndexToView(row);
+            pvtTable.scrollRectToVisible(pvtTable.getCellRect(viewRow, 0, false));
         }
         // pvt count 更新
         updatePvtCount();
@@ -1016,8 +1019,14 @@ public class WaitingListImpl extends AbstractMainComponent {
 
             if (value instanceof String) {
                 switch (col) {
-                    case 1: // ID
                     case 3: // 名前
+                        if (fontSize > 12) {
+                            value = (String) value + "　(" + pvt.getPatient().getKanaName() + ")";
+                        }
+                        this.setText(IndentTableCellRenderer.addIndent((String) value, IndentTableCellRenderer.WIDE, this.getForeground()));
+                        this.setFont(view.getNormalFont());
+                        break;
+                    case 1: // ID
                     case 6: // 生年月日
                         this.setText(IndentTableCellRenderer.addIndent((String) value, IndentTableCellRenderer.WIDE, this.getForeground()));
                         this.setFont(view.getNormalFont());
