@@ -548,6 +548,18 @@ public class OrcaApi {
     }
 
     /**
+     * PUSH通知一括取得.
+     */
+    public open.dolphin.orca.pushapi.bean.Data post(Pusheventgetv2req pusheventgetv2req) {
+        Request req = new Request();
+        req.setPusheventgetv2req(pusheventgetv2req);
+
+        String url = OrcaApiUrl.PUSHEVENTGETV2;
+        Response response = request(url, req);
+        return response.getData();
+    }
+
+    /**
      * Orca に Request を POST して Response を得る.
      *
      * @param url URL

@@ -164,6 +164,11 @@ public class Request {
     private Subjectiveslstreq subjectiveslstreq;
 
     /**
+     * PUSH通知一括取得. https://www.orca.med.or.jp/receipt/tec/api/pusheventget.html
+     */
+    private Pusheventgetv2req pusheventgetv2req;
+
+    /**
      * API 予約. https://www.orca.med.or.jp/receipt/tec/api/appointmod.html
      *
      * @return the appointreq
@@ -732,5 +737,23 @@ public class Request {
      */
     public void setSubjectiveslstreq(Subjectiveslstreq subjectiveslstreq) {
         this.subjectiveslstreq = subjectiveslstreq;
+    }
+
+    /**
+     * PUSH通知一括取得. https://www.orca.med.or.jp/receipt/tec/api/pusheventget.html
+     *
+     * @return pusheventgetv2req
+     */
+    public Pusheventgetv2req getPusheventgetv2req() {
+        return pusheventgetv2req;
+    }
+
+    /**
+     * PUSH通知一括取得. https://www.orca.med.or.jp/receipt/tec/api/pusheventget.html
+     *
+     * @param pusheventgetv2req to set
+     */
+    public void setPusheventgetv2req(Pusheventgetv2req pusheventgetv2req) {
+        this.pusheventgetv2req = pusheventgetv2req;
     }
 }

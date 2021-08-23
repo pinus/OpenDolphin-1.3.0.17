@@ -34,7 +34,7 @@ public class OrcaApiTest {
         //test.system01lstv2();
         //test.medicalgetv2();
         //test.diseasegetv2();
-        test.patientmodv2();
+        //test.patientmodv2();
         //test.appointlst2v2();
         //test.acsimulatev2();;
         //test.subjectivesv2();
@@ -54,6 +54,7 @@ public class OrcaApiTest {
         //test.contraindicationcheckv2();
         //test.insuranceinf1v2();
         //test.subjectiveslstv2();
+        test.pusheventgetv2();
     }
 
     private void patientgetv2() {
@@ -558,6 +559,19 @@ public class OrcaApiTest {
 
         Subjectiveslstres res = api.post(req);
 
+        System.out.println(JsonConverter.toJson(res));
+    }
+
+    private void pusheventgetv2() {
+        System.out.println("PUSH通知一括取得");
+
+        Pusheventgetv2req req = new Pusheventgetv2req();
+        req.setEvent("patient_accept");
+        req.setUser("ormaster");
+        req.setStart_time("2021-08-23 08:30");
+        req.setEnd_time("2021-08-23 17:30");
+
+        open.dolphin.orca.pushapi.bean.Data res = api.post(req);
         System.out.println(JsonConverter.toJson(res));
     }
 }
