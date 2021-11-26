@@ -54,7 +54,8 @@ public class OrcaApiTest {
         //test.contraindicationcheckv2();
         //test.insuranceinf1v2();
         //test.subjectiveslstv2();
-        test.pusheventgetv2();
+        //test.pusheventgetv2();
+        test.patientlst8v2();
     }
 
     private void patientgetv2() {
@@ -572,6 +573,17 @@ public class OrcaApiTest {
         req.setEnd_time("2021-08-23 17:30");
 
         open.dolphin.orca.pushapi.bean.Data res = api.post(req);
+        System.out.println(JsonConverter.toJson(res));
+    }
+
+    private void patientlst8v2() {
+        System.out.println("旧姓履歴情報取得");
+
+        Patientlst8req req = new Patientlst8req();
+        req.setRequest_Number("01");
+        req.setPatient_ID("001967");
+
+        Patientlst8res res = api.post(req);
         System.out.println(JsonConverter.toJson(res));
     }
 }

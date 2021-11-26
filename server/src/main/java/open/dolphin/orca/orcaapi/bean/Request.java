@@ -169,6 +169,12 @@ public class Request {
     private Pusheventgetv2req pusheventgetv2req;
 
     /**
+     * 旧姓履歴情報取得. https://www.orca.med.or.jp/receipt/tec/api/kyuseirireki.html
+     */
+    private Patientlst8req patientlst8req;
+
+
+    /**
      * API 予約. https://www.orca.med.or.jp/receipt/tec/api/appointmod.html
      *
      * @return the appointreq
@@ -755,5 +761,23 @@ public class Request {
      */
     public void setPusheventgetv2req(Pusheventgetv2req pusheventgetv2req) {
         this.pusheventgetv2req = pusheventgetv2req;
+    }
+
+    /**
+     * 旧姓履歴情報取得. https://www.orca.med.or.jp/receipt/tec/api/kyuseirireki.html
+     *
+     * @return patientlst8req
+     */
+    public Patientlst8req getPatientlst8req() {
+        return patientlst8req;
+    }
+
+    /**
+     * 旧姓履歴情報取得. https://www.orca.med.or.jp/receipt/tec/api/kyuseirireki.html
+     *
+     * @param patientlst8req to set
+     */
+    public void setPatientlst8req(Patientlst8req patientlst8req) {
+        this.patientlst8req = patientlst8req;
     }
 }
