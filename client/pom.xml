@@ -36,7 +36,7 @@
         <!-- Resteasy -->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs-all</artifactId>
+            <artifactId>resteasy-core</artifactId>
             <version>${version.org.jboss.resteasy}</version>
         </dependency>
         <dependency>
