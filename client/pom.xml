@@ -13,7 +13,7 @@
 
         <!-- versions -->
         <java.version>1.8</java.version>
-        <version.org.jboss.resteasy>3.9.0.Final</version.org.jboss.resteasy>
+        <version.org.jboss.resteasy>4.7.4.Final</version.org.jboss.resteasy>
         <version.org.hibernate>5.3.13.Final</version.org.hibernate>
         <version.org.glassfish.tyrus.bundles>1.15</version.org.glassfish.tyrus.bundles>
     </properties>
@@ -36,7 +36,7 @@
         <!-- Resteasy -->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
+            <artifactId>resteasy-jaxrs-all</artifactId>
             <version>${version.org.jboss.resteasy}</version>
         </dependency>
         <dependency>
@@ -82,6 +82,11 @@
         </dependency>
 
         <!-- others -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

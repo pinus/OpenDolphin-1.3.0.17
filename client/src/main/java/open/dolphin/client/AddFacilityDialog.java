@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import javax.swing.*;
+import javax.ws.rs.client.ClientBuilder;
 import java.awt.*;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
@@ -339,7 +340,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
         protected Void doInBackground() {
 
             // Resteasy
-            ResteasyClient client = new ResteasyClientBuilder().build();
+            ResteasyClient client = (ResteasyClient) ClientBuilder.newBuilder().build();
             JsonConverter jsonConverter = new JsonConverter();
             client.register(jsonConverter);
 
