@@ -10,7 +10,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.client.ClientBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -196,7 +195,7 @@ public class InitDatabase {
         }
 
         // 登録
-        ResteasyClient client = (ResteasyClient) ClientBuilder.newBuilder().build();
+        ResteasyClient client = new ResteasyClientBuilder().build();
         client.register(new JsonConverter());
         ResteasyWebTarget target = client.target(hostAddress);
         service = target.proxy(SystemService.class);

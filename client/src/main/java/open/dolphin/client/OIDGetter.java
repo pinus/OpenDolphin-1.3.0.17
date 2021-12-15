@@ -10,7 +10,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import javax.security.auth.login.LoginException;
 import javax.swing.*;
-import javax.ws.rs.client.ClientBuilder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -131,7 +130,7 @@ public class OIDGetter extends JPanel {
         protected String doInBackground() throws Exception {
 
             // Resteasy
-            ResteasyClient client = (ResteasyClient) ClientBuilder.newBuilder().build();
+            ResteasyClient client = new ResteasyClientBuilder().build();
             JsonConverter jsonConverter = new JsonConverter();
             client.register(jsonConverter);
 
