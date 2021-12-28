@@ -453,6 +453,12 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             logger.debug("not dirty");
             return;
         }
+        // Debug code
+        logger.info("save started: " + System.currentTimeMillis());
+        if (soaPane.getTextPane() == null) {
+            logger.info("TextPane is null");
+            return;
+        }
 
         // 保存ダイアログを表示し，パラメータを得る
         SaveParams params = getSaveParams();
