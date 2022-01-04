@@ -164,6 +164,8 @@ public class Autosave implements Runnable {
         dirty = newDirty;
     }
 
+    public boolean isDirty() { return dirty; }
+
     /**
      * 編集中の KarteEditor を AutosaveModel にしてファイル保存する.
      */
