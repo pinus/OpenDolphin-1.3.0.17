@@ -453,9 +453,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             logger.debug("not dirty");
             return;
         }
-        // Debug code
-        logger.info("save started: " + System.currentTimeMillis());
-        logger.info("autosave dirty: " + autosave.isDirty());
 
         // 保存ダイアログを表示し，パラメータを得る
         SaveParams params = getSaveParams();
@@ -470,6 +467,12 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             // cancel の場合はそのまま帰る
             return;
         }
+
+        // Autosave の dirty を解消して、干渉してくるのを防ぐ
+        autosave.run();
+
+        // Debug code
+        logger.info("save started: " + System.currentTimeMillis());
 
         // 文書末の余分な改行文字を削除する by masuda-senesi
         KarteStyledDocument doc = (KarteStyledDocument) soaPane.getTextPane().getDocument();
