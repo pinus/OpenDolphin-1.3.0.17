@@ -1,5 +1,7 @@
 package open.dolphin.client;
 
+import open.dolphin.JsonConverter;
+import open.dolphin.delegater.BusinessDelegater;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.dnd.KartePaneTransferHandler;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.ws.rs.BadRequestException;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -492,10 +495,36 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
             @Override
             protected String doInBackground() {
-                logger.debug("KarteSaveTask doInBackground");
+                logger.info("KarteSaveTask doInBackground");
                 String ret = null;
 
-                ddl.putKarte(saveModel);
+                // BadRequestError が始業初期に起こることがあるの workaround
+                int retry = 3;
+                while (retry > 0) {
+                    try {
+                        ddl.putKarte(saveModel);
+                        retry = 0;
+
+                    } catch (BadRequestException ex) {
+                        ex.printStackTrace(System.err);
+                        if (retry > 1) {
+                            logger.info("putKarte retry: " + retry);
+                            retry--;
+                        } else {
+                            int ans = JOptionPane.showConfirmDialog(
+                                null, "カルテ送信中にエラーが発生しました。再送しますか？", "Bad Request Error",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE
+                            );
+                            if (ans == JOptionPane.YES_OPTION) {
+                                retry = 3;
+                            } else {
+                                ddl.setErrorCode(BusinessDelegater.Result.ERROR);
+                                ddl.setErrorMessage(ex.getMessage());
+                                retry = 0;
+                            }
+                        }
+                    }
+                }
 
                 if (ddl.isNoError()) {
                     if (sendClaim) {
