@@ -495,36 +495,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
             @Override
             protected String doInBackground() {
-                logger.info("KarteSaveTask doInBackground");
+                logger.debug("KarteSaveTask doInBackground");
                 String ret = null;
-
-                // BadRequestError が始業初期に起こることがあるの workaround
-                int retry = 3;
-                while (retry > 0) {
-                    try {
-                        ddl.putKarte(saveModel);
-                        retry = 0;
-
-                    } catch (BadRequestException ex) {
-                        ex.printStackTrace(System.err);
-                        if (retry > 1) {
-                            logger.info("putKarte retry: " + retry);
-                            retry--;
-                        } else {
-                            int ans = JOptionPane.showConfirmDialog(
-                                null, "カルテ送信中にエラーが発生しました。再送しますか？", "Bad Request Error",
-                                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE
-                            );
-                            if (ans == JOptionPane.YES_OPTION) {
-                                retry = 3;
-                            } else {
-                                ddl.setErrorCode(BusinessDelegater.Result.ERROR);
-                                ddl.setErrorMessage(ex.getMessage());
-                                retry = 0;
-                            }
-                        }
-                    }
-                }
+                ddl.putKarte(saveModel);
 
                 if (ddl.isNoError()) {
                     if (sendClaim) {
