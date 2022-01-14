@@ -64,8 +64,7 @@ public class BusinessDelegater<T> {
                     if (ans == JOptionPane.YES_OPTION) {
                         retry = RETRY;
                     } else {
-                        setErrorCode(BusinessDelegater.Result.ERROR);
-                        setErrorMessage(e.getMessage());
+                        processError(e);
                         retry = 0;
                     }
                 }
