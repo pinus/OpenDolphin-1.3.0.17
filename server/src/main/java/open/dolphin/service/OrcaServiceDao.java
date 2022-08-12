@@ -9,6 +9,7 @@ import open.dolphin.orca.ClaimConst;
 import open.dolphin.orca.orcadao.OrcaDao;
 import open.dolphin.orca.orcadao.OrcaDbConnection;
 import open.dolphin.orca.orcadao.bean.Inputset;
+import open.dolphin.orca.orcadao.bean.OnshiYakuzai;
 import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
 import open.dolphin.util.ModelUtils;
@@ -36,6 +37,57 @@ public class OrcaServiceDao {
     String today = dtf.format(LocalDate.now());
     private OrcaDao dao = OrcaDao.getInstance();
     private Logger logger = Logger.getLogger(OrcaServiceApi.class);
+
+    /**
+     * 資格確認薬剤情報格納.
+     * TBL_ONSHI_YAKUZAI_SUB 資格確認薬剤情報格納副テーブル.
+     *
+     * @param ptnum
+     * @return List of OnshiYakuzai
+     */
+    public List<OnshiYakuzai> getDrugHistory(String ptnum) {
+        String sql = "select sryym, srydd, shoho_hakkoymd, rennum, yohocd, yohoname, shiji, srycd, yakuzainame, taniname, suryo, yoryo, kaisu, chozai_seqnum, shoho_seqnum "
+            + "from tbl_onshi_yakuzai_sub "
+            + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
+
+        List<OnshiYakuzai> bundle = new ArrayList<>();
+        OrcaDbConnection con = dao.getConnection(rs -> {
+            while (rs.next()) {
+                OnshiYakuzai onshiYakuzai = new OnshiYakuzai();
+                String sryym = rs.getString(1); // 202107
+                String srydd = rs.getString(2); // 25
+                onshiYakuzai.setIsoDate(String.format("%s-%s-%s", sryym.substring(0,4), sryym.substring(4), srydd));
+                onshiYakuzai.setShohoHakkoymd(rs.getString(3));
+                onshiYakuzai.setRennum(rs.getInt(4)); // 明細毎の連番
+                onshiYakuzai.setYohocd(rs.getString(5)); // 3桁の用法コード: 別表12 外用剤は 900
+                onshiYakuzai.setYohoname(rs.getString(6)); // 用法名称: 外用剤の場合空欄
+                onshiYakuzai.setShiji(rs.getString(7)); // 特別指示: 外用回数、部位
+                onshiYakuzai.setSrycd(rs.getString(8)); // 医薬品コード
+                onshiYakuzai.setYakuzainame(rs.getString(9)); // 薬剤名
+                onshiYakuzai.setTaniname(rs.getString(10)); // 単位名
+                onshiYakuzai.setSuryo(rs.getInt(11)); // 1日量
+                onshiYakuzai.setYoryo(rs.getInt(12)); // 1回量: 0 が入っている
+                onshiYakuzai.setKaisu(rs.getInt(13)); // x日分: 外用剤は 1
+                onshiYakuzai.setChozaiSeqnum(rs.getInt(14)); // 薬局 1,2,..
+                onshiYakuzai.setShohoSeqnum(rs.getInt(15)); // 医院 2,3,..
+
+                bundle.add(onshiYakuzai);
+            }
+        });
+        con.setParam(1, ptnum);
+        con.executeQuery(sql);
+
+        // sort
+        Collections.sort(bundle, (o1, o2) -> {
+            int date = o1.getIsoDate().compareTo(o2.getIsoDate());
+            int shohoSeq = o1.getShohoSeqnum() - o2.getShohoSeqnum();
+            int chozaiSeq = o1.getChozaiSeqnum() - o2.getChozaiSeqnum();
+            int rennum = o1.getRennum() - o2.getRennum();
+            return date == 0? shohoSeq == 0? chozaiSeq == 0? rennum : chozaiSeq : shohoSeq : date;
+        });
+
+        return bundle;
+    }
 
     /**
      * 中途終了患者情報.

@@ -5,6 +5,7 @@ import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
+import open.dolphin.orca.orcadao.bean.OnshiYakuzai;
 import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
 
@@ -164,4 +165,14 @@ public interface OrcaService {
     @POST
     @Path("getSubjectives")
     public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec);
+
+        /**
+         * TBL_ONSHI_YAKUZAI_SUB から資格確認薬剤情報を得る.
+         *
+         * @param ptnum
+         * @return List of OnshiYakuzai
+         */
+    @POST
+    @Path("getDrugHistory")
+    public List<OnshiYakuzai> getDrugHistory(String ptnum);
 }

@@ -9,6 +9,7 @@ import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
+import open.dolphin.orca.orcadao.bean.OnshiYakuzai;
 import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
 import open.dolphin.service.OrcaServiceApi;
@@ -19,9 +20,11 @@ import java.util.*;
 
 public class OrcaServiceTest {
 
-    private long wrap;
+    private long lap;
 
     public static void main(String[] argv) throws ReflectiveOperationException {
+        String userDir = System.getProperty("user.dir");
+        System.setProperty("jboss.server.base.dir", userDir);
         OrcaServiceTest test = new OrcaServiceTest();
         test.executeTest();
     }
@@ -121,19 +124,46 @@ public class OrcaServiceTest {
         System.out.println(JsonConverter.toJson(result));
     }
 
+    private void getDrugHistory(OrcaServiceDao orcaService) throws ReflectiveOperationException {
+        //List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "012773");
+        List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "037145");
+
+        StringBuilder sb = new StringBuilder();
+
+        String date = "";
+        int shoho = 0;
+        int chozai = 0;
+        for (OnshiYakuzai o : onshiYakuzai) {
+            if (!date.equals(o.getIsoDate()) || o.getShohoSeqnum() != shoho || o.getChozaiSeqnum() != chozai) {
+                date = o.getIsoDate();
+                shoho = o.getShohoSeqnum();
+                chozai = o.getChozaiSeqnum();
+                sb.append(String.format("%s 病院:%d 薬局:%d\n", date, shoho, chozai));
+            }
+            sb.append(o.getYakuzainame()); sb.append(" ");
+            if (o.getYohoname().equals("")) {
+                // 外用剤
+                sb.append(String.format("%s%s %s\n", o.getSuryo(), o.getTaniname(), o.getShiji()));
+            } else {
+                sb.append(String.format("%s%s %s %sTD\n", o.getSuryo(), o.getTaniname(), o.getYohoname(), o.getKaisu()));
+            }
+        }
+        System.out.println(sb.toString());
+    }
+
     private void executeTest() throws ReflectiveOperationException {
         OrcaServiceApi api = new OrcaServiceApi();
         OrcaServiceDao dao = new OrcaServiceDao();
 
-        wrap = System.currentTimeMillis();
+        lap = System.currentTimeMillis();
 
         //getWksryact(api); wrap = showWrap(wrap);
         //getWksryact(dao); wrap = showWrap(wrap);
         //getSyskanri(api); wrap = showWrap(wrap);
         //getSyskanri(dao); wrap = showWrap(wrap);
         //findTensu(dao); wrap = showWrap(wrap);
-        findDiagnosis(dao);
-        wrap = showWrap(wrap);
+        getDrugHistory(dao);
+        lap = showLap(lap);
         //getOrcaInputCdList(api); wrap = showWrap(wrap);
         //getOrcaInputCdList(dao); wrap = showWrap(wrap);
         //getOrcaDisease(api); wrap = showWrap(wrap);
@@ -152,8 +182,8 @@ public class OrcaServiceTest {
         }
     }
 
-    private long showWrap(long t) {
-        System.out.println("wrap = " + (System.currentTimeMillis() - t) + " msec");
+    private long showLap(long t) {
+        System.out.println("lap = " + (System.currentTimeMillis() - t) + " msec");
         return System.currentTimeMillis();
     }
 }

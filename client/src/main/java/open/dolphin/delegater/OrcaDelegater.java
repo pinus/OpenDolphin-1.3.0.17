@@ -2,6 +2,7 @@ package open.dolphin.delegater;
 
 import open.dolphin.dto.*;
 import open.dolphin.infomodel.*;
+import open.dolphin.orca.orcadao.bean.OnshiYakuzai;
 import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
 import open.dolphin.service.OrcaService;
@@ -218,4 +219,12 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
     public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec) {
         return getService().getSubjectives(spec);
     }
+
+    /**
+     * TBL_ONSHI_YAKUZAI_SUB から資格確認薬剤情報を得る.
+     *
+     * @param ptnum
+     * @return List of OnshiYakuzai
+     */
+    public List<OnshiYakuzai> getDrugHistory(String ptnum) { return getService().getDrugHistory(ptnum); }
 }
