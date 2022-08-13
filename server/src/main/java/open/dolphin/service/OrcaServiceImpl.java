@@ -93,4 +93,7 @@ public class OrcaServiceImpl implements OrcaService {
 
     @Override
     public List<OnshiYakuzai> getDrugHistory(String ptnum) { return dao.getDrugHistory(ptnum); }
+
+    @Override
+    public boolean hasDrugHistory(String ptnum) { return dao.hasDrugHistory(ptnum); }
 }

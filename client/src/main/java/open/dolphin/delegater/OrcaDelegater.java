@@ -227,4 +227,12 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      * @return List of OnshiYakuzai
      */
     public List<OnshiYakuzai> getDrugHistory(String ptnum) { return getService().getDrugHistory(ptnum); }
+
+    /**
+     * TBL_ONSHI_YAKUZAI_SUB に資格確認薬剤譲歩があるかどうかを返す.
+     *
+     * @param ptnum
+     * @return has drug history or not
+     */
+    public boolean hasDrugHistory(String ptnum) { return getService().hasDrugHistory(ptnum); }
 }

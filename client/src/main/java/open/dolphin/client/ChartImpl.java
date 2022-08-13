@@ -1,6 +1,7 @@
 package open.dolphin.client;
 
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.*;
 import open.dolphin.impl.care.CareMapDocument;
@@ -46,7 +47,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private final Logger logger;
     private final Preferences prefs;
     /// Document Plugin を格納する TabbedPane
-    private PNSTabbedPane tabbedPane;
+    private PNSBadgeTabbedPane tabbedPane;
     // Active になっているDocument Plugin
     private HashMap<String, ChartDocument> providers;
     // 患者インスペクタ
@@ -766,11 +767,11 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * ドキュメントタブを生成する.
      * 遅延実行される initComponents() から呼ばれるので遅延実行される.
      */
-    private PNSTabbedPane loadDocuments() {
+    private PNSBadgeTabbedPane loadDocuments() {
 
         providers = new HashMap<>();
 
-        PNSTabbedPane tab = new PNSTabbedPane();
+        PNSBadgeTabbedPane tab = new PNSBadgeTabbedPane();
         tab.setButtonPanelPadding(new Dimension(0, 4));
 
         ChartDocument[] plugin = new ChartDocument[6];
@@ -782,8 +783,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         plugin[5] = new Onshi();
 
         for (int index = 0; index < plugin.length; index++) {
-
-            if (index == 0) {
+            // start が必要な tab
+            if (index == 0 || index == 5) {
                 plugin[index].setContext(this);
                 plugin[index].start();
             }
@@ -807,6 +808,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         }
 
         return tab;
+    }
+
+    /**
+     * Tab に Badge を付ける.
+     * @param e
+     */
+    public void setBadge(BadgeEvent e) {
+        tabbedPane.setBadge(e);
     }
 
     /**

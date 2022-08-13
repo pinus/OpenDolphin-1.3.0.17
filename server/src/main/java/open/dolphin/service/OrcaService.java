@@ -166,13 +166,23 @@ public interface OrcaService {
     @Path("getSubjectives")
     public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec);
 
-        /**
-         * TBL_ONSHI_YAKUZAI_SUB から資格確認薬剤情報を得る.
-         *
-         * @param ptnum
-         * @return List of OnshiYakuzai
-         */
+    /**
+     * TBL_ONSHI_YAKUZAI_SUB から資格確認薬剤情報を得る.
+     *
+     * @param ptnum
+     * @return List of OnshiYakuzai
+     */
     @POST
     @Path("getDrugHistory")
     public List<OnshiYakuzai> getDrugHistory(String ptnum);
+
+    /**
+     * TBL_ONSHI_YAKUZAI_SUB に資格確認薬剤譲歩があるかどうかを返す.
+     *
+     * @param ptnum
+     * @return has drug history or not
+     */
+    @POST
+    @Path("hasDrugHistory")
+    public boolean hasDrugHistory(String ptnum);
 }

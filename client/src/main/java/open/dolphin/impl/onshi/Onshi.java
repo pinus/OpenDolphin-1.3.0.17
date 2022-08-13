@@ -1,7 +1,9 @@
 package open.dolphin.impl.onshi;
 
 import open.dolphin.client.AbstractChartDocument;
+import open.dolphin.client.ChartImpl;
 import open.dolphin.delegater.OrcaDelegater;
+import open.dolphin.event.BadgeEvent;
 import open.dolphin.helper.DBTask;
 import open.dolphin.helper.StringTool;
 import open.dolphin.orca.orcadao.bean.OnshiYakuzai;
@@ -17,9 +19,7 @@ public class Onshi extends AbstractChartDocument {
 
     private JTextPane textPane;
 
-    public Onshi() {
-        setTitle(TITLE);
-    }
+    public Onshi() { setTitle(TITLE); }
 
     @Override
     public void start() {
@@ -32,17 +32,32 @@ public class Onshi extends AbstractChartDocument {
         scroller.setVerticalScrollBarPolicy(PNSScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroller.setHorizontalScrollBarPolicy(PNSScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         myPanel.add(scroller);
+
+        DBTask<Boolean> task = new DBTask<Boolean>() {
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                String ptnum = getContext().getPatient().getPatientId();
+                OrcaDelegater delegater = new OrcaDelegater();
+                return delegater.hasDrugHistory(ptnum);
+            }
+
+            public void succeeded(Boolean hasHistory) {
+                BadgeEvent e = new BadgeEvent(Onshi.this);
+                e.setTabIndex(5);
+                e.setBadgeNumber(hasHistory? 1 : 0);
+                ((ChartImpl) getContext()).setBadge(e);
+            }
+        };
+        task.execute();
     }
 
     @Override
     public void enter() {
-        String ptnum = getContext().getPatient().getPatientId();
-        OrcaDelegater delegater = new OrcaDelegater();
-
         DBTask<List<OnshiYakuzai>> task = new DBTask<List<OnshiYakuzai>>() {
 
             @Override
             protected List<OnshiYakuzai> doInBackground() {
+                String ptnum = getContext().getPatient().getPatientId();
                 OrcaDelegater delegater = new OrcaDelegater();
                 return delegater.getDrugHistory(ptnum);
             }

@@ -151,6 +151,11 @@ public class OrcaServiceTest {
         System.out.println(sb.toString());
     }
 
+    private void hasDrugHistory(OrcaServiceDao orcaService) {
+        boolean hasDrugHistory = orcaService.hasDrugHistory("037145");
+        System.out.println("has drug history = " + hasDrugHistory);
+    }
+
     private void executeTest() throws ReflectiveOperationException {
         OrcaServiceApi api = new OrcaServiceApi();
         OrcaServiceDao dao = new OrcaServiceDao();
@@ -162,7 +167,8 @@ public class OrcaServiceTest {
         //getSyskanri(api); wrap = showWrap(wrap);
         //getSyskanri(dao); wrap = showWrap(wrap);
         //findTensu(dao); wrap = showWrap(wrap);
-        getDrugHistory(dao);
+        //getDrugHistory(dao);
+        hasDrugHistory(dao);
         lap = showLap(lap);
         //getOrcaInputCdList(api); wrap = showWrap(wrap);
         //getOrcaInputCdList(dao); wrap = showWrap(wrap);
