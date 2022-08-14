@@ -2,6 +2,7 @@ package open.dolphin.delegater;
 
 import open.dolphin.dto.*;
 import open.dolphin.infomodel.*;
+import open.dolphin.orca.orcadao.bean.OnshiKenshin;
 import open.dolphin.orca.orcadao.bean.OnshiYakuzai;
 import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
@@ -224,15 +225,31 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
      * TBL_ONSHI_YAKUZAI_SUB から資格確認薬剤情報を得る.
      *
      * @param ptnum
-     * @return List of OnshiYakuzai
+     * @return List of Onshi Yakuzai
      */
     public List<OnshiYakuzai> getDrugHistory(String ptnum) { return getService().getDrugHistory(ptnum); }
 
     /**
-     * TBL_ONSHI_YAKUZAI_SUB に資格確認薬剤譲歩があるかどうかを返す.
+     * TBL_ONSHI_YAKUZAI_SUB に資格確認薬剤情報があるかどうかを返す.
      *
      * @param ptnum
      * @return has drug history or not
      */
     public boolean hasDrugHistory(String ptnum) { return getService().hasDrugHistory(ptnum); }
+
+    /**
+     * TBL_ONSHI_KENSHIN_SUB から資格確認特定健診情報を得る.
+     *
+     * @param ptnum
+     * @return List of Onshi Kenshin
+     */
+    public List<OnshiKenshin> getKenshin(String ptnum) { return getService().getKenshin(ptnum); }
+
+    /**
+     * TBL_ONSHI_KENSHIN_SUB に資格確認特定健診情報があるかどうかを返す.
+     *
+     * @param ptnum
+     * @return has onshi kenshin or not
+     */
+    public boolean hasKenshin(String ptnum) { return getService().hasKenshin(ptnum); }
 }

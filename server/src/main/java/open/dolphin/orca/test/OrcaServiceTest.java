@@ -9,6 +9,7 @@ import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
+import open.dolphin.orca.orcadao.bean.OnshiKenshin;
 import open.dolphin.orca.orcadao.bean.OnshiYakuzai;
 import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
@@ -156,6 +157,46 @@ public class OrcaServiceTest {
         System.out.println("has drug history = " + hasDrugHistory);
     }
 
+    private void getKenshin(OrcaServiceDao orcaService) {
+        List<OnshiKenshin> kenshin = orcaService.getKenshin("037145");
+
+        StringBuilder sb = new StringBuilder();
+        String date = "";
+
+        for (OnshiKenshin k : kenshin) {
+            if (!date.equals(k.getIsoDate())) {
+                date = k.getIsoDate();
+                sb.append(date); sb.append("\n");
+            }
+            String v = k.getDataValue();
+            switch (k.getKomokuname()) {
+                case "尿糖":
+                case "尿蛋白":
+                    k.setDataValue(v.equals("1")? "-" : v.equals("2")? "±" : v.equals("3")? "+" : v.equals("4")? "++" : "+++");
+                case "既往歴":
+                case "自覚症状":
+                case "他覚症状":
+                    k.setDataValue(v.equals("1")? "特記すべきことあり" : "特記すべきことなし");
+                case "メタボリックシンドローム判定":
+                    k.setDataValue(v.equals("1")? "基準該当" : v.equals("2")? "予備軍該当" : v.equals("3")? "非該当" : "判定不能");
+                case "服薬1(血圧)":
+                case "服薬2(血糖)":
+                case "服薬3(脂質)":
+                    k.setDataValue(v.equals("1")? "服薬あり" : "服薬なし");
+                case "喫煙":
+                    k.setDataValue(v.equals("1")? "はい" : "いいえ");
+            }
+
+            sb.append(String.format("%s %s %s\n", k.getKomokuname(), k.getDataValue(), k.getDataTani()));
+        }
+        System.out.println(sb.toString());
+    }
+
+    private void hasKenshin(OrcaServiceDao orcaService) {
+        boolean hasKenshin = orcaService.hasKenshin("037145");
+        System.out.println("has kensihin = " + hasKenshin);
+    }
+
     private void executeTest() throws ReflectiveOperationException {
         OrcaServiceApi api = new OrcaServiceApi();
         OrcaServiceDao dao = new OrcaServiceDao();
@@ -168,7 +209,9 @@ public class OrcaServiceTest {
         //getSyskanri(dao); wrap = showWrap(wrap);
         //findTensu(dao); wrap = showWrap(wrap);
         //getDrugHistory(dao);
-        hasDrugHistory(dao);
+        //hasDrugHistory(dao);
+        getKenshin(dao);
+        //hasKenshin(dao);
         lap = showLap(lap);
         //getOrcaInputCdList(api); wrap = showWrap(wrap);
         //getOrcaInputCdList(dao); wrap = showWrap(wrap);

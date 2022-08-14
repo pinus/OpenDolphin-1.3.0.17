@@ -5,6 +5,7 @@ import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
+import open.dolphin.orca.orcadao.bean.OnshiKenshin;
 import open.dolphin.orca.orcadao.bean.OnshiYakuzai;
 import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
@@ -96,4 +97,10 @@ public class OrcaServiceImpl implements OrcaService {
 
     @Override
     public boolean hasDrugHistory(String ptnum) { return dao.hasDrugHistory(ptnum); }
+
+    @Override
+    public List<OnshiKenshin> getKenshin(String ptnum) { return dao.getKenshin(ptnum); }
+
+    @Override
+    public boolean hasKenshin(String ptnum) { return dao.hasKenshin(ptnum); }
 }
