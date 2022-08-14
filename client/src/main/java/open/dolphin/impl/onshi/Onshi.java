@@ -13,6 +13,9 @@ import open.dolphin.ui.PNSScrollPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -91,6 +94,9 @@ public class Onshi extends AbstractChartDocument {
             @Override
             public void succeeded(List<OnshiYakuzai> onshiYakuzai) {
                 StringBuilder sb = new StringBuilder();
+
+                // 日付順
+                sb.append("日付順\n");
                 String date = "";
                 int shoho = 0;
                 int chozai = 0;
@@ -99,7 +105,7 @@ public class Onshi extends AbstractChartDocument {
                         date = o.getIsoDate();
                         shoho = o.getShohoSeqnum();
                         chozai = o.getChozaiSeqnum();
-                        sb.append(String.format("%s 医療機関:%d 薬局:%d\n", date, shoho, chozai));
+                        sb.append(String.format("\n%s 医療機関:%d 薬局:%d\n", date, shoho, chozai));
                     }
                     String yakuzainame = o.getYakuzainame();
                     yakuzainame = StringTool.toHankakuNumber(yakuzainame);
@@ -114,6 +120,29 @@ public class Onshi extends AbstractChartDocument {
                         sb.append(String.format("%s%s %s %sTD\n", o.getSuryo(), o.getTaniname(), o.getYohoname(), o.getKaisu()));
                     }
                 }
+
+                // 薬剤別
+                sb.append("\n薬剤別\n\n");
+                // sort
+                Collections.sort(onshiYakuzai, (o1, o2) -> {
+                    int dat = o1.getIsoDate().compareTo(o2.getIsoDate());
+                    int name = o1.getYakuzainame().compareTo(o2.getYakuzainame());
+                    int yoho = o1.getYohocd().compareTo(o2.getYohocd());
+                    return yoho == 0? name == 0? dat : name : yoho;
+                });
+
+                for (OnshiYakuzai o : onshiYakuzai) {
+                    if (o.getYohocd().equals("900")) {
+                        // 外用剤
+                        sb.append(String.format("%s %s %s%s\n", o.getYakuzainame(), o.getIsoDate(), o.getSuryo(), o.getTaniname()));
+                    } else {
+                        LocalDate startDate = LocalDate.parse(o.getIsoDate());
+                        LocalDate endDate = startDate.plusDays(o.getKaisu());
+                        date = String.format("%s〜%s", startDate.format(DateTimeFormatter.ISO_DATE), endDate.format(DateTimeFormatter.ISO_DATE));
+                        sb.append(String.format("%s %s\n", o.getYakuzainame(), date));
+                    }
+                }
+
                 textPane.setText(sb.toString());
             }
         };
@@ -221,7 +250,7 @@ public class Onshi extends AbstractChartDocument {
         String[] item = str.split("、");
         for (int i = 0; i<item.length; i++) {
             String[] map = item[i].split(":");
-            if (val.equals(map[0].trim())) {
+            if (val.equals(map[0])) {
                 return map[1];
             }
         }

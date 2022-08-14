@@ -17,6 +17,8 @@ import open.dolphin.service.OrcaServiceApi;
 import open.dolphin.service.OrcaServiceDao;
 
 import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class OrcaServiceTest {
@@ -126,29 +128,31 @@ public class OrcaServiceTest {
     }
 
     private void getDrugHistory(OrcaServiceDao orcaService) throws ReflectiveOperationException {
-        //List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "012773");
-        List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "037145");
+        List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "012773");
+        //List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "037145");
 
         StringBuilder sb = new StringBuilder();
 
-        String date = "";
-        int shoho = 0;
-        int chozai = 0;
+        // sort
+        Collections.sort(onshiYakuzai, (o1, o2) -> {
+            int date = o1.getIsoDate().compareTo(o2.getIsoDate());
+            int name = o1.getYakuzainame().compareTo(o2.getYakuzainame());
+            int yoho = o1.getYohocd().compareTo(o2.getYohocd());
+            return yoho == 0? name == 0? date : name : yoho;
+        });
+
         for (OnshiYakuzai o : onshiYakuzai) {
-            if (!date.equals(o.getIsoDate()) || o.getShohoSeqnum() != shoho || o.getChozaiSeqnum() != chozai) {
-                date = o.getIsoDate();
-                shoho = o.getShohoSeqnum();
-                chozai = o.getChozaiSeqnum();
-                sb.append(String.format("%s 病院:%d 薬局:%d\n", date, shoho, chozai));
-            }
-            sb.append(o.getYakuzainame()); sb.append(" ");
-            if (o.getYohoname().equals("")) {
+            if (o.getYohocd().equals("900")) {
                 // 外用剤
-                sb.append(String.format("%s%s %s\n", o.getSuryo(), o.getTaniname(), o.getShiji()));
+                sb.append(String.format("%s %s %s%s\n", o.getYakuzainame(), o.getIsoDate(), o.getSuryo(), o.getTaniname()));
             } else {
-                sb.append(String.format("%s%s %s %sTD\n", o.getSuryo(), o.getTaniname(), o.getYohoname(), o.getKaisu()));
+                LocalDate startDate = LocalDate.parse(o.getIsoDate());
+                LocalDate endDate = startDate.plusDays(o.getKaisu());
+                String date = String.format("%s〜%s", startDate.format(DateTimeFormatter.ISO_DATE), endDate.format(DateTimeFormatter.ISO_DATE));
+                sb.append(String.format("%s %s\n", o.getYakuzainame(), date));
             }
         }
+
         System.out.println(sb.toString());
     }
 
@@ -208,9 +212,9 @@ public class OrcaServiceTest {
         //getSyskanri(api); wrap = showWrap(wrap);
         //getSyskanri(dao); wrap = showWrap(wrap);
         //findTensu(dao); wrap = showWrap(wrap);
-        //getDrugHistory(dao);
+        getDrugHistory(dao);
         //hasDrugHistory(dao);
-        getKenshin(dao);
+        //getKenshin(dao);
         //hasKenshin(dao);
         lap = showLap(lap);
         //getOrcaInputCdList(api); wrap = showWrap(wrap);
