@@ -108,9 +108,7 @@ public class Onshi extends AbstractChartDocument {
                         sb.append(String.format("\n%s 医療機関:%d 薬局:%d\n", date, shoho, chozai));
                     }
                     String yakuzainame = o.getYakuzainame();
-                    yakuzainame = StringTool.toHankakuNumber(yakuzainame);
-                    yakuzainame = StringTool.toHankakuUpperLower(yakuzainame);
-                    yakuzainame = yakuzainame.replaceAll("．", ".");
+                    yakuzainame = toHankaku(yakuzainame);
 
                     sb.append(String.format("    %s ", yakuzainame));
                     if (o.getYohoname().equals("")) {
@@ -132,14 +130,15 @@ public class Onshi extends AbstractChartDocument {
                 });
 
                 for (OnshiYakuzai o : onshiYakuzai) {
+                    String yakuzainame = toHankaku(o.getYakuzainame());
                     if (o.getYohocd().equals("900")) {
                         // 外用剤
-                        sb.append(String.format("%s %s %s%s\n", o.getYakuzainame(), o.getIsoDate(), o.getSuryo(), o.getTaniname()));
+                        sb.append(String.format("%s %s%s, %s\n", yakuzainame, o.getSuryo(), o.getTaniname(), o.getIsoDate()));
                     } else {
                         LocalDate startDate = LocalDate.parse(o.getIsoDate());
                         LocalDate endDate = startDate.plusDays(o.getKaisu());
-                        date = String.format("%s〜%s", startDate.format(DateTimeFormatter.ISO_DATE), endDate.format(DateTimeFormatter.ISO_DATE));
-                        sb.append(String.format("%s %s\n", o.getYakuzainame(), date));
+                        date = String.format("%s ~ %s", startDate.format(DateTimeFormatter.ISO_DATE), endDate.format(DateTimeFormatter.ISO_DATE));
+                        sb.append(String.format("%s, %s\n", yakuzainame, date));
                     }
                 }
 
@@ -238,6 +237,19 @@ public class Onshi extends AbstractChartDocument {
             }
         };
         task.execute();
+    }
+
+    private String toHankaku(String str) {
+        str = StringTool.toHankakuNumber(str);
+        str = StringTool.toHankakuUpperLower(str);
+        str = str.replaceAll("　", " ");
+        str = str.replaceAll("（", "(");
+        str = str.replaceAll("）", ")");
+        str = str.replaceAll("．", ".");
+        str = str.replaceAll("％", "%");
+        str = str.replaceAll("「", "｢");
+        str = str.replaceAll("」", "｣");
+        return str;
     }
 
     /**
