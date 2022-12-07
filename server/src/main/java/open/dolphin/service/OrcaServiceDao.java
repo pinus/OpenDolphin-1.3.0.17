@@ -663,12 +663,25 @@ public class OrcaServiceDao {
      * @return List of Onshi Yakuzai
      */
     public List<OnshiYakuzai> getDrugHistory(String ptnum) {
-        String sql = "select sryym, srydd, shoho_hakkoymd, rennum, yohocd, yohoname, shiji, srycd, yakuzainame, taniname, suryo, yoryo, kaisu, chozai_seqnum, shoho_seqnum "
+        String sql = "select sryym, hospcd, hospname, chozaicd, chozainame, chozai_seqnum, chozai_kbn, shoho_seqnum, shoho_kbn "
+            + "from tbl_onshi_yakuzai_main "
+            + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
+
+        OrcaDbConnection con = dao.getConnection(rs -> {
+            while (rs.next()) {
+
+            }
+        });
+        con.setParam(1, ptnum);
+        con.executeQuery(sql);
+
+
+        sql = "select sryym, srydd, shoho_hakkoymd, rennum, yohocd, yohoname, shiji, srycd, yakuzainame, taniname, suryo, yoryo, kaisu, chozai_seqnum, shoho_seqnum "
             + "from tbl_onshi_yakuzai_sub "
             + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
 
         List<OnshiYakuzai> bundle = new ArrayList<>();
-        OrcaDbConnection con = dao.getConnection(rs -> {
+        con = dao.getConnection(rs -> {
             while (rs.next()) {
                 OnshiYakuzai onshiYakuzai = new OnshiYakuzai();
                 String sryym = rs.getString(1); // 202107

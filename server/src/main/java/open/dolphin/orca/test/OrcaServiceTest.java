@@ -128,8 +128,8 @@ public class OrcaServiceTest {
     }
 
     private void getDrugHistory(OrcaServiceDao orcaService) throws ReflectiveOperationException {
-        List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "012773");
-        //List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "037145");
+        List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "008617");
+        //List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "012773");
 
         StringBuilder sb = new StringBuilder();
 
