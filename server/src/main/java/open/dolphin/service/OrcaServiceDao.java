@@ -667,9 +667,23 @@ public class OrcaServiceDao {
             + "from tbl_onshi_yakuzai_main "
             + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
 
+        class OnshiYakuzaiMain {
+            int id;
+            boolean isMe;
+            String facilityName;
+            String facilityCode;
+
+            public boolean isPharmacy () {
+                return facilityCode.substring(2,3).equals("4");
+            }
+        }
+
+        HashMap<String, List<OnshiYakuzaiMain>> facilities = new HashMap<>();
+
         OrcaDbConnection con = dao.getConnection(rs -> {
             while (rs.next()) {
-
+                String sryym = rs.getString(1);
+                System.out.println("----- " + sryym);
             }
         });
         con.setParam(1, ptnum);
