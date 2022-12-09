@@ -65,14 +65,14 @@ public class OnshiYakuzai {
     private int kaisu;
 
     /**
-     * 調剤期間毎連番.
+     * 調剤薬局名.
      */
-    private int chozaiSeqnum;
+    private String chozaiName;
 
     /**
-     * 処方期間毎連番.
+     * 処方機関名.
      */
-    private int shohoSeqnum;
+    private String hospName;
 
     /**
      * isoDate
@@ -291,38 +291,38 @@ public class OnshiYakuzai {
     }
 
     /**
-     * chozaiSeqnum
+     * chozaiName
      *
-     * @return chozaiSeqnum
+     * @return chozaiName
      */
-    public int getChozaiSeqnum() {
-        return chozaiSeqnum;
+    public String getChozaiName() {
+        return chozaiName;
     }
 
     /**
-     * chozaiSeqnum
+     * chozaiName
      *
-     * @param chozaiSeqnum to set
+     * @param chozaiName to set
      */
-    public void setChozaiSeqnum(int chozaiSeqnum) {
-        this.chozaiSeqnum = chozaiSeqnum;
+    public void setChozaiName(String chozaiName) {
+        this.chozaiName = chozaiName;
     }
 
     /**
-     * shohoSeqnum
+     * hospName
      *
-     * @return shohoSeqnum
+     * @return hospName
      */
-    public int getShohoSeqnum() {
-        return shohoSeqnum;
+    public String getHospName() {
+        return hospName;
     }
 
     /**
-     * shohoSeqnum
+     * hospName
      *
-     * @param shohoSeqnum to set
+     * @param hospName to set
      */
-    public void setShohoSeqnum(int shohoSeqnum) {
-        this.shohoSeqnum = shohoSeqnum;
+    public void setHospName(String hospName) {
+        this.hospName = hospName;
     }
 }

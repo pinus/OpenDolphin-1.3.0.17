@@ -667,28 +667,61 @@ public class OrcaServiceDao {
             + "from tbl_onshi_yakuzai_main "
             + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
 
-        class OnshiYakuzaiMain {
+        class Facility {
             int id;
             boolean isMe;
             String facilityName;
             String facilityCode;
 
-            public boolean isPharmacy () {
-                return facilityCode.substring(2,3).equals("4");
-            }
+            public int getId() { return id; }
+            public void setId(int id) { this.id = id; }
+            public boolean isMe() { return isMe; }
+            public void setMe(boolean isMe) { this.isMe = isMe;}
+            public String getFacilityName() { return facilityName; }
+            public void setFacilityName(String facilityName) { this.facilityName = facilityName;}
+            public String getFacilityCode() { return facilityCode; }
+            public void setFacilityCode(String facilityCode) { this.facilityCode = facilityCode; }
+            public boolean isPharmacy () { return facilityCode.substring(2,3).equals("4"); }
         }
 
-        HashMap<String, List<OnshiYakuzaiMain>> facilities = new HashMap<>();
+        HashMap<String, List<Facility>> facilities = new HashMap<>();
 
         OrcaDbConnection con = dao.getConnection(rs -> {
             while (rs.next()) {
                 String sryym = rs.getString(1);
-                System.out.println("----- " + sryym);
+                String hospcd = rs.getString(2);
+                String hospname = rs.getString(3);
+                String chozaicd = rs.getString(4);
+                String chozainame = rs.getString(5);
+                int chozaiSeqnum = rs.getInt(6);
+                String chozaiKbn = rs.getString(7);
+                int shohoSeqnum = rs.getInt(8);
+                String shohoKbn = rs.getString(9);
+
+                List<Facility> facilityList = facilities.get(sryym);
+                if (Objects.isNull(facilityList)) { facilityList = new ArrayList<>(); }
+
+                if (facilityList.stream().noneMatch(f -> f.getId() == chozaiSeqnum )) {
+                    Facility facility = new Facility();
+                    facility.setId(chozaiSeqnum);
+                    facility.setMe(chozaiKbn == "1");
+                    facility.setFacilityName(hospname);
+                    facility.setFacilityCode(hospcd);
+                    facilityList.add(facility);
+                }
+                if (facilityList.stream().noneMatch(f -> f.getId() == shohoSeqnum)) {
+                    Facility facility = new Facility();
+                    facility.setId(shohoSeqnum);
+                    facility.setMe(shohoKbn == "1");
+                    facility.setFacilityName(chozainame);
+                    facility.setFacilityCode(chozaicd);
+                    facilityList.add(facility);
+                }
             }
         });
+
         con.setParam(1, ptnum);
         con.executeQuery(sql);
-
 
         sql = "select sryym, srydd, shoho_hakkoymd, rennum, yohocd, yohoname, shiji, srycd, yakuzainame, taniname, suryo, yoryo, kaisu, chozai_seqnum, shoho_seqnum "
             + "from tbl_onshi_yakuzai_sub "
@@ -712,8 +745,15 @@ public class OrcaServiceDao {
                 onshiYakuzai.setSuryo(rs.getFloat(11)); // 1日量
                 onshiYakuzai.setYoryo(rs.getFloat(12)); // 1回量: 0 が入っている
                 onshiYakuzai.setKaisu(rs.getInt(13)); // x日分: 外用剤は 1
+
+                int chozaiSeqnum = rs.getInt(14);
+                int shohoSeqnum = rs.getInt(15);
+                List<Facility> facilityList = facilities.get(sryym);
+
+
                 onshiYakuzai.setChozaiSeqnum(rs.getInt(14)); // 薬局 1,2,..
                 onshiYakuzai.setShohoSeqnum(rs.getInt(15)); // 医院 2,3,..
+
 
                 bundle.add(onshiYakuzai);
             }
@@ -724,8 +764,8 @@ public class OrcaServiceDao {
         // sort
         Collections.sort(bundle, (o1, o2) -> {
             int date = o1.getIsoDate().compareTo(o2.getIsoDate());
-            int shohoSeq = o1.getShohoSeqnum() - o2.getShohoSeqnum();
-            int chozaiSeq = o1.getChozaiSeqnum() - o2.getChozaiSeqnum();
+            int shohoSeq = o1.getHospName().compareTo(o2.getHospName());
+            int chozaiSeq = o1.getChozaiName().compareTo(o2.getChozaiName());
             int rennum = o1.getRennum() - o2.getRennum();
             return date == 0? shohoSeq == 0? chozaiSeq == 0? rennum : chozaiSeq : shohoSeq : date;
         });

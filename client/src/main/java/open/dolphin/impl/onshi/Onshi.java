@@ -98,17 +98,16 @@ public class Onshi extends AbstractChartDocument {
                 // 日付順
                 sb.append("日付順\n");
                 String date = "";
-                int shoho = 0;
-                int chozai = 0;
+                String shoho = "";
+                String chozai = "";
                 for (OnshiYakuzai o : onshiYakuzai) {
-                    if (!date.equals(o.getIsoDate()) || o.getShohoSeqnum() != shoho || o.getChozaiSeqnum() != chozai) {
+                    if (!date.equals(o.getIsoDate()) || !o.getHospName().equals(shoho) || !o.getChozaiName() .equals(chozai)) {
                         date = o.getIsoDate();
-                        shoho = o.getShohoSeqnum();
-                        chozai = o.getChozaiSeqnum();
-                        sb.append(String.format("\n%s 医療機関:%d 薬局:%d\n", date, shoho, chozai));
+                        shoho = o.getHospName();
+                        chozai = o.getChozaiName();
+                        sb.append(String.format("\n%s %s %s\n", date, shoho, chozai));
                     }
                     String yakuzainame = o.getYakuzainame();
-                    yakuzainame = toHankaku(yakuzainame);
 
                     sb.append(String.format("    %s ", yakuzainame));
                     String suryo = Float.toString(o.getSuryo()).replaceAll(".0$", "");
