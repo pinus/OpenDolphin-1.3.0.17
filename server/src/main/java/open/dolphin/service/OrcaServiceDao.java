@@ -1,5 +1,6 @@
 package open.dolphin.service;
 
+import open.dolphin.JsonConverter;
 import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.dto.OrcaEntry;
 import open.dolphin.dto.PatientVisitSpec;
@@ -667,6 +668,7 @@ public class OrcaServiceDao {
             + "from tbl_onshi_yakuzai_main "
             + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
 
+        //病院名 or 薬局名 bean
         class Facility {
             int id;
             boolean isMe;
@@ -684,6 +686,7 @@ public class OrcaServiceDao {
             public boolean isPharmacy () { return facilityCode.substring(2,3).equals("4"); }
         }
 
+        // sryym をキーとする map
         HashMap<String, List<Facility>> facilities = new HashMap<>();
 
         OrcaDbConnection con = dao.getConnection(rs -> {
@@ -701,6 +704,7 @@ public class OrcaServiceDao {
                 List<Facility> facilityList = facilities.get(sryym);
                 if (Objects.isNull(facilityList)) { facilityList = new ArrayList<>(); }
 
+                // seqnum を id として, facility beans を作る
                 if (facilityList.stream().noneMatch(f -> f.getId() == chozaiSeqnum )) {
                     Facility facility = new Facility();
                     facility.setId(chozaiSeqnum);
@@ -708,6 +712,7 @@ public class OrcaServiceDao {
                     facility.setFacilityName(hospname);
                     facility.setFacilityCode(hospcd);
                     facilityList.add(facility);
+                    facilities.put(sryym, facilityList);
                 }
                 if (facilityList.stream().noneMatch(f -> f.getId() == shohoSeqnum)) {
                     Facility facility = new Facility();
@@ -716,6 +721,7 @@ public class OrcaServiceDao {
                     facility.setFacilityName(chozainame);
                     facility.setFacilityCode(chozaicd);
                     facilityList.add(facility);
+                    facilities.put(sryym, facilityList);
                 }
             }
         });
@@ -746,14 +752,21 @@ public class OrcaServiceDao {
                 onshiYakuzai.setYoryo(rs.getFloat(12)); // 1回量: 0 が入っている
                 onshiYakuzai.setKaisu(rs.getInt(13)); // x日分: 外用剤は 1
 
+                // facility beans から facility name を取得
                 int chozaiSeqnum = rs.getInt(14);
                 int shohoSeqnum = rs.getInt(15);
                 List<Facility> facilityList = facilities.get(sryym);
 
+                Bug Bug Bug
+                facilityList.stream().forEach(f -> {
+                    System.out.println(" id = " + f.getId());
+                    System.out.println(" name = " + f.getFacilityName());
+                });
 
-                onshiYakuzai.setChozaiSeqnum(rs.getInt(14)); // 薬局 1,2,..
-                onshiYakuzai.setShohoSeqnum(rs.getInt(15)); // 医院 2,3,..
-
+                Optional<Facility> chozai = facilityList.stream().filter(f -> f.getId() == chozaiSeqnum).findAny();
+                onshiYakuzai.setChozaiName(chozai.isPresent()? chozai.get().facilityName : "");
+                Optional<Facility> shoho = facilityList.stream().filter(f -> f.getId() == shohoSeqnum).findAny();
+                onshiYakuzai.setChozaiName(shoho.isPresent()? shoho.get().facilityName : "");
 
                 bundle.add(onshiYakuzai);
             }
