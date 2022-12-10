@@ -664,29 +664,11 @@ public class OrcaServiceDao {
      * @return List of Onshi Yakuzai
      */
     public List<OnshiYakuzai> getDrugHistory(String ptnum) {
-        String sql = "select sryym, hospcd, hospname, chozaicd, chozainame, chozai_seqnum, chozai_kbn, shoho_seqnum, shoho_kbn "
+        String sql = "select sryym, hospcd, hospname, chozaicd, chozainame, chozai_seqnum, chozai_kbn, shoho_seqnum, shoho_kbn, ptid "
             + "from tbl_onshi_yakuzai_main "
             + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
 
-        //病院名 or 薬局名 bean
-        class Facility {
-            int id;
-            boolean isMe;
-            String facilityName;
-            String facilityCode;
-
-            public int getId() { return id; }
-            public void setId(int id) { this.id = id; }
-            public boolean isMe() { return isMe; }
-            public void setMe(boolean isMe) { this.isMe = isMe;}
-            public String getFacilityName() { return facilityName; }
-            public void setFacilityName(String facilityName) { this.facilityName = facilityName;}
-            public String getFacilityCode() { return facilityCode; }
-            public void setFacilityCode(String facilityCode) { this.facilityCode = facilityCode; }
-            public boolean isPharmacy () { return facilityCode.substring(2,3).equals("4"); }
-        }
-
-        // sryym をキーとする map
+        // String.valueOf(ptid) + srymm をキーとして facility を保持する map
         HashMap<String, List<Facility>> facilities = new HashMap<>();
 
         OrcaDbConnection con = dao.getConnection(rs -> {
@@ -700,28 +682,31 @@ public class OrcaServiceDao {
                 String chozaiKbn = rs.getString(7);
                 int shohoSeqnum = rs.getInt(8);
                 String shohoKbn = rs.getString(9);
+                int ptid = rs.getInt(10);
 
-                List<Facility> facilityList = facilities.get(sryym);
+                String key = String.valueOf(ptid) + sryym;
+                List<Facility> facilityList = facilities.get(key);
                 if (Objects.isNull(facilityList)) { facilityList = new ArrayList<>(); }
 
-                // seqnum を id として, facility beans を作る
-                if (facilityList.stream().noneMatch(f -> f.getId() == chozaiSeqnum )) {
+                // seqnum !=0 を id として, facility beans を作る
+                // chozaiSequnum は hospNameに対応, shohoSeqnum は chozaiName に対応している
+                if (chozaiSeqnum != 0 && facilityList.stream().noneMatch(f -> f.getId() == chozaiSeqnum)) {
                     Facility facility = new Facility();
                     facility.setId(chozaiSeqnum);
                     facility.setMe(chozaiKbn == "1");
                     facility.setFacilityName(hospname);
                     facility.setFacilityCode(hospcd);
                     facilityList.add(facility);
-                    facilities.put(sryym, facilityList);
+                    facilities.put(key, facilityList);
                 }
-                if (facilityList.stream().noneMatch(f -> f.getId() == shohoSeqnum)) {
+                if (shohoSeqnum != 0 && facilityList.stream().noneMatch(f -> f.getId() == shohoSeqnum)) {
                     Facility facility = new Facility();
                     facility.setId(shohoSeqnum);
                     facility.setMe(shohoKbn == "1");
                     facility.setFacilityName(chozainame);
                     facility.setFacilityCode(chozaicd);
                     facilityList.add(facility);
-                    facilities.put(sryym, facilityList);
+                    facilities.put(key, facilityList);
                 }
             }
         });
@@ -729,7 +714,7 @@ public class OrcaServiceDao {
         con.setParam(1, ptnum);
         con.executeQuery(sql);
 
-        sql = "select sryym, srydd, shoho_hakkoymd, rennum, yohocd, yohoname, shiji, srycd, yakuzainame, taniname, suryo, yoryo, kaisu, chozai_seqnum, shoho_seqnum "
+        sql = "select sryym, srydd, shoho_hakkoymd, rennum, yohocd, yohoname, shiji, srycd, yakuzainame, taniname, suryo, yoryo, kaisu, chozai_seqnum, shoho_seqnum, ptid "
             + "from tbl_onshi_yakuzai_sub "
             + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
 
@@ -751,22 +736,18 @@ public class OrcaServiceDao {
                 onshiYakuzai.setSuryo(rs.getFloat(11)); // 1日量
                 onshiYakuzai.setYoryo(rs.getFloat(12)); // 1回量: 0 が入っている
                 onshiYakuzai.setKaisu(rs.getInt(13)); // x日分: 外用剤は 1
-
-                // facility beans から facility name を取得
                 int chozaiSeqnum = rs.getInt(14);
                 int shohoSeqnum = rs.getInt(15);
-                List<Facility> facilityList = facilities.get(sryym);
+                int ptid = rs.getInt(16);
 
-                Bug Bug Bug
-                facilityList.stream().forEach(f -> {
-                    System.out.println(" id = " + f.getId());
-                    System.out.println(" name = " + f.getFacilityName());
-                });
-
+                // facility beans から facility name を取得
+                // chozaiSequnum は hospNameに対応, shohoSeqnum は chozaiName に対応している
+                String key = String.valueOf(ptid) + sryym;
+                List<Facility> facilityList = facilities.get(key);
                 Optional<Facility> chozai = facilityList.stream().filter(f -> f.getId() == chozaiSeqnum).findAny();
-                onshiYakuzai.setChozaiName(chozai.isPresent()? chozai.get().facilityName : "");
+                onshiYakuzai.setHosp(chozai.isPresent()? chozai.get() : new Facility());
                 Optional<Facility> shoho = facilityList.stream().filter(f -> f.getId() == shohoSeqnum).findAny();
-                onshiYakuzai.setChozaiName(shoho.isPresent()? shoho.get().facilityName : "");
+                onshiYakuzai.setChozai(shoho.isPresent()? shoho.get() : new Facility());
 
                 bundle.add(onshiYakuzai);
             }
@@ -777,10 +758,8 @@ public class OrcaServiceDao {
         // sort
         Collections.sort(bundle, (o1, o2) -> {
             int date = o1.getIsoDate().compareTo(o2.getIsoDate());
-            int shohoSeq = o1.getHospName().compareTo(o2.getHospName());
-            int chozaiSeq = o1.getChozaiName().compareTo(o2.getChozaiName());
             int rennum = o1.getRennum() - o2.getRennum();
-            return date == 0? shohoSeq == 0? chozaiSeq == 0? rennum : chozaiSeq : shohoSeq : date;
+            return date == 0? rennum : date;
         });
 
         return bundle;

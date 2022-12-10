@@ -67,12 +67,12 @@ public class OnshiYakuzai {
     /**
      * 調剤薬局名.
      */
-    private String chozaiName;
+    private Facility chozai;
 
     /**
      * 処方機関名.
      */
-    private String hospName;
+    private Facility hosp;
 
     /**
      * isoDate
@@ -295,17 +295,17 @@ public class OnshiYakuzai {
      *
      * @return chozaiName
      */
-    public String getChozaiName() {
-        return chozaiName;
+    public Facility getChozai() {
+        return chozai;
     }
 
     /**
      * chozaiName
      *
-     * @param chozaiName to set
+     * @param chozai to set
      */
-    public void setChozaiName(String chozaiName) {
-        this.chozaiName = chozaiName;
+    public void setChozai(Facility chozai) {
+        this.chozai = chozai;
     }
 
     /**
@@ -313,16 +313,16 @@ public class OnshiYakuzai {
      *
      * @return hospName
      */
-    public String getHospName() {
-        return hospName;
+    public Facility getHosp() {
+        return hosp;
     }
 
     /**
      * hospName
      *
-     * @param hospName to set
+     * @param hosp to set
      */
-    public void setHospName(String hospName) {
-        this.hospName = hospName;
+    public void setHosp(Facility hosp) {
+        this.hosp = hosp;
     }
 }
