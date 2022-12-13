@@ -694,8 +694,9 @@ public class OrcaServiceDao {
                     Facility facility = new Facility();
                     facility.setId(chozaiSeqnum);
                     facility.setMe(chozaiKbn == "1");
-                    facility.setFacilityName(hospname);
-                    facility.setFacilityCode(hospcd);
+                    // hospname, hospcode が入力されていないことがある
+                    if (!StringUtils.isEmpty(hospname))  { facility.setFacilityName(hospname); }
+                    if (!StringUtils.isEmpty(hospcd)) { facility.setFacilityCode(hospcd); }
                     facilityList.add(facility);
                     facilities.put(key, facilityList);
                 }
@@ -703,8 +704,8 @@ public class OrcaServiceDao {
                     Facility facility = new Facility();
                     facility.setId(shohoSeqnum);
                     facility.setMe(shohoKbn == "1");
-                    facility.setFacilityName(chozainame);
-                    facility.setFacilityCode(chozaicd);
+                    if (!StringUtils.isEmpty(chozainame)) { facility.setFacilityName(chozainame); }
+                    if (!StringUtils.isEmpty(chozaicd)) { facility.setFacilityCode(chozaicd); }
                     facilityList.add(facility);
                     facilities.put(key, facilityList);
                 }
