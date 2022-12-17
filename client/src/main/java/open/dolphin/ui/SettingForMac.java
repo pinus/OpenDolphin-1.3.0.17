@@ -52,7 +52,7 @@ public class SettingForMac {
             }
         });
 
-        TouchpadTest.startListening();
+        //TouchpadTest.startListening();
     }
 
     private static void setMacApplication(final Dolphin context) {

@@ -40,7 +40,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     // false で paint に入ると，fading なしでスクロールバーを書く
     private boolean shouldFadeScrollBar = true;
     // スクロールバーの幅
-    private int scrollBarWidth = 7;
+    private int scrollBarWidth = 12;
     // スクロールバーの大きさ
     private Rectangle verticalBarRect = new Rectangle(0, 0, 0, 0);
     private Rectangle horizontalBarRect = new Rectangle(0, 0, 0, 0);
@@ -79,6 +79,8 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     private boolean isOvershootImgPrepared = false;
     // drop の時に，フィードバックを出すかどうか
     private boolean showDropFeedback = false;
+    // MouseWheelEvent の不応期検出用
+    private double prevPreciousWheelRotation;
 
     public PNSScrollPane() {
         this(null);
@@ -466,7 +468,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 
-        // mouseWheelEvent の頻度を計測
+        // mouseWheelEvent の頻度を計測. MyScrollBar で使う.
         long now = System.currentTimeMillis();
         laptime = now - prevTime;
         prevTime = now;
@@ -478,7 +480,10 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
             dispatchEvent(SwingUtilities.convertMouseEvent((JPanel) e.getSource(), e, this));
         }
 
-        // overshoot animation - Touchpad の情報を使ってみるテスト
+        // 慣性移動の判断
+        double preciseWheelRotation = e.getPreciseWheelRotation();
+
+        // overshoot animation
         if (isOvershootAnimationEnabled) {
             // スクロール方向の検出
             int orientation = (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == 0 ? ScrollBar.VERTICAL : ScrollBar.HORIZONTAL;
@@ -492,14 +497,10 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
             int verticalLimit = compSize.height - r.height;
             int unitIncrement = verticalScrollBar.getUnitIncrement(orientation);
 
-            // Touchpad がはなされていたら不応期にする. 触ってたら不応期を解除する
-            // overshoot 不応期の解除
-            if (!overshootReady && TouchpadTest.isPressed()) {
+            // overshoot 不応期の解除. Rotation差が少ない場合は慣性移動と判断.
+            if (!overshootReady && Math.abs(preciseWheelRotation - prevPreciousWheelRotation) > 5) {
                 overshootReady = true;
-                if (orientation == ScrollBar.VERTICAL)
-                    maxUnitIncrement = Math.abs((int) (TouchpadTest.getYVelocity() * 5));
-                else if (orientation == ScrollBar.HORIZONTAL)
-                    maxUnitIncrement = Math.abs((int) (TouchpadTest.getXVelocity() * 5));
+                maxUnitIncrement = 10;
             }
 
             p.x += e.getUnitsToScroll() * unitIncrement;
@@ -508,35 +509,33 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
             int amplitude = maxUnitIncrement;
 
             if (orientation == ScrollBar.VERTICAL && viewport.getView().getHeight() > viewport.getExtentSize().getHeight()) {
-                if (p.y < 0 && !TouchpadTest.isPressed() && overshootReady) {
+                if (p.y < 0 && overshootReady) {
                     showOvershoot(Overshoot.TOP, amplitude);
                     overshootReady = false;
                     //System.out.println("overshoot on top");
-                } else if (p.y > verticalLimit && !TouchpadTest.isPressed() && overshootReady) {
+                } else if (p.y > verticalLimit && overshootReady) {
                     showOvershoot(Overshoot.BOTTOM, amplitude);
                     overshootReady = false;
                     //System.out.println("overshoot on bottom");
                 }
 
             } else if (orientation == ScrollBar.HORIZONTAL && viewport.getView().getWidth() > viewport.getExtentSize().getWidth()) {
-                if (p.x < 0 && !TouchpadTest.isPressed() && overshootReady) {
+                if (p.x < 0 && overshootReady) {
                     showOvershoot(Overshoot.LEFT, amplitude);
                     overshootReady = false;
                     //System.out.println("overshoot to left");
-                } else if (p.x > horizontalLimit && !TouchpadTest.isPressed() && overshootReady) {
+                } else if (p.x > horizontalLimit && overshootReady) {
                     showOvershoot(Overshoot.RIGHT, amplitude);
                     overshootReady = false;
                     //System.out.println("overshoot to right");
                 }
             }
         }
+        prevPreciousWheelRotation = e.getPreciseWheelRotation();
     }
 
     /**
      * スクロールバーのフレームを書く
-     *
-     * @param x
-     * @param y
      */
     private void setShouldShowScrollBarFrame() {
         if (!shouldShowScrollBarFrame) {
@@ -773,14 +772,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
 
             // 慣性スクロールが止まるときの動きを滑らかにするため scrollUnit を動的に調整する
             // laptime が THRESHOLD 以上かかっていたら（＝スクロールが遅くなっていたら）ブレーキをかける
-            if (laptime > THRESHOLD) {
-                // scrollUnit が大きいと，減速が間に合わないので，まずは 8 まで一気に減速
-                if (scrollUnit > 9) scrollUnit = 8;
-                // その後，１ドットずつ減速していくと滑らかに止まったように見える
-                scrollUnit = (scrollUnit <= 1) ? 1 : --scrollUnit;
-            } else {
-                scrollUnit = defaultScrollUnit;
-            }
+            scrollUnit = laptime > THRESHOLD ? 1 : defaultScrollUnit;
 
             return scrollUnit;
         }
