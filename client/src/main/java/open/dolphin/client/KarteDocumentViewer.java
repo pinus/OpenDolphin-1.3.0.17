@@ -395,8 +395,9 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             scrollerPanel.removeAll();
 
             karteList.forEach(view -> scrollerPanel.add(view.getUI(), -1)); // index -1 で最後に追加になる
-            scrollerPanel.revalidate();
-            scrollerPanel.repaint();
+            SwingUtilities.invokeLater(() -> {
+                scrollerPanel.revalidate();
+            });
 
             // 編集したときの snap() 取り直しのために通知
             //scrollPane.setViewComponentChanged();
