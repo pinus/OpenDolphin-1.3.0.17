@@ -1,7 +1,8 @@
 package open.dolphin.ui.sheet;
 
 import open.dolphin.helper.WindowSupport;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -51,6 +52,8 @@ public class JSheet extends JWindow implements ActionListener {
     private Component parentComponent;
     private int displayOffsetY = 0;
     private Component focusOwner;
+
+    private Logger logger = LoggerFactory.getLogger(JSheet.class);
 
     public JSheet(Window owner) {
         super(owner);
@@ -425,7 +428,7 @@ public class JSheet extends JWindow implements ActionListener {
             // キー入力を横取りする
             KeyboardFocusManager
                 .getCurrentKeyboardFocusManager().addKeyEventDispatcher(sheetKeyEventDispatcher);
-
+            logger.info("sheetKeyEventDispatcher added: " + sheetKeyEventDispatcher);
             super.setVisible(true);
             glassPane.setVisible(true);
 
@@ -449,6 +452,7 @@ public class JSheet extends JWindow implements ActionListener {
 
             // キー入力横取りの中止と, フォーカス返還
             KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
+            logger.info("sheetKeyEventDispatcher removed: " + sheetKeyEventDispatcher);
             if (Objects.nonNull(focusOwner)) {
                 focusOwner.requestFocusInWindow();
             }
@@ -671,21 +675,30 @@ public class JSheet extends JWindow implements ActionListener {
             optionPane = pane;
 
             // JOptionPane からボタンを取り出して, default ボタンをセットする
-            Component[] components = pane.getComponents();
-            java.util.List<Component> cc = java.util.Arrays.asList(components);
-            while (!cc.isEmpty()) {
-                java.util.List<Component> stack = new ArrayList<>();
-                for (Component c : cc) {
-                    if (c instanceof JButton) {
-                        JButton button = (JButton) c;
-                        if (button.isDefaultButton()) { defaultButton = button; }
+            Window w = SwingUtilities.getWindowAncestor(pane);
+            if (w instanceof JFrame) {
+                defaultButton = ((JFrame)w).getRootPane().getDefaultButton();
+            } else if (w instanceof JDialog) {
+                defaultButton = ((JDialog)w).getRootPane().getDefaultButton();
+            } else {
+                Component[] components = pane.getComponents();
+                java.util.List<Component> cc = java.util.Arrays.asList(components);
+                while (!cc.isEmpty()) {
+                    java.util.List<Component> stack = new ArrayList<>();
+                    for (Component c : cc) {
+                        if (c instanceof JButton) {
+                            JButton button = (JButton) c;
+                            if (button.isDefaultButton()) {
+                                defaultButton = button;
+                            }
 
-                    } else if (c instanceof JComponent) {
-                        components = ((JComponent) c).getComponents();
-                        stack.addAll(java.util.Arrays.asList(components));
+                        } else if (c instanceof JComponent) {
+                            components = ((JComponent) c).getComponents();
+                            stack.addAll(java.util.Arrays.asList(components));
+                        }
                     }
+                    cc = stack;
                 }
-                cc = stack;
             }
         }
     }
