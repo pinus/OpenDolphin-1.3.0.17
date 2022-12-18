@@ -4,6 +4,7 @@ import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.PNSBorderFactory;
+import open.dolphin.ui.PNSButton;
 import open.dolphin.ui.sheet.JSheet;
 
 import javax.swing.*;
@@ -111,13 +112,13 @@ public final class NewKarteDialog {
 
         // ok
         String buttonText = (String) UIManager.get("OptionPane.okButtonText");
-        okButton = new JButton(buttonText);
+        okButton = new PNSButton(buttonText);
         okButton.addActionListener(e -> doOk());
         okButton.setEnabled(false);
 
         // Cancel Button
         buttonText = (String) UIManager.get("OptionPane.cancelButtonText");
-        cancelButton = new JButton(buttonText);
+        cancelButton = new PNSButton(buttonText);
         cancelButton.addActionListener(e -> doCancel());
 
         // 全体を配置

@@ -199,7 +199,7 @@ public class JSheet extends JWindow implements ActionListener {
     public static int showOptionDialog(Component parentComponent, Object message, String title,
                                        int optionType, int messageType, Icon icon, final Object[] options, Object initialValue) {
 
-        JOptionPane pane = new JOptionPane(message, messageType, optionType, icon, options, initialValue);
+        JOptionPane pane = new PNSOptionPane(message, messageType, optionType, icon, options, initialValue);
         pane.setInitialValue(initialValue);
         pane.selectInitialValue();
         final int[] answer = new int[1];

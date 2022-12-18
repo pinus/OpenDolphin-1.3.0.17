@@ -2,13 +2,12 @@ package open.dolphin.client;
 
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
+import open.dolphin.ui.PNSButton;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 
 /**
  * カルテ保存時の SaveDialog.
@@ -87,23 +86,23 @@ public class SaveDialog {
         p3.add(sendClaim);
         content.add(p3);
 
-        okButton = new JButton(new ProxyAction("保 存", this::doOk));
+        okButton = new PNSButton(new ProxyAction("保 存", this::doOk));
         okButton.setEnabled(false);
         okButton.setToolTipText("Return");
 
-        tmpButton = new JButton(new ProxyAction("仮保存", this::doTemp));
+        tmpButton = new PNSButton(new ProxyAction("仮保存", this::doTemp));
         tmpButton.setEnabled(false);
         tmpButton.setToolTipText("<html>&#8984;T</html>");
 
-        disposeButton = new JButton(new ProxyAction("破 棄", this::doDispose));
+        disposeButton = new PNSButton(new ProxyAction("破 棄", this::doDispose));
         disposeButton.setToolTipText("<html>&#8984;ESC</html>");
 
-        cancelButton = new JButton(new ProxyAction("キャンセル", this::doCancel));
+        cancelButton = new PNSButton(new ProxyAction("キャンセル", this::doCancel));
         cancelButton.setToolTipText("ESC");
 
         // JOptionPane
         pane = new JOptionPane(content, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null,
-                new JButton[]{okButton, tmpButton, disposeButton, cancelButton}, okButton);
+                new JButton[]{ okButton, tmpButton, disposeButton, cancelButton }, okButton);
 
         dialog = JSheet.createDialog(pane, parent);
         dialog.addSheetListener(se -> {
