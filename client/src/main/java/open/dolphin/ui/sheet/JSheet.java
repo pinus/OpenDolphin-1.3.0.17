@@ -1,6 +1,7 @@
 package open.dolphin.ui.sheet;
 
 import open.dolphin.helper.WindowSupport;
+import open.dolphin.ui.PNSOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.swing.*;
@@ -78,6 +79,10 @@ public class JSheet extends JWindow implements ActionListener {
         JSheet js = new JSheet(owner);
         js.setSourceDialog(dialog);
         js.setParentComponent(parentComponent);
+
+        if (pane.getInitialValue() instanceof JButton) {
+            js.getRootPane().setDefaultButton((JButton) pane.getInitialValue());
+        }
 
         // SheetKeyEventDispatcher に JOptionPane を登録
         sheetKeyEventDispatcher.setJOptionPane(pane);
@@ -712,7 +717,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         JButton b1 = new JButton("Create Dialog");
         b1.addActionListener(e -> {
-            JOptionPane optionPane = new JOptionPane("JSheet.createDialog", JOptionPane.INFORMATION_MESSAGE,
+            JOptionPane optionPane = new PNSOptionPane("JSheet.createDialog", JOptionPane.INFORMATION_MESSAGE,
                     JOptionPane.OK_CANCEL_OPTION, null, new String[]{"OK", "キャンセル", "破棄"}, "OK");
 
             JSheet sheet = JSheet.createDialog(optionPane, frame);
@@ -726,9 +731,9 @@ public class JSheet extends JWindow implements ActionListener {
 
         JButton b2 = new JButton("Show Sheet");
         b2.addActionListener(e -> {
-            JOptionPane optionPane = new JOptionPane("JSheet.showSheet",
+            JOptionPane optionPane = new PNSOptionPane("JSheet.showSheet",
                     JOptionPane.QUESTION_MESSAGE,
-                    JOptionPane.YES_NO_OPTION);
+                    JOptionPane.YES_NO_CANCEL_OPTION);
 
             JSheet.showSheet(optionPane, frame, se -> System.out.println("option = " + se.getOption()));
             System.out.println("Show Sheet ended");

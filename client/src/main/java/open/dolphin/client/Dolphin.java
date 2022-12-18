@@ -529,7 +529,7 @@ public class Dolphin implements MainWindow {
             Component cmp = null;
             String title = ClientContext.getString("settingDialog.title");
 
-            JOptionPane.showMessageDialog(
+            PNSOptionPane.showMessageDialog(
                     cmp,
                     msgArray,
                     ClientContext.getFrameTitle(title),
@@ -616,7 +616,7 @@ public class Dolphin implements MainWindow {
         // 終了確認
         if (saveEnv != null && !ClientContext.isWin()) {
             Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
-            int ans = JOptionPane.showConfirmDialog(null,
+            int ans = PNSOptionPane.showConfirmDialog(null,
                     "本当に終了しますか", "終了確認", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (ans != JOptionPane.YES_OPTION) {
                 activeWindow.toFront();
@@ -697,7 +697,7 @@ public class Dolphin implements MainWindow {
 
         String[] options = new String[]{cancelOption, exitOption};
 
-        int option = JOptionPane.showOptionDialog(
+        int option = PNSOptionPane.showOptionDialog(
                 null, message, title,
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.WARNING_MESSAGE,

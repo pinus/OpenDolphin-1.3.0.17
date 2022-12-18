@@ -9,6 +9,8 @@ import java.util.Objects;
  * com.apple.laf.AquaButtonUI が extend できなくなったので作った.
  */
 public class PNSButton extends JButton {
+    private Window parent;
+
     public PNSButton() {
         this(null, null);
     }
@@ -28,13 +30,13 @@ public class PNSButton extends JButton {
     }
 
     public void paint(Graphics g) {
-        ButtonModel model = getModel();
-        Window parent = SwingUtilities.getWindowAncestor(this);
+        parent = SwingUtilities.getWindowAncestor(this);
 
-        setForeground(Color.BLACK);
         if (model.isEnabled()) {
             if (Objects.nonNull(parent) && parent.isActive() && isDefaultButton() && !model.isPressed()) {
                 setForeground(Color.WHITE);
+            } else {
+                setForeground(Color.BLACK);
             }
         } else {
             setForeground(Color.GRAY);

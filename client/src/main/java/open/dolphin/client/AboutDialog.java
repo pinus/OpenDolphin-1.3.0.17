@@ -1,6 +1,7 @@
 package open.dolphin.client;
 
 import open.dolphin.ui.MoreInfoPanel;
+import open.dolphin.ui.PNSButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,9 +72,9 @@ public class AboutDialog extends JDialog {
         textPanel.add(getTextLabel(copyright, new Font(Font.DIALOG, Font.PLAIN, 12)), BorderLayout.CENTER);
 
         // 閉じるボタン作成
-        JButton closeButton = new JButton("閉じる");
+        JButton closeButton = new PNSButton("閉じる");
         this.getRootPane().setDefaultButton(closeButton);
-        closeButton.setSelected(true);
+        //closeButton.setSelected(true);
         closeButton.setFocusPainted(false);
         closeButton.addActionListener(e -> close());
 
