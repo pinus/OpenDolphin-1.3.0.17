@@ -14,6 +14,7 @@ import open.dolphin.setting.ProjectSettingDialog;
 import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSBadgeTabbedPane;
+import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.ui.SettingForMac;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -879,7 +880,7 @@ public class Dolphin implements MainWindow {
             }
         } catch (IOException e) {
         }
-        JOptionPane.showMessageDialog(null, "文書フォルダが見つかりません", "", JOptionPane.WARNING_MESSAGE);
+        PNSOptionPane.showMessageDialog(null, "文書フォルダが見つかりません", "", JOptionPane.WARNING_MESSAGE);
     }
 
     /**

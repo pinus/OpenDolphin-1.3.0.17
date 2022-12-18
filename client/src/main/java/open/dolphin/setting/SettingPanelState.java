@@ -5,5 +5,4 @@ package open.dolphin.setting;
  */
 public enum SettingPanelState {
     NONE, VALID, INVALID
-
 }

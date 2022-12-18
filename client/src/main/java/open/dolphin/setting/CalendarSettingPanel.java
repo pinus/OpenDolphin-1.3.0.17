@@ -23,6 +23,8 @@ import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.helper.Holiday;
 import open.dolphin.helper.Task;
 import open.dolphin.ui.CompletableJTextField;
+import open.dolphin.ui.PNSButton;
+import open.dolphin.ui.PNSOptionPane;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +115,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
         fromYearSpinner.setPreferredSize(new Dimension(50, 28));
         toYearSpinner.setPreferredSize(new Dimension(50, 28));
 
-        JButton updateButton = new JButton("アップデート");
+        JButton updateButton = new PNSButton("アップデート");
 
         gbb.add(calendarLabel, 0, row++, 4, 1, GridBagConstraints.WEST);
         gbb.add(calendarIdField, 0, row++, 4, 1, GridBagConstraints.WEST);
@@ -146,7 +148,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
         if (StringUtils.isEmpty(holidayCalendarIdField.getText())
             || StringUtils.isEmpty(calendarIdField.getText())
             || StringUtils.isEmpty(credentialField.getText())) {
-            showMessage("必要項目が入力されていません", JOptionPane.ERROR_MESSAGE);
+            showMessage("必要項目が入力されていません", PNSOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -268,7 +270,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
                 logger.info("Event fetch succeeded.");
             }
 
-            showMessage("Google Calendar からデータを取得しました", JOptionPane.INFORMATION_MESSAGE);
+            showMessage("Google Calendar からデータを取得しました", PNSOptionPane.INFORMATION_MESSAGE);
         }
 
         @Override
@@ -279,7 +281,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
         @Override
         protected void failed(Throwable cause) {
             logger.error("failed " + cause);
-            showMessage("データ取得に失敗しました", JOptionPane.ERROR_MESSAGE);
+            showMessage("データ取得に失敗しました", PNSOptionPane.ERROR_MESSAGE);
         }
 
         @Override
@@ -294,7 +296,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
     }
 
     private void showMessage(String message, int type) {
-        JOptionPane.showMessageDialog(getUI(), message, "", type);
+        PNSOptionPane.showMessageDialog(getUI(), message, "", type);
     }
 
     private void bindModelToView() {

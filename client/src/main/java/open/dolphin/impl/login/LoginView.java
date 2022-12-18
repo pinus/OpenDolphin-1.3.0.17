@@ -2,6 +2,7 @@ package open.dolphin.impl.login;
 
 import open.dolphin.client.GUIConst;
 import open.dolphin.ui.CompletableJTextField;
+import open.dolphin.ui.PNSButton;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
@@ -50,9 +51,9 @@ public class LoginView extends JFrame {
         splashLabel.setSelectedIcon(splash2);
 
         // ボタン
-        loginBtn = new JButton("ログイン");
-        cancelBtn = new JButton("キャンセル");
-        settingBtn = new JButton("設定");
+        loginBtn = new PNSButton("ログイン");
+        cancelBtn = new PNSButton("キャンセル");
+        settingBtn = new PNSButton("設定");
 
         // チェックボックス
         savePasswordCbx = new JCheckBox("パスワードを保存する");

@@ -10,6 +10,7 @@ import open.dolphin.helper.StringTool;
 import open.dolphin.inspector.InspectorCategory;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.ui.ComboBoxFactory;
+import open.dolphin.ui.PNSButton;
 import open.dolphin.ui.PNSTabbedPane;
 import org.apache.commons.lang3.StringUtils;
 
@@ -158,7 +159,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         // PDF store
         pdfStore = GUIFactory.createTextField(30, null, null, null);
-        pdfDir = new JButton("設定");
+        pdfDir = new PNSButton("設定");
 
         // カルテ文書関係
         asc = new JRadioButton("昇順");
@@ -179,7 +180,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         laboTestPeriodCombo = ComboBoxFactory.createLaboExtractionPeriodCombo();
 
         // コマンドボタン
-        restoreDefaultBtn = new JButton("デフォルト設定に戻す");
+        restoreDefaultBtn = new PNSButton("デフォルト設定に戻す");
 
         // スタンプ動作
         replaceStamp = new JRadioButton("置き換える");

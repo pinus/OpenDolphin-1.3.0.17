@@ -4,6 +4,7 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.event.ValidListener;
 import open.dolphin.helper.ImageHelper;
 import open.dolphin.project.Project;
+import open.dolphin.ui.PNSButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,12 +168,12 @@ public final class ProjectSettingDialog {
         cardPanel.setLayout(cardLayout);
 
         // コマンドボタン
-        okButton = new JButton("保存");
+        okButton = new PNSButton("保存");
         okButton.setEnabled(false);
 
         // Cancel
         String text = (String) UIManager.get("OptionPane.cancelButtonText");
-        cancelButton = new JButton(text);
+        cancelButton = new PNSButton(text);
 
         // 全体ダイアログのコンテントパネル
         JPanel panel = new JPanel(new BorderLayout(11, 0));
@@ -183,7 +184,7 @@ public final class ProjectSettingDialog {
         panel.setMinimumSize(new Dimension(DEFAULT_WIDTH - 50, DEFAULT_HEIGHT - 90));
 
         // ダイアログを生成する
-        Object[] options = new Object[]{okButton, cancelButton};
+        Object[] options = new Object[]{ okButton, cancelButton };
 
         JOptionPane jop = new JOptionPane(
                 panel,
