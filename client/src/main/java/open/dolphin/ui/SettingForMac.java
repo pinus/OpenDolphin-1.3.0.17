@@ -24,13 +24,9 @@ public class SettingForMac {
         // com.apple.eawt.Application の設定
         setMacApplication(context);
 
-        // Look and Feel のセットアップ
-        try {
-            UIManager.setLookAndFeel(new MyLookAndFeel());
-
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace(System.err);
-        }
+        // laf replacement
+        UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
+        UIManager.put("PasswordFieldUI", MyPasswordFieldUI.class.getName());
 
         // JavaFX settings
         // Mac OS X needs this to avoid HeadlessException
