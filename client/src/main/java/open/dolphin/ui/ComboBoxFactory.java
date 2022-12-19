@@ -115,6 +115,7 @@ public class ComboBoxFactory {
 
     private static <T> JComboBox<PNSPair<String, T>> createComboBox(List<PNSPair<String, T>> periods) {
         JComboBox<PNSPair<String, T>> combo = new JComboBox<>();
+        combo.setMaximumRowCount(20);
         periods.forEach(combo::addItem);
 
         return combo;

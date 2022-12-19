@@ -83,8 +83,8 @@ public class SettingForMac {
                     "ListUI", MyListUI.class.getName(),
                     "TreeUI", MyTreeUI.class.getName(),
                     //"ButtonUI", MyButtonUI.class.getName(),
-                    "ToggleButtonUI", MyToggleButtonUI.class.getName(),
-                    "ComboBoxUI", MyComboBoxUI.class.getName(),
+                    //"ToggleButtonUI", MyToggleButtonUI.class.getName(),
+                    //"ComboBoxUI", MyComboBoxUI.class.getName(),
             });
 
             return uiDefaults;
