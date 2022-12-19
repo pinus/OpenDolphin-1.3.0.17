@@ -2,6 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.event.ProxyAction;
 import open.dolphin.infomodel.ClaimItem;
+import open.dolphin.ui.PNSButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -428,9 +429,9 @@ public class RegionView extends javax.swing.JDialog {
         mix = new javax.swing.JRadioButton();
         dryskin = new javax.swing.JRadioButton();
         wound = new javax.swing.JRadioButton();
-        input = new javax.swing.JButton();
-        cancel = new javax.swing.JButton();
-        clear = new javax.swing.JButton();
+        input = new PNSButton();
+        cancel = new PNSButton();
+        clear = new PNSButton();
         backgroundPanel = new BackgroundPanel();
         head = new javax.swing.JRadioButton();
         ear = new javax.swing.JRadioButton();
