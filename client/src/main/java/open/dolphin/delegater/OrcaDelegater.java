@@ -7,6 +7,7 @@ import open.dolphin.orca.orcadao.bean.OnshiYakuzai;
 import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
 import open.dolphin.service.OrcaService;
+import open.dolphin.ui.PNSOptionPane;
 
 import javax.swing.*;
 import java.time.LocalDate;
@@ -161,7 +162,7 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
 
         // 他端末で使用中(90)の場合は，手動でリトライする
         while ("90".equals(apiResult)) {
-            if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null,
+            if (JOptionPane.NO_OPTION == PNSOptionPane.showConfirmDialog(null,
                     message, "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
                 return Result.ERROR;
             }
@@ -201,7 +202,7 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
 
         // 他端末で使用中(90)の場合は，手動でリトライする
         while ("90".equals(apiResult)) {
-            if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null,
+            if (JOptionPane.NO_OPTION == PNSOptionPane.showConfirmDialog(null,
                     message, "ORCA 送信エラー", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)) {
                 return Result.ERROR;
             }

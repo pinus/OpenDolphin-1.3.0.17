@@ -80,6 +80,9 @@ public class PNSOptionPane extends JOptionPane {
         return CLOSED_OPTION;
     }
 
+    public PNSOptionPane(Object message, int messageType) {
+        this(message, messageType, DEFAULT_OPTION);
+    }
     /**
      * optionType からオプションをでっち上げた JOptionPane を作る.
      *
@@ -109,6 +112,47 @@ public class PNSOptionPane extends JOptionPane {
         } else {
             setOptionsAndInitialValue(optionType);
         }
+    }
+
+    /**
+     * PNSButton をでっち上げる setOptions.
+     *
+     * @param options
+     */
+    @Override
+    public void setOptions(Object[] options) {
+        if (Objects.nonNull(options) && options[0] instanceof String) {
+            JButton[] buttons = new PNSButton[options.length];
+            for (int i=0; i<options.length; i++) {
+                buttons[i] = new PNSButton((String) options[i]);
+                int value = i;
+                buttons[i].addActionListener(e -> {
+                    setValue(value);
+                });
+            }
+            super.setOptions(buttons);
+        } else {
+            super.setOptions(options);
+        }
+    }
+
+    /**
+     * でっち上げた options から initialValue を取り出す.
+     *
+     * @param initialValue
+     */
+    @Override
+    public void setInitialValue(Object initialValue) {
+        Object[] options = super.getOptions();
+        if (Objects.nonNull(getOptions()) && options[0] instanceof JButton && initialValue instanceof String) {
+            for (int i=0; i<options.length; i++) {
+                if (((JButton)options[i]).getText().equals(initialValue)) {
+                    super.setInitialValue(options[i]);
+                    return;
+                }
+            }
+        }
+        super.setInitialValue(initialValue);
     }
 
     /**
