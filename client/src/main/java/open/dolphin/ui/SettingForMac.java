@@ -14,8 +14,7 @@ import javax.swing.*;
  * @author pns
  */
 public class SettingForMac {
-    private SettingForMac() {
-    }
+    private SettingForMac() { }
 
     public static void set(final Dolphin context) {
 
@@ -27,6 +26,9 @@ public class SettingForMac {
         // laf replacement
         UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
         UIManager.put("PasswordFieldUI", MyPasswordFieldUI.class.getName());
+        UIManager.put("TableUI", MyTableUI.class.getName());
+        UIManager.put("ListUI", MyListUI.class.getName());
+        UIManager.put("TreeUI", MyTreeUI.class.getName());
 
         // JavaFX settings
         // Mac OS X needs this to avoid HeadlessException
@@ -47,15 +49,11 @@ public class SettingForMac {
                 Thread.currentThread().setContextClassLoader(contextClassLoader);
             }
         });
-
-        //TouchpadTest.startListening();
     }
 
     private static void setMacApplication(final Dolphin context) {
-
         // ...について
         Desktop.getDesktop().setAboutHandler(ae -> context.showAbout());
-
         // 終了
         Desktop.getDesktop().setQuitHandler((qe, qr) -> {
             context.processExit();
@@ -63,27 +61,5 @@ public class SettingForMac {
         });
         // 環境設定
         Desktop.getDesktop().setPreferencesHandler(pe -> context.doPreference());
-    }
-
-    private static class MyLookAndFeel extends com.apple.laf.AquaLookAndFeel {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public UIDefaults getDefaults() {
-            UIDefaults uiDefaults = super.getDefaults();
-
-            uiDefaults.putDefaults(new Object[]{
-                    "TextFieldUI", MyTextFieldUI.class.getName(),
-                    "PasswordFieldUI", MyPasswordFieldUI.class.getName(),
-                    "TableUI", MyTableUI.class.getName(),
-                    "ListUI", MyListUI.class.getName(),
-                    "TreeUI", MyTreeUI.class.getName(),
-                    //"ButtonUI", MyButtonUI.class.getName(),
-                    //"ToggleButtonUI", MyToggleButtonUI.class.getName(),
-                    //"ComboBoxUI", MyComboBoxUI.class.getName(),
-            });
-
-            return uiDefaults;
-        }
     }
 }
