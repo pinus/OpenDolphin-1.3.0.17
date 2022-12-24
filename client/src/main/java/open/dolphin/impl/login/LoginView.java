@@ -36,7 +36,7 @@ public class LoginView extends JFrame {
      */
     public LoginView() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
+        getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
 
         initComponents();
         pack();

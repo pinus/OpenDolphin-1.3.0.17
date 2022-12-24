@@ -97,8 +97,7 @@ public class AllergyEditor {
             null,
             new Object[]{addBtn, clearBtn, "キャンセル"}, addBtn);
         dialog = pane.createDialog(inspector.getContext().getFrame(), "アレルギー登録");
-        dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
-        if (ClientContext.isMac()) { ImageHelper.setContainerTransparent(dialog); }
+        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         // dialog が開いたら FactorFld にフォーカスを当てる

@@ -138,7 +138,7 @@ public class CalendarPanel extends JPanel {
     private void expand() {
         JDialog dialog = new JDialog();
         dialog.getRootPane().putClientProperty("Window.style", "small");
-        dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
+        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         dialog.setLayout(new GridLayout(4, 3));

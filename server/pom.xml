@@ -5,7 +5,7 @@
 
     <groupId>jp.motomachi-hifuka</groupId>
     <artifactId>open.dolphin.server</artifactId>
-    <version>1.3.0.10</version>
+    <version>1.3.0.17</version>
     <packaging>war</packaging>
 
     <name>server</name>
@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- versions -->
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
         <version.com.fasterxml.jackson-databind>2.12.7.1</version.com.fasterxml.jackson-databind>
         <version.org.jboss.resteasy>4.7.2.Final</version.org.jboss.resteasy>

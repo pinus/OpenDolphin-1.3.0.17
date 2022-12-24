@@ -1,6 +1,6 @@
 package open.dolphin.impl.scheam.widget;
 
-import com.sun.javafx.scene.control.skin.TabPaneSkin;
+import javafx.scene.control.skin.TabPaneSkin;
 import javafx.beans.Observable;
 import javafx.geometry.Insets;
 import javafx.geometry.Side;

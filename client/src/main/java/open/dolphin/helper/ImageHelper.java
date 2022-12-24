@@ -295,22 +295,6 @@ public class ImageHelper {
         }
     }
 
-    /**
-     * "apple.awt.brushMetalLook" の Container のバックグランドが黒くなるのを直す.
-     *
-     * @param component 修正する Component
-     */
-    public static void setContainerTransparent(Component component) {
-        if (component instanceof Container) {
-            if (component instanceof JComponent) {
-                ((JComponent)component).setOpaque(false);
-            }
-            for (Component c : ((Container) component).getComponents()) {
-                setContainerTransparent(c);
-            }
-        }
-    }
-
     public static void main (String[] arg) {
         String sample1 = "/schemaeditor/Sample-square.JPG";
 

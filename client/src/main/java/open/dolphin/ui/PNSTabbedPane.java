@@ -1,9 +1,6 @@
 package open.dolphin.ui;
 
 import open.dolphin.client.ClientContext;
-import open.dolphin.ui.desktop.AppForegroundListener;
-import open.dolphin.ui.desktop.AppForegroundEvent;
-import open.dolphin.ui.desktop.Desktop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +9,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.awt.desktop.AppForegroundEvent;
+import java.awt.desktop.AppForegroundListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;

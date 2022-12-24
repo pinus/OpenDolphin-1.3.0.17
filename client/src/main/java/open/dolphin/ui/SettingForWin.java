@@ -1,9 +1,9 @@
 package open.dolphin.ui;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import open.dolphin.client.Dolphin;
+import open.dolphin.laf.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,16 +26,15 @@ public class SettingForWin {
         // JavaFX thread が SchemaEditor 終了後に shutdown してしまわないようにする
         Platform.setImplicitExit(false);
 
-        try {
-            // true だと白で書かれてしまう
-            UIManager.put("Tree.rendererFillBackground", false);
+        // true だと白で書かれてしまう
+        UIManager.put("Tree.rendererFillBackground", false);
 
-            UIManager.setLookAndFeel(new MyLookAndFeel());
-            //UIManager.setLookAndFeel(new MyNimbusLookAndFeel());
-
-        } catch (UnsupportedLookAndFeelException ex) {
-        }
-        //setUIFonts();
+        // laf replacement
+        UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
+        UIManager.put("PasswordFieldUI", MyPasswordFieldUI.class.getName());
+        UIManager.put("TableUI", MyTableUI.class.getName());
+        UIManager.put("ListUI", MyListUI.class.getName());
+        UIManager.put("TreeUI", MyTreeUI.class.getName());
     }
 
     private static void setUIFonts() {
@@ -90,26 +89,6 @@ public class SettingForWin {
                 Font font = (Font) value;
                 UIManager.put(key, new Font(DEFAULT_FONT_NAME, font.getStyle(), font.getSize()));
             }
-        }
-    }
-
-    private static class MyLookAndFeel extends WindowsLookAndFeel {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public UIDefaults getDefaults() {
-            UIDefaults uiDefaults = super.getDefaults();
-
-            uiDefaults.putDefaults(new Object[]{
-                    "ListUI", "open.dolphin.laf.MyListUI",
-                    "TreeUI", "open.dolphin.laf.MyTreeUI",
-                    "TableUI", "open.dolphin.laf.MyTableUI",
-                    "TableHeaderUI", "open.dolphin.laf.MyTableHeaderUI",
-                    "TextFieldUI", "open.dolphin.laf.MyTextFieldUI",
-                    "PasswordFieldUI", "open.dolphin.laf.MyPasswordFieldUI",
-            });
-
-            return uiDefaults;
         }
     }
 }

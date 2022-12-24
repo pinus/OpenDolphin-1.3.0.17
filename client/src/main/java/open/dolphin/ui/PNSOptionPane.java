@@ -25,6 +25,7 @@ public class PNSOptionPane extends JOptionPane {
     public static void showMessageDialog(Component parentComponent, Object message, String title, int messageType, Icon icon) {
         JOptionPane pane = new PNSOptionPane(message, messageType, DEFAULT_OPTION);
         JDialog dialog = new JDialog();
+        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         pane.addPropertyChangeListener(e -> {
             if (VALUE_PROPERTY.equals(e.getPropertyName())) {
                 dialog.setVisible(false);
@@ -50,6 +51,7 @@ public class PNSOptionPane extends JOptionPane {
     public static int showOptionDialog(Component parentComponent, Object message, String title, int optionType, int messageType, Icon icon, Object[] options, Object initialValue) {
         JOptionPane pane = new PNSOptionPane(message, messageType, optionType, icon, options, initialValue);
         JDialog dialog = new JDialog();
+        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         int value = JOptionPane.CLOSED_OPTION;
         pane.addPropertyChangeListener(e -> {
             if (VALUE_PROPERTY.equals(e.getPropertyName())) {

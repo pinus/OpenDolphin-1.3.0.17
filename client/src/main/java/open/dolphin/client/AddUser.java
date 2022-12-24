@@ -55,7 +55,7 @@ public class AddUser extends AbstractMainTool {
 
         String title = ClientContext.getFrameTitle(getName());
         frame = new JFrame(title);
-        frame.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
+        frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override

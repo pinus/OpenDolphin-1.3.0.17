@@ -223,7 +223,7 @@ public class RegionView extends javax.swing.JDialog {
 
     public RegionView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
+        getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
 
         initComponents();
         connect();

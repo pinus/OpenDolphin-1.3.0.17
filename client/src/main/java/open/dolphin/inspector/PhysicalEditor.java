@@ -80,8 +80,7 @@ public class PhysicalEditor {
             null,
             options, addBtn);
         dialog = pane.createDialog(inspector.getContext().getFrame(), ClientContext.getFrameTitle("身長体重登録"));
-        dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
-        if (ClientContext.isMac()) { ImageHelper.setContainerTransparent(dialog); }
+        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         // dialog が開いたら WeightFld にフォーカスを当てる

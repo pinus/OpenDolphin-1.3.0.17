@@ -197,11 +197,7 @@ public final class ProjectSettingDialog {
         dialog = jop.createDialog(parentFrame, ClientContext.getFrameTitle("環境設定"));
         // この方法で作った dialog のタイトルバーは "brushMetalLook" にすると 244 の Gray １色になる
         // 構造は JDialog > JPanel (ContentPane) > JOptionPane となっている
-        dialog.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
-
-        // Container の background が黒になってしまうので直す
-        if (ClientContext.isMac()) { ImageHelper.setContainerTransparent(dialog); }
-
+        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         dialog.setResizable(false);
         dialog.setSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
@@ -295,9 +291,6 @@ public final class ProjectSettingDialog {
             sp.start();
 
             SwingUtilities.invokeLater(() -> {
-                // Container のバックグランドを直す
-                ImageHelper.setContainerTransparent(sp.getUI());
-
                 cardPanel.add(sp.getUI(), sp.getTitle());
                 cardLayout.show(cardPanel, sp.getTitle());
                 if (!dialog.isVisible()) {

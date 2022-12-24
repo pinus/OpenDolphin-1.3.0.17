@@ -3,10 +3,10 @@ package open.dolphin.ui;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import open.dolphin.client.Dolphin;
-import open.dolphin.ui.desktop.Desktop;
 import open.dolphin.laf.*;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Mac 用のセッティング.

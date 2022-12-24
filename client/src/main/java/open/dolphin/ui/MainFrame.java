@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
     }
 
     private void initComponents(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
-        getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
+        getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         setTitle(title);
         setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 

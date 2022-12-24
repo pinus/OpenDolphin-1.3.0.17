@@ -1,11 +1,9 @@
 package open.dolphin.ui;
 
-import open.dolphin.ui.desktop.AppForegroundListener;
-import open.dolphin.ui.desktop.AppForegroundEvent;
-import open.dolphin.ui.desktop.Desktop;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.desktop.AppForegroundEvent;
+import java.awt.desktop.AppForegroundListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 

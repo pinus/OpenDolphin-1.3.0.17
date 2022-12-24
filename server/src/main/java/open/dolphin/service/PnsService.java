@@ -1,9 +1,7 @@
 package open.dolphin.service;
 
-import jdk.nashorn.internal.objects.annotations.Getter;
 import open.dolphin.infomodel.ModuleModel;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
