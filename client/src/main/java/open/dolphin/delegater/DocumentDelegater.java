@@ -59,7 +59,13 @@ public class DocumentDelegater extends BusinessDelegater<KarteService> {
      */
     public List<DocumentModel> getDocuments(List<Long> ids) {
         // 検索する
-        List<DocumentModel> ret = getService().getDocumentList(ids);
+        List<DocumentModel> ret = new ArrayList<>();
+        try {
+            // InaccessibleObjectException をつかまえるため
+            ret = getService().getDocumentList(ids);
+        } catch (RuntimeException e) {
+            e.printStackTrace(System.err);
+        }
 
         // ByteArray をアイコンへ戻す (getSchema() は必ず non null)
         ret.stream().map(DocumentModel::getSchema).forEach(sc -> sc.stream().forEach(schema -> {
