@@ -171,15 +171,14 @@ public class LoginDialog {
             protected void failed(java.lang.Throwable cause) {
                 logger.warn("Task failed");
                 logger.warn(cause.getMessage());
+                cause.printStackTrace(System.err);
 
-                if (tryCount <= maxTryCount && cause instanceof Exception) {
-                    userDlg.processError((Exception) cause);
-                    String errMsg = userDlg.getErrorMessage();
+                if (tryCount <= maxTryCount) {
+                    String errMsg = cause.getMessage();
                     showMessageDialog(errMsg);
                 } else {
                     StringBuilder sb = new StringBuilder();
-                    userDlg.processError((Exception) cause);
-                    sb.append(userDlg.getErrorMessage());
+                    sb.append(cause.getMessage());
                     sb.append("\n");
                     sb.append(ClientContext.getString("loginDialog.forceClose"));
                     String msg = sb.toString();

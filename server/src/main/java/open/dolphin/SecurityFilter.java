@@ -2,11 +2,10 @@ package open.dolphin;
 
 import open.dolphin.infomodel.InfoModel;
 import open.dolphin.infomodel.UserModel;
-import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.ResourceMethodInvoker;
-import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.util.Encode;
 
+import javax.ws.rs.core.Response;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -24,8 +23,6 @@ import java.util.*;
 /**
  * Security Filter
  * Authorization Header pattern : "facilityId:username;password"
- * <p>
- * http://howtodoinjava.com/2013/07/25/jax-rs-2-0-resteasy-3-0-2-final-security-tutorial/
  *
  * @author pns
  */
@@ -33,8 +30,8 @@ import java.util.*;
 public class SecurityFilter implements ContainerRequestFilter {
     private static final String AUTHORIZATION_PROPERTY = "Authorization";
     private static final String AUTHENTICATION_SCHEME = "Basic";
-    private static final ServerResponse ACCESS_DENIED = new ServerResponse("Access denied", 401, new Headers<>());
-    private static final ServerResponse ACCESS_FORBIDDEN = new ServerResponse("Access forbidden", 403, new Headers<>());
+    private static final Response ACCESS_DENIED = Response.status(401).entity("Access denied").build();
+    private static final Response ACCESS_FORBIDDEN = Response.status(403).entity("Access forbidden").build();
 
     private final static Map<String, Long> cachedUserMap = new HashMap<>();
 

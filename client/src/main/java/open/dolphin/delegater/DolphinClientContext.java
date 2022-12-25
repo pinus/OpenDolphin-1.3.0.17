@@ -10,7 +10,6 @@ import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
 import org.jboss.resteasy.util.Encode;
 
 import javax.websocket.*;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import java.io.IOException;
@@ -46,7 +45,7 @@ public class DolphinClientContext {
         String hashPass = HashUtil.MD5(password);
 
         // Resteasy
-        ResteasyClientBuilder builder = (ResteasyClientBuilder) ClientBuilder.newBuilder();
+        ResteasyClientBuilder builder = (ResteasyClientBuilder) ResteasyClientBuilder.newBuilder();
         ResteasyClient client = builder.connectionPoolSize(20).build();
 
         // register providers

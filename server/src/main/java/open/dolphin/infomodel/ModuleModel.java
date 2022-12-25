@@ -2,11 +2,8 @@ package open.dolphin.infomodel;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.lucene.analysis.cjk.CJKAnalyzer;
-import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import javax.persistence.*;
 
@@ -35,10 +32,8 @@ public class ModuleModel extends KarteEntryBean<ModuleModel> {
     private IInfoModel model;
 
     @Lob
-    @Field(index = Index.YES)                         // hibernate search
-    @FieldBridge(impl = ModuleModelBridge.class)    // hibernate search
-    @Analyzer(impl = CJKAnalyzer.class)             // hibernate search
     @Column(nullable = false)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = ModuleModelBridge.class))   // hibernate search
     private byte[] beanBytes;
 
     @ManyToOne

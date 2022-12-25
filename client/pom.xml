@@ -14,10 +14,10 @@
         <!-- versions -->
         <java.version>17</java.version>
         <version.openjfx>17</version.openjfx>
-        <version.org.jboss.resteasy>4.7.2.Final</version.org.jboss.resteasy>
-        <version.org.hibernate>5.4.24.Final</version.org.hibernate>
+        <version.org.jboss.resteasy>6.2.1.Final</version.org.jboss.resteasy>
+        <version.org.hibernate>6.1.5.Final</version.org.hibernate>
         <version.commons-codec>1.15</version.commons-codec>
-        <version.org.glassfish.tyrus.bundles>1.18</version.org.glassfish.tyrus.bundles>
+        <version.org.glassfish.tyrus.bundles>2.1.2</version.org.glassfish.tyrus.bundles>
     </properties>
 
     <dependencies>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
+            <version>8.0.1</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>com.google.api-client</groupId>
             <artifactId>google-api-client</artifactId>
-            <version>1.23.0</version>
+            <version>1.30.9</version>
         </dependency>
         <dependency>
             <groupId>com.google.oauth-client</groupId>
@@ -112,11 +112,6 @@
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <version>1.4.7</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>glulogic</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.intellij</groupId>
