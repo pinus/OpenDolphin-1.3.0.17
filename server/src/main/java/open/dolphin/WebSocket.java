@@ -2,10 +2,10 @@ package open.dolphin;
 
 import org.jboss.logging.Logger;
 
-import javax.inject.Inject;
-import javax.websocket.*;
-import javax.websocket.server.PathParam;
-import javax.websocket.server.ServerEndpoint;
+import jakarta.inject.Inject;
+import jakarta.websocket.*;
+import jakarta.websocket.server.PathParam;
+import jakarta.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,7 @@ public class WebSocket {
     /**
      * Websocket endpoints running in the Java EE platform must have full dependency injection support as described in the CDI specification.
      * Websocket implementations part of the Java EE platform are required to support field, method, and constructor injection using
-     * the javax.inject.Inject annotation into all websocket endpoint classes, as well as the use of interceptors for these classes.
+     * the jakarta.inject.Inject annotation into all websocket endpoint classes, as well as the use of interceptors for these classes.
      */
     @Inject
     private SecurityFilter securityFilter;

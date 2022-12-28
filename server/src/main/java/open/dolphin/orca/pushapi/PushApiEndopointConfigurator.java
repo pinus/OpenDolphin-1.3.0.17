@@ -1,6 +1,6 @@
 package open.dolphin.orca.pushapi;
 
-import javax.websocket.ClientEndpointConfig;
+import jakarta.websocket.ClientEndpointConfig;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

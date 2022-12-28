@@ -6,12 +6,12 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.search.MassIndexer;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.jboss.logging.Logger;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -104,14 +104,13 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
      */
     @Override
     public void makeInitialIndex() {
-
-        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
-        MassIndexer massIndexer = fullTextEntityManager.createIndexer(DocumentModel.class);
+        final SearchSession searchSession = Search.session(em);
 
         int core = Runtime.getRuntime().availableProcessors();
         logger.info("processor number = " + core);
 
-        massIndexer.purgeAllOnStart(true)
+        MassIndexer massIndexer = searchSession.massIndexer(DocumentModel.class)
+            .purgeAllOnStart(true)
             .transactionTimeout(14400)
             .batchSizeToLoadObjects(30)
             .threadsToLoadObjects(core);

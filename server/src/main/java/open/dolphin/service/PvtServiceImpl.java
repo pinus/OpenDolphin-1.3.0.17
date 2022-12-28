@@ -8,8 +8,8 @@ import open.dolphin.infomodel.*;
 import open.dolphin.util.ModelUtils;
 import org.jboss.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.NoResultException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;

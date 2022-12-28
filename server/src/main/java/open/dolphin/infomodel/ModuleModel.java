@@ -3,9 +3,9 @@ package open.dolphin.infomodel;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * ModuleModel.
@@ -33,7 +33,7 @@ public class ModuleModel extends KarteEntryBean<ModuleModel> {
 
     @Lob
     @Column(nullable = false)
-    @KeywordField(valueBridge = @ValueBridgeRef(type = ModuleModelBridge.class))   // hibernate search
+    @FullTextField(valueBridge = @ValueBridgeRef(type = ModuleModelBridge.class))   // hibernate search
     private byte[] beanBytes;
 
     @ManyToOne

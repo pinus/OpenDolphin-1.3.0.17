@@ -3,14 +3,11 @@ package open.dolphin.service;
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.infomodel.*;
 import open.dolphin.util.ModelUtils;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.jboss.logging.Logger;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -233,49 +230,20 @@ public class PatientServiceImpl extends DolphinService implements PatientService
                 break;
 
             case PatientSearchSpec.FULL_TEXT_SEARCH:
-                final FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
-                final Analyzer analyzer = fullTextEntityManager.getSearchFactory().getAnalyzer(DocumentModel.class);
-                //final org.apache.lucene.util.Version ver = org.apache.lucene.util.Version.LUCENE_36;
-                final String pk = "karte.patient.id:";
+                final SearchSession searchSession = Search.session(em);
 
-                // preparing seach text with narrowing list
                 String searchText = spec.getSearchText();
 
-                if (!ids.isEmpty()) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(pk).append(ids.get(0));
-                    for (int i = 1; i < ids.size(); i++) {
-                        sb.append(" OR ").append(pk).append(ids.get(i));
-                    }
-                    searchText = String.format("(%s) AND (%s)", spec.getSearchText(), sb.toString());
-                }
+                List<DocumentModel> hits = searchSession.search(DocumentModel.class)
+                    .where(f -> f.bool(b -> {
+                            b.must( f.match().field("modules.beanBytes").matching(searchText));
+                            if (!ids.isEmpty()) {
+                                b.must( f.terms().field("karte.patient.id").matchingAny(ids));
+                            }
+                        })).fetchHits(1000);
 
-                try {
-                    // create native Lucene query
-                    org.apache.lucene.queryparser.classic.QueryParser parser = new QueryParser("modules.beanBytes", analyzer);
-                    parser.setAutoGeneratePhraseQueries(true);  // http://lucene.jugem.jp/?eid=403
-                    org.apache.lucene.search.Query luceneQuery = parser.parse(searchText);
-                    // wrap Lucene query in a javax.persistence.Query
-                    javax.persistence.Query persistenceQuery = fullTextEntityManager.createFullTextQuery(luceneQuery, DocumentModel.class);
+                ret = hits.stream().map(dm -> dm.getKarte().getPatient()).distinct().toList();
 
-                    // Too many results (>32768) cause
-                    // java.io.IOException: Tried to sendDocument an out-of-range integer as a 2-byte value: xxxxx
-                    // 暫定的に 1000 にしておく
-                    persistenceQuery.setMaxResults(1000);
-
-                    // execute search
-                    List<DocumentModel> result = persistenceQuery.getResultList();
-
-                    for (DocumentModel dm : result) {
-                        PatientModel pm = dm.getKarte().getPatient();
-                        if (!ret.contains(pm)) {
-                            ret.add(pm);
-                        }
-                    }
-
-                } catch (ParseException e) {
-                    logger.info(e.getMessage(), e.getCause());
-                }
                 break;
         }
 

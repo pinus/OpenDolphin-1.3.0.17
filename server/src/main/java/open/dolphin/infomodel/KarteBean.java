@@ -2,9 +2,12 @@ package open.dolphin.infomodel;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class KarteBean extends InfoModel {
     private long id;
 
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private PatientModel patient;

@@ -16,6 +16,7 @@
 
         <!-- versions -->
         <java.version>17</java.version>
+        <version.jakarta.platform>10.0.0</version.jakarta.platform>
         <version.com.fasterxml.jackson>2.13.4</version.com.fasterxml.jackson>
         <version.com.fasterxml.jackson.databind>${version.com.fasterxml.jackson}.2</version.com.fasterxml.jackson.databind>
         <version.org.jboss.resteasy>6.2.1.Final</version.org.jboss.resteasy>
@@ -29,9 +30,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>8.0.1</version>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>${version.jakarta.platform}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -58,7 +59,7 @@
         </dependency>
         <dependency>
             <groupId>org.hibernate.search</groupId>
-            <artifactId>hibernate-search-mapper-orm</artifactId>
+            <artifactId>hibernate-search-mapper-orm-jakarta</artifactId>
             <version>${version.org.hibernate.search}</version>
             <scope>provided</scope>
         </dependency>

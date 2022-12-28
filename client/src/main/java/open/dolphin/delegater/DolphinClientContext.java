@@ -9,9 +9,11 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
 import org.jboss.resteasy.util.Encode;
 
-import javax.websocket.*;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
+import jakarta.websocket.*;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
 import java.io.IOException;
 import java.net.URI;
 
@@ -45,8 +47,7 @@ public class DolphinClientContext {
         String hashPass = HashUtil.MD5(password);
 
         // Resteasy
-        ResteasyClientBuilder builder = (ResteasyClientBuilder) ResteasyClientBuilder.newBuilder();
-        ResteasyClient client = builder.connectionPoolSize(20).build();
+        Client client = ClientBuilder.newClient();
 
         // register providers
         try {
@@ -66,7 +67,7 @@ public class DolphinClientContext {
             e.printStackTrace(System.err);
         }
         String restUrl = String.format(("http://%s/%s"), hostAddress, DOLPHIN_PATH);
-        target = client.target(restUrl);
+        target = (ResteasyWebTarget) client.target(restUrl);
 
         // WebSocket
         webSocketContainer = ContainerProvider.getWebSocketContainer();

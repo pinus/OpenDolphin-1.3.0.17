@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import javax.swing.*;
-import javax.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientBuilder;
 import java.awt.*;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
@@ -387,7 +387,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
 
             String errMsg = null;
 
-            if (cause instanceof javax.ejb.EJBAccessException) {
+            if (cause instanceof jakarta.ejb.EJBAccessException) {
                 errMsg = "システム設定エラー\n" +
                     appendExceptionInfo(cause);
 

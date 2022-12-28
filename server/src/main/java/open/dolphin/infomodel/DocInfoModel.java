@@ -2,9 +2,9 @@ package open.dolphin.infomodel;
 
 import open.dolphin.util.ModelUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;

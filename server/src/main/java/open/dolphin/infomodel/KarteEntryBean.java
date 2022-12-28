@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -52,6 +55,7 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
     private UserModel creator;
 
     @IndexedEmbedded            // hibernate search
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     @ManyToOne
     @JoinColumn(name = "karte_id", nullable = false)
     private KarteBean karte;

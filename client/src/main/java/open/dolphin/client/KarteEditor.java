@@ -1,7 +1,5 @@
 package open.dolphin.client;
 
-import open.dolphin.JsonConverter;
-import open.dolphin.delegater.BusinessDelegater;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.dnd.KartePaneTransferHandler;
@@ -18,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import javax.ws.rs.BadRequestException;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

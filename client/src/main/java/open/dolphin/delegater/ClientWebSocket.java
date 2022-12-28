@@ -1,6 +1,6 @@
 package open.dolphin.delegater;
 
-import javax.websocket.*;
+import jakarta.websocket.*;
 
 /**
  * @author pns

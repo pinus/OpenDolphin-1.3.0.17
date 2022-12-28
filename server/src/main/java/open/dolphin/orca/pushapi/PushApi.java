@@ -9,10 +9,10 @@ import open.dolphin.orca.pushapi.bean.Unsubscribe;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.logging.Logger;
 
-import javax.websocket.ContainerProvider;
-import javax.websocket.DeploymentException;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.Session;
+import jakarta.websocket.WebSocketContainer;
 import java.io.IOException;
 import java.net.URI;
 

@@ -2,9 +2,9 @@ package open.dolphin.service;
 
 import open.dolphin.infomodel.*;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityExistsException;
-import javax.persistence.NoResultException;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.NoResultException;
 import java.util.Collection;
 import java.util.List;
 

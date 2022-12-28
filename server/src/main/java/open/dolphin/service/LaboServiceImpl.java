@@ -3,7 +3,7 @@ package open.dolphin.service;
 import open.dolphin.dto.LaboSearchSpec;
 import open.dolphin.infomodel.*;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 import java.util.List;
 
 /**

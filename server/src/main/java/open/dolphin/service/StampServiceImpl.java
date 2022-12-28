@@ -3,8 +3,8 @@ package open.dolphin.service;
 import open.dolphin.infomodel.*;
 import open.dolphin.util.ModelUtils;
 
-import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

@@ -1,9 +1,9 @@
 package open.dolphin.infomodel;
 
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import jakarta.persistence.*;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +24,7 @@ public class DocumentModel extends KarteEntryBean<DocumentModel> {
     private DocInfoModel docInfo;
 
     @IndexedEmbedded        // hibernate search
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     @OneToMany(mappedBy = "document", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Collection<ModuleModel> modules;
 

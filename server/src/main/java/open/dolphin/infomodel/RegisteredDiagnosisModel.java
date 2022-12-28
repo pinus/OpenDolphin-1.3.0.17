@@ -2,7 +2,7 @@ package open.dolphin.infomodel;
 
 import open.dolphin.util.ModelUtils;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * 診断履歴クラス.

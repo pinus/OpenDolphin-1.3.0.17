@@ -1,6 +1,6 @@
 package open.dolphin.impl.pvt;
 
-import javax.websocket.MessageHandler;
+import jakarta.websocket.MessageHandler;
 
 /**
  * @author pns

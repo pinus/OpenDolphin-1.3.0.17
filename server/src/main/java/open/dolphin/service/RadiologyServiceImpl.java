@@ -2,7 +2,7 @@ package open.dolphin.service;
 
 import open.dolphin.infomodel.RadiologyMethodValue;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 import java.util.List;
 
 /**

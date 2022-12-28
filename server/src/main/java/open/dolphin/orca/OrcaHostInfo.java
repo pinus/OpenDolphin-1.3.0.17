@@ -4,8 +4,8 @@ import open.dolphin.JsonConverter;
 import open.dolphin.orca.orcaapi.OrcaApiUrl;
 import org.jboss.logging.Logger;
 
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;

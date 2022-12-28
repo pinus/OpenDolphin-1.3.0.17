@@ -3,13 +3,13 @@ package open.dolphin.service;
 import open.dolphin.dto.*;
 import open.dolphin.infomodel.*;
 import open.dolphin.util.ModelUtils;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.jboss.logging.Logger;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
 
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
+import jakarta.ejb.Asynchronous;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.NoResultException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -342,9 +342,8 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             old.setEnded(ended);
             old.setStatus(InfoModel.STATUS_MODIFIED);
 
-            // HibernateSearchのFulTextEntityManagerを用意. 修正済みのものはインデックスから削除する by masuda-sensei
-            final FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
-            fullTextEntityManager.purge(DocumentModel.class, parentPk);
+            final SearchSession searchSession = Search.session(em);
+            searchSession.indexingPlan().purge(DocumentModel.class, parentPk, null);
 
             // 関連するモジュールとイメージに同じ処理を実行する
             List<ModuleModel> oldModules = em.createQuery("select m from ModuleModel m where m.document.id = :id", ModuleModel.class)
@@ -389,9 +388,9 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
 
             long delId = delete.getId();
 
-            // HibernateSearchのFulTextEntityManagerを用意. 削除済みのものはインデックスから削除する
-            final FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
-            fullTextEntityManager.purge(DocumentModel.class, delId);
+            // 削除済みのものはインデックスから削除する
+            final SearchSession searchSession = Search.session(em);
+            searchSession.indexingPlan().purge(DocumentModel.class, delId, null);
 
             if (InfoModel.STATUS_TMP.equals(delete.getStatus())) {
                 // 仮文書の場合は抹消スル

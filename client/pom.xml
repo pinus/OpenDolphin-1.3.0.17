@@ -14,6 +14,7 @@
         <!-- versions -->
         <java.version>17</java.version>
         <version.openjfx>17</version.openjfx>
+        <version.jakarta.platform>10.0.0</version.jakarta.platform>
         <version.org.jboss.resteasy>6.2.1.Final</version.org.jboss.resteasy>
         <version.org.hibernate>6.1.5.Final</version.org.hibernate>
         <version.commons-codec>1.15</version.commons-codec>
@@ -23,10 +24,10 @@
     <dependencies>
         <!-- Server -->
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>8.0.1</version>
-            <type>jar</type>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>${version.jakarta.platform}</version>
+            <scope>jar</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -62,7 +63,7 @@
         <!-- WebSocket -->
         <dependency>
             <groupId>org.glassfish.tyrus.bundles</groupId>
-            <artifactId>tyrus-standalone-client-jdk</artifactId>
+            <artifactId>tyrus-standalone-client</artifactId>
             <version>${version.org.glassfish.tyrus.bundles}</version>
         </dependency>
 

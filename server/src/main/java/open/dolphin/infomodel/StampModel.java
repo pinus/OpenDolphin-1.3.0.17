@@ -3,7 +3,7 @@ package open.dolphin.infomodel;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * StampModel.

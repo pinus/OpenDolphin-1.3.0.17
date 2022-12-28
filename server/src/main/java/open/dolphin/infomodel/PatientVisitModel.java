@@ -3,9 +3,7 @@ package open.dolphin.infomodel;
 import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.persistence.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import jakarta.persistence.*;
 import java.util.StringTokenizer;
 
 /**

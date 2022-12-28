@@ -9,7 +9,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import javax.security.auth.login.LoginException;
 import javax.swing.*;
-import javax.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientBuilder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -159,7 +159,7 @@ public class OIDGetter extends JPanel {
 
             String errMsg = null;
 
-            if (cause instanceof javax.ejb.EJBAccessException) {
+            if (cause instanceof jakarta.ejb.EJBAccessException) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("システム設定エラー");
                 sb.append("\n");
