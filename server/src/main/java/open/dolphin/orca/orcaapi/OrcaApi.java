@@ -3,6 +3,7 @@ package open.dolphin.orca.orcaapi;
 import open.dolphin.orca.OrcaHostInfo;
 import open.dolphin.orca.orcaapi.bean.*;
 import open.dolphin.util.JsonUtils;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 
@@ -14,10 +15,15 @@ import java.net.URI;
 public class OrcaApi {
     private static final OrcaApi ORCA_API = new OrcaApi();
 
-    private final OrcaHostInfo hostInfo = OrcaHostInfo.getInstance();
-    private final OrcaApiHandler handler = OrcaApiHandler.getInstance();
+    private final OrcaHostInfo hostInfo;
+    private final OrcaApiHandler handler;
+    private final Logger logger;
 
     private OrcaApi() {
+        hostInfo = OrcaHostInfo.getInstance();
+        handler = OrcaApiHandler.getInstance();
+        logger = Logger.getLogger(OrcaApi.class);
+        logger.info("OrcaApi created");
     }
 
     /**

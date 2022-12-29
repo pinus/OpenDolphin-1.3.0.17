@@ -1,5 +1,7 @@
 package open.dolphin.orca.orcadao;
 
+import org.jboss.logging.Logger;
+
 /**
  * ORCA Database にアクセスするための DAO.
  *
@@ -7,9 +9,13 @@ package open.dolphin.orca.orcadao;
  */
 public class OrcaDao {
     private static final OrcaDao DAO = new OrcaDao();
-    private static final OrcaExtraInfo EXTRA_INFO = new OrcaExtraInfo();
+    private final OrcaExtraInfo extraInfo;
+    private final Logger logger;
 
     private OrcaDao() {
+        extraInfo = new OrcaExtraInfo();
+        logger = Logger.getLogger(OrcaDao.class);
+        logger.info("OrcaDao created");
     }
 
     /**
@@ -37,7 +43,7 @@ public class OrcaDao {
      * @return hospNum
      */
     public int getHospNum() {
-        return EXTRA_INFO.getHospNum();
+        return extraInfo.getHospNum();
     }
 
     /**
@@ -46,7 +52,7 @@ public class OrcaDao {
      * @return OrcaExtraInfo
      */
     public OrcaExtraInfo getExtraInfo() {
-        return EXTRA_INFO;
+        return extraInfo;
     }
 
     /**

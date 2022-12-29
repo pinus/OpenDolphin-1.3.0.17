@@ -4,8 +4,6 @@ import open.dolphin.orca.orcaapi.OrcaApiUrl;
 import open.dolphin.util.JsonUtils;
 import org.jboss.logging.Logger;
 
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
@@ -19,13 +17,11 @@ import java.util.Properties;
  *
  * @author pns
  */
-@Startup
-@Singleton
 public class OrcaHostInfo {
     private static final OrcaHostInfo ORCA_HOST_INFO = new OrcaHostInfo();
     private static final String ORCA_HOST_INFO_FILE = "orca.host.info";
 
-    private Logger logger = Logger.getLogger(OrcaHostInfo.class);
+    private final Logger logger = Logger.getLogger(OrcaHostInfo.class);
 
     /**
      * 取得した ORCA 情報.

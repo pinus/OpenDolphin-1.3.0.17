@@ -15,12 +15,14 @@ import java.net.URLConnection;
  * @author pns
  */
 public class OrcaApiHandler {
-
     private static final OrcaApiHandler ORCA_API_HANDLER = new OrcaApiHandler();
-    private final OrcaHostInfo hostInfo = OrcaHostInfo.getInstance();
-    private Logger logger = Logger.getLogger(OrcaApiHandler.class);
+    private final OrcaHostInfo hostInfo;
+    private final Logger logger;
 
     private OrcaApiHandler() {
+        hostInfo = OrcaHostInfo.getInstance();
+        logger = Logger.getLogger(OrcaApiHandler.class);
+        logger.info("OrcaApiHandler created");
     }
 
     public static OrcaApiHandler getInstance() {

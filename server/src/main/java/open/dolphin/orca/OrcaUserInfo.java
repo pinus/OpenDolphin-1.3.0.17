@@ -5,10 +5,8 @@ import open.dolphin.orca.orcaapi.bean.PhysicianInformation;
 import open.dolphin.orca.orcaapi.bean.System01Managereq;
 import open.dolphin.orca.orcaapi.bean.System01Manageres;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.ejb.DependsOn;
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
+import org.jboss.logging.Logger;
+
 import java.util.*;
 
 /**
@@ -16,22 +14,16 @@ import java.util.*;
  *
  * @author pns
  */
-@Singleton
-@Startup
-@DependsOn("OrcaHostInfo")
 public class OrcaUserInfo {
-
     /**
      * 漢字フルネームをキーとした ORCA 職員コードのマップ.
      * 姓名の間は半角スペース.
      */
-    private static HashMap<String, String> map = new HashMap<>();
+    private static final HashMap<String, String> map = new HashMap<>();
 
-    private OrcaUserInfo() {
-    }
+    private static final Logger logger = Logger.getLogger(OrcaUserInfo.class);
 
-    @PostConstruct
-    public static void init() {
+    static {
         OrcaApi api = OrcaApi.getInstance();
 
         System01Managereq req = new System01Managereq();
@@ -46,9 +38,11 @@ public class OrcaUserInfo {
         infos.stream().filter(info -> Objects.nonNull(info.getCode())).forEach(info -> {
             String name = replaceSpace(info.getWholeName());
             map.put(name, info.getCode());
-            //System.out.println("OrcaUserInfo: " + name);
         });
+        logger.info("OrcaUserInfo created");
     }
+
+    private OrcaUserInfo() {}
 
     /**
      * フルネームから ORCA 職員コードを調べる.
@@ -64,4 +58,6 @@ public class OrcaUserInfo {
     private static String replaceSpace(String s) {
         return s.replaceAll("　", " ").trim();
     }
+
+    public static Map<String, String> getHashMap() { return map; }
 }

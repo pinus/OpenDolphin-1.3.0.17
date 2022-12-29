@@ -29,13 +29,17 @@ import java.net.URI;
 public class PushApi {
     private static final PushApi PUSH_API = new PushApi();
 
-    private final OrcaHostInfo hostInfo = OrcaHostInfo.getInstance();
-    private final PushApiEndpoint endpoint = new PushApiEndpoint();
+    private final OrcaHostInfo hostInfo;
+    private final PushApiEndpoint endpoint;
     private Session session;
 
-    private Logger logger = Logger.getLogger(PushApi.class);
+    private final Logger logger;
 
     private PushApi() {
+        hostInfo = OrcaHostInfo.getInstance();
+        endpoint = new PushApiEndpoint();
+        logger = Logger.getLogger(PushApi.class);
+        logger.info("PusApi created");
     }
 
     /**

@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * PvtClient.
@@ -43,13 +42,13 @@ import java.util.stream.Collectors;
  */
 @Singleton
 @Startup
-@DependsOn({"OrcaHostInfo", "OrcaUserInfo"})
+@DependsOn("OrcaHostInfoStartup")
 @RunAs("user")
 public class PvtClient {
     private final Logger logger = Logger.getLogger(PvtClient.class);
-    private PushApi pushApi;
+    private final PushApi pushApi;
     private Response subscriptionRes;
-    private PvtBuilder pvtBuilder;
+    private final PvtBuilder pvtBuilder;
     @Inject
     private PvtService pvtService;
 
@@ -60,6 +59,7 @@ public class PvtClient {
         pvtBuilder = new PvtBuilder();
         pushApi = PushApi.getInstance();
         pushApi.addResponseListener(this::onResponse);
+        logger.info("PvtClient created");
     }
 
     @PostConstruct
@@ -76,13 +76,14 @@ public class PvtClient {
         String command = res.getCommand();
 
         switch (command) {
-            case "subscribed":
+            case "subscribed" -> {
                 subscriptionRes = res;
-            case "unsubscribed":
                 logger.info(String.format("command = %s\nreq.id = %s\nsub.id = %s\n\n", command, res.getReqId(), res.getSubId()));
-                break;
-
-            case "event":
+            }
+            case "unsubscribed" -> {
+                logger.info(String.format("command = %s\nreq.id = %s\nsub.id = %s\n\n", command, res.getReqId(), res.getSubId()));
+            }
+            case "event" -> {
                 Data data = res.getData();
                 Body body = data.getBody();
                 String event = data.getEvent();
@@ -92,27 +93,25 @@ public class PvtClient {
                 if (event.equals(SubscriptionEvent.ACCEPT.eventName())) {
                     DummyHeader.set();
                     switch (body.getPatient_Mode()) {
-                        case "delete":
+                        case "delete" -> {
                             String ptId = body.getPatient_ID(); // 患者番号 002906
                             String pvtTime = body.getAccept_Date() + 'T' + body.getAccept_Time(); // 2016-12-02T16:03:38
 
                             long removePk = getPvtListToday().stream()
-                                    .filter(pvt -> pvt.getPatientId().equals(ptId))
-                                    .filter(pvt -> pvt.getPvtDate().equals(pvtTime))
-                                    .map(PatientVisitModel::getId).findAny().orElse(0L);
+                                .filter(pvt -> pvt.getPatientId().equals(ptId))
+                                .filter(pvt -> pvt.getPvtDate().equals(pvtTime))
+                                .map(PatientVisitModel::getId).findAny().orElse(0L);
                             if (removePk != 0) {
                                 pvtService.removePvt(removePk);
                             }
                             logger.info("pvt removed [" + ptId + "]");
-                            break;
-
-                        case "add":
-                        case "modify":
+                        }
+                        case "add", "modify" -> {
                             pvtBuilder.build(body);
                             PatientVisitModel model = pvtBuilder.getProduct();
                             pvtService.addPvt(model);
                             logger.info("addPvt [" + model.getPatient().getPatientId() + "]");
-                            break;
+                        }
                     }
 
                 } else if (event.equals(SubscriptionEvent.INFORMATION.eventName())) {
@@ -122,9 +121,9 @@ public class PvtClient {
 
                     switch (body.getPatient_Mode()) {
                         // pvt にある患者情報が orca で書き換えられた場合の対応
-                        case "modify":
+                        case "modify" -> {
                             List<PatientVisitModel> pvts = getPvtListToday().stream()
-                                .filter(pvt -> pvt.getPatientId().equals(ptId)).collect(Collectors.toList());
+                                .filter(pvt -> pvt.getPatientId().equals(ptId)).toList();
 
                             pvts.stream().forEach(pvt -> {
                                 pvtBuilder.build(body);
@@ -134,10 +133,9 @@ public class PvtClient {
                                 logger.info("modify patient info pvt state = " + pvt.getState());
                             });
                             logger.info("modify patient info [" + ptId + "]");
-                            break;
-
+                        }
                         // pvt にある患者情報が orca で削除された場合の対応
-                        case "delete":
+                        case "delete" -> {
                             long removePk = getPvtListToday().stream()
                                 .filter(pvt -> pvt.getPatientId().equals(ptId))
                                 .map(PatientVisitModel::getId).findAny().orElse(0L);
@@ -145,10 +143,10 @@ public class PvtClient {
                                 pvtService.removePvt(removePk);
                             }
                             logger.info("pvt patient deleted [" + ptId + "]");
-                            break;
+                        }
                     }
                 }
-                break;
+            }
         }
     }
 
@@ -168,7 +166,7 @@ public class PvtClient {
      * 内部から PvtService を呼ぶためのダミーヘッダ
      */
     private static class DummyHeader implements HttpHeaders {
-        private static DummyHeader dummyHeader = new DummyHeader();
+        private static final DummyHeader dummyHeader = new DummyHeader();
         private static String header;
 
         private DummyHeader() {
