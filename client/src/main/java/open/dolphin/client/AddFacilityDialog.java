@@ -11,6 +11,8 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.CommunicationException;
+import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 import javax.swing.*;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -387,16 +389,12 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
 
             String errMsg = null;
 
-            if (cause instanceof jakarta.ejb.EJBAccessException) {
-                errMsg = "システム設定エラー\n" +
-                    appendExceptionInfo(cause);
-
-            } else if (cause instanceof javax.naming.CommunicationException) {
+            if (cause instanceof CommunicationException) {
                 errMsg = "ASPサーバに接続できません。\n" +
                     "ファイヤーウォール等がサービスを利用できない設定になっている可能性があります。\n" +
                     appendExceptionInfo(cause);
 
-            } else if (cause instanceof javax.naming.NamingException) {
+            } else if (cause instanceof NamingException) {
                 errMsg = "アプリケーションエラー\n" +
                     appendExceptionInfo(cause);
 

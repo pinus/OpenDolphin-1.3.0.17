@@ -1,6 +1,5 @@
 package open.dolphin.orca.test;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.dto.ApiResult;
 import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.dto.OrcaEntry;
@@ -15,6 +14,7 @@ import open.dolphin.orca.orcadao.bean.Syskanri;
 import open.dolphin.orca.orcadao.bean.Wksryact;
 import open.dolphin.service.OrcaServiceApi;
 import open.dolphin.service.OrcaServiceDao;
+import open.dolphin.util.JsonUtils;
 
 import java.lang.reflect.Method;
 import java.time.LocalDate;
@@ -97,7 +97,7 @@ public class OrcaServiceTest {
         // getStamp
         List<ModuleModel> m = (List<ModuleModel>) invoke(orcaService, "getStamp", stampInfo.get(20));
         m.forEach(module -> {
-            System.out.println(JsonConverter.toJson(module));
+            System.out.println(JsonUtils.toJson(module));
         });
     }
 
@@ -117,14 +117,14 @@ public class OrcaServiceTest {
         DocumentModel doc = SampleDocument.getDocumentModel("SampleDocumentModel.json");
         ApiResult result = ((OrcaServiceApi) orcaService).sendDocument(doc);
 
-        System.out.println(JsonConverter.toJson(result));
+        System.out.println(JsonUtils.toJson(result));
     }
 
     private void sendDiag(Object orcaService) {
         List<RegisteredDiagnosisModel> diagnoses = SampleDocument.getRegisteredDiagnosisModel("SampleRegisteredDiagnosisModels.json");
         ApiResult result = ((OrcaServiceApi) orcaService).sendDiagnoses(diagnoses);
 
-        System.out.println(JsonConverter.toJson(result));
+        System.out.println(JsonUtils.toJson(result));
     }
 
     private void getDrugHistory(OrcaServiceDao orcaService) throws ReflectiveOperationException {

@@ -1,4 +1,3 @@
-import open.dolphin.JsonConverter;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.dto.KarteBeanSpec;
 import open.dolphin.infomodel.*;
@@ -6,6 +5,7 @@ import open.dolphin.service.KarteService;
 import open.dolphin.service.StampService;
 import open.dolphin.service.SystemService;
 import open.dolphin.service.UserService;
+import open.dolphin.util.JsonUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import java.util.ArrayList;
@@ -103,9 +103,9 @@ public class JsonTest {
         memo.setCreator(user1);
         //memo.setCreator(user);
 
-        String json = JsonConverter.toJson(document);
+        String json = JsonUtils.toJson(document);
         System.out.println(json);
-        DocumentModel model = JsonConverter.fromJson(json, DocumentModel.class);
+        DocumentModel model = JsonUtils.fromJson(json, DocumentModel.class);
         System.out.println("creater = " + model.getKarte().getPatientMemo().getCreator().getGivenName());
     }
 
@@ -115,10 +115,10 @@ public class JsonTest {
         role.setUser(user);
         user.addRole(role);
 
-        String json = JsonConverter.toJson(user);
+        String json = JsonUtils.toJson(user);
         System.out.println(json);
 
-        UserModel u = JsonConverter.fromJson(json, UserModel.class);
+        UserModel u = JsonUtils.fromJson(json, UserModel.class);
     }
 
     private void testTypeInfo() {
@@ -132,17 +132,17 @@ public class JsonTest {
         m2.setModel(bd);
         m3.setModel(pc);
 
-        String j1 = JsonConverter.toJson(m1);
-        String j2 = JsonConverter.toJson(m2);
-        String j3 = JsonConverter.toJson(m3);
+        String j1 = JsonUtils.toJson(m1);
+        String j2 = JsonUtils.toJson(m2);
+        String j3 = JsonUtils.toJson(m3);
 
         System.out.println("j1= " + j1);
         System.out.println("j2= " + j2);
         System.out.println("j3= " + j3);
 
-        ModuleModel rm1 = JsonConverter.fromJson(j1, ModuleModel.class);
-        ModuleModel rm2 = JsonConverter.fromJson(j2, ModuleModel.class);
-        ModuleModel rm3 = JsonConverter.fromJson(j3, ModuleModel.class);
+        ModuleModel rm1 = JsonUtils.fromJson(j1, ModuleModel.class);
+        ModuleModel rm2 = JsonUtils.fromJson(j2, ModuleModel.class);
+        ModuleModel rm3 = JsonUtils.fromJson(j3, ModuleModel.class);
 
         System.out.println(rm1.getModel().getClass());
         System.out.println(rm2.getModel().getClass());

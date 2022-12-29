@@ -7,6 +7,8 @@ import open.dolphin.service.SystemService;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
+import javax.naming.CommunicationException;
+import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 import javax.swing.*;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -159,14 +161,7 @@ public class OIDGetter extends JPanel {
 
             String errMsg = null;
 
-            if (cause instanceof jakarta.ejb.EJBAccessException) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("システム設定エラー");
-                sb.append("\n");
-                sb.append(appendExceptionInfo(cause));
-                errMsg = sb.toString();
-
-            } else if (cause instanceof javax.naming.CommunicationException) {
+            if (cause instanceof CommunicationException) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("ASPサーバに接続できません。");
                 sb.append("\n");
@@ -175,7 +170,7 @@ public class OIDGetter extends JPanel {
                 sb.append(appendExceptionInfo(cause));
                 errMsg = sb.toString();
 
-            } else if (cause instanceof javax.naming.NamingException) {
+            } else if (cause instanceof NamingException) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("アプリケーションエラー");
                 sb.append("\n");

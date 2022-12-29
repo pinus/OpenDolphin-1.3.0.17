@@ -1,9 +1,9 @@
 package open.dolphin.service;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
+import open.dolphin.util.JsonUtils;
 import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.search.mapper.orm.Search;
@@ -85,7 +85,7 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
         String json = prefs.get(CALENDAR_DATA, null);
         return StringUtils.isEmpty(json)
             ? null
-            : JsonConverter.fromJson(json, String[][].class);
+            : JsonUtils.fromJson(json, String[][].class);
     }
 
     /**
@@ -94,7 +94,7 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
      * @param data Calendar data array
      */
     public void saveCalendarData(String[][] data) {
-        String json = JsonConverter.toJson(data);
+        String json = JsonUtils.toJson(data);
         prefs.put(CALENDAR_DATA, json);
         logger.info("calendar data saved");
     }

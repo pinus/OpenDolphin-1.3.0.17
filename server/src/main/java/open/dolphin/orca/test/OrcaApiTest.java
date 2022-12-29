@@ -1,8 +1,8 @@
 package open.dolphin.orca.test;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.orca.orcaapi.OrcaApi;
 import open.dolphin.orca.orcaapi.bean.*;
+import open.dolphin.util.JsonUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -62,7 +62,7 @@ public class OrcaApiTest {
         System.out.println("患者基本情報");
         PatientInfores info = api.get("000001");
 
-        System.out.println(JsonConverter.toJson(info));
+        System.out.println(JsonUtils.toJson(info));
     }
 
     private void appointmodv2() {
@@ -77,7 +77,7 @@ public class OrcaApiTest {
 
         Appointres res = api.post(req, "01");
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void medicalmodv2() {
@@ -104,7 +104,7 @@ public class OrcaApiTest {
 
         Medicalres res = api.post(req, "01");
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void acceptmodv2() {
@@ -118,7 +118,7 @@ public class OrcaApiTest {
 
         Acceptres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void acceptlstv2() {
@@ -131,7 +131,7 @@ public class OrcaApiTest {
 
         Acceptlstres res = api.post(req, "03");
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void appointlstv2() {
@@ -143,7 +143,7 @@ public class OrcaApiTest {
 
         Appointlstres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void medicationmodv2() {
@@ -164,7 +164,7 @@ public class OrcaApiTest {
 
         Medicationres res = api.post(req, "01");
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void patientlst1v2() {
@@ -176,7 +176,7 @@ public class OrcaApiTest {
 
         Patientlst1res res = api.post(req, "02");
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void patientlst2v2() {
@@ -192,7 +192,7 @@ public class OrcaApiTest {
 
         Patientlst2res res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void patientlst3v2() {
@@ -203,7 +203,7 @@ public class OrcaApiTest {
 
         Patientlst2res res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void system01lstv2() {
@@ -266,7 +266,7 @@ public class OrcaApiTest {
 
         DiseaseInfores res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void patientmodv2() {
@@ -294,7 +294,7 @@ public class OrcaApiTest {
 
         Patientmodres res = api.post(req, "01");
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void appointlst2v2() {
@@ -306,7 +306,7 @@ public class OrcaApiTest {
 
         Appointlst2res res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void acsimulatev2() {
@@ -326,7 +326,7 @@ public class OrcaApiTest {
 
         Acsimulateres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void subjectivesv2() {
@@ -342,7 +342,7 @@ public class OrcaApiTest {
 
         Subjectivesmodres res = api.post(req, "01");
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void visitptlstv2() {
@@ -354,11 +354,11 @@ public class OrcaApiTest {
         req.setRequest_Number("01");
 
         Visitptlst01res res1 = api.post(req).getVisitptlst01res();
-        System.out.println(JsonConverter.toJson(res1));
+        System.out.println(JsonUtils.toJson(res1));
 
         req.setRequest_Number("02");
         Visitptlst02res res2 = api.post(req).getVisitptlst02res();
-        System.out.println(JsonConverter.toJson(res2));
+        System.out.println(JsonUtils.toJson(res2));
     }
 
     private void tmedicalgetv2() {
@@ -368,7 +368,7 @@ public class OrcaApiTest {
 
         Tmedicalgetres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void insprogetv2() {
@@ -379,7 +379,7 @@ public class OrcaApiTest {
 
         Insprogetres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void incomeinfv2() {
@@ -391,7 +391,7 @@ public class OrcaApiTest {
 
         PrivateObjects res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void systeminfv2() {
@@ -407,7 +407,7 @@ public class OrcaApiTest {
 
         PrivateObjects res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void manageusersv2() {
@@ -418,7 +418,7 @@ public class OrcaApiTest {
 
         Manageusersres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void medicalsetv2() {
@@ -430,7 +430,7 @@ public class OrcaApiTest {
 
         Medicalsetres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void patientlst6v2() {
@@ -442,7 +442,7 @@ public class OrcaApiTest {
 
         Patientlst6res res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void diseasev3() {
@@ -467,7 +467,7 @@ public class OrcaApiTest {
 
         Diseaseres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void masterlastupdatev3() {
@@ -479,7 +479,7 @@ public class OrcaApiTest {
 
         Masterlastupdatev3res res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void system01dailyv2() {
@@ -490,7 +490,7 @@ public class OrcaApiTest {
 
         System01dailyres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void patientlst7v2() {
@@ -504,7 +504,7 @@ public class OrcaApiTest {
 
         Patientlst7res res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void medicalmodv23() {
@@ -516,7 +516,7 @@ public class OrcaApiTest {
 
         Medicalv2res3 res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void contraindicationcheckv2() {
@@ -535,7 +535,7 @@ public class OrcaApiTest {
 
         ContraindicationCheckres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void insuranceinf1v2() {
@@ -546,7 +546,7 @@ public class OrcaApiTest {
 
         Insuranceinfres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void subjectiveslstv2() {
@@ -560,7 +560,7 @@ public class OrcaApiTest {
 
         Subjectiveslstres res = api.post(req);
 
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void pusheventgetv2() {
@@ -573,7 +573,7 @@ public class OrcaApiTest {
         req.setEnd_time("2021-08-23 17:30");
 
         open.dolphin.orca.pushapi.bean.Data res = api.post(req);
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 
     private void patientlst8v2() {
@@ -584,6 +584,6 @@ public class OrcaApiTest {
         req.setPatient_ID("001967");
 
         Patientlst8res res = api.post(req);
-        System.out.println(JsonConverter.toJson(res));
+        System.out.println(JsonUtils.toJson(res));
     }
 }

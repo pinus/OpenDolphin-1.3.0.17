@@ -12,7 +12,6 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import jakarta.ejb.Singleton;
 import jakarta.ws.rs.ext.ContextResolver;
 import jakarta.ws.rs.ext.Provider;
-import java.io.IOException;
 
 /**
  * Jackson ObjectMapper
@@ -22,10 +21,17 @@ import java.io.IOException;
 @Provider
 @Singleton
 public class JsonConverter implements ContextResolver<ObjectMapper> {
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final Hibernate5Module hbm = new Hibernate5Module();
+    private ObjectMapper mapper;
+    private Hibernate5Module hbm;
 
-    static {
+    public JsonConverter() {
+        mapper = new ObjectMapper();
+        hbm = new Hibernate5Module();
+        initModule();
+        System.out.println("[open.dolphin.JsonConverter] ObjectMapper configured.");
+    }
+
+    private void initModule() {
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
         mapper.setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
@@ -33,8 +39,8 @@ public class JsonConverter implements ContextResolver<ObjectMapper> {
         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        PolymorphicTypeValidator ptv = new PolymorphicTypeValidator() {
 
+        PolymorphicTypeValidator ptv = new PolymorphicTypeValidator() {
             @Override
             public Validity validateBaseType(MapperConfig<?> config, JavaType baseType) {
                 System.out.println("-------------- base " + baseType);
@@ -55,8 +61,7 @@ public class JsonConverter implements ContextResolver<ObjectMapper> {
                 return Validity.ALLOWED;
             }
         };
-        PolymorphicTypeValidator ptv2 = BasicPolymorphicTypeValidator.builder()
-            .build();
+        PolymorphicTypeValidator ptv2 = BasicPolymorphicTypeValidator.builder().build();
         //mapper.activateDefaultTyping(ptv2);
 
         hbm.configure(Hibernate5Module.Feature.FORCE_LAZY_LOADING, false);
@@ -64,47 +69,11 @@ public class JsonConverter implements ContextResolver<ObjectMapper> {
         mapper.registerModule(hbm);
     }
 
-    public JsonConverter() {
-        System.out.println("JsonConverter: ObjectMapper configured.");
-    }
-
     /**
-     * Utility method to test converter
-     *
-     * @param obj
-     * @return
-     */
-    public static String toJson(Object obj) {
-        try {
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-        } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-        }
-        return null;
-    }
-
-    /**
-     * Utility method to test converter
-     *
-     * @param <T>
-     * @param json
-     * @param clazz
-     * @return
-     */
-    public static <T> T fromJson(String json, Class<T> clazz) {
-        try {
-            return mapper.readValue(json, clazz);
-        } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-        }
-        return null;
-    }
-
-    /**
-     * Provides ObjectMapper for resteasy
+     * Provides ObjectMapper for resteasy.
      *
      * @param type
-     * @return
+     * @return object mapper
      */
     @Override
     public ObjectMapper getContext(Class<?> type) {

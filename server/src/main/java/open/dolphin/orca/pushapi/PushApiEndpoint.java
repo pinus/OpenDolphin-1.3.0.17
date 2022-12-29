@@ -1,7 +1,7 @@
 package open.dolphin.orca.pushapi;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.orca.pushapi.bean.Response;
+import open.dolphin.util.JsonUtils;
 import org.jboss.logging.Logger;
 
 import jakarta.websocket.*;
@@ -31,7 +31,7 @@ public class PushApiEndpoint {
 
     @OnMessage
     public void onMessage(String str) {
-        Response response = JsonConverter.fromJson(str, Response.class);
+        Response response = JsonUtils.fromJson(str, Response.class);
         responseListener.onResponse(response);
     }
 

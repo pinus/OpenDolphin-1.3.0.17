@@ -1,6 +1,6 @@
-import open.dolphin.JsonConverter;
 import open.dolphin.infomodel.BundleDolphin;
 import open.dolphin.infomodel.StampModel;
+import open.dolphin.util.JsonUtils;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
@@ -31,9 +31,9 @@ public class Test51 extends JEditorPane {
         stamp.setOrderName("Order");
         model.setStamp(stamp);
 
-        String json = JsonConverter.toJson(model);
+        String json = JsonUtils.toJson(model);
         System.out.println("json = " + json);
-        StampModel model2 = JsonConverter.fromJson(json, StampModel.class);
+        StampModel model2 = JsonUtils.fromJson(json, StampModel.class);
         System.out.println("orderName = " + model2.getStamp());
 
     }

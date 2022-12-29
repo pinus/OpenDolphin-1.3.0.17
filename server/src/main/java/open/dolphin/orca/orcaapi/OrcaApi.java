@@ -1,8 +1,8 @@
 package open.dolphin.orca.orcaapi;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.orca.OrcaHostInfo;
 import open.dolphin.orca.orcaapi.bean.*;
+import open.dolphin.util.JsonUtils;
 
 import java.net.URI;
 
@@ -586,10 +586,10 @@ public class OrcaApi {
      */
     private Response request(String url, Request req) {
         URI uri = hostInfo.getOrcaApiUri(url);
-        String doc = JsonConverter.toJson(req);
+        String doc = JsonUtils.toJson(req);
 
         String response = handler.post(uri, doc);
-        return JsonConverter.fromJson(response, Response.class);
+        return JsonUtils.fromJson(response, Response.class);
     }
 
     /**
@@ -601,10 +601,10 @@ public class OrcaApi {
      */
     private Response2 request2(String url, Request req) {
         URI uri = hostInfo.getOrcaApiUri(url);
-        String doc = JsonConverter.toJson(req);
+        String doc = JsonUtils.toJson(req);
 
         String response = handler.post(uri, doc);
-        return JsonConverter.fromJson(response, Response2.class);
+        return JsonUtils.fromJson(response, Response2.class);
     }
 
     /**
@@ -617,6 +617,6 @@ public class OrcaApi {
         URI uri = hostInfo.getOrcaApiUri(url);
 
         String response = handler.get(uri);
-        return JsonConverter.fromJson(response, Response.class);
+        return JsonUtils.fromJson(response, Response.class);
     }
 }

@@ -1,10 +1,10 @@
 package open.dolphin.service;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.WebSocket;
 import open.dolphin.dto.PatientVisitSpec;
 import open.dolphin.dto.PvtStateSpec;
 import open.dolphin.infomodel.*;
+import open.dolphin.util.JsonUtils;
 import open.dolphin.util.ModelUtils;
 import org.jboss.logging.Logger;
 
@@ -333,6 +333,6 @@ public class PvtServiceImpl extends DolphinService implements PvtService {
      * @param pvt PatientVisitModel
      */
     private void sendToWebsocket(PatientVisitModel pvt) {
-        WebSocket.getSessions().forEach(session -> session.getAsyncRemote().sendText(JsonConverter.toJson(pvt)));
+        WebSocket.getSessions().forEach(session -> session.getAsyncRemote().sendText(JsonUtils.toJson(pvt)));
     }
 }

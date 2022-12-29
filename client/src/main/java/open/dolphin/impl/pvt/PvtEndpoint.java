@@ -1,7 +1,7 @@
 package open.dolphin.impl.pvt;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.infomodel.PatientVisitModel;
+import open.dolphin.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +29,7 @@ public class PvtEndpoint extends Endpoint {
     @Override
     public void onOpen(Session session, EndpointConfig config) {
         session.addMessageHandler((PvtMessageHandler) message -> {
-            PatientVisitModel hostPvt = JsonConverter.fromJson(message, PatientVisitModel.class);
+            PatientVisitModel hostPvt = JsonUtils.fromJson(message, PatientVisitModel.class);
             pvtListener.pvtChanged(hostPvt);
         });
     }

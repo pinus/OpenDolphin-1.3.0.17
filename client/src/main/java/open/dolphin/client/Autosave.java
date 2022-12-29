@@ -1,7 +1,7 @@
 package open.dolphin.client;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.ui.sheet.JSheet;
+import open.dolphin.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +70,7 @@ public class Autosave implements Runnable {
             } catch (IOException ex) {
                 ex.printStackTrace(System.err);
             }
-            return JsonConverter.fromJson(str.toString(), AutosaveModel.class);
+            return JsonUtils.fromJson(str.toString(), AutosaveModel.class);
         }).collect(Collectors.toList());
     }
 
@@ -175,7 +175,7 @@ public class Autosave implements Runnable {
 
             autosaveModel.dump(editor);
 
-            String json = JsonConverter.toJson(autosaveModel);
+            String json = JsonUtils.toJson(autosaveModel);
 
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile))) {
                 bw.write(json);

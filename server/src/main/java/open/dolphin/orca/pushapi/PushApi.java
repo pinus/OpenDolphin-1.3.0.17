@@ -1,11 +1,11 @@
 package open.dolphin.orca.pushapi;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.orca.OrcaHostInfo;
 import open.dolphin.orca.pushapi.bean.Command;
 import open.dolphin.orca.pushapi.bean.Response;
 import open.dolphin.orca.pushapi.bean.Subscribe;
 import open.dolphin.orca.pushapi.bean.Unsubscribe;
+import open.dolphin.util.JsonUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.logging.Logger;
 
@@ -93,7 +93,7 @@ public class PushApi {
      */
     private void send(Command command) {
         try {
-            String text = JsonConverter.toJson(command);
+            String text = JsonUtils.toJson(command);
             session.getBasicRemote().sendText(text);
 
         } catch (IOException ex) {

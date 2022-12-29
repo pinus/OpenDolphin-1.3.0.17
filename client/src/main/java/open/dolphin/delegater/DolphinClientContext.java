@@ -3,8 +3,6 @@ package open.dolphin.delegater;
 import open.dolphin.JsonConverter;
 import open.dolphin.helper.HashUtil;
 import open.dolphin.infomodel.InfoModel;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
 import org.jboss.resteasy.util.Encode;

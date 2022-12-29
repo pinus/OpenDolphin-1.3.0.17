@@ -1,7 +1,7 @@
 package open.dolphin.orca;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.orca.orcaapi.OrcaApiUrl;
+import open.dolphin.util.JsonUtils;
 import org.jboss.logging.Logger;
 
 import jakarta.ejb.Singleton;
@@ -42,7 +42,7 @@ public class OrcaHostInfo {
             String jBossBaseDir = System.getProperty("jboss.server.base.dir");
             Path pref = Paths.get(jBossBaseDir + "/deployments/" + ORCA_HOST_INFO_FILE);
             String json = String.join("", Files.readAllLines(pref));
-            hostData = JsonConverter.fromJson(json, HostData.class);
+            hostData = JsonUtils.fromJson(json, HostData.class);
             logger.info("orca.host.info=" + json);
 
         } catch (IOException e) {
