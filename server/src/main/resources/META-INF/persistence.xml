@@ -13,6 +13,7 @@
             <!-- hibernate search -->
             <property name="hibernate.search.backend.directory.root" value="${jboss.server.base.dir}/lucene/indexes" />
             <property name="hibernate.search.backend.type" value="lucene" />
+            <property name="hibernate.search.backend.lucene_version" value="8.11.1" />
 
         </properties>
     </persistence-unit>

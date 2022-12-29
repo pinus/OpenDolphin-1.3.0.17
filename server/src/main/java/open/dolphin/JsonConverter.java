@@ -1,8 +1,5 @@
 package open.dolphin;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
@@ -12,6 +9,7 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import jakarta.ejb.Singleton;
 import jakarta.ws.rs.ext.ContextResolver;
 import jakarta.ws.rs.ext.Provider;
+import open.dolphin.util.JsonUtils;
 
 /**
  * Jackson ObjectMapper
@@ -32,13 +30,7 @@ public class JsonConverter implements ContextResolver<ObjectMapper> {
     }
 
     private void initModule() {
-        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
-        mapper.setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
-        mapper.setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE);
-        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        JsonUtils.initialilze(mapper);
 
         PolymorphicTypeValidator ptv = new PolymorphicTypeValidator() {
             @Override
