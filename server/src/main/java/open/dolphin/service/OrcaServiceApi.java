@@ -17,6 +17,8 @@ import org.jboss.logging.Logger;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static open.dolphin.infomodel.IInfoModel.*;
+
 /**
  * OrcaServiceApi.
  * ORCA API による ORCA DAO の置き換えの試み.
@@ -25,9 +27,9 @@ import java.util.*;
  */
 public class OrcaServiceApi {
 
-    private OrcaApi api = OrcaApi.getInstance();
-    private OrcaDao dao = OrcaDao.getInstance();
-    private Logger logger = Logger.getLogger(OrcaServiceApi.class);
+    private final OrcaApi api = OrcaApi.getInstance();
+    private final OrcaDao dao = OrcaDao.getInstance();
+    private final Logger logger = Logger.getLogger(OrcaServiceApi.class);
 
     /**
      * 中途終了患者情報.
@@ -359,6 +361,14 @@ public class OrcaServiceApi {
         // 健康保険
         String insuranceUid = doc.getDocInfo().getHealthInsuranceGUID();
         Collection<PVTHealthInsuranceModel> ins = doc.getKarte().getPatient().getPvtHealthInsurances();
+        if (Objects.isNull(ins)) { // null になることはないはずだが, デバッグ中に1回なったことがある
+            ins = new ArrayList<>(1);
+            PVTHealthInsuranceModel model = new PVTHealthInsuranceModel();
+            model.setInsuranceClass(INSURANCE_SELF);
+            model.setInsuranceClassCode(INSURANCE_SELF_CODE);
+            model.setInsuranceClassCodeSys(INSURANCE_SYS);
+            ins.add(model);
+        }
 
         // 該当する uid を探す. なければ最初のものを採用.
         PVTHealthInsuranceModel first = ins.iterator().next();
@@ -440,11 +450,9 @@ public class OrcaServiceApi {
         doc.getModules().forEach(moduleModel -> {
             IInfoModel infoModel = moduleModel.getModel();
 
-            if (infoModel instanceof ClaimBundle) {
+            if (infoModel instanceof ClaimBundle bundle) {
                 // MedicalInformation
                 MedicalInformation medicalInfo = new MedicalInformation();
-
-                ClaimBundle bundle = (ClaimBundle) infoModel;
                 medicalInfo.setMedical_Class(bundle.getClassCode());
                 medicalInfo.setMedical_Class_Name(bundle.getClassName());
                 medicalInfo.setMedical_Class_Number(bundle.getBundleNumber());

@@ -2,7 +2,6 @@ package open.dolphin.infomodel;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import jakarta.persistence.*;
@@ -33,8 +32,16 @@ public class ModuleModel extends KarteEntryBean<ModuleModel> {
 
     @Lob
     @Column(nullable = false)
-    @FullTextField(valueBridge = @ValueBridgeRef(type = ModuleModelBridge.class))   // hibernate search
+    //@FullTextField(valueBridge = @ValueBridgeRef(type = ModuleModelBridge.class))   // hibernate search
     private byte[] beanBytes;
+
+    /**
+     * HibernateSearch6 ValueBridge で byte[] が byte になってしまう.
+     * String field をでっち上げて, KarteServiceImpl#setBeanBytes からここに書き込んで @FullTextField させる.
+     */
+    @Transient
+    @FullTextField   // hibernate search
+    private String fullText;
 
     @ManyToOne
     @JoinColumn(name = "doc_id", nullable = false)
@@ -72,6 +79,10 @@ public class ModuleModel extends KarteEntryBean<ModuleModel> {
 
     public void setBeanBytes(byte[] beanBytes) {
         this.beanBytes = beanBytes;
+    }
+
+    public void setFullText(String s) {
+        fullText = s;
     }
 
     @Override

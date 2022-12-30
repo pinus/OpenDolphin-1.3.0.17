@@ -54,7 +54,7 @@ public class PatientServiceImpl extends DolphinService implements PatientService
                                 .setParameter("date", spec.getDate() + "%")
                                 .setParameter("ids", ids).getResultList();
 
-                ret.addAll(pvtList.stream().map(PatientVisitModel::getPatient).collect(Collectors.toList()));
+                ret.addAll(pvtList.stream().map(PatientVisitModel::getPatient).toList());
                 break;
 
             case PatientSearchSpec.ID_SEARCH:
@@ -236,7 +236,7 @@ public class PatientServiceImpl extends DolphinService implements PatientService
 
                 List<DocumentModel> hits = searchSession.search(DocumentModel.class)
                     .where(f -> f.bool(b -> {
-                            b.must( f.match().field("modules.beanBytes").matching(searchText));
+                            b.must( f.match().field("modules.fullText").matching(searchText));
                             if (!ids.isEmpty()) {
                                 b.must( f.terms().field("karte.patient.id").matchingAny(ids));
                             }
