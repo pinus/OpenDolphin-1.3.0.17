@@ -22,7 +22,6 @@
         <version.org.jboss.resteasy>6.2.1.Final</version.org.jboss.resteasy>
         <version.org.hibernate>6.1.5.Final</version.org.hibernate>
         <version.org.hibernate.search>6.1.7.Final</version.org.hibernate.search>
-        <version.org.apache.lucene>8.11.1</version.org.apache.lucene>
         <version.commons-codec>1.15</version.commons-codec>
         <version.commons-lang3>3.11</version.commons-lang3>
         <version.org.postgresql>42.5.1</version.org.postgresql>
@@ -65,14 +64,8 @@
         </dependency>
         <dependency>
             <groupId>org.hibernate.search</groupId>
-            <artifactId>hibernate-search-backend-lucene</artifactId>
+            <artifactId>hibernate-search-backend-elasticsearch</artifactId>
             <version>${version.org.hibernate.search}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
-            <version>${version.org.apache.lucene}</version>
             <scope>provided</scope>
         </dependency>
 

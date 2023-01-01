@@ -2,9 +2,10 @@ package open.dolphin.infomodel;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import open.dolphin.util.ModelUtils;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-
 import jakarta.persistence.*;
+import java.util.Objects;
 
 /**
  * ModuleModel.
@@ -32,15 +33,15 @@ public class ModuleModel extends KarteEntryBean<ModuleModel> {
 
     @Lob
     @Column(nullable = false)
-    //@FullTextField(valueBridge = @ValueBridgeRef(type = ModuleModelBridge.class))   // hibernate search
+    //@FullTextField(valueBridge = @ValueBridgeRef(type = ModuleModelValueBridge.class))   // hibernate search
     private byte[] beanBytes;
 
     /**
-     * HibernateSearch6 ValueBridge で byte[] が byte になってしまう.
-     * String field をでっち上げて, KarteServiceImpl#setBeanBytes からここに書き込んで @FullTextField させる.
+     * HibernateSearch6 ValueBridge で byte[] が byte になってしまう workaround.
+     * String field をでっち上げて setBeanBytes からここに書き込んで @FullTextField させる.
      */
     @Transient
-    @FullTextField   // hibernate search
+    @FullTextField(analyzer = "japanese")  // hibernate search
     private String fullText;
 
     @ManyToOne
@@ -79,10 +80,45 @@ public class ModuleModel extends KarteEntryBean<ModuleModel> {
 
     public void setBeanBytes(byte[] beanBytes) {
         this.beanBytes = beanBytes;
+
+        // FullTextField を Index させるためのでっちあげ
+        if (Objects.nonNull(beanBytes)) { setFullText(beanBytesToString(beanBytes)); }
     }
 
+    /**
+     * BeanBytes を String に変換.
+     * @param beanBytes beanBytes
+     * @return String
+     */
+    private String beanBytesToString(byte[] beanBytes) {
+        InfoModel im = (InfoModel) ModelUtils.xmlDecode(beanBytes);
+        if (im instanceof ProgressCourse progressCourse) {
+            String xml = progressCourse.getFreeText();
+            return ModelUtils.extractText(xml);
+        } else {
+            return im.toString();
+        }
+    }
+
+    /**
+     * この Module Model の full text string を設定する.
+     * ここを呼ぶと, Hibernate Search に index される.
+     * @param s full text string
+     */
     public void setFullText(String s) {
         fullText = s;
+    }
+
+    /**
+     * この ModuleModel の full text string を返す.
+     * MassIndexer がここを呼ぶ.
+     * @return full text string
+     */
+    public String getFullText() {
+        if (Objects.nonNull(beanBytes)) {
+            fullText = beanBytesToString(beanBytes);
+        }
+        return fullText;
     }
 
     @Override

@@ -281,19 +281,10 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
     @Override
     public long addDocument(DocumentModel document) {
 
-        document.getModules().forEach(module -> {
-            IInfoModel im = module.getModel();
-
-            // HibernateSearch にインデックスを作らせるための操作
-            if (im instanceof ProgressCourse) {
-                module.setFullText(((ProgressCourse) im).getFreeText());
-            } else {
-                module.setFullText(im.toString());
-            }
-
-            // ModuleModel の永続化 beanBytes を作成する
-            module.setBeanBytes(ModelUtils.xmlEncode(im));
-            module.setModel(null);
+        // ModuleModel の永続化 beanBytes を作成する
+        document.getModules().forEach(m -> {
+            m.setBeanBytes(ModelUtils.xmlEncode(m.getModel()));
+            m.setModel(null);
         });
 
         // 永続化する

@@ -101,6 +101,11 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
 
     /**
      * hibernate search のインデックスを作る.
+     * トランザクションタイムアウト延長が必要. (default = 300)
+     * <pre>
+     * $ jboss-cli.sh --connect
+     * [pns@localhost:9990] /subsystem=transactions:write-attribute(name=default-timeout,value=14400)
+     * </pre>
      */
     @Override
     public void makeInitialIndex() {
@@ -112,7 +117,6 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
         MassIndexer massIndexer = searchSession.massIndexer(DocumentModel.class)
             .purgeAllOnStart(true)
             .transactionTimeout(14400)
-            .batchSizeToLoadObjects(30)
             .threadsToLoadObjects(core);
 
         try {

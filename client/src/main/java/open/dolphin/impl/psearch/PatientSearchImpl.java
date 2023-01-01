@@ -130,7 +130,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
         ObjectReflectTableModel<PatientModel> tableModel = new ObjectReflectTableModel<>(reflectList);
         table.setModel(tableModel);
-        TableRowSorter<ObjectReflectTableModel<PatientModel>> sorter = new TableRowSorter<ObjectReflectTableModel<PatientModel>>(tableModel) {
+        TableRowSorter<ObjectReflectTableModel<PatientModel>> sorter = new TableRowSorter<>(tableModel) {
             @Override
             public void toggleSortOrder(int column) {
                 List<SortKey> keys = new ArrayList<>(getSortKeys());
@@ -232,11 +232,11 @@ public class PatientSearchImpl extends AbstractMainComponent {
         // hibernate index ボタン
         view.getHibernateIndexItem().addActionListener(e -> {
             final String message = "<html><b><u>Hibernate Search のインデックス作成をします</u></b><br><br>"
-                    + "終了するまで操作不能になります。<br>"
-                    + "途中でキャンセルはできません。<br>"
+                    + "一時的にトランザクションタイムアウトの延長が必要です.<br>"
+                    + "終了するまで操作不能になります.<br>"
+                    + "途中でキャンセルはできません.<br>"
                     + "よろしいですか？</html>";
-            //int option = JSheet.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
-            int option = JOptionPane.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+            int option = PNSOptionPane.showConfirmDialog(view, message, "インデックス作成", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 
             if (option == JOptionPane.YES_OPTION) {
                 PnsDelegater dl = new PnsDelegater();
@@ -275,7 +275,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
 
             } else {
                 // キーワードが "" ならテーブルクリアして，検索件数をリセット
-                ((ObjectReflectTableModel) view.getTable().getModel()).clear();
+                ((ObjectReflectTableModel<?>) view.getTable().getModel()).clear();
                 view.getCntLbl().setText("0 件");
             }
             requestFocus();

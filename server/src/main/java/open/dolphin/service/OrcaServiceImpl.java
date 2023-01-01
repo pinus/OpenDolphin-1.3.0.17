@@ -19,8 +19,8 @@ import java.util.List;
  */
 public class OrcaServiceImpl implements OrcaService {
 
-    private OrcaServiceDao dao = new OrcaServiceDao();
-    private OrcaServiceApi api = new OrcaServiceApi();
+    private final OrcaServiceDao dao = new OrcaServiceDao();
+    private final OrcaServiceApi api = new OrcaServiceApi();
 
     @Override
     public Wksryact getWksryact(PatientVisitSpec spec) {
@@ -29,7 +29,7 @@ public class OrcaServiceImpl implements OrcaService {
 
     @Override
     public boolean existsOrcaWorkingData(String ptId) {
-        return api.existsOrcaWorkingData(ptId);
+        return dao.existsOrcaWorkingData(ptId);
     }
 
     @Override

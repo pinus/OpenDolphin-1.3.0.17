@@ -415,6 +415,7 @@ public class ModelUtils {
             String[] tail = str.split("</text>");
             if (tail.length == 2) {
                 buf.append(tail[0].trim());
+                buf.append(" ");
             }
         }
         return buf.toString();
