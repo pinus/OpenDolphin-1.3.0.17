@@ -19,6 +19,7 @@ public class UIHelper {
 
     public static final Color DEFAULT_BACKGROUND_SELECTION_FOCUSED = new Color(55, 106, 210);
     public static final Color DEFAULT_BACKGROUND_SELECTION_OFF_FOCUS = new Color(220, 220, 220);
+    public static final Color DEFAULT_TITLE_BACKGROUND_COLOR = new Color(240,235,235);
 
     private boolean isDragging = false;
 
@@ -39,7 +40,7 @@ public class UIHelper {
     /**
      * Windows かどうかを返す.
      *
-     * @return
+     * @return true if Win
      */
     public static boolean isWin() {
         return System.getProperty("os.name").toLowerCase().startsWith("windows");
@@ -65,7 +66,7 @@ public class UIHelper {
     /**
      * 現在マウスドラッグ中かどうかを返す.
      *
-     * @return
+     * @return isDragging
      */
     public boolean isDragging() {
         return isDragging;
@@ -74,9 +75,9 @@ public class UIHelper {
     /**
      * 選択状態，Focus 状態に応じてバックグランド色を返す.
      *
-     * @param selected
-     * @param focused
-     * @return
+     * @param selected selected or not
+     * @param focused focused or not
+     * @return background color
      */
     public Color getBackground(boolean selected, boolean focused) {
         if (selected) {
@@ -89,9 +90,9 @@ public class UIHelper {
     /**
      * 選択状態，Focus 状態に応じてフォアグランド色を返す.
      *
-     * @param selected
-     * @param focused
-     * @return
+     * @param selected selected or not
+     * @param focused focused or not
+     * @return foreground color
      */
     public Color getForeground(boolean selected, boolean focused) {
         if (selected) {
@@ -117,7 +118,7 @@ public class UIHelper {
     /**
      * JTable の色設定値を読み取ってセットする.
      *
-     * @param table
+     * @param table JTable
      */
     public void setRendererColors(JTable table) {
         setBackgroundSelectionFocusedColor(table.getSelectionBackground());
@@ -130,9 +131,9 @@ public class UIHelper {
     /**
      * JList の色設定値を読み取ってセットする.
      *
-     * @param list
+     * @param list JList
      */
-    public void setRendererColors(JList list) {
+    public void setRendererColors(JList<?> list) {
         setBackgroundSelectionFocusedColor(list.getSelectionBackground());
         setBackgroundNonSelectionColor(list.getBackground());
         setTextSelectionFocusedColor(list.getSelectionForeground());

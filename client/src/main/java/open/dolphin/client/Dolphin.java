@@ -16,7 +16,6 @@ import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.ui.SettingForMac;
-import org.mortbay.util.IO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -223,53 +222,6 @@ public class Dolphin implements MainWindow {
         //new FocusMonitor();
 
         /*
-         * スタンプ箱の作成・表示
-         */
-        stampBox = new StampBoxPlugin();
-        stampBox.setContext(Dolphin.this);
-
-        final Callable<Boolean> task = stampBox.getStartingTask();
-
-        String message = "スタンプ箱";
-        String note = "スタンプツリーを読み込んでいます...";
-
-        Task<Boolean> stampTask = new Task<>(null, message, note, 30 * 1000) {
-
-            @Override
-            protected Boolean doInBackground() throws Exception {
-                logger.debug("stampTask doInBackground");
-                return task.call();
-            }
-
-            @Override
-            protected void succeeded(Boolean result) {
-                logger.debug("stampTask succeeded");
-                if (result) {
-                    stampBox.start();
-                    stampBox.getFrame().setVisible(true);
-                    providers.put("stampBox", stampBox);
-
-                } else {
-                    System.exit(1);
-                }
-            }
-
-            @Override
-            protected void failed(Throwable cause) {
-                cause.printStackTrace(System.err);
-                System.exit(1);
-            }
-
-            @Override
-            protected void cancelled() {
-                logger.debug("stampTask cancelled");
-                System.exit(1);
-            }
-        };
-        //stampTask.setMillisToPopup(200);
-        stampTask.execute();
-
-        /*
          * メインウインドウ作成と表示
          */
         // 設定に必要な定数をコンテキストから取得する
@@ -358,8 +310,55 @@ public class Dolphin implements MainWindow {
         stateMgr = new StateManager();
         stateMgr.processLogin(true);
 
-        // メインウインドウ setVisible
-        myFrame.setVisible(true);
+        /*
+         * スタンプ箱の作成・表示
+         */
+        stampBox = new StampBoxPlugin();
+        stampBox.setContext(Dolphin.this);
+
+        final Callable<Boolean> task = stampBox.getStartingTask();
+
+        String message = "スタンプ箱";
+        String note = "スタンプツリーを読み込んでいます...";
+
+        Task<Boolean> stampTask = new Task<>(null, message, note, 30 * 1000) {
+
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                logger.debug("stampTask doInBackground");
+                return task.call();
+            }
+
+            @Override
+            protected void succeeded(Boolean result) {
+                logger.debug("stampTask succeeded");
+                if (result) {
+                    stampBox.start();
+                    providers.put("stampBox", stampBox);
+
+                    stampBox.getFrame().setVisible(true);
+                    myFrame.setVisible(true);
+                    myFrame.toFront();
+
+                } else {
+                    System.exit(1);
+                }
+            }
+
+            @Override
+            protected void failed(Throwable cause) {
+                cause.printStackTrace(System.err);
+                System.exit(1);
+            }
+
+            @Override
+            protected void cancelled() {
+                logger.debug("stampTask cancelled");
+                System.exit(1);
+            }
+        };
+        //stampTask.setMillisToPopup(200);
+        stampTask.execute();
     }
 
     /**
