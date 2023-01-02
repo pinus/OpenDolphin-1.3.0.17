@@ -16,6 +16,7 @@ import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSBadgeTabbedPane;
 import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.ui.SettingForMac;
+import org.mortbay.util.IO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,7 @@ import java.util.List;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
+import java.util.stream.Stream;
 
 /**
  * アプリケーションのメインウインドウクラス.
@@ -77,10 +79,22 @@ public class Dolphin implements MainWindow {
     private Chart dirtyChart;
 
     // マウスクリックしすぎて同一カルテが重複して開かれるのを防ぐための不応期タイマー
-    private Timer refractoryTimer = new Timer(500, e -> refractoryEnd());
-    private HashSet<PatientVisitModel> refractoryList = new HashSet<>();
+    private final Timer refractoryTimer = new Timer(500, e -> refractoryEnd());
+    private final HashSet<PatientVisitModel> refractoryList = new HashSet<>();
 
-    public Dolphin() {
+    public Dolphin() {}
+
+    public static void main(String[] args) {
+        // コンソールのリダイレクト
+        redirectConsole();
+
+        // startup script
+        executeStartupScript();
+
+        // Dolphin 本体の実行
+        Dolphin d = new Dolphin();
+        d.initialize();
+        d.startup();
     }
 
     /**
@@ -114,19 +128,6 @@ public class Dolphin implements MainWindow {
             } catch (IOException e) {
             }
         }
-    }
-
-    public static void main(String[] args) {
-        // コンソールのリダイレクト
-        redirectConsole();
-
-        // startup script
-        executeStartupScript();
-
-        // Dolphin 本体の実行
-        Dolphin d = new Dolphin();
-        d.initialize();
-        d.startup();
     }
 
     /**
@@ -187,17 +188,13 @@ public class Dolphin implements MainWindow {
 
         login.addLoginListener(state -> {
             switch (state) {
-                case AUTHENTICATED:
+                case AUTHENTICATED -> {
                     startServices();
                     initComponents();
-                    break;
-                case NOT_AUTHENTICATED:
-                case CANCELD:
-                    exit();
-                    break;
+                }
+                case NOT_AUTHENTICATED, CANCELD -> exit();
             }
         });
-
         login.start();
     }
 
@@ -225,6 +222,56 @@ public class Dolphin implements MainWindow {
         // javax.swing.RepaintManager.setCurrentManager(new VerboseRepaintManager());
         //new FocusMonitor();
 
+        /*
+         * スタンプ箱の作成・表示
+         */
+        stampBox = new StampBoxPlugin();
+        stampBox.setContext(Dolphin.this);
+
+        final Callable<Boolean> task = stampBox.getStartingTask();
+
+        String message = "スタンプ箱";
+        String note = "スタンプツリーを読み込んでいます...";
+
+        Task<Boolean> stampTask = new Task<>(null, message, note, 30 * 1000) {
+
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                logger.debug("stampTask doInBackground");
+                return task.call();
+            }
+
+            @Override
+            protected void succeeded(Boolean result) {
+                logger.debug("stampTask succeeded");
+                if (result) {
+                    stampBox.start();
+                    stampBox.getFrame().setVisible(true);
+                    providers.put("stampBox", stampBox);
+
+                } else {
+                    System.exit(1);
+                }
+            }
+
+            @Override
+            protected void failed(Throwable cause) {
+                cause.printStackTrace(System.err);
+                System.exit(1);
+            }
+
+            @Override
+            protected void cancelled() {
+                logger.debug("stampTask cancelled");
+                System.exit(1);
+            }
+        };
+        //stampTask.setMillisToPopup(200);
+        stampTask.execute();
+
+        /*
+         * メインウインドウ作成と表示
+         */
         // 設定に必要な定数をコンテキストから取得する
         String windowTitle = ClientContext.getString("title");
         Rectangle setBounds = new Rectangle(0, 0, 1000, 690);
@@ -313,55 +360,6 @@ public class Dolphin implements MainWindow {
 
         // メインウインドウ setVisible
         myFrame.setVisible(true);
-
-        // StampBox 作成・表示
-        stampBox = new StampBoxPlugin();
-        stampBox.setContext(Dolphin.this);
-
-        final Callable<Boolean> task = stampBox.getStartingTask();
-
-        String message = "スタンプ箱";
-        String note = "スタンプツリーを読み込んでいます...";
-
-        Task<Boolean> stampTask = new Task<>(myFrame, message, note, 30 * 1000) {
-
-            @Override
-            protected Boolean doInBackground() throws Exception {
-                logger.debug("stampTask doInBackground");
-                return task.call();
-            }
-
-            @Override
-            protected void succeeded(Boolean result) {
-                logger.debug("stampTask succeeded");
-                if (result) {
-                    stampBox.start();
-                    stampBox.getFrame().setVisible(true);
-                    providers.put("stampBox", stampBox);
-                    // メインウインドウにフォーカスを取り返す
-                    SwingUtilities.invokeLater(() -> {
-                        myFrame.toFront();
-                    });
-
-                } else {
-                    System.exit(1);
-                }
-            }
-
-            @Override
-            protected void failed(Throwable cause) {
-                cause.printStackTrace(System.err);
-                System.exit(1);
-            }
-
-            @Override
-            protected void cancelled() {
-                logger.debug("stampTask cancelled");
-                System.exit(1);
-            }
-        };
-        //stampTask.setMillisToPopup(200);
-        stampTask.execute();
     }
 
     /**
@@ -410,7 +408,7 @@ public class Dolphin implements MainWindow {
 
         Chart chart = new ChartImpl();
         chart.setContext(this);
-        chart.setPatientVisit(pvt);                 //
+        chart.setPatientVisit(pvt);
         // isReadOnly対応
         //chart.setReadOnly(Project.isReadOnly() || pvt.getState() == KarteState.READ_ONLY);    // RedaOnlyProp
         chart.setReadOnly(Project.isReadOnly());    // RedaOnlyProp
@@ -642,7 +640,7 @@ public class Dolphin implements MainWindow {
             String note = ClientContext.getString("exitDolphin.savingNote");
             Component c = getFrame();
 
-            Task<Boolean> stampTask = new Task<Boolean>(c, message, note, 60 * 1000) {
+            Task<Boolean> stampTask = new Task<>(c, message, note, 60 * 1000) {
 
                 @Override
                 protected Boolean doInBackground() throws Exception {
@@ -878,14 +876,15 @@ public class Dolphin implements MainWindow {
      */
     private void checkDocumentFolder() {
         Path path = Paths.get(ClientContext.getDocumentDirectory());
-        logger.info("document folder = " + path);
-
-        try {
-            if (Files.list(path).count() != 0) {
+        try (Stream<Path> s = Files.list(path)) {
+            if (s.findAny().isPresent()) {
+                logger.info("document folder = " + path);
                 return;
             }
         } catch (IOException e) {
+            logger.error("document folder = " + e);
         }
+        // document folder がないと Exception が発生してここに来る
         PNSOptionPane.showMessageDialog(null, "文書フォルダが見つかりません", "", JOptionPane.WARNING_MESSAGE);
     }
 
@@ -901,7 +900,7 @@ public class Dolphin implements MainWindow {
     /**
      * Mediator.
      */
-    private final class Mediator extends MenuSupport {
+    private final static class Mediator extends MenuSupport {
 
         public Mediator(Object owner) {
             super(owner);
