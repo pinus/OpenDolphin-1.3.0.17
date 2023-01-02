@@ -26,7 +26,7 @@ public class KarteBean extends InfoModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @IndexedEmbedded
+    @IndexedEmbedded // hibernate search
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)

@@ -47,13 +47,15 @@ public class PatientSearchPanel extends MainComponentPanel {
 
         final JPopupMenu popup = new JPopupMenu();
         final List<PNSPair<String, String>> menuPair = Arrays.asList(
-                new PNSPair<>("名前検索", "N"),
-                new PNSPair<>("カナ検索", "K"),
-                new PNSPair<>("患者番号検索", "T"),
-                new PNSPair<>("誕生日検索", "B"),
-                new PNSPair<>("メモ検索", "M"),
-                new PNSPair<>("全文検索", "F")
-        );
+            new PNSPair<>("名前検索", "N"),
+            new PNSPair<>("カナ検索", "K"),
+            new PNSPair<>("患者番号検索", "T"),
+            new PNSPair<>("誕生日検索", "B"),
+            new PNSPair<>("メモ検索", "M"),
+            new PNSPair<>("全文検索", "F"),
+            new PNSPair<>("クエリ検索", "Q"),
+            new PNSPair<>("正規表現検索", "R")
+            );
 
         menuPair.forEach(pair -> {
             JMenuItem item = new JMenuItem(pair.getName());

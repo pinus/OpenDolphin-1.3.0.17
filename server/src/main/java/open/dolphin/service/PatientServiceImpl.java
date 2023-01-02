@@ -10,7 +10,6 @@ import org.jboss.logging.Logger;
 import jakarta.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * PatientServiceImpl.
@@ -38,26 +37,24 @@ public class PatientServiceImpl extends DolphinService implements PatientService
         // 絞り込み id
         List<Long> ids = spec.getNarrowingList();
 
-        switch (spec.getCode()) {
-
-            case PatientSearchSpec.DATE_SEARCH:
+        switch (spec.getType()) {
+            case DATE -> {
                 final String dateQuery = "select p from PatientVisitModel p where p.facilityId = :fid and p.pvtDate like :date";
                 final String dateQueryNarrow = dateQuery + " and p.patient.id in (:ids)";
 
                 List<PatientVisitModel> pvtList = ids.isEmpty() ?
-                        em.createQuery(dateQuery, PatientVisitModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("date", spec.getDate() + "%").getResultList()
-                        :
-                        em.createQuery(dateQueryNarrow, PatientVisitModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("date", spec.getDate() + "%")
-                                .setParameter("ids", ids).getResultList();
+                    em.createQuery(dateQuery, PatientVisitModel.class)
+                        .setParameter("fid", fid)
+                        .setParameter("date", spec.getDate() + "%").getResultList()
+                    :
+                    em.createQuery(dateQueryNarrow, PatientVisitModel.class)
+                        .setParameter("fid", fid)
+                        .setParameter("date", spec.getDate() + "%")
+                        .setParameter("ids", ids).getResultList();
 
                 ret.addAll(pvtList.stream().map(PatientVisitModel::getPatient).toList());
-                break;
-
-            case PatientSearchSpec.ID_SEARCH:
+            }
+            case ID -> {
                 final String idQuery = "select p from PatientModel p where p.facilityId = :fid and p.patientId like :pid";
                 final String idQueryNarrow = idQuery + " and p.id in (:ids)";
 
@@ -67,122 +64,36 @@ public class PatientServiceImpl extends DolphinService implements PatientService
                 }
 
                 ret = ids.isEmpty() ?
-                        em.createQuery(idQuery, PatientModel.class)
-                                .setMaxResults(50)
-                                .setParameter("fid", fid)
-                                .setParameter("pid", pid).getResultList()
-                        :
-                        em.createQuery(idQueryNarrow, PatientModel.class)
-                                .setMaxResults(50)
-                                .setParameter("fid", fid)
-                                .setParameter("pid", pid)
-                                .setParameter("ids", ids).getResultList();
-                break;
-
-            case PatientSearchSpec.NAME_SEARCH:
-            case PatientSearchSpec.KANA_SEARCH:
-            case PatientSearchSpec.ROMAN_SEARCH:
+                    em.createQuery(idQuery, PatientModel.class)
+                        .setMaxResults(50)
+                        .setParameter("fid", fid)
+                        .setParameter("pid", pid).getResultList()
+                    :
+                    em.createQuery(idQueryNarrow, PatientModel.class)
+                        .setMaxResults(50)
+                        .setParameter("fid", fid)
+                        .setParameter("pid", pid)
+                        .setParameter("ids", ids).getResultList();
+            }
+            case NAME, KANA, ROMAN -> {
                 final String nameQuery = "select p from PatientModel p where p.facilityId = :fid and "
-                        + "(p.fullName like :name or p.kanaName like :name or p.romanName like :name)";
+                    + "(p.fullName like :name or p.kanaName like :name or p.romanName like :name)";
                 final String nameQueryNarrow = nameQuery + " and p.id in (:ids)";
 
                 String name = spec.getName();
-                if (!name.endsWith("%")) {
-                    name += "%";
-                }
+                if (!name.endsWith("%")) { name += "%"; }
 
                 ret = ids.isEmpty() ?
-                        em.createQuery(nameQuery, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("name", name).getResultList()
-                        :
-                        em.createQuery(nameQueryNarrow, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("name", name)
-                                .setParameter("ids", ids).getResultList();
-                break;
-
-            case PatientSearchSpec.TELEPHONE_SEARCH:
-                final String telQuery = "select p from PatientModel p where p.facilityId = :fid and (p.telephone like :number or p.mobilePhone like :number)";
-                final String telQueryNarrow = telQuery + " and p.id in (:ids)";
-
-                String number = spec.getTelephone();
-                if (!number.endsWith("%")) {
-                    number += "%";
-                }
-
-                ret = ids.isEmpty() ?
-                        em.createQuery(telQuery, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("number", number).getResultList()
-                        :
-                        em.createQuery(telQueryNarrow, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("number", number)
-                                .setParameter("ids", ids).getResultList();
-                break;
-
-            case PatientSearchSpec.ZIPCODE_SEARCH:
-                final String zipQuery = "select p from PatientModel p where p.facilityId = :fid and p.address.zipCode like :zipCode";
-                final String zipQueryNarrow = zipQuery + " and p.id in (:ids)";
-
-                String zipCode = spec.getZipCode();
-                if (!zipCode.endsWith("%")) {
-                    zipCode += "%";
-                }
-
-                ret = ids.isEmpty() ?
-                        em.createQuery(zipQuery, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("zipCode", zipCode).getResultList()
-                        :
-                        em.createQuery(zipQueryNarrow, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("zipCode", zipCode)
-                                .setParameter("ids", ids).getResultList();
-                break;
-
-            case PatientSearchSpec.ADDRESS_SEARCH:
-                final String addressQuery = "select p from PatientModel p where p.facilityId = :fid and p.address.address like :address";
-                final String addressQueryNarrow = addressQuery + " and p.id in (:ids)";
-
-                String address = spec.getAddress();
-                if (!address.endsWith("%")) {
-                    address += "%";
-                }
-
-                ret = ids.isEmpty() ?
-                        em.createQuery(addressQuery, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("address", address).getResultList()
-                        :
-                        em.createQuery(addressQueryNarrow, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("address", address)
-                                .setParameter("ids", ids).getResultList();
-                break;
-
-            case PatientSearchSpec.EMAIL_SEARCH:
-                final String emailQuery = "select p from PatientModel p where p.facilityId = :fid and p.email like :address";
-                final String emailQueryNarrow = emailQuery + " and p.id in (:ids)";
-
-                address = spec.getEmail();
-                if (!address.endsWith("%")) {
-                    address += "%";
-                }
-
-                ret = ids.isEmpty() ?
-                        em.createQuery(emailQuery, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("email", address).getResultList()
-                        :
-                        em.createQuery(emailQueryNarrow, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("email", address)
-                                .setParameter("ids", ids).getResultList();
-                break;
-
-            case PatientSearchSpec.BIRTHDAY_SEARCH:
+                    em.createQuery(nameQuery, PatientModel.class)
+                        .setParameter("fid", fid)
+                        .setParameter("name", name).getResultList()
+                    :
+                    em.createQuery(nameQueryNarrow, PatientModel.class)
+                        .setParameter("fid", fid)
+                        .setParameter("name", name)
+                        .setParameter("ids", ids).getResultList();
+            }
+            case BIRTHDAY -> {
                 final String birthdayQuery = "select p from PatientModel p where p.facilityId = :fid and p.birthday like :birthday";
                 final String birthdayQueryNarrow = birthdayQuery + " and p.id in (:ids)";
 
@@ -192,19 +103,18 @@ public class PatientServiceImpl extends DolphinService implements PatientService
                 }
 
                 ret = ids.isEmpty() ?
-                        em.createQuery(birthdayQuery, PatientModel.class)
-                                .setMaxResults(50)
-                                .setParameter("fid", fid)
-                                .setParameter("birthday", birthday).getResultList()
-                        :
-                        em.createQuery(birthdayQueryNarrow, PatientModel.class)
-                                .setMaxResults(50)
-                                .setParameter("fid", fid)
-                                .setParameter("birthday", birthday)
-                                .setParameter("ids", ids).getResultList();
-                break;
-
-            case PatientSearchSpec.MEMO_SEARCH:
+                    em.createQuery(birthdayQuery, PatientModel.class)
+                        .setMaxResults(50)
+                        .setParameter("fid", fid)
+                        .setParameter("birthday", birthday).getResultList()
+                    :
+                    em.createQuery(birthdayQueryNarrow, PatientModel.class)
+                        .setMaxResults(50)
+                        .setParameter("fid", fid)
+                        .setParameter("birthday", birthday)
+                        .setParameter("ids", ids).getResultList();
+            }
+            case MEMO -> {
                 final String memoQuery = "select p.karte.patient from PatientMemoModel p where p.karte.patient.facilityId = :fid and p.memo like :memo";
                 final String memoQueryNarrow = memoQuery + " and p.karte.patient.id in (:ids)";
 
@@ -219,32 +129,33 @@ public class PatientServiceImpl extends DolphinService implements PatientService
                 }
 
                 ret = ids.isEmpty() ?
-                        em.createQuery(memoQuery, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("memo", memo.toString()).getResultList()
-                        :
-                        em.createQuery(memoQueryNarrow, PatientModel.class)
-                                .setParameter("fid", fid)
-                                .setParameter("memo", memo.toString())
-                                .setParameter("ids", ids).getResultList();
-                break;
-
-            case PatientSearchSpec.FULL_TEXT_SEARCH:
+                    em.createQuery(memoQuery, PatientModel.class)
+                        .setParameter("fid", fid)
+                        .setParameter("memo", memo.toString()).getResultList()
+                    :
+                    em.createQuery(memoQueryNarrow, PatientModel.class)
+                        .setParameter("fid", fid)
+                        .setParameter("memo", memo.toString())
+                        .setParameter("ids", ids).getResultList();
+            }
+            case FULLTEXT, QUERY, REGEXP -> {
+                final String searchText = spec.getSearchText();
                 final SearchSession searchSession = Search.session(em);
-
-                String searchText = spec.getSearchText();
 
                 List<DocumentModel> hits = searchSession.search(DocumentModel.class)
                     .where(f -> f.bool(b -> {
-                            b.must( f.match().field("modules.fullText").matching(searchText));
-                            if (!ids.isEmpty()) {
-                                b.must( f.terms().field("karte.patient.id").matchingAny(ids));
-                            }
-                        })).fetchHits(1000);
+                        b.must(switch (spec.getType()) {
+                            case QUERY -> f.simpleQueryString().field("modules.fullText").matching(searchText);
+                            case REGEXP -> f.regexp().field("modules.fullText").matching(searchText);
+                            default -> f.phrase().field("modules.fullText").matching(searchText);
+                        });
+                        if (!ids.isEmpty()) {
+                            b.must(f.terms().field("karte.patient.id").matchingAny(ids));
+                        }
+                    })).fetchHits(1000);
 
                 ret = hits.stream().map(dm -> dm.getKarte().getPatient()).distinct().toList();
-
-                break;
+            }
         }
 
         if (!ret.isEmpty()) {

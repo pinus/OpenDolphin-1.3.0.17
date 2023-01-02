@@ -15,6 +15,6 @@ public class JapaneseAnalysisConfigurer implements ElasticsearchAnalysisConfigur
         context.analyzer("japanese").custom()
             .tokenizer("kuromoji_tokenizer")
             .charFilters("icu_normalizer", "kuromoji_iteration_mark")
-            .tokenFilters("kuromoji_baseform", "kuromoji_part_of_speech", "ja_stop", "kuromoji_number", "kuromoji_stemmer");
+            .tokenFilters("kuromoji_baseform", "ja_stop", "kuromoji_number", "kuromoji_stemmer");
     }
 }

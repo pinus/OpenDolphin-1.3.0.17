@@ -5,6 +5,8 @@ import open.dolphin.util.ModelUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import jakarta.persistence.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -20,6 +22,7 @@ public class PatientModel extends InfoModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @GenericField // hibernate search
     private long id;
 
     /**

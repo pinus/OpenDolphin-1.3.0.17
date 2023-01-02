@@ -15,6 +15,7 @@ import open.dolphin.ui.*;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.Gengo;
 import open.dolphin.util.ModelUtils;
+import open.dolphin.dto.PatientSearchSpec.SEARCH;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +28,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -447,83 +446,55 @@ public class PatientSearchImpl extends AbstractMainComponent {
         PatientSearchSpec spec = new PatientSearchSpec();
 
         if (text.startsWith("N ") || text.startsWith("n ")) {
-            spec.setCode(PatientSearchSpec.NAME_SEARCH);
-            text = text.substring(2);
-            spec.setName(text);
+            spec.setType(SEARCH.NAME);
+            spec.setName(text.substring(2));
 
         } else if (text.startsWith("K ") || text.startsWith("k ")) {
-            spec.setCode(PatientSearchSpec.KANA_SEARCH);
-            text = text.substring(2);
-            spec.setName(text);
-
-        } else if (text.startsWith("A ") || text.startsWith("a ")) {
-            spec.setCode(PatientSearchSpec.ADDRESS_SEARCH);
-            text = text.substring(2);
-            spec.setAddress(text);
-
-        } else if (text.startsWith("Z ") || text.startsWith("z ")) {
-            spec.setCode(PatientSearchSpec.ZIPCODE_SEARCH);
-            text = text.substring(2);
-            spec.setZipCode(text);
-
-        } else if (text.startsWith("T ") || text.startsWith("t ")) {
-            spec.setCode(PatientSearchSpec.TELEPHONE_SEARCH);
-            text = text.substring(2);
-            spec.setTelephone(text);
-
-        } else if (text.startsWith("I ") || text.startsWith("i ")) {
-            spec.setCode(PatientSearchSpec.ID_SEARCH);
-            text = text.substring(2);
-            spec.setPatientId(text);
-
-        } else if (text.startsWith("E ") || text.startsWith("e ")) {
-            spec.setCode(PatientSearchSpec.EMAIL_SEARCH);
-            text = text.substring(2);
-            spec.setEmail(text);
-
-        } else if (text.startsWith("O ") || text.startsWith("o ")) {
-            spec.setCode(PatientSearchSpec.OTHERID_SEARCH);
-            text = text.substring(2);
-            spec.setOtherId(text);
+            spec.setType(SEARCH.KANA);
+            spec.setName(text.substring(2));
 
         } else if (text.startsWith("B ") || text.startsWith("b ")) {
-            spec.setCode(PatientSearchSpec.BIRTHDAY_SEARCH);
-            text = text.substring(2);
-            spec.setBirthday(Gengo.toSeireki(text));
+            spec.setType(SEARCH.BIRTHDAY);
+            spec.setBirthday(Gengo.toSeireki(text.substring(2)));
 
         } else if (text.startsWith("M ") || text.startsWith("m ")) {
-            spec.setCode(PatientSearchSpec.MEMO_SEARCH);
-            text = text.substring(2);
-            spec.setSearchText(text);
+            spec.setType(SEARCH.MEMO);
+            spec.setSearchText(text.substring(2));
 
         } else if (text.startsWith("F ") || text.startsWith("f ")) {
-            spec.setCode(PatientSearchSpec.FULL_TEXT_SEARCH);
-            text = text.substring(2);
-            spec.setSearchText(text);
+            spec.setType(SEARCH.FULLTEXT);
+            spec.setSearchText(text.substring(2));
+
+        } else if (text.startsWith("Q ") || text.startsWith("q ")) {
+            spec.setType(SEARCH.QUERY);
+            spec.setSearchText(text.substring(2));
+
+        } else if (text.startsWith("R ") || text.startsWith("r ")) {
+            spec.setType(SEARCH.REGEXP);
+            spec.setSearchText(text.substring(2));
 
         } else if (isNengoDate(text)) {
-            spec.setCode(PatientSearchSpec.BIRTHDAY_SEARCH);
+            spec.setType(SEARCH.BIRTHDAY);
             spec.setBirthday(Gengo.toSeireki(text));
 
         } else if (isOrcaDate(text)) {
-            spec.setCode(PatientSearchSpec.BIRTHDAY_SEARCH);
+            spec.setType(SEARCH.BIRTHDAY);
             spec.setBirthday(Gengo.toSeireki(ModelUtils.orcaDateToGengo(text)));
 
         } else if (isDate(text)) {
-            //System.out.println("Date search");
-            spec.setCode(PatientSearchSpec.DATE_SEARCH);
+            spec.setType(SEARCH.DATE);
             spec.setDate(Gengo.toSeireki(text)); // 月/日が１桁で指定された場合の調整 by pns
 
         } else if (isKana(text)) {
-            spec.setCode(PatientSearchSpec.KANA_SEARCH);
-            spec.setName(text);
+            spec.setType(SEARCH.KANA);
+            spec.setName(text.replace('　', ' '));
 
         } else if (isHiragana(text)) {
-            spec.setCode(PatientSearchSpec.KANA_SEARCH);
-            spec.setName(StringTool.hiraganaToKatakana(text));
+            spec.setType(SEARCH.KANA);
+            spec.setName(StringTool.hiraganaToKatakana(text).replace('　', ' '));
 
         } else if (isId(text)) {
-            spec.setCode(PatientSearchSpec.ID_SEARCH);
+            spec.setType(SEARCH.ID);
             spec.setPatientId(text);
 
         } else if (text.length() <= 1) {
@@ -532,7 +503,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
             return;
 
         } else {
-            spec.setCode(PatientSearchSpec.FULL_TEXT_SEARCH);
+            spec.setType(SEARCH.FULLTEXT);
             spec.setSearchText(text);
         }
 
@@ -557,6 +528,11 @@ public class PatientSearchImpl extends AbstractMainComponent {
         return text != null && text.matches("[1-6][0-6][0-9][0-1][0-9][0-3][0-9]");
     }
 
+    /**
+     * カタカナ文字列かどうか判定する.
+     * @param text 判定文字列
+     * @return 判定結果
+     */
     private boolean isKana(String text) {
         boolean maybe = true;
         if (text != null) {
@@ -573,6 +549,11 @@ public class PatientSearchImpl extends AbstractMainComponent {
         return false;
     }
 
+    /**
+     * ひらがな文字列かどうか判定する.
+     * @param text 判定文字列
+     * @return 判定結果
+     */
     private boolean isHiragana(String text) {
         boolean maybe = true;
         if (text != null) {
@@ -588,11 +569,13 @@ public class PatientSearchImpl extends AbstractMainComponent {
         return false;
     }
 
+    /**
+     * 患者 ID かどうか判定する.
+     * @param text 判定文字列
+     * @return 判定結果
+     */
     private boolean isId(String text) {
-        if (text == null || text.length() > 6) {
-            return false;
-        }
-        return text.matches("[0-9]+");
+        return Objects.nonNull(text) && text.length() <= 6 && text.matches("[0-9]+");
     }
 
     /**

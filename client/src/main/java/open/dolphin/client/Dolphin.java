@@ -311,6 +311,10 @@ public class Dolphin implements MainWindow {
         stateMgr = new StateManager();
         stateMgr.processLogin(true);
 
+        // メインウインドウ setVisible
+        myFrame.setVisible(true);
+
+        // StampBox 作成・表示
         stampBox = new StampBoxPlugin();
         stampBox.setContext(Dolphin.this);
 
@@ -318,9 +322,8 @@ public class Dolphin implements MainWindow {
 
         String message = "スタンプ箱";
         String note = "スタンプツリーを読み込んでいます...";
-        Component c = windowSupport.getFrame();
 
-        Task<Boolean> stampTask = new Task<Boolean>(c, message, note, 30 * 1000) {
+        Task<Boolean> stampTask = new Task<>(myFrame, message, note, 30 * 1000) {
 
             @Override
             protected Boolean doInBackground() throws Exception {
@@ -335,7 +338,10 @@ public class Dolphin implements MainWindow {
                     stampBox.start();
                     stampBox.getFrame().setVisible(true);
                     providers.put("stampBox", stampBox);
-                    windowSupport.getFrame().setVisible(true);
+                    // メインウインドウにフォーカスを取り返す
+                    SwingUtilities.invokeLater(() -> {
+                        myFrame.toFront();
+                    });
 
                 } else {
                     System.exit(1);

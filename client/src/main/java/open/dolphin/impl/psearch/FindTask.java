@@ -5,21 +5,19 @@ import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.dto.PatientSearchSpec.SEARCH;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 検索タスクの実務をするクラス
  *
  * @author pns
  */
-class FindTask extends Task<Collection> {
+class FindTask extends Task<Collection<PatientModel>> {
 
     private final PatientSearchPanel view;
     private final ObjectReflectTableModel<PatientModel> tableModel;
@@ -44,32 +42,25 @@ class FindTask extends Task<Collection> {
     }
 
     @Override
-    protected Collection doInBackground() {
+    protected Collection<PatientModel> doInBackground() {
         logger.debug("FindTask doInBackground");
 
-        // auto narrowing search
         // table のリストが空の場合は全患者から，リストがあればその中で検索する
         // そのために，spec に PatientModel の id をセットしておく
-
         List<Long> ids = new ArrayList<>();
-
         if (view.getNarrowingSearchCb().isSelected()) {
-            List<PatientModel> ptOnTable = tableModel.getObjectList();
-            ptOnTable.stream().forEach(patientModel -> ids.add(patientModel.getId()));
+            tableModel.getObjectList().stream().map(PatientModel::getId).forEach(ids::add);
         }
         spec.setNarrowingIds(ids);
 
         PatientDelegater pdl = new PatientDelegater();
         List<PatientModel> pm = pdl.getPatients(spec);
 
-        // カルテ検索で薬の名前を検索すると患者名と判断されてしまうので，
+        // カルテ検索で薬の名前を検索すると、カナなので患者名と判断することになる
         // 検索結果が 0 だったら，full text search に切り替えることにする
-        if (pm.isEmpty() && (
-                spec.getCode() == PatientSearchSpec.KANA_SEARCH
-                        || spec.getCode() == PatientSearchSpec.ROMAN_SEARCH
-                        || spec.getCode() == PatientSearchSpec.NAME_SEARCH)) {
-
-            spec.setCode(PatientSearchSpec.FULL_TEXT_SEARCH);
+        if (pm.isEmpty() &&
+            (spec.getType() == SEARCH.KANA || spec.getType() == SEARCH.ROMAN || spec.getType() == SEARCH.NAME)) {
+            spec.setType(PatientSearchSpec.SEARCH.FULLTEXT);
             spec.setSearchText(spec.getName());
             pm = pdl.getPatients(spec);
         }
@@ -96,7 +87,7 @@ class FindTask extends Task<Collection> {
     }
 
     @Override
-    protected void succeeded(Collection result) {
+    protected void succeeded(Collection<PatientModel> result) {
         setResult();
         logger.debug("FindTask succeeded");
     }
