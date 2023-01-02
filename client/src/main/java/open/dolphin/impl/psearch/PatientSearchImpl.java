@@ -477,6 +477,10 @@ public class PatientSearchImpl extends AbstractMainComponent {
             spec.setType(SEARCH.BIRTHDAY);
             spec.setBirthday(Gengo.toSeireki(text));
 
+        } else if (is8digitDate(text)) {
+            spec.setType(SEARCH.BIRTHDAY);
+            spec.setBirthday(text.substring(0,4)+"-"+text.substring(4,6)+"-"+text.substring(6));
+
         } else if (isOrcaDate(text)) {
             spec.setType(SEARCH.BIRTHDAY);
             spec.setBirthday(Gengo.toSeireki(ModelUtils.orcaDateToGengo(text)));
@@ -515,17 +519,40 @@ public class PatientSearchImpl extends AbstractMainComponent {
         task.execute();
     }
 
+    /**
+     * 2023-01-02 パターンかどうか. 受診日検索用.
+     * @param text 判定文字列
+     * @return 判定結果
+     */
     private boolean isDate(String text) {
-        return text != null && text.matches("[0-9][0-9][0-9][0-9]-[0-9]+-[0-9]+");
+        return Objects.nonNull(text) && text.matches("[0-9][0-9][0-9][0-9]-[0-9]+-[0-9]+");
     }
 
+    /**
+     * R05-01-02 パターンかどうか. 誕生日検索用.
+     * @param text 判定文字列
+     * @return 判定結果
+     */
     private boolean isNengoDate(String text) {
-        return text != null && text.matches("[MmTtSsHhRr][0-9]+-[0-9]+-[0-9]+");
+        return Objects.nonNull(text) && text.matches("[MmTtSsHhRr][0-9]+-[0-9]+-[0-9]+");
     }
 
+    /**
+     * 5050102 パターンかどうか. 誕生日検索用.
+     * @param text 判定文字列
+     * @return 判定結果
+     */
     private boolean isOrcaDate(String text) {
-        // S12-3-4 = 3120304
-        return text != null && text.matches("[1-6][0-6][0-9][0-1][0-9][0-3][0-9]");
+        return Objects.nonNull(text) && text.matches("[1-6][0-6][0-9][0-1][0-9][0-3][0-9]");
+    }
+
+    /**
+     * 20230102 パターンかどうか. 誕生日検索用.
+     * @param text 判定文字列
+     * @return 判定結果
+     */
+    private boolean is8digitDate(String text) {
+        return Objects.nonNull(text) && text.matches("[1-2][0-9][0-9][0-9][0-1][0-9][0-3][0-9]");
     }
 
     /**
