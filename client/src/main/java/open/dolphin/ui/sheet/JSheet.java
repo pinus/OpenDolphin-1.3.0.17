@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -19,7 +20,7 @@ import java.util.Objects;
 public class JSheet extends JWindow implements ActionListener {
     private static final long serialVersionUID = 1L;
 
-    public static final int MENU_BAR_HEIGHT = 22;
+    public static final int MENUBAR_HEIGHT = 28; // ventura 28
     public static String MENUBAR_HEIGHT_OFFSET_PROP = WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP;
     public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
     public static final int INCOMING = 1;
@@ -54,7 +55,7 @@ public class JSheet extends JWindow implements ActionListener {
     private int displayOffsetY = 0;
     private Component focusOwner;
 
-    private Logger logger = LoggerFactory.getLogger(JSheet.class);
+    private final Logger logger = LoggerFactory.getLogger(JSheet.class);
 
     public JSheet(Window owner) {
         super(owner);
@@ -258,8 +259,7 @@ public class JSheet extends JWindow implements ActionListener {
         });
 
         // JFrame と JDialog で分けざるを得ない処理
-        if (owner instanceof JFrame) {
-            JFrame w = (JFrame) owner;
+        if (owner instanceof JFrame w) {
             originalGlassPane = w.getGlassPane();
             w.setGlassPane(glassPane);
             Object menubarHeightOffset = w.getRootPane().getClientProperty(MENUBAR_HEIGHT_OFFSET_PROP);
@@ -290,7 +290,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         // Sheet をセンタリング
         loc.x += (ownerSize.width - sourcePaneSize.width) / 2;
-        loc.y += MENU_BAR_HEIGHT;
+        loc.y += MENUBAR_HEIGHT;
 
         // 右端，左端の処理
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -571,7 +571,7 @@ public class JSheet extends JWindow implements ActionListener {
     /**
      * 下から描いていく JPaenl.
      */
-    private class AnimatingSheet extends JPanel {
+    private static class AnimatingSheet extends JPanel {
 
         private static final long serialVersionUID = 1L;
 
@@ -633,8 +633,8 @@ public class JSheet extends JWindow implements ActionListener {
     private class SheetKeyEventDispatcher implements KeyEventDispatcher {
         private JOptionPane optionPane;
         private JButton defaultButton;
-        private KeyStroke escapeKey = KeyStroke.getKeyStroke("ESCAPE");
-        private KeyStroke enterKey = KeyStroke.getKeyStroke("ENTER");
+        private final KeyStroke escapeKey = KeyStroke.getKeyStroke("ESCAPE");
+        private final KeyStroke enterKey = KeyStroke.getKeyStroke("ENTER");
 
         @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
@@ -687,19 +687,18 @@ public class JSheet extends JWindow implements ActionListener {
                 defaultButton = ((JDialog)w).getRootPane().getDefaultButton();
             } else {
                 Component[] components = pane.getComponents();
-                java.util.List<Component> cc = java.util.Arrays.asList(components);
+                java.util.List<Component> cc = Arrays.asList(components);
                 while (!cc.isEmpty()) {
                     java.util.List<Component> stack = new ArrayList<>();
                     for (Component c : cc) {
-                        if (c instanceof JButton) {
-                            JButton button = (JButton) c;
+                        if (c instanceof JButton button) {
                             if (button.isDefaultButton()) {
                                 defaultButton = button;
                             }
 
-                        } else if (c instanceof JComponent) {
-                            components = ((JComponent) c).getComponents();
-                            stack.addAll(java.util.Arrays.asList(components));
+                        } else if (c instanceof JComponent comp) {
+                            components = comp.getComponents();
+                            stack.addAll(Arrays.asList(components));
                         }
                     }
                     cc = stack;

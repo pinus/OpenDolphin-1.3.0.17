@@ -460,7 +460,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         String patientName = getPatientVisit().getPatient().getFullName() + "様";
         String note = patientName + "を開いています...";
 
-        Task<KarteBean> task = new Task<KarteBean>(null, message, note, maxEstimation) {
+        Task<KarteBean> task = new Task<>(null, message, note, maxEstimation) {
 
             @Override
             protected KarteBean doInBackground() {
@@ -525,7 +525,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // チャートの JFrame オブジェクトを得る
         final MainFrame frame = windowSupport.getFrame();
         frame.setName("chartFrame");
-        frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 30);
+        frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 38);
 
         // FocusTraversalPolicy
         frame.setFocusTraversalPolicy(new FocusTraversalPolicy() {
@@ -811,7 +811,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * Tab に Badge を付ける.
-     * @param e
+     * @param e BadgeEvent
      */
     public void setBadge(BadgeEvent e) {
         tabbedPane.setBadge(e);
@@ -894,16 +894,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         ChartDocument bridgeOrViewer = providers.get("参 照");
 
-        if (bridgeOrViewer instanceof DocumentBridgeImpl) {
+        if (bridgeOrViewer instanceof DocumentBridgeImpl bridge) {
             // Chart画面のタブパネル
             logger.debug("bridgeOrViewer instanceof DocumentBridgeImpl");
-            DocumentBridgeImpl bridge = (DocumentBridgeImpl) bridgeOrViewer;
             base = bridge.getBaseKarte();
 
-        } else if (bridgeOrViewer instanceof KarteDocumentViewer) {
+        } else if (bridgeOrViewer instanceof KarteDocumentViewer viewer) {
             logger.debug("bridgeOrViewer instanceof KarteDocumentViewer");
-            KarteDocumentViewer viwer = (KarteDocumentViewer) bridgeOrViewer;
-            base = viwer.getBaseKarte();
+            base = viewer.getBaseKarte();
         } else {
             return;
         }
@@ -955,27 +953,16 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
             // 作成モード
             switch (option) {
-
-                case BROWSER_NEW:
-                    params.setCreateMode(Chart.NewKarteMode.EMPTY_NEW);
-                    break;
-
-                case BROWSER_COPY_NEW:
+                case BROWSER_NEW -> params.setCreateMode(NewKarteMode.EMPTY_NEW);
+                case BROWSER_COPY_NEW -> {
                     int cMode = prefs.getInt(Project.KARTE_CREATE_MODE, 0);
                     switch (cMode) {
-                        case 0:
-                            params.setCreateMode(Chart.NewKarteMode.EMPTY_NEW);
-                            break;
-                        case 1:
-                            params.setCreateMode(Chart.NewKarteMode.APPLY_RP);
-                            break;
-                        case 2:
-                            params.setCreateMode(Chart.NewKarteMode.ALL_COPY);
-                            break;
-                        default:
-                            break;
+                        case 0 -> params.setCreateMode(NewKarteMode.EMPTY_NEW);
+                        case 1 -> params.setCreateMode(NewKarteMode.APPLY_RP);
+                        case 2 -> params.setCreateMode(NewKarteMode.ALL_COPY);
+                        default -> {}
                     }
-                    break;
+                }
             }
 
             // 配置方法
@@ -1606,7 +1593,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         return false;
     }
 
-    private abstract class ChartState {
+    private static abstract class ChartState {
 
         public ChartState() {
         }
