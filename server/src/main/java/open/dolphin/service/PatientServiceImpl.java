@@ -18,8 +18,7 @@ import java.util.List;
  */
 @Stateless
 public class PatientServiceImpl extends DolphinService implements PatientService {
-    private static final long serialVersionUID = -456476244129106722L;
-    private final Logger logger = Logger.getLogger(PatientService.class);
+        private final Logger logger = Logger.getLogger(PatientService.class);
 
     /**
      * 患者オブジェクトを取得する.

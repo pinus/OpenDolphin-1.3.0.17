@@ -16,8 +16,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "d_module")
 public class ModuleModel extends KarteEntryBean<ModuleModel> {
-    private static final long serialVersionUID = -8781968977231876023L;
-
+    
     @Embedded
     private ModuleInfoBean moduleInfo;
 

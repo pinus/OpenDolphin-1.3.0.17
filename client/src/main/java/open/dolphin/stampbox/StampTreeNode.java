@@ -10,8 +10,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class StampTreeNode extends DefaultMutableTreeNode {
-    private static final long serialVersionUID = 1L;
-
+    
     /**
      * コンストラクタ
      *

@@ -12,8 +12,7 @@ import java.util.stream.Stream;
  * @author pns
  */
 public class DiagnosisInspectorTransferHandler extends DolphinTransferHandler {
-    private static final long serialVersionUID = 1L;
-    private final ChartImpl context;
+        private final ChartImpl context;
 
     public DiagnosisInspectorTransferHandler(ChartImpl context) {
         this.context = context;

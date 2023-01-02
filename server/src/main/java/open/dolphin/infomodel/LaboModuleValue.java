@@ -10,8 +10,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "d_labo_module")
 public class LaboModuleValue extends KarteEntryBean<LaboModuleValue> {
-    private static final long serialVersionUID = 582445940772745523L;
-
+    
     // MMLのUID
     @Column(nullable = false, unique = true, length = 32)
     private String docId;

@@ -28,8 +28,7 @@ import java.util.List;
  * @author pns
  */
 public class KarteScrollPane extends PNSScrollPane {
-    private static final long serialVersionUID = 1L;
-    // 不透明で塗りつぶすための alpha 値
+        // 不透明で塗りつぶすための alpha 値
     private static final AlphaComposite opaque = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f);
     // 影をつけるための半透明の alpha 値
     private static final AlphaComposite[] translucent = {

@@ -23,8 +23,7 @@ import java.util.Objects;
  * @author pns
  */
 public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
-    private static final long serialVersionUID = 1777560751402251092L;
-    private static final Dimension INITIAL_SIZE = new Dimension(192, 192);
+        private static final Dimension INITIAL_SIZE = new Dimension(192, 192);
     private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
     private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
     private final KartePane kartePane;

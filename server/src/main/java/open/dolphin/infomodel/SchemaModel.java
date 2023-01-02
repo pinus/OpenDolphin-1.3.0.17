@@ -11,8 +11,7 @@ import javax.swing.*;
 @Entity
 @Table(name = "d_image")
 public class SchemaModel extends KarteEntryBean<SchemaModel> {
-    private static final long serialVersionUID = -2500342431785313368L;
-
+    
     @Embedded
     private ExtRefModel extRef;
 

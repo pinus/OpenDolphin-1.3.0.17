@@ -16,8 +16,7 @@ public class StampTreeRenderer extends DefaultTreeCellRenderer {
     public static final int SQUARE = 0;
     public static final int UNDER_LINE = 1;
     public static final int UPPER_LINE = 2;
-    private static final long serialVersionUID = 1L;
-    private static final ImageIcon ASP_ICON = GUIConst.ICON_DOCUMENT_ATTRIBUTE_16;
+        private static final ImageIcon ASP_ICON = GUIConst.ICON_DOCUMENT_ATTRIBUTE_16;
     private static final ImageIcon LOCAL_ICON = GUIConst.ICON_DOCUMENT_CONVERT_16;
     private Object targetNode;
     private int drawMode;

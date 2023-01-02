@@ -17,8 +17,7 @@ import java.util.Objects;
  * @author pns
  */
 public class StampTreePopupMenu extends JPopupMenu {
-    private static final long serialVersionUID = 1L;
-
+    
     private final StampTree tree;
 
     public StampTreePopupMenu(StampTree tree) {

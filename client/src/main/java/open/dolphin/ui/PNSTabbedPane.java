@@ -24,8 +24,7 @@ import java.util.List;
  * @author pns
  */
 public class PNSTabbedPane extends JPanel implements ChangeListener {
-    private static final long serialVersionUID = 1L;
-    /**
+        /**
      * １行の最低タブ数
      */
     private static final int MIN_TAB_PER_LINE = 3;
@@ -458,8 +457,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * ボタンパネル.
      */
     private class ButtonPanel extends HorizontalPanel {
-        private static final long serialVersionUID = 1L;
-        private Dimension padding = new Dimension(0, 0);
+                private Dimension padding = new Dimension(0, 0);
 
         public ButtonPanel() {
         }
@@ -486,7 +484,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * タブボタンクラス.
      */
     private class TabButton extends JToggleButton implements IPNSButton, ActionListener {
-        private static final long serialVersionUID = 1L;
 
         public boolean isTop;
         public boolean isBottom;
@@ -659,7 +656,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * 両端そろえる FlowLayout.
      */
     private class RightJustifiedFlowLayout extends FlowLayout {
-        private static final long serialVersionUID = 1L;
 
         public RightJustifiedFlowLayout() {
             super(FlowLayout.CENTER, 0, 0);
@@ -951,7 +947,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
         JPanel p = new JPanel(new BorderLayout());
         JPanel p1 = new JPanel() {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public void paintComponent(Graphics grahics) {

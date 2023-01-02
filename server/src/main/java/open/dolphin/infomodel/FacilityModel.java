@@ -11,8 +11,7 @@ import java.util.Date;
 @Entity
 @Table(name = "d_facility")
 public class FacilityModel extends InfoModel {
-    private static final long serialVersionUID = 3142760011378628588L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

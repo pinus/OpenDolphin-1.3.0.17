@@ -20,8 +20,7 @@ import java.awt.event.MouseEvent;
  * @author pns
  */
 public class WaitingListPanel extends MainComponentPanel {
-    private static final long serialVersionUID = 1L;
-    private static Logger logger = LoggerFactory.getLogger(WaitingListPanel.class);
+        private static Logger logger = LoggerFactory.getLogger(WaitingListPanel.class);
 
     // アイコン
     private static final ImageIcon KUTU_ICON = GUIConst.ICON_ARROW_CIRCULAR_ALT1_16;

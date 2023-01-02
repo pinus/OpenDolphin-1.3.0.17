@@ -24,8 +24,7 @@ import java.util.List;
  * @author pns
  */
 public final class OrderHistoryPanel extends JPanel {
-    private static final long serialVersionUID = -2302784717739085879L;
-    private final Dimension contentSize = new Dimension(240, 300);
+        private final Dimension contentSize = new Dimension(240, 300);
     private ObjectReflectTableModel<ModuleModel> tModel;
     private JTable table;
     private JLabel contents;
@@ -41,8 +40,7 @@ public final class OrderHistoryPanel extends JPanel {
 
         // オーダの履歴(確定日|スタンプ名)を表示する TableModel: 各行は ModuleModel
         tModel = new ObjectReflectTableModel<ModuleModel>(columnNames) {
-            private static final long serialVersionUID = 1684645192401100170L;
-
+            
             @Override
             public boolean isCellEditable(int row, int col) {
                 return false;

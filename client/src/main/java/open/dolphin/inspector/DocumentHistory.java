@@ -108,8 +108,7 @@ public class DocumentHistory implements IInspector {
 
         // 文書履歴テーブルを生成する
         tableModel = new ObjectReflectTableModel<DocInfoModel>(reflectList) {
-            private static final long serialVersionUID = 1L;
-
+            
             @Override
             public boolean isCellEditable(int row, int col) {
                 // "内容" は editable

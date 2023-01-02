@@ -20,8 +20,7 @@ import java.util.List;
 @Table(name = "d_karte")
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class KarteBean extends InfoModel {
-    private static final long serialVersionUID = 4658519288418950016L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

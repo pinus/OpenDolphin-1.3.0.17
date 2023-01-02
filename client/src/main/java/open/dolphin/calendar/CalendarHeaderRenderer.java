@@ -10,8 +10,7 @@ import java.awt.*;
  * @author pns
  */
 public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
-    private static final long serialVersionUID = 1L;
-
+    
     private static final Color BACKGROUND = new Color(240, 240, 240);
     private static final Color BORDER = Color.LIGHT_GRAY;
 

@@ -9,8 +9,7 @@ import javax.swing.table.TableModel;
  * @author pns
  */
 public class PNSTable extends JTable {
-    private static final long serialVersionUID = 1L;
-
+    
     public PNSTable() {
         super();
     }

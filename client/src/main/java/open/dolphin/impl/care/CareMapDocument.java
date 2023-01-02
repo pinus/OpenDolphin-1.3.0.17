@@ -565,8 +565,7 @@ public final class CareMapDocument extends AbstractChartDocument {
      * ComboBoxRenderer.
      */
     private class ComboBoxRenderer extends JLabel implements ListCellRenderer<PNSPair<String, String>> {
-        private static final long serialVersionUID = 4661822065789099499L;
-
+        
         public ComboBoxRenderer() {
             init();
         }

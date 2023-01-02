@@ -6,8 +6,7 @@ package open.dolphin.infomodel;
  * @author Minagawa, Kazushi
  */
 public class TelephoneModel extends InfoModel {
-    private static final long serialVersionUID = -3520256828672499135L;
-
+    
     private String telephoneType;
 
     private String telephoneTypeDesc;

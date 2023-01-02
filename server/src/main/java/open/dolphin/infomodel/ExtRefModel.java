@@ -11,8 +11,7 @@ import jakarta.persistence.Transient;
  */
 @Embeddable
 public class ExtRefModel extends InfoModel {
-    private static final long serialVersionUID = -3408876454565957708L;
-
+    
     @Column(nullable = false)
     private String contentType;
 

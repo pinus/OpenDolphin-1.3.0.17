@@ -6,7 +6,6 @@ package open.dolphin.infomodel;
  * @author Minagawa, kazushi
  */
 public class AddressModel extends InfoModel {
-    private static final long serialVersionUID = 4602230572833538876L;
 
     private String addressType;
     private String addressTypeDesc;

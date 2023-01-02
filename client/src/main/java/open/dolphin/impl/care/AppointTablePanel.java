@@ -25,7 +25,6 @@ import java.util.List;
  * @author pns
  */
 public class AppointTablePanel extends JPanel {
-    private static final long serialVersionUID = 1013931150179503017L;
 
     private final String[] COLUMN_NAMES = {"予約日", "内  容", "メ   モ"};
     private final int[] COLUMN_WIDTH = {90, 90, 300};
@@ -121,7 +120,6 @@ public class AppointTablePanel extends JPanel {
      * TableModel of AppointmentTable.
      */
     private class CareTableModel extends ObjectReflectTableModel<AppointmentModel> {
-        private static final long serialVersionUID = -5342312972368806563L;
 
         public CareTableModel(String[] columnNames) {
             super(columnNames);
@@ -259,7 +257,6 @@ public class AppointTablePanel extends JPanel {
      * 今日の予約のバックグランドに色を付けるレンダラ.
      */
     private class TodayRowRenderer extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = 4422900791807822090L;
 
         public TodayRowRenderer() {
         }

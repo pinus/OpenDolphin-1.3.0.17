@@ -16,8 +16,7 @@ import java.util.List;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public abstract class AbstractStampBox extends PNSTabbedPane {
-    private static final long serialVersionUID = 1L;
-
+    
     private StampTreeBean stampBean;
     private StampBoxPlugin context;
 

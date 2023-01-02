@@ -18,8 +18,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "d_patient")
 public class PatientModel extends InfoModel {
-    private static final long serialVersionUID = 2863696294817965234L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @GenericField // hibernate search

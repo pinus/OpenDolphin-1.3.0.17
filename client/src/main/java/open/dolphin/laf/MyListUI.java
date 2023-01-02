@@ -113,7 +113,6 @@ public class MyListUI extends BasicListUI {
      * Focus に応じてバックグランド色を調節する Renderer.
      */
     private class Renderer extends DefaultListCellRenderer.UIResource {
-        private static final long serialVersionUID = 1L;
 
         @Override
         public Component getListCellRendererComponent(

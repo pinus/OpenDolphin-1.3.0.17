@@ -74,7 +74,6 @@ public class DiagnosisInspector implements IInspector {
         listModel = new DefaultListModel<>();
 
         diagList = new JList<RegisteredDiagnosisModel>(listModel) {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public String getToolTipText(MouseEvent e) {
@@ -451,7 +450,6 @@ public class DiagnosisInspector implements IInspector {
     }
 
     private class DiagnosisListCellRenderer extends DefaultListCellRenderer {
-        private static final long serialVersionUID = 1L;
 
         @Override
         public Component getListCellRendererComponent(
@@ -545,7 +543,6 @@ public class DiagnosisInspector implements IInspector {
      * ドロップするとき，Border にフィードバックを出すパネル.
      */
     private class DropPanel extends JPanel {
-        private static final long serialVersionUID = 1L;
 
         private boolean showFeedback = false;
 

@@ -15,8 +15,7 @@ import java.beans.PropertyChangeSupport;
 public class AgreementPanel extends JPanel {
 
     public static final String AGREE_PROP = "agreeProp";
-    private static final long serialVersionUID = -2621821413657989752L;
-    // GUI コンポーネント
+        // GUI コンポーネント
     private static final String AGREE_TEXT = "同意する";
     private static final String DISAGREE_TEXT = "同意しない";
     // モデル

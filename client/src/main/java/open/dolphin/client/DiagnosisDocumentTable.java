@@ -13,8 +13,7 @@ import java.awt.event.MouseEvent;
  * @author pns
  */
 public class DiagnosisDocumentTable extends JTable {
-    private static final long serialVersionUID = 1L;
-
+    
     private final DiagnosisDocumentTableModel model;
 
     public DiagnosisDocumentTable(DiagnosisDocumentTableModel model) {

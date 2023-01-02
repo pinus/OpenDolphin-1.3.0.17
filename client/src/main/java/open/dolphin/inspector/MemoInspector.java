@@ -299,7 +299,6 @@ public class MemoInspector implements IInspector {
      * ViewPort に赤枠を付ける.
      */
     private class AttentiveViewport extends JViewport {
-        private static final long serialVersionUID = 1L;
 
         public void setView(JComponent c) {
             c.setOpaque(false);

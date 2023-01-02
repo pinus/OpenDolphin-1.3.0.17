@@ -10,8 +10,7 @@ import java.util.Date;
  */
 public class ModuleSearchSpec implements Serializable {
     public static final int ENTITY_SEARCH = 0;
-    private static final long serialVersionUID = 4550131751936543011L;
-    private int code;
+        private int code;
     private long karteId;
     private String patientId;
     private String entity;

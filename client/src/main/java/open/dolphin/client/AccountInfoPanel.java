@@ -19,8 +19,7 @@ import java.util.Date;
  * @author pns
  */
 public class AccountInfoPanel extends JPanel {
-    private static final long serialVersionUID = -7695417342865642933L;
-
+    
     // FACILITY_USERにしておく. FACILITY_OIDはデフォを使う (masuda-sensei)
     //private static final String MEMBER_TYPE = "ASP_TESTER";
     private static final String MEMBER_TYPE = "FACILITY_USER";

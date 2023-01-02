@@ -14,8 +14,7 @@ import java.util.HashMap;
  * @author pns
  */
 public class HorizontalPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-    private static final int SEPARATOR_WIDTH = 16;
+        private static final int SEPARATOR_WIDTH = 16;
     private static final int DEFAULT_PANEL_HEIGHT = 24;
     /**
      * 文字列を挿入した場合は，後からそこに setText できるようにする
@@ -210,7 +209,6 @@ public class HorizontalPanel extends JPanel {
      * 縦線のセパレーターパネル
      */
     private class SeparatorPanel extends JPanel {
-        private static final long serialVersionUID = 1L;
 
         private final Color leftColor = Color.GRAY;
         private final Color rightColor = Color.WHITE;

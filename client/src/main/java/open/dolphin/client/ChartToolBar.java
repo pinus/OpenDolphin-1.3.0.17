@@ -24,8 +24,7 @@ import java.util.prefs.Preferences;
  * @author pns
  */
 public class ChartToolBar extends JToolBar {
-    private static final long serialVersionUID = 1L;
-
+    
     private final EditorFrame editorFrame;
     private final ChartMediator mediator;
     private final Preferences prefs;

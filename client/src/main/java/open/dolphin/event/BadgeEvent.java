@@ -8,8 +8,7 @@ import java.util.EventObject;
  * @author pns
  */
 public class BadgeEvent extends EventObject {
-    private static final long serialVersionUID = 1L;
-
+    
     private int badgeNumber;
     private int tabIndex;
 

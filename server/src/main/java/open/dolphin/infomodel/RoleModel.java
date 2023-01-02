@@ -14,7 +14,6 @@ import jakarta.persistence.*;
 @Table(name = "d_roles")
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class RoleModel extends InfoModel {
-    private static final long serialVersionUID = 8116489464515271217L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

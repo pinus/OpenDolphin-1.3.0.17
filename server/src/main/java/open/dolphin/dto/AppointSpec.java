@@ -13,8 +13,7 @@ import java.util.Collections;
  * @author Minagawa, Kazushi
  */
 public class AppointSpec implements Serializable {
-    private static final long serialVersionUID = -2819531469105475380L;
-
+    
     private Collection<AppointmentModel> added;
     private Collection<AppointmentModel> updated;
     private Collection<AppointmentModel> removed;

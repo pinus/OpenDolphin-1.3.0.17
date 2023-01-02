@@ -17,7 +17,6 @@ import java.util.Date;
 @Table(name = "d_users")
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class UserModel extends InfoModel {
-    private static final long serialVersionUID = 1646664434908470285L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

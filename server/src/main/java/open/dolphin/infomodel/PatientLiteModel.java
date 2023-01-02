@@ -6,8 +6,7 @@ package open.dolphin.infomodel;
  * @author Minagawa, kazushi
  */
 public class PatientLiteModel extends InfoModel {
-    private static final long serialVersionUID = 2257606235838636648L;
-
+    
     private String patientId;
     private String name;    // full name
     private String gender;

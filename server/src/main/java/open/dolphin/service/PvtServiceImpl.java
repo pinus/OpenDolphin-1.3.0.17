@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class PvtServiceImpl extends DolphinService implements PvtService {
-    private static final long serialVersionUID = -3889943133781444449L;
-    private final Logger logger = Logger.getLogger(PvtServiceImpl.class);
+        private final Logger logger = Logger.getLogger(PvtServiceImpl.class);
 
     /**
      * 患者来院情報を登録する.

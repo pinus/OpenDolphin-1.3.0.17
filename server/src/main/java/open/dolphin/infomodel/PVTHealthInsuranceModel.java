@@ -7,7 +7,6 @@ package open.dolphin.infomodel;
  * Modified by Mirror-I corp for adding 'PvtPublicInsuranceItem' and related function to store/get PvtPublicInsuranceItem name
  */
 public class PVTHealthInsuranceModel extends InfoModel {
-    private static final long serialVersionUID = 6119471803755585233L;
 
     private String uuid;
     private String insuranceClass;

@@ -16,7 +16,6 @@ import java.util.List;
  * @author Kazushi Minagawa
  */
 public class OrcaTree extends StampTree {
-    private static final long serialVersionUID = 1L;
 
     private static final String MONITOR_TITLE = "ORCAセット検索";
     private static final String MONITOR_NOTE = "ORCAに接続中";

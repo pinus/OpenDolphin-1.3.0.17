@@ -10,8 +10,7 @@ import java.util.Date;
  */
 @MappedSuperclass
 public abstract class StampTreeBean extends InfoModel {
-    private static final long serialVersionUID = 1L;
-
+    
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserModel user;

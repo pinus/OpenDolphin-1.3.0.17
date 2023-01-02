@@ -24,8 +24,7 @@ import java.util.regex.Pattern;
  */
 public class CompletableJTextField extends JTextField
         implements ListSelectionListener, FocusListener, KeyListener, ComponentListener, ActionListener {
-    private static final long serialVersionUID = 1L;
-    private static final String PREFS = "prefs";
+        private static final String PREFS = "prefs";
 
     private Completer completer;
     private JList<String> completionList;

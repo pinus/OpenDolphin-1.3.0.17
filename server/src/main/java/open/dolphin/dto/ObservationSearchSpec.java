@@ -9,7 +9,6 @@ import java.util.Date;
  * @author Minagawa, kazushi
  */
 public class ObservationSearchSpec implements Serializable {
-    private static final long serialVersionUID = 1297578145028629411L;
 
     private long karteId;
     private String observation;

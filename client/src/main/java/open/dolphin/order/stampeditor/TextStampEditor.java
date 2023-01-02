@@ -22,8 +22,7 @@ import java.awt.*;
  * @author pns
  */
 public final class TextStampEditor extends JPanel implements IStampEditor<ModuleModel> {
-    private static final long serialVersionUID = 1L;
-    // ItemTablePanel.java の stampNameField.setBackground と同じ色
+        // ItemTablePanel.java の stampNameField.setBackground と同じ色
     private static final Color STAMP_NAME_FIELD_BACKGROUND = new Color(251, 239, 128);
     private String title; // Dialog に表示されるタイトル
     private ValidListener validListener;

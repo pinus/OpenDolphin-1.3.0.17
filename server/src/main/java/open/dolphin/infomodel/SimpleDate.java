@@ -9,8 +9,7 @@ import java.util.GregorianCalendar;
  * @author Kazushi Minagawa
  */
 public class SimpleDate extends InfoModel implements Comparable<SimpleDate> {
-    private static final long serialVersionUID = 2137848922359964710L;
-
+    
     private int year;
 
     private int month; // 0~11

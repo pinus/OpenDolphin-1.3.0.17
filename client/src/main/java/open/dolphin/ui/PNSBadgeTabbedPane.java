@@ -21,8 +21,7 @@ import java.awt.*;
  * @author pns
  */
 public class PNSBadgeTabbedPane extends PNSTabbedPane {
-    private static final long serialVersionUID = 1L;
-
+    
     private static final int BADGE_RADIUS = ClientContext.isWin() ? 6 : 8;
     private static final int BADGE_FONT_SIZE = ClientContext.isWin() ? 10 : 11;
     private static final int BADGE_OFFSET = 4;

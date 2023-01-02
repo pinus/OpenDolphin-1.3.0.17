@@ -10,8 +10,7 @@ import java.awt.*;
  */
 public class SeparatorPanel extends JPanel {
 
-    private static final long serialVersionUID = 335333326611592227L;
-    private static final Color DEFAULT_LEFT_COLOR = Color.WHITE;
+        private static final Color DEFAULT_LEFT_COLOR = Color.WHITE;
     private static final Color DEFAULT_RIGHT_COLOR = Color.LIGHT_GRAY;
     private Color leftColor = DEFAULT_LEFT_COLOR;
     private Color rightColor = DEFAULT_RIGHT_COLOR;

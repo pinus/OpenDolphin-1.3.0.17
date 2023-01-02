@@ -14,8 +14,7 @@ import java.util.StringTokenizer;
 @Entity
 @Table(name = "d_patient_visit")
 public class PatientVisitModel extends InfoModel {
-    private static final long serialVersionUID = 7049490761810599245L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

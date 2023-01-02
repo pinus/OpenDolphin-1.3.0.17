@@ -14,8 +14,7 @@ import java.awt.*;
  * @author pns
  */
 public class DocumentHistoryPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-
+    
     private JLabel cntLbl;
     private JComboBox<PNSPair<String, Integer>> extractCombo;
     private JTable table;

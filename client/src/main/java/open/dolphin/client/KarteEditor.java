@@ -36,8 +36,7 @@ import java.util.prefs.Preferences;
  * @author pns
  */
 public class KarteEditor extends AbstractChartDocument implements IInfoModel {
-    private static final long serialVersionUID = 1L;
-    private static final String DEFAULT_TITLE = "経過記録";
+        private static final String DEFAULT_TITLE = "経過記録";
 
     // SOA Pane
     private KartePane soaPane;

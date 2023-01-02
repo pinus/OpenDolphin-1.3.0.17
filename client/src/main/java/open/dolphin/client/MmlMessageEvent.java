@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class MmlMessageEvent extends java.util.EventObject {
 
-    private static final long serialVersionUID = -5163032502414937817L;
 
     private String patientId;
     private String patientName;

@@ -25,7 +25,6 @@ import java.util.List;
  * @author pns
  */
 public class CalendarTable extends JTable {
-    private static final long serialVersionUID = 1L;
 
     //private static final String[] MONTH_NAME = new String[] {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
     private static final String[] MONTH_NAME = new String[]{"睦月", "如月", "弥生", "卯月", "皐月", "水無月", "文月", "葉月", "長月", "神無月", "霜月", "師走"};
@@ -323,7 +322,6 @@ public class CalendarTable extends JTable {
      * Custom table cell renderer for CalendarTable.
      */
     private class DateRenderer extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = 5817292848730765481L;
 
         private Color eventColor;
 

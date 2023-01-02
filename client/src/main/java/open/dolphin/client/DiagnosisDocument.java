@@ -1512,7 +1512,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      * ORCA 病名の色を変える，DELETE 病名を薄く表示，移行病名を赤表示.
      */
     private class DolphinOrcaRenderer extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = 1L;
 
         public DolphinOrcaRenderer() {
             super();
@@ -1617,7 +1616,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      * JComboBox を細かくコントロールするための Cell Editor.
      */
     private class MyCellEditor extends PNSCellEditor {
-        private static final long serialVersionUID = 1L;
 
         JComboBox<?> combo;
 

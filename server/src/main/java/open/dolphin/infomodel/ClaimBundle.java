@@ -6,7 +6,6 @@ package open.dolphin.infomodel;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ClaimBundle extends InfoModel {
-    private static final long serialVersionUID = -7332175271243905003L;
 
     private String className;           // 診療行為名
     private String classCode;           // 診療行為コード

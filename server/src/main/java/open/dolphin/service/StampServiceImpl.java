@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class StampServiceImpl extends DolphinService implements StampService {
-    private static final long serialVersionUID = -9201185729129886533L;
 
     /**
      * User 個人の StampTree を保存/更新する.

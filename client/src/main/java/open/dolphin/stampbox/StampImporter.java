@@ -347,7 +347,6 @@ public class StampImporter {
     }
 
     private class PublishTypeRenderer extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = 1L;
 
         public PublishTypeRenderer() {
             super();
@@ -394,7 +393,6 @@ public class StampImporter {
     }
 
     private class ImportedRenderer extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = 1L;
 
         public ImportedRenderer() {
             super();

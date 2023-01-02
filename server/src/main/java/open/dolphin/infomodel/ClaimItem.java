@@ -6,8 +6,7 @@ package open.dolphin.infomodel;
  * @author Kazushi Minagawa, Digital Globe,Inc.
  */
 public class ClaimItem extends InfoModel {
-    private static final long serialVersionUID = 3256217487799388468L;
-
+    
     private String name;
     private String code;
     private String codeSystem;

@@ -16,8 +16,7 @@ import java.awt.event.FocusEvent;
  * @author pns
  */
 public class PNSCellEditor extends DefaultCellEditor {
-    private static final long serialVersionUID = 1L;
-
+    
     // Focus を取ったときに JTextField#selectAll するかどうか.
     boolean shouldSelectAll;
 

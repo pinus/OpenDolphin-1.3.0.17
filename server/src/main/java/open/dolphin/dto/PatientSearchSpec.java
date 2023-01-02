@@ -12,7 +12,6 @@ import java.util.Objects;
  * @author pns
  */
 public class PatientSearchSpec implements Serializable {
-    private static final long serialVersionUID = -3192512318678902328L;
 
     public enum SEARCH {
         ID, NAME, KANA, ROMAN, DATE, BIRTHDAY, MEMO, FULLTEXT, QUERY, REGEXP

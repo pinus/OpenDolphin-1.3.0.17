@@ -18,8 +18,7 @@ import java.awt.*;
  * @author pns
  */
 public class StatusPanel extends HorizontalPanel {
-    private static final long serialVersionUID = 1L;
-    private static final int STATUS_PANEL_HEIGHT = 24;
+        private static final int STATUS_PANEL_HEIGHT = 24;
 
     private final JProgressBar progressBar;
 

@@ -18,8 +18,7 @@ import java.util.Objects;
  * @author pns
  */
 public class JSheet extends JWindow implements ActionListener {
-    private static final long serialVersionUID = 1L;
-
+    
     public static final int MENUBAR_HEIGHT = 28; // ventura 28
     public static String MENUBAR_HEIGHT_OFFSET_PROP = WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP;
     public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
@@ -573,8 +572,7 @@ public class JSheet extends JWindow implements ActionListener {
      */
     private static class AnimatingSheet extends JPanel {
 
-        private static final long serialVersionUID = 1L;
-
+        
         private final Dimension animatingSize = new Dimension(0, 1);
         private JComponent source;
         private BufferedImage offscreenImage;

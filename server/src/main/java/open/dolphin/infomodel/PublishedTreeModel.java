@@ -13,7 +13,6 @@ import jakarta.persistence.Transient;
 @Entity
 @Table(name = "d_published_tree")
 public class PublishedTreeModel extends StampTreeBean {
-    private static final long serialVersionUID = -1402248987372246092L;
 
     // この id は generate された値ではなく，
     //コピー元の PersonalTreeModel と同じ Id に設定される

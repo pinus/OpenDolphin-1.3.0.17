@@ -10,8 +10,7 @@ import java.awt.event.MouseEvent;
  */
 public class MoreInfoPanel extends JPanel {
     public static final int SPIN_WIDGET_HEIGHT = 14;
-    private static final long serialVersionUID = 1L;
-    public Component topComponent;
+        public Component topComponent;
     public Component bottomComponent;
     protected SpinWidget spinWidget;
     private JPanel spinComponent;
@@ -73,8 +72,7 @@ public class MoreInfoPanel extends JPanel {
 
 
     public class SpinWidget extends JPanel {
-        private static final long serialVersionUID = 1L;
-        final int HALF_HEIGHT = SPIN_WIDGET_HEIGHT / 2;
+                final int HALF_HEIGHT = SPIN_WIDGET_HEIGHT / 2;
         boolean open;
         Dimension mySize = new Dimension(SPIN_WIDGET_HEIGHT, SPIN_WIDGET_HEIGHT);
         int offsetX = 1;

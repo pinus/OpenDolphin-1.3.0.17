@@ -33,8 +33,7 @@ import java.util.Objects;
  * @author pns
  */
 public class DiagnosisTablePanel extends ItemTablePanel {
-    private static final long serialVersionUID = 1L;
-    Logger logger = LoggerFactory.getLogger(DiagnosisTablePanel.class);
+        Logger logger = LoggerFactory.getLogger(DiagnosisTablePanel.class);
 
     // 傷病名の修飾語コード
     private static final String MODIFIER_CODE = "ZZZ";
@@ -95,7 +94,6 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         setTableColumnWidth(new int[]{90, 200, 200});
 
         return new UndoableObjectReflectTableModel<MasterItem>(reflectList) {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public boolean isCellEditable(int row, int col) {

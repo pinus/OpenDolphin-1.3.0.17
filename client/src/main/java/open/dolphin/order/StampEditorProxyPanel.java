@@ -16,8 +16,7 @@ import java.util.HashMap;
  * @author pns
  */
 public class StampEditorProxyPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-
+    
     private CardLayout cardLayout;
     // entity のエディタをロードするローダー
     private StampEditorLoader loader;

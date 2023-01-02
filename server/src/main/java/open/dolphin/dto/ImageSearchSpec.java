@@ -12,8 +12,7 @@ import java.util.Date;
 public class ImageSearchSpec implements Serializable {
     public static final int ID_SEARCH = 0;
     public static final int PATIENT_SEARCH = 1;
-    private static final long serialVersionUID = 1306931621795428447L;
-    private int code;
+        private int code;
     private long karteId;
     private long id;
     private String patientId;

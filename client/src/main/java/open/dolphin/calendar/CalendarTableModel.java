@@ -16,8 +16,7 @@ import java.util.HashMap;
  * @author pns
  */
 public class CalendarTableModel extends AbstractTableModel {
-    private static final long serialVersionUID = 1L;
-
+    
     private static final String[] COLUMN_NAME = {"日", "月", "火", "水", "木", "金", "土"};
     private final int numRows = 6; // 6週で固定
     private final int numCols = 7; // 7日で固定

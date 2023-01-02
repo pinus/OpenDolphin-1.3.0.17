@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class KarteServiceImpl extends DolphinService implements KarteService {
-    private static final long serialVersionUID = 1L;
-    private final Logger logger = Logger.getLogger(KarteServiceImpl.class);
+        private final Logger logger = Logger.getLogger(KarteServiceImpl.class);
 
     /**
      * カルテの基礎的な情報をまとめて返す.

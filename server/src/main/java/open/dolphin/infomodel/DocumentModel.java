@@ -18,8 +18,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "d_document")
 public class DocumentModel extends KarteEntryBean<DocumentModel> {
-    private static final long serialVersionUID = 8273677751373923433L;
-
+    
     @Embedded
     private DocInfoModel docInfo;
 

@@ -16,8 +16,7 @@ import java.awt.image.BufferedImage;
  * @author pns
  */
 public class DolphinTransferHandler extends TransferHandler {
-    private static final long serialVersionUID = 1L;
-    private Logger logger = LoggerFactory.getLogger(DolphinTransferHandler.class);
+        private Logger logger = LoggerFactory.getLogger(DolphinTransferHandler.class);
     private final boolean isWin = ClientContext.isWin();
 
     private final Point offset = new Point(0, 0);

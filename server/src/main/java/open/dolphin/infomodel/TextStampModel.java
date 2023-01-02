@@ -6,8 +6,7 @@ package open.dolphin.infomodel;
  * @author Kazushi Minagawa
  */
 public class TextStampModel extends InfoModel {
-    private static final long serialVersionUID = -7296082989470881197L;
-
+    
     private String text;
 
     public String getText() {

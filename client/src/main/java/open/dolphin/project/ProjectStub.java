@@ -25,8 +25,7 @@ import java.util.prefs.Preferences;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ProjectStub implements java.io.Serializable {
-    private static final long serialVersionUID = 1L;
-
+    
     private final Preferences prefs;
     // Preferences のノード名
     private final String NODE_NAME = "/open/dolphin/project/v1310";

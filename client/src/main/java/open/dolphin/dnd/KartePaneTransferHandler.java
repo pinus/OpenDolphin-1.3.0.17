@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class KartePaneTransferHandler extends DolphinTransferHandler {
-    private static final long serialVersionUID = 1L;
-    private Logger logger = LoggerFactory.getLogger(KartePaneTransferHandler.class);
+        private Logger logger = LoggerFactory.getLogger(KartePaneTransferHandler.class);
 
     private KartePane kartePane;
     private JTextPane source;

@@ -11,8 +11,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "d_subscribed_tree")
 public class SubscribedTreeModel extends InfoModel {
-    private static final long serialVersionUID = -881452344593635871L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

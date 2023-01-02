@@ -33,8 +33,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class AddFacilityDialog extends JDialog implements ComponentListener, Runnable {
     public static final String ACCOUNT_INFO = "accountInfo";
-    private static final long serialVersionUID = 1L;
-    private JPanel cardPanel;
+        private JPanel cardPanel;
     private CardLayout cardLayout;
     private JButton okBtn;
     private JButton cancelBtn;

@@ -12,7 +12,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "d_observation")
 public class ObservationModel extends KarteEntryBean<ObservationModel> {
-    private static final long serialVersionUID = 51827574299906303L;
 
     @Column(nullable = false)
     private String observation;

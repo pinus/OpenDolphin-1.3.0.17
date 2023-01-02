@@ -9,8 +9,7 @@ import javax.swing.*;
  * @author pns
  */
 public abstract class KartePanel extends PrintablePanel {
-    private static final long serialVersionUID = 1L;
-
+    
     public abstract JTextPane getPTextPane();
 
     public abstract JTextPane getSoaTextPane();

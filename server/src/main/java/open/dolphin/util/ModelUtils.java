@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
  * @author pns
  */
 public class ModelUtils {
-    private static final long serialVersionUID = 1L;
-
+    
     /**
      * MML 形式から日付だけ取り出す.
      *

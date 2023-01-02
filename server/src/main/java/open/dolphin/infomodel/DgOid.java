@@ -10,8 +10,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "d_oid")
 public class DgOid extends InfoModel {
-    private static final long serialVersionUID = -1825623503728483560L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

@@ -63,7 +63,6 @@ public class KartePanelFactory {
 
         timeStampPanel = new JPanel() {
             // フラットなタイトルバー
-            private static final long serialVersionUID = 1L;
 
             @Override
             public void paintBorder(Graphics g) {
@@ -94,7 +93,6 @@ public class KartePanelFactory {
      * soaTextaPenel と soaTextPanel の中身の実際の高さの高い方を preferredSize として返す
      */
     private class ViewerPanel extends KartePanel {
-        private static final long serialVersionUID = 1L;
 
         public ViewerPanel() {
             initComponents();
@@ -172,7 +170,6 @@ public class KartePanelFactory {
      * Editor 用の KartePanel.
      */
     private class EditorPanel extends KartePanel {
-        private static final long serialVersionUID = 1L;
 
         public EditorPanel() {
             initComponents();
@@ -236,8 +233,7 @@ public class KartePanelFactory {
      * http://stackoverflow.com/questions/8666727/wrap-long-words-in-jtextpane-java-7
      */
     private class WrapEditorKit extends StyledEditorKit {
-        private static final long serialVersionUID = 1L;
-        ViewFactory defaultFactory = new WrapColumnFactory();
+                ViewFactory defaultFactory = new WrapColumnFactory();
 
         @Override
         public ViewFactory getViewFactory() {

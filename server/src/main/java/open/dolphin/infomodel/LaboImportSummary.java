@@ -9,8 +9,7 @@ import java.io.Serializable;
  */
 public class LaboImportSummary implements Serializable {
 
-    private static final long serialVersionUID = 8730078673332969884L;
-
+    
     private String patientId;
 
     private PatientModel patient;

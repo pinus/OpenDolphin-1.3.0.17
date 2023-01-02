@@ -12,7 +12,6 @@ import jakarta.persistence.Embeddable;
  */
 @Embeddable
 public class LicenseModel extends InfoModel {
-    private static final long serialVersionUID = 5120402348495916132L;
 
     private String license;
 

@@ -6,8 +6,7 @@ package open.dolphin.infomodel;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class PhysicalModel extends InfoModel implements Comparable<PhysicalModel> {
-    private static final long serialVersionUID = 5923780180643179995L;
-
+    
     private long heightId;
     private long weightId;
 

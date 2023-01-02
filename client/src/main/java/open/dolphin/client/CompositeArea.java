@@ -18,8 +18,7 @@ import java.util.Objects;
  * @author pns
  */
 public class CompositeArea extends JTextArea implements KarteComposite<JTextArea>, CaretListener {
-    private static final long serialVersionUID = 1L;
-    private TextComponentUndoManager undoManager;
+        private TextComponentUndoManager undoManager;
     private boolean hasSelection;
     private ActionMap map;
 

@@ -32,8 +32,7 @@ import java.util.prefs.Preferences;
  * @author pns
  */
 public class MasterSearchPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-
+    
     /**
      * Preferences に部分一致の on/off を記録するための key
      */
@@ -411,8 +410,7 @@ public class MasterSearchPanel extends JPanel {
      * Master のレンダラ.
      */
     private class MasterTableRenderer extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = 1L;
-
+        
         private final int TENSU_COL = 4;
         private final int START_COL = 5;
         private final int END_COL = 6;

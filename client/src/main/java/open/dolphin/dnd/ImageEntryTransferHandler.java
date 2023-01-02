@@ -7,7 +7,6 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.datatransfer.Transferable;
 
 public class ImageEntryTransferHandler extends DolphinTransferHandler {
-        private static final long serialVersionUID = 1L;
 
         @Override
         protected Transferable createTransferable(JComponent c) {

@@ -18,8 +18,7 @@ import java.util.StringTokenizer;
  */
 @Embeddable
 public class DocInfoModel extends InfoModel implements Comparable<DocInfoModel> {
-    private static final long serialVersionUID = 5082783120126942636L;
-
+    
     @Transient
     private long docPk;
 

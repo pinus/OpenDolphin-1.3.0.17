@@ -21,8 +21,7 @@ import javax.swing.undo.UndoableEdit;
  * @author pns
  */
 public class StampTreeModel extends DefaultTreeModel {
-    private static final long serialVersionUID = -2227174337081687786L;
-    private Logger logger = LoggerFactory.getLogger(StampTreeModel.class);
+        private Logger logger = LoggerFactory.getLogger(StampTreeModel.class);
     private UndoManager undoManager = new UndoManager();
     private CompoundEdit current = new CompoundEdit();
     private Timer timer = new Timer(30, e -> flush());

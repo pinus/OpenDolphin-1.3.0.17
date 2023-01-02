@@ -13,8 +13,7 @@ public class DiagnosisSearchSpec implements Serializable {
     public static final int CODE_SEARCH = 1;
     public static final int DIAGNOSIS_SEARCH = 2;
     public static final int CREATOR_SEARCH = 3;
-    private static final long serialVersionUID = 3687480184889000203L;
-    private int code;
+        private int code;
     private long karteId;
     private String patientId;
     private String diagnosisCode;

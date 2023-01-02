@@ -36,7 +36,6 @@ import java.util.List;
  * @author pns
  */
 public class StampTree extends JTree implements TreeModelListener {
-    private static final long serialVersionUID = -4651151848166376384L;
 
     private final Logger logger = LoggerFactory.getLogger(StampTree.class);
     public static final String SELECTED_NODE_PROP = "selectedNodeProp";

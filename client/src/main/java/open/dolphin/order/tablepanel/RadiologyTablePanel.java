@@ -16,8 +16,7 @@ import java.util.List;
  * @author pns
  */
 public class RadiologyTablePanel extends ItemTablePanel {
-    private static final long serialVersionUID = 1L;
-
+    
     public RadiologyTablePanel(IStampEditor parent) {
         super(parent);
     }
@@ -47,8 +46,7 @@ public class RadiologyTablePanel extends ItemTablePanel {
      * テーブルの左側にくっつくパネル
      */
     private final class RadiologyMethodPanel extends JPanel {
-        private static final long serialVersionUID = 7002106454090449477L;
-
+        
         private static final int METHOD_CELL_WIDTH = 120;
         private static final int COMMENT_CELL_WIDTH = 140;
 

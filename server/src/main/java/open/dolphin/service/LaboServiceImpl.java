@@ -13,8 +13,7 @@ import java.util.List;
  */
 @Stateless
 public class LaboServiceImpl extends DolphinService implements LaboService {
-    private static final long serialVersionUID = 3956888524428014377L;
-
+    
     /**
      * LaboModuleを保存する.
      *

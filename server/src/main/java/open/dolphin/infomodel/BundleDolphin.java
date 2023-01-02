@@ -9,8 +9,7 @@ import java.util.stream.Stream;
  * @author Minagawa, Kazushi
  */
 public class BundleDolphin extends ClaimBundle {
-    private static final long serialVersionUID = -8747202550129389855L;
-
+    
     private String orderName;
 
     public String getOrderName() {

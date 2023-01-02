@@ -6,8 +6,7 @@ package open.dolphin.infomodel;
  * @author Minagawa, Kazushi
  */
 public class UserLiteModel extends InfoModel {
-    private static final long serialVersionUID = 6256812305377957756L;
-
+    
     private String userId;
     private String commonName;
     private LicenseModel licenseModel;

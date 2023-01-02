@@ -15,7 +15,6 @@ import jakarta.persistence.Embeddable;
  */
 @Embeddable
 public class DepartmentModel extends InfoModel {
-    private static final long serialVersionUID = -920243869556556218L;
 
     private String department;
     private String departmentDesc;

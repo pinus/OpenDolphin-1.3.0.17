@@ -8,8 +8,7 @@ import open.dolphin.infomodel.ModuleModel;
  * @author Kazushi Minagawa
  */
 public final class OrderList implements java.io.Serializable {
-    private static final long serialVersionUID = -6049175115811888229L;
-
+    
     private ModuleModel[] orderList;
 
     public OrderList(ModuleModel[] stamp) {

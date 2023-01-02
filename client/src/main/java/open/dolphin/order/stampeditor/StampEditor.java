@@ -26,8 +26,7 @@ import java.util.Objects;
  * @author pns
  */
 public class StampEditor extends JPanel implements IStampEditor {
-    private static final long serialVersionUID = 1L;
-    public static final String MASTER_SEARCH_FIELD = "masterSearchField";
+        public static final String MASTER_SEARCH_FIELD = "masterSearchField";
     public static final String MASTER_TABLE = "masterTable";
     public static final String ITEM_TABLE = "itemTable";
 

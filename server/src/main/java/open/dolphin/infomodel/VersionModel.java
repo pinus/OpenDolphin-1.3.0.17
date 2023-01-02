@@ -6,8 +6,7 @@ package open.dolphin.infomodel;
  * @author Kazushi Minagawa
  */
 public class VersionModel extends InfoModel {
-    private static final long serialVersionUID = 5196580420531493579L;
-
+    
     private int number;
 
     private int revision;

@@ -16,8 +16,7 @@ import java.util.Collection;
 @Table(name = "d_labo_specimen")
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class LaboSpecimenValue extends InfoModel {
-    private static final long serialVersionUID = -7010436187772562514L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

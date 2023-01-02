@@ -62,8 +62,7 @@ public class ItemTablePanel extends JPanel {
     public static final String NUMBER_LABEL_TEXT = "回 数";
     public static final String SET_NAME_LABEL_TEXT = "セット名：";
     public static final String MEMO_LABEL_TEXT = "メ モ";
-    private static final long serialVersionUID = 1L;
-    // 数量コンボ用のデータを生成する
+        // 数量コンボ用のデータを生成する
     private static String[] NUMBER_LIST;
 
     static {
@@ -139,7 +138,6 @@ public class ItemTablePanel extends JPanel {
         setTableColumnWidth(new int[]{90, 200, 60, 60});
 
         return new UndoableObjectReflectTableModel<MasterItem>(reflectList) {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public boolean isCellEditable(int row, int col) {

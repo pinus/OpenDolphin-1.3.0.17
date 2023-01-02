@@ -27,8 +27,7 @@ import java.util.stream.Stream;
  * @author pns
  */
 public class DiagnosisTransferHandler extends DolphinTransferHandler {
-    private static final long serialVersionUID = 1L;
-    private Logger logger = LoggerFactory.getLogger(DiagnosisTransferHandler.class);
+        private Logger logger = LoggerFactory.getLogger(DiagnosisTransferHandler.class);
 
     private final DiagnosisDocument parent;
     private JTable sourceTable;

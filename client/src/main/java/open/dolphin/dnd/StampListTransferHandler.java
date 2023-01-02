@@ -30,8 +30,7 @@ import java.util.stream.Stream;
  * @author pns
  */
 public class StampListTransferHandler extends DolphinTransferHandler {
-    private static final long serialVersionUID = -9182879162438446790L;
-    private Logger logger = LoggerFactory.getLogger(StampListTransferHandler.class);
+        private Logger logger = LoggerFactory.getLogger(StampListTransferHandler.class);
 
     public StampListTransferHandler() { }
 

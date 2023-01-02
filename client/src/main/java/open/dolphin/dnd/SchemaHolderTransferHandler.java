@@ -14,7 +14,6 @@ import java.awt.datatransfer.Transferable;
  * @author pns
  */
 public class SchemaHolderTransferHandler extends DolphinTransferHandler {
-    private static final long serialVersionUID = -1293765478832142035L;
 
     public SchemaHolderTransferHandler() { }
 

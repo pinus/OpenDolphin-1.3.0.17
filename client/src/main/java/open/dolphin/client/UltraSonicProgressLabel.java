@@ -23,8 +23,7 @@ public class UltraSonicProgressLabel extends JLabel {
     protected static final Color PULSE_TAIL = Color.WHITE;
     protected static final int PULSE_COUNT = 10;
     protected static final int DEFAULT_FPS = 10;  // 10 frames per sec
-    private static final long serialVersionUID = -7642593282566833954L;
-    private Area[] pulses;
+        private Area[] pulses;
 
     private int pulseCount = PULSE_COUNT;
 

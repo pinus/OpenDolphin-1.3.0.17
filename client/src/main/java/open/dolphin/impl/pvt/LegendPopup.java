@@ -11,7 +11,6 @@ import java.awt.*;
  * @author pns
  */
 public class LegendPopup extends JPopupMenu {
-    private static final long serialVersionUID = 1L;
 
     private static String SPACE = "　";
 

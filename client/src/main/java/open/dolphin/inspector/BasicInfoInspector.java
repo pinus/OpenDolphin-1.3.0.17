@@ -142,7 +142,6 @@ public class BasicInfoInspector implements IInspector {
 
         // 境界線つき
         panel = new JPanel() {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public void paint(Graphics g) {
@@ -268,7 +267,6 @@ public class BasicInfoInspector implements IInspector {
     }
 
     private class NameBorder extends AbstractBorder {
-        private static final long serialVersionUID = 1L;
 
         private Insets borderInsets = new Insets(4, 8, 5, 4);
         private int r = 10;

@@ -8,7 +8,6 @@ import open.dolphin.infomodel.SchemaModel;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class SchemaList implements java.io.Serializable {
-    private static final long serialVersionUID = 5408868424299902180L;
 
     private SchemaModel[] schemaList;
 

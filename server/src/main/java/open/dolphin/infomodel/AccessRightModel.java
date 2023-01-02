@@ -6,7 +6,6 @@ package open.dolphin.infomodel;
  * @author Kazushi Minagawa
  */
 public class AccessRightModel extends InfoModel {
-    private static final long serialVersionUID = -90888255738195101L;
 
     private String permission;
     private String startDate;

@@ -30,8 +30,7 @@ import java.nio.charset.StandardCharsets;
 public class OIDGetter extends JPanel {
 
     public static final String NEXT_OID_PROP = "nextOidProp";
-    private static final long serialVersionUID = 1666003906485274645L;
-    private static final int MAX_ESTIMATION = 30 * 1000;
+        private static final int MAX_ESTIMATION = 30 * 1000;
     private static final int DELAY = 200;
     private static final String PROGRESS_NOTE = "通信テストをしています...";
     private static final String SUCCESS_NOTE = "通信に成功しました。次項ボタンをクリックし次に進むことができます。";

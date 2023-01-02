@@ -11,7 +11,6 @@ import javax.swing.*;
 @Entity
 @Table(name = "d_composite_image")
 public class CompositeImageModel extends KarteEntryBean<CompositeImageModel> {
-    private static final long serialVersionUID = 1L;
 
     @Column(nullable = false)
     private String contentType;

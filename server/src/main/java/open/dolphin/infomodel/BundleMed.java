@@ -8,8 +8,7 @@ import java.util.StringJoiner;
  * @author pns
  */
 public class BundleMed extends BundleDolphin {
-    private static final long serialVersionUID = -3898329425428401649L;
-
+    
     @Override
     public String toString() {
 

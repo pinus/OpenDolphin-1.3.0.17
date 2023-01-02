@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class UserServiceImpl extends DolphinService implements UserService {
-    private static final long serialVersionUID = 1L;
-
+    
     /**
      * 施設管理者が院内 User を登録する.
      *

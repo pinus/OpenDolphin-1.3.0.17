@@ -192,7 +192,7 @@ public class MyTreeUI extends BasicTreeUI {
             super.startEditingAtPath(tree, path);
         }
     }
-    
+
     public static void main(String[] arg) {
         UIManager.put("TreeUI", MyTreeUI.class.getName());
         UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
@@ -206,7 +206,6 @@ public class MyTreeUI extends BasicTreeUI {
         tree.setRootVisible(false);
 
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value,

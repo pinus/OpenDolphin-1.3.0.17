@@ -20,8 +20,7 @@ import java.util.stream.Stream;
  * @author pns
  */
 public class MasterItemTransferHandler extends DolphinTransferHandler {
-    private static final long serialVersionUID = 4871088750931696219L;
-    private Logger logger = LoggerFactory.getLogger(MasterItemTransferHandler.class);
+        private Logger logger = LoggerFactory.getLogger(MasterItemTransferHandler.class);
 
     private JTable sourceTable;
     private boolean shouldRemove;

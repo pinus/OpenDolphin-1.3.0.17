@@ -252,8 +252,7 @@ public final class ProjectSettingDialog {
         KeyStroke key = KeyStroke.getKeyStroke("ESCAPE");
         im.put(key, "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 doCancel();

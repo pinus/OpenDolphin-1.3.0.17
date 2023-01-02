@@ -25,8 +25,7 @@ import java.util.List;
  * @author pns
  */
 public class ImageHistoryPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-    private final int columnCount = 5;
+        private final int columnCount = 5;
     private final int imageWidth = 132;
     private final int imageHeight = 132;
     private String pid;
@@ -143,8 +142,7 @@ public class ImageHistoryPanel extends JPanel {
     }
 
     private class ImageTableModel extends AbstractTableModel {
-        private static final long serialVersionUID = -2683619747572366737L;
-
+        
         private List<ImageEntry> imageList;
 
         @Override
@@ -211,8 +209,7 @@ public class ImageHistoryPanel extends JPanel {
     }
 
     private class ImageRenderer extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = -8136363583689791913L;
-
+        
         public ImageRenderer() {
             init();
         }

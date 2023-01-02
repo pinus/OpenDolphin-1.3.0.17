@@ -18,8 +18,7 @@ import java.util.List;
  * @author pns
  */
 public class RegionView extends javax.swing.JDialog {
-    private static final long serialVersionUID = 1L;
-    private Logger logger = LoggerFactory.getLogger(RegionView.class);
+        private Logger logger = LoggerFactory.getLogger(RegionView.class);
 
     /**
      * ORCA 自作マスタの部位部分 001000800 - 001000999
@@ -1001,8 +1000,7 @@ public class RegionView extends javax.swing.JDialog {
      * バックグランド付きパネル
      */
     private class BackgroundPanel extends JPanel {
-        private static final long serialVersionUID = 1L;
-        private final int width, height;
+                private final int width, height;
 
         public BackgroundPanel() {
             width = GUIConst.IMAGE_BODY.getWidth();

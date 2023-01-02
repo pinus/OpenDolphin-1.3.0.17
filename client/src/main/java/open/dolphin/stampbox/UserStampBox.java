@@ -21,7 +21,6 @@ import java.util.*;
  * @author pns
  */
 public class UserStampBox extends AbstractStampBox {
-    private static final long serialVersionUID = 1L;
 
     private static final String BOX_INFO = "個人用スタンプ箱";
     /**
@@ -263,7 +262,6 @@ public class UserStampBox extends AbstractStampBox {
      * AbstractAction which sends Stamps to a Chart.
      */
     private abstract class SendStampBase extends AbstractAction {
-        private static final long serialVersionUID = 1L;
 
         public final Chart chart;
         public final StampTree tree;
@@ -296,7 +294,6 @@ public class UserStampBox extends AbstractStampBox {
      * DiagnosisDocument に StampTree から Diagnosis を送る Action.
      */
     private class SendDiagnosisAction extends SendStampBase {
-        private static final long serialVersionUID = 1L;
 
         private final DiagnosisDocument doc;
 
@@ -321,7 +318,6 @@ public class UserStampBox extends AbstractStampBox {
      * Action which sends selected Stamps to PPane.
      */
     private class SendStampAction extends SendStampBase {
-        private static final long serialVersionUID = 1L;
 
         private final KartePane pane;
         private final String entity;

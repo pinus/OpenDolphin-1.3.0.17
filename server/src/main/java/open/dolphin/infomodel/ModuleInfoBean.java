@@ -13,8 +13,7 @@ import jakarta.persistence.Transient;
  */
 @Embeddable
 public class ModuleInfoBean extends InfoModel implements Comparable<ModuleInfoBean> {
-    private static final long serialVersionUID = -3011774071100921454L;
-
+    
     /**
      * Module 名: StampTree、 オーダ履歴当に表示する名前
      */

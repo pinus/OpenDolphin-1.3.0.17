@@ -11,7 +11,6 @@ import java.util.StringJoiner;
  * Modified by Mirror-I corp for adding 'claimDeptName' and related function to store/get Department name
  */
 public class PVTClaim extends InfoModel {
-    private static final long serialVersionUID = -8573272136025043849L;
 
     private String claimStatus;
     private String claimRegistTime;

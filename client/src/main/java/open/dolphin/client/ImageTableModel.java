@@ -9,7 +9,6 @@ import java.util.List;
  * @author Minagawa, Kazushi
  */
 public class ImageTableModel extends AbstractTableModel {
-    private static final long serialVersionUID = 1L;
 
     private final String[] columnNames;
     private final int columnCount;

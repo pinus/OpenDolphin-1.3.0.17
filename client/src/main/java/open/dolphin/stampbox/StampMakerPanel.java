@@ -29,8 +29,7 @@ import java.beans.PropertyChangeSupport;
  */
 public class StampMakerPanel extends JPanel {
     public static final String EDITOR_VALUE_PROP = "editorSetProp";
-    private static final long serialVersionUID = 1L;
-    // StampBoxPlugin から addPropertyChangeListener される
+        // StampBoxPlugin から addPropertyChangeListener される
     private final PropertyChangeSupport boundSupport = new PropertyChangeSupport(this);
     // StampEditorProxyPanel
     private StampEditorProxyPanel editorPanel;

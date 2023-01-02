@@ -23,8 +23,7 @@ import java.util.List;
  * @author pns
  */
 public class StampHolderPopupMenu extends JPopupMenu {
-    private static final long serialVersionUID = 1L;
-    private Logger logger = LoggerFactory.getLogger(StampHolderPopupMenu.class);
+        private Logger logger = LoggerFactory.getLogger(StampHolderPopupMenu.class);
 
     /**
      * メニューに載せる処方日数のリスト
@@ -247,8 +246,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * 処方日数を変更するアクション.
      */
     private class BundleChangeAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private final int value;
+                private final int value;
 
         public BundleChangeAction(int value) {
             this.value = value;
@@ -279,8 +277,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * 内服の用法（１日３回毎食後など）を変更するアクション
      */
     private class AdminChangeAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private final Admin admin;
+                private final Admin admin;
 
         public AdminChangeAction(Admin admin) {
             this.admin = admin;
@@ -330,8 +327,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * 外用剤の外用回数（１日２回外用など）を変更するアクション
      */
     private class AdminChangeAction2 extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private final Admin2 admin;
+                private final Admin2 admin;
 
         public AdminChangeAction2(Admin2 admin) {
             this.admin = admin;
@@ -361,8 +357,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * 外用剤の処方量を変更するアクション.
      */
     private class DoseChangeAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private final int value;
+                private final int value;
 
         public DoseChangeAction(int value) {
             this.value = value;
@@ -405,8 +400,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * 外用剤の部位を変更するアクション.
      */
     private class PutRegionAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-
+        
         public PutRegionAction() {
             putValue(AbstractAction.NAME, "部位・指示...");
         }
@@ -468,8 +462,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * 内服薬の用量を変更するアクション. 何倍にするかで指定する
      */
     private class DoseChangeAction2 extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private final double value;
+                private final double value;
 
         public DoseChangeAction2(String str) {
             value = stringToDouble(str);
@@ -521,8 +514,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * コメントを付けるアクション.
      */
     private class PutCommentAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-
+        
         public PutCommentAction() {
             putValue(AbstractAction.NAME, "コメント...");
         }
@@ -604,8 +596,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * 一般名記載コメントをつけるアクション.
      */
     private class PutGenericNameAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-
+        
         public PutGenericNameAction() {
             putValue(AbstractAction.NAME, "一般名記載");
         }

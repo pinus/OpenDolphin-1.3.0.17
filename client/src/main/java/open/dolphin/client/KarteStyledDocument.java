@@ -14,8 +14,7 @@ import java.util.List;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class KarteStyledDocument extends DefaultStyledDocument {
-    private static final long serialVersionUID = 1L;
-    private static final String STAMP_STYLE = "stampHolder";
+        private static final String STAMP_STYLE = "stampHolder";
     private static final String SCHEMA_STYLE = "schemaHolder";
     private Logger logger = LoggerFactory.getLogger(KarteStyledDocument.class);
 

@@ -20,7 +20,6 @@ import java.util.stream.Stream;
  * @author kazushi Minagawa
  */
 class LaboTestFileTransferHandler extends TransferHandler {
-    private static final long serialVersionUID = 2942768324728994019L;
 
     private final DataFlavor fileFlavor;
     private final LaboTestImporter context;

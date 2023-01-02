@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
  * @author pns
  */
 public class AboutDialog extends JDialog {
-    private static final long serialVersionUID = 1L;
 
     /**
      * Creates new AboutDialog.

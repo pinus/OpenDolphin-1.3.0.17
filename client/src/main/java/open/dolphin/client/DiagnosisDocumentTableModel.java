@@ -20,7 +20,6 @@ import java.util.*;
  * @author pns
  */
 public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<RegisteredDiagnosisModel> {
-    private static final long serialVersionUID = 1L;
 
     private final boolean isReadOnly;
     private final PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());

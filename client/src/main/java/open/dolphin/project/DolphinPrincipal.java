@@ -8,7 +8,6 @@ import java.io.Serializable;
  * @author Minagawa, Kazushi
  */
 public class DolphinPrincipal implements Serializable {
-    private static final long serialVersionUID = -2401769499519969282L;
 
     private String userId;
     private String facilityId;

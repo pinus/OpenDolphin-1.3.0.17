@@ -14,8 +14,7 @@ import java.awt.image.BufferedImage;
  * @author pns
  */
 public class PNSRoundedTextureBorder extends AbstractBorder {
-    private static final long serialVersionUID = 1L;
-
+    
     private static final Color EDGE_COLOR = new Color(200, 200, 200);
     private final ImageIcon image;
     private final Insets insets;

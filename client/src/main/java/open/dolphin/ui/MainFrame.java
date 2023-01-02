@@ -20,8 +20,7 @@ import java.awt.*;
  * @author pns
  */
 public class MainFrame extends JFrame {
-    private static final long serialVersionUID = 1L;
-    // Panels
+        // Panels
     private CommandPanel commandPanel;
     private MainPanel mainPanel;
     private StatusPanel statusPanel;
@@ -147,7 +146,6 @@ public class MainFrame extends JFrame {
      * 上部のコマンドパネル
      */
     public class CommandPanel extends HorizontalPanel {
-        private static final long serialVersionUID = 1L;
 
         public CommandPanel() {
         }
@@ -157,7 +155,6 @@ public class MainFrame extends JFrame {
      * メインパネル
      */
     public class MainPanel extends JPanel {
-        private static final long serialVersionUID = 1L;
 
         public MainPanel() {
             super();

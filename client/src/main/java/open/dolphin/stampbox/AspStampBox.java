@@ -11,7 +11,6 @@ import java.util.List;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class AspStampBox extends AbstractStampBox {
-    private static final long serialVersionUID = 1L;
 
     @Override
     protected void buildStampBox() {

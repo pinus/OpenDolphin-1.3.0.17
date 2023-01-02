@@ -23,8 +23,7 @@ import java.util.List;
  * @author pns
  */
 public class RecipeTablePanel extends ItemTablePanel {
-    private static final long serialVersionUID = 1L;
-    Logger logger = LoggerFactory.getLogger(RecipeTablePanel.class);
+        Logger logger = LoggerFactory.getLogger(RecipeTablePanel.class);
 
     private static final ImageIcon INFO_BUTTON_IMAGE = GUIConst.ICON_INFORMATION_16;
     private static final String ADMIN_MARK = "[用法] ";
@@ -78,7 +77,6 @@ public class RecipeTablePanel extends ItemTablePanel {
         setTableColumnWidth(new int[]{90, 200, 50, 80, 30, 50});
 
         return new UndoableObjectReflectTableModel<MasterItem>(reflectList) {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public boolean isCellEditable(int row, int col) {

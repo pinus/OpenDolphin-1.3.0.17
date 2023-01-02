@@ -14,8 +14,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "d_stamp")
 public class StampModel extends InfoModel {
-    private static final long serialVersionUID = 7588591951375345379L;
-
+    
     @Id
     private String id;
 

@@ -8,7 +8,6 @@ package open.dolphin.order;
  * @author pns
  */
 public class MasterItem implements java.io.Serializable {
-    private static final long serialVersionUID = -6359300744722498857L;
 
     /**
      * Claim subclass code マスタ項目の種別.

@@ -11,7 +11,6 @@ import java.awt.*;
  * @author pns
  */
 public class TablePanelRenderer extends DefaultTableCellRenderer {
-    private static final long serialVersionUID = 1L;
 
     public TablePanelRenderer() {
         initComponents();

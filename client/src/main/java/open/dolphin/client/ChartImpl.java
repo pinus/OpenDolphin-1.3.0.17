@@ -35,7 +35,6 @@ import java.util.prefs.Preferences;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
-    private static final long serialVersionUID = 1L;
     //  Chart インスタンスを管理するstatic 変数
     private static final List<ChartImpl> allCharts = new ArrayList<>(3);
     // PvtChangeListener
@@ -657,7 +656,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // 全体をレイアウトする
         JPanel inspectorPanel = new JPanel() {
             // 右側の境界線を描く
-            private static final long serialVersionUID = 1L;
 
             @Override
             public void paint(Graphics g) {

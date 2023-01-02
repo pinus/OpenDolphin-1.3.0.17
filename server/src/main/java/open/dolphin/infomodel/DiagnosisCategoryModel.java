@@ -9,8 +9,7 @@ import jakarta.persistence.Embeddable;
  */
 @Embeddable
 public class DiagnosisCategoryModel extends InfoModel {
-    private static final long serialVersionUID = 7606390775489282517L;
-
+    
     private String diagnosisCategory;
     private String diagnosisCategoryDesc;
     private String diagnosisCategoryCodeSys;

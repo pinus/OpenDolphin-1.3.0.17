@@ -25,8 +25,7 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class PnsServiceImpl extends DolphinService implements PnsService {
-    private static final long serialVersionUID = 1L;
-    private static final String CALENDAR_DATA = "calendar.data";
+        private static final String CALENDAR_DATA = "calendar.data";
 
     private final Preferences prefs = Preferences.userNodeForPackage(PnsServiceImpl.class);
     private final Logger logger = Logger.getLogger(PnsServiceImpl.class);

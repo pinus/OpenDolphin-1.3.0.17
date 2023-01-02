@@ -13,8 +13,7 @@ import java.util.Date;
 @Entity
 @Table(name = "d_appo")
 public class AppointmentModel extends KarteEntryBean<AppointmentModel> {
-    private static final long serialVersionUID = 6166365309219504946L;
-    public static final int TT_NONE = 0;
+        public static final int TT_NONE = 0;
     public static final int TT_NEW = 1;
     public static final int TT_HAS = 2;
     public static final int TT_REPLACE = 3;

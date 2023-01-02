@@ -13,8 +13,7 @@ import java.awt.print.PrinterJob;
  * @author Junzo SATO
  */
 public class PrintablePanel extends JPanel implements Printable {
-    private static final long serialVersionUID = 1L;
-
+    
     private String patientName;
     private int height;
 

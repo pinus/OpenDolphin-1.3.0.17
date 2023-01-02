@@ -15,8 +15,7 @@ import java.awt.image.BufferedImage;
  * @author pns
  */
 public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMotionListener, MouseWheelListener {
-    private static final long serialVersionUID = 1L;
-    // マウスホイールを操作しているかどうかを判定するしきい値
+        // マウスホイールを操作しているかどうかを判定するしきい値
     // laptime < THRESHOLD ならばスクロール操作中と考える
     private static final long THRESHOLD = 30;
     // スクロールバーの最低の長さ　短くなりすぎるとつかみにくくなるので
@@ -717,7 +716,6 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
      * isClassicScrollBar = false : スクロールバー表示しない
      */
     private class MyScrollBar extends ScrollBar {
-        private static final long serialVersionUID = 1L;
 
         PNSScrollPane context;
 

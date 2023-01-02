@@ -13,7 +13,6 @@ import java.awt.datatransfer.Transferable;
  * @author pns
  */
 public class AspStampTreeNodeTransferHandler extends StampTreeNodeTransferHandler {
-    private static final long serialVersionUID = 1L;
 
     @Override
     protected Transferable createTransferable(JComponent c) {

@@ -26,8 +26,7 @@ import java.awt.event.*;
  */
 public abstract class AbstractComponentHolder<T> extends JLabel
     implements ComponentHolder<JLabel>, MouseListener, MouseMotionListener, KeyListener {
-    private static final long serialVersionUID = 1L;
-    private Logger logger = LoggerFactory.getLogger(AbstractComponentHolder.class);
+        private Logger logger = LoggerFactory.getLogger(AbstractComponentHolder.class);
 
     private static final KeyStroke TAB = KeyStroke.getKeyStroke("TAB");
     private static final KeyStroke SHIFT_TAB = KeyStroke.getKeyStroke("shift TAB");

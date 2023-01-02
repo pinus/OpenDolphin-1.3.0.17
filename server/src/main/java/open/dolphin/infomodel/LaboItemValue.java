@@ -14,8 +14,7 @@ import jakarta.persistence.*;
 @Table(name = "d_labo_item")
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class LaboItemValue extends InfoModel {
-    private static final long serialVersionUID = -6582278876758760228L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

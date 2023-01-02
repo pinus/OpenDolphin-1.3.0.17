@@ -16,7 +16,6 @@ import java.awt.event.MouseEvent;
  * @author pns
  */
 public class AppointLabel extends JLabel {
-    private static final long serialVersionUID = 2843710174202998473L;
 
     public AppointLabel(String text, Icon icon, int align) {
         super(text, icon, align);
@@ -36,7 +35,6 @@ public class AppointLabel extends JLabel {
     }
 
     private class AppointTransferHandler extends DolphinTransferHandler {
-        private static final long serialVersionUID = 1L;
 
         public AppointTransferHandler() {
             super();

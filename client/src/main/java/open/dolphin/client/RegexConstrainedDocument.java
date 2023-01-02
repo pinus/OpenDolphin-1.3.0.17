@@ -12,8 +12,7 @@ import java.util.regex.Pattern;
  * RegexConstrainedDocument.
  */
 public class RegexConstrainedDocument extends PlainDocument {
-    private static final long serialVersionUID = 4066321190740323979L;
-
+    
     private boolean beep;
     private boolean debug;
     private Pattern pattern;

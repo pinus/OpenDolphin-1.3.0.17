@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
  * @author pns
  */
 public class ProxyAction extends AbstractAction {
-    private static final long serialVersionUID = 1L;
 
     private ProxyActionListener listener;
 

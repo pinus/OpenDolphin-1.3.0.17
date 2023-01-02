@@ -19,8 +19,7 @@ import java.awt.image.BufferedImage;
  * @author pns
  */
 public class CompletableSearchField extends CompletableJTextField {
-    private static final long serialVersionUID = 1L;
-    private static final int ICON_TEXT_GAP = 5;
+        private static final int ICON_TEXT_GAP = 5;
 
     private BufferedImage icon;
     private BufferedImage clearButton;

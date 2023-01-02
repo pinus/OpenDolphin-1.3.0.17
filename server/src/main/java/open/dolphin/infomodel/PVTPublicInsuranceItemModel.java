@@ -6,7 +6,6 @@ package open.dolphin.infomodel;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class PVTPublicInsuranceItemModel extends InfoModel {
-    private static final long serialVersionUID = 7141232138488822853L;
 
     private String priority;
     private String providerName;

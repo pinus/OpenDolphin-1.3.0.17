@@ -11,8 +11,7 @@ import java.util.Date;
 @Entity
 @Table(name = "d_phenomenon")
 public class PhenomenonModel extends InfoModel {
-    private static final long serialVersionUID = -5238918766376204524L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

@@ -7,7 +7,6 @@ import java.util.EventObject;
  * @author pns
  */
 public class StampTreeMenuEvent extends EventObject {
-    private static final long serialVersionUID = 1L;
 
     private String entity;
     private Transferable tr;

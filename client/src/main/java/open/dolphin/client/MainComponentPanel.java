@@ -23,7 +23,6 @@ import java.awt.*;
  * @author pns
  */
 public class MainComponentPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
 
     private static final int COMMAND_PANEL_HEIGHT = 36;
 
@@ -61,7 +60,6 @@ public class MainComponentPanel extends JPanel {
      * ボタン等が入るコマンドパネル
      */
     public class CommandPanel extends HorizontalPanel {
-        private static final long serialVersionUID = 1L;
 
         public CommandPanel() {
             super();

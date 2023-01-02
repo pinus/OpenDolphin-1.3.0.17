@@ -34,8 +34,7 @@ import java.util.Objects;
  */
 public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
     public static final String STAMP_MODIFIED = "stampModified";
-    private static final long serialVersionUID = 5853431116398862958L;
-    private static final Color FOREGROUND = new Color(20, 20, 140);
+        private static final Color FOREGROUND = new Color(20, 20, 140);
     private static final Color BACKGROUND = new Color(0, 0, 0, 0);
     private static final Color COMMENT_COLOR = new Color(120, 20, 140);
     private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();

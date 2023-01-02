@@ -81,7 +81,6 @@ public class WindowSupport implements MenuListener {
         // Windowメニューのアクション
         // 選択されたらフレームを前面にする
         Action windowAction = new AbstractAction(title) {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -222,7 +221,6 @@ public class WindowSupport implements MenuListener {
      * インスペクタを整列する action.
      */
     private class ArrangeInspectorAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
 
         public ArrangeInspectorAction() {
             initComponent();

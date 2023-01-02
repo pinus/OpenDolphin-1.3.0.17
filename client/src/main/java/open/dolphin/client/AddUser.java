@@ -138,8 +138,7 @@ public class AddUser extends AbstractMainTool {
      * 施設（医療機関）情報を変更するクラス.
      */
     private class FacilityInfoPanel extends JPanel {
-        private static final long serialVersionUID = 1L;
-
+        
         // 施設情報フィールド
         private JTextField facilityName;
         private JTextField zipField1;
@@ -408,8 +407,7 @@ public class AddUser extends AbstractMainTool {
      * ユーザリストを取得するクラス. 名前がいけない.
      */
     private class UserListPanel extends JPanel {
-        private static final long serialVersionUID = 1L;
-
+        
         private ObjectReflectTableModel<UserModel> tableModel;
         private JTable table;
         private JButton getButton;
@@ -601,8 +599,7 @@ public class AddUser extends AbstractMainTool {
      * 施設内ユーザ登録クラス.
      */
     private class AddUserPanel extends JPanel {
-        private static final long serialVersionUID = 1L;
-
+        
         private JTextField uid; // 利用者ID
         private JPasswordField userPassword1; // パスワード
         private JPasswordField userPassword2; // パスワード

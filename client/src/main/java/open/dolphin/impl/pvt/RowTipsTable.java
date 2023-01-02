@@ -17,8 +17,7 @@ import java.util.Date;
  * @author pns
  */
 public class RowTipsTable extends JTable {
-    private static final long serialVersionUID = 1L;
-
+    
     public RowTipsTable() {
         // フォーカス取ったら選択する
         addFocusListener(new FocusAdapter() {

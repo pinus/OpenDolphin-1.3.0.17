@@ -19,7 +19,6 @@ import java.util.GregorianCalendar;
  * @author pns
  */
 public class CalendarPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
 
     private static final int BUTTON_WIDTH = 12;
 
@@ -86,7 +85,6 @@ public class CalendarPanel extends JPanel {
 
         // 境界線を描く
         LayerUI<JPanel> layerUI = new LayerUI<JPanel>() {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public void paint(Graphics g, JComponent c) {

@@ -13,8 +13,7 @@ import java.awt.event.MouseEvent;
  * @author pns
  */
 public class AddressTipsTable extends JTable {
-    private static final long serialVersionUID = -1150173229895931042L;
-
+    
     public AddressTipsTable() {
         // フォーカス取ったら選択する
         addFocusListener(new FocusAdapter() {

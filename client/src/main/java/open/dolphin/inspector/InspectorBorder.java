@@ -11,7 +11,6 @@ import java.awt.*;
  * @author pns
  */
 public class InspectorBorder extends AbstractBorder {
-    private static final long serialVersionUID = 1L;
 
     private static final Font DEFAULT_TITLE_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
     private static final Color DEFAULT_TITLE_COLOR = Color.BLACK;

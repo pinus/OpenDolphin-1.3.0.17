@@ -33,8 +33,7 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
     static final float EXAMPLE_FRAME_SPACE = 50.0F;
     static final float EXAMPLE_SPACE = 30.0F;
     static final float DUMMY_VALUE = -9999.99F;
-    private static final long serialVersionUID = 7472151201436824606L;
-    // 検査データ
+        // 検査データ
     String[] sampleTime; // 検体採取日
     String[] itemName; // テスト項目名
     String[] itemUnit; // 検査値の単位

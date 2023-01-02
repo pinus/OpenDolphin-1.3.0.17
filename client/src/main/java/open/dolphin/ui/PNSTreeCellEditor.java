@@ -30,8 +30,7 @@ public final class PNSTreeCellEditor extends DefaultTreeCellEditor {
     @Override
     protected TreeCellEditor createTreeCellEditor() {
         final DefaultTextField textField = new DefaultTextField(null) {
-            private static final long serialVersionUID = 1L;
-
+            
             @Override
             public void setText(String text) {
                 super.setText(text);

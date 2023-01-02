@@ -38,8 +38,7 @@ public class MenuActionManager {
             if (m.getAnnotation(MenuAction.class) != null) {
                 final Method method = m;
                 javax.swing.Action action = new AbstractAction() {
-                    private static final long serialVersionUID = 1L;
-
+                    
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try {

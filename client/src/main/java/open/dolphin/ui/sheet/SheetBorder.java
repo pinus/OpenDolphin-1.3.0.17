@@ -10,8 +10,7 @@ import java.awt.geom.Rectangle2D;
  */
 public class SheetBorder extends AbstractBorder {
 
-    private static final long serialVersionUID = 1L;
-
+    
     private static final int SHADOW_WIDTH = 10;
     private static final Insets BORDER_INSETS = new Insets(10, 20, 20, 20);
     private static final Color BACKGROUND = new Color(0.95f, 0.95f, 0.95f, 0.97f);

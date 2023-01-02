@@ -17,8 +17,7 @@ import java.util.List;
  * @author pns
  */
 public class ObjectReflectTableModel<T> extends AbstractTableModel {
-    private static final long serialVersionUID = -8280948755982277457L;
-
+    
     // カラム名配列
     private final String[] columnNames;
     // カラム数

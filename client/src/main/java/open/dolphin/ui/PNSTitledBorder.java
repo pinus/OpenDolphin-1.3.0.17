@@ -15,8 +15,7 @@ import java.awt.*;
  * @author pns
  */
 public class PNSTitledBorder extends AbstractBorder {
-    private static final long serialVersionUID = 1L;
-
+    
     // content の回りのスペース
     private static final int DEFAULT_INSET = 5;
     // タイトルと content の間のスペース

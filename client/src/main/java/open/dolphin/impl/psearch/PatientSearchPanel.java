@@ -23,7 +23,6 @@ import java.util.List;
  * @author pns
  */
 public class PatientSearchPanel extends MainComponentPanel {
-    private static final long serialVersionUID = 1L;
 
     // command panel
     private CompletableSearchField keywordFld;

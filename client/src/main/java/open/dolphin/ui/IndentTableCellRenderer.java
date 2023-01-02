@@ -16,8 +16,7 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
     public static final int WIDE = 10;
     public static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
     public static final Font SMALL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 9);
-    private static final long serialVersionUID = 1L;
-    private int indent;
+        private int indent;
     private Font font;
 
     public IndentTableCellRenderer() {

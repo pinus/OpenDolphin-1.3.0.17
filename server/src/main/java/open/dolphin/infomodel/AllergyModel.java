@@ -6,7 +6,6 @@ package open.dolphin.infomodel;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class AllergyModel extends InfoModel implements Comparable<AllergyModel> {
-    private static final long serialVersionUID = -6327488237646390391L;
 
     private long observationId;
     // 要因

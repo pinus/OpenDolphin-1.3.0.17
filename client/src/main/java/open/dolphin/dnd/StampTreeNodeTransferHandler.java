@@ -29,8 +29,7 @@ import java.io.IOException;
  * @author pns
  */
 public class StampTreeNodeTransferHandler extends DolphinTransferHandler {
-    private static final long serialVersionUID = 1205897976539749194L;
-    private Logger logger = LoggerFactory.getLogger(StampTreeNodeTransferHandler.class);
+        private Logger logger = LoggerFactory.getLogger(StampTreeNodeTransferHandler.class);
 
     // StampTreeNode
     private final DataFlavor stampTreeNodeFlavor = DolphinDataFlavor.stampTreeNodeFlavor;

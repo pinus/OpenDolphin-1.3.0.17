@@ -352,7 +352,6 @@ public class PhysicalInspector implements IInspector, TableModelListener {
      * BMI値 を表示するレンダラクラス.
      */
     private class BMIRenderer extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = 1L;
 
         public BMIRenderer() {
             super();

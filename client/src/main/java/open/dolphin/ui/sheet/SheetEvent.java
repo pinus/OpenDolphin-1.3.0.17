@@ -7,8 +7,7 @@ import java.util.EventObject;
  */
 public class SheetEvent extends EventObject {
 
-    private static final long serialVersionUID = 1L;
-
+    
     private int option;
 
     public SheetEvent(Object source) {

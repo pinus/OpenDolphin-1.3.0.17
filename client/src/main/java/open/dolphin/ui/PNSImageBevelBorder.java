@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
  * @author pns
  */
 public class PNSImageBevelBorder extends AbstractBorder {
-    private static final long serialVersionUID = 1L;
 
     private final BufferedImage image;
     private final Insets borderInsets;

@@ -32,8 +32,7 @@ import java.util.*;
  * @author pns
  */
 public final class SimpleCalendarPanel extends JPanel {
-    private static final long serialVersionUID = 3030024622746649784L;
-    // MmlDate 型式の日付をキー，AppointmentModel を value とする HashMap
+        // MmlDate 型式の日付をキー，AppointmentModel を value とする HashMap
     private final HashMap<String, AppointmentModel> map = new HashMap<>();
     private SimpleDate today;
     private int relativeMonth;
@@ -476,7 +475,6 @@ public final class SimpleCalendarPanel extends JPanel {
      * 予約の TransferHandler.
      */
     private class CalendarTableTransferHandler extends DolphinTransferHandler {
-        private static final long serialVersionUID = 1L;
 
         private int srcRow;
         private int srcCol;

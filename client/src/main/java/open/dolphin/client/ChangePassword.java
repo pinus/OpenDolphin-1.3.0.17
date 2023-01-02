@@ -123,7 +123,6 @@ public class ChangePassword extends AbstractMainTool {
      * パスワード変更クラス.
      */
     private class ChangePasswordPanel extends JPanel {
-        private static final long serialVersionUID = 1L;
 
         private JTextField uid; // 利用者ID
         private JPasswordField userPassword1; // パスワード1

@@ -566,8 +566,7 @@ public class LaboTestBean extends AbstractChartDocument {
 
     class ImageTableCellRenderer extends JLabel implements TableCellRenderer {
 
-        private static final long serialVersionUID = -520905432722518156L;
-        private Color penCol = Color.black;
+                private Color penCol = Color.black;
         private String upperValueText = ClientContext.getString("labotest.value.upperText");
         private String standardValueText = ClientContext.getString("labotest.value.standardText");
         private String lowerValueText = ClientContext.getString("labotest.value.lowerText");
@@ -678,8 +677,7 @@ public class LaboTestBean extends AbstractChartDocument {
      */
     class MyTableModel extends AbstractTableModel {
 
-        private static final long serialVersionUID = 3686975270538007030L;
-        Object[] columnNames;
+                Object[] columnNames;
         Object[][] data;
 
         public MyTableModel(Object[] names, Object[][] d) {

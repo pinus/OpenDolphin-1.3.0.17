@@ -29,8 +29,7 @@ import java.util.regex.Pattern;
  * @author pns
  */
 public class TextComponentUndoManager extends UndoManager {
-    private static final long serialVersionUID = 1L;
-    private Logger logger = LoggerFactory.getLogger(TextComponentUndoManager.class);
+        private Logger logger = LoggerFactory.getLogger(TextComponentUndoManager.class);
     private static Pattern ALPHABET = Pattern.compile("^[a-z,A-Z]*$");
 
     private Action undoAction;

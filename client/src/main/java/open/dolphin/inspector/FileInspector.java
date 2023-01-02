@@ -173,7 +173,6 @@ public class FileInspector implements IInspector {
     }
 
     private class FileListCellRenderer extends DefaultListCellRenderer {
-        private static final long serialVersionUID = 1L;
 
         @Override
         public Component getListCellRendererComponent(

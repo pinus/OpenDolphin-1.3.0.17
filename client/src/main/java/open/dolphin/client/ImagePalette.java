@@ -27,8 +27,7 @@ import java.util.List;
  * @author pns
  */
 public class ImagePalette extends JPanel {
-    private static final long serialVersionUID = -6218860704261308773L;
-
+    
     private static final int DEFAULT_COLUMN_COUNT = 3;
     private static final int DEFAULT_IMAGE_WIDTH = 120;
     private static final int DEFAULT_IMAGE_HEIGHT = 120;
@@ -233,8 +232,7 @@ public class ImagePalette extends JPanel {
     }
 
     private class ImageRenderer extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = -7952145522385412194L;
-
+        
         public ImageRenderer() {
             initComponent();
         }

@@ -13,8 +13,7 @@ public class DocumentSearchSpec implements Serializable {
     public static final int PURPOSE_SEARCH = 1;
     public static final int CREATOR_SEARCH = 2;
     public static final int LICENSE_SEARCH = 3;
-    private static final long serialVersionUID = 8297575731862377052L;
-    private int code;
+        private int code;
     private long karteId;
     private int docId;
     private String facilityId;

@@ -10,8 +10,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "d_health_insurance")
 public class HealthInsuranceModel extends InfoModel {
-    private static final long serialVersionUID = 3064687655700962022L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

@@ -788,8 +788,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      * Retina 対応 Grid を描くレンダラのベース.
      */
     private abstract class TableCellRendererBase extends DefaultTableCellRenderer {
-        private static final long serialVersionUID = 1L;
-
+        
         protected boolean horizontalGrid = false;
         protected boolean verticalGrid = false;
         protected boolean marking = false;
@@ -861,8 +860,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      * カルテ（チャート）の状態をレンダリングするクラス.
      */
     private class KarteStateRenderer extends TableCellRendererBase {
-        private static final long serialVersionUID = -7654410476024116413L;
-
+        
         public KarteStateRenderer() {
             horizontalGrid = true;
             verticalGrid = true;
@@ -974,8 +972,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      * 男女で色を変える renderer.
      */
     private class MaleFemaleRenderer extends TableCellRendererBase {
-        private static final long serialVersionUID = 1L;
-
+        
         public MaleFemaleRenderer() {
             this(JLabel.LEFT);
         }

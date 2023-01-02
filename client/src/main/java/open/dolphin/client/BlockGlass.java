@@ -42,8 +42,7 @@ import java.awt.geom.*;
  */
 
 public class BlockGlass extends JComponent implements MouseListener {
-    private static final long serialVersionUID = 1L;
-    /**
+        /**
      * Contains the bars composing the circular shape.
      */
     protected Area[] ticker = null;

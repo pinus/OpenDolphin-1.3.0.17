@@ -9,7 +9,6 @@ import jakarta.persistence.Embeddable;
  */
 @Embeddable
 public class SimpleAddressModel extends InfoModel {
-    private static final long serialVersionUID = 6193406550378317758L;
 
     private String zipCode;
 
