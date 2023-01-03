@@ -40,7 +40,7 @@ public class MainFrame extends JFrame {
     }
 
     private void initComponents(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
-        getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
+        getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         setTitle(title);
         setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
@@ -145,7 +145,7 @@ public class MainFrame extends JFrame {
     /**
      * 上部のコマンドパネル
      */
-    public class CommandPanel extends HorizontalPanel {
+    public static class CommandPanel extends HorizontalPanel {
 
         public CommandPanel() {
         }
@@ -154,7 +154,7 @@ public class MainFrame extends JFrame {
     /**
      * メインパネル
      */
-    public class MainPanel extends JPanel {
+    public static class MainPanel extends JPanel {
 
         public MainPanel() {
             super();

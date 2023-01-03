@@ -29,8 +29,8 @@ public class SettingForMac {
         UIManager.put("TableUI", MyTableUI.class.getName());
         UIManager.put("ListUI", MyListUI.class.getName());
         UIManager.put("TreeUI", MyTreeUI.class.getName());
-        UIManager.put("OptionPane.background", UIHelper.DEFAULT_TITLE_BACKGROUND_COLOR);
-        UIManager.put("Panel.background", UIHelper.DEFAULT_TITLE_BACKGROUND_COLOR);
+        //UIManager.put("OptionPane.background", UIHelper.DEFAULT_TITLE_BACKGROUND_COLOR);
+        //UIManager.put("Panel.background", UIHelper.DEFAULT_TITLE_BACKGROUND_COLOR);
 
         // JavaFX settings
         // Mac OS X needs this to avoid HeadlessException

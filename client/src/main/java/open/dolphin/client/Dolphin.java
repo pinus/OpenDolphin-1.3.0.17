@@ -237,8 +237,11 @@ public class Dolphin implements MainWindow {
         String title = ClientContext.getFrameTitle(windowTitle);
         // System.out.println(title);
         windowSupport = WindowSupport.create(title);
-        windowSupport.getFrame().getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 36);
         MainFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
+        myFrame.getFrame().getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 36);
+        myFrame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+        myFrame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
+
         JMenuBar myMenuBar = windowSupport.getMenuBar();    // MainWindow の JMenuBar
 
         // Windowにこのクラス固有の設定をする

@@ -293,6 +293,7 @@ public class StampBoxPlugin extends AbstractMainTool {
             WindowSupport windowSupport = WindowSupport.create(title);
             frame = windowSupport.getFrame();
             frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 105);
+            frame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
             javax.swing.JMenuBar myMenuBar = windowSupport.getMenuBar();
             mediator = new MenuSupport(this);
             MenuFactory appMenu = new MenuFactory();
@@ -944,9 +945,8 @@ public class StampBoxPlugin extends AbstractMainTool {
         public void propertyChange(PropertyChangeEvent e) {
             Object obj = e.getNewValue();
 
-            if (obj instanceof ModuleModel) {
+            if (obj instanceof ModuleModel stamp) {
                 // 傷病名以外の場合
-                ModuleModel stamp = (ModuleModel) obj;
                 String entity = stamp.getModuleInfo().getEntity();
                 final StampTree tree = userBox.getStampTree(entity);
 
