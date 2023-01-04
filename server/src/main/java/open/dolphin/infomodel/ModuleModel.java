@@ -16,7 +16,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "d_module")
 public class ModuleModel extends KarteEntryBean<ModuleModel> {
-    
+
     @Embedded
     private ModuleInfoBean moduleInfo;
 
@@ -110,13 +110,14 @@ public class ModuleModel extends KarteEntryBean<ModuleModel> {
 
     /**
      * この ModuleModel の full text string を返す.
-     * MassIndexer がここを呼ぶ.
+     * MassIndexer だけがここを呼ぶ.
      * @return full text string
      */
     public String getFullText() {
-        if (Objects.nonNull(beanBytes)) {
-            fullText = beanBytesToString(beanBytes);
-        }
+        fullText = InfoModel.STATUS_FINAL.equals(getDocument().getStatus()) && Objects.nonNull(beanBytes)
+            ? beanBytesToString(beanBytes)
+            : "";
+
         return fullText;
     }
 
