@@ -113,10 +113,11 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
         int core = Runtime.getRuntime().availableProcessors();
         logger.info("processor number = " + core);
 
-        MassIndexer massIndexer = searchSession.massIndexer(DocumentModel.class)
-            .purgeAllOnStart(true)
-            .transactionTimeout(14400)
-            .threadsToLoadObjects(core);
+        MassIndexer massIndexer = searchSession.massIndexer();
+        // [select count(e) from open.dolphin.infomodel.DocumentModel e where e.status = :status]
+        // Encountered FQN entity name [open.dolphin.infomodel.DocumentModel], but strict JPQL compliance was requested ( [DocumentModel] should be used instead )
+        massIndexer.type(DocumentModel.class).reindexOnly("select count(d) from DocumentModel d where d.status = :status").param("status", IInfoModel.STATUS_FINAL);
+        massIndexer.purgeAllOnStart(true).transactionTimeout(14400).threadsToLoadObjects(core);
 
         try {
             massIndexer.startAndWait();

@@ -115,9 +115,7 @@ public class KarteEntryBean<T extends KarteEntryBean<T>> extends InfoModel imple
         this.linkRelation = linkRelation;
     }
 
-    public String getStatus() {
-        return status;
-    }
+    public String getStatus() { return status; }
 
     public void setStatus(String status) {
         this.status = status;
