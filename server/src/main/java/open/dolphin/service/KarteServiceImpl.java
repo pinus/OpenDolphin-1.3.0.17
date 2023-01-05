@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @Stateless
 public class KarteServiceImpl extends DolphinService implements KarteService {
     private final Logger logger = Logger.getLogger(KarteServiceImpl.class);
-    private final SearchSession searchSession = Search.session(em);
 
     /**
      * カルテの基礎的な情報をまとめて返す.
@@ -332,6 +331,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             docInfo.setVersionNumber(pInfo.getVersionNumber());
 
             // 編集元は削除
+            SearchSession searchSession = Search.session(em);
             searchSession.indexingPlan().purge(DocumentModel.class, parentPk, null);
             em.remove(old);
 
@@ -344,6 +344,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             old.setStatus(InfoModel.STATUS_MODIFIED);
 
             // hibernate search から除去
+            SearchSession searchSession = Search.session(em);
             searchSession.indexingPlan().purge(DocumentModel.class, parentPk, null);
 
             // 関連するモジュールとイメージに同じ処理を実行する
@@ -390,6 +391,7 @@ public class KarteServiceImpl extends DolphinService implements KarteService {
             long delId = delete.getId();
 
             // 削除済みのものはインデックスから削除する
+            SearchSession searchSession = Search.session(em);
             searchSession.indexingPlan().purge(DocumentModel.class, delId, null);
 
             if (InfoModel.STATUS_TMP.equals(delete.getStatus())) {
