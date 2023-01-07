@@ -39,28 +39,22 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
     @Override
     public List<ModuleModel> peekKarte(Long patientId) {
         try {
+            GregorianCalendar today = new GregorianCalendar();
+            today.set(Calendar.HOUR_OF_DAY, 0);
 
             Long karteId = em.createQuery("select k.id from KarteBean k where k.patient.id = :patientId", Long.class)
                     .setParameter("patientId", patientId).getSingleResult();
 
-            GregorianCalendar today = new GregorianCalendar();
-            today.set(Calendar.HOUR_OF_DAY, 0);
+            List<DocumentModel> docList = em.createQuery("from DocumentModel d where d.karte.id = :karteId and (d.status ='F' or d.status='T') and d.started >= :fromDate", DocumentModel.class)
+                .setParameter("karteId", karteId)
+                .setParameter("fromDate", today.getTime()).getResultList();
 
-            List<Long> docIdList = em.createQuery("select d.id from DocumentModel d where d.karte.id = :karteId and (d.status ='F' or d.status='T') and d.started >= :fromDate", Long.class)
-                    .setParameter("karteId", karteId)
-                    .setParameter("fromDate", today.getTime()).getResultList();
-
-            if (docIdList.isEmpty()) {
+            if (docList.isEmpty()) {
                 return null;
 
             } else {
-                Long docId = docIdList.get(0);
-                // m.document で DocumentModel がとれて，document.id で doc_id がとれる
-                List<ModuleModel> modules = em.createQuery("select m from ModuleModel m where m.document.id = :id", ModuleModel.class)
-                        .setParameter("id", docId).getResultList();
-
                 // beanBytes を変換して新しいモデルにして返す
-                return modules.stream().map(src -> {
+                return docList.get(0).getModules().stream().map(src -> {
                     ModuleModel dist = new ModuleModel();
                     dist.setDocument(src.getDocument());
                     dist.setModuleInfo(src.getModuleInfo());
@@ -71,6 +65,7 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
         } catch (Exception e) {
             logger.info(e.getMessage(), e.getCause());
         }
+
         return null;
     }
 
@@ -114,9 +109,7 @@ public class PnsServiceImpl extends DolphinService implements PnsService {
         logger.info("processor number = " + core);
 
         MassIndexer massIndexer = searchSession.massIndexer();
-        // [select count(e) from open.dolphin.infomodel.DocumentModel e where e.status = :status]
-        // Encountered FQN entity name [open.dolphin.infomodel.DocumentModel], but strict JPQL compliance was requested ( [DocumentModel] should be used instead )
-        massIndexer.type(DocumentModel.class).reindexOnly("select count(d) from DocumentModel d where d.status = :status").param("status", IInfoModel.STATUS_FINAL);
+        massIndexer.type(DocumentModel.class).reindexOnly("e.status = :status").param("status", IInfoModel.STATUS_FINAL);
         massIndexer.purgeAllOnStart(true).transactionTimeout(14400).threadsToLoadObjects(core);
 
         try {

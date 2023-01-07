@@ -14,10 +14,10 @@
             <property name="hibernate.search.backend.type" value="elasticsearch"/>
             <property name="hibernate.search.backend.hosts" value="localhost:9200"/>
             <property name="hibernate.search.backend.protocol" value="http"/>
-            <!--<property name="hibernate.search.backend.username" value="elastic"/>
-            <property name="hibernate.search.backend.password" value="dolphin"/>-->
-
             <property name="hibernate.search.backend.analysis.configurer" value="class:open.dolphin.JapaneseAnalysisConfigurer" />
+
+            <!-- MassIndexer violates jpa compliance -->
+            <property name="hibernate.jpa.compliance.query" value="false"/>
 
         </properties>
     </persistence-unit>
