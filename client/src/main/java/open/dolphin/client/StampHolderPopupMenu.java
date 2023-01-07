@@ -7,6 +7,7 @@ import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.IMEControl;
+import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ import java.util.List;
  * @author pns
  */
 public class StampHolderPopupMenu extends JPopupMenu {
-        private Logger logger = LoggerFactory.getLogger(StampHolderPopupMenu.class);
+        private final Logger logger = LoggerFactory.getLogger(StampHolderPopupMenu.class);
 
     /**
      * メニューに載せる処方日数のリスト
@@ -400,7 +401,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * 外用剤の部位を変更するアクション.
      */
     private class PutRegionAction extends AbstractAction {
-        
+
         public PutRegionAction() {
             putValue(AbstractAction.NAME, "部位・指示...");
         }
@@ -514,7 +515,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * コメントを付けるアクション.
      */
     private class PutCommentAction extends AbstractAction {
-        
+
         public PutCommentAction() {
             putValue(AbstractAction.NAME, "コメント...");
         }
@@ -527,7 +528,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
             IMEControl.on(tf);
 
             String[] options = {"追加", "上書き", "キャンセル"};
-            JOptionPane pane = new JOptionPane(tf,
+            PNSOptionPane pane = new PNSOptionPane(tf,
                     JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null,
                     options, options[0]) {
                 // 初期状態でボタンでなく，tf にフォーカスを取る
@@ -596,7 +597,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
      * 一般名記載コメントをつけるアクション.
      */
     private class PutGenericNameAction extends AbstractAction {
-        
+
         public PutGenericNameAction() {
             putValue(AbstractAction.NAME, "一般名記載");
         }

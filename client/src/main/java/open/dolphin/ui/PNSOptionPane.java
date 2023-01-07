@@ -52,7 +52,7 @@ public class PNSOptionPane extends JOptionPane {
         JOptionPane pane = new PNSOptionPane(message, messageType, optionType, icon, options, initialValue);
         JDialog dialog = new JDialog();
         dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
-        int value = JOptionPane.CLOSED_OPTION;
+
         pane.addPropertyChangeListener(e -> {
             if (VALUE_PROPERTY.equals(e.getPropertyName())) {
                 dialog.setVisible(false);
@@ -88,9 +88,9 @@ public class PNSOptionPane extends JOptionPane {
     /**
      * optionType からオプションをでっち上げた JOptionPane を作る.
      *
-     * @param message
-     * @param messageType
-     * @param optionType
+     * @param message message
+     * @param messageType message type
+     * @param optionType option type
      */
     public PNSOptionPane(Object message, int messageType, int optionType) {
         super(message, messageType, optionType);
@@ -100,12 +100,12 @@ public class PNSOptionPane extends JOptionPane {
     /**
      * 文字列 options を PNSButton に変換して JOptionPane を作る.
      *
-     * @param message
-     * @param messageType
-     * @param optionType
-     * @param icon
-     * @param options
-     * @param initialValue
+     * @param message message
+     * @param messageType message type
+     * @param optionType option type
+     * @param icon icon
+     * @param options options
+     * @param initialValue initial value
      */
     public PNSOptionPane(Object message, int messageType, int optionType, Icon icon, Object[] options, Object initialValue) {
         super(message, messageType, optionType, icon, options, initialValue);
@@ -119,7 +119,7 @@ public class PNSOptionPane extends JOptionPane {
     /**
      * PNSButton をでっち上げる setOptions.
      *
-     * @param options
+     * @param options options
      */
     @Override
     public void setOptions(Object[] options) {
@@ -128,9 +128,7 @@ public class PNSOptionPane extends JOptionPane {
             for (int i=0; i<options.length; i++) {
                 buttons[i] = new PNSButton((String) options[i]);
                 int value = i;
-                buttons[i].addActionListener(e -> {
-                    setValue(value);
-                });
+                buttons[i].addActionListener(e -> setValue(value));
             }
             super.setOptions(buttons);
         } else {
@@ -141,15 +139,15 @@ public class PNSOptionPane extends JOptionPane {
     /**
      * でっち上げた options から initialValue を取り出す.
      *
-     * @param initialValue
+     * @param initialValue initial value
      */
     @Override
     public void setInitialValue(Object initialValue) {
         Object[] options = super.getOptions();
         if (Objects.nonNull(getOptions()) && options[0] instanceof JButton && initialValue instanceof String) {
-            for (int i=0; i<options.length; i++) {
-                if (((JButton)options[i]).getText().equals(initialValue)) {
-                    super.setInitialValue(options[i]);
+            for (Object option : options) {
+                if (((JButton) option).getText().equals(initialValue)) {
+                    super.setInitialValue(option);
                     return;
                 }
             }
@@ -160,28 +158,30 @@ public class PNSOptionPane extends JOptionPane {
     /**
      * optionType から options と initialValue をでっち上げて設定する.
      *
-     * @param optionType
+     * @param optionType option type
      */
     public void setOptionsAndInitialValue(int optionType) {
         String[] options;
         String initialValue;
 
         switch (optionType) {
-            case YES_NO_OPTION:
-                options = new String[] { yes, no };
+            case YES_NO_OPTION -> {
+                options = new String[]{yes, no};
                 initialValue = yes;
-                break;
-            case YES_NO_CANCEL_OPTION:
-                options = new String[] { yes, no, cancel };
+            }
+            case YES_NO_CANCEL_OPTION -> {
+                options = new String[]{yes, no, cancel};
                 initialValue = yes;
-                break;
-            case OK_CANCEL_OPTION:
-                options = new String[] { ok, cancel };
+
+            }
+            case OK_CANCEL_OPTION -> {
+                options = new String[]{ok, cancel};
                 initialValue = ok;
-                break;
-            default:
-                options = new String[] { ok };
+            }
+            default -> {
+                options = new String[]{ok};
                 initialValue = ok;
+            }
         }
         setOptionsAndInitialValue(options, initialValue);
     }
@@ -189,8 +189,8 @@ public class PNSOptionPane extends JOptionPane {
     /**
      * 文字列の options, initialValue から PNSButton を作って設定する.
      *
-     * @param options
-     * @param initialValue
+     * @param options options
+     * @param initialValue initial value
      */
     public void setOptionsAndInitialValue(Object[] options, Object initialValue) {
         if (Objects.nonNull(options) && options[0] instanceof String) {
@@ -198,9 +198,7 @@ public class PNSOptionPane extends JOptionPane {
             for (int i=0; i<options.length; i++) {
                 buttons[i] = new PNSButton((String) options[i]);
                 int value = i;
-                buttons[i].addActionListener(e -> {
-                    setValue(value);
-                });
+                buttons[i].addActionListener(e -> setValue(value));
                 if (options[i].equals(initialValue)) {
                     setInitialValue(buttons[i]);
                 }
