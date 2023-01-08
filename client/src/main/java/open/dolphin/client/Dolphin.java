@@ -239,8 +239,8 @@ public class Dolphin implements MainWindow {
         windowSupport = WindowSupport.create(title);
         MainFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
         myFrame.getFrame().getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 36);
-        myFrame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
-        myFrame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
+        // myFrame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+        //myFrame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
 
         JMenuBar myMenuBar = windowSupport.getMenuBar();    // MainWindow の JMenuBar
 
