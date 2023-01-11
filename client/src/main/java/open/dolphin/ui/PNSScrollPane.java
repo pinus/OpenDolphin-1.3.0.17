@@ -1,5 +1,6 @@
 package open.dolphin.ui;
 
+import open.dolphin.client.ClientContext;
 import open.dolphin.project.Project;
 
 import javax.swing.*;
@@ -91,6 +92,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
 
     public PNSScrollPane(Component view, int v, int h) {
         super(view, v, h);
+        if (ClientContext.isWin()) { isClassicScrollBar = true; }
         setBorder(BorderFactory.createEmptyBorder());
         addMouseWheelListener(this);
         // JScrollPane に MouseListener をつけても viewport の component に取られるので MouseEvent は拾えない

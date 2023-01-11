@@ -1,5 +1,7 @@
 package open.dolphin.ui;
 
+import open.dolphin.client.ClientContext;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
@@ -30,16 +32,12 @@ public class PNSButton extends JButton {
     }
 
     public void paint(Graphics g) {
-        parent = SwingUtilities.getWindowAncestor(this);
-
-        if (model.isEnabled()) {
-            if (Objects.nonNull(parent) && parent.isActive() && isDefaultButton() && !model.isPressed()) {
-                setForeground(Color.WHITE);
-            } else {
-                setForeground(Color.BLACK);
+        if (ClientContext.isMac()) {
+            parent = SwingUtilities.getWindowAncestor(this);
+            if (model.isEnabled()) {
+                setForeground(Objects.nonNull(parent) && parent.isActive() && isDefaultButton() && !model.isPressed()?
+                    Color.WHITE : Color.BLACK);
             }
-        } else {
-            setForeground(Color.GRAY);
         }
         super.paint(g);
     }
