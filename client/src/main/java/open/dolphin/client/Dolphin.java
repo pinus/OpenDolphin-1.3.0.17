@@ -12,10 +12,7 @@ import open.dolphin.project.Project;
 import open.dolphin.project.ProjectStub;
 import open.dolphin.setting.ProjectSettingDialog;
 import open.dolphin.stampbox.StampBoxPlugin;
-import open.dolphin.ui.MainFrame;
-import open.dolphin.ui.PNSBadgeTabbedPane;
-import open.dolphin.ui.PNSOptionPane;
-import open.dolphin.ui.SettingForMac;
+import open.dolphin.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,7 +131,8 @@ public class Dolphin implements MainWindow {
      */
     private void initialize() {
 
-        SettingForMac.set(this);
+        if (System.getProperty("os.name").startsWith("Mac")) { SettingForMac.set(this); }
+        else { SettingForWin.set(this); }
 
         // default locale を設定する
         Locale.setDefault(new Locale("ja", "JP"));

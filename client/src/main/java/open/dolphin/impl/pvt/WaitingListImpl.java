@@ -388,7 +388,9 @@ public class WaitingListImpl extends AbstractMainComponent {
         pane.setBadge(e);
 
         // Dock のアイコンにバッジを出す
-        Taskbar.getTaskbar().setIconBadge(waitingCount == 0 ? null : String.valueOf(waitingCount));
+        if (ClientContext.isMac()) {
+            Taskbar.getTaskbar().setIconBadge(waitingCount == 0 ? null : String.valueOf(waitingCount));
+        }
     }
 
     /**
@@ -788,7 +790,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      * Retina 対応 Grid を描くレンダラのベース.
      */
     private abstract class TableCellRendererBase extends DefaultTableCellRenderer {
-        
+
         protected boolean horizontalGrid = false;
         protected boolean verticalGrid = false;
         protected boolean marking = false;
@@ -860,7 +862,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      * カルテ（チャート）の状態をレンダリングするクラス.
      */
     private class KarteStateRenderer extends TableCellRendererBase {
-        
+
         public KarteStateRenderer() {
             horizontalGrid = true;
             verticalGrid = true;
@@ -972,7 +974,7 @@ public class WaitingListImpl extends AbstractMainComponent {
      * 男女で色を変える renderer.
      */
     private class MaleFemaleRenderer extends TableCellRendererBase {
-        
+
         public MaleFemaleRenderer() {
             this(JLabel.LEFT);
         }
