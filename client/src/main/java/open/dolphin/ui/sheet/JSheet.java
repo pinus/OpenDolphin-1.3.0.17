@@ -51,6 +51,7 @@ public class JSheet extends JWindow implements ActionListener {
     private Component parentComponent;
     private int displayOffsetY = 0;
     private Component focusOwner;
+    private static final boolean isClassicDialog = !System.getProperty("os.name").startsWith("Mac");
 
     private final Logger logger = LoggerFactory.getLogger(JSheet.class);
 
@@ -68,7 +69,7 @@ public class JSheet extends JWindow implements ActionListener {
      */
     public static JSheet createDialog(final JOptionPane pane, Component parentComponent) {
         // create corresponding dialog
-        pane.setBorder(new SheetBorder());
+        if (!isClassicDialog) { pane.setBorder(new SheetBorder()); }
         JDialog dialog = pane.createDialog(null);
         dialog.pack();
 
@@ -116,7 +117,7 @@ public class JSheet extends JWindow implements ActionListener {
         chooser.setPreferredSize(FILE_CHOOSER_SIZE);
         chooser.setMaximumSize(FILE_CHOOSER_SIZE);
         chooser.setMinimumSize(FILE_CHOOSER_SIZE);
-        chooser.setBorder(new SheetBorder());
+        if (!isClassicDialog) { chooser.setBorder(new SheetBorder()); }
 
         JDialog dialog = new JDialog();
         dialog.add(chooser);
@@ -228,8 +229,10 @@ public class JSheet extends JWindow implements ActionListener {
         this.owner = owner;
         sheetKeyEventDispatcher = new SheetKeyEventDispatcher();
 
-        setBackground(new Color(0, 0, 0, 0));
-        getRootPane().putClientProperty("Window.shadow", Boolean.FALSE);
+        if (!isClassicDialog) {
+            setBackground(new Color(0, 0, 0, 0));
+            //getRootPane().putClientProperty("Window.shadow", Boolean.TRUE);
+        }
 
         content = (JPanel) getContentPane();
         content.setLayout(new BorderLayout());
@@ -287,8 +290,12 @@ public class JSheet extends JWindow implements ActionListener {
 
         // Sheet をセンタリング
         loc.x += (ownerSize.width - sourcePaneSize.width) / 2;
-        loc.y += MENUBAR_HEIGHT;
-
+        if (isClassicDialog) {
+            // classic dialog なら中央に表示
+            loc.y += (ownerSize.height - sourcePaneSize.height) / 2;
+        } else {
+            loc.y += MENUBAR_HEIGHT;
+        }
         // 右端，左端の処理
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         if (loc.x < 0) {
@@ -551,6 +558,9 @@ public class JSheet extends JWindow implements ActionListener {
 
             animatingSheet.repaint();
 
+            // classic dialog ならアニメーションしない
+            if (isClassicDialog) { animationPercent = 1.0f; }
+
             // 終了処理
             if (animationPercent >= 1.0f) {
                 stopAnimation();
@@ -569,8 +579,6 @@ public class JSheet extends JWindow implements ActionListener {
      * 下から描いていく JPaenl.
      */
     private static class AnimatingSheet extends JPanel {
-
-        
         private final Dimension animatingSize = new Dimension(0, 1);
         private JComponent source;
         private BufferedImage offscreenImage;
