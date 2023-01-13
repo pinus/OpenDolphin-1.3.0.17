@@ -4,6 +4,9 @@ import open.dolphin.helper.WindowSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -69,7 +72,11 @@ public class JSheet extends JWindow implements ActionListener {
      */
     public static JSheet createDialog(final JOptionPane pane, Component parentComponent) {
         // create corresponding dialog
-        if (!isClassicDialog) { pane.setBorder(new SheetBorder()); }
+        if (isClassicDialog) {
+            pane.setBorder(new CompoundBorder(new LineBorder(Color.GRAY), new EmptyBorder(16,16,16,16)));
+        } else {
+            pane.setBorder(new SheetBorder());
+        }
         JDialog dialog = pane.createDialog(null);
         dialog.pack();
 
@@ -117,7 +124,11 @@ public class JSheet extends JWindow implements ActionListener {
         chooser.setPreferredSize(FILE_CHOOSER_SIZE);
         chooser.setMaximumSize(FILE_CHOOSER_SIZE);
         chooser.setMinimumSize(FILE_CHOOSER_SIZE);
-        if (!isClassicDialog) { chooser.setBorder(new SheetBorder()); }
+        if (isClassicDialog) {
+            chooser.setBorder(new CompoundBorder(new LineBorder(Color.GRAY), new EmptyBorder(16,16,16,16)));
+        } else {
+            chooser.setBorder(new SheetBorder());
+        }
 
         JDialog dialog = new JDialog();
         dialog.add(chooser);
