@@ -1,7 +1,6 @@
 package open.dolphin.ui.sheet;
 
 import open.dolphin.helper.WindowSupport;
-import open.dolphin.ui.PNSOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.swing.*;
@@ -18,7 +17,6 @@ import java.util.Objects;
  * @author pns
  */
 public class JSheet extends JWindow implements ActionListener {
-    
     public static final int MENUBAR_HEIGHT = 28; // ventura 28
     public static String MENUBAR_HEIGHT_OFFSET_PROP = WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP;
     public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
@@ -199,7 +197,7 @@ public class JSheet extends JWindow implements ActionListener {
     public static int showOptionDialog(Component parentComponent, Object message, String title,
                                        int optionType, int messageType, Icon icon, final Object[] options, Object initialValue) {
 
-        JOptionPane pane = new PNSOptionPane(message, messageType, optionType, icon, options, initialValue);
+        JOptionPane pane = new JOptionPane(message, messageType, optionType, icon, options, initialValue);
         pane.setInitialValue(initialValue);
         pane.selectInitialValue();
         final int[] answer = new int[1];
@@ -714,7 +712,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         JButton b1 = new JButton("Create Dialog");
         b1.addActionListener(e -> {
-            JOptionPane optionPane = new PNSOptionPane("JSheet.createDialog", JOptionPane.INFORMATION_MESSAGE,
+            JOptionPane optionPane = new JOptionPane("JSheet.createDialog", JOptionPane.INFORMATION_MESSAGE,
                     JOptionPane.OK_CANCEL_OPTION, null, new String[]{"OK", "キャンセル", "破棄"}, "OK");
 
             JSheet sheet = JSheet.createDialog(optionPane, frame);
@@ -728,7 +726,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         JButton b2 = new JButton("Show Sheet");
         b2.addActionListener(e -> {
-            JOptionPane optionPane = new PNSOptionPane("JSheet.showSheet",
+            JOptionPane optionPane = new JOptionPane("JSheet.showSheet",
                     JOptionPane.QUESTION_MESSAGE,
                     JOptionPane.YES_NO_CANCEL_OPTION);
 

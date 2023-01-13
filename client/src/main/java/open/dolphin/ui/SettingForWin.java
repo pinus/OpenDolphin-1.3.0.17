@@ -26,6 +26,11 @@ public class SettingForWin {
         // JavaFX thread が SchemaEditor 終了後に shutdown してしまわないようにする
         Platform.setImplicitExit(false);
 
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace(System.err);
+        }
         // true だと白で書かれてしまう
         UIManager.put("Tree.rendererFillBackground", false);
 
