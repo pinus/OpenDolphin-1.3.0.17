@@ -1,6 +1,7 @@
 package open.dolphin.stampbox;
 
 import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.delegater.StampDelegater;
@@ -76,7 +77,7 @@ public class StampPublisher {
             }
         });
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        int n = ClientContext.isMac() ? 3 : 2;
+        int n = Dolphin.forWin ? 2 : 3;
         int x = (screen.width - WIDTH) / 2;
         int y = (screen.height - HEIGHT) / n;
         ComponentBoundsManager cm = new ComponentBoundsManager(dialog, new Point(x, y), new Dimension(WIDTH, HEIGHT), this);
@@ -182,10 +183,10 @@ public class StampPublisher {
 
         // コマンドパネル
         JPanel cmdPanel;
-        if (ClientContext.isMac()) {
-            cmdPanel = GUIFactory.createCommandButtonPanel(new JButton[]{cancel, cancelPublish, publish});
-        } else {
+        if (Dolphin.forWin) {
             cmdPanel = GUIFactory.createCommandButtonPanel(new JButton[]{publish, cancelPublish, cancel});
+        } else {
+            cmdPanel = GUIFactory.createCommandButtonPanel(new JButton[]{cancel, cancelPublish, publish});
         }
 
         // 配置する
@@ -428,7 +429,7 @@ public class StampPublisher {
         String note = "公開しています...";
         Component c = dialog;
 
-        Task<Boolean> task = new Task<Boolean>(c, message, note, maxEstimation) {
+        Task<Boolean> task = new Task<>(c, message, note, maxEstimation) {
 
             @Override
             protected Boolean doInBackground() {
@@ -520,7 +521,7 @@ public class StampPublisher {
         String note = "公開を取り消しています...";
         Component c = dialog;
 
-        Task<Boolean> task = new Task<Boolean>(c, message, note, maxEstimation) {
+        Task<Boolean> task = new Task<>(c, message, note, maxEstimation) {
 
             @Override
             protected Boolean doInBackground() {

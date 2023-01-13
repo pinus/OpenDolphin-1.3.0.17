@@ -1,6 +1,6 @@
 package open.dolphin.helper;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
  * @author pns
  */
 public class TextComponentUndoManager extends UndoManager {
-        private Logger logger = LoggerFactory.getLogger(TextComponentUndoManager.class);
-    private static Pattern ALPHABET = Pattern.compile("^[a-z,A-Z]*$");
+        private final Logger logger = LoggerFactory.getLogger(TextComponentUndoManager.class);
+    private static final Pattern ALPHABET = Pattern.compile("^[a-z,A-Z]*$");
 
     private Action undoAction;
     private Action redoAction;
@@ -47,7 +47,7 @@ public class TextComponentUndoManager extends UndoManager {
         current = new TextComponentUndoableEdit();
 
         // ATOK 関連
-        if (ClientContext.isMac()) {
+        if (Dolphin.forMac) {
             AtokListener atokListener = new AtokListener(c, this);
             c.addKeyListener(atokListener);
             c.addInputMethodListener(atokListener);
@@ -113,11 +113,8 @@ public class TextComponentUndoManager extends UndoManager {
         UndoableEdit lastEdit = ((TextComponentUndoableEdit) last).lastEdit();
 
         // 内容が　DefaultDocumentEvent でなければ merge しない
-        if (!(curEdit instanceof AbstractDocument.DefaultDocumentEvent)
-            || !(lastEdit instanceof AbstractDocument.DefaultDocumentEvent)) { return false; }
-
-        AbstractDocument.DefaultDocumentEvent curEvent = (AbstractDocument.DefaultDocumentEvent) curEdit;
-        AbstractDocument.DefaultDocumentEvent lastEvent = (AbstractDocument.DefaultDocumentEvent) lastEdit;
+        if (!(curEdit instanceof AbstractDocument.DefaultDocumentEvent curEvent)
+            || !(lastEdit instanceof AbstractDocument.DefaultDocumentEvent lastEvent)) { return false; }
 
         try {
             if (curEvent.getType() == DocumentEvent.EventType.REMOVE) {
@@ -183,7 +180,7 @@ public class TextComponentUndoManager extends UndoManager {
     /**
      * TextComponentUndoManager 用の UndoableEdit.
      */
-    private class TextComponentUndoableEdit extends CompoundEdit {
+    private static class TextComponentUndoableEdit extends CompoundEdit {
         @Override
         public UndoableEdit lastEdit() {
             return super.lastEdit();

@@ -1,6 +1,6 @@
 package open.dolphin.inspector;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.event.BadgeListener;
 import open.dolphin.infomodel.IInfoModel;
 
@@ -19,51 +19,50 @@ import java.util.Date;
  */
 public interface IInspector {
 
-    public static final boolean IS_WIN = ClientContext.isWin();
-    public static final int DEFAULT_WIDTH = IS_WIN ? 261 - 14 * 2 : 261;
-    public static final int DEFAULT_HEIGHT = IS_WIN ? 150 : 175;
-    public static final Color BACKGROUND = new Color(240, 240, 240);
-    public static final Color BORDER_COLOR = Color.LIGHT_GRAY;
+    int DEFAULT_WIDTH = Dolphin.forWin? 261 - 14 * 2 : 261;
+    int DEFAULT_HEIGHT = Dolphin.forWin? 150 : 175;
+    Color BACKGROUND = new Color(240, 240, 240);
+    Color BORDER_COLOR = Color.LIGHT_GRAY;
 
-    public static final KeyStroke META_W = KeyStroke.getKeyStroke("meta W");
-    public static final KeyStroke META_Z = KeyStroke.getKeyStroke("meta Z");
-    public static final KeyStroke SHIFT_META_Z = KeyStroke.getKeyStroke("shift meta Z");
-    public static final KeyStroke BACK_SPACE = KeyStroke.getKeyStroke("BACK_SPACE");
+    KeyStroke META_W = KeyStroke.getKeyStroke("meta W");
+    KeyStroke META_Z = KeyStroke.getKeyStroke("meta Z");
+    KeyStroke SHIFT_META_Z = KeyStroke.getKeyStroke("shift meta Z");
+    KeyStroke BACK_SPACE = KeyStroke.getKeyStroke("BACK_SPACE");
 
     /**
      * Inspector を区別する ID としての名前.
      *
-     * @return
+     * @return name
      */
-    public String getName();
+    String getName();
 
     /**
      * GUI で使うタイトル. Name と違うものがある.
      *
-     * @return
+     * @return title
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * Inspector をのせた JPanel.
      *
-     * @return
+     * @return JPanel
      */
-    public JPanel getPanel();
+    JPanel getPanel();
 
     /**
      * Border が必要な場合はここから引き出す.
      *
-     * @return
+     * @return Border
      */
-    default public Border getBorder() {
+    default Border getBorder() {
         return new InspectorBorder(getTitle());
     }
 
     /**
      * 内容を更新する.
      */
-    public void update();
+    void update();
 
     /**
      * Tab のバッジを表示したい時に使う.
@@ -71,15 +70,15 @@ public interface IInspector {
      * @param listener BadgeListener
      * @param index    Badge を付ける tab のインデックス番号
      */
-    default public void addBadgeListener(BadgeListener listener, int index) { }
+    default void addBadgeListener(BadgeListener listener, int index) { }
 
     /**
      * Windows かどうか.
      *
      * @return true if win
      */
-    default public boolean isWin() {
-        return IS_WIN;
+    default boolean isWin() {
+        return Dolphin.forWin;
     }
 
     /**
@@ -87,7 +86,7 @@ public interface IInspector {
      *
      * @return ISO 型式の日付
      */
-    default public String today() {
+    default String today() {
         Date today = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(IInfoModel.DATE_WITHOUT_TIME);
         return sdf.format(today);

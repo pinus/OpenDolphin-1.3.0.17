@@ -1,6 +1,6 @@
 package open.dolphin.dnd;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +16,7 @@ import java.awt.image.BufferedImage;
  * @author pns
  */
 public class DolphinTransferHandler extends TransferHandler {
-        private Logger logger = LoggerFactory.getLogger(DolphinTransferHandler.class);
-    private final boolean isWin = ClientContext.isWin();
-
+    private final Logger logger = LoggerFactory.getLogger(DolphinTransferHandler.class);
     private final Point offset = new Point(0, 0);
 
     /**
@@ -98,7 +96,7 @@ public class DolphinTransferHandler extends TransferHandler {
             offset.y = -image.getHeight(null) / 2;
         }
         // windows では offset の方向が逆
-        if (isWin) {
+        if (Dolphin.forWin) {
             offset.x = -offset.x;
             offset.y = -offset.y;
         }

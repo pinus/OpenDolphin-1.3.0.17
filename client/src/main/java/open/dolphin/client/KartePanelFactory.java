@@ -1,7 +1,6 @@
 package open.dolphin.client;
 
 import open.dolphin.inspector.IInspector;
-import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSScrollPane;
 
 import javax.swing.*;
@@ -15,7 +14,7 @@ import java.awt.*;
  */
 public class KartePanelFactory {
     private static final int TIMESTAMP_PANEL_HEIGHT = 22; // 22で固定
-    private static final Font KARTE_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, ClientContext.isWin() ? 12 : 13);
+    private static final Font KARTE_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, Dolphin.forWin? 12 : 13);
 
     private final KartePanel kartePanel;
     private JTextPane soaTextPane;
@@ -223,7 +222,7 @@ public class KartePanelFactory {
      * workaround caret moving to the end on opening
      * http://ron.shoutboot.com/2010/05/23/swing-jscrollpane-scrolls-to-bottom/
      */
-    private class MyCaret extends DefaultCaret {
+    private static class MyCaret extends DefaultCaret {
         @Override
         protected void adjustVisibility(Rectangle r) { }
     }
@@ -274,12 +273,9 @@ public class KartePanelFactory {
         @Override
         public float getMinimumSpan(int axis) {
             switch (axis) {
-                case View.X_AXIS:
-                    return 0;
-                case View.Y_AXIS:
-                    return super.getMinimumSpan(axis);
-                default:
-                    throw new IllegalArgumentException("Invalid axis: " + axis);
+                case View.X_AXIS -> { return 0; }
+                case View.Y_AXIS -> { return super.getMinimumSpan(axis); }
+                default -> throw new IllegalArgumentException("Invalid axis: " + axis);
             }
         }
     }

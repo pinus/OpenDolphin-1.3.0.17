@@ -1,6 +1,6 @@
 package open.dolphin.impl.pvt;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.ui.PNSScrollPane;
@@ -20,7 +20,7 @@ import java.awt.event.MouseEvent;
  * @author pns
  */
 public class WaitingListPanel extends MainComponentPanel {
-        private static Logger logger = LoggerFactory.getLogger(WaitingListPanel.class);
+    private static final Logger logger = LoggerFactory.getLogger(WaitingListPanel.class);
 
     // アイコン
     private static final ImageIcon KUTU_ICON = GUIConst.ICON_ARROW_CIRCULAR_ALT1_16;
@@ -35,9 +35,9 @@ public class WaitingListPanel extends MainComponentPanel {
     private static final int ROW_HEIGHT_12 = 18;
     private static final int ROW_HEIGHT_18 = 27;
     private static final int ROW_HEIGHT_24 = 36;
-    private static int[] COLUMN_WIDTH_12 = {34, 68, 72, 140, 40, 50, 100, 75, 50, 40, 30};
-    private static int[] COLUMN_WIDTH_18 = {51, 102, 108, 210, 60, 75, 150, 112, 75, 60, 45};
-    private static int[] COLUMN_WIDTH_24 = {68, 136, 144, 280, 80, 100, 200, 150, 100, 80, 60};
+    private static final int[] COLUMN_WIDTH_12 = {34, 68, 72, 140, 40, 50, 100, 75, 50, 40, 30};
+    private static final int[] COLUMN_WIDTH_18 = {51, 102, 108, 210, 60, 75, 150, 112, 75, 60, 45};
+    private static final int[] COLUMN_WIDTH_24 = {68, 136, 144, 280, 80, 100, 200, 150, 100, 80, 60};
     // command panel
     private JButton kutuBtn;
     private JLabel legendLbl;
@@ -63,7 +63,7 @@ public class WaitingListPanel extends MainComponentPanel {
         remove(comPanel);
 
         kutuBtn = new JButton(KUTU_ICON);
-        if (ClientContext.isWin()) {
+        if (Dolphin.forWin) {
             kutuBtn.setBorder(null);
             kutuBtn.setContentAreaFilled(false);
         } else {
@@ -96,9 +96,7 @@ public class WaitingListPanel extends MainComponentPanel {
         countLbl = new JLabel("来院数10人，待ち10人，待ち時間 00:00");
         dateLbl = new JLabel("2011-11-11(土)");
         statusPanel.add(kutuBtn);
-        if (ClientContext.isWin()) {
-            statusPanel.addSpace(5);
-        }
+        if (Dolphin.forWin) { statusPanel.addSpace(5); }
         statusPanel.add(checkedTimeLbl);
         statusPanel.addSeparator();
         statusPanel.addGlue();
@@ -136,24 +134,25 @@ public class WaitingListPanel extends MainComponentPanel {
 
     public void setFontSize(int size) {
         switch (size) {
-            case 18:
+            case 18 -> {
                 columnWidth = COLUMN_WIDTH_18;
                 rowHeight = ROW_HEIGHT_18;
                 normalFont = NORMAL_FONT_18;
                 smallFont = SMALL_FONT_18;
-                break;
-            case 24:
+            }
+            case 24 -> {
                 columnWidth = COLUMN_WIDTH_24;
                 rowHeight = ROW_HEIGHT_24;
                 normalFont = NORMAL_FONT_24;
                 smallFont = SMALL_FONT_24;
-                break;
+            }
 
-            default:
+            default -> {
                 columnWidth = COLUMN_WIDTH_12;
                 rowHeight = ROW_HEIGHT_12;
                 normalFont = NORMAL_FONT_12;
                 smallFont = SMALL_FONT_12;
+            }
         }
         setColumnWidth(columnWidth);
         table.setRowHeight(rowHeight);

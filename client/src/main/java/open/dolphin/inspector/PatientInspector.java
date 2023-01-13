@@ -1,7 +1,7 @@
 package open.dolphin.inspector;
 
 import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.project.Project;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.PNSBadgeTabbedPane;
@@ -61,7 +61,7 @@ public class PatientInspector {
 
         // タブパネル
         tabbedPane = new PNSBadgeTabbedPane();
-        if (ClientContext.isWin()) {
+        if (Dolphin.forWin) {
             tabbedPane.setButtonPanelFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
         }
         tabbedPane.setBorder(new InspectorBorder(null));
@@ -82,7 +82,7 @@ public class PatientInspector {
 
         // 浮動インスペクタを生成して分類する
         Stream.of(InspectorCategory.values())
-                .map(c -> c.clazz()).filter(Objects::nonNull).forEach(clazz -> {
+                .map(InspectorCategory::clazz).filter(Objects::nonNull).forEach(clazz -> {
             try {
                 // インスペクタを生成する
                 Constructor<? extends IInspector> c = clazz.getConstructor(PatientInspector.class);
@@ -142,13 +142,13 @@ public class PatientInspector {
      * すべてのインスペクタをアップデートする.
      */
     public void update() {
-        inspectorMap.values().forEach(inspector -> inspector.update());
+        inspectorMap.values().forEach(IInspector::update);
     }
 
     /**
      * ChartImpl を返す.
      *
-     * @return
+     * @return ChartImpl
      */
     public ChartImpl getContext() {
         return context;
@@ -193,7 +193,7 @@ public class PatientInspector {
     /**
      * 病名インスペクタを返す.
      *
-     * @return
+     * @return Diagnosis Inspector
      */
     public DiagnosisInspector getDiagnosisInspector() {
         return (DiagnosisInspector) inspectorMap.get(InspectorCategory.病名.name());
@@ -202,7 +202,7 @@ public class PatientInspector {
     /**
      * 関連文書インスペクタを返す.
      *
-     * @return
+     * @return File Inspector
      */
     public FileInspector getFileInspector() {
         return (FileInspector) inspectorMap.get(InspectorCategory.関連文書.name());

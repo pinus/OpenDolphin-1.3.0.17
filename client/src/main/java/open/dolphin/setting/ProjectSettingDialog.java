@@ -1,8 +1,8 @@
 package open.dolphin.setting;
 
 import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.event.ValidListener;
-import open.dolphin.helper.ImageHelper;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSButton;
 import org.slf4j.Logger;
@@ -23,8 +23,8 @@ import java.util.List;
  */
 public final class ProjectSettingDialog {
     public static final Color BACKGROUND = new Color(244, 244, 244);
-    private static int DEFAULT_WIDTH = 600;
-    private static int DEFAULT_HEIGHT = 700;
+    private static final int DEFAULT_WIDTH = 600;
+    private static final int DEFAULT_HEIGHT = 700;
     // GUI
     private JDialog dialog;
     private JPanel itemPanel;
@@ -39,7 +39,7 @@ public final class ProjectSettingDialog {
     private String startSettingName;
     private boolean loginState;
     private boolean okState;
-    private Logger logger;
+    private final Logger logger;
     private Frame parentFrame = null;
 
     private ValidListener validListener;
@@ -149,7 +149,7 @@ public final class ProjectSettingDialog {
             String text = setting.getTitle();
             JToggleButton tb = new JToggleButton(text, setting.getIcon());
             tb.setFocusable(false);
-            if (ClientContext.isWin()) {
+            if (Dolphin.forWin) {
                 tb.setMargin(new Insets(0, 0, 0, 0));
             }
             tb.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -252,7 +252,7 @@ public final class ProjectSettingDialog {
         KeyStroke key = KeyStroke.getKeyStroke("ESCAPE");
         im.put(key, "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new AbstractAction() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 doCancel();
@@ -309,11 +309,8 @@ public final class ProjectSettingDialog {
      */
     public void controlButtons(SettingPanelState state) {
         // 全てのカードをスキャンして OK ボタンをコントロールする
-        boolean newOk = true;
-        if (settingMap.values().stream()
-                .anyMatch(p -> p.getState().equals(SettingPanelState.INVALID))) {
-            newOk = false;
-        }
+        boolean newOk = settingMap.values().stream()
+            .noneMatch(p -> p.getState().equals(SettingPanelState.INVALID));
 
         if (okState != newOk) {
             okState = newOk;

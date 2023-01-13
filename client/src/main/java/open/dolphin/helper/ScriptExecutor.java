@@ -1,6 +1,6 @@
 package open.dolphin.helper;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class ScriptExecutor {
      * @param subtitle Subtitle
      */
     public static void displayNotification(String message, String title, String subtitle) {
-        if (ClientContext.isMac()) {
+        if (Dolphin.forMac) {
             String script = String.format(DISPLAY_NOTIFICATION_SCRIPT, message, title, subtitle);
             executeShellScript(new String[]{"osascript", "-e", script});
         }
@@ -57,13 +57,12 @@ public class ScriptExecutor {
      * @param path POSIX path
      */
     public static void openPatientFolder(final String path) {
-        if (ClientContext.isMac()) {
+        if (Dolphin.forWin) {
+            executeShellScript(new String[]{"explorer", path});
+        } else {
             // スクリプトに path を設定
             OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to " + QUOTE + path + QUOTE + " as POSIX file";
             executeAppleScript(OPEN_PATIENT_FOLDER_SCRIPT);
-
-        } else {
-            executeShellScript(new String[]{"explorer", path});
         }
     }
 
@@ -73,12 +72,11 @@ public class ScriptExecutor {
      * @param path POSIX Path to target
      */
     public static void quickLook(String path) {
-        if (ClientContext.isMac()) {
+        if (Dolphin.forWin) {
+            executeShellScript(new String[]{"explorer", path});
+        } else {
             String[] command = {"qlmanage", "-p", path};
             executeShellScript(command);
-
-        } else {
-            executeShellScript(new String[]{"explorer", path});
         }
     }
 

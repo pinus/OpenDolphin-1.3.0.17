@@ -1,6 +1,6 @@
 package open.dolphin.ui;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +32,7 @@ public class PNSButton extends JButton {
     }
 
     public void paint(Graphics g) {
-        if (ClientContext.isMac()) {
+        if (Dolphin.forMac) {
             parent = SwingUtilities.getWindowAncestor(this);
             if (model.isEnabled()) {
                 setForeground(Objects.nonNull(parent) && parent.isActive() && isDefaultButton() && !model.isPressed()?

@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author pns
  */
 public class MenuFactory {
-    private static final String SHORT_CUT_KEY_MASK = ClientContext.isMac() ? "meta" : "ctrl";
+    private static final String SHORT_CUT_KEY_MASK = Dolphin.forWin ? "ctrl" : "meta";
 
     private MenuSupport main;
     private MenuSupport chart; // ChartMediator
@@ -367,7 +367,7 @@ public class MenuFactory {
                 "P", GUIConst.ICON_PRINT_16, "プリントします"));
 
         // 終了 - Window のみ
-        if (ClientContext.isWin()) {
+        if (Dolphin.forWin) {
             file.add(createMenuItem("終了", GUIConst.ACTION_PROCESS_EXIT,
                     "Q", GUIConst.ICON_EMPTY_16, "プログラムを終了します"));
         }
@@ -440,7 +440,7 @@ public class MenuFactory {
         karte.add(createRadioButtonMenuItem("修正履歴表示", GUIConst.ACTION_SHOW_MODIFIED));
 
         // 環境設定. Mac の場合は SettingForMac で設定済み.
-        if (ClientContext.isWin()) {
+        if (Dolphin.forWin) {
             karte.add(createMenuItem("環境設定...", GUIConst.ACTION_SET_KARTE_ENVIROMENT));
         }
 
@@ -518,7 +518,7 @@ public class MenuFactory {
         //
         JMenu help = createMenu("ヘルプ", GUIConst.ACTION_HELP_MENU);
 
-        if (ClientContext.isWin()) {
+        if (Dolphin.forWin) {
             help.add(createMenuItem("OpenDolphin について", GUIConst.ACTION_SHOW_ABOUT));
         }
 
@@ -627,7 +627,7 @@ public class MenuFactory {
         action.putValue(GUIConst.KEY_MENU_ITEM, item); // action から JMenuItem を取得できるようにする
         item.setAction(action);
         if (Objects.nonNull(keyStroke)) {
-            if (!keyStroke.contains("ctrl") || ClientContext.isMac()) {
+            if (!keyStroke.contains("ctrl") || Dolphin.forMac) {
                 item.setAccelerator(KeyStroke.getKeyStroke(String.join(" ", SHORT_CUT_KEY_MASK, keyStroke)));
             }
        }

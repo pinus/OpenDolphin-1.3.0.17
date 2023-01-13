@@ -46,6 +46,8 @@ import java.util.stream.Stream;
  * @author pns
  */
 public class Dolphin implements MainWindow {
+    public static final boolean forMac = System.getProperty("os.name").startsWith("Mac");
+    public static final boolean forWin = !forMac;
 
     // Window と Menu サポート
     private WindowSupport windowSupport;
@@ -618,7 +620,7 @@ public class Dolphin implements MainWindow {
         }
 
         // 終了確認
-        if (saveEnv != null && !ClientContext.isWin()) {
+        if (saveEnv != null && Dolphin.forMac) {
             Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
             int ans = PNSOptionPane.showConfirmDialog(null,
                     "本当に終了しますか", "終了確認", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -746,73 +748,6 @@ public class Dolphin implements MainWindow {
         AddUser au = new AddUser();
         au.setContext(this);
         au.start();
-    }
-
-    /**
-     * ドルフィンサポートをオープンする.
-     */
-    public void browseDolphinSupport() {
-        browseURL(ClientContext.getString("menu.dolphinSupportUrl"));
-    }
-
-    /**
-     * ドルフィンプロジェクトをオープンする.
-     */
-    public void browseDolphinProject() {
-        browseURL(ClientContext.getString("menu.dolphinUrl"));
-    }
-
-    /**
-     * MedXMLをオープンする.
-     */
-    public void browseMedXml() {
-        browseURL(ClientContext.getString("menu.medXmlUrl"));
-    }
-
-    /**
-     * SGをオープンする.
-     */
-    public void browseSeaGaia() {
-        browseURL(ClientContext.getString("menu.seaGaiaUrl"));
-    }
-
-    /**
-     * URLをオープンする.
-     *
-     * @param url URL
-     */
-    private void browseURL(String url) {
-
-        try {
-            if (ClientContext.isMac()) {
-                ProcessBuilder builder = new ProcessBuilder("open", url);
-                builder.start();
-
-            } else if (ClientContext.isWin()) {
-                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "start", url);
-                builder.start();
-
-            } else {
-                String[] browsers = {
-                        "firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape"
-                };
-                String browser = null;
-                for (int count = 0; count < browsers.length && browser == null; count++) {
-                    if (Runtime.getRuntime().exec(
-                            new String[]{"which", browsers[count]}).waitFor() == 0) {
-                        browser = browsers[count];
-                    }
-                    if (browser == null) {
-                        throw new Exception("Could not find web browser");
-                    } else {
-                        Runtime.getRuntime().exec(new String[]{browser, url});
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
     }
 
     /**

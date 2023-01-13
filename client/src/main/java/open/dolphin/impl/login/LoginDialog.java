@@ -2,6 +2,7 @@ package open.dolphin.impl.login;
 
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.event.ProxyDocumentListener;
@@ -76,7 +77,7 @@ public class LoginDialog {
         int width = view.getWidth();
         int height = view.getHeight();
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        int n = ClientContext.isMac() ? 3 : 2;
+        int n = Dolphin.forWin ? 2 : 3;
         int left = (screen.width - width) / 2;
         int top = (screen.height - height) / n;
         view.setLocation(left, top);
@@ -124,7 +125,7 @@ public class LoginDialog {
         String message = "ログイン";
         String note = "認証中...";
 
-        Task<UserModel> task = new Task<UserModel>(view, message, note, maxEstimation) {
+        Task<UserModel> task = new Task<>(view, message, note, maxEstimation) {
             private UserDelegater userDlg;
 
             @Override

@@ -1,7 +1,7 @@
 package open.dolphin.inspector;
 
 import open.dolphin.client.ChartImpl;
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientModel;
@@ -51,7 +51,7 @@ public class BasicInfoInspector implements IInspector {
     /**
      * BasicInfoInspector オブジェクトを生成する.
      *
-     * @param parent
+     * @param parent PatientInspector
      */
     public BasicInfoInspector(PatientInspector parent) {
         context = parent.getContext();
@@ -164,7 +164,7 @@ public class BasicInfoInspector implements IInspector {
         agePanel.setLayout(new BoxLayout(agePanel, BoxLayout.Y_AXIS));
         agePanel.add(Box.createVerticalStrut(1));
         agePanel.add(ageLabel);
-        int adjust = ClientContext.isMac() ? 1 : 2;
+        int adjust = Dolphin.forWin ? 2 : 1;
         agePanel.add(Box.createVerticalStrut(adjust));
 
         ageLayout = new JPanel();
@@ -241,18 +241,18 @@ public class BasicInfoInspector implements IInspector {
         }
 
         switch (patient.getGenderDesc()) {
-            case IInfoModel.MALE_DISP:
+            case IInfoModel.MALE_DISP -> {
                 namePanel.setBorder(MALE_BORDER);
                 agePanel.setBorder(MALE_BORDER2);
-                break;
-            case IInfoModel.FEMALE_DISP:
+            }
+            case IInfoModel.FEMALE_DISP -> {
                 namePanel.setBorder(FEMALE_BORDER);
                 agePanel.setBorder(FEMALE_BORDER2);
-                break;
-            default:
+            }
+            default -> {
                 namePanel.setBorder(UNKNOWN_BORDER);
                 agePanel.setBorder(UNKNOWN_BORDER2);
-                break;
+            }
         }
     }
 
@@ -266,12 +266,12 @@ public class BasicInfoInspector implements IInspector {
         return NAME;
     }
 
-    private class NameBorder extends AbstractBorder {
+    private static class NameBorder extends AbstractBorder {
 
-        private Insets borderInsets = new Insets(4, 8, 5, 4);
-        private int r = 10;
-        private Color color;
-        private int angle;
+        private final Insets borderInsets = new Insets(4, 8, 5, 4);
+        private final int r = 10;
+        private final Color color;
+        private final int angle;
 
         public NameBorder(Color c) {
             this(c, SwingConstants.RIGHT);
@@ -285,7 +285,7 @@ public class BasicInfoInspector implements IInspector {
         @Override
         public void paintBorder(Component c, Graphics graphics, int x, int y, int width, int height) {
             Graphics2D g = (Graphics2D) graphics.create();
-            if (ClientContext.isMac()) {
+            if (Dolphin.forMac) {
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             }
             g.setColor(color);

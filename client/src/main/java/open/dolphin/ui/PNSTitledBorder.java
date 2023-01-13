@@ -1,7 +1,6 @@
 package open.dolphin.ui;
 
-import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIConst;
+import open.dolphin.client.Dolphin;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -15,7 +14,7 @@ import java.awt.*;
  * @author pns
  */
 public class PNSTitledBorder extends AbstractBorder {
-    
+
     // content の回りのスペース
     private static final int DEFAULT_INSET = 5;
     // タイトルと content の間のスペース
@@ -25,7 +24,6 @@ public class PNSTitledBorder extends AbstractBorder {
     private final Border contentBorder;
     private final Insets borderInsets = new Insets(DEFAULT_INSET + DEFAULT_FONT_HEIGHT + SPACING, DEFAULT_INSET, DEFAULT_INSET, DEFAULT_INSET);
     private final int fontHeight;
-    private boolean isWin = ClientContext.isWin();
     private Border titleBorder; // 未対応
     private String title;
     private int justification, position; // 未対応
@@ -35,12 +33,12 @@ public class PNSTitledBorder extends AbstractBorder {
     /**
      * PNSTitledBorder.
      *
-     * @param border
-     * @param text
-     * @param titleJustification
-     * @param titlePosition
-     * @param titleFont
-     * @param titleColor
+     * @param border border
+     * @param text text
+     * @param titleJustification justification
+     * @param titlePosition position
+     * @param titleFont font
+     * @param titleColor color
      */
     public PNSTitledBorder(Border border, String text, int titleJustification, int titlePosition, Font titleFont, Color titleColor) {
         titleBorder = border;
@@ -64,7 +62,7 @@ public class PNSTitledBorder extends AbstractBorder {
         // Title
         g.setFont(font);
         g.setColor(fontColor);
-        if (!isWin) {
+        if (Dolphin.forMac) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
         g.drawString(title, borderInsets.left + SPACING, fontHeight);

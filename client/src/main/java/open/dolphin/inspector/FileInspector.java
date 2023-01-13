@@ -2,6 +2,7 @@ package open.dolphin.inspector;
 
 import open.dolphin.client.ChartImpl;
 import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.BadgeListener;
 import open.dolphin.helper.ScriptExecutor;
@@ -69,8 +70,8 @@ public class FileInspector implements IInspector {
         int index10k = (Integer.parseInt(id) - 1) / 10000; // 上位2桁
         int index1k = (Integer.parseInt(id) - 1) / 1000; // 上位3桁
 
-        String formatStr = ClientContext.isMac() ?
-                "%02d0001-%02d0000/%03d001-%03d000/" : "%02d0001-%02d0000\\%03d001-%03d000\\";
+        String formatStr = Dolphin.forWin?
+                "%02d0001-%02d0000\\%03d001-%03d000\\" : "%02d0001-%02d0000/%03d001-%03d000/";
 
         String subfolder = String.format(formatStr, index10k, (index10k + 1), index1k, (index1k + 1));
 

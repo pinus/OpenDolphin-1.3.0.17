@@ -47,12 +47,10 @@ public class ImageBox extends AbstractMainTool {
 
     // SchemaBox でもメニューを出すため
     private MenuSupport mediator;
-    private boolean isMac;
 
     @Override
     public void start() {
         logger = LoggerFactory.getLogger(ImageBox.class);
-        isMac = ClientContext.isMac();
 
         initComponent();
         connect();
@@ -95,7 +93,7 @@ public class ImageBox extends AbstractMainTool {
         String message = "シェーマ画像";
         Component c = null;
 
-        Task<Void> task = new Task<Void>(c, message, PROGRESS_NOTE, MAX_ESTIMATION) {
+        Task<Void> task = new Task<>(c, message, PROGRESS_NOTE, MAX_ESTIMATION) {
 
             @Override
             protected Void doInBackground() {
@@ -122,7 +120,7 @@ public class ImageBox extends AbstractMainTool {
         Component c = this.getFrame();
         String note = "画像リストを更新しています";
 
-        Task<Void> task = new Task<Void>(c, message, note, MAX_ESTIMATION) {
+        Task<Void> task = new Task<>(c, message, note, MAX_ESTIMATION) {
 
             @Override
             protected Void doInBackground() {
@@ -162,7 +160,7 @@ public class ImageBox extends AbstractMainTool {
         //JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         // mac で SchemaBox にもメニューバーを出す
-        if (isMac) {
+        if (Dolphin.forMac) {
             WindowSupport windowSupport = WindowSupport.create(title);
             frame = windowSupport.getFrame();
             javax.swing.JMenuBar myMenuBar = windowSupport.getMenuBar();

@@ -388,7 +388,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         pane.setBadge(e);
 
         // Dock のアイコンにバッジを出す
-        if (ClientContext.isMac()) {
+        if (Dolphin.forMac) {
             Taskbar.getTaskbar().setIconBadge(waitingCount == 0 ? null : String.valueOf(waitingCount));
         }
     }

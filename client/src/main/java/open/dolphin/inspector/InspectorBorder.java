@@ -1,6 +1,6 @@
 package open.dolphin.inspector;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
@@ -18,11 +18,10 @@ public class InspectorBorder extends AbstractBorder {
     private static final Insets BORDER_INSETS = new Insets(3, 10, 3, 10);
     private static final Insets BORDER_INSETS_W_TITLE = new Insets(15, 10, 3, 10);
 
-    private final boolean isWin = ClientContext.isWin();
     private String title;
-    private Font font;
-    private Color color;
-    private int indent;
+    private final Font font;
+    private final Color color;
+    private final int indent;
     private Insets insets;
 
     public InspectorBorder(String titleText) {
@@ -54,7 +53,7 @@ public class InspectorBorder extends AbstractBorder {
         if (title != null) {
             g.setFont(font);
             g.setColor(color);
-            if (!isWin) {
+            if (Dolphin.forMac) {
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             }
             g.drawString(title, insets.left + indent, g.getFontMetrics().getAscent());

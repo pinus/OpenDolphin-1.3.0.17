@@ -39,7 +39,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
     private JButton cancelBtn;
     private JButton nextBtn;
     private JButton backBtn;
-    private PropertyChangeSupport boundSupport;
+    private final PropertyChangeSupport boundSupport;
     private ServerInfo serverInfo;
     private OIDGetter oidGetter;
     private AgreementPanel agreement;
@@ -48,7 +48,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
     private boolean comTestOk;
     private boolean agreementOk;
     private boolean accountInfoOk;
-    private Logger logger;
+    private final Logger logger;
 
     public AddFacilityDialog() {
         super((Frame) null, null, true);
@@ -155,13 +155,12 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
 
         // ボタンパネルを生成する
         JPanel btnPanel;
-        if (ClientContext.isMac()) {
+        if (Dolphin.forWin) {
             btnPanel = GUIFactory.createCommandButtonPanel(
-                    new JButton[]{backBtn, nextBtn, cancelBtn, okBtn});
-
+                new JButton[]{backBtn, nextBtn, okBtn, cancelBtn});
         } else {
             btnPanel = GUIFactory.createCommandButtonPanel(
-                    new JButton[]{backBtn, nextBtn, okBtn, cancelBtn});
+                new JButton[]{backBtn, nextBtn, cancelBtn, okBtn});
         }
 
         // 全体を配置する
@@ -236,19 +235,17 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
 
         switch (state) {
 
-            case COM_TEST:
-                nextBtn.setEnabled(comTestOk);
-                break;
+            case COM_TEST -> nextBtn.setEnabled(comTestOk);
 
-            case AGREEMENT:
+            case AGREEMENT -> {
                 backBtn.setEnabled(true);
                 nextBtn.setEnabled(agreementOk);
-                break;
+            }
 
-            case ACCOUNT_INFO:
+            case ACCOUNT_INFO -> {
                 backBtn.setEnabled(true);
                 okBtn.setEnabled(accountInfoOk);
-                break;
+            }
         }
     }
 
@@ -329,7 +326,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
      */
     private class AddFacilityTask extends Task<Void> {
 
-        private UserModel user;
+        private final UserModel user;
 
         public AddFacilityTask(Component c, Object message, String note, int maxEstimation, UserModel user) {
             super(c, message, note, maxEstimation);

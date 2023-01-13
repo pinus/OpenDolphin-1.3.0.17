@@ -736,7 +736,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         frame.setVisible(true);
 
         // command ctrl F で検索フィールドにフォーカスする裏コマンド
-        if (ClientContext.isMac()) {
+        if (Dolphin.forMac) {
             InputMap im = windowSupport.getFrame().getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
             ActionMap am = windowSupport.getFrame().getRootPane().getActionMap();
             im.put(KeyStroke.getKeyStroke("meta ctrl F"), GUIConst.ACTION_SEARCH_STAMP);

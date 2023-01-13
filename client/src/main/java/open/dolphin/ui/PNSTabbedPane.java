@@ -1,6 +1,6 @@
 package open.dolphin.ui;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +87,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
     /**
      * Logger
      */
-    private Logger logger = LoggerFactory.getLogger(PNSTabbedPane.class);
+    private final Logger logger = LoggerFactory.getLogger(PNSTabbedPane.class);
 
     public PNSTabbedPane() {
         initComponents();
@@ -544,7 +544,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             int w = this.getWidth();
             int h = this.getHeight();
 
-            if (ClientContext.isMac()) {
+            if (Dolphin.forMac) {
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             }
 

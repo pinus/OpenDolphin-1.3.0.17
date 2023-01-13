@@ -1,6 +1,6 @@
 package open.dolphin.helper;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.event.ProxyAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +29,8 @@ public class ComponentBoundsManager extends WindowAdapter implements ComponentLi
     private final Dimension defaultSize;
     private Preferences prefs;
     private String key;
-    private Timer timer;
-    private int delay = 500;
+    private final Timer timer;
+    private final int delay = 500;
     private boolean resized, moved;
 
     /**
@@ -122,7 +122,7 @@ public class ComponentBoundsManager extends WindowAdapter implements ComponentLi
      * target component を画面中央に設定する.
      */
     public void putCenter() {
-        putCenter(ClientContext.isMac()? 3 : 2);
+        putCenter(Dolphin.forWin? 2 : 3);
     }
 
     private void putCenter(int n) {

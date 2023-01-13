@@ -1,6 +1,6 @@
 package open.dolphin.calendar;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.infomodel.SimpleDate;
 
@@ -48,7 +48,7 @@ public class CalendarPanel extends JPanel {
 
         // control panel 生成
         JButton expand = new JButton(GUIConst.ICON_MD_EJECT_16);
-        if (ClientContext.isWin()) {
+        if (Dolphin.forWin) {
             expand.setContentAreaFilled(false);
         } else {
             expand.setBorderPainted(false);
@@ -84,7 +84,7 @@ public class CalendarPanel extends JPanel {
         controlPanel.setMinimumSize(size);
 
         // 境界線を描く
-        LayerUI<JPanel> layerUI = new LayerUI<JPanel>() {
+        LayerUI<JPanel> layerUI = new LayerUI<>() {
 
             @Override
             public void paint(Graphics g, JComponent c) {
@@ -109,7 +109,7 @@ public class CalendarPanel extends JPanel {
         button.setMinimumSize(size);
         button.setMaximumSize(size);
 
-        if (ClientContext.isWin()) {
+        if (Dolphin.forWin) {
             button.setContentAreaFilled(false);
         } else {
             button.setBorderPainted(false);
@@ -188,7 +188,7 @@ public class CalendarPanel extends JPanel {
     /**
      * バックグラウンド色を設定する.
      *
-     * @param bg
+     * @param bg background
      */
     public void setCalendarBackground(Color bg) {
         table.setBackground(bg);
@@ -198,7 +198,7 @@ public class CalendarPanel extends JPanel {
     /**
      * 表示年月変更のリスナ.
      *
-     * @param l
+     * @param l listener
      */
     public void addCalendarListener(CalendarListener l) {
         listener = l;
@@ -207,7 +207,7 @@ public class CalendarPanel extends JPanel {
     /**
      * CalendarTable を返す.
      *
-     * @return
+     * @return CalendarTable
      */
     public CalendarTable getTable() {
         return table;
@@ -216,7 +216,7 @@ public class CalendarPanel extends JPanel {
     /**
      * CalendarTableModel を返す.
      *
-     * @return
+     * @return CalendarTableModel
      */
     public CalendarTableModel getModel() {
         return tableModel;
@@ -229,9 +229,8 @@ public class CalendarPanel extends JPanel {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         CalendarPanel panel = new CalendarPanel();
 
-        panel.getTable().addCalendarListener(date -> {
-            System.out.println(date.getYear() + " / " + date.getMonth() + " / " + date.getDay());
-        });
+        panel.getTable().addCalendarListener(date
+            -> System.out.println(date.getYear() + " / " + date.getMonth() + " / " + date.getDay()));
 
         f.add(panel);
         f.pack();

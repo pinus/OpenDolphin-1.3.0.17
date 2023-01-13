@@ -1,6 +1,6 @@
 package open.dolphin.setting;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.codehelper.AbstractCodeHelper;
@@ -101,7 +101,7 @@ public class CodeHelperSettingPanel extends AbstractSettingPanel {
     private void initComponents() {
 
         ctrlMask = new JRadioButton("<html>&#8963;</html>"); // ^
-        String str = ClientContext.isMac() ? "<html>&#8984;</html>" : "<html>&#8997;</html>"; // command / alt
+        String str = Dolphin.forWin? "<html>&#8997;</html>" : "<html>&#8984;</html>"; // alt/command
         metaMask = new JRadioButton(str);
         text = GUIFactory.createTextField(5, null, null, null);
         path = GUIFactory.createTextField(5, null, null, null);

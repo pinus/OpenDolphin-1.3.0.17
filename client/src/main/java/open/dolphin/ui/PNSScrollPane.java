@@ -1,6 +1,6 @@
 package open.dolphin.ui;
 
-import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.project.Project;
 
 import javax.swing.*;
@@ -25,7 +25,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     private final static String HORIZONTAL_BAR_PANEL_NAME = "hbp";
     // LionScrollBar 関連
     // 従来の ScrollBar にしたいときは true にする
-    public boolean isClassicScrollBar = false;
+    public boolean isClassicScrollBar;
     // ScrollBar を常に表示したい場合は true にする
     public boolean isPermanentScrollBar = false;
     // スクロールバー操作でのマウスキャプチャのためのダミーパネル.
@@ -40,12 +40,12 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     // false で paint に入ると，fading なしでスクロールバーを書く
     private boolean shouldFadeScrollBar = true;
     // スクロールバーの幅
-    private int scrollBarWidth = 12;
+    private final int scrollBarWidth = 12;
     // スクロールバーの大きさ
-    private Rectangle verticalBarRect = new Rectangle(0, 0, 0, 0);
-    private Rectangle horizontalBarRect = new Rectangle(0, 0, 0, 0);
-    private Rectangle verticalBarFrameRect = new Rectangle(0, 0, 0, 0);
-    private Rectangle horizontalBarFrameRect = new Rectangle(0, 0, 0, 0);
+    private final Rectangle verticalBarRect = new Rectangle(0, 0, 0, 0);
+    private final Rectangle horizontalBarRect = new Rectangle(0, 0, 0, 0);
+    private final Rectangle verticalBarFrameRect = new Rectangle(0, 0, 0, 0);
+    private final Rectangle horizontalBarFrameRect = new Rectangle(0, 0, 0, 0);
     // スクロールバーの枠表示の有無　マウスがスクロールバー領域に入ったら枠を表示する
     private boolean shouldShowScrollBarFrame = false;
     // スクロールバー表示のアルファ値
@@ -54,7 +54,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     private boolean isFadeScrollBarRequested = false;
     // スクロールバーを fade out させるアニメーションスレッド
     private Thread fader;
-    private FadeAnimator fadeAnimator = new FadeAnimator();
+    private final FadeAnimator fadeAnimator = new FadeAnimator();
     // スクロールされたかどうかを検出するための変数
     private Rectangle prevViewRect = new Rectangle(0, 0, 0, 0);
     // マウスがドラッグ中かどうか
@@ -65,10 +65,10 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     private JPanel horizontalBarPanel;
     // overshoot animator 関連
     // overshoot animation を表示したくない場合は false にする
-    private boolean isOvershootAnimationEnabled = true;
+    private final boolean isOvershootAnimationEnabled = true;
     // overshoot アニメーション実行中かどうか
     private boolean isOvershootAnimating;
-    private OvershootAnimator overshootAnimator = new OvershootAnimator();
+    private final OvershootAnimator overshootAnimator = new OvershootAnimator();
     private Timer overshootTimer;
     // overshoot アニメーション開始時間
     private long overshootStart;
@@ -92,7 +92,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
 
     public PNSScrollPane(Component view, int v, int h) {
         super(view, v, h);
-        if (ClientContext.isWin()) { isClassicScrollBar = true; }
+        isClassicScrollBar = Dolphin.forWin;
         setBorder(BorderFactory.createEmptyBorder());
         addMouseWheelListener(this);
         // JScrollPane に MouseListener をつけても viewport の component に取られるので MouseEvent は拾えない
@@ -120,7 +120,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
      * KarteScrollPane は paintChildren で描画するようにしたので
      * その後に，ここでスクロールバーを出す
      *
-     * @param g
+     * @param g Graphics
      */
     @Override
     public void paint(Graphics g) {
@@ -152,7 +152,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
      * スクロールバーのつかむところの大きさ verticalBarRect，horizontalBarRect
      * スクロールバー表示領域全体の大きさ　verticalBarFrameRec，horizontalBarFrameRect
      *
-     * @param g
+     * @param g Graphics
      */
     protected void showScrollBar(Graphics2D g) {
 
@@ -287,7 +287,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     /**
      * 親フレームの JLayeredPane を返す
      *
-     * @return
+     * @return JLayerdPane
      */
     public JLayeredPane getParentLayer() {
         if (parentLayer == null) {
@@ -340,8 +340,8 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     /**
      * overshoot のアニメーションをスタート
      *
-     * @param direction
-     * @param amplitude
+     * @param direction direction
+     * @param amplitude amplitude
      */
     private void showOvershoot(Overshoot direction, int amplitude) {
         if (overshootTimer == null) {
@@ -359,7 +359,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     /**
      * スクロールバー操作のマウスイベントを取得するためのダミーパネルを作成する
      *
-     * @return
+     * @return Dummy Panel
      */
     private JPanel createScrollBarPanel() {
         JPanel p = new JPanel();
@@ -464,7 +464,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
      * MyJScrollBar では，WheelEvent の頻度を計測
      * スクロールダミーパネルでは，スクロールフレームの表示をしてから MyJScroppPane にイベントを投げる
      *
-     * @param e
+     * @param e MouseWheelEvent
      */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -548,8 +548,8 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     /**
      * MouseEvent がスクロールダミーパネルのどちらから来たかを判定
      *
-     * @param e
-     * @return
+     * @param e MouseEvent
+     * @return Source panel name
      */
     private String getSourcePanelName(MouseEvent e) {
         Object src = e.getSource();
@@ -617,7 +617,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     private class OvershootAnimator implements ActionListener {
         private Overshoot direction;
         private int amplitude;
-        private float duration = 200f;
+        private final float duration = 200f;
 
         public void setDirection(Overshoot direction) {
             this.direction = direction;
@@ -645,57 +645,57 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
             paintChildren(tmpImg.getGraphics());
 
             switch (direction) {
-                case TOP:
+                case TOP -> {
                     g.drawImage(tmpImg.getSubimage(0, 0, tmpImg.getWidth(), tmpImg.getHeight() - (int) d),
-                            0, (int) d, null);
+                        0, (int) d, null);
 
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(0, marginY, tmpImg.getWidth(), (int) d);
 
                     if (columnHeader != null) {
                         g.drawImage(tmpImg.getSubimage(0, 0, tmpImg.getWidth(), marginY),
-                                0, 0, null);
-                    }
-                    break;
-
-                case BOTTOM:
-                    g.drawImage(tmpImg.getSubimage(0, (int) d, tmpImg.getWidth(), tmpImg.getHeight() - (int) d),
                             0, 0, null);
+                    }
+                }
+
+                case BOTTOM -> {
+                    g.drawImage(tmpImg.getSubimage(0, (int) d, tmpImg.getWidth(), tmpImg.getHeight() - (int) d),
+                        0, 0, null);
 
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(0, viewSize.height - (int) d, tmpImg.getWidth(), (int) d);
 
                     if (columnHeader != null) {
                         g.drawImage(tmpImg.getSubimage(0, 0, tmpImg.getWidth(), marginY),
-                                0, 0, null);
+                            0, 0, null);
                     }
-                    break;
+                }
 
-                case LEFT:
+                case LEFT -> {
                     g.drawImage(tmpImg.getSubimage(0, 0, tmpImg.getWidth() - (int) d, tmpImg.getHeight()),
-                            (int) d, 0, null);
+                        (int) d, 0, null);
 
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(marginX, 0, (int) d, tmpImg.getHeight());
 
                     if (rowHeader != null) {
                         g.drawImage(tmpImg.getSubimage(0, 0, marginX, tmpImg.getHeight()),
-                                0, 0, null);
-                    }
-                    break;
-
-                case RIGHT:
-                    g.drawImage(tmpImg.getSubimage((int) d, 0, tmpImg.getWidth() - (int) d, tmpImg.getHeight()),
                             0, 0, null);
+                    }
+                }
+
+                case RIGHT -> {
+                    g.drawImage(tmpImg.getSubimage((int) d, 0, tmpImg.getWidth() - (int) d, tmpImg.getHeight()),
+                        0, 0, null);
 
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(viewSize.width - (int) d, 0, (int) d, tmpImg.getHeight());
 
                     if (rowHeader != null) {
                         g.drawImage(tmpImg.getSubimage(0, 0, marginX, tmpImg.getHeight()),
-                                0, 0, null);
+                            0, 0, null);
                     }
-                    break;
+                }
             }
 
             isOvershootImgPrepared = true;
@@ -723,7 +723,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
 
         private int scrollUnit;
         private int defaultScrollUnit;
-        private Dimension preferredSize = new Dimension(0, 0);
+        private final Dimension preferredSize = new Dimension(0, 0);
 
         // この scroll pane を使っている component
         private Component child = null;
@@ -786,7 +786,7 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
          * scrollable なものは，ここに value をセットするだけで viewport が書き換わるので，JScrollPane の paint は呼ばれない.
          * それだと LionScrollBar が書けないので，無理矢理 repaint して書かせる
          *
-         * @param value
+         * @param value value
          */
         @Override
         public void setValue(int value) {

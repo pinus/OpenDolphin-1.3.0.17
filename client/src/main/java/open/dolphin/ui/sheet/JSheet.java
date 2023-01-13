@@ -1,5 +1,6 @@
 package open.dolphin.ui.sheet;
 
+import open.dolphin.client.Dolphin;
 import open.dolphin.helper.WindowSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class JSheet extends JWindow implements ActionListener {
     private Component parentComponent;
     private int displayOffsetY = 0;
     private Component focusOwner;
-    private static final boolean isClassicDialog = !System.getProperty("os.name").startsWith("Mac");
+    private static final boolean isClassicDialog = Dolphin.forWin;
 
     private final Logger logger = LoggerFactory.getLogger(JSheet.class);
 

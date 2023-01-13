@@ -1,6 +1,7 @@
 package open.dolphin.stampbox;
 
 import open.dolphin.client.ClientContext;
+import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.delegater.StampDelegater;
@@ -127,7 +128,7 @@ public class StampImporter {
             }
         });
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        int n = ClientContext.isMac() ? 3 : 2;
+        int n = Dolphin.forWin ? 2 : 3;
         int x = (screen.width - WIDTH) / 2;
         int y = (screen.height - HEIGHT) / n;
         ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(x, y), new Dimension(WIDTH, HEIGHT), this);

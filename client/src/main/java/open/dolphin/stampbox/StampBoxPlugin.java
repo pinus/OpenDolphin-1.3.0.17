@@ -48,8 +48,6 @@ public class StampBoxPlugin extends AbstractMainTool {
     private final int DEFAULT_WIDTH = 320;
     private final int DEFAULT_HEIGHT = 690;
     private final int IMPORT_TREE_OFFSET = 1;
-    // mac フラグ
-    private final boolean isMac;
     // Logger
     private final Logger logger;
     // StampBox の JFrame
@@ -95,7 +93,6 @@ public class StampBoxPlugin extends AbstractMainTool {
     public StampBoxPlugin() {
         setName(NAME);
         logger = LoggerFactory.getLogger(StampBoxPlugin.class);
-        isMac = ClientContext.isMac();
     }
 
     /**
@@ -119,7 +116,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         } else {
             // lock が外れていたら注意マークを出す
             int spaces = 0;
-            if (isMac && stampBoxWidth != 0) {
+            if (Dolphin.forMac && stampBoxWidth != 0) {
                 // stamp maker が起動していたらタイトルを右の方に出す
                 spaces = (int) ((frame.getWidth() - stampBoxWidth) * 0.27f);
             }
@@ -289,7 +286,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         int height = DEFAULT_HEIGHT;
 
         // mac で StampBox にもメニューバーを出す
-        if (isMac) {
+        if (Dolphin.forMac) {
             WindowSupport windowSupport = WindowSupport.create(title);
             frame = windowSupport.getFrame();
             frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 105);
