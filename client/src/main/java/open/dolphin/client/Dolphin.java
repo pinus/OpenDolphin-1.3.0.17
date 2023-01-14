@@ -234,7 +234,7 @@ public class Dolphin implements MainWindow {
         int defaultHeight = 678;
 
         // WindowSupport を生成する この時点で Frame,WindowMenu を持つMenuBar が生成されている
-        String title = ClientContext.getFrameTitle(windowTitle);
+        String title = Dolphin.forWin? "" : ClientContext.getFrameTitle(windowTitle);
         // System.out.println(title);
         windowSupport = WindowSupport.create(title);
         MainFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame

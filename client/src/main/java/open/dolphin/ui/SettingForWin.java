@@ -30,8 +30,9 @@ public class SettingForWin {
         // FlatLaf
         FlatLightLaf.setup();
 
-        // true だと白で書かれてしまう
-        UIManager.put("Tree.rendererFillBackground", false);
+        UIManager.put("Tree.rendererFillBackground", false); // true だと白で書かれてしまう
+        UIManager.put("TableHeader.height", 18);
+        UIManager.put("TableHeader.font", new Font(Font.SANS_SERIF, Font.PLAIN, 10));
 
         // laf replacement
         UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
