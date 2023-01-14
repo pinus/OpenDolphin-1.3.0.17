@@ -12,6 +12,7 @@ import open.dolphin.project.DolphinPrincipal;
 import open.dolphin.project.Project;
 import open.dolphin.setting.ProjectSettingDialog;
 import open.dolphin.ui.Focuser;
+import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,26 +120,23 @@ public class LoginDialog {
 
         // LoginTask を生成する
         int maxEstimation = ClientContext.getInt("task.default.maxEstimation");
-        int delay = ClientContext.getInt("task.default.delay");
-        int lengthOfTask = maxEstimation / delay;    // タスクの長さ = 最大予想時間 / 割り込み間隔
+        //int delay = ClientContext.getInt("task.default.delay");
+        //int lengthOfTask = maxEstimation / delay;    // タスクの長さ = 最大予想時間 / 割り込み間隔
 
         String message = "ログイン";
         String note = "認証中...";
 
         Task<UserModel> task = new Task<>(view, message, note, maxEstimation) {
-            private UserDelegater userDlg;
 
             @Override
             protected UserModel doInBackground() {
-
                 // ログイン手順開始
                 String hostAddress = String.format("%s:%d", Project.getHostAddress(), Project.getHostPort());
                 String pk = principal.getFacilityId() + ":" + principal.getUserId();
                 DolphinClientContext.configure(hostAddress, pk, password);
 
                 // User 情報を取得するためのデリゲータを得る
-                userDlg = new UserDelegater();
-
+                UserDelegater userDlg = new UserDelegater();
                 return userDlg.getUser(pk);
             }
 
@@ -148,7 +146,7 @@ public class LoginDialog {
                 if (userModel != null) {
 
                     Project.UserType userType = Project.UserType.valueOf(userModel.getMemberType());
-                    logger.info("User Type = " + userType.toString());
+                    logger.info("User Type = " + userType);
 
                     // 認証成功
                     String time = ModelUtils.getDateTimeAsString(new Date());
@@ -178,12 +176,7 @@ public class LoginDialog {
                     String errMsg = cause.getMessage();
                     showMessageDialog(errMsg);
                 } else {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(cause.getMessage());
-                    sb.append("\n");
-                    sb.append(ClientContext.getString("loginDialog.forceClose"));
-                    String msg = sb.toString();
-                    showMessageDialog(msg);
+                    showMessageDialog(String.format("%s\nアプリケーションを終了します", cause.getMessage()));
                     result = LoginState.NOT_AUTHENTICATED;
                     notifyClose(result);
                 }
@@ -202,7 +195,7 @@ public class LoginDialog {
     private void showMessageDialog(String msg) {
         String title = view.getTitle();
 
-        JOptionPane.showMessageDialog(view, msg, title, JOptionPane.WARNING_MESSAGE);
+        PNSOptionPane.showMessageDialog(view, msg, title, JOptionPane.WARNING_MESSAGE);
         EventQueue.invokeLater(() -> {
             view.getPasswordField().requestFocusInWindow();
             view.getPasswordField().selectAll();
@@ -405,7 +398,6 @@ public class LoginDialog {
             view.getSettingBtn().setEnabled(false);
             view.getLoginBtn().setEnabled(false);
             view.getCancelBtn().setEnabled(false);
-            view.getProgressBar().setIndeterminate(true);
         }
 
         @Override
@@ -416,8 +408,6 @@ public class LoginDialog {
             view.getSettingBtn().setEnabled(true);
             view.getLoginBtn().setEnabled(true);
             view.getCancelBtn().setEnabled(true);
-            view.getProgressBar().setIndeterminate(false);
-            view.getProgressBar().setValue(0);
         }
     }
 }

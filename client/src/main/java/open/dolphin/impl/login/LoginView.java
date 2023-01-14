@@ -26,10 +26,9 @@ public class LoginView extends JFrame {
     private JTextField userIdField;
     private JPasswordField passwordField;
     private JCheckBox savePasswordCbx;
-    private JProgressBar progressBar;
 
-    private ImageIcon splash1 = GUIConst.ICON_SPLASH_DOLPHIN;
-    private ImageIcon splash2 = GUIConst.ICON_SPLASH_USAGI;
+    private final ImageIcon splash1 = GUIConst.ICON_SPLASH_DOLPHIN;
+    private final ImageIcon splash2 = GUIConst.ICON_SPLASH_USAGI;
 
     /**
      * create LoginView JFrame.
@@ -37,6 +36,8 @@ public class LoginView extends JFrame {
     public LoginView() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
+        getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+        getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
 
         initComponents();
         pack();
@@ -53,13 +54,11 @@ public class LoginView extends JFrame {
         // ボタン
         loginBtn = new PNSButton("ログイン");
         cancelBtn = new PNSButton("キャンセル");
-        settingBtn = new PNSButton("設定");
+        settingBtn = new PNSButton(GUIConst.ICON_GEAR_16);
+        settingBtn.setBorderPainted(false);
 
         // チェックボックス
         savePasswordCbx = new JCheckBox("パスワードを保存する");
-
-        // プログレスバー
-        progressBar = new JProgressBar();
 
         // テキストフィールド
         hostField = new CompletableJTextField(TEXT_LENGTH);
@@ -93,8 +92,9 @@ public class LoginView extends JFrame {
         rightPanel.add(passwordPanel);
         rightPanel.add(Box.createVerticalStrut(13));
         rightPanel.add(savePasswordCbx);
-        rightPanel.add(progressBar);
+        rightPanel.add(Box.createVerticalGlue());
         rightPanel.add(buttonPanel);
+        rightPanel.add(Box.createVerticalStrut(12));
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
         getContentPane().add(splashLabel);
@@ -183,15 +183,6 @@ public class LoginView extends JFrame {
      */
     public JCheckBox getSavePasswordCbx() {
         return savePasswordCbx;
-    }
-
-    /**
-     * progressBar
-     *
-     * @return progressBar
-     */
-    public JProgressBar getProgressBar() {
-        return progressBar;
     }
 }
 
