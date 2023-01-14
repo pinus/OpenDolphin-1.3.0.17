@@ -56,6 +56,7 @@ public class LoginView extends JFrame {
         cancelBtn = new PNSButton("キャンセル");
         settingBtn = new PNSButton(GUIConst.ICON_GEAR_16);
         settingBtn.setBorderPainted(false);
+        settingBtn.setContentAreaFilled(false);
 
         // チェックボックス
         savePasswordCbx = new JCheckBox("パスワードを保存する");
@@ -81,6 +82,7 @@ public class LoginView extends JFrame {
         buttonPanel.add(settingBtn);
         buttonPanel.add(Box.createHorizontalGlue());
         buttonPanel.add(cancelBtn);
+        buttonPanel.add(Box.createHorizontalStrut(8));
         buttonPanel.add(loginBtn);
 
         // 右側のパネル
@@ -94,7 +96,7 @@ public class LoginView extends JFrame {
         rightPanel.add(savePasswordCbx);
         rightPanel.add(Box.createVerticalGlue());
         rightPanel.add(buttonPanel);
-        rightPanel.add(Box.createVerticalStrut(12));
+        rightPanel.add(Box.createVerticalStrut(4));
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
         getContentPane().add(splashLabel);
@@ -185,4 +187,3 @@ public class LoginView extends JFrame {
         return savePasswordCbx;
     }
 }
-
