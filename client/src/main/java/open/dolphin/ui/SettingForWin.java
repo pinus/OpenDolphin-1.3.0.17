@@ -1,5 +1,6 @@
 package open.dolphin.ui;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import open.dolphin.client.Dolphin;
@@ -26,11 +27,9 @@ public class SettingForWin {
         // JavaFX thread が SchemaEditor 終了後に shutdown してしまわないようにする
         Platform.setImplicitExit(false);
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            e.printStackTrace(System.err);
-        }
+        // FlatLaf
+        FlatLightLaf.setup();
+
         // true だと白で書かれてしまう
         UIManager.put("Tree.rendererFillBackground", false);
 
@@ -43,7 +42,6 @@ public class SettingForWin {
     }
 
     private static void setUIFonts() {
-
         if (isMeiryoAvailable()) setMeiryoFont();
         else setDefaultFont();
     }
@@ -90,8 +88,7 @@ public class SettingForWin {
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
             Object value = UIManager.get(key);
-            if (value instanceof Font) {
-                Font font = (Font) value;
+            if (value instanceof Font font) {
                 UIManager.put(key, new Font(DEFAULT_FONT_NAME, font.getStyle(), font.getSize()));
             }
         }
