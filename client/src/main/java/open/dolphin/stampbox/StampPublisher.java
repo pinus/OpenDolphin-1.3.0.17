@@ -12,6 +12,7 @@ import open.dolphin.helper.StampTreeUtils;
 import open.dolphin.helper.Task;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
+import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,7 @@ public class StampPublisher {
     public void start() {
 
         dialog = new JFrame(ClientContext.getFrameTitle(title));
+        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -449,14 +451,14 @@ public class StampPublisher {
                 logger.debug("Task succeeded");
 
                 if (succeeded) {
-                    JOptionPane.showMessageDialog(dialog,
+                    PNSOptionPane.showMessageDialog(dialog,
                             "スタンプを公開しました。",
                             ClientContext.getFrameTitle(title),
                             JOptionPane.INFORMATION_MESSAGE);
                     stop();
 
                 } else {
-                    JOptionPane.showMessageDialog(dialog,
+                    PNSOptionPane.showMessageDialog(dialog,
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(title),
                             JOptionPane.WARNING_MESSAGE);
@@ -485,7 +487,7 @@ public class StampPublisher {
         box.add(p2);
         box.setBorder(BorderFactory.createEmptyBorder(0, 0, 11, 11));
 
-        int option = JOptionPane.showConfirmDialog(dialog,
+        int option = PNSOptionPane.showConfirmDialog(dialog,
                 new Object[]{box},
                 ClientContext.getFrameTitle(title),
                 JOptionPane.YES_NO_OPTION,
@@ -534,14 +536,14 @@ public class StampPublisher {
                 logger.debug("Task succeeded");
 
                 if (succeeded) {
-                    JOptionPane.showMessageDialog(dialog,
+                    PNSOptionPane.showMessageDialog(dialog,
                             "公開を取り消しました。",
                             ClientContext.getFrameTitle(title),
                             JOptionPane.INFORMATION_MESSAGE);
                     stop();
 
                 } else {
-                    JOptionPane.showMessageDialog(dialog,
+                    PNSOptionPane.showMessageDialog(dialog,
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(title),
                             JOptionPane.WARNING_MESSAGE);

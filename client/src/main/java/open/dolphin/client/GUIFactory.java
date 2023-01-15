@@ -70,7 +70,7 @@ public class GUIFactory {
         JTextField tf = new JTextField(val == 0 ? TF_LENGTH : val);
         Dimension d = tf.getPreferredSize();
         tf.setPreferredSize(new Dimension(d.width, TF_HEIGHT));
-        tf.setMinimumSize(new Dimension(36, TF_HEIGHT));
+        tf.setMinimumSize(new Dimension(d.width, TF_HEIGHT));
         tf.setMargin(margin == null ? new Insets(TF_MARGIN_TOP, TF_MARGIN_LEFT, TF_MARGIN_BOTTOM, TF_MARGIN_RIGHT) : margin);
         if (dl != null) {
             tf.getDocument().addDocumentListener(dl);

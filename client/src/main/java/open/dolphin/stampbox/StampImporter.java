@@ -13,6 +13,7 @@ import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.infomodel.SubscribedTreeModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.ObjectReflectTableModel;
+import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.ui.PNSScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,7 @@ public class StampImporter {
         String message = "スタンプ取り込み";
         Component c = null;
 
-        Task<List<PublishedTreeModel>> task = new Task<List<PublishedTreeModel>>(c, message, mmsg, maxEstimation) {
+        Task<List<PublishedTreeModel>> task = new Task<>(c, message, mmsg, maxEstimation) {
 
             @Override
             protected List<PublishedTreeModel> doInBackground() {
@@ -102,7 +103,7 @@ public class StampImporter {
                     }
                     tableModel.setObjectList(result);
                 } else {
-                    JOptionPane.showMessageDialog(frame,
+                    PNSOptionPane.showMessageDialog(frame,
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(TITLE),
                             JOptionPane.WARNING_MESSAGE);
@@ -118,6 +119,7 @@ public class StampImporter {
      */
     public void initComponent() {
         frame = new JFrame(ClientContext.getFrameTitle(TITLE));
+        frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         frame.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -263,7 +265,7 @@ public class StampImporter {
         String message = "スタンプ取り込み";
         Component c = frame;
 
-        Task<Boolean> task = new Task<Boolean>(c, message, mmsg, maxEstimation) {
+        Task<Boolean> task = new Task<>(c, message, mmsg, maxEstimation) {
 
             @Override
             protected Boolean doInBackground() {
@@ -281,7 +283,7 @@ public class StampImporter {
                     tableModel.fireTableDataChanged();
 
                 } else {
-                    JOptionPane.showMessageDialog(frame,
+                    PNSOptionPane.showMessageDialog(frame,
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(TITLE),
                             JOptionPane.WARNING_MESSAGE);
@@ -318,7 +320,7 @@ public class StampImporter {
         String message = "スタンプ取り込み";
         Component c = frame;
 
-        Task<Boolean> task = new Task<Boolean>(c, message, mmsg, maxEstimation) {
+        Task<Boolean> task = new Task<>(c, message, mmsg, maxEstimation) {
 
             @Override
             protected Boolean doInBackground() {
@@ -336,7 +338,7 @@ public class StampImporter {
                     tableModel.fireTableDataChanged();
 
                 } else {
-                    JOptionPane.showMessageDialog(frame,
+                    PNSOptionPane.showMessageDialog(frame,
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(TITLE),
                             JOptionPane.WARNING_MESSAGE);
@@ -374,10 +376,7 @@ public class StampImporter {
                 }
             }
 
-            if (value instanceof String) {
-
-                String pubType = (String) value;
-
+            if (value instanceof String pubType) {
                 if (pubType.equals(IInfoModel.PUBLISHED_TYPE_GLOBAL)) {
                     setIcon(WEB_ICON);
                 } else {
@@ -420,10 +419,7 @@ public class StampImporter {
                 }
             }
 
-            if (value instanceof Boolean) {
-
-                Boolean imported = (Boolean) value;
-
+            if (value instanceof Boolean imported) {
                 if (imported) {
                     this.setIcon(FLAG_ICON);
                 } else {
