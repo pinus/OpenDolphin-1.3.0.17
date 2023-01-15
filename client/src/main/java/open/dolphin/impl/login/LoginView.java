@@ -2,6 +2,8 @@ package open.dolphin.impl.login;
 
 import open.dolphin.client.GUIConst;
 import open.dolphin.ui.CompletableJTextField;
+import open.dolphin.ui.CompletableJTextFieldWithLabel;
+import open.dolphin.ui.JPasswordFieldWithLabel;
 import open.dolphin.ui.PNSButton;
 
 import javax.swing.*;
@@ -22,9 +24,9 @@ public class LoginView extends JFrame {
     private JButton cancelBtn;
     private JButton settingBtn;
 
-    private CompletableJTextField hostField;
-    private JTextField userIdField;
-    private JPasswordField passwordField;
+    private CompletableJTextFieldWithLabel hostField;
+    private CompletableJTextFieldWithLabel userIdField;
+    private JPasswordFieldWithLabel passwordField;
     private JCheckBox savePasswordCbx;
 
     private final ImageIcon splash1 = GUIConst.ICON_SPLASH_DOLPHIN;
@@ -62,10 +64,19 @@ public class LoginView extends JFrame {
         savePasswordCbx = new JCheckBox("パスワードを保存する");
 
         // テキストフィールド
-        hostField = new CompletableJTextField(TEXT_LENGTH);
+        hostField = new CompletableJTextFieldWithLabel(TEXT_LENGTH);
+        hostField.setLabel("サーバ");
+        hostField.setIcon(GUIConst.ICON_SERVER_16);
         hostField.setPreferences(Preferences.userNodeForPackage(getClass()));
-        userIdField = new JTextField(TEXT_LENGTH);
-        passwordField = new JPasswordField(TEXT_LENGTH);
+
+        userIdField = new CompletableJTextFieldWithLabel(TEXT_LENGTH);
+        userIdField.setLabel("ユーザ");
+        userIdField.setIcon(GUIConst.ICON_USER_16);
+        userIdField.setPreferences(Preferences.userNodeForPackage(getClass()));
+
+        passwordField = new JPasswordFieldWithLabel(TEXT_LENGTH);
+        passwordField.setLabel("パスワード");
+        passwordField.setIcon(GUIConst.ICON_PADLOCK_CLOSED_16);
 
         // テキストフィールドのフォーカス移動
         hostField.addActionListener(e -> userIdField.requestFocusInWindow());

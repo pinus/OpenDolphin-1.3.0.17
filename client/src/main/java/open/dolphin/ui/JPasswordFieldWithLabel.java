@@ -11,14 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
-/**
- * CompletableJTextFieldWithLabel.
- * 未入力の Text Field に，半透明のアイコンと Label を表示する.
- * 入力が始まるとアイコンと Label は消える.
- *
- * @author pns
- */
-public class CompletableJTextFieldWithLabel extends CompletableJTextField {
+public class JPasswordFieldWithLabel extends JPasswordField {
     private static final int ICON_TEXT_GAP = 5;
 
     private BufferedImage clearButton;
@@ -26,8 +19,8 @@ public class CompletableJTextFieldWithLabel extends CompletableJTextField {
     private BufferedImage icon;
     private Font font;
 
-    public CompletableJTextFieldWithLabel(int col) {
-        super(col);
+    public JPasswordFieldWithLabel(int textLength) {
+        super(textLength);
         init();
     }
 
@@ -56,7 +49,7 @@ public class CompletableJTextFieldWithLabel extends CompletableJTextField {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                if (getText() != null && !getText().equals("") && getWidth() - e.getX() <= 20) {
+                if (getWidth() - e.getX() <= 20) {
                     setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 } else {
                     setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
@@ -99,7 +92,7 @@ public class CompletableJTextFieldWithLabel extends CompletableJTextField {
 
         int verticalCentering = (getHeight() - icon.getHeight()) / 2;
 
-        if (getText() == null || getText().equals("")) {
+        if (getPassword().length == 0) {
             // 虫眼鏡とラベル
             FontMetrics fm = g.getFontMetrics();
             int iconWidth = icon.getWidth();
@@ -118,17 +111,5 @@ public class CompletableJTextFieldWithLabel extends CompletableJTextField {
         }
 
         g.dispose();
-    }
-
-    public static void main(String[] arg) {
-        open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        CompletableJTextFieldWithLabel field = new CompletableJTextFieldWithLabel(15);
-        field.setLabel("病名検索");
-        field.setIcon(GUIConst.ICON_SEARCH_16);
-        f.add(field);
-        f.pack();
-        f.setVisible(true);
     }
 }

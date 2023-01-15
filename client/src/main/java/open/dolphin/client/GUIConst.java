@@ -208,6 +208,8 @@ public class GUIConst {
     public static final ImageIcon ICON_MD_FAST_BACKWARD_16 = ClientContext.getImageIcon("bw/16x16/MD-fast-backward.png");
     public static final ImageIcon ICON_MD_STOP_16 = ClientContext.getImageIcon("bw/16x16/MD-stop.png");
     public static final ImageIcon ICON_MD_EJECT_16 = ClientContext.getImageIcon("bw/16x16/MD-eject.png");
+    public static final ImageIcon ICON_SERVER_16 = ClientContext.getImageIcon("bw/16x16/server.png");
+    public static final ImageIcon ICON_USER_16 = ClientContext.getImageIcon("bw/16x16/user.png");
 
 
     //  fugue series ----------------------
