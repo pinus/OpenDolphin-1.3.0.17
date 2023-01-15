@@ -79,6 +79,7 @@ public class JSheet extends JWindow implements ActionListener {
             pane.setBorder(new SheetBorder());
         }
         JDialog dialog = pane.createDialog(null);
+        dialog.getRootPane().putClientProperty("JRootPane.useWindowDecorations", false);
         dialog.pack();
 
         // create JSheet
@@ -132,6 +133,7 @@ public class JSheet extends JWindow implements ActionListener {
         }
 
         JDialog dialog = new JDialog();
+        dialog.getRootPane().putClientProperty("JRootPane.useWindowDecorations", false);
         dialog.add(chooser);
         dialog.pack();
 
