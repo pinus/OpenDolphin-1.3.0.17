@@ -208,7 +208,7 @@
                                     <arg value="--no-man-pages" />
                                     <arg value="--strip-debug" />
                                     <arg value="--compress=2" />
-                                    <arg line="--add-modules java.base,java.desktop,java.logging,java.naming,java.prefs,java.management,java.xml,jdk.unsupported" />
+                                    <arg line="--add-modules java.base,java.desktop,java.datatransfer,java.naming,java.prefs,java.xml,java.management,jdk.unsupported" />
                                     <arg line="--output ${jredir}" />
                                 </exec>
                             </target>
