@@ -21,6 +21,30 @@
         <version.org.glassfish.tyrus.bundles>2.1.2</version.org.glassfish.tyrus.bundles>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <java.jlink>/usr/bin/jlink</java.jlink>
+                <java.jpackage>/usr/bin/jpackage</java.jpackage>
+                <java.jpackage.icon>${basedir}/icons/OpenDolphin-ICN.icns</java.jpackage.icon>
+                <java.jpackage.type>dmg</java.jpackage.type>
+            </properties>
+        </profile>
+        <profile>
+            <id>win</id>
+            <properties>
+                <java.jlink>${java.home}/bin/jlink.exe</java.jlink>
+                <java.jpackage>${java.home}/bin/jpackage.exe</java.jpackage>
+                <java.jpackage.icon>${basedir}/icons/OpenDolphin-ICO.ico</java.jpackage.icon>
+                <java.jpackage.type>msi</java.jpackage.type>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <!-- Server -->
         <dependency>
@@ -175,19 +199,19 @@
                     <execution>
                         <id>jre</id>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <echo>making jre using jlink</echo>
                                 <property name="jredir" value="${basedir}/appRuntimeImage/jre" />
                                 <delete dir="${jredir}" />
-                                <exec executable="/usr/bin/jlink">
+                                <exec executable="${java.jlink}">
                                     <arg value="--no-header-files" />
                                     <arg value="--no-man-pages" />
                                     <arg value="--strip-debug" />
                                     <arg value="--compress=2" />
-                                    <arg line="--add-modules java.base,java.desktop,java.datatransfer,java.naming,java.prefs,java.xml,java.management,jdk.unsupported" />
+                                    <arg line="--add-modules java.base,java.desktop,java.logging,java.naming,java.prefs,java.management,java.xml,jdk.unsupported" />
                                     <arg line="--output ${jredir}" />
                                 </exec>
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
 
@@ -195,6 +219,9 @@
                     <execution>
                         <id>dist</id>
                         <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                         <configuration>
                             <tasks>
                                 <echo>making dist folder using jpackage</echo>
@@ -212,13 +239,13 @@
                                 </copy>
 
                                 <delete dir="${distdir}" />
-                                <exec executable="/usr/bin/jpackage">
+                                <exec executable="${java.jpackage}">
                                     <arg line="-n OpenDolphin" />
-                                    <arg line="--type app-image" />
+                                    <arg line="--type ${java.jpackage.type}" />
                                     <arg line="-i ${workdir}/" />
                                     <arg line="-d ${distdir}" />
                                     <arg line="--main-jar opendolphin.jar" />
-                                    <arg line="--icon ${basedir}/icons/OpenDolphin-ICN.icns" />
+                                    <arg line="--icon ${java.jpackage.icon}" />
                                     <arg line="--runtime-image ${jredir}" />
                                 </exec>
                             </tasks>
