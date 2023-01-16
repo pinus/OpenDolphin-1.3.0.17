@@ -26,7 +26,6 @@ import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -101,12 +100,18 @@ public class Dolphin implements MainWindow {
     private static void redirectConsole() {
         if (Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false)) {
             try {
-                String logName = System.getProperty("user.dir") + "/console.log";
+                String applicationSupportDir = Dolphin.forMac
+                    ? System.getProperty("user.home") + "/Library/Application Support/OpenDolphin/"
+                    : System.getProperty("user.home") + "\\AppData\\Local\\OpenDolphin\\";
+                Path p = Paths.get(applicationSupportDir);
+                if (!Files.exists(p)) { Files.createDirectory(p); }
+
+                String logName = applicationSupportDir + "console.log";
                 PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
                 System.setOut(ps);
                 System.setErr(ps);
                 System.out.println("Console redirected to " + logName);
-            } catch (FileNotFoundException ex) {
+            } catch (IOException ex) {
             }
         }
     }
