@@ -107,10 +107,11 @@ public class Dolphin implements MainWindow {
                 if (!Files.exists(p)) { Files.createDirectory(p); }
 
                 String logName = applicationSupportDir + "console.log";
+                System.out.println("**** Redirecting Console to " + logName + " ****");
+
                 PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
                 System.setOut(ps);
                 System.setErr(ps);
-                System.out.println("Console redirected to " + logName);
             } catch (IOException ex) {
             }
         }
