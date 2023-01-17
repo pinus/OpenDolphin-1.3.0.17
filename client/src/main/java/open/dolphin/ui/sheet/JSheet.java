@@ -1,6 +1,7 @@
 package open.dolphin.ui.sheet;
 
 import open.dolphin.client.Dolphin;
+import open.dolphin.helper.StackTracer;
 import open.dolphin.helper.WindowSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -448,10 +449,15 @@ public class JSheet extends JWindow implements ActionListener {
             // フォーカス解除
             focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
             KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
-            // キー入力を横取りする
-            KeyboardFocusManager
-                .getCurrentKeyboardFocusManager().addKeyEventDispatcher(sheetKeyEventDispatcher);
+            // キー入力を横取りする (重複を防ぐ)
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sheetKeyEventDispatcher);
+
+            // DEBUG
             logger.info("sheetKeyEventDispatcher added: " + sheetKeyEventDispatcher);
+            java.util.List<StackTraceElement> trace = StackTracer.getTrace();
+            for(int i=1; i<4; i++) { logger.info(trace.get(i).getClassName()); }
+
             super.setVisible(true);
             glassPane.setVisible(true);
 
@@ -475,7 +481,10 @@ public class JSheet extends JWindow implements ActionListener {
 
             // キー入力横取りの中止と, フォーカス返還
             KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
+
+            // DEBUG
             logger.info("sheetKeyEventDispatcher removed: " + sheetKeyEventDispatcher);
+
             if (Objects.nonNull(focusOwner)) {
                 focusOwner.requestFocusInWindow();
             }
