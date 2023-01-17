@@ -87,7 +87,9 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         //scrollUnitPanel.add(Box.createVerticalGlue());
 
         // コンソールのログ出力
-        redirectBox = new JCheckBox("コンソールをファイルに出力する [設定反映に再起動が必要]");
+        redirectBox = new JCheckBox("<html>コンソールをファイルに出力する [設定反映に再起動が必要]<br>" +
+            "・user.home/Library/Application Support/OpenDolphin/console.log<br>" +
+            "・user.home\\AppData\\Local\\OpenDolphin\\console.log</html>");
 
         gbb = new GridBagBuilder("コンソールのログ出力");
         gbb.add(redirectBox, 0, 1, 1, 1, GridBagConstraints.EAST);
