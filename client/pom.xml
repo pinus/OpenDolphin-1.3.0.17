@@ -223,7 +223,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <echo>making dist folder using jpackage</echo>
                                 <property name="targetdir" value="${basedir}/target" />
                                 <property name="distdir" value="${targetdir}/dist" />
@@ -247,8 +247,16 @@
                                     <arg line="--main-jar opendolphin.jar" />
                                     <arg line="--icon ${java.jpackage.icon}" />
                                     <arg line="--runtime-image ${jredir}" />
+                                    <arg line="--java-options --add-opens=java.desktop/javax.swing=ALL-UNNAMED" />
+                                    <arg line="--java-options --add-opens=java.desktop/javax.swing.undo=ALL-UNNAMED" />
+                                    <arg line="--java-options --add-opens=java.desktop/javax.accessibility=ALL-UNNAMED" />
+                                    <arg line="--java-options --add-opens=java.desktop/java.beans=ALL-UNNAMED" />
+                                    <arg line="--java-options --add-opens=java.desktop/sun.awt=ALL-UNNAMED" />
+                                    <arg line="--java-options --add-opens=java.base/java.lang=ALL-UNNAMED" />
+                                    <arg line="--java-options --add-opens=java.base/java.lang.ref=ALL-UNNAMED" />
+                                    <arg line="--java-options --add-opens=java.base/java.security=ALL-UNNAMED" />
                                 </exec>
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
