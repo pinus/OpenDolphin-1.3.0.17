@@ -26,15 +26,19 @@ import java.awt.event.*;
  */
 public abstract class AbstractComponentHolder<T> extends JLabel
     implements ComponentHolder<JLabel>, MouseListener, MouseMotionListener, KeyListener {
-        private Logger logger = LoggerFactory.getLogger(AbstractComponentHolder.class);
+    private final Logger logger = LoggerFactory.getLogger(AbstractComponentHolder.class);
 
     private static final KeyStroke TAB = KeyStroke.getKeyStroke("TAB");
     private static final KeyStroke SHIFT_TAB = KeyStroke.getKeyStroke("shift TAB");
     private static final KeyStroke CTRL_ENTER = KeyStroke.getKeyStroke("ctrl ENTER");
     private static final KeyStroke SPACE = KeyStroke.getKeyStroke("SPACE");
+    private static final KeyStroke UP = KeyStroke.getKeyStroke("UP");
+    private static final KeyStroke DOWN = KeyStroke.getKeyStroke("DOWN");
+    private static final KeyStroke RIGHT = KeyStroke.getKeyStroke("RIGHT");
+    private static final KeyStroke LEFT = KeyStroke.getKeyStroke("LEFT");
 
     // 親の KartePane
-    private KartePane kartePane;
+    private final KartePane kartePane;
     // JTextPane 内での開始と終了ポジション. 自動更新される.
     private Position start;
     private Position end;
@@ -85,13 +89,13 @@ public abstract class AbstractComponentHolder<T> extends JLabel
         KeyStroke key = KeyStroke.getKeyStrokeForEvent(e);
 
         if (TAB.equals(key)) {
-            // TAB キーでフォーカス次移動
+            // TAB キーでフォーカス次移動 (インスペクタでのフォーカス移動)
             if (!kartePane.getTextPane().isEditable()) {
                 SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusNextComponent);
             }
 
         } else if (SHIFT_TAB.equals(key)) {
-            // shift TAB キーでフォーカス前移動
+            // shift TAB キーでフォーカス前移動 (インスペクタでのフォーカス移動)
             if (!kartePane.getTextPane().isEditable()) {
                 SwingUtilities.invokeLater(FocusManager.getCurrentManager()::focusPreviousComponent);
             }
@@ -102,17 +106,17 @@ public abstract class AbstractComponentHolder<T> extends JLabel
 
         } else if (CTRL_ENTER.equals(key)) {
             // ctrl-ENTER でポップアップ表示
-            Point p = getLocationOnScreen();
             MouseEvent me = new MouseEvent(this, 0, 0, 0,
                 10, this.getHeight(), 0, true, 0);
             maybeShowPopup(me);
 
-        } else if (!e.isControlDown() && !e.isMetaDown() && !e.isShiftDown() && !e.isAltDown()){
-            // その他のキーは親の JTextPane に丸投げ
+        } else if (UP.equals(key) || DOWN.equals(key) || RIGHT.equals(key) || LEFT.equals(key)) {
+            // 上下左右キーは JTextPane に送る
             JTextPane pane = kartePane.getTextPane();
             pane.requestFocusInWindow();
             pane.dispatchEvent(e);
         }
+        // その他のキーはここで消費される
     }
 
     @Override

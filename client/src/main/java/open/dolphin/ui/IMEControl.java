@@ -17,14 +17,13 @@ import java.awt.event.KeyEvent;
  * <li>ver 3: Robot version 切り替わったかどうか判定するために event queue システム導入
  * <li>ver 4: enableInputMethod(true/false) バージョン: short-cut が効かなくなったり不安定
  * <li>ver 5: Robot version 復活. 物理キーが押されていると誤動作するのでキー入力でフォーカスが当たるところには使えない
- * <li>ver 6: Java 17 で c や z が入力されてしまう. ATOK で F14 ひらがな, F15 英字 に設定して対応.
  * </ul>
  *
  * @author pns
  */
 public class IMEControl {
-    private static Logger logger = LoggerFactory.getLogger(IMEControl.class);
-    private static boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
+    private final static Logger logger = LoggerFactory.getLogger(IMEControl.class);
+    private final static boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
     private static Robot robot;
     static {
         try { robot = new Robot(); }
@@ -32,24 +31,22 @@ public class IMEControl {
     }
 
     /**
-     * IME-off. Shift-Control-C で英字 -> F15
+     * IME-off. Shift-Control-C で英字
      */
     public static void off() {
         if (isMac) {
             logger.info("atok eiji mode");
-            //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_C);
-            type(KeyEvent.VK_F15);
+            type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_C);
         }
     }
 
     /**
-     * IME-on. Shift-Control-Z でひらがな -> F14
+     * IME-on. Shift-Control-Z でひらがな
      */
     public static void on() {
         if (isMac) {
             logger.info("atok hiragana mode");
-            //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_Z);
-            type(KeyEvent.VK_F14);
+            type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_Z);
         }
     }
 
