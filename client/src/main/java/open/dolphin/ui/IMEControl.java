@@ -31,22 +31,24 @@ public class IMEControl {
     }
 
     /**
-     * IME-off. Shift-Control-C で英字
+     * IME-off. Shift-Control-C で英字 -> F15
      */
     public static void off() {
         if (isMac) {
             logger.info("atok eiji mode");
-            type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_C);
+            //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_C);
+            type(KeyEvent.VK_F15);
         }
     }
 
     /**
-     * IME-on. Shift-Control-Z でひらがな
+     * IME-on. Shift-Control-Z でひらがな -> F14
      */
     public static void on() {
         if (isMac) {
             logger.info("atok hiragana mode");
-            type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_Z);
+            //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_Z);
+            type(KeyEvent.VK_F14);
         }
     }
 

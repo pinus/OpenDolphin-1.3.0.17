@@ -116,7 +116,6 @@ public abstract class AbstractComponentHolder<T> extends JLabel
             pane.requestFocusInWindow();
             pane.dispatchEvent(e);
         }
-        // その他のキーはここで消費される
     }
 
     @Override
