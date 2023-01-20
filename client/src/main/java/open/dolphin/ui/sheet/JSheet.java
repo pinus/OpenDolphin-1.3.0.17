@@ -3,6 +3,7 @@ package open.dolphin.ui.sheet;
 import open.dolphin.client.Dolphin;
 import open.dolphin.helper.StackTracer;
 import open.dolphin.helper.WindowSupport;
+import open.dolphin.ui.PNSOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.swing.*;
@@ -213,7 +214,7 @@ public class JSheet extends JWindow implements ActionListener {
     public static int showOptionDialog(Component parentComponent, Object message, String title,
                                        int optionType, int messageType, Icon icon, final Object[] options, Object initialValue) {
 
-        JOptionPane pane = new JOptionPane(message, messageType, optionType, icon, options, initialValue);
+        JOptionPane pane = new PNSOptionPane(message, messageType, optionType, icon, options, initialValue);
         pane.setInitialValue(initialValue);
         pane.selectInitialValue();
         final int[] answer = new int[1];

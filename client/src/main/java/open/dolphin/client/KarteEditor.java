@@ -20,6 +20,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -105,12 +106,12 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
      *
      * @return 高さ
      */
-    public int getActualHeight() {
+    public double getActualHeight() {
         try {
             JTextPane pane = soaPane.getTextPane();
             int pos = pane.getDocument().getLength();
-            Rectangle r = pane.modelToView(pos);
-            int hsoa = r.y;
+            Rectangle2D r = pane.modelToView2D(pos);
+            double hsoa = r.getHeight();
 
             if (pPane == null) {
                 return hsoa;
@@ -118,8 +119,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
             pane = pPane.getTextPane();
             pos = pane.getDocument().getLength();
-            r = pane.modelToView(pos);
-            int hp = r.y;
+            r = pane.modelToView2D(pos);
+            double hp = r.getHeight();
 
             return Math.max(hsoa, hp);
 
@@ -241,8 +242,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
         // ctrl-¥ で soaPane, PPane 間を移動する
         KeyListener l = new KeyAdapter() {
-            KeyStroke CTRL_YEN = KeyStroke.getKeyStroke("ctrl BACK_SLASH");
-            JTextPane SOA = kartePanel.getSoaTextPane(), P = kartePanel.getPTextPane();
+            final KeyStroke CTRL_YEN = KeyStroke.getKeyStroke("ctrl BACK_SLASH");
+            final JTextPane SOA = kartePanel.getSoaTextPane(), P = kartePanel.getPTextPane();
             @Override
             public void keyPressed(KeyEvent e) {
                 if (KeyStroke.getKeyStrokeForEvent(e).equals(CTRL_YEN)) {
@@ -318,8 +319,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         // コンテキストが EditotFrame の場合と Chart の場合がある
         if (getContext() instanceof ChartImpl) {
             ins = getContext().getHealthInsurances();
-        } else if (getContext() instanceof EditorFrame) {
-            EditorFrame ef = (EditorFrame) getContext();
+        } else if (getContext() instanceof EditorFrame ef) {
             ChartImpl chart = (ChartImpl) ef.getChart();
             ins = chart.getHealthInsurances();
         }
@@ -426,11 +426,21 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         params.setSendClaim(sendClaim);
 
         Window parent = SwingUtilities.getWindowAncestor(this.getUI());
+
+        // save dialog が出ている間, JTextPane を disable する
+        soaPane.getTextPane().setEnabled(false);
+        pPane.getTextPane().setEnabled(false);
+
         SaveDialog sd = new SaveDialog(parent);
         params.setAllowPatientRef(false);    // 患者の参照
         params.setAllowClinicRef(false);     // 診療履歴のある医療機関
         sd.setValue(params);
         sd.start();
+
+        // save dialog が消えたら JTextPane を eable する
+        soaPane.getTextPane().setEnabled(true);
+        pPane.getTextPane().setEnabled(true);
+
         params = sd.getValue();
 
         // 印刷枚数を保存する
@@ -487,7 +497,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         final DocumentModel saveModel = getDocument();
         final Chart chart = this.getContext();
 
-        DBTask<String> task = new DBTask<String>(chart) {
+        DBTask<String> task = new DBTask<>(chart) {
 
             @Override
             protected String doInBackground() {
@@ -589,27 +599,27 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             String oldStatus = docInfo.getStatus();
 
             switch (oldStatus) {
-                case STATUS_NONE:
+                case STATUS_NONE -> {
                     //
                     // NONEから確定への遷移 newSave
                     //
                     sendClaim = params.isSendClaim();
                     logger.debug("NONEから確定 : " + sendClaim);
-                    break;
-                case STATUS_TMP:
+                }
+                case STATUS_TMP -> {
                     //
                     // 仮保存から確定へ遷移する場合   saveFromTmp
                     //
                     sendClaim = params.isSendClaim();
                     logger.debug("仮保存から確定 : " + sendClaim);
-                    break;
-                default:
+                }
+                default -> {
                     //
                     // 確定から確定（修正の場合に相当する）以前は sendClaim = false;
                     //
                     sendClaim = params.isSendClaim();
                     logger.debug("修正 : " + sendClaim);
-                    break;
+                }
             }
 
             //
@@ -778,8 +788,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             bean.setStatus(STATUS_FINAL);                           // status
 
             // 全角を Kill する
-            if (bean.getModel() instanceof BundleMed) {
-                BundleMed med = (BundleMed) bean.getModel();
+            if (bean.getModel() instanceof BundleMed med) {
                 ClaimItem[] items = med.getClaimItem();
                 if (items != null && items.length > 0) {
                     for (ClaimItem item : items) {
@@ -795,8 +804,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                     bNum = StringTool.toHankakuNumber(bNum);
                     med.setBundleNumber(bNum);
                 }
-            } else if (bean.getModel() instanceof ClaimBundle) {
-                ClaimBundle bundle = (ClaimBundle) bean.getModel();
+            } else if (bean.getModel() instanceof ClaimBundle bundle) {
                 ClaimItem[] items = bundle.getClaimItem();
                 if (items != null && items.length > 0) {
                     for (ClaimItem item : items) {
