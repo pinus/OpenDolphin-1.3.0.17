@@ -1,5 +1,7 @@
 package open.dolphin.ui;
 
+import open.dolphin.client.Dolphin;
+import open.dolphin.project.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +10,7 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
+import java.util.prefs.Preferences;
 
 /**
  * Mac で IME on/off を切り替える.
@@ -17,6 +20,7 @@ import java.awt.event.KeyEvent;
  * <li>ver 3: Robot version 切り替わったかどうか判定するために event queue システム導入
  * <li>ver 4: enableInputMethod(true/false) バージョン: short-cut が効かなくなったり不安定
  * <li>ver 5: Robot version 復活. 物理キーが押されていると誤動作するのでキー入力でフォーカスが当たるところには使えない
+ * <li>ver 6: key combination での robot 入力うまくいかず, F14, F15 キーで切り替えるように ATOK 側で設定することにした
  * </ul>
  *
  * @author pns
@@ -24,6 +28,8 @@ import java.awt.event.KeyEvent;
 public class IMEControl {
     private final static Logger logger = LoggerFactory.getLogger(IMEControl.class);
     private final static boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
+    private final static int toEijiKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F15);
+    private final static int toHiraganaKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F14);
     private static Robot robot;
     static {
         try { robot = new Robot(); }
@@ -37,7 +43,7 @@ public class IMEControl {
         if (isMac) {
             logger.info("atok eiji mode");
             //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_C);
-            type(KeyEvent.VK_F15);
+            type(toEijiKey);
         }
     }
 
@@ -48,7 +54,7 @@ public class IMEControl {
         if (isMac) {
             logger.info("atok hiragana mode");
             //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_Z);
-            type(KeyEvent.VK_F14);
+            type(toHiraganaKey);
         }
     }
 

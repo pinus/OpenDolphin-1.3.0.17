@@ -82,6 +82,9 @@ public class Project {
     public static final String PVT_CHECK_INTERVAL = "pvt.check.interval";
     // コンソールのログファイル出力
     public static final String REDIRECT_CONSOLE = "redirect.console";
+    // ATOK 文字種切換キー
+    public static final String ATOK_TO_EIJI_KEY = "atok.to.eiji.key";
+    public static final String ATOK_TO_HIRAGANA_KEY = "atok.to.hiragana.key";
     private static ProjectStub stub;
 
     public Project() {
