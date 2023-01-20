@@ -15,7 +15,7 @@ import java.awt.print.PrinterJob;
 public class PrintablePanel extends JPanel implements Printable {
     
     private String patientName;
-    private int height;
+    private double height;
 
     public PrintablePanel() {
     }
@@ -23,9 +23,9 @@ public class PrintablePanel extends JPanel implements Printable {
     // Junzo SATO
     public void printPanel(
 
-            PageFormat pageFormat,
-            int numOfCopies,
-            boolean useDialog, String name, int height) {
+        PageFormat pageFormat,
+        int numOfCopies,
+        boolean useDialog, String name, double height) {
 
         patientName = name + " カルテ";
         this.height = height;
