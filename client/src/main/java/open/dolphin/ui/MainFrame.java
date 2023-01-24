@@ -1,5 +1,6 @@
 package open.dolphin.ui;
 
+import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 
 import javax.swing.*;
@@ -42,20 +43,16 @@ public class MainFrame extends JFrame {
     private void initComponents(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
         getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         setTitle(title);
-        setIconImage(GUIConst.ICON_DOLPHIN.getImage());
+        if (Dolphin.forWin) { setIconImage(GUIConst.ICON_DOLPHIN.getImage()); }
 
         // コマンドパネル
-        if (commandPanelNeeded) {
-            commandPanel = new CommandPanel();
-        }
+        if (commandPanelNeeded) { commandPanel = new CommandPanel(); }
 
         // メインパネル
         mainPanel = new MainPanel();
 
         // ステータスパネル
-        if (statusPanelNeeded) {
-            statusPanel = new StatusPanel();
-        }
+        if (statusPanelNeeded) { statusPanel = new StatusPanel(); }
 
         // 全体をレイアウトする
         this.setLayout(new BorderLayout(0, 0));
