@@ -30,7 +30,7 @@
             <properties>
                 <java.jlink>/usr/bin/jlink</java.jlink>
                 <java.jpackage>/usr/bin/jpackage</java.jpackage>
-                <java.jpackage.icon>${basedir}/icons/OpenDolphin-ICN.icns</java.jpackage.icon>
+                <java.jpackage.resource.dir>${basedir}/resouces</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
             </properties>
         </profile>
@@ -40,6 +40,7 @@
                 <java.jlink>${java.home}/bin/jlink.exe</java.jlink>
                 <java.jpackage>${java.home}/bin/jpackage.exe</java.jpackage>
                 <java.jpackage.icon>${basedir}/icons/OpenDolphin-ICO.ico</java.jpackage.icon>
+                <java.jpackage.resource.dir>${basedir}/resouces-win</java.jpackage.resource.dir>
                 <java.jpackage.type>msi</java.jpackage.type>
             </properties>
         </profile>
@@ -245,8 +246,8 @@
                                     <arg line="-i ${workdir}/" />
                                     <arg line="-d ${distdir}" />
                                     <arg line="--main-jar opendolphin.jar" />
-                                    <arg line="--icon ${java.jpackage.icon}" />
                                     <arg line="--runtime-image ${jredir}" />
+                                    <arg line="--resource-dir ${java.jpackage.resource.dir}" />?
                                     <arg line="--java-options --add-opens=java.desktop/javax.swing=ALL-UNNAMED" />
                                     <arg line="--java-options --add-opens=java.desktop/javax.swing.undo=ALL-UNNAMED" />
                                     <arg line="--java-options --add-opens=java.desktop/javax.accessibility=ALL-UNNAMED" />
