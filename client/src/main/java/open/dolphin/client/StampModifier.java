@@ -18,22 +18,23 @@ import java.util.List;
  */
 public class StampModifier {
 
-    private static String[] UNIT_MAI = {
+    private static final String[] UNIT_MAI = {
             "620005757", "620005758", "620007608", "620007706", "620007807", "620614501"
     };
 
     /**
      * スタンプ加工バッチ処理.
      *
-     * @param stamp
+     * @param stamp stamp
      */
     public static void modify(ModuleModel stamp) {
-        //checkDuplicate(stamp, kartePane);
-        if (IInfoModel.ENTITY_TREATMENT.equals(stamp.getModuleInfo().getEntity())) {
+        String entity = stamp.getModuleInfo().getEntity();
+        // 開始日挿入
+        if (IInfoModel.ENTITY_TREATMENT.equals(entity) || IInfoModel.ENTITY_OTHER_ORDER.equals(entity)) {
             addTodaysDate(stamp);
         }
-
-        if (IInfoModel.ENTITY_MED_ORDER.equals(stamp.getModuleInfo().getEntity())) {
+        // 外用剤の bundle を常に 1 に補正. 単位のない薬剤に単位をでっち上げる.
+        if (IInfoModel.ENTITY_MED_ORDER.equals(entity)) {
             adjustNumber(stamp);
             addUnit(stamp);
         }
@@ -43,15 +44,14 @@ public class StampModifier {
      * 重複スタンプがあれば注意を促す.
      * KartePane，KartePaneTransferHandler から呼ばれる.
      *
-     * @param srcStamp
-     * @param kartePane
+     * @param srcStamp stamp
+     * @param kartePane karte pane
      * @return duplicate の数
      */
     public static int checkDuplicates(ModuleModel srcStamp, KartePane kartePane) {
         // チェックするのは BundleDolphin だけ
-        if (!(srcStamp.getModel() instanceof BundleDolphin)) { return 0; }
+        if (!(srcStamp.getModel() instanceof BundleDolphin srcModel)) { return 0; }
 
-        BundleDolphin srcModel = (BundleDolphin) srcStamp.getModel();
         String classCode = srcModel.getClassCode();
 
         List<StampHolder> distStamps = kartePane.getDocument().getStampHolders();
@@ -84,16 +84,13 @@ public class StampModifier {
         if (!duplicates.isEmpty()) {
             final Window parent = SwingUtilities.getWindowAncestor(kartePane.getComponent());
 
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("重複したスタンプがあります");
-                    for (String item : duplicates) {
-                        sb.append("\n「").append(item).append("」");
-                    }
-                    JSheet.showMessageDialog(parent, sb.toString(), "スタンプ重複", JOptionPane.WARNING_MESSAGE);
+            SwingUtilities.invokeLater(() -> {
+                StringBuilder sb = new StringBuilder();
+                sb.append("重複したスタンプがあります");
+                for (String item : duplicates) {
+                    sb.append("\n「").append(item).append("」");
                 }
+                JSheet.showMessageDialog(parent, sb.toString(), "スタンプ重複", JOptionPane.WARNING_MESSAGE);
             });
         }
 
@@ -103,7 +100,7 @@ public class StampModifier {
     /**
      * 初回実施で number が入力されていない場合，今日の日付を入れる
      *
-     * @param stamp
+     * @param stamp stamp
      */
     private static void addTodaysDate(ModuleModel stamp) {
         ClaimBundle bundle = (ClaimBundle) stamp.getModel();
@@ -117,8 +114,9 @@ public class StampModifier {
                     c.setNumber(String.format("%02d-%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DATE)));
                     break;
                 }
-            } else if ("850100268".equals(c.getCode())) {
-                // 熱傷処置の日付
+            //} else if ("850100268".equals(c.getCode())) {
+            } else if (c.getCode().startsWith("850100")) {
+                // 850100xxx は全て年月日になってるみたい
                 if (c.getNumber() == null || !c.getNumber().matches("[0-9]*-[0-9]*-[0-9]*")) {
                     Calendar calendar = Calendar.getInstance();
                     c.setNumber(String.format("%4d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DATE)));
@@ -133,7 +131,7 @@ public class StampModifier {
      * 外用剤の場合は bundle は常に 1 にして，その分を dose の方に増やす.
      * ドレニゾンテープ 1枚 x 3回分 → ドレニゾンテープ 3枚 x 1回分 という形式にする.
      *
-     * @param stamp
+     * @param stamp stamp
      */
     public static void adjustNumber(ModuleModel stamp) {
         BundleDolphin bundle = (BundleDolphin) stamp.getModel();
@@ -159,7 +157,7 @@ public class StampModifier {
     /**
      * 単位の付いてない薬剤に単位を付ける.
      *
-     * @param stamp
+     * @param stamp stamp
      */
     private static void addUnit(ModuleModel stamp) {
         ClaimItem[] items = ((BundleDolphin) stamp.getModel()).getClaimItem();
