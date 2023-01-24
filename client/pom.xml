@@ -30,7 +30,7 @@
             <properties>
                 <java.jlink>/usr/bin/jlink</java.jlink>
                 <java.jpackage>/usr/bin/jpackage</java.jpackage>
-                <java.jpackage.resource.dir>${basedir}/resouces</java.jpackage.resource.dir>
+                <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
             </properties>
         </profile>
@@ -40,7 +40,7 @@
                 <java.jlink>${java.home}/bin/jlink.exe</java.jlink>
                 <java.jpackage>${java.home}/bin/jpackage.exe</java.jpackage>
                 <java.jpackage.icon>${basedir}/icons/OpenDolphin-ICO.ico</java.jpackage.icon>
-                <java.jpackage.resource.dir>${basedir}/resouces-win</java.jpackage.resource.dir>
+                <java.jpackage.resource.dir>${basedir}/resources-win</java.jpackage.resource.dir>
                 <java.jpackage.type>msi</java.jpackage.type>
             </properties>
         </profile>
