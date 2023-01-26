@@ -442,6 +442,10 @@ public class JSheet extends JWindow implements ActionListener {
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
+            if (isVisible()) {
+                logger.info("setVisible called, but is already visible");
+                return;
+            }
             owner.toFront();
 
             // アニメーションは EDT で表示される.
@@ -450,14 +454,13 @@ public class JSheet extends JWindow implements ActionListener {
             // フォーカス解除
             focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
             KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
-            // キー入力を横取りする (重複を防ぐ)
-            KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
+            // キー入力を横取りする
             KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sheetKeyEventDispatcher);
 
             // DEBUG
-            logger.info("sheetKeyEventDispatcher added: " + sheetKeyEventDispatcher);
-            java.util.List<StackTraceElement> trace = StackTracer.getTrace();
-            for(int i=1; i<4; i++) { logger.info(trace.get(i).getClassName()); }
+            //logger.info("sheetKeyEventDispatcher added: " + sheetKeyEventDispatcher);
+            //java.util.List<StackTraceElement> trace = StackTracer.getTrace();
+            //for(int i=1; i<4; i++) { logger.info(trace.get(i).getClassName()); }
 
             super.setVisible(true);
             glassPane.setVisible(true);
@@ -484,7 +487,7 @@ public class JSheet extends JWindow implements ActionListener {
             KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
 
             // DEBUG
-            logger.info("sheetKeyEventDispatcher removed: " + sheetKeyEventDispatcher);
+            //logger.info("sheetKeyEventDispatcher removed: " + sheetKeyEventDispatcher);
 
             if (Objects.nonNull(focusOwner)) {
                 focusOwner.requestFocusInWindow();
