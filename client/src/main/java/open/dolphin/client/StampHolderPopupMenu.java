@@ -548,15 +548,11 @@ public class StampHolderPopupMenu extends JPopupMenu {
             dialog.setLocation(p);
             dialog.setVisible(true);
 
-            // getValue() の値 -1=エスケープでキャンセル，null=赤ボタンで消した, 文字=optionsの文字
-            Object ans = pane.getValue();
+            // getValue() の値 追加=0, 上書き=1, キャンセル=2, エスケープでキャンセル=-1，赤ボタンで消した=null
+            int ans = (int) pane.getValue();
 
-            // キャンセルの場合はそのまま帰る
-            if (!options[0].equals(ans) && !options[1].equals(ans)) {
-                return;
-            }
-            // 入力無ければそのまま帰る
-            if (tf.getText().trim().equals("")) { return; }
+            // 追加、上書きでないばあい、入力なしの場合はそのまま帰る
+            if (!(ans == 0 || ans == 1) || tf.getText().trim().equals("")) { return; }
 
             // 新たなスタンプ作成
             BundleMed srcBundle = (BundleMed) ctx.getModel().getModel();
@@ -567,7 +563,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
             // 既存のコメント以外はそのまま登録，追加登録の場合は既存のコメントも登録
             for (ClaimItem src : srcBundle.getClaimItem()) {
-                if (!src.getCode().startsWith("810000001") || options[0].equals(ans)) {
+                if (!src.getCode().startsWith("810000001") || ans == 0) {
                     list.add(ModelUtils.clone(src));
                 }
             }
