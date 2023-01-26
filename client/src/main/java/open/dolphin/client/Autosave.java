@@ -27,7 +27,7 @@ public class Autosave implements Runnable {
     private final KarteEditor editor;
     // Logger
     private final Logger logger = LoggerFactory.getLogger(Autosave.class);
-    private AutosaveModel autosaveModel;
+    private final AutosaveModel autosaveModel;
     private File tmpFile;
     private boolean dirty = true;
     // 自動セーブのタイマー
@@ -84,8 +84,7 @@ public class Autosave implements Runnable {
         String chartPid = chart.getKarte().getPatient().getPatientId();
 
         List<AutosaveModel> targetModels = load().stream()
-                .filter(m -> chartPid.equals(m.getPatientId()))
-                .collect(Collectors.toList());
+            .filter(m -> chartPid.equals(m.getPatientId())).toList();
 
         if (targetModels.isEmpty()) {
             return;
@@ -100,8 +99,7 @@ public class Autosave implements Runnable {
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, selection, selection[0]);
 
             switch (opt) {
-                case JOptionPane.YES_OPTION:
-
+                case JOptionPane.YES_OPTION ->
                     targetModels.stream().map(a -> {
                         a.composeDocumentModel();
                         return a.getDocumentModel();
@@ -120,15 +118,11 @@ public class Autosave implements Runnable {
 
                         editor.setDirty(true);
                     });
-                    break;
 
-                case JOptionPane.NO_OPTION:
-                case JOptionPane.CLOSED_OPTION: // ESC key
-
+                case JOptionPane.NO_OPTION, JOptionPane.CLOSED_OPTION ->
                     targetModels.stream()
-                            .map(a -> getTemporaryFile(a.getPatientId(), a.getDocumentModel().getDocInfo().getDocId()))
-                            .forEach(File::delete);
-                    break;
+                        .map(a -> getTemporaryFile(a.getPatientId(), a.getDocumentModel().getDocInfo().getDocId()))
+                        .forEach(File::delete);
             }
         });
     }
@@ -151,8 +145,12 @@ public class Autosave implements Runnable {
      * 編集中カルテの記録を終了し, TemporaryFile を消去する.
      */
     public void stop() {
-        executor.shutdownNow();
-        tmpFile.delete();
+        if (! (executor.isShutdown() || executor.isTerminated())) {
+            executor.shutdownNow();
+            tmpFile.delete();
+        } else {
+            logger.info("stop() is called, but is already shutdown");
+        }
     }
 
     /**

@@ -477,8 +477,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             return;
         }
 
-        // Autosave の dirty を解消して、干渉してくるのを防ぐ
-        autosave.run();
+        // Autosave を止めて干渉してくるのを防ぐ
+        autosave.stop();
 
         // Debug code
         logger.info("save started: " + System.currentTimeMillis());

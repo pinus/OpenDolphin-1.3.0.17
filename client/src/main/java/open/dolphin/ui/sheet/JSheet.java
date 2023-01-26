@@ -1,7 +1,6 @@
 package open.dolphin.ui.sheet;
 
 import open.dolphin.client.Dolphin;
-import open.dolphin.helper.StackTracer;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.ui.PNSOptionPane;
 import org.slf4j.Logger;
@@ -458,7 +457,7 @@ public class JSheet extends JWindow implements ActionListener {
             KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sheetKeyEventDispatcher);
 
             // DEBUG
-            //logger.info("sheetKeyEventDispatcher added: " + sheetKeyEventDispatcher);
+            logger.info("sheetKeyEventDispatcher added: " + sheetKeyEventDispatcher);
             //java.util.List<StackTraceElement> trace = StackTracer.getTrace();
             //for(int i=1; i<4; i++) { logger.info(trace.get(i).getClassName()); }
 
@@ -487,7 +486,7 @@ public class JSheet extends JWindow implements ActionListener {
             KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
 
             // DEBUG
-            //logger.info("sheetKeyEventDispatcher removed: " + sheetKeyEventDispatcher);
+            logger.info("sheetKeyEventDispatcher removed: " + sheetKeyEventDispatcher);
 
             if (Objects.nonNull(focusOwner)) {
                 focusOwner.requestFocusInWindow();
