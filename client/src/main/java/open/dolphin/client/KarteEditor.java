@@ -477,12 +477,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             return;
         }
 
-        // Autosave を止めて干渉してくるのを防ぐ
-        autosave.stop();
-
-        // Debug code
-        logger.info("save started: " + System.currentTimeMillis());
-
         // 文書末の余分な改行文字を削除する by masuda-senesi
         KarteStyledDocument doc = (KarteStyledDocument) soaPane.getTextPane().getDocument();
         doc.removeExtraCr();

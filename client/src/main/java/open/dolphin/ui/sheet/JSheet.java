@@ -456,11 +456,6 @@ public class JSheet extends JWindow implements ActionListener {
             // キー入力を横取りする
             KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sheetKeyEventDispatcher);
 
-            // DEBUG
-            logger.info("sheetKeyEventDispatcher added: " + sheetKeyEventDispatcher);
-            //java.util.List<StackTraceElement> trace = StackTracer.getTrace();
-            //for(int i=1; i<4; i++) { logger.info(trace.get(i).getClassName()); }
-
             super.setVisible(true);
             glassPane.setVisible(true);
 
@@ -484,9 +479,6 @@ public class JSheet extends JWindow implements ActionListener {
 
             // キー入力横取りの中止と, フォーカス返還
             KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
-
-            // DEBUG
-            logger.info("sheetKeyEventDispatcher removed: " + sheetKeyEventDispatcher);
 
             if (Objects.nonNull(focusOwner)) {
                 focusOwner.requestFocusInWindow();

@@ -116,12 +116,8 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         }
 
         switch (mode) {
-            case BROWSER:
-                docModel = view.getDocument();
-                break;
-            case EDITOR:
-                docModel = editor.getDocument();
-                break;
+            case BROWSER -> docModel = view.getDocument();
+            case EDITOR -> docModel = editor.getDocument();
         }
         return docModel;
     }
@@ -149,12 +145,8 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         DocumentModel docModel = getDocumentModel();
         if (docModel != null) {
             switch (mode) {
-                case BROWSER:
-                    pk = docModel.getDocInfo().getDocPk();
-                    break;
-                case EDITOR:
-                    pk = docModel.getDocInfo().getParentPk();
-                    break;
+                case BROWSER -> pk = docModel.getDocInfo().getDocPk();
+                case EDITOR -> pk = docModel.getDocInfo().getParentPk();
             }
         }
         return pk;
@@ -519,7 +511,8 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                close();
+                // window のクローズボタンを押したときの対応
+                closeFrame();
             }
 
             @Override
@@ -585,17 +578,20 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * クローズする.
      * キャンセル，破棄の処理は editor でまとめてすることにした.
      */
-    @Override
-    public void close() {
-        if (mode == EditorMode.EDITOR) {
-            if (editor.isDirty()) {
-                editor.save(); // save 呼ぶと完了後に FinishLitener で stop() が呼ばれる
-            } else {
-                stop();
-            }
+    private void closeFrame() {
+        if (mode == EditorMode.EDITOR && editor.isDirty()) {
+            editor.save();
         } else {
             stop();
         }
+    }
+
+    /**
+     * メニューの「閉じる」で呼ばれる.
+     */
+    @Override
+    public void close() {
+        closeFrame();
     }
 
     // このクラスの２つのモード（状態）でメニューの制御に使用する
