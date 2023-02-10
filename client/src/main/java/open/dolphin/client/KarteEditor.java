@@ -537,19 +537,19 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                     // 文書履歴の更新を通知する
                     chart.getDocumentHistory().update(docInfo.getFirstConfirmDateTrimTime());
 
-                    // save が終了したことを EditorFrame に知らせる
-                    completionListener.completed();
-
                 } else {
                     // errMsg を処理する
                     // エラーを表示する
                     JFrame parent = chart.getFrame();
-                    String title = ClientContext.getString("karte.task.saveTitle");
+                    //String title = ClientContext.getString("karte.task.saveTitle");
+                    String title = "カルテ保存";
                     JOptionPane.showMessageDialog(parent,
                             errMsg,
                             ClientContext.getFrameTitle(title),
                             JOptionPane.WARNING_MESSAGE);
                 }
+                // EditorFrame#stop() が呼ばれる
+                completionListener.completed();
             }
         };
         task.execute();

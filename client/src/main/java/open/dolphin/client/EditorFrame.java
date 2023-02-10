@@ -1,12 +1,15 @@
 package open.dolphin.client;
 
 import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.StackTracer;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DocumentHistory;
 import open.dolphin.ui.MainFrame;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.StatusPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +27,7 @@ import java.util.List;
  * @author Kazushi Minagawa
  */
 public class EditorFrame extends AbstractMainTool implements Chart {
+    private final Logger logger;
 
     // 全インスタンスを保持するリスト
     private static final List<EditorFrame> allEditorFrames = new ArrayList<>(3);
@@ -52,6 +56,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * EditorFrame オブジェクトを生成する.
      */
     public EditorFrame() {
+        logger = LoggerFactory.getLogger(EditorFrame.class);
     }
 
     /**
@@ -512,6 +517,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             @Override
             public void windowClosing(WindowEvent e) {
                 // window のクローズボタンを押したときの対応
+                logger.info("windowClosing");
                 closeFrame();
             }
 
@@ -568,6 +574,9 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      */
     @Override
     public void stop() {
+        //DEBUG
+        logger.info("stop()");
+
         editor.stop();
         mediator.dispose();
         windowSupport.dispose();
@@ -579,6 +588,12 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * キャンセル，破棄の処理は editor でまとめてすることにした.
      */
     private void closeFrame() {
+        //DEBUG
+        List<StackTraceElement> trace = StackTracer.getTrace();
+        for (int i=2; i<4; i++) {
+            logger.info(i + ":" + trace.get(i).toString());
+        }
+
         if (mode == EditorMode.EDITOR && editor.isDirty()) {
             editor.save();
         } else {
