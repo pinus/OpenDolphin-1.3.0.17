@@ -595,6 +595,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         }
 
         if (mode == EditorMode.EDITOR && editor.isDirty()) {
+            // save が成功すると editor から stop() が呼ばれる. 失敗すると呼ばれない.
             editor.save();
         } else {
             stop();

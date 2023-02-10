@@ -536,6 +536,8 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                     }
                     // 文書履歴の更新を通知する
                     chart.getDocumentHistory().update(docInfo.getFirstConfirmDateTrimTime());
+                    // EditorFrame#stop() を呼ぶ
+                    completionListener.completed();
 
                 } else {
                     // errMsg を処理する
@@ -548,8 +550,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                             ClientContext.getFrameTitle(title),
                             JOptionPane.WARNING_MESSAGE);
                 }
-                // EditorFrame#stop() が呼ばれる
-                completionListener.completed();
             }
         };
         task.execute();
