@@ -28,9 +28,9 @@ public class JSheet extends JWindow implements ActionListener {
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
     // アニメーションする時間 msec
-    public static final float ANIMATION_DURATION = 50;
+    public static final float ANIMATION_DURATION = 100;
     // 書き換えの周期 msec
-    public static final int ANIMATION_SLEEP = 10;
+    public static final int ANIMATION_SLEEP = 5;
     // Owner window
     private Window owner;
     // 表示する JOptionPane / JFileChooser を入れる JPanel
@@ -77,7 +77,7 @@ public class JSheet extends JWindow implements ActionListener {
         if (isClassicDialog) {
             pane.setBorder(new CompoundBorder(new LineBorder(Color.GRAY), new EmptyBorder(16,16,16,16)));
         } else {
-            pane.setBorder(new SheetBorder());
+            //pane.setBorder(new SheetBorder());
         }
         JDialog dialog = pane.createDialog(null);
         dialog.getRootPane().putClientProperty("JRootPane.useWindowDecorations", false);
@@ -412,7 +412,6 @@ public class JSheet extends JWindow implements ActionListener {
                     }
                     sheetListener.optionSelected(se);
                     setVisible(false);
-                    dispose();
                 }
             });
 
@@ -428,7 +427,6 @@ public class JSheet extends JWindow implements ActionListener {
                 }
                 sheetListener.optionSelected(se);
                 setVisible(false);
-                dispose();
             });
         }
     }
@@ -573,7 +571,6 @@ public class JSheet extends JWindow implements ActionListener {
                     : (int) ((1.0f - animationPercent) * sourcePane.getHeight());
             // clip off that much from sheet and blit it into animatingSheet
             animatingSheet.setAnimatingHeight(animatingHeight);
-
             animatingSheet.repaint();
 
             // classic dialog ならアニメーションしない
@@ -603,6 +600,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         public AnimatingSheet() {
             super();
+            setBackground(new Color(0,0,0,0));
         }
 
         public void setSource(JComponent src) {
