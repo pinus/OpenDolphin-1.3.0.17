@@ -100,7 +100,7 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         JPanel redirectPanel = gbb.getProduct();
 
         // ATOK の【ひらがな入力文字種(あ)】と【英字入力(A)】に割り当てたキーを設定
-        String[] key = { "F13", "F14", "F15"};
+        String[] key = { "F12", "F13", "F14", "F15"};
         toEijiCombo = new JComboBox<>(key);
         toHiraganaCombo = new JComboBox<>(key);
         JLabel toEijiLabel = new JLabel("英字入力(A)", SwingConstants.RIGHT);
@@ -124,6 +124,7 @@ public class MiscSettingPanel extends AbstractSettingPanel {
 
     private static int toKeyCode(String key) {
         return switch (key) {
+            case "F12" -> KeyEvent.VK_F12;
             case "F13" -> KeyEvent.VK_F13;
             case "F14" -> KeyEvent.VK_F14;
             default -> KeyEvent.VK_F15;
@@ -132,6 +133,7 @@ public class MiscSettingPanel extends AbstractSettingPanel {
 
     private static String toKeyCodeString(int key) {
         return switch (key) {
+            case KeyEvent.VK_F12 -> "F12";
             case KeyEvent.VK_F13 -> "F13";
             case KeyEvent.VK_F14 -> "F14";
             default -> "F15";
