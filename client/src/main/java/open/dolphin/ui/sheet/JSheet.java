@@ -30,7 +30,7 @@ public class JSheet extends JWindow implements ActionListener {
     // アニメーションする時間 msec
     public static final float ANIMATION_DURATION = 100;
     // 書き換えの周期 msec
-    public static final int ANIMATION_SLEEP = 10;
+    public static final int ANIMATION_SLEEP = 2;
     // Owner window
     private Window owner;
     // 表示する JOptionPane / JFileChooser を入れる JPanel
@@ -252,6 +252,8 @@ public class JSheet extends JWindow implements ActionListener {
         content = (JPanel) getContentPane();
         content.setLayout(new BorderLayout());
         animatingSheet = new AnimatingSheet();
+        animationTimer = new Timer(ANIMATION_SLEEP, this);
+        animationTimer.setInitialDelay(0);
 
         // リアルタイムの書き直しにならない.
         owner.addComponentListener(new ComponentListener() {
@@ -520,9 +522,6 @@ public class JSheet extends JWindow implements ActionListener {
 
         // start animation timer
         animationStart = System.currentTimeMillis();
-        if (animationTimer == null) {
-            animationTimer = new Timer(ANIMATION_SLEEP, this);
-        }
         animating = true;
         animationTimer.start();
     }
