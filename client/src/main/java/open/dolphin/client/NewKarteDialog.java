@@ -52,8 +52,8 @@ public final class NewKarteDialog {
     /**
      * Creates new NewKarteDialog.
      *
-     * @param parentFrame
-     * @param title
+     * @param parentFrame parent frame
+     * @param title title
      */
     public NewKarteDialog(Frame parentFrame, String title) {
         prefs = Preferences.userNodeForPackage(this.getClass());
@@ -184,8 +184,7 @@ public final class NewKarteDialog {
         boolean frameMemory = prefs.getBoolean(FRAME_MEMORY, true);
 
         switch (params.getOption()) {
-
-            case BROWSER_NEW:
+            case BROWSER_NEW -> {
                 applyRp.setEnabled(false);
                 allCopy.setEnabled(false);
                 emptyNew.setSelected(true);
@@ -194,57 +193,51 @@ public final class NewKarteDialog {
                 ButtonGroup bg = new ButtonGroup();
                 bg.add(openAnother);
                 bg.add(addToTab);
-                break;
-
-            case BROWSER_COPY_NEW:
+            }
+            case BROWSER_COPY_NEW -> {
                 selectCreateMode(lastCreateMode);
-                bg = new ButtonGroup();
+                ButtonGroup bg = new ButtonGroup();
                 bg.add(emptyNew);
                 bg.add(applyRp);
                 bg.add(allCopy);
-
                 openAnother.setSelected(frameMemory);
                 addToTab.setSelected(!frameMemory);
                 bg = new ButtonGroup();
                 bg.add(openAnother);
                 bg.add(addToTab);
-                break;
-
-            case BROWSER_MODIFY:
+            }
+            case BROWSER_MODIFY -> {
                 insuranceList.setEnabled(false);
                 applyRp.setEnabled(false);
                 allCopy.setEnabled(false);
                 emptyNew.setEnabled(false);
                 openAnother.setSelected(frameMemory);
                 addToTab.setSelected(!frameMemory);
-                bg = new ButtonGroup();
+                ButtonGroup bg = new ButtonGroup();
                 bg.add(openAnother);
                 bg.add(addToTab);
                 // OK Button
                 okButton.setEnabled(true);
-                break;
-
-            case EDITOR_NEW:
+            }
+            case EDITOR_NEW -> {
                 applyRp.setEnabled(false);
                 allCopy.setEnabled(false);
                 emptyNew.setSelected(true);
                 openAnother.setSelected(true);
                 openAnother.setEnabled(false);
                 addToTab.setEnabled(false);
-                break;
-
-            case EDITOR_COPY_NEW:
+            }
+            case EDITOR_COPY_NEW -> {
                 selectCreateMode(lastCreateMode);
-                bg = new ButtonGroup();
+                ButtonGroup bg = new ButtonGroup();
                 bg.add(applyRp);
                 bg.add(allCopy);
                 bg.add(emptyNew);
                 openAnother.setSelected(true);
                 openAnother.setEnabled(false);
                 addToTab.setEnabled(false);
-                break;
-
-            case EDITOR_MODIFY:
+            }
+            case EDITOR_MODIFY -> {
                 insuranceList.setEnabled(false);
                 applyRp.setEnabled(false);
                 allCopy.setEnabled(false);
@@ -252,7 +245,7 @@ public final class NewKarteDialog {
                 openAnother.setSelected(true);
                 openAnother.setEnabled(false);
                 addToTab.setEnabled(false);
-                break;
+            }
         }
     }
 
@@ -264,9 +257,7 @@ public final class NewKarteDialog {
     }
 
     private void setInsurance(PVTHealthInsuranceModel[] o) {
-
         insuranceList.setListData(o);
-
         //
         // 保険が一つしかない場合はそれを選択する
         //
@@ -290,28 +281,15 @@ public final class NewKarteDialog {
     }
 
     private void selectCreateMode(int mode) {
-        emptyNew.setSelected(false);
-        applyRp.setSelected(false);
-        allCopy.setSelected(false);
-        switch (mode) {
-            case 0:
-                emptyNew.setSelected(true);
-                break;
-            case 1:
-                applyRp.setSelected(true);
-                break;
-            case 2:
-                allCopy.setSelected(true);
-                break;
-            default:
-                break;
-        }
+        emptyNew.setSelected(mode == 0);
+        applyRp.setSelected(mode == 1);
+        allCopy.setSelected(mode == 2);
     }
 
     /**
      * 保険選択に応じてボタン処理をする.
      *
-     * @param adjusting
+     * @param adjusting adjusting
      */
     public void insuranceSelectionChanged(boolean adjusting) {
         if (!adjusting) {
@@ -324,7 +302,6 @@ public final class NewKarteDialog {
      * カルテの作成方法をプレファレンスに記録する.
      */
     public void memoryMode() {
-
         if (emptyNew.isSelected()) {
             prefs.putInt(LAST_CREATE_MODE, 0);
         } else if (applyRp.isSelected()) {
@@ -354,7 +331,7 @@ public final class NewKarteDialog {
         params.setOpenFrame(openAnother.isSelected());
         value = params;
         dialog.setVisible(false);
-        dialog.dispose();
+        //dialog.dispose();
     }
 
     /**
@@ -363,6 +340,6 @@ public final class NewKarteDialog {
     public void doCancel() {
         value = null;
         dialog.setVisible(false);
-        dialog.dispose();
+        //dialog.dispose();
     }
 }

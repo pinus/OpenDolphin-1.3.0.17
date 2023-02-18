@@ -9,7 +9,6 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.plaf.basic.BasicPanelUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -31,7 +30,7 @@ public class JSheet extends JWindow implements ActionListener {
     // アニメーションする時間 msec
     public static final float ANIMATION_DURATION = 100;
     // 書き換えの周期 msec
-    public static final int ANIMATION_SLEEP = 5;
+    public static final int ANIMATION_SLEEP = 10;
     // Owner window
     private Window owner;
     // 表示する JOptionPane / JFileChooser を入れる JPanel
@@ -78,7 +77,7 @@ public class JSheet extends JWindow implements ActionListener {
         if (isClassicDialog) {
             pane.setBorder(new CompoundBorder(new LineBorder(Color.GRAY), new EmptyBorder(16,16,16,16)));
         } else {
-            //pane.setBorder(new SheetBorder());
+            pane.setBorder(new SheetBorder());
         }
         JDialog dialog = pane.createDialog(null);
         dialog.getRootPane().putClientProperty("JRootPane.useWindowDecorations", false);
@@ -247,7 +246,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         if (!isClassicDialog) {
             setBackground(new Color(0, 0, 0, 0));
-            //getRootPane().putClientProperty("Window.shadow", Boolean.TRUE);
+            getRootPane().putClientProperty("Window.shadow", Boolean.FALSE);
         }
 
         content = (JPanel) getContentPane();
