@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicPanelUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -595,7 +596,6 @@ public class JSheet extends JWindow implements ActionListener {
      */
     private static class AnimatingSheet extends JPanel {
         private final Dimension animatingSize = new Dimension(0, 1);
-        private JComponent source;
         private BufferedImage offscreenImage;
 
         public AnimatingSheet() {
@@ -604,7 +604,6 @@ public class JSheet extends JWindow implements ActionListener {
         }
 
         public void setSource(JComponent src) {
-            source = src;
             animatingSize.width = src.getWidth();
             makeOffscreenImage(src);
         }
@@ -615,9 +614,7 @@ public class JSheet extends JWindow implements ActionListener {
         }
 
         private void makeOffscreenImage(JComponent source) {
-            GraphicsConfiguration gfxConfig
-                    = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-            offscreenImage = gfxConfig.createCompatibleImage(source.getWidth(), source.getHeight(), Transparency.TRANSLUCENT);
+            offscreenImage = new BufferedImage(source.getWidth(), source.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
             Graphics2D offscreenGraphics = (Graphics2D) offscreenImage.getGraphics();
             source.paint(offscreenGraphics);
         }
@@ -639,11 +636,7 @@ public class JSheet extends JWindow implements ActionListener {
 
         @Override
         public void paint(Graphics g) {
-            // get the bottommost n pixels of source and
-            // paint them into g, where n is height
-            BufferedImage fragment
-                    = offscreenImage.getSubimage(0, offscreenImage.getHeight() - animatingSize.height, source.getWidth(), animatingSize.height);
-            g.drawImage(fragment, 0, 0, this);
+            g.drawImage(offscreenImage, 0, -offscreenImage.getHeight() + animatingSize.height, this);
         }
     }
 
