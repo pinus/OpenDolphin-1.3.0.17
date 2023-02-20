@@ -232,7 +232,7 @@ public class JSheet extends JWindow implements ActionListener {
         Window window = JOptionPane.getFrameForComponent(parentComponent);
         Window[] windowList = window.getOwnedWindows();
         for (Window w : windowList) {
-            if (w instanceof JSheet && w.isVisible()) {
+            if (w instanceof JSheet sheet && sheet.isVisible() && !sheet.isHiding()) {
                 // すでに JSheet が表示されている
                 return true;
             }
@@ -507,6 +507,15 @@ public class JSheet extends JWindow implements ActionListener {
     public void hideSheet() {
         animationDirection = OUTGOING;
         startAnimation();
+    }
+
+    /**
+     * 消去アニメーション中かどうか.
+     *
+     * @return 消去アニメーション中の場合 true
+     */
+    public boolean isHiding() {
+        return animationDirection == OUTGOING && animating;
     }
 
     /**
