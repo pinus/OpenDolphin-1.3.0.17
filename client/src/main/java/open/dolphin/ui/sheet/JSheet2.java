@@ -22,6 +22,7 @@ public class JSheet2 extends JWindow implements ActionListener {
     public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
+    public static final int ANIMATION_OFFSET = 48;
     // アニメーションする時間 msec
     public static final float ANIMATION_DURATION = 100;
     // 書き換えの周期 msec
@@ -68,7 +69,7 @@ public class JSheet2 extends JWindow implements ActionListener {
      */
     public static JSheet2 createDialog(final JOptionPane pane, Component parentComponent) {
         // create corresponding dialog
-        pane.setBorder(new SheetBorder());
+        pane.setBorder(new SheetBorder2());
         JDialog dialog = pane.createDialog(null);
         dialog.getRootPane().putClientProperty("JRootPane.useWindowDecorations", false);
         dialog.pack();
@@ -117,7 +118,7 @@ public class JSheet2 extends JWindow implements ActionListener {
         chooser.setPreferredSize(FILE_CHOOSER_SIZE);
         chooser.setMaximumSize(FILE_CHOOSER_SIZE);
         chooser.setMinimumSize(FILE_CHOOSER_SIZE);
-        chooser.setBorder(new SheetBorder());
+        chooser.setBorder(new SheetBorder2());
 
         JDialog dialog = new JDialog();
         dialog.getRootPane().putClientProperty("JRootPane.useWindowDecorations", false);
@@ -291,7 +292,7 @@ public class JSheet2 extends JWindow implements ActionListener {
 
         // Sheet をセンタリング
         loc.x += (ownerSize.width - sourcePaneSize.width) / 2;
-        loc.y += (ownerSize.height - sourcePaneSize.height) / 2;
+        loc.y += (ownerSize.height - sourcePaneSize.height) / 2 - ANIMATION_OFFSET;
 
         // 右端，左端の処理
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -554,11 +555,7 @@ public class JSheet2 extends JWindow implements ActionListener {
             float animationPercent
                 = (System.currentTimeMillis() - animationStart) / ANIMATION_DURATION;
             animationPercent = Math.min(1.0f, animationPercent);
-            int animatingHeight = (animationDirection == INCOMING)
-                ? (int) (animationPercent * sourcePane.getHeight())
-                : (int) ((1.0f - animationPercent) * sourcePane.getHeight());
-            // clip off that much from sheet and blit it into animatingSheet
-            animatingSheet.setAnimatingHeight(animatingHeight);
+            animatingSheet.setAnimationPercent(animationPercent, animationDirection);
             animatingSheet.repaint();
 
             // 終了処理
@@ -579,8 +576,11 @@ public class JSheet2 extends JWindow implements ActionListener {
      * 下から描いていく JPaenl.
      */
     private static class AnimatingSheet extends JPanel {
-        private final Dimension animatingSize = new Dimension(0, 1);
+        private final Dimension animatingSize = new Dimension(1, 1);
         private BufferedImage offscreenImage;
+        private float animationPercent;
+        private int posY;
+        private int direction;
 
         public AnimatingSheet() {
             super();
@@ -589,12 +589,16 @@ public class JSheet2 extends JWindow implements ActionListener {
 
         public void setSource(JComponent src) {
             animatingSize.width = src.getWidth();
+            animatingSize.height = src.getHeight() + ANIMATION_OFFSET;
             makeOffscreenImage(src);
         }
 
-        public void setAnimatingHeight(int height) {
-            animatingSize.height = height;
-            setSize(animatingSize);
+        public void setAnimationPercent(float percent, int dir) {
+            animationPercent = percent;
+            direction = dir;
+            posY = (direction == INCOMING)
+                ? (int) ( animationPercent * ANIMATION_OFFSET )
+                : (int) ( (1.0f - animationPercent) * ANIMATION_OFFSET );
         }
 
         private void makeOffscreenImage(JComponent source) {
@@ -619,8 +623,14 @@ public class JSheet2 extends JWindow implements ActionListener {
         }
 
         @Override
-        public void paint(Graphics g) {
-            g.drawImage(offscreenImage, 0, -offscreenImage.getHeight() + animatingSize.height, this);
+        public void paint(Graphics gr) {
+            Graphics2D g = (Graphics2D) gr;
+            float alpha = direction == INCOMING
+                ? animationPercent
+                : 1.0f - animationPercent;
+            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+            g.setComposite(ac);
+            g.drawImage(offscreenImage, 0, posY - ANIMATION_OFFSET, this);
         }
     }
 
