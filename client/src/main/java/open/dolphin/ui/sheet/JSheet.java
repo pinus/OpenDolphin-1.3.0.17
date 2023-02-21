@@ -1,14 +1,10 @@
 package open.dolphin.ui.sheet;
 
-import open.dolphin.client.Dolphin;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.ui.PNSOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -22,11 +18,11 @@ import java.util.Objects;
  * @author pns
  */
 public class JSheet extends JWindow implements ActionListener {
-    public static final int MENUBAR_HEIGHT = 28; // ventura 28
     public static String MENUBAR_HEIGHT_OFFSET_PROP = WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP;
     public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
+    public static final int ANIMATION_OFFSET = 48;
     // アニメーションする時間 msec
     public static final float ANIMATION_DURATION = 100;
     // 書き換えの周期 msec
@@ -56,7 +52,6 @@ public class JSheet extends JWindow implements ActionListener {
     private Component parentComponent;
     private int displayOffsetY = 0;
     private Component focusOwner;
-    private static final boolean isClassicDialog = Dolphin.forWin;
 
     private final Logger logger = LoggerFactory.getLogger(JSheet.class);
 
@@ -74,11 +69,7 @@ public class JSheet extends JWindow implements ActionListener {
      */
     public static JSheet createDialog(final JOptionPane pane, Component parentComponent) {
         // create corresponding dialog
-        if (isClassicDialog) {
-            pane.setBorder(new CompoundBorder(new LineBorder(Color.GRAY), new EmptyBorder(16,16,16,16)));
-        } else {
-            pane.setBorder(new SheetBorder());
-        }
+        pane.setBorder(new SheetBorder());
         JDialog dialog = pane.createDialog(null);
         dialog.getRootPane().putClientProperty("JRootPane.useWindowDecorations", false);
         dialog.pack();
@@ -127,11 +118,7 @@ public class JSheet extends JWindow implements ActionListener {
         chooser.setPreferredSize(FILE_CHOOSER_SIZE);
         chooser.setMaximumSize(FILE_CHOOSER_SIZE);
         chooser.setMinimumSize(FILE_CHOOSER_SIZE);
-        if (isClassicDialog) {
-            chooser.setBorder(new CompoundBorder(new LineBorder(Color.GRAY), new EmptyBorder(16,16,16,16)));
-        } else {
-            chooser.setBorder(new SheetBorder());
-        }
+        chooser.setBorder(new SheetBorder());
 
         JDialog dialog = new JDialog();
         dialog.getRootPane().putClientProperty("JRootPane.useWindowDecorations", false);
@@ -244,10 +231,8 @@ public class JSheet extends JWindow implements ActionListener {
         this.owner = owner;
         sheetKeyEventDispatcher = new SheetKeyEventDispatcher();
 
-        if (!isClassicDialog) {
-            setBackground(new Color(0, 0, 0, 0));
-            getRootPane().putClientProperty("Window.shadow", Boolean.FALSE);
-        }
+        setBackground(new Color(0, 0, 0, 0));
+        getRootPane().putClientProperty("Window.shadow", Boolean.FALSE);
 
         content = (JPanel) getContentPane();
         content.setLayout(new BorderLayout());
@@ -307,12 +292,8 @@ public class JSheet extends JWindow implements ActionListener {
 
         // Sheet をセンタリング
         loc.x += (ownerSize.width - sourcePaneSize.width) / 2;
-        if (isClassicDialog) {
-            // classic dialog なら中央に表示
-            loc.y += (ownerSize.height - sourcePaneSize.height) / 2;
-        } else {
-            loc.y += MENUBAR_HEIGHT;
-        }
+        loc.y += (ownerSize.height - sourcePaneSize.height) / 2 - ANIMATION_OFFSET;
+
         // 右端，左端の処理
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         if (loc.x < 0) {
@@ -572,17 +553,10 @@ public class JSheet extends JWindow implements ActionListener {
         if (animating) {
             // calculate height to show
             float animationPercent
-                    = (System.currentTimeMillis() - animationStart) / ANIMATION_DURATION;
+                = (System.currentTimeMillis() - animationStart) / ANIMATION_DURATION;
             animationPercent = Math.min(1.0f, animationPercent);
-            int animatingHeight = (animationDirection == INCOMING)
-                    ? (int) (animationPercent * sourcePane.getHeight())
-                    : (int) ((1.0f - animationPercent) * sourcePane.getHeight());
-            // clip off that much from sheet and blit it into animatingSheet
-            animatingSheet.setAnimatingHeight(animatingHeight);
+            animatingSheet.setAnimationPercent(animationPercent, animationDirection);
             animatingSheet.repaint();
-
-            // classic dialog ならアニメーションしない
-            if (isClassicDialog) { animationPercent = 1.0f; }
 
             // 終了処理
             if (animationPercent >= 1.0f) {
@@ -602,8 +576,11 @@ public class JSheet extends JWindow implements ActionListener {
      * 下から描いていく JPaenl.
      */
     private static class AnimatingSheet extends JPanel {
-        private final Dimension animatingSize = new Dimension(0, 1);
+        private final Dimension animatingSize = new Dimension(1, 1);
         private BufferedImage offscreenImage;
+        private float animationPercent;
+        private int posY;
+        private int direction;
 
         public AnimatingSheet() {
             super();
@@ -612,12 +589,16 @@ public class JSheet extends JWindow implements ActionListener {
 
         public void setSource(JComponent src) {
             animatingSize.width = src.getWidth();
+            animatingSize.height = src.getHeight();
             makeOffscreenImage(src);
         }
 
-        public void setAnimatingHeight(int height) {
-            animatingSize.height = height;
-            setSize(animatingSize);
+        public void setAnimationPercent(float percent, int dir) {
+            animationPercent = percent;
+            direction = dir;
+            posY = (direction == INCOMING)
+                ? (int) ( animationPercent * ANIMATION_OFFSET )
+                : (int) ( (1.0f - animationPercent) * ANIMATION_OFFSET );
         }
 
         private void makeOffscreenImage(JComponent source) {
@@ -642,8 +623,14 @@ public class JSheet extends JWindow implements ActionListener {
         }
 
         @Override
-        public void paint(Graphics g) {
-            g.drawImage(offscreenImage, 0, -offscreenImage.getHeight() + animatingSize.height, this);
+        public void paint(Graphics gr) {
+            Graphics2D g = (Graphics2D) gr;
+            float alpha = direction == INCOMING
+                ? animationPercent
+                : 1.0f - animationPercent;
+            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+            g.setComposite(ac);
+            g.drawImage(offscreenImage, 0, posY - ANIMATION_OFFSET, this);
         }
     }
 
@@ -737,7 +724,7 @@ public class JSheet extends JWindow implements ActionListener {
         JButton b1 = new JButton("Create Dialog");
         b1.addActionListener(e -> {
             JOptionPane optionPane = new JOptionPane("JSheet.createDialog", JOptionPane.INFORMATION_MESSAGE,
-                    JOptionPane.OK_CANCEL_OPTION, null, new String[]{"OK", "キャンセル", "破棄"}, "OK");
+                JOptionPane.OK_CANCEL_OPTION, null, new String[]{"OK", "キャンセル", "破棄"}, "OK");
 
             JSheet sheet = JSheet.createDialog(optionPane, frame);
             sheet.addSheetListener(se -> {
@@ -751,8 +738,8 @@ public class JSheet extends JWindow implements ActionListener {
         JButton b2 = new JButton("Show Sheet");
         b2.addActionListener(e -> {
             JOptionPane optionPane = new JOptionPane("JSheet.showSheet",
-                    JOptionPane.QUESTION_MESSAGE,
-                    JOptionPane.YES_NO_CANCEL_OPTION);
+                JOptionPane.QUESTION_MESSAGE,
+                JOptionPane.YES_NO_CANCEL_OPTION);
 
             JSheet.showSheet(optionPane, frame, se -> System.out.println("option = " + se.getOption()));
             System.out.println("Show Sheet ended");
