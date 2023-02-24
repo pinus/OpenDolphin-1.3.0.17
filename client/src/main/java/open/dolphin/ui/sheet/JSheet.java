@@ -1,6 +1,5 @@
 package open.dolphin.ui.sheet;
 
-import open.dolphin.helper.WindowSupport;
 import open.dolphin.ui.PNSOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import java.util.Objects;
  * @author pns
  */
 public class JSheet extends JWindow implements ActionListener {
-    public static String MENUBAR_HEIGHT_OFFSET_PROP = WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP;
     public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
@@ -34,8 +32,7 @@ public class JSheet extends JWindow implements ActionListener {
     // JSheet の ContentPane
     private JPanel content;
     // glass pane
-    private JPanel glassPane;
-    private Component originalGlassPane;
+    private Component glassPane;
     // キー入力を横取りするための KeyEventDispatcher
     private static SheetKeyEventDispatcher sheetKeyEventDispatcher;
     // Modal にするための SecondaryLoop
@@ -50,7 +47,6 @@ public class JSheet extends JWindow implements ActionListener {
 
     private SheetListener sheetListener;
     private Component parentComponent;
-    private int displayOffsetY = 0;
     private Component focusOwner;
 
     private final Logger logger = LoggerFactory.getLogger(JSheet.class);
@@ -252,32 +248,19 @@ public class JSheet extends JWindow implements ActionListener {
             public void componentHidden(ComponentEvent e) { }
         });
 
-        glassPane = new JPanel();
-        glassPane.setOpaque(false);
-        glassPane.addMouseMotionListener(new MouseMotionAdapter(){});
-        glassPane.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mousePressed(MouseEvent e) { toFront(); }
-        });
-
         // JFrame と JDialog で分けざるを得ない処理
         if (owner instanceof JFrame w) {
-            originalGlassPane = w.getGlassPane();
-            w.setGlassPane(glassPane);
-            Object menubarHeightOffset = w.getRootPane().getClientProperty(MENUBAR_HEIGHT_OFFSET_PROP);
-            if (Objects.nonNull(menubarHeightOffset) && menubarHeightOffset instanceof Integer) {
-                displayOffsetY = (Integer) menubarHeightOffset;
-            }
-
+            glassPane = w.getGlassPane();
         } else {
             JDialog w = (JDialog) owner;
-            originalGlassPane = w.getGlassPane();
-            w.setGlassPane(glassPane);
-            Object menubarHeightOffset = w.getRootPane().getClientProperty(MENUBAR_HEIGHT_OFFSET_PROP);
-            if (Objects.nonNull(menubarHeightOffset) && menubarHeightOffset instanceof Integer) {
-                displayOffsetY = (Integer) menubarHeightOffset;
-            }
+            glassPane = w.getGlassPane();
         }
+        glassPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) { toFront(); }
+            @Override
+            public void mouseReleased(MouseEvent e) { toFront(); }
+        });
     }
 
     /**
@@ -303,7 +286,7 @@ public class JSheet extends JWindow implements ActionListener {
             loc.x = screenSize.width - sourcePaneSize.width;
         }
 
-        setBounds(loc.x, loc.y + displayOffsetY, sourcePaneSize.width, sourcePaneSize.height);
+        setBounds(loc.x, loc.y, sourcePaneSize.width, sourcePaneSize.height);
         toFront();
     }
 
@@ -452,11 +435,6 @@ public class JSheet extends JWindow implements ActionListener {
         } else {
             // GlassPane を元に戻す
             glassPane.setVisible(false);
-            if (owner instanceof JDialog) {
-                ((JDialog)owner).setGlassPane(originalGlassPane);
-            } else if (owner instanceof JFrame) {
-                ((JFrame)owner).setGlassPane(originalGlassPane);
-            }
 
             // キー入力横取りの中止と, フォーカス返還
             KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
@@ -715,7 +693,8 @@ public class JSheet extends JWindow implements ActionListener {
     }
 
     public static void main(String[] arg) {
-        JFrame frame = new JFrame();
+        open.dolphin.ui.MainFrame frame = new open.dolphin.ui.MainFrame();
+        ((JComponent) frame.getGlassPane()).putClientProperty("blockglass.show.ticker", false);
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

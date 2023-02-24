@@ -59,9 +59,13 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      */
     protected int alphaLevel = 0;
     /**
+     * Initial delay before ramp up
+     */
+    private int initialDelay = 300;
+    /**
      * Duration of the veil's fade in/out.
      */
-    protected int rampDelay = 300;
+    protected int rampDelay = 200;
     /**
      * Alpha level of the veil.
      */
@@ -88,17 +92,9 @@ public class BlockGlass2 extends JComponent implements MouseListener {
     private int frameWidth;
     private int frameHeight;
     /**
-     * caller for this blocker
+     * Show ticker.
      */
-    private StackTraceElement blockCaller;
-    /**
-     * caller's hash code for this blocker
-     */
-    private long blockCallerHash;
-    /**
-     * lock
-     */
-    private boolean isLocked;
+    private boolean showTicker = true;
 
     /**
      * Creates a new progress panel with default values:<br>
@@ -186,27 +182,25 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      *                  shield (or veil).
      * @param fps       The number of frames per second. Lower this value to
      *                  decrease CPU usage.
-     * @param rampDelay The duration, in milli seconds, of the fade in and
+     * @param rampDelay The duration, in milliseconds, of the fade in and
      *                  the fade out of the veil.
      */
     public BlockGlass2(String text, int barsCount, float shield, float fps, int rampDelay) {
         this.text = text;
-        this.rampDelay = rampDelay >= 0 ? rampDelay : 0;
-        this.shield = shield >= 0.0f ? shield : 0.0f;
+        this.rampDelay = Math.max(rampDelay, 0);
+        this.shield = Math.max(shield, 0.0f);
         this.fps = fps > 0.0f ? fps : 15.0f;
         this.barsCount = barsCount > 0 ? barsCount : 14;
 
         this.hints = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         this.hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         this.hints.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-
-        this.isLocked = false;
     }
 
     /**
      * Returns the current displayed message.
      *
-     * @return
+     * @return text
      */
     public String getText() {
         return text;
@@ -223,31 +217,28 @@ public class BlockGlass2 extends JComponent implements MouseListener {
     }
 
     /**
-     * Starts the waiting animation by fading the veil in, then
+     * Starts / stops the waiting animation by fading the veil in, then
      * rotating the shapes. This method handles the visibility
      * of the glass pane.
      */
-    public void start() {
-        addMouseListener(this);
-        setVisible(true);
-        frameHeight = getHeight();
-        frameWidth = getWidth();
-        ticker = buildTicker();
-        animation = new Thread(new Animator(true));
-        animation.start();
-    }
-
-    /**
-     * Stops the waiting animation by stopping the rotation
-     * of the circular shape and then by fading out the veil.
-     * This methods sets the panel invisible at the end.
-     */
-    public void stop() {
-        if (animation != null) {
-            animation.interrupt();
-            animation = null;
-            animation = new Thread(new Animator(false));
+    @Override
+    public void setVisible(boolean visible) {
+        if (visible) {
+            super.setVisible(true);
+            showTicker = getClientProperty("blockglass.show.ticker") instanceof Boolean b ? b : true;
+            addMouseListener(this);
+            frameHeight = getHeight();
+            frameWidth = getWidth();
+            ticker = buildTicker();
+            animation = new Thread(new Animator(true));
             animation.start();
+        } else {
+            if (animation != null) {
+                animation.interrupt();
+                animation = null;
+                animation = new Thread(new Animator(false));
+                animation.start();
+            }
         }
     }
 
@@ -263,7 +254,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             animation = null;
 
             removeMouseListener(this);
-            setVisible(false);
+            super.setVisible(false);
         }
     }
 
@@ -276,17 +267,19 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHints(hints);
 
-            g2.setColor(new Color(255, 255, 255, (int) (alphaLevel * shield)));
+            g2.setColor(new Color(168, 168, 168, (int) (alphaLevel * shield)));
             g2.fillRect(0, 0, frameWidth, frameHeight);
 
-            for (int i = 0; i < ticker.length; i++) {
-                int channel = 224 - 128 / (i + 1);
-                g2.setColor(new Color(channel, channel, channel, alphaLevel));
-                g2.fill(ticker[i]);
+            if (showTicker) {
+                for (int i = 0; i < ticker.length; i++) {
+                    int channel = 224 - 128 / (i + 1);
+                    g2.setColor(new Color(channel, channel, channel, alphaLevel));
+                    g2.fill(ticker[i]);
 
-                Rectangle2D bounds = ticker[i].getBounds2D();
-                if (bounds.getMaxY() > maxY) {
-                    maxY = bounds.getMaxY();
+                    Rectangle2D bounds = ticker[i].getBounds2D();
+                    if (bounds.getMaxY() > maxY) {
+                        maxY = bounds.getMaxY();
+                    }
                 }
             }
 
@@ -348,14 +341,6 @@ public class BlockGlass2 extends JComponent implements MouseListener {
         return tick;
     }
 
-    public void block() {
-        start();
-    }
-
-    public void unblock() {
-        stop();
-    }
-
     private void beep() {
         Toolkit.getDefaultToolkit().beep();
     }
@@ -397,14 +382,14 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             double fixedIncrement = 2.0 * Math.PI / barsCount;
             AffineTransform toCircle = AffineTransform.getRotateInstance(fixedIncrement, center.getX(), center.getY());
 
-            /** initial delay */
+            /* initial delay */
             if (rampUp) {
                 try {
-                    Thread.sleep(700);
+                    Thread.sleep(initialDelay);
                 } catch (InterruptedException ie) {
                     started = false;
                     repaint();
-                    setVisible(false);
+                    BlockGlass2.super.setVisible(false);
                     removeMouseListener(BlockGlass2.this);
                     return;
                 }
@@ -460,7 +445,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
                 started = false;
                 repaint();
 
-                setVisible(false);
+                BlockGlass2.super.setVisible(false);
                 removeMouseListener(BlockGlass2.this);
             }
         }

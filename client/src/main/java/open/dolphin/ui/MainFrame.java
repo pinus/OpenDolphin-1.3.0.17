@@ -21,7 +21,7 @@ import java.awt.*;
  * @author pns
  */
 public class MainFrame extends JFrame {
-        // Panels
+    // Panels
     private CommandPanel commandPanel;
     private MainPanel mainPanel;
     private StatusPanel statusPanel;
@@ -43,6 +43,8 @@ public class MainFrame extends JFrame {
     private void initComponents(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
         getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         setTitle(title);
+        setGlassPane(new BlockGlass2());
+
         if (Dolphin.forWin) { setIconImage(GUIConst.ICON_DOLPHIN.getImage()); }
 
         // コマンドパネル
@@ -195,5 +197,9 @@ public class MainFrame extends JFrame {
         statusPanel.setText("2011-10-27", "3rdLabel");
 
         f.setVisible(true);
+        BlockGlass2 bg = (BlockGlass2) f.getGlassPane();
+        bg.setVisible(true);
+        try { Thread.sleep(3000); } catch (Exception e) {}
+        bg.setVisible(false);
     }
 }
