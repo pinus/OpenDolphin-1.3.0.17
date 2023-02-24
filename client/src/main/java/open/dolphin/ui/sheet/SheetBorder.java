@@ -23,6 +23,7 @@ public class SheetBorder extends AbstractBorder {
         g.fillRoundRect(1,1, width-2, height-2, ARC, ARC);
         g.fillRoundRect(3,3, width-6, height-6, ARC, ARC);
         g.fillRoundRect(4,4, width-8, height-8, ARC, ARC);
+        g.fillRoundRect(5,5, width-10, height-10, ARC, ARC);
         g.fillRoundRect(6,6, width-12, height-12, ARC, ARC);
         g.setColor(SHADOW_COLOR_ML);
         g.fillRoundRect(7,7, width-14, height-14, ARC, ARC);

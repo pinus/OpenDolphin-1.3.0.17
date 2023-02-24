@@ -471,7 +471,7 @@ public class Dolphin implements MainWindow {
     }
 
     @Override
-    public JFrame getFrame() {
+    public MainFrame getFrame() {
         return windowSupport.getFrame();
     }
 

@@ -2,6 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.infomodel.PatientVisitModel;
+import open.dolphin.ui.MainFrame;
 
 import javax.swing.*;
 import java.awt.print.PageFormat;
@@ -14,37 +15,37 @@ import java.util.HashMap;
  */
 public interface MainWindow {
 
-    public HashMap<String, MainService> getProviders();
+    HashMap<String, MainService> getProviders();
 
-    public void setProviders(HashMap<String, MainService> providers);
+    void setProviders(HashMap<String, MainService> providers);
 
-    public JMenuBar getMenuBar();
+    JMenuBar getMenuBar();
 
-    public MenuSupport getMenuSupport();
+    MenuSupport getMenuSupport();
 
-    public void registerActions(ActionMap actions);
+    void registerActions(ActionMap actions);
 
-    public Action getAction(String name);
+    Action getAction(String name);
 
-    public void enableAction(String name, boolean b);
+    void enableAction(String name, boolean b);
 
-    public void openKarte(PatientVisitModel pvt);
+    void openKarte(PatientVisitModel pvt);
 
-    public void addNewPatient();
+    void addNewPatient();
 
-    public void block();
+    void block();
 
-    public void unblock();
+    void unblock();
 
-    public BlockGlass getGlassPane();
+    BlockGlass getGlassPane();
 
-    public MainService getPlugin(String name);
+    MainService getPlugin(String name);
 
-    public PageFormat getPageFormat();
+    PageFormat getPageFormat();
 
-    public void showStampBox();
+    void showStampBox();
 
-    public void showSchemaBox();
+    void showSchemaBox();
 
-    public JFrame getFrame();
+    MainFrame getFrame();
 }
