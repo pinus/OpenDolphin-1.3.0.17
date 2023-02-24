@@ -59,9 +59,13 @@ public class BlockGlass extends JComponent implements MouseListener {
      */
     protected int alphaLevel = 0;
     /**
+     * Initial delay before ramp up
+     */
+    private int initialDelay = 300;
+    /**
      * Duration of the veil's fade in/out.
      */
-    protected int rampDelay = 300;
+    protected int rampDelay = 200;
     /**
      * Alpha level of the veil.
      */
@@ -428,10 +432,10 @@ public class BlockGlass extends JComponent implements MouseListener {
             double fixedIncrement = 2.0 * Math.PI / barsCount;
             AffineTransform toCircle = AffineTransform.getRotateInstance(fixedIncrement, center.getX(), center.getY());
 
-            /** initial delay */
+            /* initial delay */
             if (rampUp) {
                 try {
-                    Thread.sleep(700);
+                    Thread.sleep(initialDelay);
                 } catch (InterruptedException ie) {
                     started = false;
                     repaint();

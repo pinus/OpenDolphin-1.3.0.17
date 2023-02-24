@@ -16,7 +16,7 @@ import java.util.Objects;
  *
  * @author pns
  */
-public class JSheet extends JWindow implements ActionListener {
+public class JSheet extends JWindow implements ActionListener, MouseListener {
     public static final Dimension FILE_CHOOSER_SIZE = new Dimension(500, 500);
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
@@ -255,12 +255,6 @@ public class JSheet extends JWindow implements ActionListener {
             JDialog w = (JDialog) owner;
             glassPane = w.getGlassPane();
         }
-        glassPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) { toFront(); }
-            @Override
-            public void mouseReleased(MouseEvent e) { toFront(); }
-        });
     }
 
     /**
@@ -421,6 +415,7 @@ public class JSheet extends JWindow implements ActionListener {
             KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sheetKeyEventDispatcher);
 
             super.setVisible(true);
+            glassPane.addMouseListener(this);
             glassPane.setVisible(true);
 
             // modal にするために SecondaryLoop に入る
@@ -435,6 +430,7 @@ public class JSheet extends JWindow implements ActionListener {
         } else {
             // GlassPane を元に戻す
             glassPane.setVisible(false);
+            glassPane.removeMouseListener(this);
 
             // キー入力横取りの中止と, フォーカス返還
             KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(sheetKeyEventDispatcher);
@@ -549,6 +545,21 @@ public class JSheet extends JWindow implements ActionListener {
             }
         }
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) { toFront();}
+
+    @Override
+    public void mouseReleased(MouseEvent e) { toFront(); }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
 
     /**
      * 下から描いていく JPaenl.
