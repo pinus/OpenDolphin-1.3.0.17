@@ -4,7 +4,7 @@ import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.Task;
 import open.dolphin.helper.WindowSupport;
-import open.dolphin.ui.MainFrame;
+import open.dolphin.ui.PNSFrame;
 import open.dolphin.ui.PNSTabbedPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class ImageBox extends AbstractMainTool {
     private int imageWidth = DEFAULT_IMAGE_WIDTH;
     private int imageHeight = DEFAULT_IMAGE_HEIGHT;
     private String[] suffix = DEFAULT_IMAGE_SUFFIX;
-    private MainFrame frame;
+    private PNSFrame frame;
     private Logger logger;
 
     // SchemaBox でもメニューを出すため
@@ -70,7 +70,7 @@ public class ImageBox extends AbstractMainTool {
         frame.setVisible(false);
     }
 
-    public MainFrame getFrame() {
+    public PNSFrame getFrame() {
         return frame;
     }
 
@@ -180,7 +180,7 @@ public class ImageBox extends AbstractMainTool {
             };
             mediator.enableMenus(enables);
         } else {
-            frame = new MainFrame(title);
+            frame = new PNSFrame(title);
         }
 
         ComponentBoundsManager cm = new ComponentBoundsManager(frame, DEFAULT_LOC, DEFAULT_SIZE, this);
@@ -198,7 +198,7 @@ public class ImageBox extends AbstractMainTool {
         frame.removeCommandPanel();
         frame.removeStatusPanel();
         // MainPanel に TabbedPane を挿入
-        MainFrame.MainPanel mainPanel = frame.getMainPanel();
+        PNSFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
     }

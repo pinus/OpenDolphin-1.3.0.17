@@ -5,7 +5,7 @@ import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.inspector.DocumentHistory;
-import open.dolphin.ui.MainFrame;
+import open.dolphin.ui.PNSFrame;
 import open.dolphin.ui.StatusPanel;
 
 public interface Chart extends MainTool {
@@ -30,7 +30,7 @@ public interface Chart extends MainTool {
 
     public void close();
 
-    public MainFrame getFrame();
+    public PNSFrame getFrame();
 
     public StatusPanel getStatusPanel();
 

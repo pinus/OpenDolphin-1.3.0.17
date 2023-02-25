@@ -5,7 +5,7 @@ import open.dolphin.helper.StackTracer;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DocumentHistory;
-import open.dolphin.ui.MainFrame;
+import open.dolphin.ui.PNSFrame;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.StatusPanel;
 import org.slf4j.Logger;
@@ -290,7 +290,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * @return JFrame オブジェクト
      */
     @Override
-    public MainFrame getFrame() {
+    public PNSFrame getFrame() {
         return windowSupport.getFrame();
     }
 
@@ -426,7 +426,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         windowSupport = WindowSupport.create(title);
         JMenuBar myMenuBar = windowSupport.getMenuBar();
 
-        MainFrame frame = windowSupport.getFrame();
+        PNSFrame frame = windowSupport.getFrame();
         frame.setName("editorFrame");
         frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 30);
 
@@ -467,9 +467,9 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         statusPanel = new StatusPanel(); // dummy 表示はしない　AbstractChartDocument から呼ばれるので
         statusPanel.add("", "message");
 
-        MainFrame.MainPanel mainPanel = frame.getMainPanel();
+        PNSFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
-        MainFrame.CommandPanel comPanel = frame.getCommandPanel();
+        PNSFrame.CommandPanel comPanel = frame.getCommandPanel();
 
         //content = new JPanel(new BorderLayout());
 

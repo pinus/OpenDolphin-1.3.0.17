@@ -1,5 +1,6 @@
 package open.dolphin.ui.sheet;
 
+import open.dolphin.ui.PNSFrame;
 import open.dolphin.ui.PNSOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -704,7 +705,7 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
     }
 
     public static void main(String[] arg) {
-        open.dolphin.ui.MainFrame frame = new open.dolphin.ui.MainFrame();
+        PNSFrame frame = new PNSFrame();
         ((JComponent) frame.getGlassPane()).putClientProperty("blockglass.show.ticker", false);
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

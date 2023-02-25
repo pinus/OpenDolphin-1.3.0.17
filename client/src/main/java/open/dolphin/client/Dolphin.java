@@ -243,7 +243,7 @@ public class Dolphin implements MainWindow {
         String title = Dolphin.forWin? "" : ClientContext.getFrameTitle(windowTitle);
         // System.out.println(title);
         windowSupport = WindowSupport.create(title);
-        MainFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
+        PNSFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
         myFrame.getFrame().getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 36);
         //myFrame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
         //myFrame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
@@ -278,11 +278,11 @@ public class Dolphin implements MainWindow {
         tabbedPane = new PNSBadgeTabbedPane();
         //tabbedPane.setButtonVgap(4);
 
-        MainFrame.MainPanel mainPanel = myFrame.getMainPanel();
+        PNSFrame.MainPanel mainPanel = myFrame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
 
-        // MainComponent では，MainFrame の CommandPanel, StatusPanel は使わない
+        // MainComponent では，PNSFrame の CommandPanel, StatusPanel は使わない
         // MainComponentPanel で自前で用意する
         myFrame.removeCommandPanel();
         myFrame.removeStatusPanel();
@@ -471,7 +471,7 @@ public class Dolphin implements MainWindow {
     }
 
     @Override
-    public MainFrame getFrame() {
+    public PNSFrame getFrame() {
         return windowSupport.getFrame();
     }
 

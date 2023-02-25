@@ -216,7 +216,7 @@ public class CompletableJTextField extends JTextField
     @Override
     public void keyPressed(KeyEvent e) {
         keyCode = e.getKeyCode();
-        int modifier = e.getModifiers();
+        int modifier = e.getModifiers();xx
 
         // リストが表示されているとき
         if (listWindow.isVisible()) {
@@ -251,7 +251,7 @@ public class CompletableJTextField extends JTextField
 
                 case KeyEvent.VK_D: // Ctrl-D 1項目削除
                     int index = completionList.getSelectedIndex();
-                    if (modifier == KeyEvent.CTRL_MASK && index != -1) {
+                    if (modifier == KeyEvent.CTRL_MASK && index != -1) {xx
                         String s = completionListModel.get(index);
                         removeCompletion(s);
                         e.consume();

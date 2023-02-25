@@ -1208,7 +1208,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      * @param rdList List of RegisteredDiagnosisModel
      */
     public void checkIkouByomei(final List<RegisteredDiagnosisModel> rdList) {
-        MainFrame c = getContext().getFrame();
+        PNSFrame c = getContext().getFrame();
         String message = "ORCA 接続中";
         String note = "移行病名チェック";
         int maxEstimation = 10000;
@@ -1363,7 +1363,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         diagList.addAll(updatedList);
         diagList.addAll(addedList);
 
-        MainFrame parent = getContext().getFrame();
+        PNSFrame parent = getContext().getFrame();
         String message;
         int messageType = JOptionPane.INFORMATION_MESSAGE;
 

@@ -81,7 +81,7 @@ public class FindAndView {
                     // もし見つかったら，マーキングと positions データベース登録
                     while (pos != -1) {
                         //　見つかったテキストに，foundAttr をセットして，見つかった位置の y 座標を positions データベースに入れる
-                        int y = kpHeight + soaPane.modelToView(pos).y;
+                        int y = kpHeight + soaPane.modelToView(pos).y;xx
                         foundDataList.addRow(y, true, soaPane, pos, null);
                         // 次の検索
                         pos = soaPane.getText().indexOf(text, pos + 1);
@@ -94,7 +94,7 @@ public class FindAndView {
                     // もし見つかったら，マーキングと positions データベース登録
                     while (pos != -1) {
                         //　見つかったテキストに，foundAttr をセットして，見つかった位置の y 座標を positions データベースに入れる
-                        int y = kpHeight + pPane.modelToView(pos).y;
+                        int y = kpHeight + pPane.modelToView(pos).y;xx
                         foundDataList.addRow(y, true, pPane, pos, null);
 
                         // 次の検索
@@ -110,7 +110,7 @@ public class FindAndView {
                         String stampText = sh.getText();
                         pos = stampText.indexOf(searchText);
                         if (pos != -1) { // 見つかった
-                            int y = kpHeight + pPane.modelToView(sh.getStartPos()).y;
+                            int y = kpHeight + pPane.modelToView(sh.getStartPos()).y;xx
                             foundDataList.addRow(y, false, pPane, sh.getStartPos(), sh);
                         }
                     }
@@ -272,7 +272,7 @@ public class FindAndView {
      */
     private void scrollToCenter(JPanel panel, JTextPane pane, int pos) {
         try {
-            Rectangle r = pane.modelToView(pos);
+            Rectangle r = pane.modelToView(pos);xx
             int h = panel.getParent().getBounds().height; // viewport の高さ
             r.y -= h / 2;
             r.height = h;

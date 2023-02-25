@@ -20,23 +20,21 @@ import java.awt.*;
  *
  * @author pns
  */
-public class MainFrame extends JFrame {
+public class PNSFrame extends JFrame {
     // Panels
     private CommandPanel commandPanel;
     private MainPanel mainPanel;
     private StatusPanel statusPanel;
 
-    public MainFrame() {
-        //setBackground(new Color(0,0,0,0));
-        //AWTAccessor.getWindowAccessor().setOpacity(this, 0.5f);
+    public PNSFrame() {
         this("", true, true);
     }
 
-    public MainFrame(String title) {
+    public PNSFrame(String title) {
         this(title, true, true);
     }
 
-    public MainFrame(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
+    public PNSFrame(String title, boolean commandPanelNeeded, boolean statusPanelNeeded) {
         initComponents(title, commandPanelNeeded, statusPanelNeeded);
     }
 
@@ -92,15 +90,6 @@ public class MainFrame extends JFrame {
      */
     public StatusPanel getStatusPanel() {
         return statusPanel;
-    }
-
-    /**
-     * この frame を返す
-     *
-     * @return Main Frame
-     */
-    public MainFrame getFrame() {
-        return this;
     }
 
     /**
@@ -163,7 +152,7 @@ public class MainFrame extends JFrame {
     public static void main(String[] argv) {
         open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
 
-        MainFrame f = new MainFrame();
+        PNSFrame f = new PNSFrame();
         f.setSize(600, 700);
 
         f.setTitle("テスト〜タイトル");
@@ -197,7 +186,7 @@ public class MainFrame extends JFrame {
         statusPanel.setText("2011-10-27", "3rdLabel");
 
         f.setVisible(true);
-        BlockGlass2 bg = (BlockGlass2) f.getGlassPane();
+        Component bg = f.getGlassPane();
         bg.setVisible(true);
         try { Thread.sleep(3000); } catch (Exception e) {}
         bg.setVisible(false);

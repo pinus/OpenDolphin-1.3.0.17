@@ -879,7 +879,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * +---------------+
      */
     private static void testPattern1() {
-        MainFrame f = new MainFrame("", false, false);
+        PNSFrame f = new PNSFrame("", false, false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(600, 800);
 
@@ -893,7 +893,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         tabPane.addTab("患者検索", mainComponentPanel_2);
         tabPane.addTab("ラボレシーバ", mainComponentPanel_3);
 
-        MainFrame.MainPanel mainPanel = f.getMainPanel();
+        PNSFrame.MainPanel mainPanel = f.getMainPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(tabPane, BorderLayout.CENTER);
 
@@ -922,11 +922,11 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * +---------------+
      */
     private static void testPattern2() {
-        MainFrame f = new MainFrame();
+        PNSFrame f = new PNSFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(800, 600);
 
-        MainFrame.CommandPanel commandPanel = f.getCommandPanel();
+        PNSFrame.CommandPanel commandPanel = f.getCommandPanel();
         commandPanel.setPanelHeight(56);
         commandPanel.add(new JButton("FIRST"));
         commandPanel.addSeparator();
@@ -942,7 +942,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         statusPanel.add("END");
         statusPanel.setMargin(8);
 
-        MainFrame.MainPanel mainPanel = f.getMainPanel();
+        PNSFrame.MainPanel mainPanel = f.getMainPanel();
         mainPanel.setLayout(new BorderLayout(1, 1));
 
         JPanel p = new JPanel(new BorderLayout());
@@ -993,12 +993,12 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
      * +---------------+
      */
     private static void testPattern3() {
-        MainFrame f = new MainFrame();
+        PNSFrame f = new PNSFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // MainFrame の StatusPanel は使わない
+        // PNSFrame の StatusPanel は使わない
         f.removeStatusPanel();
         // コマンドパネル
-        MainFrame.CommandPanel commandPanel = f.getCommandPanel();
+        PNSFrame.CommandPanel commandPanel = f.getCommandPanel();
         commandPanel.add(new JButton("FIRST"));
         commandPanel.addSeparator();
         commandPanel.add(new JButton("NEXT"));
@@ -1031,7 +1031,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
 
         // main panel に tab を格納
-        MainFrame.MainPanel mainPanel = f.getMainPanel();
+        PNSFrame.MainPanel mainPanel = f.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(tabOut, BorderLayout.CENTER);
 

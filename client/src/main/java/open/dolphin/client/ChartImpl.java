@@ -246,7 +246,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * @return チャートウインドウno JFrame
      */
     @Override
-    public MainFrame getFrame() {
+    public PNSFrame getFrame() {
         return windowSupport.getFrame();
     }
 
@@ -522,7 +522,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         JMenuBar myMenuBar = windowSupport.getMenuBar();
 
         // チャートの JFrame オブジェクトを得る
-        final MainFrame frame = windowSupport.getFrame();
+        final PNSFrame frame = windowSupport.getFrame();
         frame.setName("chartFrame");
         frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 38);
 
@@ -672,7 +672,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         inspectorPanel.add(inspector.getBasicInfoInspector().getPanel());
         inspectorPanel.add(inspector.getPanel());
 
-        final MainFrame.MainPanel mainPanel = frame.getMainPanel();
+        final PNSFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         mainPanel.add(inspectorPanel, BorderLayout.WEST);
@@ -1235,7 +1235,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * @param deptCode     Department ocd
      * @return NewKarteParams
      */
-    public NewKarteParams getNewKarteParams(String docType, Chart.NewKarteOption option, MainFrame f, String dept, String deptCode, String insuranceUid) {
+    public NewKarteParams getNewKarteParams(String docType, Chart.NewKarteOption option, PNSFrame f, String dept, String deptCode, String insuranceUid) {
 
         NewKarteParams params = new NewKarteParams(option);
         params.setDocType(docType);
@@ -1279,7 +1279,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         text = ClientContext.getFrameTitle(text);
 
         // モーダルダイアログを表示する
-        MainFrame frame = f != null ? f : getFrame();
+        PNSFrame frame = f != null ? f : getFrame();
         NewKarteDialog od = new NewKarteDialog(frame, text);
         od.setValue(params);
         od.start();

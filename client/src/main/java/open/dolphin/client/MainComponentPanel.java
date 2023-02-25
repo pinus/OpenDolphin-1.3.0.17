@@ -1,7 +1,7 @@
 package open.dolphin.client;
 
 import open.dolphin.ui.HorizontalPanel;
-import open.dolphin.ui.MainFrame;
+import open.dolphin.ui.PNSFrame;
 import open.dolphin.ui.StatusPanel;
 
 import javax.swing.*;
@@ -9,7 +9,7 @@ import java.awt.*;
 
 /**
  * WaitingList, PatientSearch, LaboTextImporter で使う共通パネル骨格
- * MainFrame に格納される TabbedPane の中に入る
+ * PNSFrame に格納される TabbedPane の中に入る
  * +-----------------+
  * | commandPanel    |
  * |-----------------|
@@ -83,7 +83,7 @@ public class MainComponentPanel extends JPanel {
     }
 
     public static void main(String[] argv) {
-        MainFrame f = new MainFrame("", false, false);
+        PNSFrame f = new PNSFrame("", false, false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(600, 800);
 

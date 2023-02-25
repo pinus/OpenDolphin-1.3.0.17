@@ -147,7 +147,7 @@ public abstract class AbstractCodeHelper {
 
         try {
             int pos = textPane.getCaretPosition();
-            Rectangle r = textPane.modelToView(pos);
+            Rectangle r = textPane.modelToView(pos);xx
 
             popup.show(textPane, r.x, r.y);
 

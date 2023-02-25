@@ -93,7 +93,7 @@ public class KartePanePopupMenu extends JPopupMenu {
         }
 
         // Option キーで詳記削除メニューを出す
-        if ((modifier & KeyEvent.ALT_MASK) != 0) {
+        if ((modifier & KeyEvent.ALT_MASK) != 0) {xx
             JMenu subjMenu = new JMenu("症状詳記削除");
             // 症状詳記情報を取得してメニューを作る
             OrcaDelegater delegater = new OrcaDelegater();

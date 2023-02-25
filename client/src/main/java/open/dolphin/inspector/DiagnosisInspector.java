@@ -154,7 +154,7 @@ public class DiagnosisInspector implements IInspector {
                 }
 
                 private void maybeShowPopup(MouseEvent e) {
-                    if ((e.getModifiers() & InputEvent.ALT_MASK) != 0) {
+                    if ((e.getModifiers() & InputEvent.ALT_MASK) != 0) {xx
                         // option キーを押していたら category：主病名，疑い病名
                         doc.getDiagnosisDocumentPopup().getCategoryPopup().show(diagList, e.getX(), e.getY());
                     } else {

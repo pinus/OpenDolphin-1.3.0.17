@@ -10,7 +10,7 @@ import open.dolphin.infomodel.*;
 import open.dolphin.order.stampeditor.StampEditor;
 import open.dolphin.project.Project;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.MainFrame;
+import open.dolphin.ui.PNSFrame;
 import open.dolphin.ui.PNSSafeToggleButton;
 import open.dolphin.ui.PNSTabbedPane;
 import open.dolphin.ui.sheet.JSheet;
@@ -51,7 +51,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     // Logger
     private final Logger logger;
     // StampBox の JFrame
-    private MainFrame frame;
+    private PNSFrame frame;
     // StampBox
     private PNSTabbedPane parentBox;
     //ユーザ個人用の StampBox
@@ -165,7 +165,7 @@ public class StampBoxPlugin extends AbstractMainTool {
      *
      * @return StampBox の JFrame
      */
-    public MainFrame getFrame() {
+    public PNSFrame getFrame() {
         return frame;
     }
 
@@ -311,7 +311,7 @@ public class StampBoxPlugin extends AbstractMainTool {
             mediator.enableMenus(enables);
 
         } else {
-            frame = new MainFrame(title);
+            frame = new PNSFrame(title);
         }
         frame.removeStatusPanel();
 
@@ -459,11 +459,11 @@ public class StampBoxPlugin extends AbstractMainTool {
         //
         // レイアウトする
         //
-        MainFrame.MainPanel mainPanel = frame.getMainPanel();
+        PNSFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(parentBox, BorderLayout.CENTER);
 
-        MainFrame.CommandPanel comPanel = frame.getCommandPanel();
+        PNSFrame.CommandPanel comPanel = frame.getCommandPanel();
         comPanel.setPanelHeight(24);
         comPanel.addGlue();
         comPanel.add(toolBtn);
@@ -582,7 +582,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
         fireTreeSelectionListener(tree);
 
-        MainFrame.MainPanel mainPanel = frame.getMainPanel();
+        PNSFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.add(parentBox, BorderLayout.EAST);
         mainPanel.add(stampMaker, BorderLayout.CENTER);
 
@@ -639,7 +639,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         stampMaker.removePropertyChangeListener(StampMakerPanel.EDITOR_VALUE_PROP, editorValueListener);
         List<StampTree> allTrees = userBox.getAllTrees();
 
-        MainFrame.MainPanel mainPanel = frame.getMainPanel();
+        PNSFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.remove(stampMaker);
         mainPanel.add(parentBox, BorderLayout.CENTER);
 

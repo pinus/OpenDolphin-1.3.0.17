@@ -456,7 +456,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
 
     private void showPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {
-            KartePanePopupMenu contextMenu = new KartePanePopupMenu(this, e.getModifiers());
+            KartePanePopupMenu contextMenu = new KartePanePopupMenu(this, e.getModifiersEx());
             contextMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }

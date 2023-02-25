@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.infomodel.PatientVisitModel;
-import open.dolphin.ui.MainFrame;
+import open.dolphin.ui.PNSFrame;
 
 import javax.swing.*;
 import java.awt.print.PageFormat;
@@ -12,9 +12,9 @@ import java.util.HashMap;
  * アプリケーションのメインウインドウインターフェイスクラス.
  *
  * @author Minagawa, Kazushi. Digital Globe, Inc.
+ * @author pns
  */
 public interface MainWindow {
-
     HashMap<String, MainService> getProviders();
 
     void setProviders(HashMap<String, MainService> providers);
@@ -33,12 +33,6 @@ public interface MainWindow {
 
     void addNewPatient();
 
-    void block();
-
-    void unblock();
-
-    BlockGlass getGlassPane();
-
     MainService getPlugin(String name);
 
     PageFormat getPageFormat();
@@ -47,5 +41,5 @@ public interface MainWindow {
 
     void showSchemaBox();
 
-    MainFrame getFrame();
+    PNSFrame getFrame();
 }

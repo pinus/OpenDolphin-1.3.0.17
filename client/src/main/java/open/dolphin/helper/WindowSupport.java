@@ -1,14 +1,12 @@
 package open.dolphin.helper;
 
 import open.dolphin.client.GUIConst;
-import open.dolphin.ui.MainFrame;
+import open.dolphin.ui.PNSFrame;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +33,7 @@ public class WindowSupport implements MenuListener {
 
     // Window support が提供するスタッフ
     // フレーム
-    final private MainFrame frame;
+    final private PNSFrame frame;
     // メニューバー
     final private JMenuBar menuBar;
     // ウインドウメニュー
@@ -44,7 +42,7 @@ public class WindowSupport implements MenuListener {
     final private Action windowAction;
 
     // プライベートコンストラクタ
-    private WindowSupport(MainFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction) {
+    private WindowSupport(PNSFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction) {
         this.frame = frame;
         this.menuBar = menuBar;
         this.windowMenu = windowMenu;
@@ -64,7 +62,7 @@ public class WindowSupport implements MenuListener {
     public static WindowSupport create(String title) {
 
         // フレームを生成する
-        final MainFrame frame = new MainFrame(title);
+        final PNSFrame frame = new PNSFrame(title);
 
         // メニューバーを生成する
         JMenuBar menuBar = new JMenuBar();
@@ -119,7 +117,7 @@ public class WindowSupport implements MenuListener {
         return frame.isActive() ? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16;
     }
 
-    public MainFrame getFrame() {
+    public PNSFrame getFrame() {
         return frame;
     }
 
