@@ -74,8 +74,6 @@ public class StampBoxPlugin extends AbstractMainTool {
     private int stampBoxWidth;
     // StampBox 高さ
     private int stampBoxHeight;
-    // Block Glass Pane
-    private BlockGlass glass;
     // このスタンプボックスの StmpTreeModel
     private List<StampTreeBean> stampTreeModels;
     // mac でメニューが消えないようにするために使う
@@ -176,15 +174,6 @@ public class StampBoxPlugin extends AbstractMainTool {
      */
     public List<Long> getImportedTreeList() {
         return importedTreeList;
-    }
-
-    /**
-     * Block用GlassPaneを返す.
-     *
-     * @return Block用GlassPane
-     */
-    public BlockGlass getBlockGlass() {
-        return glass;
     }
 
     /**
@@ -315,8 +304,6 @@ public class StampBoxPlugin extends AbstractMainTool {
         }
         frame.removeStatusPanel();
 
-        glass = new BlockGlass();
-        frame.setGlassPane(glass);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(x, y), new Dimension(width, height), this);
         cm.revertToPreferenceBounds();

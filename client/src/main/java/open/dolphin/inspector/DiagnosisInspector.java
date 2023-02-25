@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TooManyListenersException;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -70,11 +69,8 @@ public class DiagnosisInspector implements IInspector {
      * GUI コンポーネントを初期化する.
      */
     private void initComponents() {
-
         listModel = new DefaultListModel<>();
-
-        diagList = new JList<RegisteredDiagnosisModel>(listModel) {
-
+        diagList = new JList<>(listModel) {
             @Override
             public String getToolTipText(MouseEvent e) {
                 int index = locationToIndex(e.getPoint());
@@ -154,7 +150,7 @@ public class DiagnosisInspector implements IInspector {
                 }
 
                 private void maybeShowPopup(MouseEvent e) {
-                    if ((e.getModifiers() & InputEvent.ALT_MASK) != 0) {xx
+                    if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
                         // option キーを押していたら category：主病名，疑い病名
                         doc.getDiagnosisDocumentPopup().getCategoryPopup().show(diagList, e.getX(), e.getY());
                     } else {
@@ -307,7 +303,7 @@ public class DiagnosisInspector implements IInspector {
         });
         // 選択を保存　hashCode を保存しておく
         List<Integer> selected = Arrays.stream(diagList.getSelectedIndices()).boxed()
-                .map(listModel::get).map(System::identityHashCode).collect(Collectors.toList());
+            .map(listModel::get).map(System::identityHashCode).toList();
 
         // listModel にセット
         listModel.clear();

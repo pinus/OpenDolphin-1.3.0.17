@@ -14,7 +14,6 @@ import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,10 +26,10 @@ import static open.dolphin.orca.ClaimConst.SubjectivesCodeMap;
  * @author pns
  */
 public class KartePanePopupMenu extends JPopupMenu {
-    private KartePane kartePane;
-    private ChartMediator mediator;
-    private JTextPane textPane;
-    private int modifier;
+    private final KartePane kartePane;
+    private final ChartMediator mediator;
+    private final JTextPane textPane;
+    private final int modifier;
 
     /**
      * KartePanePopupMenu.
@@ -93,7 +92,7 @@ public class KartePanePopupMenu extends JPopupMenu {
         }
 
         // Option キーで詳記削除メニューを出す
-        if ((modifier & KeyEvent.ALT_MASK) != 0) {xx
+        if ((modifier & KeyEvent.ALT_DOWN_MASK) != 0) {
             JMenu subjMenu = new JMenu("症状詳記削除");
             // 症状詳記情報を取得してメニューを作る
             OrcaDelegater delegater = new OrcaDelegater();

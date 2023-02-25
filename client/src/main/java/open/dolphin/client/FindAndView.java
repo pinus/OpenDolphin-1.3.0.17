@@ -7,6 +7,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -35,7 +36,7 @@ public class FindAndView {
     private FoundDataList foundDataList;
     private int row; // 現在の row
 
-    private Chart chart;
+    private final Chart chart;
 
     public FindAndView(Chart context) {
         chart = context;
@@ -81,7 +82,7 @@ public class FindAndView {
                     // もし見つかったら，マーキングと positions データベース登録
                     while (pos != -1) {
                         //　見つかったテキストに，foundAttr をセットして，見つかった位置の y 座標を positions データベースに入れる
-                        int y = kpHeight + soaPane.modelToView(pos).y;xx
+                        int y = kpHeight + (int) soaPane.modelToView2D(pos).getY();
                         foundDataList.addRow(y, true, soaPane, pos, null);
                         // 次の検索
                         pos = soaPane.getText().indexOf(text, pos + 1);
@@ -94,7 +95,7 @@ public class FindAndView {
                     // もし見つかったら，マーキングと positions データベース登録
                     while (pos != -1) {
                         //　見つかったテキストに，foundAttr をセットして，見つかった位置の y 座標を positions データベースに入れる
-                        int y = kpHeight + pPane.modelToView(pos).y;xx
+                        int y = kpHeight + (int) pPane.modelToView2D(pos).getY();
                         foundDataList.addRow(y, true, pPane, pos, null);
 
                         // 次の検索
@@ -110,7 +111,7 @@ public class FindAndView {
                         String stampText = sh.getText();
                         pos = stampText.indexOf(searchText);
                         if (pos != -1) { // 見つかった
-                            int y = kpHeight + pPane.modelToView(sh.getStartPos()).y;xx
+                            int y = kpHeight + (int) pPane.modelToView2D(sh.getStartPos()).getY();
                             foundDataList.addRow(y, false, pPane, sh.getStartPos(), sh);
                         }
                     }
@@ -272,9 +273,12 @@ public class FindAndView {
      */
     private void scrollToCenter(JPanel panel, JTextPane pane, int pos) {
         try {
-            Rectangle r = pane.modelToView(pos);xx
+            Rectangle2D r2d = pane.modelToView2D(pos);
             int h = panel.getParent().getBounds().height; // viewport の高さ
-            r.y -= h / 2;
+            Rectangle r = new Rectangle();
+            r.x = (int) r2d.getX();
+            r.y = (int) r2d.getY() - h / 2;
+            r.width = (int) r2d.getWidth();
             r.height = h;
             // 上のようにすると，同じ画面に found text があっても，いちいちスクロールしてしまう
             //r.height += 100;

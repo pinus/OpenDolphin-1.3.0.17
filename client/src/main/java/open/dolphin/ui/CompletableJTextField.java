@@ -1,5 +1,6 @@
 package open.dolphin.ui;
 
+import open.dolphin.client.Dolphin;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -33,7 +34,6 @@ public class CompletableJTextField extends JTextField
     private Window parentFrame;
     private int keyCode;
     private Preferences prefs;
-    private boolean isWin = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
     public CompletableJTextField(int col) {
         super(col);
@@ -50,7 +50,7 @@ public class CompletableJTextField extends JTextField
 
         listWindow = new JWindow();
         listWindow.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-        if (isWin) {
+        if (Dolphin.forWin) {
             Border outer = BorderFactory.createLineBorder(Color.LIGHT_GRAY);
             Border inner = BorderFactory.createEmptyBorder(0, 10, 10, 10);
             Border compound = BorderFactory.createCompoundBorder(outer, inner);
@@ -216,7 +216,7 @@ public class CompletableJTextField extends JTextField
     @Override
     public void keyPressed(KeyEvent e) {
         keyCode = e.getKeyCode();
-        int modifier = e.getModifiers();xx
+        int modifier = e.getModifiersEx();
 
         // リストが表示されているとき
         if (listWindow.isVisible()) {
@@ -224,15 +224,14 @@ public class CompletableJTextField extends JTextField
             int selection = completionList.getSelectedIndex();
 
             switch (keyCode) {
-                case KeyEvent.VK_UP:
+                case KeyEvent.VK_UP -> {
                     if (selection > 0) {
                         selection--;
                         completionList.getSelectionModel().setSelectionInterval(selection, selection);
                     }
                     e.consume();
-                    break;
-
-                case KeyEvent.VK_DOWN:
+                }
+                case KeyEvent.VK_DOWN -> {
                     if (selection < size - 1) {
                         selection++;
                         completionList.getSelectionModel().setSelectionInterval(selection, selection);
@@ -242,29 +241,23 @@ public class CompletableJTextField extends JTextField
                         completionList.getSelectionModel().setSelectionInterval(selection, selection);
                     }
                     e.consume();
-                    break;
-
-                case KeyEvent.VK_CLEAR: // 全クリア
+                }
+                case KeyEvent.VK_CLEAR -> { // 全クリア
                     clearCompletions();
                     e.consume();
-                    break;
-
-                case KeyEvent.VK_D: // Ctrl-D 1項目削除
+                }
+                case KeyEvent.VK_D -> { // Ctrl-D 1項目削除
                     int index = completionList.getSelectedIndex();
-                    if (modifier == KeyEvent.CTRL_MASK && index != -1) {xx
+                    if (modifier == KeyEvent.CTRL_DOWN_MASK && index != -1) {
                         String s = completionListModel.get(index);
                         removeCompletion(s);
                         e.consume();
                     }
-                    break;
-
-                case KeyEvent.VK_ESCAPE:
+                }
+                case KeyEvent.VK_ESCAPE -> {
                     listWindow.setVisible(false);
                     e.consume();
-                    break;
-
-                default:
-                    break;
+                }
             }
         } else {
             // リストが表示されていないとき，下キーで候補を全部出す

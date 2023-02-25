@@ -80,13 +80,13 @@ public class WaitingListImpl extends AbstractMainComponent {
     private PatientVisitModel[] selectedPvt; // 複数行選択対応
     private int[] selectedIndex; // 複数行選択対応
     // Pvt チェックの runnable
-    private PvtChecker pvtChecker;
+    private final PvtChecker pvtChecker;
     // PvtChecker の臨時起動等, runnable を乗せるための ExecutorService
-    private ExecutorService executor;
+    private final ExecutorService executor;
     // 時計を更新するための ExecutorService
-    private ScheduledExecutorService schedule;
+    private final ScheduledExecutorService schedule;
     // Logger
-    private Logger logger = LoggerFactory.getLogger(WaitingListImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(WaitingListImpl.class);
 
     /**
      * Creates new WaitingList.
@@ -151,7 +151,7 @@ public class WaitingListImpl extends AbstractMainComponent {
             new PNSTriple<>("状態", Integer.class, "getState")
         );
 
-        pvtTableModel = new ObjectReflectTableModel<PatientVisitModel>(reflectList) {
+        pvtTableModel = new ObjectReflectTableModel<>(reflectList) {
             @Override
             public Object getValueAt(int row, int col) {
                 Object obj = super.getValueAt(row, col);
@@ -166,7 +166,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         pvtTable.setRowSelectionAllowed(true);
 
         // sorter を設定
-        TableRowSorter<ObjectReflectTableModel> sorter = new TableRowSorter<ObjectReflectTableModel>(pvtTableModel) {
+        TableRowSorter<ObjectReflectTableModel> sorter = new TableRowSorter<>(pvtTableModel) {
             // ASCENDING -> DESCENDING -> 初期状態 と切り替える
             @Override
             public void toggleSortOrder(int column) {
@@ -399,15 +399,13 @@ public class WaitingListImpl extends AbstractMainComponent {
      * @param busy pvt 検索中は true
      */
     public void setBusy(boolean busy) {
-
         view.getKutuBtn().setEnabled(!busy);
 
         if (busy) {
-            getContext().block();
+            getContext().getFrame().getGlassPane().setVisible(true);
             selectedIndex = pvtTable.getSelectedRows();
         } else {
-            getContext().getGlassPane().setText("");
-            getContext().unblock();
+            getContext().getFrame().getGlassPane().setVisible(false);
             if (selectedIndex != null && selectedIndex.length != 0) {
                 for (int index : selectedIndex) {
                     pvtTable.getSelectionModel().addSelectionInterval(index, index);
@@ -493,8 +491,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         while (!cc.isEmpty()) {
             List<Component> stack = new ArrayList<>();
             for (Component c : cc) {
-                if (c instanceof JButton) {
-                    JButton button = (JButton) c;
+                if (c instanceof JButton button) {
                     String name = button.getText();
                     if (options[1].equals(name)) {
                         tmpForce = button;
@@ -1021,19 +1018,18 @@ public class WaitingListImpl extends AbstractMainComponent {
 
             if (value instanceof String) {
                 switch (col) {
-                    case 3: // 名前
+                    case 3 -> { // 名前
                         if (fontSize > 12) {
-                            value = (String) value + "　(" + pvt.getPatient().getKanaName() + ")";
+                            value = value + "　(" + pvt.getPatient().getKanaName() + ")";
                         }
                         this.setText(IndentTableCellRenderer.addIndent((String) value, IndentTableCellRenderer.WIDE, this.getForeground()));
                         this.setFont(view.getNormalFont());
-                        break;
-                    case 1: // ID
-                    case 6: // 生年月日
+                    }
+                    case 1, 6 -> { // ID, 生年月日
                         this.setText(IndentTableCellRenderer.addIndent((String) value, IndentTableCellRenderer.WIDE, this.getForeground()));
                         this.setFont(view.getNormalFont());
-                        break;
-                    case 5: // 年齢
+                    }
+                    case 5 -> { // 年齢
                         String[] age = ((String) value).split("\\.");
                         if (age[0].equals("0")) {
                             setText(age[1] + " ヶ月");
@@ -1041,15 +1037,15 @@ public class WaitingListImpl extends AbstractMainComponent {
                             setText(age[0] + " 歳");
                         }
                         this.setFont(view.getNormalFont());
-                        break;
-                    case 7: // ドクターに変更
-                    case 8: // メモ
+                    }
+                    case 7, 8 -> { // ドクター, メモ
                         this.setText(IndentTableCellRenderer.addIndent((String) value, IndentTableCellRenderer.WIDE, this.getForeground()));
                         this.setFont(view.getSmallFont());
-                        break;
-                    default:
+                    }
+                    default -> {
                         this.setText((String) value);
                         this.setFont(view.getNormalFont());
+                    }
                 }
             } else {
                 setIcon(null);

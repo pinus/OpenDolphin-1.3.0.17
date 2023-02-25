@@ -65,7 +65,11 @@ public class BlockGlass2 extends JComponent implements MouseListener {
     /**
      * Duration of the veil's fade in/out.
      */
-    protected int rampDelay = 200;
+    protected int rampDelay = 300;
+    /**
+     * Color of the veil.
+     */
+    private int veilColor = 200;
     /**
      * Alpha level of the veil.
      */
@@ -267,7 +271,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHints(hints);
 
-            g2.setColor(new Color(168, 168, 168, (int) (alphaLevel * shield)));
+            g2.setColor(new Color(veilColor, veilColor, veilColor, (int) (alphaLevel * shield)));
             g2.fillRect(0, 0, frameWidth, frameHeight);
 
             if (showTicker) {

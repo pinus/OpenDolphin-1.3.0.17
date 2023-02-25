@@ -256,6 +256,7 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
             JDialog w = (JDialog) owner;
             glassPane = w.getGlassPane();
         }
+        ((JComponent) glassPane).putClientProperty("blockglass.show.ticker", false);
     }
 
     /**
@@ -706,7 +707,6 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
 
     public static void main(String[] arg) {
         PNSFrame frame = new PNSFrame();
-        ((JComponent) frame.getGlassPane()).putClientProperty("blockglass.show.ticker", false);
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

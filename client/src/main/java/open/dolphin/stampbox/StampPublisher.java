@@ -89,14 +89,14 @@ public class StampPublisher {
         contentPane.setOpaque(true);
         dialog.setContentPane(contentPane);
 
-        stampBox.getBlockGlass().block();
+        stampBox.getFrame().getGlassPane().setVisible(true);
         dialog.setVisible(true);
     }
 
     public void stop() {
         dialog.setVisible(false);
         dialog.dispose();
-        stampBox.getBlockGlass().unblock();
+        stampBox.getFrame().getGlassPane().setVisible(false);
     }
 
     private JPanel createContentPane() {
@@ -223,32 +223,16 @@ public class StampPublisher {
 
         // GUIコンポーネントに初期値を入力する
         switch (publishState) {
-
-            case NONE:
+            case NONE, SAVED_NONE -> {
+                String dateStr = ModelUtils.getDateAsString(new Date());
+                String url = facility.getUrl();
                 instLabel.setText("このスタンプは公開されていません。");
                 partyName.setText(facility.getFacilityName());
-                String url = facility.getUrl();
-                if (url != null) {
-                    contact.setText(url);
-                }
-                String dateStr = ModelUtils.getDateAsString(new Date());
+                if (url != null) { contact.setText(url); }
                 publishedDate.setText(dateStr);
                 publish.setText("公開する");
-                break;
-
-            case SAVED_NONE:
-                instLabel.setText("このスタンプは公開されていません。");
-                partyName.setText(stmpTree.getPartyName());
-                url = facility.getUrl();
-                if (url != null) {
-                    contact.setText(url);
-                }
-                dateStr = ModelUtils.getDateAsString(new Date());
-                publishedDate.setText(dateStr);
-                publish.setText("公開する");
-                break;
-
-            case LOCAL:
+            }
+            case LOCAL -> {
                 instLabel.setText("このスタンプは院内に公開されています。");
                 stampBoxName.setText(stmpTree.getName());
                 local.setSelected(true);
@@ -285,9 +269,8 @@ public class StampPublisher {
                 publish.setText("更新する");
                 publish.setEnabled(true);
                 cancelPublish.setEnabled(true);
-                break;
-
-            case GLOBAL:
+            }
+            case GLOBAL -> {
                 instLabel.setText("このスタンプはグローバルに公開されています。");
                 stampBoxName.setText(stmpTree.getName());
                 local.setSelected(false);
@@ -298,7 +281,7 @@ public class StampPublisher {
                 description.setText(stmpTree.getDescription());
                 publishType = PublishType.TT_PUBLIC;
 
-                published = ((PersonalTreeModel) stmpTree).getPublished();
+                String published = ((PersonalTreeModel) stmpTree).getPublished();
                 if (published != null) {
                     StringTokenizer st = new StringTokenizer(published, ",");
                     while (st.hasMoreTokens()) {
@@ -312,7 +295,7 @@ public class StampPublisher {
                     }
                 }
 
-                sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
                 sb.append(ModelUtils.getDateAsString(stmpTree.getPublishedDate()));
                 sb.append("  最終更新日( ");
                 sb.append(ModelUtils.getDateAsString(stmpTree.getLastUpdated()));
@@ -321,7 +304,7 @@ public class StampPublisher {
                 publish.setText("更新する");
                 publish.setEnabled(true);
                 cancelPublish.setEnabled(true);
-                break;
+            }
         }
 
         // コンポーネントのイベント接続を行う

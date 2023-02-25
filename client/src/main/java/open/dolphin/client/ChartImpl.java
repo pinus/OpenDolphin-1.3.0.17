@@ -64,8 +64,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private StateMgr stateMgr;
     // このチャートの KarteBean
     private KarteBean karte;
-    // GlassPane
-    private BlockGlass blockGlass;
     // 最新の受診歴
     private LastVisit lastVisit;
     // 検索パネル
@@ -680,13 +678,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // StateMgr を生成する
         stateMgr = new StateMgr();
 
-        // BlockGlass を設定する
-        blockGlass = new BlockGlass();
-        frame.setGlassPane(blockGlass);
-
         // このチャートの Window にリスナを設定する
         frame.addWindowListener(new WindowAdapter() {
-
             @Override
             public void windowClosing(WindowEvent e) {
                 // CloseBox の処理を行う

@@ -47,8 +47,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     private WindowSupport windowSupport;
     // Mediator オブジェクト
     private ChartMediator mediator;
-    // Block GlassPane
-    private BlockGlass blockGlass;
     // ChartToolBar
     private ChartToolBar chartToolBar;
 
@@ -540,9 +538,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 }
             }
         });
-
-        blockGlass = new BlockGlass();
-        frame.setGlassPane(blockGlass);
 
         // Frame の大きさをストレージからロードする
         Point defaultLocation = new Point(5, 20);

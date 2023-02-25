@@ -1,6 +1,5 @@
 package open.dolphin.inspector;
 
-import open.dolphin.client.BlockGlass;
 import open.dolphin.client.Chart;
 import open.dolphin.client.ChartImpl;
 import open.dolphin.delegater.DocumentDelegater;
@@ -12,10 +11,7 @@ import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
-import open.dolphin.ui.ComboBoxFactory;
-import open.dolphin.ui.IndentTableCellRenderer;
-import open.dolphin.ui.ObjectReflectTableModel;
-import open.dolphin.ui.PNSCellEditor;
+import open.dolphin.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +55,7 @@ public class DocumentHistory implements IInspector {
     // 抽出開始日
     private Date extractionPeriod;
     // 自動的に取得する文書数
-    private int autoFetchCount;
+    private final int autoFetchCount;
     // 昇順降順のフラグ
     private boolean ascending;
     // 修正版も表示するかどうかのフラグ
@@ -69,7 +65,7 @@ public class DocumentHistory implements IInspector {
     // 編集終了したカルテの日付を保存する. 編集終了した時に必ず選択するために使う
     private String editDate = null;
     // ロガー
-    private Logger logger = LoggerFactory.getLogger(DocumentHistory.class);
+    private final Logger logger = LoggerFactory.getLogger(DocumentHistory.class);
 
     /**
      * 文書履歴オブジェクトを生成する.
@@ -107,8 +103,8 @@ public class DocumentHistory implements IInspector {
         );
 
         // 文書履歴テーブルを生成する
-        tableModel = new ObjectReflectTableModel<DocInfoModel>(reflectList) {
-            
+        tableModel = new ObjectReflectTableModel<>(reflectList) {
+
             @Override
             public boolean isCellEditable(int row, int col) {
                 // "内容" は editable
@@ -285,20 +281,15 @@ public class DocumentHistory implements IInspector {
      * @param busy true の時検索中
      */
     public void blockHistoryTable(boolean busy) {
-        // JSheet が表示されると、glasspane が JPanel に入れ替わっており、そっちでブロックされている
-        if (context.getFrame().getGlassPane() instanceof BlockGlass) {
-            BlockGlass blockGlass = (BlockGlass) context.getFrame().getGlassPane();
-            if (busy) {
-                view.getTable().addKeyListener(blockKeyListener);
-                blockGlass.setText("読み込み中");
-                blockGlass.block();
-            } else {
-                view.getTable().removeKeyListener(blockKeyListener);
-                blockGlass.setText("");
-                blockGlass.unblock();
-            }
+        BlockGlass2 blockGlass = (BlockGlass2) context.getFrame().getGlassPane();
+        if (busy) {
+            view.getTable().addKeyListener(blockKeyListener);
+            blockGlass.setText("読み込み中");
+            blockGlass.setVisible(true);
         } else {
-            logger.info("Block glass has been replaced by JSheet");
+            view.getTable().removeKeyListener(blockKeyListener);
+            blockGlass.setText("");
+            blockGlass.setVisible(false);
         }
     }
 

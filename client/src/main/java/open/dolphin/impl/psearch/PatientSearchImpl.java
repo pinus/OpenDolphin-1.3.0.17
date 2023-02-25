@@ -688,11 +688,10 @@ public class PatientSearchImpl extends AbstractMainComponent {
      * FindTask で使う InputBlocker.
      */
     private class Blocker implements Task.InputBlocker {
-
         @Override
         public void block() {
             keyBlocker.block();
-            getContext().getGlassPane().block();
+            getContext().getFrame().getGlassPane().setVisible(true);
             JProgressBar bar = view.getProgressBar();
             //bar.setIndeterminate(true);
         }
@@ -700,7 +699,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
         @Override
         public void unblock() {
             keyBlocker.unblock();
-            getContext().getGlassPane().unblock();
+            getContext().getFrame().getGlassPane().setVisible(false);
             JProgressBar bar = view.getProgressBar();
             //bar.setIndeterminate(false);
             bar.setValue(0);

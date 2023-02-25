@@ -1,11 +1,11 @@
 package open.dolphin.order;
 
-import open.dolphin.client.BlockGlass;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.order.stampeditor.StampEditor;
 import open.dolphin.order.tablepanel.ItemTablePanel;
+import open.dolphin.ui.BlockGlass2;
 import open.dolphin.ui.HorizontalPanel;
 import open.dolphin.ui.sheet.JSheet;
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +48,7 @@ public class StampEditorDialog {
     private StampEditor editor;
     private JFrame dialog;
     private Object value;
-    private BlockGlass glass;
+    private BlockGlass2 glass;
 
     public StampEditorDialog(String entity, Object value) {
         this.entity = entity;
@@ -89,7 +89,7 @@ public class StampEditorDialog {
         });
 
         // BlockGlass を生成し dialog に設定する
-        glass = new BlockGlass();
+        glass = new BlockGlass2();
         dialog.setGlassPane(glass);
 
         editor = new StampEditor(this.entity);
@@ -193,12 +193,12 @@ public class StampEditorDialog {
      * 閉じるときにリスナに通知する.
      */
     public void close() {
-        glass.block();
+        glass.setVisible(true);
         editor.dispose();
         dialog.setVisible(false);
         dialog.dispose();
         boundSupport.firePropertyChange(VALUE_PROP, isNew, value);
-        glass.unblock();
+        glass.setVisible(false);
 
         Stream.of(boundSupport.getPropertyChangeListeners()).
             forEach(boundSupport::removePropertyChangeListener);

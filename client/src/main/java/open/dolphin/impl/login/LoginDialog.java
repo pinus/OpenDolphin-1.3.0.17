@@ -1,6 +1,5 @@
 package open.dolphin.impl.login;
 
-import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.Dolphin;
 import open.dolphin.delegater.DolphinClientContext;
@@ -11,6 +10,7 @@ import open.dolphin.infomodel.UserModel;
 import open.dolphin.project.DolphinPrincipal;
 import open.dolphin.project.Project;
 import open.dolphin.setting.ProjectSettingDialog;
+import open.dolphin.ui.BlockGlass2;
 import open.dolphin.ui.Focuser;
 import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.util.ModelUtils;
@@ -32,7 +32,7 @@ import java.util.Date;
 public class LoginDialog {
 
     private LoginView view;
-    private BlockGlass blockGlass;
+    private BlockGlass2 blockGlass;
 
     // 認証制御用
     private Logger logger;
@@ -220,7 +220,7 @@ public class LoginDialog {
 
         view = new LoginView();
         view.getRootPane().setDefaultButton(view.getLoginBtn());
-        blockGlass = new BlockGlass();
+        blockGlass = new BlockGlass2();
         view.setGlassPane(blockGlass);
 
         setWindowTitle();
@@ -331,8 +331,7 @@ public class LoginDialog {
      * 設定ボタンがおされた時，設定画面を開始する.
      */
     public void doSettingDialog() {
-
-        blockGlass.block();
+        blockGlass.setVisible(true);
 
         ProjectSettingDialog sd = new ProjectSettingDialog();
         sd.addValidListener(this::setNewParams);
@@ -347,7 +346,7 @@ public class LoginDialog {
      * @param valid Validity
      **/
     public void setNewParams(Boolean valid) {
-        blockGlass.unblock();
+        blockGlass.setVisible(false);
 
         if (valid) {
             principal.setUserId(Project.getUserId());
@@ -392,7 +391,7 @@ public class LoginDialog {
 
         @Override
         public void block() {
-            blockGlass.block();
+            blockGlass.setVisible(true);
             view.getUserIdField().setEnabled(false);
             view.getPasswordField().setEnabled(false);
             view.getSettingBtn().setEnabled(false);
@@ -402,7 +401,7 @@ public class LoginDialog {
 
         @Override
         public void unblock() {
-            blockGlass.unblock();
+            blockGlass.setVisible(false);
             view.getUserIdField().setEnabled(true);
             view.getPasswordField().setEnabled(true);
             view.getSettingBtn().setEnabled(true);

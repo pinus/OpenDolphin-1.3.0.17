@@ -9,9 +9,9 @@ import open.dolphin.stampbox.StampTreeMenuEvent;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -63,8 +63,8 @@ public abstract class AbstractCodeHelper {
     /**
      * Creates a new instance of CodeHelper.
      *
-     * @param kartePane
-     * @param chartMediator
+     * @param kartePane KartePane
+     * @param chartMediator ChartMediator
      */
     public AbstractCodeHelper(KartePane kartePane, ChartMediator chartMediator) {
 
@@ -147,9 +147,8 @@ public abstract class AbstractCodeHelper {
 
         try {
             int pos = textPane.getCaretPosition();
-            Rectangle r = textPane.modelToView(pos);xx
-
-            popup.show(textPane, r.x, r.y);
+            Rectangle2D r = textPane.modelToView2D(pos);
+            popup.show(textPane, (int) r.getX(), (int) r.getY());
 
         } catch (BadLocationException e) {
             e.printStackTrace(System.err);
@@ -159,7 +158,7 @@ public abstract class AbstractCodeHelper {
     /**
      * 引数の entityに対応するスタンプの popup を作る.
      *
-     * @param entity
+     * @param entity Entity
      */
     protected void buildEntityPopup(String entity) {
 
@@ -179,8 +178,8 @@ public abstract class AbstractCodeHelper {
     /**
      * SearchText に一致するスタンプの popup を作る.
      *
-     * @param trees
-     * @param searchText
+     * @param trees stamp trees
+     * @param searchText search text
      */
     protected void buildMatchedPopup(List<StampTree> trees, String searchText) {
         popup = new JPopupMenu();
@@ -194,7 +193,7 @@ public abstract class AbstractCodeHelper {
     /**
      * StampTree menu action.
      *
-     * @param e
+     * @param e StampTreeMenuEvent
      */
     public void importStamp(StampTreeMenuEvent e) {
         JComponent comp;
@@ -225,7 +224,7 @@ public abstract class AbstractCodeHelper {
     /**
      * ChartMediator を返す.
      *
-     * @return
+     * @return ChartMediator
      */
     protected ChartMediator getMediator() {
         return mediator;
@@ -234,7 +233,7 @@ public abstract class AbstractCodeHelper {
     /**
      * Preferences を返す.
      *
-     * @return
+     * @return Preferences
      */
     protected Preferences getPreferences() {
         return prefs;

@@ -64,8 +64,6 @@ public class Dolphin implements MainWindow {
     private Logger logger;
     // 環境設定用の Properties
     private Properties saveEnv;
-    // BlockGlass
-    private BlockGlass blockGlass;
     // SchemaBox
     private ImageBox imageBox;
     // StampBox
@@ -244,7 +242,6 @@ public class Dolphin implements MainWindow {
         // System.out.println(title);
         windowSupport = WindowSupport.create(title);
         PNSFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
-        myFrame.getFrame().getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 36);
         //myFrame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
         //myFrame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
 
@@ -261,11 +258,6 @@ public class Dolphin implements MainWindow {
         });
         ComponentBoundsManager cm = new ComponentBoundsManager(myFrame, loc, size, this);
         cm.revertToPreferenceBounds();
-
-        // BlockGlass を設定する
-        blockGlass = new BlockGlass();
-        blockGlass.setSize(myFrame.getSize());
-        myFrame.setGlassPane(blockGlass);
 
         // mainWindowのメニューを生成しメニューバーに追加する
         mediator = new Mediator(this);
@@ -380,11 +372,6 @@ public class Dolphin implements MainWindow {
     }
 
     @Override
-    public BlockGlass getGlassPane() {
-        return blockGlass;
-    }
-
-    @Override
     public MainService getPlugin(String id) {
         return providers.get(id);
     }
@@ -483,22 +470,6 @@ public class Dolphin implements MainWindow {
     @Override
     public PageFormat getPageFormat() {
         return PrinterJob.getPrinterJob().getPageFormat(null);
-    }
-
-    /**
-     * ブロックする.
-     */
-    @Override
-    public void block() {
-        blockGlass.block();
-    }
-
-    /**
-     * ブロックを解除する.
-     */
-    @Override
-    public void unblock() {
-        blockGlass.unblock();
     }
 
     /**

@@ -1,6 +1,5 @@
 package open.dolphin.stampbox;
 
-import open.dolphin.client.BlockGlass;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dnd.StampTreeNodeTransferHandler;
@@ -11,6 +10,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.StampModel;
 import open.dolphin.project.Project;
+import open.dolphin.ui.BlockGlass2;
 import open.dolphin.util.ModelUtils;
 import org.jdom2.Element;
 
@@ -32,9 +32,8 @@ import java.util.concurrent.ExecutionException;
  * @author masuda-sensei
  */
 public class StampBoxExtraMenu extends MouseAdapter {
-
     private final StampBoxPlugin context;
-    private final BlockGlass blockGlass;
+    private final BlockGlass2 blockGlass;
     private JPopupMenu popup;
     // @MenuAction で定義された action の actionMap， key は method 名
     private ActionMap actionMap;
@@ -42,9 +41,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
     public StampBoxExtraMenu(StampBoxPlugin ctx) {
         super();
         context = ctx;
-        blockGlass = new BlockGlass();
-        context.getFrame().setGlassPane(blockGlass);
-        blockGlass.setSize(context.getFrame().getSize());
+        blockGlass = (BlockGlass2) context.getFrame().getGlassPane();
         buildPopupMenu();
     }
 
@@ -137,10 +134,10 @@ public class StampBoxExtraMenu extends MouseAdapter {
         if (files.length != 1) { return; }
         final File file = files[0];
 
-        SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+        SwingWorker<String, Void> worker = new SwingWorker<>() {
             @Override
             protected String doInBackground() {
-                blockGlass.block();
+                blockGlass.setVisible(true);
                 List<StampTree> publishList = new ArrayList<>(IInfoModel.STAMP_ENTITIES.length);
                 List<StampTree> trees = stampBox.getAllTrees();
                 publishList.addAll(trees);
@@ -150,7 +147,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
             @Override
             protected void done() {
                 blockGlass.setText("");
-                blockGlass.unblock();
+                blockGlass.setVisible(false);
 
                 try (FileOutputStream f = new FileOutputStream(file);
                      OutputStreamWriter w = new OutputStreamWriter(f, StandardCharsets.UTF_8)) {
@@ -183,10 +180,10 @@ public class StampBoxExtraMenu extends MouseAdapter {
         if (files.length != 1) { return; }
         File file = files[0];
 
-        SwingWorker<Object, Void> worker = new SwingWorker<Object, Void>() {
+        SwingWorker<Object, Void> worker = new SwingWorker<>() {
             @Override
             protected Object doInBackground() {
-                blockGlass.block();
+                blockGlass.setVisible(true);
 
                 try {
                     // xml ファイルから StampTree 作成
@@ -254,7 +251,7 @@ public class StampBoxExtraMenu extends MouseAdapter {
             @Override
             protected void done() {
                 blockGlass.setText("");
-                blockGlass.unblock();
+                blockGlass.setVisible(false);
             }
         };
         worker.execute();
@@ -433,30 +430,28 @@ public class StampBoxExtraMenu extends MouseAdapter {
         public int startElement(String eName, Element e) {
 
             switch (eName) {
-                case "stampInfo":
+                case "stampInfo" -> {
                     ((ExtendedStampTreeBuilder) builder).buildStampInfo(
-                            e.getAttributeValue("name"),
-                            e.getAttributeValue("role"),
-                            e.getAttributeValue("entity"),
-                            e.getAttributeValue("editable"),
-                            e.getAttributeValue("memo"),
-                            e.getAttributeValue("stampId"),
-                            e.getAttributeValue("stampBytes")
+                        e.getAttributeValue("name"),
+                        e.getAttributeValue("role"),
+                        e.getAttributeValue("entity"),
+                        e.getAttributeValue("editable"),
+                        e.getAttributeValue("memo"),
+                        e.getAttributeValue("stampId"),
+                        e.getAttributeValue("stampBytes")
                     );
                     blockGlass.setText(count + " 個のスタンプを読み込みました");
                     count++;
                     return TT_STAMP_INFO;
-
-                case "node":
+                }
+                case "node" -> {
                     builder.buildNode(e.getAttributeValue("name"));
                     return TT_NODE;
-
-                case "root":
+                }
+                case "root" -> {
                     builder.buildRoot(e.getAttributeValue("name"), e.getAttributeValue("entity"));
                     return TT_ROOT;
-
-                default:
-                    break;
+                }
             }
             return -1;
         }
