@@ -440,8 +440,8 @@ public class BlockGlass2 extends JComponent implements MouseListener {
                     break;
                 }
                 Thread.yield();
-                // if (rampUp) System.out.print(".");
-                // else System.out.print(",");
+                if (rampUp) System.out.print(".");
+                else System.out.print(",");
             }
             // System.out.println("blocking animation done");
 

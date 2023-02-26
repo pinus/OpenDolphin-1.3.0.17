@@ -68,12 +68,11 @@ public class PNSOptionPane extends JOptionPane {
 
         Object selectedValue = pane.getValue();
         if (selectedValue == null ) { return CLOSED_OPTION; }
-        if (options == null) {
-            if (selectedValue instanceof Integer) {
-                return (Integer) selectedValue;
-            }
-            return CLOSED_OPTION;
-        }
+        // selectedValue が数字ならそのまま返す
+        if (selectedValue instanceof Integer num) { return num; }
+        // selectedValue が数字ではなくて, options が null ということはないはず
+        if (options == null) { return CLOSED_OPTION; }
+        // selectedValue が文字列などの場合, オブジェクトとして比較して何番目かを返す
         for (int i=0; i<options.length; i++) {
             if (options[i].equals(selectedValue)) {
                 return i;
@@ -144,7 +143,7 @@ public class PNSOptionPane extends JOptionPane {
     @Override
     public void setInitialValue(Object initialValue) {
         Object[] options = super.getOptions();
-        if (Objects.nonNull(getOptions()) && options[0] instanceof JButton && initialValue instanceof String) {
+        if (Objects.nonNull(options) && options[0] instanceof JButton && initialValue instanceof String) {
             for (Object option : options) {
                 if (((JButton) option).getText().equals(initialValue)) {
                     super.setInitialValue(option);

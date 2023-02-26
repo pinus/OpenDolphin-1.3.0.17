@@ -678,7 +678,7 @@ public class Dolphin implements MainWindow {
         // 環境保存
         String taskTitle = ClientContext.getString("exitDolphin.taskTitle");
         String title = ClientContext.getFrameTitle(taskTitle);
-        String[] options = new String[]{cancelOption, exitOption};
+        String[] options = new String[]{ cancelOption, exitOption }; // cancel=0, exit=1
 
         int option = PNSOptionPane.showOptionDialog(
                 null, message, title,
@@ -686,7 +686,7 @@ public class Dolphin implements MainWindow {
                 JOptionPane.WARNING_MESSAGE,
                 null, options, options[0]);
 
-        if (option == -1) { exit(); }
+        if (option == 1) { exit(); } // キャンセル=0, ESC キー = -1
     }
 
     /**
