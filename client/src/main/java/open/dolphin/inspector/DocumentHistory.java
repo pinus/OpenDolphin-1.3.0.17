@@ -5,7 +5,7 @@ import open.dolphin.client.ChartImpl;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.DocumentSearchSpec;
 import open.dolphin.event.ProxyAction;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.DocInfoModel;
@@ -571,7 +571,7 @@ public class DocumentHistory implements IInspector {
     /**
      * 検索タスク.
      */
-    private class DocInfoTask extends DBTask<List<DocInfoModel>> {
+    private class DocInfoTask extends ChartTask<List<DocInfoModel>> {
 
         // Delegator
         private final DocumentDelegater ddl;
@@ -603,7 +603,7 @@ public class DocumentHistory implements IInspector {
     /**
      * タイトル変更タスククラス.
      */
-    private class ChangeTitleTask extends DBTask<Boolean> {
+    private class ChangeTitleTask extends ChartTask<Boolean> {
 
         // DocInfo
         private final DocInfoModel docInfo;

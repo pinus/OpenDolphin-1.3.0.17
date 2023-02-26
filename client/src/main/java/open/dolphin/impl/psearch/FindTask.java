@@ -2,7 +2,7 @@ package open.dolphin.impl.psearch;
 
 import open.dolphin.delegater.PatientDelegater;
 import open.dolphin.dto.PatientSearchSpec;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.dto.PatientSearchSpec.SEARCH;
@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author pns
  */
-class FindTask extends Task<Collection<PatientModel>> {
+class FindTask extends PNSTask<Collection<PatientModel>> {
 
     private final PatientSearchPanel view;
     private final ObjectReflectTableModel<PatientModel> tableModel;

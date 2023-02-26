@@ -61,15 +61,15 @@ public class BlockGlass2 extends JComponent implements MouseListener {
     /**
      * Initial delay before ramp up
      */
-    private int initialDelay = 300;
+    private final int initialDelay = 100;
     /**
      * Duration of the veil's fade in/out.
      */
-    protected int rampDelay = 300;
+    protected int rampDelay = 100;
     /**
      * Color of the veil.
      */
-    private int veilColor = 200;
+    private final int veilColor = 200;
     /**
      * Alpha level of the veil.
      */
@@ -440,8 +440,8 @@ public class BlockGlass2 extends JComponent implements MouseListener {
                     break;
                 }
                 Thread.yield();
-                // if (rampUp) System.out.print(".");
-                // else System.out.print(",");
+                if (rampUp) System.out.print(".");
+                else System.out.print(",");
             }
             // System.out.println("blocking animation done");
 

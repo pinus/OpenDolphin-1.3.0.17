@@ -6,7 +6,7 @@ import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.dto.OrcaEntry;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.PNSTriple;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
 import open.dolphin.order.IStampEditor;
 import open.dolphin.order.MasterItem;
@@ -93,7 +93,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         );
         setTableColumnWidth(new int[]{90, 200, 200});
 
-        return new UndoableObjectReflectTableModel<MasterItem>(reflectList) {
+        return new UndoableObjectReflectTableModel<>(reflectList) {
 
             @Override
             public boolean isCellEditable(int row, int col) {
@@ -313,7 +313,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         String note = "傷病名を検索しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        Task<List<OrcaEntry>> task = new Task<List<OrcaEntry>>(c, message, note, 30 * 1000) {
+        PNSTask<List<OrcaEntry>> task = new PNSTask<>(c, message, note, 30 * 1000) {
             @Override
             protected List<OrcaEntry> doInBackground() {
                 // 傷病名コードからDiseaseEntryを取得
@@ -368,8 +368,7 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         String alias = null;
 
         // テーブルをスキャンする
-        for (Object o : tableModel.getObjectList()) {
-            MasterItem mItem = (MasterItem) o;
+        for (MasterItem mItem : tableModel.getObjectList()) {
             String diagCode = mItem.getCode();
 
             if (diagCode.startsWith(MODIFIER_CODE)) {
@@ -452,8 +451,8 @@ public class DiagnosisTablePanel extends ItemTablePanel {
         // 修飾語があるかどうか
         boolean hasModifier = false;
 
-        for (Object o : tableModel.getObjectList()) {
-            if (((MasterItem) o).getCode().startsWith("ZZZ")) {
+        for (MasterItem mItem : tableModel.getObjectList()) {
+            if (mItem.getCode().startsWith("ZZZ")) {
                 hasModifier = true;
             } else {
                 baseDiagnosisCount++;

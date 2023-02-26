@@ -4,7 +4,7 @@ import open.dolphin.client.ChartImpl;
 import open.dolphin.client.CompositeArea;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.event.ProxyAction;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.helper.ScriptExecutor;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PatientMemoModel;
@@ -259,7 +259,7 @@ public class MemoInspector implements IInspector {
         patientMemoModel.setStatus(IInfoModel.STATUS_FINAL);
         patientMemoModel.setMemo(memoArea.getText().trim());
 
-        DBTask<Void> task = new DBTask<Void>(context) {
+        ChartTask<Void> task = new ChartTask<>(context) {
 
             @Override
             protected Void doInBackground() {

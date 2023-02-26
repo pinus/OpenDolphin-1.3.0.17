@@ -5,7 +5,7 @@ import open.dolphin.delegater.UserDelegater;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.HashUtil;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.DepartmentModel;
 import open.dolphin.infomodel.LicenseModel;
 import open.dolphin.infomodel.RoleModel;
@@ -427,8 +427,7 @@ public class ChangePassword extends AbstractMainTool {
             int delay = ClientContext.getInt("task.default.delay");
             String message = null;
 
-            Task<Boolean> task = new Task<Boolean>(frame, message, PROGRESS_NOTE, maxEstimation) {
-
+            PNSTask<Boolean> task = new PNSTask<>(frame, message, PROGRESS_NOTE, maxEstimation) {
                 @Override
                 protected Boolean doInBackground() {
                     logger.debug("ChangePassword doInBackground");
@@ -458,14 +457,14 @@ public class ChangePassword extends AbstractMainTool {
                         DolphinClientContext.configure(hostAddress, pk, password);
 
                         JOptionPane.showMessageDialog(frame,
-                                SUCCESS_MESSAGE,
-                                ClientContext.getFrameTitle(getName()),
-                                JOptionPane.INFORMATION_MESSAGE);
+                            SUCCESS_MESSAGE,
+                            ClientContext.getFrameTitle(getName()),
+                            JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(frame,
-                                udl.getErrorMessage(),
-                                ClientContext.getFrameTitle(getName()),
-                                JOptionPane.WARNING_MESSAGE);
+                            udl.getErrorMessage(),
+                            ClientContext.getFrameTitle(getName()),
+                            JOptionPane.WARNING_MESSAGE);
                     }
                 }
             };

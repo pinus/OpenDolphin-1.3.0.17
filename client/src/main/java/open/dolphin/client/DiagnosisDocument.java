@@ -331,7 +331,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         diagTable.putClientProperty("Quaqua.Table.style", "striped");
         tableModel.setDiagTable(diagTable);
         // sorter を設定
-        TableRowSorter<DiagnosisDocumentTableModel> sorter = new TableRowSorter<DiagnosisDocumentTableModel>(tableModel) {
+        TableRowSorter<DiagnosisDocumentTableModel> sorter = new TableRowSorter<>(tableModel) {
             // ASCENDING -> DESENDING -> 初期状態 と切り替える
             @Override
             public void toggleSortOrder(int column) {
@@ -632,7 +632,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         controlButtons();
     }
 
-    /**
+    /*
      * デバッグ用
      */
 /*
@@ -777,7 +777,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         final StampDelegater sdl = new StampDelegater();
 
-        DBTask<List<StampModel>> task = new DBTask<List<StampModel>>(getContext()) {
+        ChartTask<List<StampModel>> task = new ChartTask<>(getContext()) {
             @Override
             protected List<StampModel> doInBackground() {
                 return sdl.getStamp(stampList);
@@ -1151,7 +1151,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
         final DocumentDelegater ddl = new DocumentDelegater();
 
-        DBTask<List<RegisteredDiagnosisModel>> task = new DBTask<List<RegisteredDiagnosisModel>>(getContext()) {
+        ChartTask<List<RegisteredDiagnosisModel>> task = new ChartTask<>(getContext()) {
 
             @Override
             protected List<RegisteredDiagnosisModel> doInBackground() {
@@ -1214,7 +1214,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         int maxEstimation = 10000;
         int delay = 3000;
 
-        Task<Boolean> task = new Task<Boolean>(c, message, note, maxEstimation) {
+        PNSTask<Boolean> task = new PNSTask<>(c, message, note, maxEstimation) {
 
             @Override
             protected Boolean doInBackground() {
@@ -1225,7 +1225,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 List<String> codeSet = new ArrayList<>();
                 // codes のうち，７桁のものが srycd コード → これを codeSet にためる
                 rdList.stream().map(rd -> rd.getDiagnosisCode().split("\\.")).forEach(codes ->
-                        Arrays.stream(codes).filter(code -> code.length() == 7).forEach(codeSet::add));
+                    Arrays.stream(codes).filter(code -> code.length() == 7).forEach(codeSet::add));
 
                 // codeSet のうち移行病名のリストを取得
                 OrcaDelegater delegater = new OrcaDelegater();
@@ -1233,9 +1233,9 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
                 // ikouList に合致する病名に IKOU_BYOMEI_RECORD をマークする
                 ikouList.stream().forEach(code ->
-                        rdList.stream()
-                                .filter(rd -> rd.getDiagnosisCode().contains(code))
-                                .forEach(rd -> rd.setStatus(IKOU_BYOMEI_RECORD))
+                    rdList.stream()
+                        .filter(rd -> rd.getDiagnosisCode().contains(code))
+                        .forEach(rd -> rd.setStatus(IKOU_BYOMEI_RECORD))
                 );
                 return !ikouList.isEmpty();
             }
@@ -1280,7 +1280,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     public void viewOrca() {
 
-        DBTask<List<RegisteredDiagnosisModel>> task = new DBTask<List<RegisteredDiagnosisModel>>(getContext()) {
+        ChartTask<List<RegisteredDiagnosisModel>> task = new ChartTask<>(getContext()) {
 
             @Override
             protected List<RegisteredDiagnosisModel> doInBackground() {
@@ -1427,7 +1427,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     /**
      * DiagnosisPutTask.
      */
-    private class DiagnosisPutTask extends DBTask<List<Long>> {
+    private class DiagnosisPutTask extends ChartTask<List<Long>> {
 
         private final boolean sendClaim;
         private final DocumentDelegater ddl;

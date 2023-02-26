@@ -3,7 +3,7 @@ package open.dolphin.stampbox;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.ModuleModel;
@@ -137,7 +137,7 @@ public class StampMakerPanel extends JPanel {
      * StampBoxPlugin で，全 StampTree に listener が付けられている.
      * 選択されたスタンプに応じて左ボタンを制御する.
      *
-     * @param e
+     * @param e TreeSelectionEvent
      */
     public void treeSelectionChanged(TreeSelectionEvent e) {
         StampTree tree = (StampTree) e.getSource();
@@ -178,12 +178,10 @@ public class StampMakerPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             // 無効なデータは読まない
-            if (selectedNode == null || !(selectedNode.getUserObject() instanceof ModuleInfoBean)) {
+            if (selectedNode == null
+                || !(selectedNode.getUserObject() instanceof ModuleInfoBean stampInfo)) {
                 return;
             }
-
-            final ModuleInfoBean stampInfo = (ModuleInfoBean) selectedNode.getUserObject();
-
             final StampDelegater sdl = new StampDelegater();
             int maxEstimation = 30 * 1000;
             int delay = 200;
@@ -191,7 +189,7 @@ public class StampMakerPanel extends JPanel {
             String note = "検索しています...";
             Component c = SwingUtilities.getWindowAncestor(editorPanel);
 
-            Task task = new Task<StampModel>(c, message, note, maxEstimation) {
+            PNSTask<StampModel> task = new PNSTask<>(c, message, note, maxEstimation) {
                 @Override
                 protected StampModel doInBackground() throws Exception {
                     return sdl.getStamp(stampInfo.getStampId());
@@ -217,9 +215,9 @@ public class StampMakerPanel extends JPanel {
 
                     } else {
                         JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(editorPanel),
-                                (stampModel == null) ? "実体のないスタンプです。削除してください。" : sdl.getErrorMessage(),
-                                ClientContext.getFrameTitle("Stamp取得"),
-                                JOptionPane.WARNING_MESSAGE);
+                            (stampModel == null) ? "実体のないスタンプです。削除してください。" : sdl.getErrorMessage(),
+                            ClientContext.getFrameTitle("Stamp取得"),
+                            JOptionPane.WARNING_MESSAGE);
                     }
                 }
             };

@@ -9,7 +9,7 @@ import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.helper.StampTreeUtils;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSOptionPane;
@@ -391,18 +391,11 @@ public class StampPublisher {
         personalTree.setPublished(published);
 
         // 公開及び更新日を設定する
-        switch (publishState) {
-            case NONE:
-            case SAVED_NONE:
-                Date date = new Date();
-                personalTree.setPublishedDate(date);
-                personalTree.setLastUpdated(date);
-                break;
-            case LOCAL:
-            case GLOBAL:
-                personalTree.setLastUpdated(new Date());
-                break;
+        Date now = new Date();
+        if (publishState == PublishedState.NONE || publishState == PublishedState.SAVED_NONE) {
+            personalTree.setPublishedDate(now);
         }
+        personalTree.setLastUpdated(now);
 
         // Delegator を生成する
         sdl = new StampDelegater();
@@ -414,8 +407,7 @@ public class StampPublisher {
         String note = "公開しています...";
         Component c = dialog;
 
-        Task<Boolean> task = new Task<>(c, message, note, maxEstimation) {
-
+        PNSTask<Boolean> task = new PNSTask<>(c, message, note, maxEstimation) {
             @Override
             protected Boolean doInBackground() {
 
@@ -506,8 +498,7 @@ public class StampPublisher {
         String note = "公開を取り消しています...";
         Component c = dialog;
 
-        Task<Boolean> task = new Task<>(c, message, note, maxEstimation) {
-
+        PNSTask<Boolean> task = new PNSTask<>(c, message, note, maxEstimation) {
             @Override
             protected Boolean doInBackground() {
                 sdl.cancelPublishedTree(stmpTree);

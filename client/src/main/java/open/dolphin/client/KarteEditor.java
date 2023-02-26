@@ -4,7 +4,7 @@ import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.dnd.KartePaneTransferHandler;
 import open.dolphin.event.CompletionListener;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
@@ -491,7 +491,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         final DocumentModel saveModel = getDocument();
         final Chart chart = this.getContext();
 
-        DBTask<String> task = new DBTask<>(chart) {
+        ChartTask<String> task = new ChartTask<>(chart) {
 
             @Override
             protected String doInBackground() {

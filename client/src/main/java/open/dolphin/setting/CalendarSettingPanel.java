@@ -18,10 +18,9 @@ import com.google.api.services.calendar.model.Event;
 
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.PnsDelegater;
-import open.dolphin.helper.DBTask;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.helper.Holiday;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.ui.CompletableJTextField;
 import open.dolphin.ui.PNSButton;
 import open.dolphin.ui.PNSOptionPane;
@@ -160,8 +159,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
     /**
      * Google Calendar API にアクセスする実務.
      */
-    private class GoogleTask extends Task<List<Event>> {
-
+    private class GoogleTask extends PNSTask<List<Event>> {
         public GoogleTask(Component parent, Object message, String note) {
             super(parent, message, note);
         }
@@ -321,7 +319,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
         prefs.put(TO_YEAR, to);
 
         // サーバにデータを保存する
-        DBTask<Void> task = new DBTask<Void>() {
+        PNSTask<Void> task = new PNSTask<>() {
             @Override
             protected Void doInBackground() {
                 PnsDelegater dlg = new PnsDelegater();

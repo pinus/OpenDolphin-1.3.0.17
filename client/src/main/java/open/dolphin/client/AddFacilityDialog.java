@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.JsonConverter;
 import open.dolphin.helper.HashUtil;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.project.Project;
 import open.dolphin.service.SystemService;
@@ -324,8 +324,7 @@ public class AddFacilityDialog extends JDialog implements ComponentListener, Run
     /**
      * AddFacilityTask
      */
-    private class AddFacilityTask extends Task<Void> {
-
+    private class AddFacilityTask extends PNSTask<Void> {
         private final UserModel user;
 
         public AddFacilityTask(Component c, Object message, String note, int maxEstimation, UserModel user) {

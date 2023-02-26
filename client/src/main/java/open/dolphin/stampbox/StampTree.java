@@ -5,7 +5,7 @@ import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dnd.StampTreeNodeTransferHandler;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.GUIDGenerator;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSTreeCellEditor;
@@ -335,7 +335,7 @@ public class StampTree extends JTree implements TreeModelListener {
         String note = info.getStampName() + "を保存しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        Task<String> task = new Task<String>(c, message, note, 60 * 1000) {
+        PNSTask<String> task = new PNSTask<>(c, message, note, 60 * 1000) {
 
             @Override
             protected String doInBackground() {
@@ -390,14 +390,10 @@ public class StampTree extends JTree implements TreeModelListener {
             int index = newParent.getIndex(selected);
 
             switch (insertPosition) {
-                case BEFORE:
-                    treeModel.undoableInsertNodeInto(node, newParent, index);
-                    break;
-                case AFTER:
-                    treeModel.undoableInsertNodeInto(node, newParent, index + 1);
-                    break;
-                default: // INTO_FOLDER
-                    treeModel.undoableInsertNodeInto(node, selected, selected.getChildCount());
+                case BEFORE -> treeModel.undoableInsertNodeInto(node, newParent, index);
+                case AFTER -> treeModel.undoableInsertNodeInto(node, newParent, index + 1);
+                // INTO_FOLDER
+                default -> treeModel.undoableInsertNodeInto(node, selected, selected.getChildCount());
             }
             // replace
             if (toReplace) {
@@ -492,7 +488,7 @@ public class StampTree extends JTree implements TreeModelListener {
         String note = info.getStampName() + "を保存しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        Task<String> task = new Task<String>(c, message, note, 60 * 1000) {
+        PNSTask<String> task = new PNSTask<>(c, message, note, 60 * 1000) {
 
             @Override
             protected String doInBackground() {
@@ -568,7 +564,7 @@ public class StampTree extends JTree implements TreeModelListener {
         String note = "病名スタンプを保存しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        Task<List<String>> task = new Task<List<String>>(c, message, note, 60 * 1000) {
+        PNSTask<List<String>> task = new PNSTask<>(c, message, note, 60 * 1000) {
 
             @Override
             protected List<String> doInBackground() {
@@ -644,7 +640,7 @@ public class StampTree extends JTree implements TreeModelListener {
         String note = info.getStampName() + "を保存しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        Task<String> task = new Task<String>(c, message, note, 60 * 1000) {
+        PNSTask<String> task = new PNSTask<>(c, message, note, 60 * 1000) {
 
             @Override
             protected String doInBackground() {
@@ -809,8 +805,7 @@ public class StampTree extends JTree implements TreeModelListener {
         String note = "スタンプを削除しています...";
         Component c = SwingUtilities.getWindowAncestor(this);
 
-        Task<Void> task = new Task<Void>(c, message, note, 60 * 1000) {
-
+        PNSTask<Void> task = new PNSTask<>(c, message, note, 60 * 1000) {
             @Override
             protected Void doInBackground() {
                 logger.debug("deleteNode doInBackground");

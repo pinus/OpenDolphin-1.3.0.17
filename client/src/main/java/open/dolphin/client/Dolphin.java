@@ -322,7 +322,7 @@ public class Dolphin implements MainWindow {
         String message = "スタンプ箱";
         String note = "スタンプツリーを読み込んでいます...";
 
-        Task<Boolean> stampTask = new Task<>(null, message, note, 30 * 1000) {
+        PNSTask<Boolean> stampTask = new PNSTask<>(null, message, note, 30 * 1000) {
 
             @Override
             protected Boolean doInBackground() throws Exception {
@@ -619,8 +619,7 @@ public class Dolphin implements MainWindow {
             String note = ClientContext.getString("exitDolphin.savingNote");
             Component c = getFrame();
 
-            Task<Boolean> stampTask = new Task<>(c, message, note, 60 * 1000) {
-
+            PNSTask<Boolean> stampTask = new PNSTask<>(c, message, note, 5 * 1000) {
                 @Override
                 protected Boolean doInBackground() throws Exception {
                     logger.debug("stoppingTask doInBackground");
@@ -643,6 +642,12 @@ public class Dolphin implements MainWindow {
                     } else {
                         doStoppingAlert();
                     }
+                }
+
+                @Override
+                protected void cancelled() {
+                    logger.info("stopping task cancelled");
+                    doStoppingAlert();
                 }
 
                 @Override
@@ -669,15 +674,11 @@ public class Dolphin implements MainWindow {
 
         // 終了する
         String exitOption = ClientContext.getString("exitDolphin.exitOption");
-
         // キャンセルする
         String cancelOption = ClientContext.getString("exitDolphin.cancelOption");
-
         // 環境保存
         String taskTitle = ClientContext.getString("exitDolphin.taskTitle");
-
         String title = ClientContext.getFrameTitle(taskTitle);
-
         String[] options = new String[]{cancelOption, exitOption};
 
         int option = PNSOptionPane.showOptionDialog(
@@ -686,9 +687,7 @@ public class Dolphin implements MainWindow {
                 JOptionPane.WARNING_MESSAGE,
                 null, options, options[0]);
 
-        if (option == 1) {
-            exit();
-        }
+        if (option == -1) { exit(); }
     }
 
     /**

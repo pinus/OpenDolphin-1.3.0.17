@@ -7,7 +7,7 @@ import open.dolphin.client.GUIFactory;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.PNSTriple;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.infomodel.SubscribedTreeModel;
@@ -78,8 +78,7 @@ public class StampImporter {
         String message = "スタンプ取り込み";
         Component c = null;
 
-        Task<List<PublishedTreeModel>> task = new Task<>(c, message, mmsg, maxEstimation) {
-
+        PNSTask<List<PublishedTreeModel>> task = new PNSTask<>(c, message, mmsg, maxEstimation) {
             @Override
             protected List<PublishedTreeModel> doInBackground() {
                 return sdl.getPublishedTrees();
@@ -265,7 +264,7 @@ public class StampImporter {
         String message = "スタンプ取り込み";
         Component c = frame;
 
-        Task<Boolean> task = new Task<>(c, message, mmsg, maxEstimation) {
+        PNSTask<Boolean> task = new PNSTask<>(c, message, mmsg, maxEstimation) {
 
             @Override
             protected Boolean doInBackground() {
@@ -320,8 +319,7 @@ public class StampImporter {
         String message = "スタンプ取り込み";
         Component c = frame;
 
-        Task<Boolean> task = new Task<>(c, message, mmsg, maxEstimation) {
-
+        PNSTask<Boolean> task = new PNSTask<>(c, message, mmsg, maxEstimation) {
             @Override
             protected Boolean doInBackground() {
                 sdl.unsubscribeTrees(list);

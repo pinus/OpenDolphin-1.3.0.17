@@ -23,11 +23,12 @@ public class Holiday {
      * サーバからデータを取得してカレンダーデータベースを作成する.
      */
     public static void setupCalendarData() {
-        DBTask<Void> setup = new DBTask<Void>() {
+        PNSTask<Void> setup = new PNSTask<>() {
             @Override
             protected Void doInBackground() {
                 PnsDelegater dlg = new PnsDelegater();
                 String[][] holidayData = dlg.getCalendarData();
+
                 if (holidayData == null) {
                     // サーバにデータが無いときは, ハードコーディングされたデータを読み込む
                     holidayData = HolidayDatabase.HOLIDAY_DATA;
@@ -37,6 +38,8 @@ public class Holiday {
                 logger.info("Holiday database created.");
                 return null;
             }
+            @Override
+            protected void succeeded(Void result) {}
         };
         setup.execute();
     }

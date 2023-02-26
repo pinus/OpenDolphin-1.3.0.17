@@ -5,7 +5,7 @@ import open.dolphin.client.ChartImpl;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.event.ProxyAction;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ObservationModel;
@@ -309,7 +309,7 @@ public class PhysicalInspector implements IInspector, TableModelListener {
                 observations.add(observation);
             }
 
-            DBTask<List<Long>> task = new DBTask<List<Long>>(context) {
+            ChartTask<List<Long>> task = new ChartTask<>(context) {
                 @Override
                 protected List<Long> doInBackground() {
                     List<Long> ids = delegater.addObservations(observations);
@@ -337,7 +337,7 @@ public class PhysicalInspector implements IInspector, TableModelListener {
             if (lastDeleted.getHeight() != null) { ids.add(lastDeleted.getHeightId()); }
             if (lastDeleted.getWeight() != null) { ids.add(lastDeleted.getWeightId()); }
 
-            DBTask<Void> task = new DBTask<Void>(context) {
+            ChartTask<Void> task = new ChartTask<>(context) {
                 @Override
                 protected Void doInBackground() {
                     delegater.removeObservations(ids);

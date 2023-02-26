@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.delegater.OrcaDelegater;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
@@ -720,7 +720,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     /**
      * カルテの削除タスククラス.
      */
-    private class DeleteTask extends DBTask<Boolean> {
+    private class DeleteTask extends ChartTask<Boolean> {
 
         private final DocumentDelegater ddl;
         private final long docPk;

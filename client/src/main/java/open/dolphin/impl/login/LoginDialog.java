@@ -5,7 +5,7 @@ import open.dolphin.client.Dolphin;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.UserModel;
 import open.dolphin.project.DolphinPrincipal;
 import open.dolphin.project.Project;
@@ -126,8 +126,7 @@ public class LoginDialog {
         String message = "ログイン";
         String note = "認証中...";
 
-        Task<UserModel> task = new Task<>(view, message, note, maxEstimation) {
-
+        PNSTask<UserModel> task = new PNSTask<>(view, message, note, maxEstimation) {
             @Override
             protected UserModel doInBackground() {
                 // ログイン手順開始
@@ -387,8 +386,7 @@ public class LoginDialog {
         Focuser.requestFocus(c);
     }
 
-    private class Blocker implements Task.InputBlocker {
-
+    private class Blocker implements PNSTask.InputBlocker {
         @Override
         public void block() {
             blockGlass.setVisible(true);

@@ -1,7 +1,7 @@
 package open.dolphin.stampbox;
 
 import open.dolphin.delegater.OrcaDelegater;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.ModuleInfoBean;
 
 import javax.swing.*;
@@ -39,15 +39,15 @@ public class OrcaTree extends StampTree {
         String updateMsg = MONITOR_NOTE;
         int masEstimation = 30000;
 
-        Task<Boolean> task = new Task<Boolean>(c, message, updateMsg, masEstimation) {
+        PNSTask<Boolean> task = new PNSTask<>(c, message, updateMsg, masEstimation) {
 
             @Override
-            protected Boolean doInBackground() throws Exception {
+            protected Boolean doInBackground() {
                 OrcaDelegater delegater = new OrcaDelegater();
                 List<ModuleInfoBean> beans = delegater.getOrcaInputCdList();
 
                 StampTreeNode root = (StampTreeNode) getModel().getRoot();
-                beans.stream().map(stampInfo -> new StampTreeNode(stampInfo)).forEach(root::add);
+                beans.stream().map(StampTreeNode::new).forEach(root::add);
 
                 DefaultTreeModel model = (DefaultTreeModel) getModel();
                 model.reload(root);

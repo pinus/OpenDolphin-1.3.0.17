@@ -3,7 +3,7 @@ package open.dolphin.impl.pinfo;
 import open.dolphin.client.AbstractChartDocument;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.PatientDelegater;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.infomodel.PVTPublicInsuranceItemModel;
 import open.dolphin.infomodel.PatientModel;
@@ -14,8 +14,6 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -86,12 +84,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
 //pns   saveBtn = new JButton(ClientContext.getImageIcon(SAVE_ICON));
         saveBtn = new JButton(SAVE_ICON);
         saveBtn.setEnabled(false);
-        saveBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                save();
-            }
-        });
+        saveBtn.addActionListener(e -> save());
         cmdPanel.add(saveBtn);
 
         myPanel.add(cmdPanel, BorderLayout.NORTH);
@@ -136,10 +129,10 @@ public class PatientInfoDocument extends AbstractChartDocument {
         final PatientModel update = getContext().getPatient();
         final PatientDelegater pdl = new PatientDelegater();
 
-        DBTask task = new DBTask<Void>(getContext()) {
+        ChartTask<Void> task = new ChartTask<Void>(getContext()) {
 
             @Override
-            public Void doInBackground() throws Exception {
+            public Void doInBackground() {
                 pdl.updatePatient(update);
                 return null;
             }
@@ -252,7 +245,6 @@ public class PatientInfoDocument extends AbstractChartDocument {
 
         @Override
         public Object getValueAt(int row, int col) {
-
             String ret = null;
 
             if (col == 0) {
@@ -262,70 +254,28 @@ public class PatientInfoDocument extends AbstractChartDocument {
                 ret = attributes[row];
 
             } else if (col == 1 && patient != null) {
-
                 //
                 // 患者属性を返す
                 //
-
-                switch (row) {
-
-                    case 0:
-                        ret = patient.getPatientId();
-                        break;
-
-                    case 1:
-                        ret = patient.getFullName();
-                        break;
-
-                    case 2:
-                        ret = patient.getKanaName();
-                        break;
-
-                    case 3:
-                        ret = patient.getRomanName();
-                        break;
-
-                    case 4:
-                        ret = patient.getGender();
-                        break;
-
-                    case 5:
-                        ret = patient.getAgeBirthday();
-                        break;
-
-                    case 6:
-                        ret = patient.getNationality();
-                        break;
-
-                    case 7:
-                        ret = patient.getMaritalStatus();
-                        break;
-
-                    case 8:
-                        ret = patient.contactZipCode();
-                        break;
-
-                    case 9:
-                        ret = patient.contactAddress();
-                        break;
-
-                    case 10:
-                        ret = patient.getTelephone();
-                        break;
-
-                    case 11:
-                        ret = patient.getMobilePhone();
-                        break;
-
-                    case 12:
-                        ret = patient.getEmail();
-                        break;
-
-                }
+                ret = switch (row) {
+                    case 0 -> patient.getPatientId();
+                    case 1 -> patient.getFullName();
+                    case 2 -> patient.getKanaName();
+                    case 3 -> patient.getRomanName();
+                    case 4 -> patient.getGender();
+                    case 5 -> patient.getAgeBirthday();
+                    case 6 -> patient.getNationality();
+                    case 7 -> patient.getMaritalStatus();
+                    case 8 -> patient.contactZipCode();
+                    case 9 -> patient.contactAddress();
+                    case 10 -> patient.getTelephone();
+                    case 11 -> patient.getMobilePhone();
+                    case 12 -> patient.getEmail();
+                    default -> throw new IllegalStateException("Unexpected row: " + row);
+                };
             }
             return ret;
         }
-
 
         /**
          * 属性値を変更する.
@@ -336,7 +286,6 @@ public class PatientInfoDocument extends AbstractChartDocument {
          */
         @Override
         public void setValueAt(Object value, int row, int col) {
-
             if (value == null || value.equals("") || col == 0) {
                 return;
             }
@@ -344,46 +293,41 @@ public class PatientInfoDocument extends AbstractChartDocument {
             String strValue = (String) value;
 
             switch (row) {
-
-                case 3:
+                case 3 -> {
                     //
                     // ローマ字
                     //
                     patient.setRomanName(strValue);
                     stateMgr.processDirtyEvent();
-                    break;
-
-                case 6:
+                }
+                case 6 -> {
                     //
                     // 国籍
                     //
                     patient.setNationality(strValue);
                     stateMgr.processDirtyEvent();
-                    break;
-
-                case 7:
+                }
+                case 7 -> {
                     //
                     // 婚姻状況
                     //
                     patient.setMaritalStatus(strValue);
                     stateMgr.processDirtyEvent();
-                    break;
-
-                case 11:
+                }
+                case 11 -> {
                     //
                     // 携帯電話
                     //
                     patient.setMobilePhone(strValue);
                     stateMgr.processDirtyEvent();
-                    break;
-
-                case 12:
+                }
+                case 12 -> {
                     //
                     // 電子メール
                     //
                     patient.setEmail(strValue);
                     stateMgr.processDirtyEvent();
-                    break;
+                }
             }
         }
     }
@@ -409,7 +353,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
                 return null;
             }
 
-            List<String[]> list = new ArrayList<String[]>();
+            List<String[]> list = new ArrayList<>();
 
             String[] rowData = new String[2];
             rowData[0] = "GUID";
@@ -554,9 +498,9 @@ public class PatientInfoDocument extends AbstractChartDocument {
                 return null;
             }
 
-            String[] rowData = (String[]) data.get(row);
+            String[] rowData = data.get(row);
 
-            return (Object) rowData[col];
+            return rowData[col];
         }
     }
 

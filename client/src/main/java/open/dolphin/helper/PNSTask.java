@@ -18,16 +18,15 @@ import java.util.concurrent.ExecutionException;
  * @param <T> Target
  * @author pns
  */
-public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionListener, PropertyChangeListener {
-
+public abstract class PNSTask<T> extends SwingWorker<T, Integer> implements ActionListener, PropertyChangeListener {
     /**
      * ProgressMonitor のレンジは 0-100 で固定なので MAX は 100 で固定する.
      */
     private static final double MAX = 100;
     /**
-     * 起動している Task instance のリスト. 表示される ProgressMonitor を１つにするのに使う.
+     * 起動している PNSTask instance のリスト. 表示される ProgressMonitor を１つにするのに使う.
      */
-    private static List<Task> taskList = new ArrayList<>();
+    private static List<PNSTask<?>> taskList = new ArrayList<>();
     /**
      * 進捗状況を表示する間隔 (msec).
      */
@@ -50,20 +49,24 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
      */
     private boolean interrupt = true;
 
+    public PNSTask() {
+        this(null, "", "", 0);
+    }
+
     /**
-     * 進捗状況を自分で setProgress する Task を作る.
+     * 進捗状況を自分で setProgress する PNSTask を作る.
      * setProgress しないと，勝手に 1/10 ずつ count up していくが終了はしない.
      *
      * @param parent  ダイアログの親
      * @param message ダイアログに出すメッセージ（後から変更不可）
      * @param note    ダイアログに出すノート（後から変更可能）
      */
-    public Task(Component parent, Object message, String note) {
+    public PNSTask(Component parent, Object message, String note) {
         this(parent, message, note, 0);
     }
 
     /**
-     * 一定時間ごとに進捗状況を表示する Task を作る.
+     * 一定時間ごとに進捗状況を表示する PNSTask を作る.
      * maxEstimation=0 の場合は自分で setProgress して管理する必要あり.
      *
      * @param parent        ダイアログの親
@@ -71,7 +74,7 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
      * @param note          ダイアログに出すノート（後から setNote で変更可能）
      * @param maxEstimation timeout までの時間（msec）
      */
-    public Task(Component parent, Object message, String note, int maxEstimation) {
+    public PNSTask(Component parent, Object message, String note, int maxEstimation) {
         super();
 
         // interval (msec) ごとに interrupt して進捗状況を表示
@@ -140,7 +143,7 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
     }
 
     /**
-     * Task#InputBlocker をセットする.
+     * PNSTask#InputBlocker をセットする.
      *
      * @param blocker InputBlocker
      */
@@ -198,7 +201,7 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
 
         if ("state".equals(prop)) {
             switch ((StateValue) e.getNewValue()) {
-                case STARTED:
+                case STARTED -> {
                     // 一定時間ごとに割り込んで進捗状況を表示するタイマーをスタート
                     if (!timer.isRunning()) {
                         timer.start();
@@ -206,14 +209,13 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
                     if (blocker != null) {
                         blocker.block();
                     }
-                    break;
-
-                case DONE:
+                }
+                case DONE -> {
                     timer.stop();
                     if (blocker != null) {
                         blocker.unblock();
                     }
-                    break;
+                }
             }
             // setProgress した場合呼ばれる
         } else if ("progress".equals(prop)) {
@@ -262,8 +264,7 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
     }
 
     public static void main(String[] argv) {
-        Task task = new Task<String>(null, "テスト１", "実行中...") {
-
+        PNSTask task = new PNSTask<String>(null, "テスト１", "実行中...") {
             @Override
             protected String doInBackground() throws Exception {
                 for (int i = 0; i < 4; i++) {
@@ -297,10 +298,9 @@ public abstract class Task<T> extends SwingWorker<T, Integer> implements ActionL
         };
         task.setTimeOut(3000);
         task.execute();
-        System.out.println("Task thread started: " + new java.util.Date());
+        System.out.println("PNSTask thread started: " + new java.util.Date());
 
-        Task task2 = new Task(null, "テスト２", "実行中...") {
-
+        PNSTask task2 = new PNSTask(null, "テスト２", "実行中...") {
             @Override
             protected Object doInBackground() throws Exception {
                 System.out.println("task2 start");

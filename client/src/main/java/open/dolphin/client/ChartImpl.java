@@ -457,7 +457,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         String patientName = getPatientVisit().getPatient().getFullName() + "様";
         String note = patientName + "を開いています...";
 
-        Task<KarteBean> task = new Task<>(null, message, note, maxEstimation) {
+        PNSTask<KarteBean> task = new PNSTask<>(null, message, note, maxEstimation) {
 
             @Override
             protected KarteBean doInBackground() {

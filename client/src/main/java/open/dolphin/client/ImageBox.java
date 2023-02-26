@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.ui.PNSFrame;
 import open.dolphin.ui.PNSTabbedPane;
@@ -93,8 +93,7 @@ public class ImageBox extends AbstractMainTool {
         String message = "シェーマ画像";
         Component c = null;
 
-        Task<Void> task = new Task<>(c, message, PROGRESS_NOTE, MAX_ESTIMATION) {
-
+        PNSTask<Void> task = new PNSTask<>(c, message, PROGRESS_NOTE, MAX_ESTIMATION) {
             @Override
             protected Void doInBackground() {
                 createImagePalettes();
@@ -120,8 +119,7 @@ public class ImageBox extends AbstractMainTool {
         Component c = this.getFrame();
         String note = "画像リストを更新しています";
 
-        Task<Void> task = new Task<>(c, message, note, MAX_ESTIMATION) {
-
+       PNSTask<Void> task = new PNSTask<>(c, message, note, MAX_ESTIMATION) {
             @Override
             protected Void doInBackground() {
                 imageTable.refresh();

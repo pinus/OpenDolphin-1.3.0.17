@@ -3,7 +3,7 @@ package open.dolphin.impl.care;
 import open.dolphin.client.ImageEntry;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.ImageSearchSpec;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.infomodel.SchemaModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.PNSScrollPane;
@@ -93,7 +93,7 @@ public class ImageHistoryPanel extends JPanel {
         if (allImages != null) {
 
             List<ImageEntry> list = new ArrayList<>();
-            allImages.forEach(imageList -> list.addAll(imageList));
+            allImages.forEach(list::addAll);
             tModel.setImageList(list);
 
         } else {
@@ -121,7 +121,7 @@ public class ImageHistoryPanel extends JPanel {
         spec.setId(entry.getId());
         final DocumentDelegater ddl = new DocumentDelegater();
 
-        DBTask<SchemaModel> task = new DBTask<SchemaModel>(myParent.getContext()) {
+        ChartTask<SchemaModel> task = new ChartTask<>(myParent.getContext()) {
 
             @Override
             public SchemaModel doInBackground() throws Exception {
@@ -142,7 +142,7 @@ public class ImageHistoryPanel extends JPanel {
     }
 
     private class ImageTableModel extends AbstractTableModel {
-        
+
         private List<ImageEntry> imageList;
 
         @Override
@@ -209,7 +209,7 @@ public class ImageHistoryPanel extends JPanel {
     }
 
     private class ImageRenderer extends DefaultTableCellRenderer {
-        
+
         public ImageRenderer() {
             init();
         }

@@ -1,7 +1,7 @@
 package open.dolphin.client;
 
 import open.dolphin.JsonConverter;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.project.Project;
 import open.dolphin.service.SystemService;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -13,8 +13,6 @@ import javax.security.auth.login.LoginException;
 import javax.swing.*;
 import jakarta.ws.rs.client.ClientBuilder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
@@ -28,7 +26,6 @@ import java.nio.charset.StandardCharsets;
  * @author Minagawa, Kazushi
  */
 public class OIDGetter extends JPanel {
-
     public static final String NEXT_OID_PROP = "nextOidProp";
         private static final int MAX_ESTIMATION = 30 * 1000;
     private static final int DELAY = 200;
@@ -64,7 +61,6 @@ public class OIDGetter extends JPanel {
     }
 
     private void initialize() {
-
         try {
             InputStream in = ClientContext.getResourceAsStream("account-make-info.txt");
 //masuda^   UTF-8に変更
@@ -102,27 +98,19 @@ public class OIDGetter extends JPanel {
     }
 
     private void connect() {
-        comTest.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                doTest();
-            }
-        });
+        comTest.addActionListener(e -> doTest());
     }
 
     private void doTest() {
-
         String message = "通信テスト";
         Component c = SwingUtilities.getWindowAncestor(this);
-
         OidTask task = new OidTask(c, message);
 
         //task.setMillisToPopup(DELAY);
         task.execute();
     }
 
-    private class OidTask extends Task<String> {
-
+    private class OidTask extends PNSTask<String> {
         public OidTask(Component c, Object message) {
             super(c, message, PROGRESS_NOTE, MAX_ESTIMATION);
         }

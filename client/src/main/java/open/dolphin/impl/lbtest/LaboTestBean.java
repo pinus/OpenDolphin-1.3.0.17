@@ -3,7 +3,7 @@ package open.dolphin.impl.lbtest;
 import open.dolphin.client.*;
 import open.dolphin.delegater.LaboDelegater;
 import open.dolphin.dto.LaboSearchSpec;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.infomodel.LaboItemValue;
 import open.dolphin.infomodel.LaboModuleValue;
 import open.dolphin.infomodel.LaboSpecimenValue;
@@ -125,7 +125,7 @@ public class LaboTestBean extends AbstractChartDocument {
 
             // 固定列を実装する
             //
-            if (laboModules != null && laboModules.size() > MAX_ITEMS_NONE_FIXED_COLUMNS) {
+            if (laboModules.size() > MAX_ITEMS_NONE_FIXED_COLUMNS) {
 
                 DefaultTableModel model = new DefaultTableModel(laboData, header);
                 table.setModel(model);
@@ -267,7 +267,7 @@ public class LaboTestBean extends AbstractChartDocument {
         spec.setToDate(MMLDate.getDate());
         ldl = new LaboDelegater();
 
-        DBTask task = new DBTask<Void>(getContext()) {
+        ChartTask<Void> task = new ChartTask<>(getContext()) {
 
             @Override
             public Void doInBackground() {

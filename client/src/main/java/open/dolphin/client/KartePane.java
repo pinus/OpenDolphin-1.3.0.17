@@ -7,7 +7,7 @@ import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dnd.SchemaHolderTransferHandler;
 import open.dolphin.dnd.StampListTransferHandler;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.helper.ImageHelper;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
@@ -732,7 +732,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
         }
 
         // ORCA 以外で serialize されているものはサーバに問い合わせる
-        DBTask<List<StampModel>> task = new DBTask<List<StampModel>>(parent.getContext()) {
+        ChartTask<List<StampModel>> task = new ChartTask<>(parent.getContext()) {
             private StampDelegater sdl = new StampDelegater();
 
             @Override
@@ -796,7 +796,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
      */
     private void applyOrcaSet(final ModuleInfoBean stampInfo) {
 
-        DBTask<List<ModuleModel>> task = new DBTask<List<ModuleModel>>(parent.getContext()) {
+        ChartTask<List<ModuleModel>> task = new ChartTask<>(parent.getContext()) {
 
             @Override
             protected List<ModuleModel> doInBackground() {
@@ -893,7 +893,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
             return;
         }
 
-        DBTask<ImageIcon> task = new DBTask<ImageIcon>(parent.getContext()) {
+        ChartTask<ImageIcon> task = new ChartTask<>(parent.getContext()) {
 
             @Override
             protected ImageIcon doInBackground() throws Exception {
@@ -1025,22 +1025,21 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
     public void propertyChange(PropertyChangeEvent e) {
 
         switch (e.getPropertyName()) {
-            case SchemaEditor.IMAGE_PROP:
+            case SchemaEditor.IMAGE_PROP -> {
                 SchemaModel schema = (SchemaModel) e.getNewValue();
                 if (schema != null) {
                     // 編集されたシェーマをこのペインに挿入する
                     stampSchema(schema);
                 }
-                break;
-
-            case StampEditorDialog.VALUE_PROP:
+            }
+            case StampEditorDialog.VALUE_PROP -> {
                 Object o = e.getNewValue();
                 if (o != null) {
                     // 編集された Stamp をこのペインに挿入する
                     ModuleModel stamp = (ModuleModel) o;
                     stamp(stamp);
                 }
-                break;
+            }
         }
         // stamp が挿入されたら toFront する.
         this.getParent().getContext().getFrame().toFront();

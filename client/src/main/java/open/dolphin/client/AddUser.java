@@ -6,7 +6,7 @@ import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.HashUtil;
 import open.dolphin.helper.PNSTriple;
-import open.dolphin.helper.Task;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IndentTableCellRenderer;
@@ -138,7 +138,7 @@ public class AddUser extends AbstractMainTool {
      * 施設（医療機関）情報を変更するクラス.
      */
     private class FacilityInfoPanel extends JPanel {
-        
+
         // 施設情報フィールド
         private JTextField facilityName;
         private JTextField zipField1;
@@ -373,8 +373,7 @@ public class AddUser extends AbstractMainTool {
             String updateMsg = ClientContext.getString("task.default.updateMessage");
             String message = null;
 
-            Task<Boolean> task = new Task<Boolean>(frame, message, updateMsg, maxEstimation) {
-
+            PNSTask<Boolean> task = new PNSTask<>(frame, message, updateMsg, maxEstimation) {
                 @Override
                 protected Boolean doInBackground() {
                     logger.debug("updateUser doInBackground");
@@ -387,14 +386,14 @@ public class AddUser extends AbstractMainTool {
                     logger.debug("updateUser succeeded");
                     if (result) {
                         JOptionPane.showMessageDialog(frame,
-                                FACILITY_SUCCESS_MSG,
-                                ClientContext.getFrameTitle(getName()),
-                                JOptionPane.INFORMATION_MESSAGE);
+                            FACILITY_SUCCESS_MSG,
+                            ClientContext.getFrameTitle(getName()),
+                            JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(frame,
-                                udl.getErrorMessage(),
-                                ClientContext.getFrameTitle(getName()),
-                                JOptionPane.WARNING_MESSAGE);
+                            udl.getErrorMessage(),
+                            ClientContext.getFrameTitle(getName()),
+                            JOptionPane.WARNING_MESSAGE);
                     }
                 }
             };
@@ -407,7 +406,7 @@ public class AddUser extends AbstractMainTool {
      * ユーザリストを取得するクラス. 名前がいけない.
      */
     private class UserListPanel extends JPanel {
-        
+
         private ObjectReflectTableModel<UserModel> tableModel;
         private JTable table;
         private JButton getButton;
@@ -503,8 +502,7 @@ public class AddUser extends AbstractMainTool {
             String note = ClientContext.getString("task.default.searchMessage");
             String message = null;
 
-            Task<List<UserModel>> task = new Task<List<UserModel>>(frame, message, note, maxEstimation) {
-
+            PNSTask<List<UserModel>> task = new PNSTask<>(frame, message, note, maxEstimation) {
                 @Override
                 protected List<UserModel> doInBackground() {
                     logger.debug("getUsers doInBackground");
@@ -518,9 +516,9 @@ public class AddUser extends AbstractMainTool {
                         tableModel.setObjectList(results);
                     } else {
                         JOptionPane.showMessageDialog(frame,
-                                udl.getErrorMessage(),
-                                ClientContext.getFrameTitle(getName()),
-                                JOptionPane.WARNING_MESSAGE);
+                            udl.getErrorMessage(),
+                            ClientContext.getFrameTitle(getName()),
+                            JOptionPane.WARNING_MESSAGE);
                     }
                 }
             };
@@ -542,11 +540,7 @@ public class AddUser extends AbstractMainTool {
             //
             // 作成したドキュメントも削除するかどうかを選ぶ
             //
-            boolean deleteDoc = true;
-            if (entry.getLicenseModel().getLicense().equals("doctor")) {
-                deleteDoc = false;
-            }
-
+            boolean deleteDoc = !entry.getLicenseModel().getLicense().equals("doctor");
             final UserDelegater udl = new UserDelegater();
 
             int maxEstimation = ClientContext.getInt("task.default.maxEstimation");
@@ -556,8 +550,7 @@ public class AddUser extends AbstractMainTool {
 
             final String deleteId = entry.getUserId();
 
-            Task<List<UserModel>> task = new Task<List<UserModel>>(frame, message, note, maxEstimation) {
-
+            PNSTask<List<UserModel>> task = new PNSTask<>(frame, message, note, maxEstimation) {
                 @Override
                 protected List<UserModel> doInBackground() {
                     logger.debug("deleteUser doInBackground");
@@ -574,15 +567,15 @@ public class AddUser extends AbstractMainTool {
                     if (udl.getErrorCode() == BusinessDelegater.Result.NO_ERROR) {
                         tableModel.setObjectList(results);
                         JOptionPane.showMessageDialog(frame,
-                                DELETE_USER_SUCCESS_MSG,
-                                ClientContext.getFrameTitle(getName()),
-                                JOptionPane.INFORMATION_MESSAGE);
+                            DELETE_USER_SUCCESS_MSG,
+                            ClientContext.getFrameTitle(getName()),
+                            JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
                         JOptionPane.showMessageDialog(frame,
-                                udl.getErrorMessage(),
-                                ClientContext.getFrameTitle(getName()),
-                                JOptionPane.WARNING_MESSAGE);
+                            udl.getErrorMessage(),
+                            ClientContext.getFrameTitle(getName()),
+                            JOptionPane.WARNING_MESSAGE);
                     }
                 }
             };
@@ -599,7 +592,7 @@ public class AddUser extends AbstractMainTool {
      * 施設内ユーザ登録クラス.
      */
     private class AddUserPanel extends JPanel {
-        
+
         private JTextField uid; // 利用者ID
         private JPasswordField userPassword1; // パスワード
         private JPasswordField userPassword2; // パスワード
@@ -815,8 +808,7 @@ public class AddUser extends AbstractMainTool {
             String addMsg = ClientContext.getString("task.default.addMessage");
             String message = null;
 
-            Task<Boolean> task = new Task<Boolean>(frame, message, addMsg, maxEstimation) {
-
+            PNSTask<Boolean> task = new PNSTask<>(frame, message, addMsg, maxEstimation) {
                 @Override
                 protected Boolean doInBackground() {
                     logger.debug("addUserEntry doInBackground");

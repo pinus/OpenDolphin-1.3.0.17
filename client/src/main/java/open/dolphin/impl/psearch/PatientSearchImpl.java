@@ -512,7 +512,6 @@ public class PatientSearchImpl extends AbstractMainComponent {
         }
 
         FindTask task = new FindTask(view, "患者検索", "検索中...", spec);
-
         task.setInputBlocker(new Blocker());
         // キャンセルした際 interrupt すると delegater で NamigException が出る
         task.setInterruptOnCancel(false);
@@ -687,7 +686,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
     /**
      * FindTask で使う InputBlocker.
      */
-    private class Blocker implements Task.InputBlocker {
+    private class Blocker implements PNSTask.InputBlocker {
         @Override
         public void block() {
             keyBlocker.block();

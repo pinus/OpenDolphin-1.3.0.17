@@ -6,7 +6,7 @@ import open.dolphin.delegater.AppointmentDelegater;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.dto.ImageSearchSpec;
 import open.dolphin.dto.ModuleSearchSpec;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.helper.PNSPair;
 import open.dolphin.infomodel.AppointmentModel;
 import open.dolphin.infomodel.IInfoModel;
@@ -227,8 +227,8 @@ public final class CareMapDocument extends AbstractChartDocument {
     /**
      * SimpleCalendarPanel の日付選択で呼ばれる.
      *
-     * @param target
-     * @param date
+     * @param target SimpleCalendarPanel
+     * @param date date
      */
     private void updatePanel(SimpleCalendarPanel target, SimpleDate date) {
         String code = date.getEventCode();
@@ -324,7 +324,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     /**
      * 表示している期間内にある画像をマークする.
      *
-     * @param images
+     * @param images List of List&lt;ImageEntry&gt;
      */
     public void setAllImages(List<List<ImageEntry>> images) {
 
@@ -342,7 +342,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     /**
      * 抽出期間が変更された場合，現在選択されているイベントに応じ， モジュールまたは画像履歴を取得する.
      *
-     * @param p
+     * @param p period
      */
     public void setSelectedPeriod(Period p) {
 
@@ -363,7 +363,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     /**
      * 表示するオーダが変更された場合，選択されたイベントに応じ， モジュールまたは画像履歴を取得する.
      *
-     * @param code
+     * @param code code
      */
     public void setSelectedEvent(String code) {
         // 登録前に以前の event はクリアする
@@ -412,24 +412,24 @@ public final class CareMapDocument extends AbstractChartDocument {
 
         final DocumentDelegater ddl = new DocumentDelegater();
 
-        DBTask<PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>>> task =
-                new DBTask<PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>>>(getContext()) {
+        ChartTask<PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>>> task =
+            new ChartTask<>(getContext()) {
 
-                    @Override
-                    public PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>> doInBackground() {
-                        List<List<ModuleModel>> modules = ddl.getModuleList(spec);
-                        List<List<AppointmentModel>> appoints = appo ? ddl.getAppoinmentList(spec) : null;
-                        return new PNSPair<>(modules, appoints);
-                    }
+                @Override
+                public PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>> doInBackground() {
+                    List<List<ModuleModel>> modules = ddl.getModuleList(spec);
+                    List<List<AppointmentModel>> appoints = appo ? ddl.getAppoinmentList(spec) : null;
+                    return new PNSPair<>(modules, appoints);
+                }
 
-                    @Override
-                    public void succeeded(PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>> result) {
-                        setAllModules(result.getName());
-                        if (appo) {
-                            setAllAppointments(result.getValue());
-                        }
+                @Override
+                public void succeeded(PNSPair<List<List<ModuleModel>>, List<List<AppointmentModel>>> result) {
+                    setAllModules(result.getName());
+                    if (appo) {
+                        setAllAppointments(result.getValue());
                     }
-                };
+                }
+            };
 
         task.execute();
     }
@@ -464,7 +464,7 @@ public final class CareMapDocument extends AbstractChartDocument {
 
         final DocumentDelegater ddl = new DocumentDelegater();
 
-        DBTask<List<List<ImageEntry>>> task = new DBTask<List<List<ImageEntry>>>(getContext()) {
+        ChartTask<List<List<ImageEntry>>> task = new ChartTask<>(getContext()) {
 
             @Override
             public List<List<ImageEntry>> doInBackground() {
@@ -534,7 +534,7 @@ public final class CareMapDocument extends AbstractChartDocument {
 
         final AppointmentDelegater adl = new AppointmentDelegater();
 
-        DBTask<Void> task = new DBTask<Void>(getContext()) {
+        ChartTask<Void> task = new ChartTask<>(getContext()) {
 
             @Override
             protected Void doInBackground() {
@@ -554,7 +554,7 @@ public final class CareMapDocument extends AbstractChartDocument {
     /**
      * ComboBox で選択された EntityName を返す.
      *
-     * @return
+     * @return entity name
      */
     private String getEntityName() {
         int index = orderCombo.getSelectedIndex();
@@ -565,7 +565,7 @@ public final class CareMapDocument extends AbstractChartDocument {
      * ComboBoxRenderer.
      */
     private class ComboBoxRenderer extends JLabel implements ListCellRenderer<PNSPair<String, String>> {
-        
+
         public ComboBoxRenderer() {
             init();
         }

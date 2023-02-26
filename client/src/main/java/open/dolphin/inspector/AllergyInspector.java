@@ -5,7 +5,7 @@ import open.dolphin.client.ChartImpl;
 import open.dolphin.client.GUIConst;
 import open.dolphin.delegater.DocumentDelegater;
 import open.dolphin.event.ProxyAction;
-import open.dolphin.helper.DBTask;
+import open.dolphin.helper.ChartTask;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.infomodel.AllergyModel;
 import open.dolphin.infomodel.IInfoModel;
@@ -283,12 +283,13 @@ public class AllergyInspector implements IInspector, TableModelListener {
 
             observations.add(observation);
 
-            DBTask<Long> task = new DBTask<Long>(context) {
+            ChartTask<Long> task = new ChartTask<>(context) {
                 @Override
                 protected Long doInBackground() {
                     List<Long> ids = delegater.addObservations(observations);
                     return ids.get(0);
                 }
+
                 @Override
                 protected void succeeded(Long id) {
                     model.setObservationId(id);
@@ -300,7 +301,7 @@ public class AllergyInspector implements IInspector, TableModelListener {
             List<Long> ids = new ArrayList<>();
             ids.add(tableModel.getLastDeleted().getObservationId());
 
-            DBTask<Void> task = new DBTask<Void>(this.context) {
+            ChartTask<Void> task = new ChartTask<>(this.context) {
                 @Override
                 protected Void doInBackground() {
                     delegater.removeObservations(ids);
