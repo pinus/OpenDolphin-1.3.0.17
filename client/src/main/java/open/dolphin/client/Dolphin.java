@@ -323,7 +323,6 @@ public class Dolphin implements MainWindow {
         String note = "スタンプツリーを読み込んでいます...";
 
         PNSTask<Boolean> stampTask = new PNSTask<>(null, message, note, 30 * 1000) {
-
             @Override
             protected Boolean doInBackground() throws Exception {
                 logger.debug("stampTask doInBackground");

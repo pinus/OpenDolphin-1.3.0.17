@@ -33,8 +33,8 @@ public abstract class ChartTask<T> extends PNSTask<T> implements PropertyChangeL
 
         @Override
         public void unblock() {
-            if (!context.getFrame().getGlassPane().isVisible()) {
-                context.getDocumentHistory().blockHistoryTable(true);
+            if (context.getFrame().getGlassPane().isVisible()) {
+                context.getDocumentHistory().blockHistoryTable(false);
             }
         }
     }

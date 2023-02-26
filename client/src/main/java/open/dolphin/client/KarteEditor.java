@@ -9,6 +9,8 @@ import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.Focuser;
+import open.dolphin.ui.PNSFrame;
+import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.util.DateUtils;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
@@ -492,7 +494,6 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         final Chart chart = this.getContext();
 
         ChartTask<String> task = new ChartTask<>(chart) {
-
             @Override
             protected String doInBackground() {
                 logger.debug("KarteSaveTask doInBackground");
@@ -542,10 +543,10 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 } else {
                     // errMsg を処理する
                     // エラーを表示する
-                    JFrame parent = chart.getFrame();
+                    PNSFrame parent = chart.getFrame();
                     //String title = ClientContext.getString("karte.task.saveTitle");
                     String title = "カルテ保存";
-                    JOptionPane.showMessageDialog(parent,
+                    PNSOptionPane.showMessageDialog(parent,
                             errMsg,
                             ClientContext.getFrameTitle(title),
                             JOptionPane.WARNING_MESSAGE);
