@@ -1,5 +1,9 @@
 package open.dolphin.ui;
 
+import open.dolphin.helper.StackTracer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -7,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.*;
+import java.util.List;
 
 /**
  * An infinite progress panel displays a rotating figure and
@@ -99,6 +104,8 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      * Show ticker.
      */
     private boolean showTicker = true;
+
+    private final Logger logger = LoggerFactory.getLogger(BlockGlass2.class);
 
     /**
      * Creates a new progress panel with default values:<br>
@@ -227,6 +234,13 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      */
     @Override
     public void setVisible(boolean visible) {
+        //DEBUG
+        logger.info("setVisible: " + visible);
+        List<StackTraceElement> trace = StackTracer.getTrace();
+        for (int i=2; i<4; i++) {
+            logger.info(i + ":" + trace.get(i).toString());
+        }
+
         if (visible) {
             super.setVisible(true);
             showTicker = getClientProperty("blockglass.show.ticker") instanceof Boolean b ? b : true;
@@ -440,8 +454,8 @@ public class BlockGlass2 extends JComponent implements MouseListener {
                     break;
                 }
                 Thread.yield();
-                if (rampUp) System.out.print(".");
-                else System.out.print(",");
+                //if (rampUp) System.out.print(".");
+                //else System.out.print(",");
             }
             // System.out.println("blocking animation done");
 
