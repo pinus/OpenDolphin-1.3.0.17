@@ -477,10 +477,6 @@ public class WaitingListImpl extends AbstractMainComponent {
                 JOptionPane.WARNING_MESSAGE);
         pane.setOptions(options);
         pane.setInitialValue(options[0]);
-        // メッセージが改行しないように大きさをセット（JDialog なら自動でやってくれる）
-        Dimension size = pane.getPreferredSize();
-        size.width = 540; // cut and try
-        pane.setPreferredSize(size);
 
         // JOptionPane から component を再帰検索して forceEditBtn を取り出す
         JButton tmpForce = null;
