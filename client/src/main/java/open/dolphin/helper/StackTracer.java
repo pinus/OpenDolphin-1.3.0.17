@@ -11,11 +11,16 @@ import java.util.List;
 public class StackTracer {
 
     public static void showTrace() {
+        showTrace(6);
+    }
+
+    public static void showTrace(int depth) {
         Throwable t = new Throwable();
         StackTraceElement[] e = t.getStackTrace();
+        int min = Math.min(e.length, depth);
 
-        for (int i = 1; i < e.length; i++) {
-            System.out.println(String.format("%d:%s#%s:%d", i, e[i].getClassName(), e[i].getMethodName(), e[i].getLineNumber()));
+        for (int i = 1; i < min; i++) {
+            System.out.printf("%d:%s#%s:%d%n", i, e[i].getClassName(), e[i].getMethodName(), e[i].getLineNumber());
         }
     }
 

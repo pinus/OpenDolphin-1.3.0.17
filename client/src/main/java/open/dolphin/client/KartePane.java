@@ -7,7 +7,7 @@ import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dnd.SchemaHolderTransferHandler;
 import open.dolphin.dnd.StampListTransferHandler;
-import open.dolphin.helper.ChartTask;
+import open.dolphin.helper.PNSTask;
 import open.dolphin.helper.ImageHelper;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
@@ -732,8 +732,8 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
         }
 
         // ORCA 以外で serialize されているものはサーバに問い合わせる
-        ChartTask<List<StampModel>> task = new ChartTask<>(parent.getContext()) {
-            private StampDelegater sdl = new StampDelegater();
+        PNSTask<List<StampModel>> task = new PNSTask<>(getParent().getContext().getFrame()) {
+            private final StampDelegater sdl = new StampDelegater();
 
             @Override
             protected List<StampModel> doInBackground() {
@@ -796,8 +796,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
      */
     private void applyOrcaSet(final ModuleInfoBean stampInfo) {
 
-        ChartTask<List<ModuleModel>> task = new ChartTask<>(parent.getContext()) {
-
+        PNSTask<List<ModuleModel>> task = new PNSTask<>(parent.getContext().getFrame()) {
             @Override
             protected List<ModuleModel> doInBackground() {
                 OrcaDelegater delegater = new OrcaDelegater();
@@ -893,8 +892,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
             return;
         }
 
-        ChartTask<ImageIcon> task = new ChartTask<>(parent.getContext()) {
-
+        PNSTask<ImageIcon> task = new PNSTask<>(parent.getContext().getFrame()) {
             @Override
             protected ImageIcon doInBackground() throws Exception {
 

@@ -26,11 +26,11 @@ public abstract class PNSTask<T> extends SwingWorker<T, Integer> implements Acti
     /**
      * 起動している PNSTask instance のリスト. 表示される ProgressMonitor を１つにするのに使う.
      */
-    private static List<PNSTask<?>> taskList = new ArrayList<>();
+    private static final List<PNSTask<?>> taskList = new ArrayList<>();
     /**
      * 進捗状況を表示する間隔 (msec).
      */
-    private static int INTERVAL = 500;
+    private static final int INTERVAL = 500;
 
     private PNSProgressMonitor progressMonitor;
     private Timer timer;
@@ -50,7 +50,11 @@ public abstract class PNSTask<T> extends SwingWorker<T, Integer> implements Acti
     private boolean interrupt = true;
 
     public PNSTask() {
-        this(null, "", "", 0);
+        this(null);
+    }
+
+    public PNSTask(Component parent) {
+        this(parent, "", "");
     }
 
     /**
@@ -258,13 +262,12 @@ public abstract class PNSTask<T> extends SwingWorker<T, Integer> implements Acti
      * 入力ブロッカー
      */
     public interface InputBlocker {
-        public void block();
-
-        public void unblock();
+        void block();
+        void unblock();
     }
 
     public static void main(String[] argv) {
-        PNSTask task = new PNSTask<String>(null, "テスト１", "実行中...") {
+        PNSTask<String> task = new PNSTask<>(null, "テスト１", "実行中...") {
             @Override
             protected String doInBackground() throws Exception {
                 for (int i = 0; i < 4; i++) {
@@ -300,7 +303,7 @@ public abstract class PNSTask<T> extends SwingWorker<T, Integer> implements Acti
         task.execute();
         System.out.println("PNSTask thread started: " + new java.util.Date());
 
-        PNSTask task2 = new PNSTask(null, "テスト２", "実行中...") {
+        PNSTask<Object> task2 = new PNSTask<>(null, "テスト２", "実行中...") {
             @Override
             protected Object doInBackground() throws Exception {
                 System.out.println("task2 start");

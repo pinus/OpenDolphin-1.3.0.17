@@ -1,6 +1,5 @@
 package open.dolphin.ui;
 
-import open.dolphin.helper.StackTracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +10,6 @@ import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.*;
-import java.util.List;
 
 /**
  * An infinite progress panel displays a rotating figure and
@@ -234,13 +232,6 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      */
     @Override
     public void setVisible(boolean visible) {
-        //DEBUG
-        logger.info("setVisible: " + visible);
-        List<StackTraceElement> trace = StackTracer.getTrace();
-        for (int i=2; i<4; i++) {
-            logger.info(i + ":" + trace.get(i).toString());
-        }
-
         if (visible) {
             super.setVisible(true);
             showTicker = getClientProperty("blockglass.show.ticker") instanceof Boolean b ? b : true;
