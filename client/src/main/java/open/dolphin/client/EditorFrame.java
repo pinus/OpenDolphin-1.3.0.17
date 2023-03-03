@@ -1,7 +1,6 @@
 package open.dolphin.client;
 
 import open.dolphin.helper.ComponentBoundsManager;
-import open.dolphin.helper.StackTracer;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DocumentHistory;
@@ -569,9 +568,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      */
     @Override
     public void stop() {
-        //DEBUG
-        logger.info("stop()");
-
         editor.stop();
         mediator.dispose();
         windowSupport.dispose();
@@ -584,10 +580,10 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      */
     private void closeFrame() {
         //DEBUG
-        List<StackTraceElement> trace = StackTracer.getTrace();
-        for (int i=2; i<4; i++) {
-            logger.info(i + ":" + trace.get(i).toString());
-        }
+        //List<StackTraceElement> trace = StackTracer.getTrace();
+        //for (int i=2; i<4; i++) {
+        //    logger.info(i + ":" + trace.get(i).toString());
+        //}
 
         if (mode == EditorMode.EDITOR && editor.isDirty()) {
             // save が成功すると editor から stop() が呼ばれる. 失敗すると呼ばれない.

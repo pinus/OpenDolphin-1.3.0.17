@@ -52,7 +52,11 @@ public class BlockGlass2 extends JComponent implements MouseListener {
     /**
      * The animation thread is responsible for fade in/out and rotation.
      */
-    protected Thread animation = null;
+    protected Thread animationThread = null;
+    /**
+     * Runnable for the animation thread.
+     */
+    private Animator animator;
     /**
      * Notifies whether the animation is running or not.
      */
@@ -239,14 +243,15 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             frameHeight = getHeight();
             frameWidth = getWidth();
             ticker = buildTicker();
-            animation = new Thread(new Animator(true));
-            animation.start();
+            animator = new Animator(true);
+            animationThread = new Thread(animator);
+            animationThread.start();
         } else {
-            if (animation != null) {
-                animation.interrupt();
-                animation = null;
-                animation = new Thread(new Animator(false));
-                animation.start();
+            if (animationThread != null && animator.rampUp) {
+                animationThread.interrupt();
+                animator = new Animator(false);
+                animationThread = new Thread(animator);
+                animationThread.start();
             }
         }
     }
@@ -258,10 +263,10 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      * This methods sets the panel invisible at the end.
      */
     public void interrupt() {
-        if (animation != null) {
-            animation.interrupt();
-            animation = null;
-
+        logger.info("interrupted");
+        if (animationThread != null) {
+            animationThread.interrupt();
+            animationThread = null;
             removeMouseListener(this);
             super.setVisible(false);
         }
@@ -379,7 +384,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      * Animation thread.
      */
     private class Animator implements Runnable {
-        private boolean rampUp = true;
+        public boolean rampUp;
 
         protected Animator(boolean rampUp) {
             this.rampUp = rampUp;
@@ -413,6 +418,9 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             boolean inRamp = rampUp;
 
             while (!Thread.interrupted()) {
+                // visible でないのに animation が続くのを防ぐ安全装置
+                if (!isVisible()) { interrupt(); }
+
                 if (!inRamp) {
                     for (Area ticker1 : ticker) {
                         ticker1.transform(toCircle);
@@ -445,10 +453,10 @@ public class BlockGlass2 extends JComponent implements MouseListener {
                     break;
                 }
                 Thread.yield();
-                //if (rampUp) System.out.print(".");
-                //else System.out.print(",");
+                if (rampUp) System.out.print(".");
+                else System.out.print(",");
             }
-            // System.out.println("blocking animation done");
+            System.out.println("blocking animation done");
 
             if (!rampUp) {
                 started = false;
