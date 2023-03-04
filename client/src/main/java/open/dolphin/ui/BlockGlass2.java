@@ -419,7 +419,10 @@ public class BlockGlass2 extends JComponent implements MouseListener {
 
             while (!Thread.interrupted()) {
                 // visible でないのに animation が続くのを防ぐ安全装置
-                if (!isVisible()) { interrupt(); }
+                if (!isVisible()) {
+                    interrupt();
+                    break;
+                }
 
                 if (!inRamp) {
                     for (Area ticker1 : ticker) {
