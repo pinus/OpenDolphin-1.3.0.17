@@ -230,29 +230,47 @@ public class BlockGlass2 extends JComponent implements MouseListener {
     }
 
     /**
-     * Starts / stops the waiting animation by fading the veil in, then
-     * rotating the shapes. This method handles the visibility
-     * of the glass pane.
+     * Starts / stops the waiting animation according to the visibility.
+     *
+     * @param visible  true to make the component visible; false to make it invisible
      */
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
             super.setVisible(true);
-            showTicker = getClientProperty("blockglass.show.ticker") instanceof Boolean b ? b : true;
-            addMouseListener(this);
-            frameHeight = getHeight();
-            frameWidth = getWidth();
-            ticker = buildTicker();
-            animator = new Animator(true);
+            start();
+        } else {
+            stop();
+        }
+    }
+
+    /**
+     * Starts the waiting animation by fading the veil in, then rotating the ticker.
+     * Ticker visibility can be controlled by the client property blockglass.show.ticker.
+     * This method handles the visibility of the glass pane.
+     */
+    public void start() {
+        showTicker = getClientProperty("blockglass.show.ticker") instanceof Boolean b ? b : true;
+        addMouseListener(this);
+        frameHeight = getHeight();
+        frameWidth = getWidth();
+        ticker = buildTicker();
+        animator = new Animator(true);
+        animationThread = new Thread(animator);
+        animationThread.start();
+    }
+
+    /**
+     * Stops the waiting animation by stopping the rotation
+     * of the circular shape and then by fading out the veil.
+     * This methods sets the panel invisible at the end.
+     */
+    public void stop() {
+        if (animationThread != null && animator.rampUp) {
+            animationThread.interrupt();
+            animator = new Animator(false);
             animationThread = new Thread(animator);
             animationThread.start();
-        } else {
-            if (animationThread != null && animator.rampUp) {
-                animationThread.interrupt();
-                animator = new Animator(false);
-                animationThread = new Thread(animator);
-                animationThread.start();
-            }
         }
     }
 
