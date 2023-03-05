@@ -236,12 +236,8 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      */
     @Override
     public void setVisible(boolean visible) {
-        if (visible) {
-            super.setVisible(true);
-            start();
-        } else {
-            stop();
-        }
+        if (visible) { start(); }
+        else { stop(); }
     }
 
     /**
@@ -250,6 +246,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      * This method handles the visibility of the glass pane.
      */
     public void start() {
+        super.setVisible(true);
         showTicker = getClientProperty("blockglass.show.ticker") instanceof Boolean b ? b : true;
         addMouseListener(this);
         frameHeight = getHeight();
