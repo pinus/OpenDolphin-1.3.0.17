@@ -376,9 +376,13 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     public void mouseClicked(MouseEvent e) {
         //System.out.println("mouse clicked");
         if (VERTICAL_BAR_PANEL_NAME.equals(getSourcePanelName(e))) {
-            verticalScrollBar.setValue(e.getY() * (viewport.getView().getHeight() / verticalBarFrameRect.height));
+            if (verticalBarFrameRect.height != 0) {
+                verticalScrollBar.setValue(e.getY() * (viewport.getView().getHeight() / verticalBarFrameRect.height));
+            }
         } else {
-            horizontalScrollBar.setValue(e.getX() * (viewport.getView().getWidth() / horizontalBarFrameRect.width));
+            if (horizontalBarFrameRect.width != 0) {
+                horizontalScrollBar.setValue(e.getX() * (viewport.getView().getWidth() / horizontalBarFrameRect.width));
+            }
         }
         prevTime = System.currentTimeMillis();
     }
