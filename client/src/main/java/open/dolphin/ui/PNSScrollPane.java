@@ -435,7 +435,9 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
                 value = max;
                 mouseDragOffset = p.y - max;
             }
-            verticalScrollBar.setValue(value * (viewport.getView().getHeight() - verticalBarFrameRect.height) / max);
+            if (max != 0) {
+                verticalScrollBar.setValue(value * (viewport.getView().getHeight() - verticalBarFrameRect.height) / max);
+            }
 
         } else {
             mouseDragging = true;
@@ -449,7 +451,9 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
                 value = max;
                 mouseDragOffset = p.x - max;
             }
-            horizontalScrollBar.setValue(value * (viewport.getView().getWidth() - horizontalBarFrameRect.width) / max);
+            if (max != 0) {
+                horizontalScrollBar.setValue(value * (viewport.getView().getWidth() - horizontalBarFrameRect.width) / max);
+            }
         }
 
         // mouseWheel と drug を同時に操作はしないとの仮定
