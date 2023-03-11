@@ -4,7 +4,6 @@ import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.ProgressCourse;
-import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -30,71 +29,41 @@ import java.util.*;
  * @author pns
  */
 public class KarteRenderer_2 {
-
     private static final String COMPONENT_ELEMENT_NAME = "component";
-
     private static final String STAMP_HOLDER = "stampHolder";
-
     private static final String SCHEMA_HOLDER = "schemaHolder";
-
     private static final int TT_SECTION = 0;
-
     private static final int TT_PARAGRAPH = 1;
-
     private static final int TT_CONTENT = 2;
-
     private static final int TT_ICON = 3;
-
     private static final int TT_COMPONENT = 4;
-
     private static final int TT_PROGRESS_COURSE = 5;
-
     private static final String SECTION_NAME = "section";
-
     private static final String PARAGRAPH_NAME = "paragraph";
-
     private static final String CONTENT_NAME = "content";
-
     private static final String COMPONENT_NAME = "component";
-
     private static final String ICON_NAME = "icon";
-
     private static final String ALIGNMENT_NAME = "Alignment";
-
     private static final String FOREGROUND_NAME = "foreground";
-
     private static final String SIZE_NAME = "size";
-
     private static final String BOLD_NAME = "bold";
-
     private static final String ITALIC_NAME = "italic";
-
     private static final String UNDERLINE_NAME = "underline";
-
     private static final String TEXT_NAME = "text";
-
     private static final String NAME_NAME = "name";
-
     private static final String LOGICAL_STYLE_NAME = "logicalStyle";
-
     private static final String PROGRESS_COURSE_NAME = "kartePane";
-
     private static final String[] REPLACES = new String[]{"<", ">", "&", "'", "\""};
-
     private static final String[] MATCHES = new String[]{"&lt;", "&gt;", "&amp;", "&apos;", "&quot;"};
-
     private static final String NAME_STAMP_HOLDER = "name=\"stampHolder\"";
-
     private int paragraphStart;
     private MutableAttributeSet paragraphAtts;
-
     private final KartePane soaPane;
     private final KartePane pPane;
     private final Logger logger;
     private DocumentModel model;
     private KartePane thePane;
     private boolean isSoaPane;
-
     private List<ModuleModel> soaModules;
     private List<ModuleModel> pModules;
 
@@ -110,9 +79,7 @@ public class KarteRenderer_2 {
      * @param model レンダリングする DocumentModel
      */
     public void render(DocumentModel model) {
-
         this.model = model;
-
         Collection<ModuleModel> modules = model.getModules();
 
         // SOA と P のモジュールをわける
@@ -123,22 +90,16 @@ public class KarteRenderer_2 {
         String pSpec = null;
 
         for (ModuleModel bean : modules) {
-
             String role = bean.getModuleInfo().getStampRole();
-
             switch (role) {
-                case IInfoModel.ROLE_SOA:
-                    soaModules.add(bean);
-                    break;
-                case IInfoModel.ROLE_SOA_SPEC:
-                    soaSpec = ((ProgressCourse) bean.getModel()).getFreeText();
-                    break;
-                case IInfoModel.ROLE_P:
-                    pModules.add(bean);
-                    break;
-                case IInfoModel.ROLE_P_SPEC:
-                    pSpec = ((ProgressCourse) bean.getModel()).getFreeText();
-                    break;
+                case IInfoModel.ROLE_SOA
+                    -> soaModules.add(bean);
+                case IInfoModel.ROLE_SOA_SPEC
+                    -> soaSpec = ((ProgressCourse) bean.getModel()).getFreeText();
+                case IInfoModel.ROLE_P
+                    -> pModules.add(bean);
+                case IInfoModel.ROLE_P_SPEC
+                    -> pSpec = ((ProgressCourse) bean.getModel()).getFreeText();
             }
         }
 
@@ -203,7 +164,6 @@ public class KarteRenderer_2 {
      * @param xml TextPane Dump の XML
      */
     private void renderPane(String xml) {
-
         debug(xml);
 
         SAXBuilder docBuilder = new SAXBuilder();
@@ -218,6 +178,7 @@ public class KarteRenderer_2 {
         // indicates a well-formedness error
         catch (JDOMException | IOException e) {
             e.printStackTrace(System.err);
+            logger.info(xml);
         }
     }
 
@@ -231,48 +192,41 @@ public class KarteRenderer_2 {
         String eName = current.getName();
 
         switch (eName) {
-            case SECTION_NAME:
+            case SECTION_NAME -> {
                 eType = TT_SECTION;
                 startSection();
-                break;
-
-            case PARAGRAPH_NAME:
+            }
+            case PARAGRAPH_NAME -> {
                 eType = TT_PARAGRAPH;
                 startParagraph(current.getAttributeValue(ALIGNMENT_NAME));
-                break;
-
-            case CONTENT_NAME:
+            }
+            case CONTENT_NAME -> {
                 if (Objects.nonNull(current.getChild(TEXT_NAME))) {
                     eType = TT_CONTENT;
                     startContent(
-                            current.getAttributeValue(FOREGROUND_NAME),
-                            current.getAttributeValue(SIZE_NAME),
-                            current.getAttributeValue(BOLD_NAME),
-                            current.getAttributeValue(ITALIC_NAME),
-                            current.getAttributeValue(UNDERLINE_NAME),
-                            current.getChildText(TEXT_NAME));
+                        current.getAttributeValue(FOREGROUND_NAME),
+                        current.getAttributeValue(SIZE_NAME),
+                        current.getAttributeValue(BOLD_NAME),
+                        current.getAttributeValue(ITALIC_NAME),
+                        current.getAttributeValue(UNDERLINE_NAME),
+                        current.getChildText(TEXT_NAME));
                 }
-                break;
-
-            case COMPONENT_NAME:
+            }
+            case COMPONENT_NAME -> {
                 eType = TT_COMPONENT;
                 startComponent(
-                        current.getAttributeValue(NAME_NAME),
-                        current.getAttributeValue(COMPONENT_ELEMENT_NAME));
-                break;
-
-            case ICON_NAME:
+                    current.getAttributeValue(NAME_NAME),
+                    current.getAttributeValue(COMPONENT_ELEMENT_NAME));
+            }
+            case ICON_NAME -> {
                 eType = TT_ICON;
                 startIcon(current);
-                break;
-
-            case PROGRESS_COURSE_NAME:
+            }
+            case PROGRESS_COURSE_NAME -> {
                 eType = TT_PROGRESS_COURSE;
                 startProgressCourse();
-                break;
-
-            default:
-                debug("Other element:" + eName);
+            }
+            default -> debug("Other element:" + eName);
         }
 
         // 子を探索するのはパラグフとトップ要素のみ
@@ -283,17 +237,9 @@ public class KarteRenderer_2 {
         }
 
         switch (eType) {
-            case TT_SECTION:
-                endSection();
-                break;
-
-            case TT_PARAGRAPH:
-                endParagraph();
-                break;
-
-            case TT_PROGRESS_COURSE:
-                endProgressCourse();
-                break;
+            case TT_SECTION -> endSection();
+            case TT_PARAGRAPH -> endParagraph();
+            case TT_PROGRESS_COURSE -> endProgressCourse();
         }
     }
 
@@ -308,15 +254,9 @@ public class KarteRenderer_2 {
 
         if (alignStr != null) {
             switch (alignStr) {
-                case "0":
-                    StyleConstants.setAlignment(paragraphAtts, StyleConstants.ALIGN_LEFT);
-                    break;
-                case "1":
-                    StyleConstants.setAlignment(paragraphAtts, StyleConstants.ALIGN_CENTER);
-                    break;
-                case "2":
-                    StyleConstants.setAlignment(paragraphAtts, StyleConstants.ALIGN_RIGHT);
-                    break;
+                case "0" -> StyleConstants.setAlignment(paragraphAtts, StyleConstants.ALIGN_LEFT);
+                case "1" -> StyleConstants.setAlignment(paragraphAtts, StyleConstants.ALIGN_CENTER);
+                case "2" -> StyleConstants.setAlignment(paragraphAtts, StyleConstants.ALIGN_RIGHT);
             }
         }
     }
@@ -349,24 +289,13 @@ public class KarteRenderer_2 {
         }
 
         // size 属性を設定する
-        if (size != null) {
-            StyleConstants.setFontSize(atts, Integer.parseInt(size));
-        }
-
+        if (size != null) { StyleConstants.setFontSize(atts, Integer.parseInt(size)); }
         // bold 属性を設定する
-        if (bold != null) {
-            StyleConstants.setBold(atts, Boolean.parseBoolean(bold));
-        }
-
+        if (bold != null) { StyleConstants.setBold(atts, Boolean.parseBoolean(bold)); }
         // italic 属性を設定する
-        if (italic != null) {
-            StyleConstants.setItalic(atts, Boolean.parseBoolean(italic));
-        }
-
+        if (italic != null) { StyleConstants.setItalic(atts, Boolean.parseBoolean(italic));}
         // underline 属性を設定する
-        if (underline != null) {
-            StyleConstants.setUnderline(atts, Boolean.parseBoolean(underline));
-        }
+        if (underline != null) { StyleConstants.setUnderline(atts, Boolean.parseBoolean(underline)); }
 
         // テキストを挿入する
         thePane.insertFreeString(text, atts);
