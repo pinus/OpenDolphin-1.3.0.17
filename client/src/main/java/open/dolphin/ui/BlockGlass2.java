@@ -254,6 +254,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
         ticker = buildTicker();
         animator = new Animator(true);
         animationThread = new Thread(animator);
+        animationThread.setPriority(Thread.MIN_PRIORITY);
         animationThread.start();
     }
 
@@ -267,6 +268,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             animationThread.interrupt();
             animator = new Animator(false);
             animationThread = new Thread(animator);
+            animationThread.setPriority(Thread.MIN_PRIORITY);
             animationThread.start();
         }
     }

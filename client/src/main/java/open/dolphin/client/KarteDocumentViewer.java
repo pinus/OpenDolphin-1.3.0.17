@@ -9,6 +9,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
 import open.dolphin.ui.CompletableSearchField;
 import open.dolphin.ui.Focuser;
+import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.ui.sheet.JSheet;
 import open.dolphin.util.ModelUtils;
@@ -555,7 +556,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         String deleteText = "削除する";
         String cancelText = (String) UIManager.get("OptionPane.cancelButtonText");
 
-        int option = JOptionPane.showOptionDialog(
+        int option = PNSOptionPane.showOptionDialog(
                 this.getUI(),
                 msg,
                 ClientContext.getFrameTitle("ドキュメント削除"),
