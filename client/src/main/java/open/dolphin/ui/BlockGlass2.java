@@ -68,7 +68,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
     /**
      * Initial delay before ramp up
      */
-    private final int initialDelay = 100;
+    private final int initialDelay = 300;
     /**
      * Duration of the veil's fade in/out.
      */
