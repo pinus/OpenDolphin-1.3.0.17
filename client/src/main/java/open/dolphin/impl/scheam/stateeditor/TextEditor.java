@@ -12,6 +12,7 @@ import open.dolphin.impl.scheam.SchemaLayer;
 import open.dolphin.impl.scheam.ShapeHolder;
 import open.dolphin.impl.scheam.shapeholder.TextHolder;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 
@@ -22,16 +23,6 @@ import java.awt.event.InputEvent;
  */
 public class TextEditor extends StateEditorBase {
     // TextField を1回とじてからもう1回作らないと ATOK が有効にならないのの work around
-    private static Robot robot;
-    static {
-        try {
-            robot = new Robot();
-            robot.setAutoWaitForIdle(true);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-    }
-
     private static final double TEXTFIELD_WIDTH = 100;
 
     // 大元の Stage の Content を入れる Pane
@@ -82,9 +73,16 @@ public class TextEditor extends StateEditorBase {
         // こうすると最初から ATOK が有効になる
         //textField.requestFocus();
         dummy.requestFocus();
-        robot.mouseMove((int) e.getScreenX() + 1, (int) e.getScreenY() + 1);
-        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        SwingUtilities.invokeLater(() -> {
+            try {
+                Robot robot = new Robot();
+                robot.mouseMove((int) e.getScreenX() + 1, (int) e.getScreenY() + 1);
+                robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+            } catch (AWTException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     @Override
@@ -107,11 +105,9 @@ public class TextEditor extends StateEditorBase {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
-            case ESCAPE:
-                end();
-                break;
+            case ESCAPE -> end();
 
-            case ENTER:
+            case ENTER -> {
                 // 新しい Layer を加える
                 // 他の StateEditor の場合は，
                 // StateManager で MouseReleased でこの仕事をしている
@@ -129,8 +125,9 @@ public class TextEditor extends StateEditorBase {
                 layer.draw();
                 canvasPane.getChildren().add(layer);
 
+                e.consume();
                 end();
-                break;
+            }
         }
     }
 

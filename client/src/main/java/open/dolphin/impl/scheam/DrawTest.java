@@ -1,7 +1,7 @@
 package open.dolphin.impl.scheam;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import open.dolphin.infomodel.ExtRefModel;
 import open.dolphin.infomodel.SchemaModel;
 
@@ -12,15 +12,34 @@ import java.io.InputStream;
 /**
  * @author pns
  */
-public class DrawTest extends Application {
+public class DrawTest {
 
     // ******************  JavaFX version  ***********************
     public static void main(String[] arg) {
-        Application.launch(arg);
+        // JavaFX settings
+        // Mac OS X needs this to avoid HeadlessException
+        System.setProperty("java.awt.headless", "false");
+        // necessary to initialize JavaFX Toolkit
+        new JFXPanel();
+        // JavaFX thread が SchemaEditor 終了後に shutdown してしまわないようにする
+        Platform.setImplicitExit(false);
+        // JavaFX ClassLoader
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        System.out.println("ClassLoader in Swing Thread = " + contextClassLoader);
+
+        Platform.runLater(() -> {
+            ClassLoader jfx = Thread.currentThread().getContextClassLoader();
+            System.out.println("ClassLoader in JFX Thread = " + jfx);
+            if (jfx == null) {
+                System.out.println("ClassLoader in JFX Thread is null; set " + contextClassLoader + " instead.");
+                Thread.currentThread().setContextClassLoader(contextClassLoader);
+            }
+        });
+
+        Platform.runLater(new DrawTest()::start);
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    public void start() {
         SchemaEditorImpl editor = new SchemaEditorImpl();
 
         SchemaModel schema = new SchemaModel();
@@ -29,14 +48,13 @@ public class DrawTest extends Application {
         String sample3 = "/schemaeditor/Sample-landscape.JPG";
         String sample4 = "/schemaeditor/Sample-portrait.JPG";
 
-        InputStream in = getClass().getResourceAsStream(sample1);
-
-        byte[] buf = null;
-        try {
+        byte[] buf;
+        try (InputStream in = getClass().getResourceAsStream(sample1)) {
             int n = in.available();
             buf = new byte[n];
             for (int i = 0; i < n; i++) buf[i] = (byte) in.read();
-        } catch (IOException ex) {
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         schema.setIcon(new ImageIcon(buf));
 
