@@ -53,7 +53,7 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
     // Google Calendar
     private static final String APPLICATION_NAME = "open.dolphin";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
+    private static final List<String> SCOPES = List.of(CalendarScopes.CALENDAR_READONLY);
     private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
     private static final String TOKENS_DIRECTORY_PATH = TMP_DIR + "com.google.calendar.tokens";
 
@@ -197,13 +197,13 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
                     .setTimeMin(new DateTime(prevYear.getTime()))
                     .setTimeMax(new DateTime(nextYear.getTime()))
                     .setOrderBy("startTime")
-                    .setSingleEvents(true).execute();
+                    .setSingleEvents(Boolean.TRUE).execute();
 
                 Events holidays = service.events().list(holidayCalendarIdField.getText())
                     .setTimeMin(new DateTime(prevYear.getTime()))
                     .setTimeMax(new DateTime(nextYear.getTime()))
                     .setOrderBy("startTime")
-                    .setSingleEvents(true).execute();
+                    .setSingleEvents(Boolean.TRUE).execute();
 
                 List<Event> eventList = events.getItems();
                 eventList.addAll(holidays.getItems());
