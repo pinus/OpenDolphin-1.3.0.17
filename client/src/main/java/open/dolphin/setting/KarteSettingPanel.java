@@ -3,6 +3,7 @@ package open.dolphin.setting;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
+import open.dolphin.event.ProxyActionListener;
 import open.dolphin.event.ProxyDocumentListener;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.helper.PNSPair;
@@ -16,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.text.NumberFormat;
@@ -68,7 +71,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     private JTextField defaultZyozaiNum, defaultMizuyakuNum, defaultSanyakuNum, defaultRpNum;
 
     // CLAIM 送信関係
-    private JRadioButton sendAtTmp, noSendAtTmp, sendAtSave, noSendAtSave,
+    private JRadioButton sendClaim, noSendClaim, sendAtTmp, noSendAtTmp, sendAtSave, noSendAtSave,
         sendAtModify, noSendAtModify, sendDiagnosis, noSendDiagnosis;
     private JCheckBox useTop15AsTitle;
     private JTextField defaultKarteTitle;
@@ -193,6 +196,8 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         defaultRpNum = GUIFactory.createTextField(3, null, null, null);
 
         // CLAIM 送信関係
+        sendClaim = new JRadioButton("送信する");
+        noSendClaim = new JRadioButton("送信しない");
         sendAtTmp = new JRadioButton("送信する");
         noSendAtTmp = new JRadioButton("送信しない");
         sendAtSave = new JRadioButton("送信する");
@@ -428,10 +433,16 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
         gbb = new GridBagBuilder("診療行為送信のデフォルト設定");
         row = 0;
-        label = new JLabel("仮保存時:", SwingConstants.RIGHT);
-        JPanel p9 = GUIFactory.createRadioPanel(new JRadioButton[]{sendAtTmp, noSendAtTmp});
+        label = new JLabel("診療行為を送信する:", SwingConstants.RIGHT);
+        JPanel p9 = GUIFactory.createRadioPanel(new JRadioButton[]{sendClaim, noSendClaim});
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
         gbb.add(p9, 1, row, 1, 1, GridBagConstraints.WEST);
+
+        //row++;
+        //label = new JLabel("仮保存時:", SwingConstants.RIGHT);
+        //p9 = GUIFactory.createRadioPanel(new JRadioButton[]{sendAtTmp, noSendAtTmp});
+        //gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
+        //gbb.add(p9, 1, row, 1, 1, GridBagConstraints.WEST);
 
         row++;
         label = new JLabel("保存時:", SwingConstants.RIGHT);
@@ -506,6 +517,10 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         bg = new ButtonGroup();
         bg.add(placeWindow);
         bg.add(palceTabbedPane);
+
+        bg = new ButtonGroup();
+        bg.add(sendClaim);
+        bg.add(noSendClaim);
 
         bg = new ButtonGroup();
         bg.add(sendAtTmp);
@@ -724,6 +739,28 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             noSendDiagnosis.doClick();
         }
 
+        // Claim 関連ボタンの制御
+        ActionListener claimButtonController = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendAtSave.setEnabled(sendClaim.isSelected());
+                noSendAtSave.setEnabled(sendClaim.isSelected());
+                sendAtModify.setEnabled(sendClaim.isSelected());
+                noSendAtModify.setEnabled(sendClaim.isSelected());
+                sendDiagnosis.setEnabled(sendClaim.isSelected());
+                noSendDiagnosis.setEnabled(sendClaim.isSelected());
+            }
+        };
+        sendClaim.addActionListener(claimButtonController);
+        noSendClaim.addActionListener(claimButtonController);
+
+        // 送信するかどうかの大元
+        if (model.isSendClaim()) {
+            sendClaim.doClick();
+        } else {
+            noSendClaim.doClick();
+        }
+
         // カルテタイトル
         useTop15AsTitle.addActionListener(e -> {
             boolean enabled = useTop15AsTitle.isSelected();
@@ -867,12 +904,12 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         model.setDefaultSanyakuNum(defaultSanyakuNum.getText().trim());
         model.setDefaultRpNum(defaultRpNum.getText().trim());
 
+        // CLAIM 送信大元
+        model.setSendClaim(sendClaim.isSelected());
         // 仮保存時の CLAIM 送信
         model.setSendClaimTmp(sendAtTmp.isSelected());
-
         // 保存時の CLAIM 送信
         model.setSendClaimSave(sendAtSave.isSelected());
-
         // 修正時の CLAIM 送信
         model.setSendClaimModify(sendAtModify.isSelected());
 
@@ -967,7 +1004,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         private boolean replaceStamp, stampSpace, laboFold;
         private String defaultZyozaiNum, defaultMizuyakuNum, defaultSanyakuNum, defaultRpNum;
         // CLAIM 送信関係
-        private boolean sendClaimTmp, sendClaimSave, sendClaimModify, sendDiagnosis;
+        private boolean sendClaim, sendClaimTmp, sendClaimSave, sendClaimModify, sendDiagnosis;
         private String defaultKarteTitle;
         private boolean useTop15AsTitle;
         // 確認ダイアログ関係
@@ -1009,6 +1046,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             setDefaultSanyakuNum(stub.getDefaultSanyakuNum());
             setDefaultRpNum(stub.getDefaultRpNum());
             // CLAIM 送信関係
+            setSendClaim(stub.getSendClaim());
             setSendClaimTmp(stub.getSendClaimTmp());
             setSendClaimSave(stub.getSendClaimSave());
             setSendClaimModify(stub.getSendClaimModify());
@@ -1059,6 +1097,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             if (test != null) { stub.setDefaultSanyakuNum(test); }
             test = testNumber(getDefaultRpNum());
             if (test != null) { stub.setDefaultRpNum(test); }
+            stub.setSendClaim(isSendClaim());
             stub.setSendClaimTmp(isSendClaimTmp());
             stub.setSendClaimSave(isSendClaimSave());
             stub.setSendClaimModify(isSendClaimModify());
@@ -1077,9 +1116,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         public boolean isLocateByPlatform() {
             return locateByPlatform;
         }
-        public void setLocateByPlatform(boolean locateByPlatform) {
-            this.locateByPlatform = locateByPlatform;
-        }
+        public void setLocateByPlatform(boolean locateByPlatform) { this.locateByPlatform = locateByPlatform; }
         public int getFetchKarteCount() {
             return fetchKarteCount;
         }
@@ -1130,12 +1167,12 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             return labotestExtractionPeriod;
         }
         public void setLabotestExtractionPeriod(int period) { this.labotestExtractionPeriod = period; }
+        public boolean isSendClaim() { return sendClaim; }
+        public void setSendClaim(boolean sendClaim) { this.sendClaim = sendClaim; }
         public boolean isSendClaimTmp() {
             return sendClaimTmp;
         }
-        public void setSendClaimTmp(boolean sendClaimTmp) {
-            this.sendClaimTmp = sendClaimTmp;
-        }
+        public void setSendClaimTmp(boolean sendClaimTmp) { this.sendClaimTmp = sendClaimTmp; }
         public boolean isSendClaimSave() {
             return sendClaimSave;
         }
