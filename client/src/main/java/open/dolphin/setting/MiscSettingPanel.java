@@ -4,6 +4,7 @@ import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.helper.GridBagBuilder;
+import open.dolphin.helper.WindowSupport;
 import open.dolphin.project.Project;
 
 import javax.swing.*;
@@ -27,6 +28,9 @@ public class MiscSettingPanel extends AbstractSettingPanel {
     private JSpinner scrollUnitKarteSpinner;
     private JSpinner scrollUnitTableSpinner;
     private JSpinner scrollUnitStampSpinner;
+
+    // ウインドウ整列 in WindowSupport のパラメータ
+    private JTextField initX, initY, diffX, diffY;
 
     // コンソールのログ出力
     private JCheckBox redirectBox;
@@ -90,6 +94,27 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         //scrollUnitPanel.add(Box.createVerticalStrut(500));
         //scrollUnitPanel.add(Box.createVerticalGlue());
 
+        // ウインドウ整列 in WindwoSupport のパラメータ
+        gbb = new GridBagBuilder("ウインドウ整列のパラメータ");
+        initX = new JTextField(String.valueOf(WindowSupport.INITIAL_X), 3);
+        initY = new JTextField(String.valueOf(WindowSupport.INITIAL_Y), 3);
+        diffX = new JTextField(String.valueOf(WindowSupport.INITIAL_DX), 3);
+        diffY = new JTextField(String.valueOf(WindowSupport.INITIAL_DY), 3);
+        label = new JLabel("開始X:", SwingConstants.RIGHT);
+        gbb.add(label, 0, 0, 1, 1, GridBagConstraints.EAST);
+        gbb.add(initX, 1, 0, 1, 1, GridBagConstraints.WEST);
+        label = new JLabel("開始Y:", SwingConstants.RIGHT);
+        gbb.add(label, 2, 0, 1, 1, GridBagConstraints.EAST);
+        gbb.add(initY, 3, 0, 1, 1, GridBagConstraints.WEST);
+        label = new JLabel("X差分:", SwingConstants.RIGHT);
+        gbb.add(label, 4, 0, 1, 1, GridBagConstraints.EAST);
+        gbb.add(diffX, 5, 0, 1, 1, GridBagConstraints.WEST);
+        label = new JLabel("Y差分:", SwingConstants.RIGHT);
+        gbb.add(label, 6, 0, 1, 1, GridBagConstraints.EAST);
+        gbb.add(diffY, 7, 0, 1, 1, GridBagConstraints.WEST);
+
+        scrollUnitPanel.add(gbb.getProduct());
+
         // コンソールのログ出力
         redirectBox = new JCheckBox("<html>コンソールをファイルに出力する<br>" +
             "・user.home/Library/Application Support/OpenDolphin/console.log<br>" +
@@ -144,6 +169,12 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         scrollUnitKarteSpinner.setValue(prefs.getInt(Project.SCROLL_UNIT_KARTE, 15));
         scrollUnitTableSpinner.setValue(prefs.getInt(Project.SCROLL_UNIT_TABLE, 15));
         scrollUnitStampSpinner.setValue(prefs.getInt(Project.SCROLL_UNIT_STAMP, 15));
+
+        initX.setText(String.valueOf(prefs.getInt(Project.ARRANGE_INSPECTOR_X, WindowSupport.INITIAL_X)));
+        initY.setText(String.valueOf(prefs.getInt(Project.ARRANGE_INSPECTOR_Y, WindowSupport.INITIAL_Y)));
+        diffX.setText(String.valueOf(prefs.getInt(Project.ARRANGE_INSPECTOR_DX, WindowSupport.INITIAL_DX)));
+        diffY.setText(String.valueOf(prefs.getInt(Project.ARRANGE_INSPECTOR_DY, WindowSupport.INITIAL_DY)));
+
         redirectBox.setSelected(Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false));
 
         int toEijiCode = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F15);
@@ -161,6 +192,12 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         prefs.putInt(Project.SCROLL_UNIT_KARTE, (int) scrollUnitKarteSpinner.getValue());
         prefs.putInt(Project.SCROLL_UNIT_TABLE, (int) scrollUnitTableSpinner.getValue());
         prefs.putInt(Project.SCROLL_UNIT_STAMP, (int) scrollUnitStampSpinner.getValue());
+
+        prefs.putInt(Project.ARRANGE_INSPECTOR_X, Integer.parseInt(initX.getText()));
+        prefs.putInt(Project.ARRANGE_INSPECTOR_Y, Integer.parseInt(initY.getText()));
+        prefs.putInt(Project.ARRANGE_INSPECTOR_DX, Integer.parseInt(diffX.getText()));
+        prefs.putInt(Project.ARRANGE_INSPECTOR_DY, Integer.parseInt(diffY.getText()));
+
         Preferences.userNodeForPackage(Dolphin.class).putBoolean(Project.REDIRECT_CONSOLE, redirectBox.isSelected());
 
         String toEijiString = (String) toEijiCombo.getSelectedItem();

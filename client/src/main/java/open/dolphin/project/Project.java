@@ -80,6 +80,11 @@ public class Project {
     public static final String SCROLL_UNIT_STAMP = "scroll.unit.stamp";
     // pvt チェック間隔
     public static final String PVT_CHECK_INTERVAL = "pvt.check.interval";
+    // ウィンドウ整列 in WindowSupport
+    public static final String ARRANGE_INSPECTOR_X = "arrange.inspector.x";
+    public static final String ARRANGE_INSPECTOR_Y = "arrange.inspector.y";
+    public static final String ARRANGE_INSPECTOR_DX = "arrange.inspector.dx";
+    public static final String ARRANGE_INSPECTOR_DY = "arrange.inspector.dy";
     // コンソールのログファイル出力
     public static final String REDIRECT_CONSOLE = "redirect.console";
     // ATOK 文字種切換キー

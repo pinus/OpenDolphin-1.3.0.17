@@ -1,6 +1,7 @@
 package open.dolphin.helper;
 
 import open.dolphin.client.GUIConst;
+import open.dolphin.project.Project;
 import open.dolphin.ui.PNSFrame;
 
 import javax.swing.*;
@@ -11,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * Window Menu をサポートするためのクラス.
@@ -233,12 +235,16 @@ public class WindowSupport implements MenuListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            JFrame f;
-            int x = INITIAL_X;
-            int y = INITIAL_Y;
+            Preferences prefs = Project.getPreferences();
+            int x = prefs.getInt(Project.ARRANGE_INSPECTOR_X, INITIAL_X);
+            int y = prefs.getInt(Project.ARRANGE_INSPECTOR_Y, INITIAL_Y);
+            int diffX = prefs.getInt(Project.ARRANGE_INSPECTOR_DX, INITIAL_DX);
+            int diffY = prefs.getInt(Project.ARRANGE_INSPECTOR_DY, INITIAL_DY);
+
             int width = 0;
             int height = 0;
 
+            JFrame f;
             for (WindowSupport ws : allWindows) {
                 f = ws.getFrame();
                 if (f.getTitle().contains("インスペクタ")) {
@@ -251,8 +257,8 @@ public class WindowSupport implements MenuListener {
 
                     f.setBounds(x, y, width, height);
                     f.toFront();
-                    x += INITIAL_DX;
-                    y += INITIAL_DY;
+                    x += diffX;
+                    y += diffY;
                 }
             }
         }
