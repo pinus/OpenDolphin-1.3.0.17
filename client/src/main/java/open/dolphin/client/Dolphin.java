@@ -80,6 +80,9 @@ public class Dolphin implements MainWindow {
     public Dolphin() {}
 
     public static void main(String[] args) {
+        // debug
+        Toolkit.getDefaultToolkit().getSystemEventQueue().push(new TimedEventQueue());
+
         // コンソールのリダイレクト
         redirectConsole();
 
@@ -948,6 +951,15 @@ public class Dolphin implements MainWindow {
             // private and not accessible from the subclass at the moment,
             // so we can't print more info about what's being painted.
             super.paintDirtyRegions();
+        }
+    }
+
+    public static class TimedEventQueue extends EventQueue {
+        @Override
+        protected void dispatchEvent(AWTEvent event) {
+            String s = event.toString();
+            System.out.println(s);
+            super.dispatchEvent(event);
         }
     }
 }
