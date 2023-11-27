@@ -77,12 +77,10 @@ public class Dolphin implements MainWindow {
     private final Timer refractoryTimer = new Timer(500, e -> refractoryEnd());
     private final HashSet<PatientVisitModel> refractoryList = new HashSet<>();
 
-    public Dolphin() {}
+    public Dolphin() {
+    }
 
     public static void main(String[] args) {
-        // debug
-        Toolkit.getDefaultToolkit().getSystemEventQueue().push(new TimedEventQueue());
-
         // コンソールのリダイレクト
         redirectConsole();
 
@@ -105,7 +103,9 @@ public class Dolphin implements MainWindow {
                     ? System.getProperty("user.home") + "/Library/Application Support/OpenDolphin/"
                     : System.getProperty("user.home") + "\\AppData\\Local\\OpenDolphin\\";
                 Path p = Paths.get(applicationSupportDir);
-                if (!Files.exists(p)) { Files.createDirectory(p); }
+                if (!Files.exists(p)) {
+                    Files.createDirectory(p);
+                }
 
                 String logName = applicationSupportDir + "console.log";
                 System.out.println("**** Redirecting Console to " + logName + " ****");
@@ -127,7 +127,7 @@ public class Dolphin implements MainWindow {
         if (Files.exists(path)) {
             try {
                 String command = String.join("\n", Files.readAllLines(path));
-                List<String> response = ScriptExecutor.executeShellScriptWithResponce(new String[] {"bash", "-c", command});
+                List<String> response = ScriptExecutor.executeShellScriptWithResponce(new String[]{"bash", "-c", command});
                 response.stream().forEach(System.out::println);
 
             } catch (IOException e) {
@@ -140,8 +140,11 @@ public class Dolphin implements MainWindow {
      */
     private void initialize() {
 
-        if (System.getProperty("os.name").startsWith("Mac")) { SettingForMac.set(this); }
-        else { SettingForWin.set(this); }
+        if (System.getProperty("os.name").startsWith("Mac")) {
+            SettingForMac.set(this);
+        } else {
+            SettingForWin.set(this);
+        }
 
         // default locale を設定する
         Locale.setDefault(new Locale("ja", "JP"));
@@ -241,7 +244,7 @@ public class Dolphin implements MainWindow {
         int defaultHeight = 678;
 
         // WindowSupport を生成する この時点で Frame,WindowMenu を持つMenuBar が生成されている
-        String title = Dolphin.forWin? "" : ClientContext.getFrameTitle(windowTitle);
+        String title = Dolphin.forWin ? "" : ClientContext.getFrameTitle(windowTitle);
         // System.out.println(title);
         windowSupport = WindowSupport.create(title);
         PNSFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
@@ -515,10 +518,10 @@ public class Dolphin implements MainWindow {
             String title = ClientContext.getString("settingDialog.title");
 
             PNSOptionPane.showMessageDialog(
-                    cmp,
-                    msgArray,
-                    ClientContext.getFrameTitle(title),
-                    JOptionPane.INFORMATION_MESSAGE);
+                cmp,
+                msgArray,
+                ClientContext.getFrameTitle(title),
+                JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -602,7 +605,7 @@ public class Dolphin implements MainWindow {
         if (saveEnv != null && Dolphin.forMac) {
             Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
             int ans = PNSOptionPane.showConfirmDialog(null,
-                    "本当に終了しますか", "終了確認", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                "本当に終了しますか", "終了確認", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (ans != JOptionPane.YES_OPTION) {
                 activeWindow.toFront();
                 return;
@@ -681,15 +684,17 @@ public class Dolphin implements MainWindow {
         // 環境保存
         String taskTitle = ClientContext.getString("exitDolphin.taskTitle");
         String title = ClientContext.getFrameTitle(taskTitle);
-        String[] options = new String[]{ cancelOption, exitOption }; // cancel=0, exit=1
+        String[] options = new String[]{cancelOption, exitOption}; // cancel=0, exit=1
 
         int option = PNSOptionPane.showOptionDialog(
-                null, message, title,
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.WARNING_MESSAGE,
-                null, options, options[0]);
+            null, message, title,
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null, options, options[0]);
 
-        if (option == 1) { exit(); } // キャンセル=0, ESC キー = -1
+        if (option == 1) {
+            exit();
+        } // キャンセル=0, ESC キー = -1
     }
 
     /**
@@ -852,15 +857,15 @@ public class Dolphin implements MainWindow {
             mediator.disableAllMenus();
 
             String[] enables = new String[]{
-                    GUIConst.ACTION_PRINTER_SETUP,
-                    GUIConst.ACTION_PROCESS_EXIT,
-                    GUIConst.ACTION_SET_KARTE_ENVIROMENT,
-                    GUIConst.ACTION_SHOW_STAMPBOX,
-                    GUIConst.ACTION_SHOW_SCHEMABOX,
-                    GUIConst.ACTION_SHOW_WAITING_LIST,
-                    GUIConst.ACTION_SHOW_PATIENT_SEARCH,
-                    GUIConst.ACTION_CHANGE_PASSWORD,
-                    GUIConst.ACTION_SHOW_ABOUT,
+                GUIConst.ACTION_PRINTER_SETUP,
+                GUIConst.ACTION_PROCESS_EXIT,
+                GUIConst.ACTION_SET_KARTE_ENVIROMENT,
+                GUIConst.ACTION_SHOW_STAMPBOX,
+                GUIConst.ACTION_SHOW_SCHEMABOX,
+                GUIConst.ACTION_SHOW_WAITING_LIST,
+                GUIConst.ACTION_SHOW_PATIENT_SEARCH,
+                GUIConst.ACTION_CHANGE_PASSWORD,
+                GUIConst.ACTION_SHOW_ABOUT,
             };
             mediator.enableMenus(enables);
 
@@ -951,15 +956,6 @@ public class Dolphin implements MainWindow {
             // private and not accessible from the subclass at the moment,
             // so we can't print more info about what's being painted.
             super.paintDirtyRegions();
-        }
-    }
-
-    public static class TimedEventQueue extends EventQueue {
-        @Override
-        protected void dispatchEvent(AWTEvent event) {
-            String s = event.toString();
-            System.out.println(s);
-            super.dispatchEvent(event);
         }
     }
 }
