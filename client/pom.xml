@@ -22,34 +22,42 @@
         <version.org.hibernate>6.1.5.Final</version.org.hibernate>
         <version.commons-codec>1.15</version.commons-codec>
         <version.org.glassfish.tyrus.bundles>2.1.2</version.org.glassfish.tyrus.bundles>
+
+        <!-- バージョニングに使う日付 -->
+        <buildDate>${maven.build.timestamp}</buildDate>
+        <!-- バージョニングに使う日付のフォーマット -->
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
     </properties>
 
     <profiles>
         <profile>
-            <id>mac-aarch64</id>
+            <id>mac-arm64</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <jfx.platform>mac-aarch64</jfx.platform>
+                <java.bin.dir>/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin</java.bin.dir>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre</java.jre.dir>
-                <java.jlink>/usr/bin/jlink</java.jlink>
-                <java.jpackage>/usr/bin/jpackage</java.jpackage>
+                <java.jlink>${java.bin.dir}/jlink</java.jlink>
+                <java.jpackage>${java.bin.dir}/jpackage</java.jpackage>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
             </properties>
         </profile>
 
         <profile>
-            <id>mac</id>
+            <id>mac-x64</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <jfx.platform>mac</jfx.platform>
+                <java.bin.dir>/Library/Java/JavaVirtualMachines/jdk-17.0.7-x64.jdk/Contents/Home/bin</java.bin.dir>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre-x86</java.jre.dir>
-                <java.jlink>/Library/Java/JavaVirtualMachines/jdk-17.0.7-x64.jdk/Contents/Home/bin/jlink</java.jlink>
-                <java.jpackage>/Library/Java/JavaVirtualMachines/jdk-17.0.7-x64.jdk/Contents/Home/bin/jpackage</java.jpackage>
+                <java.jlink>${java.bin.dir}/jlink</java.jlink>
+                <java.jpackage>${java.bin.dir}/jpackage</java.jpackage>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
             </properties>
@@ -259,6 +267,7 @@
                                 <delete dir="${distdir}" />
                                 <exec executable="${java.jpackage}">
                                     <arg line="-n OpenDolphin" />
+                                    <arg line="--app-version ${buildDate}" />
                                     <arg line="--type ${java.jpackage.type}" />
                                     <arg line="-i ${workdir}/" />
                                     <arg line="-d ${distdir}" />
