@@ -77,8 +77,8 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
         js.setSourceDialog(dialog);
         js.setParentComponent(parentComponent);
 
-        if (pane.getInitialValue() instanceof JButton) {
-            js.getRootPane().setDefaultButton((JButton) pane.getInitialValue());
+        if (pane.getInitialValue() instanceof JButton b) {
+            js.getRootPane().setDefaultButton(b);
         }
 
         // SheetKeyEventDispatcher に JOptionPane を登録
@@ -333,11 +333,11 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
      * @param c component to be transparent
      */
     public void setTransparent(Component c) {
-        if (c instanceof JComponent) {
-            ((JComponent) c).setOpaque(false);
+        if (c instanceof JComponent jc) {
+            jc.setOpaque(false);
         }
-        if (c instanceof Container) {
-            for (Component comp : ((Container) c).getComponents()) {
+        if (c instanceof Container cont) {
+            for (Component comp : cont.getComponents()) {
                 setTransparent(comp);
             }
         }
@@ -349,7 +349,7 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
      * @param c component to listen
      */
     private void connectListeners(Component c) {
-        if (c instanceof JOptionPane) {
+        if (c instanceof JOptionPane jop) {
             c.addPropertyChangeListener(e -> {
                 if (e.getPropertyName().equals(JOptionPane.VALUE_PROPERTY)) {
                     // SheetEvent の設定
@@ -357,11 +357,11 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
 
                     // 戻り値: int の場合と String の場合がある
                     Object val = e.getNewValue();
-                    Object[] options = ((JOptionPane) c).getOptions();
+                    Object[] options = jop.getOptions();
 
-                    if (val instanceof Integer) {
+                    if (val instanceof Integer num) {
                         // intで返ってきたとき
-                        se.setOption((int) val);
+                        se.setOption(num);
 
                     } else {
                         // String で返ってきたときは, 何番目かを返す
@@ -377,8 +377,8 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
                 }
             });
 
-        } else if (c instanceof JFileChooser) {
-            ((JFileChooser) c).addActionListener(e -> {
+        } else if (c instanceof JFileChooser jfc) {
+            jfc.addActionListener(e -> {
                 // CANCEL_SELECTION = "CancelSelection";
                 // APPROVE_SELECTION = "ApproveSelection";
                 SheetEvent se = new SheetEvent(e.getSource());
@@ -679,10 +679,10 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
 
             // JOptionPane からボタンを取り出して, default ボタンをセットする
             Window w = SwingUtilities.getWindowAncestor(pane);
-            if (w instanceof JFrame) {
-                defaultButton = ((JFrame)w).getRootPane().getDefaultButton();
-            } else if (w instanceof JDialog) {
-                defaultButton = ((JDialog)w).getRootPane().getDefaultButton();
+            if (w instanceof JFrame f) {
+                defaultButton = f.getRootPane().getDefaultButton();
+            } else if (w instanceof JDialog d) {
+                defaultButton = d.getRootPane().getDefaultButton();
             } else {
                 Component[] components = pane.getComponents();
                 java.util.List<Component> cc = Arrays.asList(components);

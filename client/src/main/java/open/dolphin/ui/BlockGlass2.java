@@ -236,6 +236,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      */
     @Override
     public void setVisible(boolean visible) {
+        super.setVisible(visible);
         if (visible) { start(); }
         else { stop(); }
     }

@@ -11,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.InputStream;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -75,17 +77,21 @@ public final class ClientContextStub {
         logger.info("os.name = " + System.getProperty("os.name"));
         logger.info("java.version = " + System.getProperty("java.version"));
         logger.info("dolphin.version = " + getString("version"));
-        logger.info("base.directory = " + getString("base.dir"));
-        logger.info("lib.directory = " + getString("lib.dir"));
-        logger.info("plugins.directory = " + getString("plugins.dir"));
-        logger.info("log.directory = " + getString("log.dir"));
-        logger.info("setting.directory = " + getString("setting.dir"));
-        logger.info("security.directory = " + getString("security.dir"));
-        logger.info("schema.directory = " + getString("schema.dir"));
+        //logger.info("base.directory = " + getString("base.dir"));
+        //logger.info("lib.directory = " + getString("lib.dir"));
+        //logger.info("plugins.directory = " + getString("plugins.dir"));
+        //logger.info("log.directory = " + getString("log.dir"));
+        //logger.info("setting.directory = " + getString("setting.dir"));
+        //logger.info("security.directory = " + getString("security.dir"));
+        //logger.info("schema.directory = " + getString("schema.dir"));
         //logger.info("log.config.file = " + getString("log.config.file"));
         //logger.info("veleocity.log.file = " + getString("application.velocity.log.file"));
         //logger.info("login.config.file = " + getString("application.security.login.config"));
         //logger.info("ssl.trsutStore = " + getString("application.security.ssl.trustStore"));
+
+        for (GarbageCollectorMXBean gcMxBean : ManagementFactory.getGarbageCollectorMXBeans()) {
+            logger.info(gcMxBean.getName() + ", " + gcMxBean.getObjectName());
+        }
     }
 
     public String getDocumentDirectory() { return documentFolder; }
