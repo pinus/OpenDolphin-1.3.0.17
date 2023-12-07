@@ -1530,6 +1530,12 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         mediator.dispose();
         inspector.dispose();
         windowSupport.dispose(); // ここで windowClosed が呼ばれる
+
+        // メモリ状況ログ
+        long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
+        long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
+        long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
+        logger.info("free/max/total memory (M) = " + freeMemory + "/" + maxMemory + "/" + totalMemory);
     }
 
     /**

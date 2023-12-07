@@ -32,7 +32,7 @@ public class IMEControl {
     private final static int toHiraganaKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F13);
 
     /**
-     * IME-off. Shift-Control-C で英字 -> F15
+     * IME-off. Shift-Control-C で英字 -> F12
      */
     public static void off() {
         if (isMac) {
@@ -43,7 +43,7 @@ public class IMEControl {
     }
 
     /**
-     * IME-on. Shift-Control-Z でひらがな -> F14
+     * IME-on. Shift-Control-Z でひらがな -> F13
      */
     public static void on() {
         if (isMac) {
