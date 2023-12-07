@@ -13,6 +13,7 @@ import open.dolphin.project.ProjectStub;
 import open.dolphin.setting.ProjectSettingDialog;
 import open.dolphin.stampbox.StampBoxPlugin;
 import open.dolphin.ui.*;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,13 +107,14 @@ public class Dolphin implements MainWindow {
                 if (!Files.exists(p)) {
                     Files.createDirectory(p);
                 }
-
+                // tee で file と stdout 両方に出力する
                 String logName = applicationSupportDir + "console.log";
-                System.out.println("**** Redirecting Console to " + logName + " ****");
+                PrintStream fileStream = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
+                TeeOutputStream teeStream = new TeeOutputStream(System.out, fileStream);
+                PrintStream tee = new PrintStream(teeStream);
+                System.setOut(tee);
+                System.setErr(tee);
 
-                PrintStream ps = new PrintStream(new FileOutputStream(logName, true), true); // append, auto flush
-                System.setOut(ps);
-                System.setErr(ps);
             } catch (IOException ex) {
             }
         }

@@ -20,7 +20,7 @@ import java.util.prefs.Preferences;
  * <li>ver 3: Robot version 切り替わったかどうか判定するために event queue システム導入
  * <li>ver 4: enableInputMethod(true/false) バージョン: short-cut が効かなくなったり不安定
  * <li>ver 5: Robot version 復活. 物理キーが押されていると誤動作するのでキー入力でフォーカスが当たるところには使えない
- * <li>ver 6: key combination での robot 入力うまくいかず, F14, F15 キーで切り替えるように ATOK 側で設定することにした
+ * <li>ver 6: key combination での robot 入力うまくいかず, F12, F13 キーで切り替えるように ATOK 側で設定することにした
  * </ul>
  *
  * @author pns
@@ -28,13 +28,8 @@ import java.util.prefs.Preferences;
 public class IMEControl {
     private final static Logger logger = LoggerFactory.getLogger(IMEControl.class);
     private final static boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
-    private final static int toEijiKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F15);
-    private final static int toHiraganaKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F14);
-    private static Robot robot;
-    static {
-        try { robot = new Robot(); }
-        catch (AWTException e) { logger.error(e.getMessage()); }
-    }
+    private final static int toEijiKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F12);
+    private final static int toHiraganaKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F13);
 
     /**
      * IME-off. Shift-Control-C で英字 -> F15
@@ -59,8 +54,13 @@ public class IMEControl {
     }
 
     private static void type(int... keys) {
-        for (int i = 0; i < keys.length; i++) { robot.keyPress(keys[i]); }
-        for (int i = keys.length -1 ; i >= 0; i--) { robot.keyRelease(keys[i]); }
+        try {
+            Robot robot = new Robot();
+            for (int i = 0; i < keys.length; i++) { robot.keyPress(keys[i]); }
+            for (int i = keys.length -1 ; i >= 0; i--) { robot.keyRelease(keys[i]); }
+        } catch (AWTException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
