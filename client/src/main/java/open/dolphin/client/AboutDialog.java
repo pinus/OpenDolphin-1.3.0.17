@@ -19,9 +19,9 @@ public class AboutDialog extends JDialog {
     /**
      * Creates new AboutDialog.
      *
-     * @param f
-     * @param title
-     * @param imageFile
+     * @param f parent frame
+     * @param title title
+     * @param imageFile image
      */
     public AboutDialog(Frame f, String title, String imageFile) {
         super(f, title, true);
@@ -29,6 +29,10 @@ public class AboutDialog extends JDialog {
     }
 
     private void init() {
+        getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
+        getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+        getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
+
         setIconImage(GUIConst.ICON_DOLPHIN.getImage());
         //ラベル作成
         final JLabel imageLabel = new JLabel();
@@ -47,27 +51,13 @@ public class AboutDialog extends JDialog {
         });
 
         // version 文字列作成
-        StringBuilder buf = new StringBuilder();
-        buf.append("<html>");
-        buf.append(ClientContext.getString("productString"));
-        buf.append("  Ver.");
-        buf.append(ClientContext.getString("version"));
-        buf.append("</html>");
-        String version = buf.toString();
-
+        String version = String.format("<html>%s Ver. %s (Java %s)</html>",
+            ClientContext.getString("productString"), ClientContext.getString("version"), System.getProperty("java.version"));
         // copyright 文字列作成
-        String[] copyrightList = ClientContext.getStringArray("copyrightString");
-        buf = new StringBuilder();
-        buf.append("<html>");
-        for (int i = 0; i <= 4; i++) {
-            buf.append((i == 0) ? "" : "<br>");
-            buf.append(copyrightList[i]);
-        }
-        buf.append("</html>");
-        String copyright = buf.toString();
+        String copyright = "<html>" + String.join("<br>", ClientContext.getStringArray("copyrightString")) + "</html>";
 
         JPanel textPanel = new JPanel(new BorderLayout());
-        textPanel.add(getTextLabel(version, new Font(Font.DIALOG, Font.BOLD, 16)), BorderLayout.NORTH);
+        textPanel.add(getTextLabel(version, new Font(Font.DIALOG, Font.BOLD, 14)), BorderLayout.NORTH);
         textPanel.add(getTextLabel(copyright, new Font(Font.DIALOG, Font.PLAIN, 12)), BorderLayout.CENTER);
 
         // 閉じるボタン作成
@@ -105,22 +95,20 @@ public class AboutDialog extends JDialog {
 
     private JScrollPane getMoreInfoPane() {
         JTextArea area =
-                new JTextArea(
-                        "This product also contains copyrighted materials as follows: " +
-                                "OpenDolphin 1.3-2.2 Copyright (C) Digital Globe Inc.,  " +
-                                "OpenDolphin 1.4m-2.3m Copyright (C) Masuda Naika Clinic,  " +
-                                "Fugue Icons 2.4.2 Copyright (C) Yusuke Kamiyamane, " +
-                                "Aesthetica Icons 1.12 (http://dryicons.com), " +
-                                "Icons from Tango Desktop Project, " +
-                                "DefaultIcon ver 2.0 Copyright (c) 2010-2011 Apostolos Paschalidis interactivemania" +
-                                "", 5, 20);
+            new JTextArea(
+                "This product also contains copyrighted materials as follows: " +
+                    "OpenDolphin 1.3-2.2 Copyright (C) Digital Globe Inc.,  " +
+                    "OpenDolphin 1.4m-2.3m Copyright (C) Masuda Naika Clinic,  " +
+                    "Fugue Icons 2.4.2 Copyright (C) Yusuke Kamiyamane, " +
+                    "Aesthetica Icons 1.12 (http://dryicons.com), " +
+                    "Icons from Tango Desktop Project, " +
+                    "DefaultIcon ver 2.0 Copyright (c) 2010-2011 Apostolos Paschalidis interactivemania" +
+                    "", 5, 20);
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
-        JScrollPane scroller =
-                new JScrollPane(area,
-                        ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-                        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        return scroller;
+        return new JScrollPane(area,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     }
 
     private JLabel getTextLabel(String text, Font font) {
@@ -128,6 +116,7 @@ public class AboutDialog extends JDialog {
         label.setText(text);
         label.setFont(font);
         label.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        label.setHorizontalAlignment(JLabel.CENTER);
 
         return label;
     }
