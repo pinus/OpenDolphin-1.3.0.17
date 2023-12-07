@@ -282,6 +282,8 @@
                                     <arg line="--java-options --add-opens=java.base/java.lang=ALL-UNNAMED" />
                                     <arg line="--java-options --add-opens=java.base/java.lang.ref=ALL-UNNAMED" />
                                     <arg line="--java-options --add-opens=java.base/java.security=ALL-UNNAMED" />
+                                    <arg line="--java-options -Xmx1024m" />
+                                    <arg line="--java-options -verbose:gc" />
                                 </exec>
                             </target>
                         </configuration>
