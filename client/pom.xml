@@ -44,6 +44,7 @@
                 <java.jpackage>${java.bin.dir}/jpackage</java.jpackage>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
+                <java.gc.log>file=${user.home}/Library/Logs/jvm-gc.log:utctime,pid:filecount=3,filesize=1m</java.gc.log>
             </properties>
         </profile>
 
@@ -60,6 +61,7 @@
                 <java.jpackage>${java.bin.dir}/jpackage</java.jpackage>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
+                <java.gc.log></java.gc.log>
             </properties>
         </profile>
 
@@ -73,6 +75,7 @@
                 <java.jpackage.icon>${basedir}/icons/OpenDolphin-ICO.ico</java.jpackage.icon>
                 <java.jpackage.resource.dir>${basedir}/resources-win</java.jpackage.resource.dir>
                 <java.jpackage.type>msi</java.jpackage.type>
+                <java.gc.log></java.gc.log>
             </properties>
         </profile>
     </profiles>
@@ -288,7 +291,8 @@
                                     <arg line="--java-options --add-opens=java.base/java.lang.ref=ALL-UNNAMED" />
                                     <arg line="--java-options --add-opens=java.base/java.security=ALL-UNNAMED" />
                                     <arg line="--java-options -Xmx1024m" />
-                                    <arg line="--java-options -verbose:gc" />
+                                    <arg line="--java-options -Xlog:gc:${java.gc.log}" />
+                                    <arg line="--java-options -Dsun.java2d.opengl=true}" />
                                 </exec>
                             </target>
                         </configuration>

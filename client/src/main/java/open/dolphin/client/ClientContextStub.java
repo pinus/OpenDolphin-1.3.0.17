@@ -93,14 +93,10 @@ public final class ClientContextStub {
         for (GarbageCollectorMXBean gcMxBean : ManagementFactory.getGarbageCollectorMXBeans()) {
             logger.info(gcMxBean.getName() + ", " + gcMxBean.getObjectName());
         }
-        // memory
-        long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
-        long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
-        long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
-        logger.info("free/max/total memory (M) = " + freeMemory + "/" + maxMemory + "/" + totalMemory);
         // processor number
         logger.info("available processors = " + Runtime.getRuntime().availableProcessors());
-
+        logger.info("java2d opengl = " + System.getProperty("sun.java2d.opengl"));
+        logger.info("java2d metal = " + System.getProperty("sun.java2d.metal"));
     }
 
     public String getDocumentDirectory() { return documentFolder; }

@@ -1535,7 +1535,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
         long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
         long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
-        logger.info("free/max/total memory (M) = " + freeMemory + "/" + maxMemory + "/" + totalMemory);
+        logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
     }
 
     /**
