@@ -380,13 +380,11 @@ public class PatientSearchImpl extends AbstractMainComponent {
     }
 
     /**
-     * 現在の selectedPatinet が canOpen かどうか判定 by pns.
-     * １つでも開けられないものがあれば false とする.
+     * 現在の selectedPatinet が canOpen かどうか判定.
      */
     private boolean canOpen() {
-        // 既に開かれているカルテを open すると，toFront として処理されるので
-        // PatientSearchImpl では open できないカルテというのはない
-        return true;
+        PatientModel[] selected = getSelectedPatinet();
+        return Objects.nonNull(selected) && selected.length > 0;
     }
 
     /**

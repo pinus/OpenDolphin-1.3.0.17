@@ -22,14 +22,13 @@ import java.util.prefs.Preferences;
  * @author pns
  */
 public class WindowSupport implements MenuListener {
-
     // frame を整列させるときの初期位置と移動幅
     final public static int INITIAL_X = 256;
     final public static int INITIAL_Y = 40;
     final public static int INITIAL_DX = 96;
     final public static int INITIAL_DY = 48;
     final private static List<WindowSupport> allWindows = new ArrayList<>();
-    private static final String WINDOW_MWNU_NAME = "ウインドウ";
+    private static final String WINDOW_MENU_NAME = "ウインドウ";
     // メニューバーの増えた分の高さをセットするプロパティ名
     final public static String MENUBAR_HEIGHT_OFFSET_PROP = "menubar.height.offset";
 
@@ -62,53 +61,50 @@ public class WindowSupport implements MenuListener {
      * @return WindowSupport
      */
     public static WindowSupport create(String title) {
-
         // フレームを生成する
-        final PNSFrame frame = new PNSFrame(title);
+        final PNSFrame f = new PNSFrame(title);
 
         // メニューバーを生成する
         JMenuBar menuBar = new JMenuBar();
 
         // Window メニューを生成する
-        JMenu windowMenu = new JMenu(WINDOW_MWNU_NAME);
+        JMenu windowMenu = new JMenu(WINDOW_MENU_NAME);
 
         // メニューバーへWindow メニューを追加する
         menuBar.add(windowMenu);
 
         // フレームにメニューバーを設定する
-        frame.setJMenuBar(menuBar);
+        f.setJMenuBar(menuBar);
 
         // Windowメニューのアクション
         // 選択されたらフレームを前面にする
         Action windowAction = new AbstractAction(title) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.toFront();
+                f.toFront();
             }
         };
 
         // インスタンスを生成する
-        final WindowSupport ret = new WindowSupport(frame, menuBar, windowMenu, windowAction);
+        final WindowSupport windowSupport = new WindowSupport(f, menuBar, windowMenu, windowAction);
 
         // WindowEvent をこのクラスに通知しリストの管理を行う
-        frame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-
+        f.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        f.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(java.awt.event.WindowEvent e) {
-                allWindows.add(ret);
+                allWindows.add(windowSupport);
             }
 
             @Override
             public void windowClosed(java.awt.event.WindowEvent e) {
-                allWindows.remove(ret);
+                allWindows.remove(windowSupport);
             }
         });
 
         // windowMenu にメニューリスナを設定しこのクラスで処理をする
-        windowMenu.addMenuListener(ret);
-        return ret;
+        windowMenu.addMenuListener(windowSupport);
+        return windowSupport;
     }
 
     public static List<WindowSupport> getAllWindows() {
@@ -123,17 +119,13 @@ public class WindowSupport implements MenuListener {
         return frame;
     }
 
-    public JMenuBar getMenuBar() {
-        return menuBar;
-    }
+    public JMenuBar getMenuBar() { return menuBar; }
 
     public JMenu getWindowMenu() {
         return windowMenu;
     }
 
-    public Action getWindowAction() {
-        return windowAction;
-    }
+    public Action getWindowAction() { return windowAction; }
 
     public void dispose() {
         frame.setVisible(false);

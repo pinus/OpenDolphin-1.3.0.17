@@ -292,7 +292,6 @@
                                     <arg line="--java-options --add-opens=java.base/java.security=ALL-UNNAMED" />
                                     <arg line="--java-options -Xmx1024m" />
                                     <arg line="--java-options -Xlog:gc:${java.gc.log}" />
-                                    <arg line="--java-options -Dsun.java2d.opengl=true}" />
                                 </exec>
                             </target>
                         </configuration>
