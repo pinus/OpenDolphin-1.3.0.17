@@ -264,7 +264,7 @@ public class PatientSearchImpl extends AbstractMainComponent {
             JTextField tf = (JTextField) e.getSource();
             String test = tf.getText().trim();
 
-            if (!test.equals("")) {
+            if (!test.isEmpty()) {
                 // 検索開始
                 find(test);
 
