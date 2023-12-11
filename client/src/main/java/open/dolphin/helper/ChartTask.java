@@ -26,16 +26,12 @@ public abstract class ChartTask<T> extends PNSTask<T> implements PropertyChangeL
     private class Blocker implements PNSTask.InputBlocker {
         @Override
         public void block() {
-            if (!context.getFrame().getGlassPane().isVisible()) {
-                context.getDocumentHistory().blockHistoryTable(true);
-            }
+            context.getDocumentHistory().blockHistoryTable(true);
         }
 
         @Override
         public void unblock() {
-            if (context.getFrame().getGlassPane().isVisible()) {
-                context.getDocumentHistory().blockHistoryTable(false);
-            }
+            context.getDocumentHistory().blockHistoryTable(false);
         }
     }
 }
