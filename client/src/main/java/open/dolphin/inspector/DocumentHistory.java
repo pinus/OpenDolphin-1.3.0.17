@@ -282,9 +282,9 @@ public class DocumentHistory implements IInspector {
      */
     public void blockHistoryTable(boolean busy) {
         BlockGlass2 blockGlass = (BlockGlass2) context.getFrame().getGlassPane();
+        boolean keyBlocked = Arrays.asList(view.getTable().getKeyListeners()).contains(blockKeyListener);
 
         if (busy) {
-            boolean keyBlocked = Arrays.asList(view.getTable().getKeyListeners()).contains(blockKeyListener);
             if (!keyBlocked) {
                 view.getTable().addKeyListener(blockKeyListener);
             }
@@ -293,7 +293,6 @@ public class DocumentHistory implements IInspector {
                 blockGlass.setVisible(true);
             }
         } else {
-            boolean keyBlocked = Arrays.asList(view.getTable().getKeyListeners()).contains(blockKeyListener);
             if (keyBlocked) {
                 view.getTable().removeKeyListener(blockKeyListener);
             }
