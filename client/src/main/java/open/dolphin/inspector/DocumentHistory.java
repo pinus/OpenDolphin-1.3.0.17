@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * 文書履歴を取得し，表示するクラス.
@@ -282,14 +283,25 @@ public class DocumentHistory implements IInspector {
      */
     public void blockHistoryTable(boolean busy) {
         BlockGlass2 blockGlass = (BlockGlass2) context.getFrame().getGlassPane();
+
         if (busy) {
-            view.getTable().addKeyListener(blockKeyListener);
-            blockGlass.setText("読み込み中");
-            blockGlass.setVisible(true);
+            boolean keyBlocked = Arrays.asList(view.getTable().getKeyListeners()).contains(blockKeyListener);
+            if (!keyBlocked) {
+                view.getTable().addKeyListener(blockKeyListener);
+            }
+            if (!blockGlass.isVisible()) {
+                blockGlass.setText("読み込み中");
+                blockGlass.setVisible(true);
+            }
         } else {
-            view.getTable().removeKeyListener(blockKeyListener);
-            blockGlass.setText("");
-            blockGlass.setVisible(false);
+            boolean keyBlocked = Arrays.asList(view.getTable().getKeyListeners()).contains(blockKeyListener);
+            if (keyBlocked) {
+                view.getTable().removeKeyListener(blockKeyListener);
+            }
+            if (blockGlass.isVisible()) {
+                blockGlass.setText("");
+                blockGlass.setVisible(false);
+            }
         }
     }
 
@@ -309,7 +321,6 @@ public class DocumentHistory implements IInspector {
      */
     @Override
     public void update() {
-
         if (extractionPeriod != null) {
 
             // 検索パラメータセットのDTOを生成する
