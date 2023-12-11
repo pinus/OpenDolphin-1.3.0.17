@@ -27,7 +27,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * 文書履歴を取得し，表示するクラス.
