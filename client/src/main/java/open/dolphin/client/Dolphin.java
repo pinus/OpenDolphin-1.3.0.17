@@ -480,18 +480,6 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * カルテの環境設定を行う. メニューから reflection で呼ばれる.
-     */
-    public void setKarteEnviroment() {
-        KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        ProjectSettingDialog sd = new ProjectSettingDialog(focusManager.getActiveWindow());
-        sd.addValidListener(this::controlService);
-        sd.setLoginState(stateMgr.isLogin());
-        sd.setProject("karteSetting");
-        sd.start();
-    }
-
-    /**
      * 環境設定を行う.
      * desktop PreferencesHandler  から呼ばれる.
      */
@@ -594,7 +582,68 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * 終了処理.
+     * 終了処理中にエラーが生じた場合の警告をダイアログを表示する.
+     */
+    private void doStoppingAlert() {
+
+        String msg1 = ClientContext.getString("exitDolphin.err.msg1");
+        String msg2 = ClientContext.getString("exitDolphin.err.msg2");
+        String msg3 = ClientContext.getString("exitDolphin.err.msg3");
+        String msg4 = ClientContext.getString("exitDolphin.err.msg4");
+        Object message = new Object[]{msg1, msg2, msg3, msg4};
+
+        // 終了する
+        String exitOption = ClientContext.getString("exitDolphin.exitOption");
+        // キャンセルする
+        String cancelOption = ClientContext.getString("exitDolphin.cancelOption");
+        // 環境保存
+        String taskTitle = ClientContext.getString("exitDolphin.taskTitle");
+        String title = ClientContext.getFrameTitle(taskTitle);
+        String[] options = new String[]{cancelOption, exitOption}; // cancel=0, exit=1
+
+        int option = PNSOptionPane.showOptionDialog(
+            null, message, title,
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null, options, options[0]);
+
+        if (option == 1) {
+            exit();
+        } // キャンセル=0, ESC キー = -1
+    }
+
+    /**
+     * 最終 exit.
+     */
+    private void exit() {
+
+        if (providers != null) {
+            providers.values().forEach(MainService::stop);
+        }
+
+        if (windowSupport != null) {
+            JFrame myFrame = windowSupport.getFrame();
+            myFrame.setVisible(false);
+            myFrame.dispose();
+        }
+        logger.info("アプリケーションを終了します");
+        System.exit(0);
+    }
+
+    /**
+     * カルテの環境設定を行う. MenuSupport から reflection で呼ばれる.
+     */
+    public void setKarteEnviroment() {
+        KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        ProjectSettingDialog sd = new ProjectSettingDialog(focusManager.getActiveWindow());
+        sd.addValidListener(this::controlService);
+        sd.setLoginState(stateMgr.isLogin());
+        sd.setProject("karteSetting");
+        sd.start();
+    }
+
+    /**
+     * 終了処理. MenuSupport から reflection で呼ばれる.
      */
     public void processExit() {
 
@@ -669,56 +718,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * 終了処理中にエラーが生じた場合の警告をダイアログを表示する.
-     */
-    private void doStoppingAlert() {
-
-        String msg1 = ClientContext.getString("exitDolphin.err.msg1");
-        String msg2 = ClientContext.getString("exitDolphin.err.msg2");
-        String msg3 = ClientContext.getString("exitDolphin.err.msg3");
-        String msg4 = ClientContext.getString("exitDolphin.err.msg4");
-        Object message = new Object[]{msg1, msg2, msg3, msg4};
-
-        // 終了する
-        String exitOption = ClientContext.getString("exitDolphin.exitOption");
-        // キャンセルする
-        String cancelOption = ClientContext.getString("exitDolphin.cancelOption");
-        // 環境保存
-        String taskTitle = ClientContext.getString("exitDolphin.taskTitle");
-        String title = ClientContext.getFrameTitle(taskTitle);
-        String[] options = new String[]{cancelOption, exitOption}; // cancel=0, exit=1
-
-        int option = PNSOptionPane.showOptionDialog(
-            null, message, title,
-            JOptionPane.DEFAULT_OPTION,
-            JOptionPane.WARNING_MESSAGE,
-            null, options, options[0]);
-
-        if (option == 1) {
-            exit();
-        } // キャンセル=0, ESC キー = -1
-    }
-
-    /**
-     * 最終 exit.
-     */
-    private void exit() {
-
-        if (providers != null) {
-            providers.values().forEach(MainService::stop);
-        }
-
-        if (windowSupport != null) {
-            JFrame myFrame = windowSupport.getFrame();
-            myFrame.setVisible(false);
-            myFrame.dispose();
-        }
-        logger.info("アプリケーションを終了します");
-        System.exit(0);
-    }
-
-    /**
-     * ユーザのパスワードを変更する. メニューから reflection で呼ばれる.
+     * ユーザのパスワードを変更する. MenuSupport から reflection で呼ばれる.
      */
     public void changePassword() {
         ChangePassword cp = new ChangePassword();
@@ -736,7 +736,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * About を表示する.
+     * About を表示する. MenuSupport から reflection で呼ばれる.
      */
     public void showAbout() {
         Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
@@ -746,7 +746,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * シェーマボックスを表示する.
+     * シェーマボックスを表示する. MenuSupport から reflection で呼ばれる.
      */
     @Override
     public void showSchemaBox() {
@@ -760,7 +760,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * スタンプボックスを表示する.
+     * スタンプボックスを表示する. MenuSupport から reflection で呼ばれる.
      */
     @Override
     public void showStampBox() {
@@ -770,8 +770,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * Waiting list を表示する.
-     * MenuSupport から呼ばれる.
+     * Waiting list を表示する. MenuSupport から reflection で呼ばれる.
      */
     public void showWaitingList() {
         // Search field に focus させるためのトリック
@@ -781,8 +780,7 @@ public class Dolphin implements MainWindow {
     }
 
     /**
-     * Patient search を表示する.
-     * MenuSupport から呼ばれる.
+     * Patient search を表示する. MenuSupport から reflection で呼ばれる.
      */
     public void showPatientSearch() {
         // Search field に focus させるためのトリック

@@ -270,16 +270,6 @@ public class WaitingListImpl extends AbstractMainComponent {
         pvtTable.getInputMap().put(KeyStroke.getKeyStroke("shift TAB"), "focusPrevious");
         pvtTable.getActionMap().put("focusPrevious", new ProxyAction(KeyboardFocusManager.getCurrentKeyboardFocusManager()::focusPreviousComponent));
 
-        // shift - alt - L でフォント拡大
-        pvtTable.getInputMap().put(KeyStroke.getKeyStroke("shift alt L"), "fontLarge");
-        pvtTable.getActionMap().put("fontLarge", new ProxyAction(() -> {
-            if (fontSize == 12) { fontSize = 18; }
-            else if (fontSize == 18) { fontSize = 24; }
-            else if (fontSize == 24) { fontSize = 12; }
-            view.setFontSize(fontSize);
-            preferences.putInt("fontSize", fontSize);
-        }));
-
         // pvt 受信待ち endpoint
         PvtEndpoint endpoint = new PvtEndpoint();
         DolphinClientContext.getContext().setEndpoint(endpoint);
@@ -406,7 +396,7 @@ public class WaitingListImpl extends AbstractMainComponent {
             selectedIndex = pvtTable.getSelectedRows();
         } else {
             getContext().getFrame().getGlassPane().setVisible(false);
-            if (selectedIndex != null && selectedIndex.length != 0) {
+            if (selectedIndex != null) {
                 for (int index : selectedIndex) {
                     pvtTable.getSelectionModel().addSelectionInterval(index, index);
                 }
@@ -549,9 +539,17 @@ public class WaitingListImpl extends AbstractMainComponent {
         }
         final int state = updated.getState();
 
-        if (state != KarteState.READ_ONLY) {
+        Runnable r;
+        if (state == KarteState.READ_ONLY) {
+            // ReadOnly の時, state を読み直す
+            r = () -> {
+                PvtDelegater pdl = new PvtDelegater();
+                updated.setState(pdl.getPvtState(updated.getId()));
+                pvtTableModel.fireTableRowsUpdated(row, row);
+            };
+        } else {
             // データベースへの書き込み
-            Runnable r = () -> {
+            r = () -> {
                 PvtDelegater pdl = new PvtDelegater();
                 int serverState = pdl.getPvtState(updated.getId());
                 // サーバが NONE 以外かつクライアントが NONE の時はサーバの state を優先する
@@ -562,16 +560,8 @@ public class WaitingListImpl extends AbstractMainComponent {
                 pdl.updatePvt(updated);
                 pvtTableModel.fireTableRowsUpdated(row, row);
             };
-            executor.submit(r);
-        } else {
-            // ReadOnly の時, state を読み直す
-            Runnable r = () -> {
-                PvtDelegater pdl = new PvtDelegater();
-                updated.setState(pdl.getPvtState(updated.getId()));
-                pvtTableModel.fireTableRowsUpdated(row, row);
-            };
-            executor.submit(r);
         }
+        executor.submit(r);
     }
 
     /**
@@ -1070,11 +1060,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         public void maybeShowPopup(MouseEvent e) {
 
             if (e.isPopupTrigger()) {
-
                 contextMenu.removeAll();
-                String pop3 = "偶数奇数レンダラを使用する";
-                String pop4 = "性別レンダラを使用する";
-                String pop5 = "生年月日の元号表示";
 
                 if (canOpen()) {
                     String pop1 = "カルテを開く";
@@ -1084,11 +1070,13 @@ public class WaitingListImpl extends AbstractMainComponent {
                     contextMenu.addSeparator();
                 }
 
+                String pop3 = "偶数奇数レンダラを使用する";
+                String pop4 = "性別レンダラを使用する";
                 JRadioButtonMenuItem oddEven = new JRadioButtonMenuItem(new ProxyAction(pop3, WaitingListImpl.this::switchRenderer));
                 JRadioButtonMenuItem sex = new JRadioButtonMenuItem(new ProxyAction(pop4, WaitingListImpl.this::switchRenderer));
-                ButtonGroup bg = new ButtonGroup();
-                bg.add(oddEven);
-                bg.add(sex);
+                ButtonGroup renderButtonGroup = new ButtonGroup();
+                renderButtonGroup.add(oddEven);
+                renderButtonGroup.add(sex);
                 contextMenu.add(oddEven);
                 contextMenu.add(sex);
                 if (sexRenderer) {
@@ -1097,59 +1085,40 @@ public class WaitingListImpl extends AbstractMainComponent {
                     oddEven.setSelected(true);
                 }
 
-                JCheckBoxMenuItem item = new JCheckBoxMenuItem(pop5);
-                contextMenu.add(item);
-                item.setSelected(ageDisplay);
-                item.addActionListener(ae -> {
-                    ageDisplay = item.isSelected();
+                String pop5 = "生年月日の元号表示";
+                JCheckBoxMenuItem gengo = new JCheckBoxMenuItem(pop5);
+                contextMenu.add(gengo);
+                gengo.setSelected(ageDisplay);
+                gengo.addActionListener(ae -> {
+                    ageDisplay = gengo.isSelected();
                     preferences.putBoolean("ageDisplay", ageDisplay);
                 });
+
+                String pop6 = "フォントサイズ";
+                JMenu fontMenu = new JMenu(pop6);
+                contextMenu.add(fontMenu);
+                int[] sizes = { 12, 18, 24 };
+                JRadioButtonMenuItem[] sizeItems = new JRadioButtonMenuItem[sizes.length];
+                ButtonGroup fontButtonGroup = new ButtonGroup();
+                for (int i=0; i<sizes.length; i++) {
+                    final int size = sizes[i];
+                    sizeItems[i] = new JRadioButtonMenuItem(String.valueOf(size));
+                    sizeItems[i].setIconTextGap(12);
+                    sizeItems[i].addActionListener(ae -> {
+                        fontSize = size;
+                        view.setFontSize(size);
+                        preferences.putInt("fontSize", size);
+                    });
+                    if (fontSize == size) { sizeItems[i].setSelected(true); }
+                    fontButtonGroup.add(sizeItems[i]);
+                    fontMenu.add(sizeItems[i]);
+                }
+
                 oddEven.setIconTextGap(12);
                 sex.setIconTextGap(12);
-                item.setIconTextGap(12);
-
+                gengo.setIconTextGap(12);
+                fontMenu.setIconTextGap(12);
                 contextMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
-        }
-    }
-
-    /**
-     * 配列の中から最大値, 最小値を調べる.
-     */
-    private class MinMax {
-        public int max = -1;
-        public int min = -1;
-
-        public MinMax(int[] rows) {
-            set(rows);
-        }
-
-        public MinMax(List<Integer> list) {
-            if (list == null || list.isEmpty()) {
-                return;
-            }
-            int[] rows = new int[list.size()];
-            int count = 0;
-            for (Integer i : list) {
-                rows[count++] = i;
-            }
-            set(rows);
-        }
-
-        private void set(int[] rows) {
-            if (rows == null || rows.length == 0) {
-                return;
-            }
-
-            min = rows[0];
-            max = rows[0];
-            if (rows.length == 1) {
-                return;
-            }
-
-            for (int i = 1; i < rows.length; i++) {
-                min = Math.min(min, rows[i]);
-                max = Math.max(max, rows[i]);
             }
         }
     }
