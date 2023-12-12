@@ -77,6 +77,7 @@ public final class ClientContextStub {
         logger.info("os.name = " + System.getProperty("os.name"));
         logger.info("java.version = " + System.getProperty("java.version"));
         logger.info("dolphin.version = " + getString("version"));
+        logger.info("dolphin.build.timestamp = " + System.getProperty("open.dolphin.build.timestamp"));
         //logger.info("base.directory = " + getString("base.dir"));
         //logger.info("lib.directory = " + getString("lib.dir"));
         //logger.info("plugins.directory = " + getString("plugins.dir"));

@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * About dialog.
@@ -50,9 +53,15 @@ public class AboutDialog extends JDialog {
             }
         });
 
-        // version 文字列作成
-        String version = String.format("<html>%s Ver. %s (Java %s)</html>",
-            ClientContext.getString("productString"), ClientContext.getString("version"), System.getProperty("java.version"));
+        // ビルド日時文字列作成. pom.xml で UTC の "20231212064212" という文字列をセットしてある.
+        String timestamp = System.getProperty("open.dolphin.build.timestamp");
+        if (Objects.nonNull(timestamp) && timestamp.length() == 14) {
+            LocalDateTime buildDate = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            timestamp = buildDate.plusHours(9).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        String version = String.format("<html><center>%s Ver. %s (Java %s)<br><small>build %s</small></center></html>",
+            ClientContext.getString("productString"), ClientContext.getString("version"), System.getProperty("java.version"), timestamp);
         // copyright 文字列作成
         String copyright = "<html>" + String.join("<br>", ClientContext.getStringArray("copyrightString")) + "</html>";
 

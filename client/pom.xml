@@ -27,7 +27,7 @@
         <buildDate>${maven.build.timestamp}</buildDate>
         <!-- バージョニングに使う日付のフォーマット -->
         <timestamp>${maven.build.timestamp}</timestamp>
-        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     </properties>
 
     <profiles>
@@ -291,7 +291,7 @@
                                     <arg line="--java-options --add-opens=java.base/java.lang.ref=ALL-UNNAMED" />
                                     <arg line="--java-options --add-opens=java.base/java.security=ALL-UNNAMED" />
                                     <arg line="--java-options -Xmx1024m" />
-                                    <arg line="--java-options -Xlog:gc:${java.gc.log}" />
+                                    <arg line="--java-options -Dopen.dolphin.build.timestamp=${buildDate}" />
                                 </exec>
                             </target>
                         </configuration>
