@@ -396,9 +396,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             scrollerPanel.removeAll();
 
             karteList.forEach(view -> scrollerPanel.add(view.getUI(), -1)); // index -1 で最後に追加になる
-            SwingUtilities.invokeLater(() -> {
-                scrollerPanel.revalidate();
-            });
+            SwingUtilities.invokeLater(() -> scrollerPanel.revalidate());
 
             // 編集したときの snap() 取り直しのために通知
             //scrollPane.setViewComponentChanged();
@@ -586,7 +584,11 @@ public class KarteDocumentViewer extends AbstractChartDocument {
      * 表示されているカルテを CLAIM 送信する.
      */
     public void sendClaim() {
-        logger.debug("sendClaim() in KarteDocumentViewer called.");
+        Frame parent = getContext().getFrame();
+        if (JSheet.isAlreadyShown(parent)) {
+            logger.info("sendClaim() modal dialog already shown");
+            return;
+        }
 
         String message;
         int messageType;
@@ -621,11 +623,6 @@ public class KarteDocumentViewer extends AbstractChartDocument {
             }
         }
 
-        Frame parent = getContext().getFrame();
-        if (JSheet.isAlreadyShown(parent)) {
-            parent.toFront();
-            return;
-        }
         JSheet.showMessageDialog(parent, message, "", messageType);
     }
 
