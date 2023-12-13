@@ -16,7 +16,7 @@
 
         <!-- versions -->
         <java.version>17</java.version>
-        <version.openjfx>17</version.openjfx>
+        <version.openjfx>21</version.openjfx>
         <version.jakarta.platform>10.0.0</version.jakarta.platform>
         <version.org.jboss.resteasy>6.2.3.Final</version.org.jboss.resteasy>
         <version.org.hibernate>6.1.5.Final</version.org.hibernate>

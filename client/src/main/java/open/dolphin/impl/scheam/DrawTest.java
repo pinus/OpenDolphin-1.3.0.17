@@ -16,6 +16,8 @@ public class DrawTest {
 
     // ******************  JavaFX version  ***********************
     public static void main(String[] arg) {
+        System.out.println("version = " + com.sun.javafx.runtime.VersionInfo.getRuntimeVersion());
+
         // JavaFX settings
         // Mac OS X needs this to avoid HeadlessException
         System.setProperty("java.awt.headless", "false");
@@ -37,6 +39,7 @@ public class DrawTest {
         });
 
         Platform.runLater(new DrawTest()::start);
+        JOptionPane.showMessageDialog(null, "Keep this window to keep thread active");
     }
 
     public void start() {
