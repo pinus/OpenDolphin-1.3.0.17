@@ -27,7 +27,7 @@ public class RecipeTablePanel extends ItemTablePanel {
 
     private static final ImageIcon INFO_BUTTON_IMAGE = GUIConst.ICON_INFORMATION_16;
     private static final String ADMIN_MARK = "[用法] ";
-    private static final String REG_ADMIN_MARK = "\\[用法\\] ";
+    private static final String REG_ADMIN_MARK = "[用法] ";
     private static final String LABEL_TEXT_IN_MED = "院内";
     private static final String LABEL_TEXT_OUT_MED = "院外";
     private static final String IN_MEDICINE = "院内処方";
@@ -62,7 +62,7 @@ public class RecipeTablePanel extends ItemTablePanel {
     /**
      * RecipeTablePanel の TableModel を作る.
      *
-     * @return
+     * @return product
      */
     @Override
     public UndoableObjectReflectTableModel<MasterItem> createTableModel() {
@@ -76,13 +76,15 @@ public class RecipeTablePanel extends ItemTablePanel {
         );
         setTableColumnWidth(new int[]{90, 200, 50, 80, 30, 50});
 
-        return new UndoableObjectReflectTableModel<MasterItem>(reflectList) {
+        return new UndoableObjectReflectTableModel<>(reflectList) {
 
             @Override
             public boolean isCellEditable(int row, int col) {
                 // 数量と回数は編集可能
                 // code がコメントコード（810000001)なら，診療内カラムを編集可能とする
-                return (col == 1 && "810000001".equals(this.getValueAt(row, 0))) || col == 2 || col == 5;
+                return col == 2 || col == 5
+                    || (col == 1 && "810000001".equals(this.getValueAt(row, 0)))
+                    || (col == 1 && "830600011".equals(this.getValueAt(row, 0))); // エクロックゲル5% HDSSコメント
             }
 
             @Override
@@ -97,7 +99,7 @@ public class RecipeTablePanel extends ItemTablePanel {
             }
 
             private void updateTable(Object o, int row, int col) {
-                if (o == null || ((String) o).trim().equals("")) {
+                if (o == null || ((String) o).trim().isEmpty()) {
                     return;
                 }
                 // tableModel のオブジェクトは MasterItem
@@ -122,7 +124,7 @@ public class RecipeTablePanel extends ItemTablePanel {
     /**
      * テーブル下のコンポネントを作る.
      *
-     * @return
+     * @return South Panel
      */
     @Override
     public JPanel createSouthPanel() {
@@ -187,7 +189,7 @@ public class RecipeTablePanel extends ItemTablePanel {
 
         // stampNameField がセットされていなかったら item の名前をセットする
         String name = stampNameField.getText().trim();
-        if (name.equals("") || name.equals(DEFAULT_STAMP_NAME)) {
+        if (name.isEmpty() || name.equals(DEFAULT_STAMP_NAME)) {
             stampNameField.setText(item.getName());
         }
 
@@ -272,8 +274,8 @@ public class RecipeTablePanel extends ItemTablePanel {
 
         // 用法が登録されていなければデフォルトの用法をセット
         boolean hasAdmin = false;
-        for (Object o : tableModel.getObjectList()) {
-            if (((MasterItem) o).getClassCode() == ClaimConst.ADMIN) {
+        for (MasterItem o : tableModel.getObjectList()) {
+            if (o.getClassCode() == ClaimConst.ADMIN) {
                 hasAdmin = true;
                 break;
             }
@@ -303,7 +305,7 @@ public class RecipeTablePanel extends ItemTablePanel {
     /**
      * BundleMed, Entity，StampRole，StampName のセットされた ModuleModel を返す.
      *
-     * @return
+     * @return product
      */
     private ModuleModel createModuleModel() {
 
@@ -318,7 +320,7 @@ public class RecipeTablePanel extends ItemTablePanel {
 
         //　スタンプ名を設定する
         String stampName = stampNameField.getText().trim();
-        if (!stampName.equals("")) {
+        if (!stampName.isEmpty()) {
             moduleInfo.setStampName(stampName);
         } else {
             moduleInfo.setStampName(DEFAULT_STAMP_NAME);
@@ -330,8 +332,8 @@ public class RecipeTablePanel extends ItemTablePanel {
     /**
      * MasterItem から ClaimItem を作る.
      *
-     * @param mItem
-     * @return
+     * @param mItem master item
+     * @return product
      */
     private ClaimItem createClaimItem(MasterItem mItem) {
         ClaimItem item = new ClaimItem();
@@ -354,7 +356,7 @@ public class RecipeTablePanel extends ItemTablePanel {
      * 各項目は ClaimItem に入る
      * ADMIN 情報と，外用/内容/頓用 情報は BundleMed に入る
      *
-     * @return
+     * @return value
      */
     @Override
     public Object getValue() {
@@ -386,7 +388,7 @@ public class RecipeTablePanel extends ItemTablePanel {
 
             // number（１日量）を半角変換して設定し直す
             String number = mItem.getNumber();
-            if (number != null && (!number.trim().equals(""))) {
+            if (number != null && (!number.trim().isEmpty())) {
                 number = StringTool.toHankakuNumber(number.trim());
                 mItem.setNumber(number);
             } else {
@@ -458,7 +460,7 @@ public class RecipeTablePanel extends ItemTablePanel {
                     bundle.setAdmin(ommit);
                     bundle.setAdminCode(mItem.getCode());
                     String bNum = mItem.getBundleNumber();
-                    if (bNum != null && !bNum.trim().equals("")) {
+                    if (bNum != null && !bNum.trim().isEmpty()) {
                         bNum = StringTool.toHankakuNumber(bNum.trim());
                         bundle.setBundleNumber(bNum);
                     }
@@ -497,7 +499,7 @@ public class RecipeTablePanel extends ItemTablePanel {
 
         if (!serialized && stampName.startsWith(FROM_EDITOR_STAMP_NAME)) {
             stampName = DEFAULT_STAMP_NAME;
-        } else if (stampName.equals("")) {
+        } else if (stampName.isEmpty()) {
             stampName = DEFAULT_STAMP_NAME;
         }
         stampNameField.setText(stampName);
@@ -524,7 +526,7 @@ public class RecipeTablePanel extends ItemTablePanel {
             mItem.setCode(item.getCode());
 
             String number = item.getNumber();
-            if (number != null && (!number.equals(""))) {
+            if (number != null && (!number.isEmpty())) {
                 number = StringTool.toHankakuNumber(number.trim());
                 mItem.setNumber(number);
                 mItem.setUnit(item.getUnit());
@@ -592,7 +594,7 @@ public class RecipeTablePanel extends ItemTablePanel {
     /**
      * 薬剤を含んでいるかどうか
      *
-     * @return
+     * @return has medicine or not
      */
     private boolean hasMedicine() {
         return tableModel.getObjectList().stream().anyMatch(mItem -> (mItem.getClassCode() == ClaimConst.YAKUZAI));
@@ -601,7 +603,7 @@ public class RecipeTablePanel extends ItemTablePanel {
     /**
      * 用法を含んでいるかどうか
      *
-     * @return
+     * @return has admin or not
      */
     private boolean hasAdmin() {
         return tableModel.getObjectList().stream().anyMatch(mItem -> (mItem.getClassCode() == ClaimConst.ADMIN));
@@ -609,8 +611,7 @@ public class RecipeTablePanel extends ItemTablePanel {
 
     // １日量が妥当かどうか
     private boolean isNumberOk() {
-        for (Object i : tableModel.getObjectList()) {
-            MasterItem mItem = (MasterItem) i;
+        for (MasterItem mItem : tableModel.getObjectList()) {
 
             // 器材または医薬品の場合，数量を調べる
             switch (mItem.getClassCode()) {
@@ -630,7 +631,7 @@ public class RecipeTablePanel extends ItemTablePanel {
 
                 case ClaimConst.SYUGI:
                     // 手技の場合 null "" 可
-                    if (mItem.getNumber() == null || mItem.getNumber().equals("")) {
+                    if (mItem.getNumber() == null || mItem.getNumber().isEmpty()) {
                         continue;
                     }
                     if (!isNumber(mItem.getNumber().trim())) {
@@ -648,7 +649,7 @@ public class RecipeTablePanel extends ItemTablePanel {
     // number かどうか
     private boolean isNumber(String test) {
         // 部位などに使う "." と "" は許す
-        if (test.equals(".") || test.equals("")) {
+        if (test.equals(".") || test.isEmpty()) {
             return true;
         }
 
