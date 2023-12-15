@@ -23,8 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.*;
 
@@ -208,11 +206,8 @@ public class DocumentHistory implements IInspector {
         // Preference から抽出期間を設定する
         int past = Project.getPreferences().getInt(Project.DOC_HISTORY_PERIOD, -12);
         int index = PNSPair.getIndex(past, ComboBoxFactory.getDocumentExtractionPeriodModel());
+        // ItemListener で setExtractionPeriod が呼ばれて、update がかかる
         extractionCombo.setSelectedIndex(index);
-
-        LocalDate startDate = LocalDate.now().plusMonths(past);
-        // ここで update がかかる
-        setExtractionPeriod(Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
     /**
@@ -456,7 +451,6 @@ public class DocumentHistory implements IInspector {
      * @param e ItemEvent
      */
     public void periodChanged(ItemEvent e) {
-
         if (e.getStateChange() == ItemEvent.SELECTED) {
             int index = extractionCombo.getSelectedIndex();
             int addValue = ComboBoxFactory.getDocumentExtractionPeriodModel().get(index).getValue();
