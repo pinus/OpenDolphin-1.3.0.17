@@ -222,13 +222,37 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     }
 
     /**
+     * PatientVisitModel のカルテが開いているかどうか調べる.
+     *
+     * @param pvt PatientVisitModel
+     * @return karte opened or not
+     */
+    public boolean isKarteOpened(PatientVisitModel pvt) {
+        return Objects.isNull(pvt)
+            ? false
+            : isKarteOpened(pvt.getPatient());
+    }
+
+    /**
+     * PatientModel のカルテが開いているかどうか調べる static method.
+     *
+     * @param patient PatientModel
+     * @return karte opened or not
+     */
+    public boolean isKarteOpened(PatientModel patient) {
+        return Objects.isNull(patient)
+            ? false
+            : ChartImpl.getAllCharts().stream().anyMatch(chart -> chart.getPatient().getId() == patient.getId());
+    }
+
+    /**
      * カルテ (PatientModel) を開くことが可能かどうかを返す.
      *
      * @param patient PatientModel
      * @return 開くことが可能な時 true
      */
     public boolean canOpen(PatientModel patient) {
-        return !ChartImpl.isKarteOpened(patient);
+        return !isKarteOpened(patient);
     }
 
     /**
@@ -236,9 +260,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
      *
      * @return 開くことが可能な時 true
      */
-    public boolean canOpen(PatientVisitModel pvt) {
-        return Objects.nonNull(pvt) && !ChartImpl.isKarteOpened(pvt);
-    }
+    public boolean canOpen(PatientVisitModel pvt) { return !isKarteOpened(pvt); }
 
     /**
      * department description を返す.

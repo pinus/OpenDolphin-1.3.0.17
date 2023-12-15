@@ -768,7 +768,7 @@ public final class ChartMediator extends MenuSupport {
     }
 
     public void searchStamp() {
-        ChartImpl chart = ChartImpl.getAllChart().stream().filter(c -> c.getFrame().isActive()).findAny().orElse(null);
+        ChartImpl chart = ChartImpl.getAllCharts().stream().filter(c -> c.getFrame().isActive()).findAny().orElse(null);
         if (Objects.nonNull(chart)) {
             ChartSearchPanel panel = chart.getChartSearchPanel();
             panel.show(ChartSearchPanel.Card.STAMP);

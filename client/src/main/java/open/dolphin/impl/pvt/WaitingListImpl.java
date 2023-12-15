@@ -576,7 +576,7 @@ public class WaitingListImpl extends AbstractMainComponent {
         return () -> {
             // 開いているカルテを調べる
             // java.util.ConcurrentModificationException 対策のためにコピーで実行
-            List<ChartImpl> allCharts = new ArrayList<>(ChartImpl.getAllChart());
+            List<ChartImpl> allCharts = new ArrayList<>(ChartImpl.getAllCharts());
 
             allCharts.stream()
                     .map(ChartImpl::getPatientVisit)
@@ -661,9 +661,9 @@ public class WaitingListImpl extends AbstractMainComponent {
                 hostPvt.setNumber(localPvt.getNumber());
                 pvtTableModel.getObjectList().set(row, hostPvt);
                 // changeRow を fire, ただしカルテが開いていたら fire しない
-                if (!ChartImpl.isKarteOpened(localPvt)) {
+                //if (!isKarteOpened(localPvt)) {
                     pvtTableModel.fireTableRowsUpdated(row, row);
-                }
+                //}
             }
 
         } else if (hostPvt.getState() != KarteState.CANCEL_PVT){
@@ -731,7 +731,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
                     // サーバと違いがあればアップデート
                     // 自分でカルテを開いている場合はアップデートしない
-                    if (!ChartImpl.isKarteOpened(myPvt)) {
+                    if (!isKarteOpened(myPvt)) {
                         boolean lineChanged = false;
                         if (myPvt.getState() != serverPvt.getState()) {
                             //logger.info("PVT state changed row=" + i + " state=" + serverPvt.getState());
@@ -873,61 +873,40 @@ public class WaitingListImpl extends AbstractMainComponent {
             this.setForeground(fore);
 
             // state の value チェック, 本日のカルテがあるかどうか（今日のカルテはないけど, 以前のカルテを編集しただけの場合）
-            if (value instanceof Integer) {
-                int state = (Integer) value;
-
+            if (value instanceof Integer state) {
                 switch (state) {
-
                     // 診察終了
-                    case KarteState.CLOSE_SAVE:
-                        this.setIcon(DONE_ICON);
-                        break;
-
+                    case KarteState.CLOSE_SAVE -> this.setIcon(DONE_ICON);
                     // カルテ記載がまだ
-                    case KarteState.CLOSE_UNFINISHED:
-                        this.setIcon(UNFINISHED_ICON);
-                        break;
-
+                    case KarteState.CLOSE_UNFINISHED -> this.setIcon(UNFINISHED_ICON);
                     // 仮保存
-                    case KarteState.CLOSE_TEMP:
-                        this.setIcon(TEMPORARY_ICON);
-                        break;
-
+                    case KarteState.CLOSE_TEMP -> this.setIcon(TEMPORARY_ICON);
                     // READ_ONLY で開いている
-                    case KarteState.READ_ONLY:
-                        this.setIcon(OPEN_ICON);
-                        break;
-
+                    case KarteState.READ_ONLY -> this.setIcon(OPEN_ICON);
                     // カルテが開いている
-                    case KarteState.OPEN_NONE:
-                    case KarteState.OPEN_TEMP:
-                        if (ChartImpl.isKarteOpened(pvt)) {
+                    case KarteState.OPEN_NONE, KarteState.OPEN_TEMP -> {
+                        if (isKarteOpened(pvt)) {
                             this.setIcon(OPEN_ICON);
                         } else {
                             this.setIcon(OPEN_USED_NONE);
                         }
-                        break;
-
-                    case KarteState.OPEN_SAVE:
-                        if (ChartImpl.isKarteOpened(pvt)) {
+                    }
+                    case KarteState.OPEN_SAVE -> {
+                        if (isKarteOpened(pvt)) {
                             this.setIcon(OPEN_ICON);
                         } else {
                             this.setIcon(OPEN_USED_SAVE);
                         }
-                        break;
-
-                    case KarteState.OPEN_UNFINISHED:
-                        if (ChartImpl.isKarteOpened(pvt)) {
+                    }
+                    case KarteState.OPEN_UNFINISHED -> {
+                        if (isKarteOpened(pvt)) {
                             this.setIcon(OPEN_ICON);
                         } else {
                             this.setIcon(OPEN_USED_UNFINISHED);
                         }
-                        break;
-
+                    }
                     // その他の場合はアイコン無し CLOSE_NONE はここ
-                    default:
-                        this.setIcon(null);
-                        break;
+                    default -> this.setIcon(null);
                 }
 
                 // マーキングする

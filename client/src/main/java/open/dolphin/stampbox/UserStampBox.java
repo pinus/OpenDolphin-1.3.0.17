@@ -124,7 +124,7 @@ public class UserStampBox extends AbstractStampBox {
 
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
                         // 傷病名の popup に，カルテに病名を挿入する特別メニューを加える
-                        List<ChartImpl> allCharts = ChartImpl.getAllChart();
+                        List<ChartImpl> allCharts = ChartImpl.getAllCharts();
                         if (!allCharts.isEmpty()) {
                             popup.insert(new JPopupMenu.Separator(), 0);
                             allCharts.forEach(chart -> popup.insert(new SendDiagnosisAction(chart, stampTree), 0));
@@ -152,7 +152,7 @@ public class UserStampBox extends AbstractStampBox {
                     }
 
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
-                        List<ChartImpl> allCharts = ChartImpl.getAllChart();
+                        List<ChartImpl> allCharts = ChartImpl.getAllCharts();
                         if (!allCharts.isEmpty()) {
                             ChartImpl chart = allCharts.get(0);
                             DiagnosisDocument doc = chart.getDiagnosisDocument();
@@ -185,7 +185,7 @@ public class UserStampBox extends AbstractStampBox {
                 @Override
                 public void keyPressed(KeyEvent e) {
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
-                        List<ChartImpl> allCharts = ChartImpl.getAllChart();
+                        List<ChartImpl> allCharts = ChartImpl.getAllCharts();
                         if (!allCharts.isEmpty()) {
                             ChartImpl chart = allCharts.get(0);
                             DiagnosisInspector inspector = chart.getDiagnosisInspector();

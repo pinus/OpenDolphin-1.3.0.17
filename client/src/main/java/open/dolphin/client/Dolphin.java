@@ -527,7 +527,7 @@ public class Dolphin implements MainWindow {
         boolean dirty = false;
 
         // Chart を調べる
-        List<ChartImpl> allChart = ChartImpl.getAllChart();
+        List<ChartImpl> allChart = ChartImpl.getAllCharts();
         for (ChartImpl chart : allChart) {
             if (chart.isDirty()) {
                 dirty = true;

@@ -82,7 +82,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      *
      * @return オープンしている ChartPlugin のリスト
      */
-    public static List<ChartImpl> getAllChart() {
+    public static List<ChartImpl> getAllCharts() {
         return Collections.unmodifiableList(allCharts);
     }
 
@@ -188,34 +188,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         allCharts.stream().filter(chart -> chart.getPatient().getId() == ptId)
                 .findAny().ifPresent(chart -> chart.getFrame().toFront());
 
-    }
-
-    /**
-     * PatientVisitModel のカルテが開いているかどうか調べる static method.
-     *
-     * @param pvt PatientVisitModel
-     * @return karte opened or not
-     */
-    public static boolean isKarteOpened(PatientVisitModel pvt) {
-        if (pvt == null) {
-            return false;
-        }
-        return isKarteOpened(pvt.getPatient());
-    }
-
-    /**
-     * PatientModel のカルテが開いているかどうか調べる static method.
-     *
-     * @param patient PatientModel
-     * @return karte opened or not
-     */
-    public static boolean isKarteOpened(PatientModel patient) {
-        if (patient == null) {
-            return false;
-        }
-        long ptId = patient.getId();
-
-        return allCharts.stream().anyMatch(chart -> chart.getPatient().getId() == ptId);
     }
 
     /**
@@ -1438,7 +1410,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // この患者の EditorFrame が開いたままなら，閉じる努力をする. EditorFame 保存がキャンセルされたらあきらめる.
         List<Chart> editorFrames = new ArrayList<>(EditorFrame.getAllEditorFrames());
-        if (editorFrames.size() > 0) {
+        if (!editorFrames.isEmpty()) {
             String patientId = this.getKarte().getPatient().getPatientId();
             for (Chart chart : editorFrames) {
                 String id = chart.getKarte().getPatient().getPatientId();
