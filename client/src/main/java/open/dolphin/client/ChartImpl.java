@@ -484,7 +484,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                 setKarte(karteBean);
                 initComponents();
                 logger.debug("initComponents end");
-                SwingUtilities.invokeLater(getDocumentHistory()::showHistory);
             }
 
             @Override
@@ -735,6 +734,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             im.put(KeyStroke.getKeyStroke("meta ctrl F"), GUIConst.ACTION_SEARCH_STAMP);
             am.put(GUIConst.ACTION_SEARCH_STAMP, new ProxyAction(mediator::searchStamp));
         }
+
+        // ヒストリー表示
+        getDocumentHistory().showHistory();
     }
 
     /**
