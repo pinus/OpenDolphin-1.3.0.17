@@ -128,8 +128,10 @@ public class WindowSupport implements MenuListener {
     public Action getWindowAction() { return windowAction; }
 
     public void dispose() {
+        frame.getJMenuBar().setVisible(false);
+        frame.getRootPane().getLayeredPane().remove(frame.getJMenuBar());
+        frame.setJMenuBar(null); // maybe in vain, see JRootPane#setJMenuBar
         frame.setVisible(false);
-        frame.setJMenuBar(null);
         frame.dispose();
     }
 
