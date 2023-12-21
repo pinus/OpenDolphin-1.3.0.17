@@ -53,7 +53,9 @@ public class MyTableUI extends BasicTableUI {
         t.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
         t.setShowGrid(false);
         t.setIntercellSpacing(new Dimension(0, 0));
-        t.setRowHeight(UIHelper.DEFAULT_ROW_HEIGHT);
+        if (t.getRowHeight() != UIHelper.DEFAULT_ROW_HEIGHT) {
+            t.setRowHeight(UIHelper.DEFAULT_ROW_HEIGHT);
+        }
 
         // off focus のバックグランドを client property にセット
         t.putClientProperty("JTable.backgroundOffFocus", UIHelper.DEFAULT_BACKGROUND_SELECTION_OFF_FOCUS);
@@ -135,7 +137,7 @@ public class MyTableUI extends BasicTableUI {
      * Focus に応じてバックグランド色を調節する Renderer.
      */
     private class Renderer extends DefaultTableCellRenderer.UIResource {
-        
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {

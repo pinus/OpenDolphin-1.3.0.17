@@ -45,15 +45,17 @@ public class MyTreeUI extends BasicTreeUI {
         helper = new UIHelper(c);
 
         t.putClientProperty("Quaqua.Tree.style", "striped");
-        t.setRowHeight(UIHelper.DEFAULT_ROW_HEIGHT);
+        if (t.getRowHeight() != UIHelper.DEFAULT_ROW_HEIGHT) {
+            t.setRowHeight(UIHelper.DEFAULT_ROW_HEIGHT);
+        }
         t.setShowsRootHandles(true);
     }
 
     /**
      * Background を塗る.
      *
-     * @param g
-     * @param c
+     * @param g graphics
+     * @param c component
      */
     @Override
     public void paint(Graphics g, JComponent c) {
@@ -92,8 +94,8 @@ public class MyTreeUI extends BasicTreeUI {
     /**
      * ClipBound.y を越えた初めての Cell の Y 座標とその行数.
      *
-     * @param clipY
-     * @return
+     * @param clipY y
+     * @return (y, row)
      */
     private int[] getTopY(int clipY) {
 
@@ -101,12 +103,12 @@ public class MyTreeUI extends BasicTreeUI {
             int rowHeight = tree.getRowHeight();
             int row = 0;
             TreePath path = tree.getPathForRow(0);
-            int ｙ = tree.getPathBounds(path).y;
-            while (ｙ < clipY) {
-                ｙ += rowHeight;
+            int y = tree.getPathBounds(path).y;
+            while (y < clipY) {
+                y += rowHeight;
                 row++;
             }
-            return new int[]{ｙ, row};
+            return new int[]{y, row};
 
         } else {
             return new int[]{0, 0};
@@ -116,15 +118,15 @@ public class MyTreeUI extends BasicTreeUI {
     /**
      * Text の色を renderer に設定する.
      *
-     * @param g
-     * @param clip
-     * @param insets
-     * @param bounds
-     * @param path
-     * @param row
-     * @param isExpanded
-     * @param hasBeenExpanded
-     * @param isLeaf
+     * @param g graphics
+     * @param clip clip rect
+     * @param insets insets
+     * @param bounds a bounding rectangle
+     * @param path  a tree path
+     * @param row row
+     * @param isExpanded true if the path is expanded
+     * @param hasBeenExpanded true if the path has been expanded
+     * @param isLeaf true if the path is leaf
      */
     @Override
     protected void paintRow(Graphics g, Rectangle clip,
@@ -148,9 +150,9 @@ public class MyTreeUI extends BasicTreeUI {
      * PathBounds を行全体に広げる.
      * 行のどこを click しても選択できるようになる.
      *
-     * @param tree
-     * @param path
-     * @return
+     * @param tree Tree
+     * @param path Tree Path
+     * @return bounds
      */
     @Override
     public Rectangle getPathBounds(JTree tree, TreePath path) {
@@ -163,10 +165,10 @@ public class MyTreeUI extends BasicTreeUI {
     /**
      * BasicTreeUI#getPathBounds もこのパターンで public と private が組み合わされている.
      *
-     * @param path
-     * @param insets
-     * @param bounds
-     * @return
+     * @param path path
+     * @param insets insets
+     * @param bounds bounds
+     * @return bounds
      */
     private Rectangle getPathBounds(TreePath path, Insets insets, Rectangle bounds) {
         bounds = treeState.getBounds(path, bounds);
@@ -183,8 +185,8 @@ public class MyTreeUI extends BasicTreeUI {
      * 1クリック後にドラッグを開始すると，CellEditor のタイマーは止まらないので，
      * 1200 msec 後に CellEditor がスタートしてしまうのの対策.
      *
-     * @param tree
-     * @param path
+     * @param tree tree
+     * @param path path
      */
     @Override
     public void startEditingAtPath(JTree tree, TreePath path) {

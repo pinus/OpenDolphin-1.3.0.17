@@ -132,7 +132,8 @@ public class CalendarTable extends JTable {
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                setRowHeight(getHeight() / getRowCount());
+                int h = getHeight() / getRowCount();
+                if (getRowHeight() != h) { setRowHeight(h); }
             }
 
             @Override
@@ -384,20 +385,13 @@ public class CalendarTable extends JTable {
 
                 SimpleDate targetDate = (SimpleDate) value;
 
-                Color foregroundColor;
+                Color foregroundColor = switch (col) {
+                    case 0 -> SUNDAY_FOREGROUND;
+                    case 6 -> SATURDAY_FOREGROUND;
+                    default -> WEEKDAY_FOREGROUND;
+                };
 
                 // 曜日によって ForeColor を変える
-                switch (col) {
-                    case 0:
-                        foregroundColor = SUNDAY_FOREGROUND;
-                        break;
-                    case 6:
-                        foregroundColor = SATURDAY_FOREGROUND;
-                        break;
-                    default:
-                        foregroundColor = WEEKDAY_FOREGROUND;
-                        break;
-                }
 
                 // Event "PVT", "TODAY", "BIRTHDAY"
                 eventColor = CalendarEvent.getColor(targetDate.getEventCode());

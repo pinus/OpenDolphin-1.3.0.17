@@ -89,7 +89,9 @@ public class AllergyInspector implements IInspector, TableModelListener {
         table.setDefaultRenderer(Object.class,
                 new IndentTableCellRenderer(IndentTableCellRenderer.NARROW, IndentTableCellRenderer.SMALL_FONT));
         // 表の高さ
-        table.setRowHeight(GUIConst.DEFAULT_TABLE_ROW_HEIGHT);
+        if (table.getRowHeight() != GUIConst.DEFAULT_TABLE_ROW_HEIGHT) {
+            table.setRowHeight(GUIConst.DEFAULT_TABLE_ROW_HEIGHT);
+        }
         // コラム幅
         table.getColumnModel().getColumn(0).setMinWidth(120);
         table.getColumnModel().getColumn(1).setMaxWidth(3);

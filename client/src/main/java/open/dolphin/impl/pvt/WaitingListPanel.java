@@ -155,7 +155,9 @@ public class WaitingListPanel extends MainComponentPanel {
             }
         }
         setColumnWidth(columnWidth);
-        table.setRowHeight(rowHeight);
+        if (table.getRowHeight() != rowHeight) {
+            table.setRowHeight(rowHeight);
+        }
     }
 
     private void setColumnWidth(int[] width) {

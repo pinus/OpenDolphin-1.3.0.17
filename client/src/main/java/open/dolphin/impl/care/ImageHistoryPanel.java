@@ -49,7 +49,10 @@ public class ImageHistoryPanel extends JPanel {
         Collections.list(table.getColumnModel().getColumns())
                 .forEach(column -> column.setPreferredWidth(imageWidth));
 
-        table.setRowHeight(imageHeight + 20);
+        int rowHeight = imageHeight + 20;
+        if (table.getRowHeight() != rowHeight) {
+            table.setRowHeight(imageHeight + 20);
+        }
 
         ImageRenderer imageRenderer = new ImageRenderer();
         imageRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -124,7 +127,7 @@ public class ImageHistoryPanel extends JPanel {
         ChartTask<SchemaModel> task = new ChartTask<>(myParent.getContext()) {
 
             @Override
-            public SchemaModel doInBackground() throws Exception {
+            public SchemaModel doInBackground() {
                 return ddl.getImage(spec.getId());
             }
 
@@ -165,12 +168,7 @@ public class ImageHistoryPanel extends JPanel {
         @Override
         public Object getValueAt(int row, int col) {
             int index = row * columnCount + col;
-            if (!isValidIndex(index)) {
-                return null;
-            }
-
-            ImageEntry s = imageList.get(index);
-            return s;
+            return isValidIndex(index)? imageList.get(index) : null;
         }
 
         public void setImageList(List<ImageEntry> list) {
