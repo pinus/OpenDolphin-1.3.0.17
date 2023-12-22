@@ -60,8 +60,8 @@ public class AboutDialog extends JDialog {
             timestamp = buildDate.plusHours(9).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
 
-        String version = String.format("<html><center>%s Ver. %s (Java %s)<br><small>build %s</small></center></html>",
-            ClientContext.getString("productString"), ClientContext.getString("version"), System.getProperty("java.version"), timestamp);
+        String version = String.format("<html><center>%s Ver. %s<br>(Java %s)<br><small>build %s</small></center></html>",
+            ClientContext.getString("productString"), ClientContext.getString("version"), System.getProperty("java.vm.version"), timestamp);
         // copyright 文字列作成
         String copyright = "<html>" + String.join("<br>", ClientContext.getStringArray("copyrightString")) + "</html>";
 
