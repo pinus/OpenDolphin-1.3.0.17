@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,18 +62,15 @@ public class WindowSupport implements MenuListener {
     public static WindowSupport create(String title) {
         // フレームを生成する
         final PNSFrame f = new PNSFrame(title);
+        f.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
         // メニューバーを生成する
         JMenuBar menuBar = new JMenuBar();
+        f.setJMenuBar(menuBar);
 
         // Window メニューを生成する
         JMenu windowMenu = new JMenu(WINDOW_MENU_NAME);
-
-        // メニューバーへWindow メニューを追加する
         menuBar.add(windowMenu);
-
-        // フレームにメニューバーを設定する
-        f.setJMenuBar(menuBar);
 
         // Windowメニューのアクション
         // 選択されたらフレームを前面にする
@@ -87,20 +83,7 @@ public class WindowSupport implements MenuListener {
 
         // インスタンスを生成する
         final WindowSupport windowSupport = new WindowSupport(f, menuBar, windowMenu, windowAction);
-
-        // WindowEvent をこのクラスに通知しリストの管理を行う
-        f.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        f.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(java.awt.event.WindowEvent e) {
-                allWindows.add(windowSupport);
-            }
-
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent e) {
-                allWindows.remove(windowSupport);
-            }
-        });
+        allWindows.add(windowSupport);
 
         // windowMenu にメニューリスナを設定しこのクラスで処理をする
         windowMenu.addMenuListener(windowSupport);
@@ -111,7 +94,7 @@ public class WindowSupport implements MenuListener {
         return Collections.unmodifiableList(allWindows);
     }
 
-    public static ImageIcon getIcon(JFrame frame) {
+    private static ImageIcon getIcon(JFrame frame) {
         return frame.isActive() ? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16;
     }
 
@@ -125,12 +108,10 @@ public class WindowSupport implements MenuListener {
         return windowMenu;
     }
 
-    public Action getWindowAction() { return windowAction; }
+    private Action getWindowAction() { return windowAction; }
 
     public void dispose() {
-        frame.getJMenuBar().setVisible(false);
-        frame.getRootPane().getLayeredPane().remove(frame.getJMenuBar());
-        frame.setJMenuBar(null); // maybe in vain, see JRootPane#setJMenuBar
+        allWindows.remove(this);
         frame.setVisible(false);
         frame.dispose();
     }
@@ -208,8 +189,6 @@ public class WindowSupport implements MenuListener {
     @Override
     public void menuCanceled(MenuEvent e) {
     }
-
-    private enum State {OPENED, CLOSED}
 
     /**
      * インスペクタを整列する action.
