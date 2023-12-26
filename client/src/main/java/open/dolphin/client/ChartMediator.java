@@ -14,6 +14,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,11 +39,13 @@ public final class ChartMediator extends MenuSupport {
     // Font size
     public static final Integer[] FONT_SIZE = {9, 11, 13, 16, 18, 24, 36};
     public static final int DEFAULT_FONT_SIZE = FONT_SIZE[2];
+    private static final String FOCUS_OWNER = "focusOwner";
 
-    private final Chart chart;
-    private final Logger logger;
+    final private Chart chart;
+    final private Logger logger;
     private int curFontSizeIndex = 2;
     private KarteComposite<?> curKarteComposit;
+    final private PropertyChangeListener focusOwnerListener;
 
     /**
      * Create ChartMediator.
@@ -51,15 +54,11 @@ public final class ChartMediator extends MenuSupport {
      */
     public ChartMediator(Chart owner) {
         super(owner);
-
         logger = LoggerFactory.getLogger(ChartMediator.class);
         chart = owner;
 
-        KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-
-        // focus を取った KarteComposite に menu の activate/deactivate 情報を送る
-        focusManager.addPropertyChangeListener("focusOwner", e -> {
-
+        // focus を取った KarteComposite に menu の activate/deactivate 情報を送る listener
+        focusOwnerListener = e -> {
             Window focusedWindow = ((KeyboardFocusManager) e.getSource()).getActiveWindow();
 
             if (chart.getFrame() == focusedWindow) {
@@ -76,7 +75,8 @@ public final class ChartMediator extends MenuSupport {
                     setCurKarteComposit((KarteComposite) comp);
                 }
             }
-        });
+        };
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(FOCUS_OWNER, focusOwnerListener);
     }
 
     public void setCurKarteComposit(KarteComposite<?> newComposit) {
@@ -161,6 +161,7 @@ public final class ChartMediator extends MenuSupport {
     }
 
     public void dispose() {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener(FOCUS_OWNER, focusOwnerListener);
     }
 
     /**
@@ -228,14 +229,6 @@ public final class ChartMediator extends MenuSupport {
         }
     }
 
-    @Override
-    public void menuDeselected(MenuEvent e) {
-    }
-
-    @Override
-    public void menuCanceled(MenuEvent e) {
-    }
-
     /**
      * フォーマット関連メニューを調整する.
      */
@@ -244,8 +237,7 @@ public final class ChartMediator extends MenuSupport {
         boolean enabled = false;
         KartePane kartePane;
 
-        if (getChartDocumentChain() instanceof KarteEditor) {
-            KarteEditor editor = (KarteEditor) getChartDocumentChain();
+        if (getChartDocumentChain() instanceof KarteEditor editor) {
             kartePane = editor.getSOAPane();
             enabled = kartePane.getTextPane().isEditable();
         }
@@ -351,8 +343,7 @@ public final class ChartMediator extends MenuSupport {
         KartePane kartePane = null;
         Object obj = getChartDocumentChain();
 
-        if (obj instanceof KarteEditor) {
-            KarteEditor editor = (KarteEditor) obj;
+        if (obj instanceof KarteEditor editor) {
             kartePane = editor.getSOAPane();
             if (kartePane != null) {
                 enabled = kartePane.getTextPane().isEditable();
@@ -398,8 +389,7 @@ public final class ChartMediator extends MenuSupport {
         KartePane kartePane = null;
         Object obj = getChartDocumentChain();
 
-        if (obj instanceof KarteEditor) {
-            KarteEditor editor = (KarteEditor) obj;
+        if (obj instanceof KarteEditor editor) {
             kartePane = editor.getSOAPane();
             if (kartePane != null) {
                 enabled = kartePane.getTextPane().isEditable();
@@ -444,8 +434,7 @@ public final class ChartMediator extends MenuSupport {
         KartePane kartePane = null;
         Object obj = getChartDocumentChain();
 
-        if (obj instanceof KarteEditor) {
-            KarteEditor editor = (KarteEditor) obj;
+        if (obj instanceof KarteEditor editor) {
             kartePane = editor.getPPane();
             if (kartePane != null) {
                 enabled = kartePane.getTextPane().isEditable();
@@ -504,8 +493,7 @@ public final class ChartMediator extends MenuSupport {
         KartePane kartePane = null;
         Object obj = getChartDocumentChain();
 
-        if (obj instanceof KarteEditor) {
-            KarteEditor editor = (KarteEditor) obj;
+        if (obj instanceof KarteEditor editor) {
             kartePane = editor.getPPane();
             if (kartePane != null) {
                 enabled = kartePane.getTextPane().isEditable();
@@ -625,8 +613,7 @@ public final class ChartMediator extends MenuSupport {
 
     public void resetStyle() {
         JComponent focusOwner = getCurrentComponent();
-        if (focusOwner instanceof JTextPane) {
-            JTextPane pane = (JTextPane) focusOwner;
+        if (focusOwner instanceof JTextPane pane) {
             pane.setCharacterAttributes(SimpleAttributeSet.EMPTY, true);
         }
     }
