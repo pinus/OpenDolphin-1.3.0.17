@@ -44,7 +44,7 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
         "color", "fontRed", "fontOrange", "fontYellow", "fontGreen", "fontBlue","fontPurple", "fontGray",
         "fontLarger", "fontSmaller", "fontStandard", "fontBold", "fontItalic", "fontUnderline",
         "leftJustify", "centerJustify", "rightJustify"};
-    private static final String FOCUS_OWNER = "focusOwner";
+    private static final String FOCUS_OWNER = "permanentFocusOwner";
 
     final private Chart chart;
     final private Logger logger;
@@ -90,6 +90,11 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
         }
     }
 
+    /**
+     * Focus を取った KarteComposite に enter を送る.
+     *
+     * @param newComposit focus を取った KarteComposite
+     */
     public void setCurKarteComposit(KarteComposite<?> newComposit) {
         KarteComposite<?> old = curKarteComposit;
         curKarteComposit = newComposit;
@@ -119,7 +124,7 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
     }
 
     /**
-     * KarteComosite 層の Object を addChain する.
+     * KarteComposite 層の Object を addChain する.
      * chain[0] に入る.
      *
      * @param karteComposite KarteComposite
@@ -156,18 +161,25 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
         return (ChartDocument) getChain2();
     }
 
+    /**
+     * メニューの ActionMap を登録する.
+     *
+     * @param actions ActionMap
+     */
     @Override
-    public void registerActions(ActionMap map) {
-
-        super.registerActions(map);
+    public void registerActions(ActionMap actions) {
+        super.registerActions(actions);
 
         // 昇順降順を Preference から取得し設定しておく
         boolean asc = Project.getPreferences().getBoolean(Project.DOC_HISTORY_ASCENDING, false);
-        Action action = asc ? map.get(GUIConst.ACTION_ASCENDING) : map.get(GUIConst.ACTION_DESCENDING);
+        Action action = asc ? actions.get(GUIConst.ACTION_ASCENDING) : actions.get(GUIConst.ACTION_DESCENDING);
         JRadioButtonMenuItem rdi = (JRadioButtonMenuItem) action.getValue("menuItem");
         rdi.setSelected(true);
     }
 
+    /**
+     * Dispose 処理.
+     */
     public void dispose() {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener(FOCUS_OWNER, this);
     }

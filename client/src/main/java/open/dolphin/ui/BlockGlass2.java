@@ -236,7 +236,6 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      */
     @Override
     public void setVisible(boolean visible) {
-        super.setVisible(visible);
         if (visible) { start(); }
         else { stop(); }
     }
@@ -315,7 +314,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
                 }
             }
 
-            if (text != null && text.length() > 0) {
+            if (text != null && !text.isEmpty()) {
                 FontRenderContext context = g2.getFontRenderContext();
                 TextLayout layout = new TextLayout(text, getFont(), context);
                 Rectangle2D bounds = layout.getBounds();
