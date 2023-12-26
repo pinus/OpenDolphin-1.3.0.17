@@ -14,6 +14,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Objects;
@@ -35,17 +36,20 @@ import java.util.Objects;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  * @author pns
  */
-public final class ChartMediator extends MenuSupport {
+public final class ChartMediator extends MenuSupport implements PropertyChangeListener {
     // Font size
     public static final Integer[] FONT_SIZE = {9, 11, 13, 16, 18, 24, 36};
     public static final int DEFAULT_FONT_SIZE = FONT_SIZE[2];
+    public static final String[] FONT_FORMAT_ACTION_KEYS = {"size", "style", "justify",
+        "color", "fontRed", "fontOrange", "fontYellow", "fontGreen", "fontBlue","fontPurple", "fontGray",
+        "fontLarger", "fontSmaller", "fontStandard", "fontBold", "fontItalic", "fontUnderline",
+        "leftJustify", "centerJustify", "rightJustify"};
     private static final String FOCUS_OWNER = "focusOwner";
 
     final private Chart chart;
     final private Logger logger;
     private int curFontSizeIndex = 2;
     private KarteComposite<?> curKarteComposit;
-    final private PropertyChangeListener focusOwnerListener;
 
     /**
      * Create ChartMediator.
@@ -58,36 +62,41 @@ public final class ChartMediator extends MenuSupport {
         chart = owner;
 
         // focus を取った KarteComposite に menu の activate/deactivate 情報を送る listener
-        focusOwnerListener = e -> {
-            Window focusedWindow = ((KeyboardFocusManager) e.getSource()).getActiveWindow();
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(FOCUS_OWNER, this);
+    }
 
-            if (chart.getFrame() == focusedWindow) {
-                Component comp = (Component) e.getNewValue();
-                if (comp instanceof JTextPane) {
-                    // KartePane に入っている JTextPane は ClientProperty に親の KartePane を入れてある
-                    Object obj = ((JComponent) comp).getClientProperty("kartePane");
-                    if (obj instanceof KartePane) {
-                        // KartePane
-                        setCurKarteComposit((KarteComposite) obj);
-                    }
-                } else if (comp instanceof KarteComposite) {
-                    // StampHolder など
-                    setCurKarteComposit((KarteComposite) comp);
+    /**
+     * Set focused component to current composite.
+     *
+     * @param e A PropertyChangeEvent object describing the event source
+     *          and the property that has changed.
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent e) {
+        Window focusedWindow = ((KeyboardFocusManager) e.getSource()).getActiveWindow();
+        if (chart.getFrame() == focusedWindow) {
+            Object comp = e.getNewValue();
+            if (comp instanceof JTextPane textPane) {
+                // KartePane に入っている JTextPane は ClientProperty に親の KartePane を入れてある
+                Object obj = textPane.getClientProperty("kartePane");
+                if (obj instanceof KartePane kartePane) {
+                    // KartePane
+                    setCurKarteComposit(kartePane);
                 }
+            } else if (comp instanceof KarteComposite<?> karteComposite) {
+                // StampHolder など
+                setCurKarteComposit(karteComposite);
             }
-        };
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(FOCUS_OWNER, focusOwnerListener);
+        }
     }
 
     public void setCurKarteComposit(KarteComposite<?> newComposit) {
-
         KarteComposite<?> old = curKarteComposit;
         curKarteComposit = newComposit;
         addKarteCompositeChain(curKarteComposit);
+        logger.info("current composite = " + curKarteComposit.getClass() + " in " + chart.getFrame().getTitle());
 
         if (old != curKarteComposit) {
-            logger.debug("ChartMediator: composit changed in " + chart.getClass());
-
             if (old != null) {
                 old.exit(getActions());
             }
@@ -103,7 +112,6 @@ public final class ChartMediator extends MenuSupport {
             enableAction(GUIConst.ACTION_REDO, false);
 
             if (curKarteComposit != null) {
-                logger.debug("ChartMediator: curKarteComposit != null");
                 // KarteComposite 内で enable/disable は初期化される
                 curKarteComposit.enter(getActions());
             }
@@ -126,7 +134,7 @@ public final class ChartMediator extends MenuSupport {
      * @return KarteComposite
      */
     public KarteComposite<?> getKarteCompositeChain() {
-        return (KarteComposite) getChain();
+        return (KarteComposite<?>) getChain();
     }
 
     /**
@@ -161,7 +169,7 @@ public final class ChartMediator extends MenuSupport {
     }
 
     public void dispose() {
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener(FOCUS_OWNER, focusOwnerListener);
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener(FOCUS_OWNER, this);
     }
 
     /**
@@ -204,20 +212,19 @@ public final class ChartMediator extends MenuSupport {
             trees.forEach(tree -> {
 
                 switch (tree.getEntity()) {
-                    case IInfoModel.ENTITY_DIAGNOSIS:
+                    case IInfoModel.ENTITY_DIAGNOSIS -> {
                         // 傷病名の時，傷病名メニューを構築し追加する
                         selectedMenu.add(createDiagnosisMenu(tree));
                         selectedMenu.addSeparator();
-                        break;
-                    case IInfoModel.ENTITY_TEXT:
+                    }
+                    case IInfoModel.ENTITY_TEXT -> {
                         // テキストの時，テキストメニューを構築し追加する
                         selectedMenu.add(createTextMenu(tree));
                         selectedMenu.addSeparator();
-                        break;
-                    default:
+                    }
+                    default ->
                         // 通常のPオーダの時
                         selectedMenu.add(createStampMenu(tree));
-                        break;
                 }
             });
 
@@ -233,58 +240,24 @@ public final class ChartMediator extends MenuSupport {
      * フォーマット関連メニューを調整する.
      */
     private void adjustStyleMenu() {
-
-        boolean enabled = false;
-        KartePane kartePane;
-
-        if (getChartDocumentChain() instanceof KarteEditor editor) {
-            kartePane = editor.getSOAPane();
-            enabled = kartePane.getTextPane().isEditable();
+        boolean enabled = getChartDocumentChain() instanceof KarteEditor editor
+            && editor.getSOAPane().getTextPane().isEditable();
+        for (String actionKey : FONT_FORMAT_ACTION_KEYS) {
+            getAction(actionKey).setEnabled(enabled);
         }
-
-        // サブメニューを制御する
-        getAction("size").setEnabled(enabled);
-        getAction("style").setEnabled(enabled);
-        getAction("justify").setEnabled(enabled);
-        getAction("color").setEnabled(enabled);
-
-        // メニューアイテムを制御する
-        //getAction(GUIConst.ACTION_RESET_STYLE).setEnabled(enabled);
-
-        getAction("fontRed").setEnabled(enabled);
-        getAction("fontOrange").setEnabled(enabled);
-        getAction("fontYellow").setEnabled(enabled);
-        getAction("fontGreen").setEnabled(enabled);
-        getAction("fontBlue").setEnabled(enabled);
-        getAction("fontPurple").setEnabled(enabled);
-        getAction("fontGray").setEnabled(enabled);
-
-        getAction("fontLarger").setEnabled(enabled);
-        getAction("fontSmaller").setEnabled(enabled);
-        getAction("fontStandard").setEnabled(enabled);
-
-        getAction("fontBold").setEnabled(enabled);
-        getAction("fontItalic").setEnabled(enabled);
-        getAction("fontUnderline").setEnabled(enabled);
-
-        getAction("leftJustify").setEnabled(enabled);
-        getAction("centerJustify").setEnabled(enabled);
-        getAction("rightJustify").setEnabled(enabled);
     }
 
     /**
      * スタンプTreeから傷病名メニューを構築する.
+     * chain の先頭が DiagnosisDocument の時のみ使用可能とする.
      *
      * @param stampTree StampTree
      */
     private JMenu createDiagnosisMenu(StampTree stampTree) {
-        //
-        // chain の先頭が DiagnosisDocument の時のみ使用可能とする
-        //
-        JMenu myMenu;
-        Object obj = getChartDocumentChain(); // chain の先頭
-        DiagnosisDocument diagnosis = obj instanceof DiagnosisDocument ? (DiagnosisDocument) obj : null;
+        // chain の先頭
+        DiagnosisDocument diagnosis = getChartDocumentChain() instanceof DiagnosisDocument doc ? doc : null;
 
+        JMenu myMenu;
         if (diagnosis == null) {
             // chainの先頭がDiagnosisでない場合はメニューを disable にする
             myMenu = new JMenu(stampTree.getTreeName());
@@ -302,25 +275,19 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * 引数のポップアップメニューへ傷病名メニューを追加する.
+     * Chain の ChartDocument層 が DiagnosisDocument の時のみ追加する.
      *
      * @param popup 傷病名メニューを追加するポップアップメニュー
      */
     public void addDiseaseMenu(JPopupMenu popup) {
-        //
-        // Chain の ChartDocument層 が DiagnosisDocument の時のみ追加する
-        //
-        Object obj = getChartDocumentChain();
-        DiagnosisDocument diagnosis = obj instanceof DiagnosisDocument ? (DiagnosisDocument) obj : null;
-
+        DiagnosisDocument diagnosis = getChartDocumentChain() instanceof DiagnosisDocument doc ? doc : null;
         StampTree stampTree = getStampBox().getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
 
         if (stampTree != null) {
-
             if (diagnosis == null) {
                 JMenu myMenu = new JMenu(stampTree.getTreeName());
                 myMenu.setEnabled(false);
                 popup.add(myMenu);
-
             } else {
                 StampTreeMenuBuilder builder = new StampTreeMenuBuilder(stampTree);
                 builder.addStampTreeMenuListener(new DefaultStampTreeMenuListener(diagnosis.getDiagnosisTable()));
@@ -331,19 +298,15 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * スタンプTreeからテキストメニューを構築する.
+     * chain の先頭が KarteEditor でかつ SOAane が編集可の場合のみメニューが使える.
      *
      * @param stampTree StampTree
      */
     private JMenu createTextMenu(StampTree stampTree) {
-        //
-        // chain の先頭が KarteEditor でかつ SOAane が編集可の場合のみメニューが使える
-        //
         boolean enabled = false;
-
         KartePane kartePane = null;
-        Object obj = getChartDocumentChain();
 
-        if (obj instanceof KarteEditor editor) {
+        if (getChartDocumentChain() instanceof KarteEditor editor) {
             kartePane = editor.getSOAPane();
             if (kartePane != null) {
                 enabled = kartePane.getTextPane().isEditable();
@@ -383,13 +346,10 @@ public final class ChartMediator extends MenuSupport {
      * @param popup テキストメニューを追加するポップアップメニュー
      */
     public void addTextMenu(JPopupMenu popup) {
-
         boolean enabled = false;
-
         KartePane kartePane = null;
-        Object obj = getChartDocumentChain();
 
-        if (obj instanceof KarteEditor editor) {
+        if (getChartDocumentChain() instanceof KarteEditor editor) {
             kartePane = editor.getSOAPane();
             if (kartePane != null) {
                 enabled = kartePane.getTextPane().isEditable();
@@ -422,19 +382,15 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * スタンプメニューを構築する.
+     * chain の先頭が KarteEditor でかつ Pane が編集可の場合のみメニューが使える.
      *
      * @param stampTree StampTree
      */
     private JMenu createStampMenu(StampTree stampTree) {
-        //
-        // chain の先頭が KarteEditor でかつ Pane が編集可の場合のみメニューが使える
-        //
         boolean enabled = false;
-
         KartePane kartePane = null;
-        Object obj = getChartDocumentChain();
 
-        if (obj instanceof KarteEditor editor) {
+        if (getChartDocumentChain() instanceof KarteEditor editor) {
             kartePane = editor.getPPane();
             if (kartePane != null) {
                 enabled = kartePane.getTextPane().isEditable();
@@ -460,18 +416,15 @@ public final class ChartMediator extends MenuSupport {
 
     /**
      * PPane のコンテキストメニューまたはツールバーの stampIcon へスタンプメニューを追加する.
+     * 引数のPaneがPかつ編集可の時のみ追加する.
      *
      * @param menu      Ppane のコンテキストメニュー
      * @param kartePane PPnae
      */
     public void addStampMenu(JPopupMenu menu, final KartePane kartePane) {
-
-        // 引数のPaneがPかつ編集可の時のみ追加する
         // コンテキストメニューなのでこれはOK
         if (kartePane != null && kartePane.getMyRole().equals(IInfoModel.ROLE_P) && kartePane.getTextPane().isEditable()) {
-
             StampBoxPlugin stampBox = getStampBox();
-
             List<StampTree> trees = stampBox.getAllPTrees();
 
             StampTreeMenuBuilder builder = new StampTreeMenuBuilder(trees);
@@ -487,13 +440,10 @@ public final class ChartMediator extends MenuSupport {
      * @param popup JPopupMenu
      */
     public void addStampMenu(JPopupMenu popup) {
-
         boolean enabled = false;
-
         KartePane kartePane = null;
-        Object obj = getChartDocumentChain();
 
-        if (obj instanceof KarteEditor editor) {
+        if (getChartDocumentChain() instanceof KarteEditor editor) {
             kartePane = editor.getPPane();
             if (kartePane != null) {
                 enabled = kartePane.getTextPane().isEditable();
@@ -513,7 +463,6 @@ public final class ChartMediator extends MenuSupport {
      * @return JPopupMenu
      */
     public JPopupMenu createDiagnosisPopup(String searchPattern, StampTreeMenuListener listener) {
-
         StampTree tree = getStampTree(IInfoModel.ENTITY_DIAGNOSIS);
         StampTreeMenuBuilder builder = new StampTreeMenuBuilder(tree, searchPattern);
         builder.addStampTreeMenuListener(listener);
@@ -534,7 +483,6 @@ public final class ChartMediator extends MenuSupport {
         List<StampTree> allTrees = getStampBox().getAllTrees();
         StampTreeMenuBuilder builder = new StampTreeMenuBuilder(allTrees, searchPattern);
         builder.addStampTreeMenuListener(listener);
-
 
         JPopupMenu popup = new JPopupMenu();
         builder.buildRootless(popup);
