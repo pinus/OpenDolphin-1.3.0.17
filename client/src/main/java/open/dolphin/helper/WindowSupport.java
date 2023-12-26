@@ -65,16 +65,16 @@ public class WindowSupport implements MenuListener {
         f.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
         // メニューバーを生成する
-        JMenuBar menuBar = new JMenuBar();
-        f.setJMenuBar(menuBar);
+        JMenuBar mBar = new JMenuBar();
+        f.setJMenuBar(mBar);
 
         // Window メニューを生成する
-        JMenu windowMenu = new JMenu(WINDOW_MENU_NAME);
-        menuBar.add(windowMenu);
+        JMenu wMenu = new JMenu(WINDOW_MENU_NAME);
+        mBar.add(wMenu);
 
         // Windowメニューのアクション
         // 選択されたらフレームを前面にする
-        Action windowAction = new AbstractAction(title) {
+        Action wAction = new AbstractAction(title) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 f.toFront();
@@ -82,11 +82,11 @@ public class WindowSupport implements MenuListener {
         };
 
         // インスタンスを生成する
-        final WindowSupport windowSupport = new WindowSupport(f, menuBar, windowMenu, windowAction);
+        final WindowSupport windowSupport = new WindowSupport(f, mBar, wMenu, wAction);
         allWindows.add(windowSupport);
 
         // windowMenu にメニューリスナを設定しこのクラスで処理をする
-        windowMenu.addMenuListener(windowSupport);
+        wMenu.addMenuListener(windowSupport);
         return windowSupport;
     }
 
@@ -112,6 +112,8 @@ public class WindowSupport implements MenuListener {
 
     public void dispose() {
         allWindows.remove(this);
+        windowMenu.removeMenuListener(this);
+        menuBar.setVisible(false);
         frame.setVisible(false);
         frame.dispose();
     }
