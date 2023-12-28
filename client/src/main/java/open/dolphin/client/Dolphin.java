@@ -288,31 +288,24 @@ public class Dolphin implements MainWindow {
         myFrame.removeStatusPanel();
 
         // タブペインに格納する Plugin をロードする
-        MainComponent[] plugin = new MainComponent[3];
-        plugin[0] = new WaitingListImpl();
-        plugin[1] = new PatientSearchImpl();
-        plugin[2] = new LaboTestImporter();
+        MainComponent[] plugin = { new WaitingListImpl(), new PatientSearchImpl(), new LaboTestImporter() };
+        final HashMap<Integer, MainComponent> tabMap = new HashMap<>();
 
         for (int index = 0; index < plugin.length; index++) {
             plugin[index].setContext(this);
             plugin[index].start();
             tabbedPane.addTab(plugin[index].getName(), plugin[index].getUI());
+            tabMap.put(index, plugin[index]);
             providers.put(String.valueOf(index), plugin[index]);
         }
-
+        plugin[0].enter();
         mediator.addChain(plugin[0]);
 
         // タブの切り替えで plugin.enter() をコールする
         tabbedPane.addChangeListener(e -> {
-            int index = tabbedPane.getSelectedIndex();
-            MainComponent plugin1 = (MainComponent) providers.get(String.valueOf(index));
-            if (plugin1.getContext() == null) {
-                plugin1.setContext(Dolphin.this);
-                plugin1.start();
-                tabbedPane.setComponentAt(index, plugin1.getUI());
-            }
-            plugin1.enter();
-            mediator.addChain(plugin1);
+            MainComponent selectedPlugin = tabMap.get(tabbedPane.getSelectedIndex());
+            selectedPlugin.enter();
+            mediator.addChain(selectedPlugin);
         });
 
         // StaeMagrを使用してメインウインドウの状態を制御する
