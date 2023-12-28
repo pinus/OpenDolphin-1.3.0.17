@@ -225,10 +225,6 @@ public class WaitingListImpl extends AbstractMainComponent {
      * コンポーネントにイベントハンドラーを登録し相互に接続する.
      */
     private void connect() {
-
-        // ChartImpl から PatientVisitModel を受け取って update する.
-        ChartImpl.addPvtListener(this::updateState);
-
         // 靴のアイコンをクリックした時来院情報をフルチェックする
         view.getKutuBtn().addActionListener(e -> executor.submit(pvtChecker));
 

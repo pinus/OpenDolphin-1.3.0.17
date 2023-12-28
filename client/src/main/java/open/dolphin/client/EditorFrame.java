@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Kazushi Minagawa
  */
-public class EditorFrame extends AbstractMainTool implements Chart {
+public class EditorFrame extends AbstractMainTool implements Chart, WindowListener {
     private final Logger logger;
 
     // 全インスタンスを保持するリスト
@@ -170,7 +170,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      */
     public void setChart(Chart chartCtx) {
         this.realChart = chartCtx;
-        super.setContext(chartCtx.getContext());
+        setContext(chartCtx.getContext());
     }
 
     /**
@@ -423,7 +423,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         windowSupport = WindowSupport.create(title);
         JMenuBar myMenuBar = windowSupport.getMenuBar();
 
-        PNSFrame frame = windowSupport.getFrame();
+        PNSFrame frame = getFrame();
         frame.setName("editorFrame");
         frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 30);
 
@@ -510,33 +510,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         //
         // active window がリストの最初に来るように制御する
         //
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                // window のクローズボタンを押したときの対応
-                logger.info("windowClosing");
-                closeFrame();
-            }
-
-            @Override
-            public void windowOpened(WindowEvent e) {
-                // 連続して open した場合, 間に合わないことがあるので initialize() 先頭で処理
-                //allEditorFrames.add(0, EditorFrame.this);
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                allEditorFrames.remove(EditorFrame.this);
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                // allEditorFrames の順番処理，新しいものをトップに置く
-                if (allEditorFrames.remove(EditorFrame.this)) {
-                    allEditorFrames.add(0, EditorFrame.this);
-                }
-            }
-        });
+        frame.addWindowListener(this);
 
         // Frame の大きさをストレージからロードする
         Point defaultLocation = new Point(5, 20);
@@ -563,6 +537,36 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         comPanel.add(chartToolBar);
     }
 
+    @Override
+    public void windowOpened(WindowEvent e) {}
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        // window のクローズボタンを押したときの対応
+        logger.info("windowClosing");
+        closeFrame();
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {}
+
+    @Override
+    public void windowIconified(WindowEvent e) {}
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {}
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+        // allEditorFrames の順番処理，新しいものをトップに置く
+        if (allEditorFrames.remove(this)) {
+            allEditorFrames.add(0, this);
+        }
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {}
+
     /**
      * プログラムを終了する.
      */
@@ -572,6 +576,10 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         mediator.dispose();
         windowSupport.dispose();
         realChart.getFrame().toFront();
+        getFrame().removeWindowListener(this);
+        allEditorFrames.remove(this);
+        realChart = null;
+        setContext(null);
     }
 
     /**
@@ -579,12 +587,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
      * キャンセル，破棄の処理は editor でまとめてすることにした.
      */
     private void closeFrame() {
-        //DEBUG
-        //List<StackTraceElement> trace = StackTracer.getTrace();
-        //for (int i=2; i<4; i++) {
-        //    logger.info(i + ":" + trace.get(i).toString());
-        //}
-
         if (mode == EditorMode.EDITOR && editor.isDirty()) {
             // save が成功すると editor から stop() が呼ばれる. 失敗すると呼ばれない.
             editor.save();

@@ -408,7 +408,8 @@ public class Dolphin implements MainWindow {
         }
         refractoryList.add(pvt);
 
-        Chart chart = new ChartImpl();
+        ChartImpl chart = new ChartImpl();
+        chart.setPvtListener(((WaitingListImpl) getPlugin("0"))::updateState);
         chart.setContext(this);
         chart.setPatientVisit(pvt);
         // isReadOnly対応

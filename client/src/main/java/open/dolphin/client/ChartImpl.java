@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
@@ -34,11 +34,11 @@ import java.util.prefs.Preferences;
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
-public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
+public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, WindowListener {
     //  Chart インスタンスを管理するstatic 変数
     private static final List<ChartImpl> allCharts = new ArrayList<>(3);
     // PvtChangeListener
-    private static PvtListener pvtListener;
+    private PvtListener pvtListener;
     // getDiagnosisDocument() が loadDocuments() の終了を待つための SecondaryLoop
     private SecondaryLoop secondaryLoop;
     // Logger
@@ -70,14 +70,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private ChartSearchPanel searchPanel;
 
     /**
-     * Create new ChartImpl.
-     */
-    public ChartImpl() {
-        logger = LoggerFactory.getLogger(ChartImpl.class);
-        prefs = Project.getPreferences();
-    }
-
-    /**
      * オープンしている全インスタンスを保持するリストを返す static method.
      *
      * @return オープンしている ChartPlugin のリスト
@@ -87,32 +79,66 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * PvtListener を登録するための static method.
+     * Create new ChartImpl.
+     */
+    public ChartImpl() {
+        logger = LoggerFactory.getLogger(ChartImpl.class);
+        prefs = Project.getPreferences();
+    }
+
+    /**
+     * PvtListener を登録する. Dolphin#openKarte でセットされる.
      *
      * @param listener PvtListener
      */
-    public static void addPvtListener(PvtListener listener) {
+    public void setPvtListener(PvtListener listener) {
         pvtListener = listener;
     }
 
-    /**
-     * PvtListener に PatientVisitModel を通知する static method.
-     *
-     * @param model PatientVisitModel
-     */
-    private static void firePvtChange(PatientVisitModel model) {
-        pvtListener.pvtChanged(model);
+    @Override
+    public void windowOpened(WindowEvent e) {
+        // Window がオープンされた時の処理を行う
+        windowOpened(this);
     }
 
+    @Override
+    public void windowClosing(WindowEvent e) {
+        // CloseBox の処理を行う
+        processWindowClosing();
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        // Window がクローズされた時の処理を行う
+        // stop で setVisible(false) を出した後に呼ばれる
+        windowClosed(this);
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) { }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) { }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+        // allCharts の順番処理. activate されたらトップに置く.
+        if (allCharts.remove(this)) {
+            allCharts.add(0, this);
+        }
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) { }
+
     /**
-     * チャートウインドウのオープンを通知する static method.
+     * チャートウインドウのオープンを通知する.
      * CLOSE -> OPEN に変換する操作，ReadOnly の場合は WaitingList に通知しない
      * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WaitingList に通知しない
      *
      * @param opened オープンした Chart(=this)
      */
-    public static void windowOpened(ChartImpl opened) {
-
+    public void windowOpened(ChartImpl opened) {
         // インスタンスを保持するリストへ追加する
         allCharts.add(0, opened);
 
@@ -123,20 +149,20 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         model.setState(newState);
 
         if (!opened.isReadOnly() && model.getId() != 0) {
-            firePvtChange(model);
+            pvtListener.pvtChanged(model);
         }
 
         // このあと，pvt.state は karteBean 読み込みがあればサーバデータでリストアされる
     }
 
     /**
-     * チャートウインドウのクローズを通知する static method.
+     * チャートウインドウのクローズを通知する.
      * OPEN -> CLOSE に変更する操作   ReadOnly のときも WaitingList に通知する
      * PatientSearchImpl で開いた場合など，pvt.id=0 の場合は WaitingList に通知しない
      *
      * @param closed クローズした Chart(=this)
      */
-    public static void windowClosed(ChartImpl closed) {
+    public void windowClosed(ChartImpl closed) {
 
         PatientVisitModel model = closed.getPatientVisit();
 
@@ -152,7 +178,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // WaitingListImpl に通知する
         // 書き込み時の ReadOnly 対応は WaitingList 側で施行
         if (model.getId() != 0) {
-            firePvtChange(model);
+            pvtListener.pvtChanged(model);
         }
 
         // 最後にインスタンスリストから取り除く
@@ -161,6 +187,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             // カルテが登録されていなかったと言うことで，ありえない
             throw new RuntimeException("Chart is lost!");
         }
+        // dispose
+        getFrame().removeWindowListener(this);
+        pvtListener = null;
     }
 
     /**
@@ -169,10 +198,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * @param pvt PatientVisitModel
      */
     public static void toFront(PatientVisitModel pvt) {
-        if (pvt == null) {
-            return;
-        }
-        toFront(pvt.getPatient());
+        if (Objects.nonNull(pvt)) { toFront(pvt.getPatient()); }
     }
 
     /**
@@ -181,13 +207,11 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * @param patient PatientModel
      */
     public static void toFront(PatientModel patient) {
-        if (patient == null) {
-            return;
-        }
-        long ptId = patient.getId();
-        allCharts.stream().filter(chart -> chart.getPatient().getId() == ptId)
+        if (Objects.nonNull(patient)) {
+            long ptId = patient.getId();
+            allCharts.stream().filter(chart -> chart.getPatient().getId() == ptId)
                 .findAny().ifPresent(chart -> chart.getFrame().toFront());
-
+        }
     }
 
     /**
@@ -649,34 +673,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         stateMgr = new StateMgr();
 
         // このチャートの Window にリスナを設定する
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                // CloseBox の処理を行う
-                processWindowClosing();
-            }
-
-            @Override
-            public void windowOpened(WindowEvent e) {
-                // Window がオープンされた時の処理を行う
-                ChartImpl.windowOpened(ChartImpl.this);
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                // Window がクローズされた時の処理を行う
-                // stop で setVisible(false) を出した後に呼ばれる
-                ChartImpl.windowClosed(ChartImpl.this);
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                // allCharts の順番処理 → activate されたらトップに置く
-                if (allCharts.remove(ChartImpl.this)) {
-                    allCharts.add(0, ChartImpl.this);
-                }
-            }
-        });
+        frame.addWindowListener(this);
 
         // Frame の大きさをストレージからロードする
         frame.pack(); // pack しないと，TextField に文字を入力してリターンを押した後にレイアウトがずれる
@@ -708,19 +705,21 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
+     * メニューを制御する.
+     */
+    @Override
+    public void enter() {
+        logger.info("enter()");
+        stateMgr.controlMenu();
+    }
+
+    /**
      * ChartSearchPanel を返す.
      *
      * @return ChartSearchPanel
      */
     public ChartSearchPanel getChartSearchPanel() {
         return searchPanel;
-    }
-
-    /**
-     * メニューを制御する.
-     */
-    public void controlMenu() {
-        stateMgr.controlMenu();
     }
 
     /**
@@ -1429,7 +1428,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // 保存するかどうかを確認する
         List<UnsavedDocument> dirtyList = dirtyList();
 
-        if (dirtyList != null && dirtyList.size() > 0) {
+        if (dirtyList != null && !dirtyList.isEmpty()) {
             String saveAll = "保存";     // 保存;
             String discard = "破棄";  // 破棄;
             String question = "未保存のドキュメントがあります。保存しますか？";
@@ -1459,35 +1458,24 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                     new String[]{saveAll, discard, cancelText},
                     saveAll);
 
-            switch (option) {
-                case 0:
-                    // save
-                    saveAll(dirtyList);
-                    // DiagnosisDocument が isValidOutcome でなければ，close を中止する
-                    if (!getDiagnosisDocument().isValidOutcome()) {
-                        break;
-                    }
-                    stop();
-                    break;
-
-                case 1:
-                    // discard
-                    stop();
-                    break;
-
-                case 2:
-                    // cancel
-                    break;
-            }
+            if (option == 0) {
+                // save
+                saveAll(dirtyList);
+                // DiagnosisDocument が isValidOutcome ならば終了処理へ
+                if (getDiagnosisDocument().isValidOutcome()) { stop(); }
+            } else if (option == 1) {
+                // discard without saving
+                stop();
+            } // option == 2 do nothing with cancel
 
         } else {
+            // nothing dirty
             stop();
         }
     }
 
     @Override
     public void stop() {
-
         if (providers != null) {
             for (String s : providers.keySet()) {
                 ChartDocument doc = providers.get(s);
@@ -1561,10 +1549,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     private static abstract class ChartState {
-
-        public ChartState() {
-        }
-
         public abstract void controlMenu();
     }
 
@@ -1572,10 +1556,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * ReadOnly ユーザの State クラス.
      */
     private final class ReadOnlyState extends ChartState {
-
-        public ReadOnlyState() {
-        }
-
         /**
          * 新規カルテ作成及び修正メニューを disable にする.
          */
@@ -1583,7 +1563,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         public void controlMenu() {
             mediator.getAction(GUIConst.ACTION_NEW_KARTE).setEnabled(false);
             mediator.getAction(GUIConst.ACTION_MODIFY_KARTE).setEnabled(false);
-
         }
     }
 
@@ -1591,10 +1570,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * 保険証がない場合の State クラス.
      */
     private final class NoInsuranceState extends ChartState {
-
-        public NoInsuranceState() {
-        }
-
         @Override
         public void controlMenu() {
             mediator.getAction(GUIConst.ACTION_NEW_KARTE).setEnabled(false);
@@ -1605,10 +1580,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * 通常の State クラス.
      */
     private final class OrdinalyState extends ChartState {
-
-        public OrdinalyState() {
-        }
-
         @Override
         public void controlMenu() {
             mediator.getAction(GUIConst.ACTION_NEW_KARTE).setEnabled(true);
@@ -1619,7 +1590,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * State Manager クラス.
      */
     private final class StateMgr {
-
         private final ChartState readOnlyState = new ReadOnlyState();
         private final ChartState noInsuranceState = new NoInsuranceState();
         private final ChartState ordinalyState = new OrdinalyState();

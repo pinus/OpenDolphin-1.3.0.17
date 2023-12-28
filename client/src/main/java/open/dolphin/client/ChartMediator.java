@@ -86,6 +86,8 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
             } else if (comp instanceof KarteComposite<?> karteComposite) {
                 // StampHolder など
                 setCurKarteComposit(karteComposite);
+            } else {
+                chart.enter();
             }
         }
     }
@@ -99,7 +101,6 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
         KarteComposite<?> old = curKarteComposit;
         curKarteComposit = newComposit;
         addKarteCompositeChain(curKarteComposit);
-        logger.info("current composite = " + curKarteComposit.getClass() + " in " + chart.getFrame().getTitle());
 
         if (old != curKarteComposit) {
             if (old != null) {

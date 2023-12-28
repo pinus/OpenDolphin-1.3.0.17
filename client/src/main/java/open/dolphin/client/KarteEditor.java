@@ -491,7 +491,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
 
         final DocumentDelegater ddl = new DocumentDelegater();
         final DocumentModel saveModel = getDocument();
-        final Chart chart = this.getContext();
+        final Chart chart = getContext() instanceof EditorFrame ef? ef.getChart() : getContext();
 
         ChartTask<String> task = new ChartTask<>(chart) {
             @Override
@@ -833,7 +833,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
         // 画像との関係を設定する
         number = 0;
         Collection<SchemaModel> imagesimages = document.getSchema();
-        if (imagesimages != null && imagesimages.size() > 0) {
+        if (imagesimages != null && !imagesimages.isEmpty()) {
             for (SchemaModel bean : imagesimages) {
                 bean.setId(0L);                                         // unsaved
                 bean.setKarte(karte);                                   // Karte
