@@ -56,11 +56,9 @@ public class Dolphin implements MainWindow {
     // 状態制御
     private StateManager stateMgr;
     // プラグインのプロバイダ
-    private HashMap<String, MainService> providers;
+    private HashMap<Class<? extends MainTool>, MainTool> providers;
     // pluginを格納する tabbedPane
     private PNSBadgeTabbedPane tabbedPane;
-    // timerTask 関連
-    private javax.swing.Timer taskTimer;
     // ロガー
     private Logger logger;
     // 環境設定用の Properties
@@ -69,8 +67,6 @@ public class Dolphin implements MainWindow {
     private ImageBox imageBox;
     // StampBox
     private StampBoxPlugin stampBox;
-    // URL クラスローダ
-    private ClassLoader pluginClassLoader;
     // dirty 警告を出す Frame を保持
     private Chart dirtyChart;
 
@@ -141,12 +137,8 @@ public class Dolphin implements MainWindow {
      * 初期化. 最初に呼ばれる.
      */
     private void initialize() {
-
-        if (System.getProperty("os.name").startsWith("Mac")) {
-            SettingForMac.set(this);
-        } else {
-            SettingForWin.set(this);
-        }
+        if (forMac) { SettingForMac.set(this); }
+        else { SettingForWin.set(this); }
 
         // default locale を設定する
         Locale.setDefault(new Locale("ja", "JP"));
@@ -179,9 +171,6 @@ public class Dolphin implements MainWindow {
         manager.setInitialDelay(500);
         manager.setDismissDelay(Integer.MAX_VALUE);
 
-        // PluginClassLoader
-        pluginClassLoader = ClientContext.getPluginClassLoader();
-
         // ロガーを取得する
         logger = LoggerFactory.getLogger(Dolphin.class);
         logger.info("selected logger = " + logger.getClass());
@@ -213,13 +202,10 @@ public class Dolphin implements MainWindow {
      * 起動時のバックグラウンドで実行されるべきタスクを行う. ログイン後に startup() から呼ばれる.
      */
     private void startServices() {
-
         // プラグインのプロバイダマップを生成する
-        setProviders(new HashMap<>());
-
+        providers = new HashMap<>();
         // 環境設定ダイアログで変更される場合があるので保存する
         saveEnv = new Properties();
-
         // Holiday database 構築
         Holiday.setupCalendarData();
     }
@@ -288,24 +274,31 @@ public class Dolphin implements MainWindow {
         myFrame.removeStatusPanel();
 
         // タブペインに格納する Plugin をロードする
-        MainComponent[] plugin = { new WaitingListImpl(), new PatientSearchImpl(), new LaboTestImporter() };
-        final HashMap<Integer, MainComponent> tabMap = new HashMap<>();
+        MainTool[] plugin = {
+            new WaitingListImpl(),
+            new PatientSearchImpl(),
+            new LaboTestImporter()
+        };
+        // map of the index number and the plugin object
+        final HashMap<Integer, MainTool> tabMap = new HashMap<>();
 
         for (int index = 0; index < plugin.length; index++) {
-            plugin[index].setContext(this);
-            plugin[index].start();
-            tabbedPane.addTab(plugin[index].getName(), plugin[index].getUI());
-            tabMap.put(index, plugin[index]);
-            providers.put(String.valueOf(index), plugin[index]);
+            MainTool target = plugin[index];
+            target.setContext(this);
+            target.start();
+            tabMap.put(index, target);
+            tabbedPane.addTab(target.getName(), target.getUI());
+            providers.put(target.getClass(), target);
         }
+        // 起動時 plugin 選択
         plugin[0].enter();
         mediator.addChain(plugin[0]);
 
         // タブの切り替えで plugin.enter() をコールする
         tabbedPane.addChangeListener(e -> {
-            MainComponent selectedPlugin = tabMap.get(tabbedPane.getSelectedIndex());
-            selectedPlugin.enter();
-            mediator.addChain(selectedPlugin);
+            MainTool selected = tabMap.get(tabbedPane.getSelectedIndex());
+            selected.enter();
+            mediator.addChain(selected);
         });
 
         // StaeMagrを使用してメインウインドウの状態を制御する
@@ -335,9 +328,10 @@ public class Dolphin implements MainWindow {
                 logger.debug("stampTask succeeded");
                 if (result) {
                     stampBox.start();
-                    providers.put("stampBox", stampBox);
-
+                    providers.put(StampBoxPlugin.class, stampBox);
                     stampBox.getFrame().setVisible(true);
+
+                    // スタンプを読み込んでからメインウインドウを表示する
                     myFrame.setVisible(true);
                     myFrame.toFront();
 
@@ -371,20 +365,15 @@ public class Dolphin implements MainWindow {
         return tabbedPane;
     }
 
+    /**
+     * get plugin object.
+     *
+     * @param id class of the plugin
+     * @param <T> class of the plugin
+     * @return plugin object
+     */
     @Override
-    public MainService getPlugin(String id) {
-        return providers.get(id);
-    }
-
-    @Override
-    public HashMap<String, MainService> getProviders() {
-        return providers;
-    }
-
-    @Override
-    public void setProviders(HashMap<String, MainService> providers) {
-        this.providers = providers;
-    }
+    public <T extends MainTool> T getPlugin(Class<T> id) { return (T) providers.get(id); }
 
     /**
      * カルテをオープンする.
@@ -392,7 +381,7 @@ public class Dolphin implements MainWindow {
      * @param pvt 患者来院情報
      */
     @Override
-    public synchronized void openKarte(PatientVisitModel pvt) {
+    public void openKarte(PatientVisitModel pvt) {
         // 不応期タイマースタート
         refractoryTimer.restart();
         if (refractoryList.stream().map(PatientVisitModel::getPatientId).anyMatch(pvt.getPatientId()::equals)) {
@@ -402,7 +391,7 @@ public class Dolphin implements MainWindow {
         refractoryList.add(pvt);
 
         ChartImpl chart = new ChartImpl();
-        chart.setPvtListener(((WaitingListImpl) getPlugin("0"))::updateState);
+        chart.setPvtListener(getPlugin(WaitingListImpl.class)::updateState);
         chart.setContext(this);
         chart.setPatientVisit(pvt);
         // isReadOnly対応
@@ -419,38 +408,9 @@ public class Dolphin implements MainWindow {
         refractoryList.clear();
     }
 
-    /**
-     * 新規診療録を作成する. 使ってない？ (MainWindow の implement に必要)
-     */
-    @Override
-    public void addNewPatient() {
-        // not implemented
-    }
-
     @Override
     public MenuSupport getMenuSupport() {
         return mediator;
-    }
-
-    /**
-     * MainWindow のアクションを返す.
-     *
-     * @param name Action名
-     * @return Action
-     */
-    @Override
-    public Action getAction(String name) {
-        return mediator.getAction(name);
-    }
-
-    @Override
-    public JMenuBar getMenuBar() {
-        return windowSupport.getMenuBar();
-    }
-
-    @Override
-    public void registerActions(ActionMap actions) {
-        mediator.registerActions(actions);
     }
 
     @Override
@@ -487,26 +447,7 @@ public class Dolphin implements MainWindow {
      * @param valid ValidListener validity
      */
     private void controlService(boolean valid) {
-        if (!valid) {
-            return;
-        }
-
-        // 設定の変化を調べ，サービスの制御を行う
-        List<String> messages = new ArrayList<>();
-
-        // ここで処理して message をセットして下の Dialog で表示する
-
-        if (!messages.isEmpty()) {
-            String[] msgArray = messages.toArray(new String[0]);
-            Component cmp = null;
-            String title = ClientContext.getString("settingDialog.title");
-
-            PNSOptionPane.showMessageDialog(
-                cmp,
-                msgArray,
-                ClientContext.getFrameTitle(title),
-                JOptionPane.INFORMATION_MESSAGE);
-        }
+        logger.info("Environment setting validity: " + valid);
     }
 
     /**
@@ -563,11 +504,9 @@ public class Dolphin implements MainWindow {
         }
 
         providers.values().forEach(service -> {
-            if (service instanceof MainTool) {
-                Callable<Boolean> task = ((MainTool) service).getStoppingTask();
-                if (task != null) {
-                    stoppingTasks.add(task);
-                }
+            Callable<Boolean> task = service.getStoppingTask();
+            if (task != null) {
+                stoppingTasks.add(task);
             }
         });
         // WaitingListImpl と StampBoxPlugin
@@ -610,9 +549,8 @@ public class Dolphin implements MainWindow {
      * 最終 exit.
      */
     private void exit() {
-
         if (providers != null) {
-            providers.values().forEach(MainService::stop);
+            providers.values().forEach(MainTool::stop);
         }
 
         if (windowSupport != null) {
@@ -631,7 +569,7 @@ public class Dolphin implements MainWindow {
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         ProjectSettingDialog sd = new ProjectSettingDialog(focusManager.getActiveWindow());
         sd.addValidListener(this::controlService);
-        sd.setLoginState(stateMgr.isLogin());
+        sd.setLoginState(Objects.nonNull(stateMgr) && stateMgr.isLogin());
         sd.setProject("karteSetting");
         sd.start();
     }
@@ -657,7 +595,7 @@ public class Dolphin implements MainWindow {
             }
         }
 
-        // MainTool, MainComponent で getStoppingTask を override するとここで呼ばれる
+        // MainTool で getStoppingTask を override するとここで呼ばれる
         final List<Callable<Boolean>> tasks = getStoppingTask();
 
         if (tasks.isEmpty()) {
@@ -805,7 +743,6 @@ public class Dolphin implements MainWindow {
      */
     private interface MainWindowState {
         void enter();
-
         boolean isLogin();
     }
 
@@ -813,7 +750,6 @@ public class Dolphin implements MainWindow {
      * Mediator.
      */
     private final static class Mediator extends MenuSupport {
-
         public Mediator(Object owner) {
             super(owner);
         }
@@ -835,10 +771,6 @@ public class Dolphin implements MainWindow {
      * LoginState.
      */
     private class LoginState implements MainWindowState {
-
-        public LoginState() {
-        }
-
         @Override
         public boolean isLogin() {
             return true;
@@ -873,10 +805,6 @@ public class Dolphin implements MainWindow {
      * LogoffState.
      */
     private class LogoffState implements MainWindowState {
-
-        public LogoffState() {
-        }
-
         @Override
         public boolean isLogin() {
             return false;
@@ -892,7 +820,6 @@ public class Dolphin implements MainWindow {
      * StateManager.
      */
     private class StateManager {
-
         private final MainWindowState loginState = new LoginState();
         private final MainWindowState logoffState = new LogoffState();
         private MainWindowState currentState = logoffState;

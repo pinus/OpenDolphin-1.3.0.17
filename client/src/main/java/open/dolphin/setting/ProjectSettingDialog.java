@@ -320,14 +320,17 @@ public final class ProjectSettingDialog {
 
     public void doOk() {
         settingMap.values().forEach(AbstractSettingPanel::save);
-        dialog.setVisible(false);
-        dialog.dispose();
-        notifyResult();
+        dispose();
     }
 
     public void doCancel() {
+        dispose();
+    }
+
+    private void dispose() {
         dialog.setVisible(false);
         dialog.dispose();
         notifyResult();
+        validListener = null;
     }
 }

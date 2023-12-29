@@ -95,7 +95,7 @@ public class LoginDialog {
     /**
      * 認証を試みる.
      * DatabaseLoginModule を使用，UserValueが取得できた場合に認証が成功したとみなす.
-     * 詳細はBusiness Delegater へ委譲.
+     * 詳細はBusiness Delegator へ委譲.
      */
     public void tryLogin() {
 
@@ -151,7 +151,7 @@ public class LoginDialog {
                     String time = ModelUtils.getDateTimeAsString(new Date());
                     logger.info(time + ": " + userModel.getUserId() + " がログインしました");
 
-                    // ユーザID，施設ID，ユーザモデルを rojectStub へ保存する
+                    // ユーザID，施設ID，ユーザモデルを ProjectStub へ保存する
                     Project.getProjectStub().setUserId(principal.getUserId());
                     Project.getProjectStub().setUserModel(userModel);
                     Project.getProjectStub().setDolphinPrincipal(principal);
@@ -161,7 +161,7 @@ public class LoginDialog {
                     notifyClose(result);
 
                 } else {
-                    logger.warn("User == null, this never ocuured");
+                    logger.warn("User == null, this should never occur");
                 }
             }
 
@@ -252,7 +252,7 @@ public class LoginDialog {
         JPasswordField passwdField = view.getPasswordField();
         passwdField.getDocument().addDocumentListener((ProxyDocumentListener) e -> checkButtons());
         passwdField.addActionListener(e -> {
-            if (view.getUserIdField().getText().equals("")) {
+            if (view.getUserIdField().getText().isEmpty()) {
                 requestFocus(view.getUserIdField());
 
             } else if (view.getPasswordField().getPassword().length != 0 && okState) {
@@ -276,7 +276,7 @@ public class LoginDialog {
             @Override
             public void windowOpened(WindowEvent e) {
 
-                if (!view.getUserIdField().getText().trim().equals("")) {
+                if (!view.getUserIdField().getText().trim().isEmpty()) {
                     // UserId に有効な値が設定されていればパスワードフィールドにフォーカスする
                     requestFocus(view.getPasswordField());
                 }
@@ -319,7 +319,7 @@ public class LoginDialog {
 
         // user id
         String id = view.getUserIdField().getText().trim();
-        if (!id.equals("")) {
+        if (!id.isEmpty()) {
             principal.setUserId(id);
         }
         // save password
@@ -372,7 +372,7 @@ public class LoginDialog {
      * ログインボタンの enable/disable を制御する.
      */
     public void checkButtons() {
-        boolean userEmpty = view.getUserIdField().getText().length() == 0;
+        boolean userEmpty = view.getUserIdField().getText().isEmpty();
         boolean passwdEmpty = view.getPasswordField().getPassword().length == 0;
         boolean newOKState = !userEmpty && !passwdEmpty;
 

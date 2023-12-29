@@ -77,7 +77,7 @@ public class DolphinClientContext {
     /**
      * DolphinClientContext を返す.
      *
-     * @return
+     * @return returns DolphinClientContext
      */
     public static DolphinClientContext getContext() {
         return context;
@@ -86,7 +86,7 @@ public class DolphinClientContext {
     /**
      * ResteasyWebTarget を返す.
      *
-     * @return
+     * @return returns ResteasyWebTarget
      */
     public ResteasyWebTarget getWebTarget() {
         return target;
@@ -95,7 +95,7 @@ public class DolphinClientContext {
     /**
      * WebSocket の Endpoint に登録する.
      *
-     * @param endpoint
+     * @param endpoint Endpoint
      * @return 登録されたセッション
      */
     public Session setEndpoint(Endpoint endpoint) {

@@ -25,14 +25,13 @@ import java.util.concurrent.Callable;
  * WaitingListImpl, PatientSearchImpl, LaboTestImpoter で これを extends している.
  * <br>
  * <pre>
- * AbstractMainComponent > MainComponent > MainTool > MainService
+ * AbstractMainComponent > MainTool
  * </pre>
  */
-public abstract class AbstractMainComponent extends MouseAdapter implements MainComponent {
-    private Logger logger = LoggerFactory.getLogger(AbstractMainComponent.class);
+public abstract class AbstractMainComponent extends MouseAdapter implements MainTool {
+    final private Logger logger = LoggerFactory.getLogger(AbstractMainComponent.class);
 
     private String name;
-    private String icon;
     private MainWindow context;
     private JPanel ui;
     private int number = 10000; // pvt がない場合の受付番号 10000から連番で作る
@@ -48,16 +47,6 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     @Override
     public final void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String getIcon() {
-        return icon;
-    }
-
-    @Override
-    public void setIcon(String icon) {
-        this.icon = icon;
     }
 
     @Override
@@ -81,8 +70,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     }
 
     @Override
-    public void enter() {
-    }
+    public void enter() { }
 
     @Override
     public Callable<Boolean> getStartingTask() {
@@ -228,9 +216,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
      * @return karte opened or not
      */
     public boolean isKarteOpened(PatientVisitModel pvt) {
-        return Objects.isNull(pvt)
-            ? false
-            : isKarteOpened(pvt.getPatient());
+        return Objects.nonNull(pvt) && isKarteOpened(pvt.getPatient());
     }
 
     /**
@@ -240,9 +226,8 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
      * @return karte opened or not
      */
     public boolean isKarteOpened(PatientModel patient) {
-        return Objects.isNull(patient)
-            ? false
-            : ChartImpl.getAllCharts().stream().anyMatch(chart -> chart.getPatient().getId() == patient.getId());
+        return Objects.nonNull(patient)
+            && ChartImpl.getAllCharts().stream().anyMatch(chart -> chart.getPatient().getId() == patient.getId());
     }
 
     /**

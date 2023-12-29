@@ -6,7 +6,7 @@ package open.dolphin.client;
  *
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
-public interface ClaimMessageListener extends MainService {
+public interface ClaimMessageListener {
 
     public String getHost();
 

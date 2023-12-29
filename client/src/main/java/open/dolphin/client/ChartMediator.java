@@ -518,7 +518,7 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
      * @return StampBoxPlugin
      */
     public StampBoxPlugin getStampBox() {
-        return (StampBoxPlugin) chart.getContext().getPlugin("stampBox");
+        return chart.getContext().getPlugin(StampBoxPlugin.class);
     }
 
     /**
@@ -528,9 +528,7 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
      * @return StampTree が存在すれば true
      */
     public boolean hasTree(String entity) {
-        StampBoxPlugin stBox = (StampBoxPlugin) chart.getContext().getPlugin("stampBox");
-        StampTree tree = stBox.getStampTree(entity);
-        return tree != null;
+        return Objects.nonNull(getStampBox().getStampTree(entity));
     }
 
     //
