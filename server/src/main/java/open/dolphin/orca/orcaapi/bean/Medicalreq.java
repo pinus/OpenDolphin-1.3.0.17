@@ -37,6 +37,11 @@ public class Medicalreq {
     private DiagnosisInformation Diagnosis_Information;
 
     /**
+     * Push通知指示 (例: Yes)
+     */
+    private String Medical_Push;
+
+    /**
      * 入外区分(I:入院、それ以外:入院外) (例:  )
      *
      * @return the InOut
@@ -142,5 +147,23 @@ public class Medicalreq {
      */
     public void setDiagnosis_Information(DiagnosisInformation Diagnosis_Information) {
         this.Diagnosis_Information = Diagnosis_Information;
+    }
+
+    /**
+     * Push通知指示 (例: Yes)
+     *
+     * @return Medical_Push
+     */
+    public String getMedical_Push() {
+        return Medical_Push;
+    }
+
+    /**
+     * Push通知指示 (例: Yes)
+     *
+     * @param Medical_Push to set
+     */
+    public void setMedical_Push(String Medical_Push) {
+        this.Medical_Push = Medical_Push;
     }
 }

@@ -23,7 +23,7 @@ public class OrcaApiTest {
         OrcaApiTest test = new OrcaApiTest();
         //test.patientgetv2();
         //test.appointmodv2();
-        //test.medicalmodv2();
+        test.medicalmodv2();
         //test.acceptmodv2();
         //test.acceptlstacceptlstv2();
         //test.appointlstv2();
@@ -55,7 +55,7 @@ public class OrcaApiTest {
         //test.insuranceinf1v2();
         //test.subjectiveslstv2();
         //test.pusheventgetv2();
-        test.patientlst8v2();
+        //test.patientlst8v2();
     }
 
     private void patientgetv2() {
@@ -101,6 +101,7 @@ public class OrcaApiTest {
         Medicalreq req = new Medicalreq();
         req.setPatient_ID("000001");
         req.setDiagnosis_Information(di);
+        req.setMedical_Push("Yes");
 
         Medicalres res = api.post(req, "01");
 
