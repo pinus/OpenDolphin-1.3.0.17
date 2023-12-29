@@ -8,6 +8,5 @@ import java.util.EventListener;
  * @author pns
  */
 public interface CompletionListener extends EventListener {
-
-    public void completed();
+    void completed();
 }

@@ -4,34 +4,32 @@ import javax.swing.*;
 
 /**
  * カルテの構成要素.
- * CompositArea, KartePane, SchemaHolder, StampHolder
+ * CompositeArea, KartePane, SchemaHolder, StampHolder
  *
- * @param <T>
+ * @param <T> Component
  * @author kazm
  */
 public interface KarteComposite<T> {
-
     /**
      * フォーカスを取ったときに ChartMediator から呼ばれる.
      * 必要に応じて Action を enable/disable する.
      *
-     * @param map
+     * @param map action map
      */
-    public void enter(ActionMap map);
+    void enter(ActionMap map);
 
     /**
      * フォーカスを失うときに ChartMediator から呼ばれる.
      * 必要に応じて Action を enable/disable する.
      *
-     * @param map
+     * @param map action map
      */
-    public void exit(ActionMap map);
+    void exit(ActionMap map);
 
     /**
      * KarteComposite の実務をしている JComponent を返す
      *
-     * @return
+     * @return JComponent
      */
-    public T getComponent();
-
+    T getComponent();
 }

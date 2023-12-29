@@ -8,6 +8,5 @@ import java.util.EventListener;
  * @author pns
  */
 public interface BadgeListener extends EventListener {
-
-    public void badgeChanged(BadgeEvent e);
+    void badgeChanged(BadgeEvent e);
 }

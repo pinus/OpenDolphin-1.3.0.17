@@ -44,7 +44,7 @@ public class StampListTransferHandler extends DolphinTransferHandler {
     protected Transferable createTransferable(JComponent c) {
         StampHolder source = (StampHolder) c;
         KartePane kartePane = source.getKartePane();
-        kartePane.setDraggedStamp(new ComponentHolder[]{source});
+        kartePane.setDraggedStamp(new ComponentHolder<?>[]{source});
         kartePane.setDraggedCount(1);
         ModuleModel stamp = source.getModel();
         OrderList list = new OrderList(new ModuleModel[]{stamp});
@@ -70,9 +70,8 @@ public class StampListTransferHandler extends DolphinTransferHandler {
             }
             SwingUtilities.invokeLater(() -> {
                 // 薬の場合は操作する
-                if (module.getModel() instanceof BundleMed) {
+                if (module.getModel() instanceof BundleMed bundle) {
                     // 内服薬同士で置き換えの場合，bundle number を保存する
-                    BundleMed bundle = (BundleMed) module.getModel();
                     BundleMed orgBundle = (BundleMed) target.getModel().getModel();
                     if ((ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode()) &&
                             ClaimConst.RECEIPT_CODE_NAIYO.equals(orgBundle.getClassCode())) ||

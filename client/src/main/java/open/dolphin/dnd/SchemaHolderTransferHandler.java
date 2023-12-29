@@ -21,7 +21,7 @@ public class SchemaHolderTransferHandler extends DolphinTransferHandler {
     protected Transferable createTransferable(JComponent c) {
         SchemaHolder source = (SchemaHolder) c;
         KartePane kartePane = source.getKartePane();
-        kartePane.setDraggedStamp(new ComponentHolder[]{source});
+        kartePane.setDraggedStamp(new ComponentHolder<?>[]{source});
         kartePane.setDraggedCount(1);
         SchemaModel schema = source.getModel();
         SchemaList list = new SchemaList();

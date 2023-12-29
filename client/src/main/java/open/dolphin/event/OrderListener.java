@@ -7,6 +7,5 @@ import java.util.EventListener;
  * @author pns
  */
 public interface OrderListener<T> extends EventListener {
-
-    public void order(T order);
+    void order(T order);
 }

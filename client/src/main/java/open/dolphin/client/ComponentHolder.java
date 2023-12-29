@@ -6,32 +6,21 @@ import java.beans.PropertyChangeListener;
 
 /**
  * ComponentHolder.
- * StampHolder と SchemHolder （いずれも JLabel）
+ * StampHolder と SchemaHolder （いずれも JLabel）
  *
- * @param <T>
+ * @param <T> KarteComposite の Component
  * @author Kauzshi Minagawa
  */
 public interface ComponentHolder<T> extends PropertyChangeListener, KarteComposite<T> {
-
-    public ContentType getContentType();
-
-    public KartePane getKartePane();
-
-    public boolean isSelected();
-
-    public void setSelected(boolean b);
-
-    public void edit();
-
+    ContentType getContentType();
+    KartePane getKartePane();
+    boolean isSelected();
+    void setSelected(boolean b);
+    void edit();
     @Override
-    public void propertyChange(PropertyChangeEvent e);
-
-    public void setEntry(Position start, Position end);
-
-    public int getStartPos();
-
-    public int getEndPos();
-
-    public static enum ContentType {TT_STAMP, TT_IMAGE}
-
+    void propertyChange(PropertyChangeEvent e);
+    void setEntry(Position start, Position end);
+    int getStartPos();
+    int getEndPos();
+    enum ContentType {TT_STAMP, TT_IMAGE}
 }

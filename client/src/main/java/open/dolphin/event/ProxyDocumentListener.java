@@ -11,21 +11,17 @@ import javax.swing.event.DocumentListener;
  * @author pns
  */
 public interface ProxyDocumentListener extends DocumentListener {
-
     @Override
-    public default void insertUpdate(DocumentEvent e) {
+    default void insertUpdate(DocumentEvent e) {
         anyUpdate(e);
     }
-
     @Override
-    public default void removeUpdate(DocumentEvent e) {
+    default void removeUpdate(DocumentEvent e) {
         anyUpdate(e);
     }
-
     @Override
-    public default void changedUpdate(DocumentEvent e) {
+    default void changedUpdate(DocumentEvent e) {
         anyUpdate(e);
     }
-
-    public void anyUpdate(DocumentEvent e);
+    void anyUpdate(DocumentEvent e);
 }
