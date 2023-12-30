@@ -11,10 +11,11 @@ public enum SubscriptionEvent {
     INFORMATION("patient_infomation"), // 患者登録通知
     ACCOUNT("patient_account"), // 診療行為通知
     MEMO("patient_memo"), // メモ登録通知
+    MEDICALREQ("receive_medicalreq"), // 中途終了データ受信通知
     ALL("*") // 全イベント
     ;
 
-    private String eventName;
+    final private String eventName;
 
     SubscriptionEvent(String str) {
         eventName = str;
