@@ -10,6 +10,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -201,38 +202,30 @@ public abstract class PNSTask<T> extends SwingWorker<T, Integer> implements Acti
      */
     @Override
     public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-
-        if ("state".equals(prop)) {
-            switch ((StateValue) e.getNewValue()) {
-                case STARTED -> {
+        switch (e.getPropertyName()) {
+            case "state" -> {
+                if (StateValue.STARTED.equals(e.getNewValue())) {
                     // 一定時間ごとに割り込んで進捗状況を表示するタイマーをスタート
-                    if (!timer.isRunning()) {
-                        timer.start();
-                    }
-                    if (blocker != null) {
-                        blocker.block();
-                    }
-                }
-                case DONE -> {
-                    timer.stop();
-                    if (blocker != null) {
-                        blocker.unblock();
-                    }
+                    if (!timer.isRunning()) { timer.start(); }
+                    if (Objects.nonNull(blocker)) { blocker.block(); }
                 }
             }
-            // setProgress した場合呼ばれる
-        } else if ("progress".equals(prop)) {
-            int nv = (Integer) e.getNewValue();
-            setProgressMonitorProgress(nv);
-            current = nv;
+            case "progress" -> {
+                // setProgress した場合呼ばれる
+                int nv = (Integer) e.getNewValue();
+                setProgressMonitorProgress(nv);
+                current = nv;
+            }
         }
     }
 
     @Override
     protected void done() {
-        taskList.remove(this);
+        timer.stop();
+        if (Objects.nonNull(blocker)) { blocker.unblock(); }
         progressMonitor.close();
+        removePropertyChangeListener(this);
+        taskList.remove(this);
 
         if (isCancelled()) {
             cancelled();
