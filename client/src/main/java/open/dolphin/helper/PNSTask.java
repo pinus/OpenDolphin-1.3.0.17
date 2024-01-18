@@ -1,6 +1,8 @@
 package open.dolphin.helper;
 
 import open.dolphin.ui.PNSProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -222,6 +224,7 @@ public abstract class PNSTask<T> extends SwingWorker<T, Integer> implements Acti
     @Override
     protected void done() {
         timer.stop();
+        timer.removeActionListener(this);
         if (Objects.nonNull(blocker)) { blocker.unblock(); }
         progressMonitor.close();
         removePropertyChangeListener(this);
