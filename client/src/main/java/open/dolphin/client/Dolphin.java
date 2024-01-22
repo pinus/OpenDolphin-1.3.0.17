@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import javax.swing.event.MenuEvent;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -69,10 +68,6 @@ public class Dolphin implements MainWindow {
     private StampBoxPlugin stampBox;
     // dirty 警告を出す Frame を保持
     private Chart dirtyChart;
-
-    // マウスクリックしすぎて同一カルテが重複して開かれるのを防ぐための不応期タイマー
-    private final Timer refractoryTimer = new Timer(500, e -> refractoryEnd());
-    private final HashSet<PatientVisitModel> refractoryList = new HashSet<>();
 
     public Dolphin() {
     }
@@ -382,14 +377,6 @@ public class Dolphin implements MainWindow {
      */
     @Override
     public void openKarte(PatientVisitModel pvt) {
-        // 不応期タイマースタート
-        refractoryTimer.restart();
-        if (refractoryList.stream().map(PatientVisitModel::getPatientId).anyMatch(pvt.getPatientId()::equals)) {
-            logger.info("openKarte does not respond in refractory period");
-            return;
-        }
-        refractoryList.add(pvt);
-
         ChartImpl chart = new ChartImpl();
         chart.setPvtListener(getPlugin(WaitingListImpl.class)::updateState);
         chart.setContext(this);
@@ -398,14 +385,6 @@ public class Dolphin implements MainWindow {
         //chart.setReadOnly(Project.isReadOnly() || pvt.getState() == KarteState.READ_ONLY);    // RedaOnlyProp
         chart.setReadOnly(Project.isReadOnly());    // RedaOnlyProp
         chart.start();
-    }
-
-    /**
-     * 不応期終了.
-     */
-    public void refractoryEnd() {
-        refractoryTimer.stop();
-        refractoryList.clear();
     }
 
     @Override

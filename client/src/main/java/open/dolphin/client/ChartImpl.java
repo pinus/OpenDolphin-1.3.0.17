@@ -139,8 +139,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
      * @param opened オープンした Chart(=this)
      */
     public void windowOpened(ChartImpl opened) {
-        // インスタンスを保持するリストへ追加する
-        allCharts.add(0, opened);
 
         PatientVisitModel model = opened.getPatientVisit();
         int oldState = model.getState();
@@ -445,6 +443,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
      */
     @Override
     public void start() {
+        // インスタンスを保持するリストへ追加する
+        allCharts.add(0, this);
 
         int maxEstimation = 30000;
         //int delay = ClientContext.getInt("chart.timerDelay"); // 200
@@ -456,7 +456,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
             @Override
             protected KarteBean doInBackground() {
-                logger.debug("CahrtImpl start task doInBackground");
+                logger.info("CahrtImpl start task doInBackground");
                 //
                 // Database から患者のカルテを取得する
                 //
@@ -473,7 +473,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
             @Override
             protected void succeeded(KarteBean karteBean) {
-                logger.debug("CahrtImpl start task succeeded");
+                logger.info("CahrtImpl start task succeeded");
 
                 karteBean.setPatient(getPatientVisit().getPatient());
                 setKarte(karteBean);
@@ -483,6 +483,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
             @Override
             protected void failed(Throwable t) {
+                allCharts.remove(this);
                 t.printStackTrace(System.err);
             }
         };
