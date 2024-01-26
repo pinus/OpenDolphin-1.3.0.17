@@ -207,7 +207,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     public static void toFront(PatientModel patient) {
         if (Objects.nonNull(patient)) {
             long ptId = patient.getId();
-            allCharts.stream().filter(chart -> chart.getPatient().getId() == ptId)
+            allCharts.stream().filter(chart -> Objects.nonNull(chart.getPatient()) && chart.getPatient().getId() == ptId)
                 .findAny().ifPresent(chart -> chart.getFrame().toFront());
         }
     }
@@ -309,7 +309,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
      */
     @Override
     public PatientModel getPatient() {
-        return getKarte().getPatient();
+        return Objects.nonNull(karte) ? karte.getPatient()
+            : Objects.nonNull(pvt) ? pvt.getPatient() : null;
     }
 
     /**

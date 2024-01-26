@@ -155,10 +155,12 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
             // isReadOnly対応
             Thread t = new Thread(() -> {
                 // 健康保険情報をフェッチする
+                logger.info("fetch insurance");
                 PatientDelegater ptdl = new PatientDelegater();
                 ptdl.fetchHealthInsurance(pvtModel.getPatient());
 
                 // 現在の state をサーバからとってくる
+                logger.info("get state");
                 PvtDelegater pvdl = new PvtDelegater();
                 int state = pvdl.getPvtState(pvtModel.getId());
                 // 読んだら table を update 　　　→ カルテが開くと update がよばれるのでここでは不要
@@ -228,12 +230,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
     public boolean isKarteOpened(PatientModel patient) {
         return Objects.nonNull(patient)
             && ChartImpl.getAllCharts().stream().anyMatch(chart ->
-                Objects.nonNull(chart.getKarte()) // カルテがあればそこから採取
-                    ? chart.getKarte().getPatient().getId() == patient.getId()
-                    : Objects.nonNull(chart.getPatientVisit()) // カルテがなければ patient visit から採取
-                        ? chart.getPatientVisit().getPatient().getId() == patient.getId()
-                        : false
-            );
+                Objects.nonNull(chart.getPatient()) && chart.getPatient().getId() == patient.getId());
     }
 
     /**
