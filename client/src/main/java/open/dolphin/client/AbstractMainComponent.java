@@ -227,7 +227,13 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
      */
     public boolean isKarteOpened(PatientModel patient) {
         return Objects.nonNull(patient)
-            && ChartImpl.getAllCharts().stream().anyMatch(chart -> chart.getPatient().getId() == patient.getId());
+            && ChartImpl.getAllCharts().stream().anyMatch(chart ->
+                Objects.nonNull(chart.getKarte()) // カルテがあればそこから採取
+                    ? chart.getKarte().getPatient().getId() == patient.getId()
+                    : Objects.nonNull(chart.getPatientVisit()) // カルテがなければ patient visit から採取
+                        ? chart.getPatientVisit().getPatient().getId() == patient.getId()
+                        : false
+            );
     }
 
     /**

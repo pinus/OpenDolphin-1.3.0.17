@@ -456,7 +456,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
             @Override
             protected KarteBean doInBackground() {
-                logger.info("CahrtImpl start task doInBackground");
+                //logger.info("CahrtImpl start task doInBackground");
                 //
                 // Database から患者のカルテを取得する
                 //
@@ -473,12 +473,12 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
             @Override
             protected void succeeded(KarteBean karteBean) {
-                logger.info("CahrtImpl start task succeeded");
+                //logger.info("CahrtImpl start task succeeded");
 
                 karteBean.setPatient(getPatientVisit().getPatient());
                 setKarte(karteBean);
                 initComponents();
-                logger.debug("initComponents end");
+                //logger.debug("initComponents end");
             }
 
             @Override
@@ -1491,10 +1491,10 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
         windowSupport.dispose(); // ここで windowClosed が呼ばれる
 
         // メモリ状況ログ
-        long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
-        long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
-        long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
-        logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
+        //long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
+        //long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
+        //long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
+        //logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
     }
 
     /**

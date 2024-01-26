@@ -436,7 +436,8 @@ public class BlockGlass2 extends JComponent implements MouseListener {
 
             while (!Thread.interrupted()) {
                 // visible でないのに animation が続くのを防ぐ安全装置
-                if (!isVisible()) {
+                Window parent = SwingUtilities.getWindowAncestor(BlockGlass2.this);
+                if (parent == null || !parent.isVisible()) {
                     interrupt();
                     break;
                 }
@@ -473,8 +474,8 @@ public class BlockGlass2 extends JComponent implements MouseListener {
                     break;
                 }
                 Thread.yield();
-                // if (rampUp) System.out.print(".");
-                // else System.out.print(",");
+                if (rampUp) System.out.print(".");
+                else System.out.print(",");
             }
             // System.out.println("blocking animation done");
 

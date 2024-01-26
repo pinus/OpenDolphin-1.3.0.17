@@ -81,14 +81,14 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
                 Object obj = textPane.getClientProperty("kartePane");
                 if (obj instanceof KartePane kartePane) {
                     // KartePane
-                    logger.info("enter " + kartePane.getMyRole());
+                    //logger.info("enter " + kartePane.getMyRole());
                     setCurKarteComposit(kartePane);
                 } else {
-                    logger.info("enter failed " + textPane);
+                    //logger.info("enter failed " + textPane);
                 }
             } else if (comp instanceof KarteComposite<?> karteComposite) {
                 // StampHolder など
-                logger.info("enter " + karteComposite.getClass());
+                //logger.info("enter " + karteComposite.getClass());
                 setCurKarteComposit(karteComposite);
             }
         }
