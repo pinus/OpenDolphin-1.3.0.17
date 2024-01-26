@@ -309,8 +309,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
      */
     @Override
     public PatientModel getPatient() {
-        return Objects.nonNull(karte) ? karte.getPatient()
-            : Objects.nonNull(pvt) ? pvt.getPatient() : null;
+        return Objects.nonNull(pvt) ? pvt.getPatient()
+            : Objects.nonNull(karte) ? karte.getPatient() : null;
     }
 
     /**
@@ -484,7 +484,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
             @Override
             protected void failed(Throwable t) {
-                allCharts.remove(this);
+                allCharts.remove(ChartImpl.this);
                 t.printStackTrace(System.err);
             }
         };
