@@ -71,13 +71,9 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
      */
     public static void toFront(PatientModel patient) {
         if (Objects.nonNull(patient)) {
-            for (EditorFrame chart : WindowSupport.getAllEditorFrames()) {
-                if (patient.getId() == chart.getPatient().getId()) {
-                    chart.getFrame().setExtendedState(java.awt.Frame.NORMAL);
-                    chart.getFrame().toFront();
-                    break;
-                }
-            }
+            WindowSupport.getAllEditorFrames().stream()
+                .filter(chart -> Objects.nonNull(chart.getPatient()) && chart.getPatient().getId() == patient.getId())
+                .findAny().ifPresent(chart -> chart.getFrame().toFront());
         }
     }
 
