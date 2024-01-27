@@ -104,23 +104,36 @@ public class WindowSupport<T> implements MenuListener {
 
     public T getContent() { return content; }
 
+
     public static List<WindowSupport<?>> getAllWindows() {
         return Collections.unmodifiableList(allWindows);
+    }
+
+    public static List<EditorFrame> getAllEditorFrames() {
+        return getAllWindows().stream()
+            .map(WindowSupport::getContent).filter(EditorFrame.class::isInstance).map(EditorFrame.class::cast).toList();
+    }
+
+    public static List<ChartImpl> getAllCharts() {
+        return getAllWindows().stream()
+            .map(WindowSupport::getContent).filter(ChartImpl.class::isInstance).map(ChartImpl.class::cast).toList();
+    }
+
+    public static void toTop(WindowSupport windowSupport) {
+        if (allWindows.remove(windowSupport)) {
+            allWindows.add(0, windowSupport);
+        }
     }
 
     private static ImageIcon getIcon(JFrame frame) {
         return frame.isActive() ? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16;
     }
 
-    public PNSFrame getFrame() {
-        return frame;
-    }
+    public PNSFrame getFrame() { return frame; }
 
     public JMenuBar getMenuBar() { return menuBar; }
 
-    public JMenu getWindowMenu() {
-        return windowMenu;
-    }
+    public JMenu getWindowMenu() { return windowMenu; }
 
     private Action getWindowAction() { return windowAction; }
 
@@ -130,6 +143,12 @@ public class WindowSupport<T> implements MenuListener {
         menuBar.setVisible(false);
         frame.setVisible(false);
         frame.dispose();
+
+        // メモリ状況ログ
+        long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
+        long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
+        long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
+        logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
         logger.info(content.getClass().getName() + " removed " + allWindows.size());
     }
 

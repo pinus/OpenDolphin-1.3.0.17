@@ -2,6 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.dnd.ImageEntryTransferHandler;
 import open.dolphin.helper.MouseHelper;
+import open.dolphin.helper.WindowSupport;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSScrollPane;
 
@@ -27,7 +28,7 @@ import java.util.List;
  * @author pns
  */
 public class ImagePalette extends JPanel {
-    
+
     private static final int DEFAULT_COLUMN_COUNT = 3;
     private static final int DEFAULT_IMAGE_WIDTH = 120;
     private static final int DEFAULT_IMAGE_HEIGHT = 120;
@@ -143,7 +144,7 @@ public class ImagePalette extends JPanel {
                     int col = imageTable.getSelectedColumn();
                     ImageEntry entry = (ImageEntry) imageTable.getModel().getValueAt(row, col);
 
-                    List<EditorFrame> allFrames = EditorFrame.getAllEditorFrames();
+                    List<EditorFrame> allFrames = WindowSupport.getAllEditorFrames();
                     if (!allFrames.isEmpty()) {
                         EditorFrame frame = allFrames.get(0);
                         KartePane pane = frame.getEditor().getSOAPane();
@@ -232,7 +233,7 @@ public class ImagePalette extends JPanel {
     }
 
     private class ImageRenderer extends DefaultTableCellRenderer {
-        
+
         public ImageRenderer() {
             initComponent();
         }

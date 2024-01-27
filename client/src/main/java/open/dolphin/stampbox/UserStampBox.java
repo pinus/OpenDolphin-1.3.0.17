@@ -4,6 +4,7 @@ import open.dolphin.client.*;
 import open.dolphin.dnd.StampTreeNodeTransferHandler;
 import open.dolphin.helper.MouseHelper;
 import open.dolphin.helper.StampTreeUtils;
+import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.ModuleInfoBean;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
@@ -124,7 +125,7 @@ public class UserStampBox extends AbstractStampBox {
 
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
                         // 傷病名の popup に，カルテに病名を挿入する特別メニューを加える
-                        List<ChartImpl> allCharts = ChartImpl.getAllCharts();
+                        List<ChartImpl> allCharts = WindowSupport.getAllCharts();
                         if (!allCharts.isEmpty()) {
                             popup.insert(new JPopupMenu.Separator(), 0);
                             allCharts.forEach(chart -> popup.insert(new SendDiagnosisAction(chart, stampTree), 0));
@@ -132,10 +133,10 @@ public class UserStampBox extends AbstractStampBox {
 
                     } else {
                         // それ以外の popup でも PPane にスタンプを挿入できるようにする
-                        List<EditorFrame> allFrames = EditorFrame.getAllEditorFrames();
-                        if (!allFrames.isEmpty()) {
+                        List<EditorFrame> editorFrames = WindowSupport.getAllEditorFrames();
+                        if (!editorFrames.isEmpty()) {
                             popup.insert(new JPopupMenu.Separator(), 0);
-                            allFrames.forEach(chart -> popup.insert(new SendStampAction(chart, stampTree), 0));
+                            editorFrames.forEach(editor -> popup.insert(new SendStampAction(editor, stampTree), 0));
                         }
                     }
                     popup.show(stampTree, e.getX(), e.getY());
@@ -152,7 +153,7 @@ public class UserStampBox extends AbstractStampBox {
                     }
 
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
-                        List<ChartImpl> allCharts = ChartImpl.getAllCharts();
+                        List<ChartImpl> allCharts = WindowSupport.getAllCharts();
                         if (!allCharts.isEmpty()) {
                             ChartImpl chart = allCharts.get(0);
                             DiagnosisDocument doc = chart.getDiagnosisDocument();
@@ -160,9 +161,9 @@ public class UserStampBox extends AbstractStampBox {
                         }
 
                     } else {
-                        List<EditorFrame> allFrames = EditorFrame.getAllEditorFrames();
-                        if (!allFrames.isEmpty()) {
-                            EditorFrame frame = allFrames.get(0);
+                        List<EditorFrame> editorFrames = WindowSupport.getAllEditorFrames();
+                        if (!editorFrames.isEmpty()) {
+                            EditorFrame frame = editorFrames.get(0);
                             KartePane pane = frame.getEditor().getPPane();
                             List<ModuleInfoBean> stampList = getStampList(selected);
                             // caret を最後に送ってから import する
@@ -185,7 +186,7 @@ public class UserStampBox extends AbstractStampBox {
                 @Override
                 public void keyPressed(KeyEvent e) {
                     if (IInfoModel.ENTITY_DIAGNOSIS.equals(stampTree.getEntity())) {
-                        List<ChartImpl> allCharts = ChartImpl.getAllCharts();
+                        List<ChartImpl> allCharts = WindowSupport.getAllCharts();
                         if (!allCharts.isEmpty()) {
                             ChartImpl chart = allCharts.get(0);
                             DiagnosisInspector inspector = chart.getDiagnosisInspector();

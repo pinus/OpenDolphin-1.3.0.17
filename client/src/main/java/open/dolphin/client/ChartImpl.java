@@ -35,8 +35,6 @@ import java.util.prefs.Preferences;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, WindowListener {
-    //  Chart インスタンスを管理するstatic 変数
-    private static final List<ChartImpl> allCharts = new ArrayList<>(3);
     // PvtChangeListener
     private PvtListener pvtListener;
     // getDiagnosisDocument() が loadDocuments() の終了を待つための SecondaryLoop
@@ -68,15 +66,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     private LastVisit lastVisit;
     // 検索パネル
     private ChartSearchPanel searchPanel;
-
-    /**
-     * オープンしている全インスタンスを保持するリストを返す static method.
-     *
-     * @return オープンしている ChartPlugin のリスト
-     */
-    public static List<ChartImpl> getAllCharts() {
-        return Collections.unmodifiableList(allCharts);
-    }
 
     /**
      * Create new ChartImpl.
@@ -123,9 +112,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     @Override
     public void windowActivated(WindowEvent e) {
         // allCharts の順番処理. activate されたらトップに置く.
-        if (allCharts.remove(this)) {
-            allCharts.add(0, this);
-        }
+        WindowSupport.toTop(windowSupport);
     }
 
     @Override
@@ -178,15 +165,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
         if (model.getId() != 0) {
             pvtListener.pvtChanged(model);
         }
-
-        // 最後にインスタンスリストから取り除く
-        boolean succeeded = allCharts.remove(closed);
-        if (!succeeded) {
-            // カルテが登録されていなかったと言うことで，ありえない
-            throw new RuntimeException("Chart is lost!");
-        }
-        // dispose
-        getFrame().removeWindowListener(this);
         pvtListener = null;
     }
 
@@ -207,7 +185,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     public static void toFront(PatientModel patient) {
         if (Objects.nonNull(patient)) {
             long ptId = patient.getId();
-            allCharts.stream().filter(chart -> Objects.nonNull(chart.getPatient()) && chart.getPatient().getId() == ptId)
+            WindowSupport.getAllCharts().stream()
+                .filter(chart -> Objects.nonNull(chart.getPatient()) && chart.getPatient().getId() == ptId)
                 .findAny().ifPresent(chart -> chart.getFrame().toFront());
         }
     }
@@ -444,9 +423,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
      */
     @Override
     public void start() {
-        // インスタンスを保持するリストへ追加する
-        allCharts.add(0, this);
-
         int maxEstimation = 30000;
         //int delay = ClientContext.getInt("chart.timerDelay"); // 200
         String message = "カルテオープン";
@@ -484,7 +460,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
             @Override
             protected void failed(Throwable t) {
-                allCharts.remove(ChartImpl.this);
                 t.printStackTrace(System.err);
             }
         };
@@ -1410,7 +1385,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     public void close() {
 
         // この患者の EditorFrame が開いたままなら，閉じる努力をする. EditorFame 保存がキャンセルされたらあきらめる.
-        List<Chart> editorFrames = new ArrayList<>(EditorFrame.getAllEditorFrames());
+        List<EditorFrame> editorFrames = WindowSupport.getAllEditorFrames();
         if (!editorFrames.isEmpty()) {
             String patientId = this.getKarte().getPatient().getPatientId();
             for (Chart chart : editorFrames) {
@@ -1418,7 +1393,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
                 if (patientId.equals(id)) {
                     chart.close();
 
-                    if (EditorFrame.getAllEditorFrames().contains(chart)) {
+                    if (WindowSupport.getAllEditorFrames().contains(chart)) {
                         // EditorFrame が消えていないと言うことは，キャンセルされたと言うこと. この場合，chart 終了もキャンセル.
                         // logger.info("ChartImpl#close : canceled");
                         return;
@@ -1490,12 +1465,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
         mediator.dispose();
         inspector.dispose();
         windowSupport.dispose(); // ここで windowClosed が呼ばれる
-
-        // メモリ状況ログ
-        //long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
-        //long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
-        //long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
-        //logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
     }
 
     /**
@@ -1510,16 +1479,13 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
             return false;
         }
         long baseDocPk = baseDocumentModel.getDocInfo().getDocPk();
-        List<EditorFrame> editorFrames = EditorFrame.getAllEditorFrames();
-        if (!editorFrames.isEmpty()) {
-            for (EditorFrame frame : editorFrames) {
-                long parentDocPk = frame.getParentDocPk();
-                if (baseDocPk == parentDocPk) {
-                    // parentPkが同じEditorFrameがある場合はFrameをtoFrontする
-                    frame.getFrame().setExtendedState(java.awt.Frame.NORMAL);
-                    frame.getFrame().toFront();
-                    return true;
-                }
+        for (EditorFrame frame : WindowSupport.getAllEditorFrames()) {
+            long parentDocPk = frame.getParentDocPk();
+            if (baseDocPk == parentDocPk) {
+                // parentPkが同じEditorFrameがある場合はFrameをtoFrontする
+                frame.getFrame().setExtendedState(java.awt.Frame.NORMAL);
+                frame.getFrame().toFront();
+                return true;
             }
         }
         return false;
@@ -1532,19 +1498,16 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
      * @return toFront できたら true
      */
     private boolean toFrontNewKarteIfPresent() {
-        List<EditorFrame> editorFrames = EditorFrame.getAllEditorFrames();
-        if (!editorFrames.isEmpty()) {
-            String patientId = this.getKarte().getPatient().getPatientId();
-            for (EditorFrame ef : editorFrames) {
-                // 新規カルテだとDocInfoのstatusは"N"
-                String status = ef.getDocInfoStatus();
-                String id = ef.getKarte().getPatient().getPatientId();
-                if (patientId.equals(id) && IInfoModel.STATUS_NONE.equals(status)) {
-                    // 新規カルテのEditorFrameがある場合はFrameをtoFrontする
-                    ef.getFrame().setExtendedState(Frame.NORMAL);
-                    ef.getFrame().toFront();
-                    return true;
-                }
+        String patientId = this.getKarte().getPatient().getPatientId();
+        for (EditorFrame ef : WindowSupport.getAllEditorFrames()) {
+            // 新規カルテだとDocInfoのstatusは"N"
+            String status = ef.getDocInfoStatus();
+            String id = ef.getKarte().getPatient().getPatientId();
+            if (patientId.equals(id) && IInfoModel.STATUS_NONE.equals(status)) {
+                // 新規カルテのEditorFrameがある場合はFrameをtoFrontする
+                ef.getFrame().setExtendedState(Frame.NORMAL);
+                ef.getFrame().toFront();
+                return true;
             }
         }
         return false;

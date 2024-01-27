@@ -439,33 +439,15 @@ public class Dolphin implements MainWindow {
 
         // 未保存のカルテがある場合は警告しリターンする
         // カルテを保存または破棄してから再度実行する
-        boolean dirty = false;
-
-        // Chart を調べる
-        List<ChartImpl> allChart = ChartImpl.getAllCharts();
-        for (ChartImpl chart : allChart) {
-            if (chart.isDirty()) {
-                dirty = true;
-                dirtyChart = chart;
-                break;
+        for (WindowSupport<?> ws : WindowSupport.getAllWindows()) {
+            if (ws.getContent() instanceof Chart chart) {
+                if (chart.isDirty()) {
+                    dirtyChart = chart;
+                    return true;
+                }
             }
         }
-        // 保存してないものがあればリターンする
-        if (dirty) {
-            return true;
-        }
-
-        // EditorFrameのチェックを行う
-        List<EditorFrame> allEditorFrames = EditorFrame.getAllEditorFrames();
-        for (EditorFrame chart : allEditorFrames) {
-            if (chart.isDirty()) {
-                dirty = true;
-                dirtyChart = chart;
-                break;
-            }
-        }
-
-        return dirty;
+        return false;
     }
 
     /**
@@ -574,6 +556,9 @@ public class Dolphin implements MainWindow {
                 return;
             }
         }
+
+        // dirty でない EditorFrame が開いている可能性がある
+        WindowSupport.getAllEditorFrames().forEach(EditorFrame::close);
 
         // MainTool で getStoppingTask を override するとここで呼ばれる
         final List<Callable<Boolean>> tasks = getStoppingTask();

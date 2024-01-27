@@ -14,9 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * EditorFrame.
@@ -28,8 +26,6 @@ import java.util.List;
 public class EditorFrame extends AbstractMainTool implements Chart, WindowListener {
     private final Logger logger;
 
-    // 全インスタンスを保持するリスト
-    private static final List<EditorFrame> allEditorFrames = new ArrayList<>(3);
     // このフレームの実のコンテキストチャート
     private Chart realChart;
     // このフレームに表示する KarteViewer オブジェクト
@@ -57,15 +53,6 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
     }
 
     /**
-     * 全インスタンスを保持するリストを返す static method.
-     *
-     * @return 全インスタンスを保持するリスト
-     */
-    public static List<EditorFrame> getAllEditorFrames() {
-        return Collections.unmodifiableList(allEditorFrames);
-    }
-
-    /**
      * PatientVisitModel の EditorFrame を前に出す
      *
      * @param pvt PatientVisitModel
@@ -83,16 +70,13 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
      * @param patient PatientModel
      */
     public static void toFront(PatientModel patient) {
-        if (patient == null) {
-            return;
-        }
-        long ptId = patient.getId();
-        for (Chart chart : allEditorFrames) {
-            long id = chart.getPatient().getId();
-            if (ptId == id) {
-                chart.getFrame().setExtendedState(java.awt.Frame.NORMAL);
-                chart.getFrame().toFront();
-                return;
+        if (Objects.nonNull(patient)) {
+            for (EditorFrame chart : WindowSupport.getAllEditorFrames()) {
+                if (patient.getId() == chart.getPatient().getId()) {
+                    chart.getFrame().setExtendedState(java.awt.Frame.NORMAL);
+                    chart.getFrame().toFront();
+                    break;
+                }
             }
         }
     }
@@ -408,9 +392,6 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
      * 初期化する.
      */
     private void initialize() {
-        // Command-M 連打で連続して open された場合, windowOpened の処理では間に合わない
-        allEditorFrames.add(0, EditorFrame.this);
-
         // Frame を生成する
         // Frame のタイトルを
         // 患者氏名(カナ) : 患者ID に設定する
@@ -558,10 +539,8 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
 
     @Override
     public void windowActivated(WindowEvent e) {
-        // allEditorFrames の順番処理，新しいものをトップに置く
-        if (allEditorFrames.remove(this)) {
-            allEditorFrames.add(0, this);
-        }
+        // 順番処理，新しいものをトップに置く
+        WindowSupport.toTop(windowSupport);
     }
 
     @Override
@@ -577,7 +556,6 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
         windowSupport.dispose();
         realChart.getFrame().toFront();
         getFrame().removeWindowListener(this);
-        allEditorFrames.remove(this);
         realChart = null;
         setContext(null);
     }
