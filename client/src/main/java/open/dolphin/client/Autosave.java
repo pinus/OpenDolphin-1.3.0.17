@@ -147,7 +147,13 @@ public class Autosave implements Runnable {
     public void stop() {
         if (! (executor.isShutdown() || executor.isTerminated())) {
             executor.shutdownNow();
+            try {
+                executor.awaitTermination(1, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace(System.err);
+            }
             tmpFile.delete();
+
         } else {
             logger.info("stop() is called, but is already shutdown");
         }

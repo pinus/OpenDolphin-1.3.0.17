@@ -1,8 +1,13 @@
 package open.dolphin.helper;
 
+import open.dolphin.client.Chart;
+import open.dolphin.client.ChartImpl;
+import open.dolphin.client.EditorFrame;
 import open.dolphin.client.GUIConst;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSFrame;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -20,13 +25,15 @@ import java.util.prefs.Preferences;
  * @author Minagawa, Kazushi
  * @author pns
  */
-public class WindowSupport implements MenuListener {
+public class WindowSupport<T> implements MenuListener {
+    final static Logger logger = LoggerFactory.getLogger(WindowSupport.class);
+
     // frame を整列させるときの初期位置と移動幅
     final public static int INITIAL_X = 256;
     final public static int INITIAL_Y = 40;
     final public static int INITIAL_DX = 96;
     final public static int INITIAL_DY = 48;
-    final private static List<WindowSupport> allWindows = new ArrayList<>();
+    final private static List<WindowSupport<?>> allWindows = new ArrayList<>();
     private static final String WINDOW_MENU_NAME = "ウインドウ";
     // メニューバーの増えた分の高さをセットするプロパティ名
     final public static String MENUBAR_HEIGHT_OFFSET_PROP = "menubar.height.offset";
@@ -40,13 +47,16 @@ public class WindowSupport implements MenuListener {
     final private JMenu windowMenu;
     // Window Action
     final private Action windowAction;
+    // 内容 Dolphin (MainWindow), ChartImpl, EditorFrame, etc
+    final private T content;
 
     // プライベートコンストラクタ
-    private WindowSupport(PNSFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction) {
+    private WindowSupport(PNSFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction, T content) {
         this.frame = frame;
         this.menuBar = menuBar;
         this.windowMenu = windowMenu;
         this.windowAction = windowAction;
+        this.content = content;
 
         // インスペクタを整列するアクションだけはあらかじめ入れておく
         // こうしておかないと，１回 window メニューを開かないと accelerator が効かないことになる
@@ -57,9 +67,10 @@ public class WindowSupport implements MenuListener {
      * WindowSupportを生成する.
      *
      * @param title フレームタイトル
+     * @param content 内容
      * @return WindowSupport
      */
-    public static WindowSupport create(String title) {
+    public static <K> WindowSupport<K> create(String title, K content) {
         // フレームを生成する
         final PNSFrame f = new PNSFrame(title);
         f.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -82,15 +93,18 @@ public class WindowSupport implements MenuListener {
         };
 
         // インスタンスを生成する
-        final WindowSupport windowSupport = new WindowSupport(f, mBar, wMenu, wAction);
+        final WindowSupport<K> windowSupport = new WindowSupport<>(f, mBar, wMenu, wAction, content);
         allWindows.add(windowSupport);
+        logger.info(content.getClass().getName() + " created " + allWindows.size());
 
         // windowMenu にメニューリスナを設定しこのクラスで処理をする
         wMenu.addMenuListener(windowSupport);
         return windowSupport;
     }
 
-    public static List<WindowSupport> getAllWindows() {
+    public T getContent() { return content; }
+
+    public static List<WindowSupport<?>> getAllWindows() {
         return Collections.unmodifiableList(allWindows);
     }
 
@@ -116,6 +130,7 @@ public class WindowSupport implements MenuListener {
         menuBar.setVisible(false);
         frame.setVisible(false);
         frame.dispose();
+        logger.info(content.getClass().getName() + " removed " + allWindows.size());
     }
 
     /**
@@ -125,20 +140,15 @@ public class WindowSupport implements MenuListener {
      */
     @Override
     public void menuSelected(MenuEvent e) {
-
         // 全てリムーブする
         JMenu wm = (JMenu) e.getSource();
         wm.removeAll();
-        // リストから新規に生成する
-        Action action;
-        String name;
         int count = 0;
+
         // まず，カルテとインスペクタ以外
-        for (WindowSupport ws : allWindows) {
-            action = ws.getWindowAction();
-            name = action.getValue(Action.NAME).toString();
-            if (!name.contains("インスペクタ") && !name.contains("カルテ")) {
-                wm.add(action);
+        for (WindowSupport<?> ws : allWindows) {
+            if (!(ws.getContent() instanceof Chart)) {
+                wm.add(ws.getWindowAction());
                 count++;
             }
         }
@@ -150,11 +160,10 @@ public class WindowSupport implements MenuListener {
         count = 0;
         wm.addSeparator();
 
-        // 次にカルテ
-        for (WindowSupport ws : allWindows) {
-            action = ws.getWindowAction();
-            name = action.getValue(Action.NAME).toString();
-            if (name.contains("カルテ")) {
+        // 次にカルテ (EditorFrame)
+        for (WindowSupport<?> ws : allWindows) {
+            if (ws.getContent() instanceof EditorFrame) {
+                Action action = ws.getWindowAction();
                 action.putValue(Action.SMALL_ICON, getIcon(ws.getFrame()));
                 wm.add(action);
                 count++;
@@ -165,11 +174,10 @@ public class WindowSupport implements MenuListener {
             count = 0;
         }
 
-        // 次にインスペクタ
-        for (WindowSupport ws : allWindows) {
-            action = ws.getWindowAction();
-            name = action.getValue(Action.NAME).toString();
-            if (name.contains("インスペクタ")) {
+        // 次にインスペクタ (ChartImpl)
+        for (WindowSupport<?> ws : allWindows) {
+            if (ws.getContent() instanceof ChartImpl) {
+                Action action = ws.getWindowAction();
                 action.putValue(Action.SMALL_ICON, getIcon(ws.getFrame()));
                 wm.add(action);
                 count++;
@@ -220,7 +228,7 @@ public class WindowSupport implements MenuListener {
             int height = 0;
 
             JFrame f;
-            for (WindowSupport ws : allWindows) {
+            for (WindowSupport<?> ws : allWindows) {
                 f = ws.getFrame();
                 if (f.getTitle().contains("インスペクタ")) {
                     if (width == 0) {

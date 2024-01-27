@@ -51,7 +51,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     // 患者インスペクタ
     private PatientInspector inspector;
     // Window Menu をサポートする委譲クラス
-    private WindowSupport windowSupport;
+    private WindowSupport<ChartImpl> windowSupport;
     // 検索状況等を表示する共通のパネル
     private StatusPanel statusPanel;
     // 患者来院情報
@@ -510,7 +510,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
                 getPatient().getKanaName().replace("　", " "),
                 getPatient().getPatientId());
 
-        windowSupport = WindowSupport.create(title);
+        windowSupport = WindowSupport.create(title, this);
 
         // チャート用のメニューバーを得る
         JMenuBar myMenuBar = windowSupport.getMenuBar();

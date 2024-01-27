@@ -49,7 +49,7 @@ public class Dolphin implements MainWindow {
     public static final boolean forWin = !forMac;
 
     // Window と Menu サポート
-    private WindowSupport windowSupport;
+    private WindowSupport<Dolphin> windowSupport;
     // Mediator
     private Mediator mediator;
     // 状態制御
@@ -229,7 +229,7 @@ public class Dolphin implements MainWindow {
         // WindowSupport を生成する この時点で Frame,WindowMenu を持つMenuBar が生成されている
         String title = Dolphin.forWin ? "" : ClientContext.getFrameTitle(windowTitle);
         // System.out.println(title);
-        windowSupport = WindowSupport.create(title);
+        windowSupport = WindowSupport.create(title, this);
         PNSFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
         //myFrame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
         //myFrame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );

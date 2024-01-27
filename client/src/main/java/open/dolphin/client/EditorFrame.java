@@ -43,7 +43,7 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
     // このフレームの動作モード
     private EditorMode mode;
     // WindowSupport オブジェクト
-    private WindowSupport windowSupport;
+    private WindowSupport<EditorFrame> windowSupport;
     // Mediator オブジェクト
     private ChartMediator mediator;
     // ChartToolBar
@@ -420,7 +420,7 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
                 getPatient().getKanaName().replace("　", " "),
                 getPatient().getPatientId());
 
-        windowSupport = WindowSupport.create(title);
+        windowSupport = WindowSupport.create(title, this);
         JMenuBar myMenuBar = windowSupport.getMenuBar();
 
         PNSFrame frame = getFrame();

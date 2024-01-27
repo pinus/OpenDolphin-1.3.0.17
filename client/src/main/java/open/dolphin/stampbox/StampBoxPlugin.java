@@ -276,7 +276,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
         // mac で StampBox にもメニューバーを出す
         if (Dolphin.forMac) {
-            WindowSupport windowSupport = WindowSupport.create(title);
+            WindowSupport<StampBoxPlugin> windowSupport = WindowSupport.create(title, this);
             frame = windowSupport.getFrame();
             frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 105);
             frame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);

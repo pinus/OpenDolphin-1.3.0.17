@@ -159,7 +159,7 @@ public class ImageBox extends AbstractMainTool {
 
         // mac で SchemaBox にもメニューバーを出す
         if (Dolphin.forMac) {
-            WindowSupport windowSupport = WindowSupport.create(title);
+            WindowSupport<ImageBox> windowSupport = WindowSupport.create(title, this);
             frame = windowSupport.getFrame();
             javax.swing.JMenuBar myMenuBar = windowSupport.getMenuBar();
             mediator = new MenuSupport(this);
