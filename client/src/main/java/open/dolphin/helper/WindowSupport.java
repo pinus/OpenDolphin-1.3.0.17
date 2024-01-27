@@ -119,7 +119,7 @@ public class WindowSupport<T> implements MenuListener {
             .map(WindowSupport::getContent).filter(ChartImpl.class::isInstance).map(ChartImpl.class::cast).toList();
     }
 
-    public static void toTop(WindowSupport windowSupport) {
+    public static void toTop(WindowSupport<?> windowSupport) {
         if (allWindows.remove(windowSupport)) {
             allWindows.add(0, windowSupport);
         }
