@@ -29,10 +29,7 @@ public class WindowSupport<T> implements MenuListener {
     final static Logger logger = LoggerFactory.getLogger(WindowSupport.class);
 
     // frame を整列させるときの初期位置と移動幅
-    final public static int INITIAL_X = 256;
-    final public static int INITIAL_Y = 40;
-    final public static int INITIAL_DX = 96;
-    final public static int INITIAL_DY = 48;
+    final public static int INITIAL_X = 256, INITIAL_Y = 40, INITIAL_DX = 96, INITIAL_DY = 48;
     final private static List<WindowSupport<?>> allWindows = new ArrayList<>();
     private static final String WINDOW_MENU_NAME = "ウインドウ";
     // メニューバーの増えた分の高さをセットするプロパティ名
@@ -49,6 +46,10 @@ public class WindowSupport<T> implements MenuListener {
     final private Action windowAction;
     // 内容 Dolphin (MainWindow), ChartImpl, EditorFrame, etc
     final private T content;
+    // component bounds manager
+    private Preferences pref;
+    private String key; // preference key
+    private int x, y, width, height;
 
     // プライベートコンストラクタ
     private WindowSupport(PNSFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction, T content) {
@@ -58,13 +59,16 @@ public class WindowSupport<T> implements MenuListener {
         this.windowAction = windowAction;
         this.content = content;
 
+        pref = Preferences.userNodeForPackage(content.getClass());
+
+
         // インスペクタを整列するアクションだけはあらかじめ入れておく
         // こうしておかないと，１回 window メニューを開かないと accelerator が効かないことになる
         windowMenu.add(new ArrangeInspectorAction());
     }
 
     /**
-     * WindowSupportを生成する.
+     * WindowSupport を生成する.
      *
      * @param title フレームタイトル
      * @param content 内容
@@ -102,40 +106,66 @@ public class WindowSupport<T> implements MenuListener {
         return windowSupport;
     }
 
+    /**
+     * この window の内容を返す.
+     *
+     * @return content
+     */
     public T getContent() { return content; }
 
-
+    /**
+     * List of all WindowSupport instances.
+     *
+     * @return unmodifiableList
+     */
     public static List<WindowSupport<?>> getAllWindows() {
         return Collections.unmodifiableList(allWindows);
     }
 
+    /**
+     * List of all EditorFrame instances.
+     *
+     * @return 存在しない場合、size 0 で、null にはならない
+     */
     public static List<EditorFrame> getAllEditorFrames() {
         return getAllWindows().stream()
             .map(WindowSupport::getContent).filter(EditorFrame.class::isInstance).map(EditorFrame.class::cast).toList();
     }
 
+    /**
+     * List of all ChartImpl instances.
+     *
+     * @return 存在しない場合、size 0 で、null にはならない
+     */
     public static List<ChartImpl> getAllCharts() {
         return getAllWindows().stream()
             .map(WindowSupport::getContent).filter(ChartImpl.class::isInstance).map(ChartImpl.class::cast).toList();
     }
 
+    /**
+     * 指定された WindowSupport を先頭に移動する.
+     *
+     * @param windowSupport 先頭に移動する WindowSupport
+     */
     public static void toTop(WindowSupport<?> windowSupport) {
         if (allWindows.remove(windowSupport)) {
             allWindows.add(0, windowSupport);
         }
     }
 
-    private static ImageIcon getIcon(JFrame frame) {
-        return frame.isActive() ? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16;
-    }
-
+    /**
+     * Returns frame.
+     *
+     * @return 管理している frame
+     */
     public PNSFrame getFrame() { return frame; }
 
+    /**
+     * Returns JMenuBar.
+     *
+     * @return 管理している JMenuBar
+     */
     public JMenuBar getMenuBar() { return menuBar; }
-
-    public JMenu getWindowMenu() { return windowMenu; }
-
-    private Action getWindowAction() { return windowAction; }
 
     public void dispose() {
         allWindows.remove(this);
@@ -167,14 +197,12 @@ public class WindowSupport<T> implements MenuListener {
         // まず，カルテとインスペクタ以外
         for (WindowSupport<?> ws : allWindows) {
             if (!(ws.getContent() instanceof Chart)) {
-                wm.add(ws.getWindowAction());
+                wm.add(ws.windowAction);
                 count++;
             }
         }
         // カルテ，インスペクタが開いていない場合はリターン
-        if (allWindows.size() == count) {
-            return;
-        }
+        if (allWindows.size() == count) { return; }
 
         count = 0;
         wm.addSeparator();
@@ -182,8 +210,8 @@ public class WindowSupport<T> implements MenuListener {
         // 次にカルテ (EditorFrame)
         for (WindowSupport<?> ws : allWindows) {
             if (ws.getContent() instanceof EditorFrame) {
-                Action action = ws.getWindowAction();
-                action.putValue(Action.SMALL_ICON, getIcon(ws.getFrame()));
+                Action action = ws.windowAction;
+                action.putValue(Action.SMALL_ICON, ws.getFrame().isActive() ? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16);
                 wm.add(action);
                 count++;
             }
@@ -196,8 +224,8 @@ public class WindowSupport<T> implements MenuListener {
         // 次にインスペクタ (ChartImpl)
         for (WindowSupport<?> ws : allWindows) {
             if (ws.getContent() instanceof ChartImpl) {
-                Action action = ws.getWindowAction();
-                action.putValue(Action.SMALL_ICON, getIcon(ws.getFrame()));
+                Action action = ws.windowAction;
+                action.putValue(Action.SMALL_ICON, ws.getFrame().isActive() ? GUIConst.ICON_STATUS_BUSY_16 : GUIConst.ICON_STATUS_OFFLINE_16);
                 wm.add(action);
                 count++;
             }

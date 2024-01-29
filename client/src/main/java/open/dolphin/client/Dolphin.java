@@ -516,9 +516,7 @@ public class Dolphin implements MainWindow {
         }
 
         if (windowSupport != null) {
-            JFrame myFrame = windowSupport.getFrame();
-            myFrame.setVisible(false);
-            myFrame.dispose();
+            windowSupport.dispose();
         }
         logger.info("アプリケーションを終了します");
         System.exit(0);
