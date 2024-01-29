@@ -3,7 +3,6 @@ package open.dolphin.stampbox;
 import open.dolphin.client.*;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.dnd.StampTreeNodeTransferHandler;
-import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
@@ -305,8 +304,6 @@ public class StampBoxPlugin extends AbstractMainTool {
         frame.removeStatusPanel();
 
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(x, y), new Dimension(width, height), this);
-        cm.revertToPreferenceBounds();
 
         //
         // 全体のボックスを生成する

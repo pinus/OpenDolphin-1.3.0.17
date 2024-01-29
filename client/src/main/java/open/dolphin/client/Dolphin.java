@@ -245,8 +245,6 @@ public class Dolphin implements MainWindow {
                 processExit();
             }
         });
-        ComponentBoundsManager cm = new ComponentBoundsManager(myFrame, loc, size, this);
-        cm.revertToPreferenceBounds();
 
         // mainWindowのメニューを生成しメニューバーに追加する
         mediator = new Mediator(this);

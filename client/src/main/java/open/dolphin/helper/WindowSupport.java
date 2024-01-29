@@ -9,13 +9,16 @@ import open.dolphin.ui.PNSFrame;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import java.util.*;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.List;
+import java.util.Timer;
 import java.util.prefs.Preferences;
 
 /**
@@ -25,7 +28,7 @@ import java.util.prefs.Preferences;
  * @author Minagawa, Kazushi
  * @author pns
  */
-public class WindowSupport<T> implements MenuListener {
+public class WindowSupport<T> implements MenuListener, ComponentListener {
     final static Logger logger = LoggerFactory.getLogger(WindowSupport.class);
 
     // frame を整列させるときの初期位置と移動幅
@@ -47,9 +50,11 @@ public class WindowSupport<T> implements MenuListener {
     // 内容 Dolphin (MainWindow), ChartImpl, EditorFrame, etc
     final private T content;
     // component bounds manager
-    private Preferences pref;
-    private String key; // preference key
-    private int x, y, width, height;
+    final private Preferences pref;
+    final private String keyX, keyY, keyW, keyH; // preference keys
+    private int pX, pY, pW, pH; // bounds before moving
+    private boolean moved, resized;
+    private Timer timer;
 
     // プライベートコンストラクタ
     private WindowSupport(PNSFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction, T content) {
@@ -59,8 +64,19 @@ public class WindowSupport<T> implements MenuListener {
         this.windowAction = windowAction;
         this.content = content;
 
+        // bounds manager
+        String key = content.getClass().getName();
+        keyX = key + "_x";
+        keyY = key + "_y";
+        keyW = key + "_width";
+        keyH = key + "_height";
         pref = Preferences.userNodeForPackage(content.getClass());
-
+        pX = pref.getInt(keyX, 100);
+        pY = pref.getInt(keyY, 50);
+        pW = pref.getInt(keyW, 1280);
+        pH = pref.getInt(keyH, 760);
+        frame.setBounds(pX, pY, pW, pH);
+        logger.info(String.format("bounds loaded %s %d %d %d %d", key, pX, pY, pW, pH));
 
         // インスペクタを整列するアクションだけはあらかじめ入れておく
         // こうしておかないと，１回 window メニューを開かないと accelerator が効かないことになる
@@ -70,7 +86,7 @@ public class WindowSupport<T> implements MenuListener {
     /**
      * WindowSupport を生成する.
      *
-     * @param title フレームタイトル
+     * @param title   フレームタイトル
      * @param content 内容
      * @return WindowSupport
      */
@@ -101,8 +117,10 @@ public class WindowSupport<T> implements MenuListener {
         allWindows.add(windowSupport);
         logger.info(content.getClass().getName() + " created " + allWindows.size());
 
-        // windowMenu にメニューリスナを設定しこのクラスで処理をする
+        // リスナ
+        f.addComponentListener(windowSupport);
         wMenu.addMenuListener(windowSupport);
+
         return windowSupport;
     }
 
@@ -111,7 +129,9 @@ public class WindowSupport<T> implements MenuListener {
      *
      * @return content
      */
-    public T getContent() { return content; }
+    public T getContent() {
+        return content;
+    }
 
     /**
      * List of all WindowSupport instances.
@@ -158,19 +178,27 @@ public class WindowSupport<T> implements MenuListener {
      *
      * @return 管理している frame
      */
-    public PNSFrame getFrame() { return frame; }
+    public PNSFrame getFrame() {
+        return frame;
+    }
 
     /**
      * Returns JMenuBar.
      *
      * @return 管理している JMenuBar
      */
-    public JMenuBar getMenuBar() { return menuBar; }
+    public JMenuBar getMenuBar() {
+        return menuBar;
+    }
 
+    /**
+     * 終了処理
+     */
     public void dispose() {
         allWindows.remove(this);
         windowMenu.removeMenuListener(this);
         menuBar.setVisible(false);
+        frame.removeComponentListener(this);
         frame.setVisible(false);
         frame.dispose();
 
@@ -180,6 +208,79 @@ public class WindowSupport<T> implements MenuListener {
         long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
         logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
         logger.info(content.getClass().getName() + " removed " + allWindows.size());
+    }
+
+    /**
+     * save new bounds to preferences.
+     */
+    private class FlushTask extends TimerTask {
+        @Override
+        public void run() {
+            timer = null;
+
+            Rectangle r = frame.getBounds();
+            if (moved) {
+                pref.putInt(keyX, r.x);
+                pref.putInt(keyY, r.y);
+            }
+            if (resized) {
+                pref.putInt(keyW, r.width);
+                pref.putInt(keyH, r.height);
+            }
+            moved = false;
+            resized = false;
+            timer = null;
+            logger.info(String.format("bounds saved %s %d %d %d %d", content.getClass().getName(), r.x, r.y, r.width, r.height));
+            logger.info(String.format("bounds previous %s %d %d %d %d", content.getClass().getName(), pX, pY, pW, pH));
+        }
+    }
+
+    /**
+     * 500 msec 以内の変更は記録しない処理.
+     */
+    private void restartTimer() {
+        if (Objects.nonNull(timer)) {
+            timer.cancel();
+            timer.purge();
+        }
+        timer = new Timer();
+        timer.schedule(new FlushTask(), 500);
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+        if (!moved) {
+            pX = frame.getX();
+            pY = frame.getY();
+        }
+        moved = true;
+        restartTimer();
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        if (!resized) {
+            pW = frame.getWidth();
+            pH = frame.getHeight();
+        }
+        resized = true;
+        restartTimer();
+    }
+
+    @Override
+    public void menuDeselected(MenuEvent e) {
+    }
+
+    @Override
+    public void menuCanceled(MenuEvent e) {
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
     }
 
     /**
@@ -193,6 +294,9 @@ public class WindowSupport<T> implements MenuListener {
         JMenu wm = (JMenu) e.getSource();
         wm.removeAll();
         int count = 0;
+
+        // undo resize or move
+        wm.add(new RevertBoundsAction());
 
         // まず，カルテとインスペクタ以外
         for (WindowSupport<?> ws : allWindows) {
@@ -239,12 +343,21 @@ public class WindowSupport<T> implements MenuListener {
         }
     }
 
-    @Override
-    public void menuDeselected(MenuEvent e) {
-    }
-
-    @Override
-    public void menuCanceled(MenuEvent e) {
+    /**
+     * ウインドウの大きさ・位置変更を、元に戻す action.
+     */
+    private class RevertBoundsAction extends AbstractAction {
+        public RevertBoundsAction() {
+            putValue(Action.NAME, "ウインドウの位置を元に戻す");
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int x = frame.getX(), y = frame.getY(), width = frame.getWidth(), height = frame.getHeight();
+            moved = x != pX || y != pY;
+            resized = width != pW || height != pH;
+            frame.setBounds(pX, pY, pW, pH);
+            pX = x; pY = y; pW = width; pH = height;
+        }
     }
 
     /**
@@ -253,10 +366,6 @@ public class WindowSupport<T> implements MenuListener {
     private class ArrangeInspectorAction extends AbstractAction {
 
         public ArrangeInspectorAction() {
-            initComponent();
-        }
-
-        private void initComponent() {
             putValue(Action.NAME, "インスペクタを整列");
             //putValue(Action.SMALL_ICON, GUIConst.ICON_WINDOWS_22);
             putValue(Action.SMALL_ICON, GUIConst.ICON_WINDOW_STACK_16);

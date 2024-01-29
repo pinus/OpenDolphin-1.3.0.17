@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.PNSTask;
 import open.dolphin.helper.WindowSupport;
@@ -180,9 +179,6 @@ public class ImageBox extends AbstractMainTool {
         } else {
             frame = new PNSFrame(title);
         }
-
-        ComponentBoundsManager cm = new ComponentBoundsManager(frame, DEFAULT_LOC, DEFAULT_SIZE, this);
-        cm.revertToPreferenceBounds();
 
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
