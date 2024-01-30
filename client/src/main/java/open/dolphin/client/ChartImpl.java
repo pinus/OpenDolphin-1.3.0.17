@@ -432,7 +432,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
             @Override
             protected KarteBean doInBackground() {
-                //logger.info("CahrtImpl start task doInBackground");
+                //logger.info("ChartImpl start task doInBackground");
                 //
                 // Database から患者のカルテを取得する
                 //
@@ -449,7 +449,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
             @Override
             protected void succeeded(KarteBean karteBean) {
-                //logger.info("CahrtImpl start task succeeded");
+                //logger.info("ChartImpl start task succeeded");
 
                 karteBean.setPatient(getPatientVisit().getPatient());
                 setKarte(karteBean);
@@ -484,7 +484,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
                 getPatient().getKanaName().replace("　", " "),
                 getPatient().getPatientId());
 
-        windowSupport = WindowSupport.create(title, this);
+        windowSupport = new WindowSupport<>(title, this);
 
         // チャート用のメニューバーを得る
         JMenuBar myMenuBar = windowSupport.getMenuBar();
@@ -573,19 +573,19 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
         // カルテ登録日 Status パネルの右側に配置する
         String rdFormat = ClientContext.getString("common.dateFormat");         // yyyy-MM-dd
         String rdPrifix = ClientContext.getString("common.registeredDatePrefix");     // カルテ登録日:
-        String patienIdPrefix = ClientContext.getString("common.registeredDatePatientIdPrefix"); // 患者ID:
+        String patientIdPrefix = ClientContext.getString("common.registeredDatePatientIdPrefix"); // 患者ID:
         Date date = getKarte().getCreated();
         SimpleDateFormat sdf = new SimpleDateFormat(rdFormat);
         String created = sdf.format(date);
 
         // status panel 設定
         // 患者ID Status パネルの左に配置する
-        //statusPanel.setLeftInfo(patienIdPrefix + " " + getKarte().getPatient().getPatientId()); // 患者ID:xxxxxx
+        //statusPanel.setLeftInfo(patientIdPrefix + " " + getKarte().getPatient().getPatientId()); // 患者ID:xxxxxx
         statusPanel.add("", "message"); // key "message" の JLabel : AbstractChartDocument#enter と LaboTestBean で使う
         statusPanel.addGlue();
         statusPanel.addProgressBar();
         statusPanel.addSeparator();
-        statusPanel.add(patienIdPrefix + " " + getKarte().getPatient().getPatientId());
+        statusPanel.add(patientIdPrefix + " " + getKarte().getPatient().getPatientId());
         statusPanel.addSeparator();
         statusPanel.add(rdPrifix + " " + created);
 
@@ -651,22 +651,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
         // このチャートの Window にリスナを設定する
         frame.addWindowListener(this);
 
-        // Frame の大きさをストレージからロードする
-        frame.pack(); // pack しないと，TextField に文字を入力してリターンを押した後にレイアウトがずれる
-        Point defaultLocation = new Point(5, 20);
-        Dimension defaultSize = new Dimension(900, 740);
-        ComponentBoundsManager manager = new ComponentBoundsManager(frame, defaultLocation, defaultSize, this);
-
         // フレームの表示位置を決める J2SE 5.0
         boolean locByPlatform = Project.getPreferences().getBoolean(Project.LOCATION_BY_PLATFORM, false);
 
         if (locByPlatform) {
             frame.setLocationByPlatform(true);
-            manager.putCenter();
-
+            windowSupport.toCenter();
         } else {
             frame.setLocationByPlatform(false);
-            manager.revertToPreferenceBounds();
         }
 
         frame.setVisible(true);
@@ -755,7 +747,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
 
     /**
      * ChartImpl から DiagnosisDocument を取る.
-     * DiangosisInspector, DiagnosisInspectorTransferHandler, UserStampBox から呼ばれる.
+     * DiagnosisInspector, DiagnosisInspectorTransferHandler, UserStampBox から呼ばれる.
      * DiagnosisInspector は loadDocuments() が完了する前に呼びに来る.
      *
      * @return DiagnosisDocument
@@ -1543,7 +1535,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     /**
      * 通常の State クラス.
      */
-    private final class OrdinalyState extends ChartState {
+    private final class OrdinaryState extends ChartState {
         @Override
         public void controlMenu() {
             mediator.getAction(GUIConst.ACTION_NEW_KARTE).setEnabled(true);
@@ -1556,14 +1548,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     private final class StateMgr {
         private final ChartState readOnlyState = new ReadOnlyState();
         private final ChartState noInsuranceState = new NoInsuranceState();
-        private final ChartState ordinalyState = new OrdinalyState();
+        private final ChartState ordinaryState = new OrdinaryState();
         private ChartState currentState;
 
         public StateMgr() {
             if (isReadOnly()) {
                 enterReadOnlyState();
             } else {
-                enterOrdinalyState();
+                enterOrdinaryState();
             }
         }
 
@@ -1577,8 +1569,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
             currentState.controlMenu();
         }
 
-        public void enterOrdinalyState() {
-            currentState = ordinalyState;
+        public void enterOrdinaryState() {
+            currentState = ordinaryState;
             currentState.controlMenu();
         }
 

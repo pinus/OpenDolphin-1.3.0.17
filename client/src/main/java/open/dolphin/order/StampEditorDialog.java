@@ -2,7 +2,7 @@ package open.dolphin.order;
 
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
-import open.dolphin.helper.ComponentBoundsManager;
+import open.dolphin.helper.WindowSupport;
 import open.dolphin.order.stampeditor.StampEditor;
 import open.dolphin.order.tablepanel.ItemTablePanel;
 import open.dolphin.ui.BlockGlass2;
@@ -31,8 +31,6 @@ import java.util.stream.Stream;
 public class StampEditorDialog {
 
     public static final String VALUE_PROP = "value";
-    private static final Point DEFAULT_LOC = new Point(159, 67);
-    private static final Dimension DEFAULT_SIZE = new Dimension(924, 616);
     private final PropertyChangeSupport boundSupport;
     private final String entity;
     private final Logger logger;
@@ -46,7 +44,7 @@ public class StampEditorDialog {
      * target editor
      */
     private StampEditor editor;
-    private JFrame dialog;
+    private WindowSupport<StampEditorDialog> windowSupport;
     private Object value;
     private BlockGlass2 glass;
 
@@ -69,10 +67,12 @@ public class StampEditorDialog {
      * GUIコンポーネントを初期化する.
      */
     private void initialize() {
+        editor = new StampEditor(this.entity);
+        editor.start();
 
-        dialog = new JFrame();
+        windowSupport = new WindowSupport<>(editor.getTitle(), this);
+        JFrame dialog = windowSupport.getFrame();
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
-
         dialog.setAlwaysOnTop(true);
 
         okButton = new JButton("カルテに展開");
@@ -88,12 +88,6 @@ public class StampEditorDialog {
             close();
         });
 
-        // BlockGlass を生成し dialog に設定する
-        glass = new BlockGlass2();
-        dialog.setGlassPane(glass);
-
-        editor = new StampEditor(this.entity);
-        editor.start();
         editor.addValidListener(okButton::setEnabled);
         editor.setValue(value);
 
@@ -117,16 +111,12 @@ public class StampEditorDialog {
             }
         });
 
-        dialog.setTitle(editor.getTitle());
-        ComponentBoundsManager cm = new ComponentBoundsManager(dialog, DEFAULT_LOC, DEFAULT_SIZE, this);
-        cm.revertToPreferenceBounds();
-
         //ESC で編集内容破棄してクローズ
         InputMap im = dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         im.put(KeyStroke.getKeyStroke("ESCAPE"), "cancel");
         dialog.getRootPane().getActionMap().put("cancel", new ProxyAction(this::escape));
 
-        // commnad-w で，保存ダイアログを出してから終了
+        // command-w で，保存ダイアログを出してから終了
         im.put(KeyStroke.getKeyStroke("meta W"), "close-window");
         dialog.getRootPane().getActionMap().put("close-window", new ProxyAction(() -> {
             int ans = JSheet.showOptionDialog(dialog, "カルテに展開しますか？", "",
@@ -193,14 +183,12 @@ public class StampEditorDialog {
      * 閉じるときにリスナに通知する.
      */
     public void close() {
-        glass.setVisible(true);
         editor.dispose();
-        dialog.setVisible(false);
-        dialog.dispose();
         boundSupport.firePropertyChange(VALUE_PROP, isNew, value);
-        glass.setVisible(false);
 
         Stream.of(boundSupport.getPropertyChangeListeners()).
             forEach(boundSupport::removePropertyChangeListener);
+
+        windowSupport.dispose();
     }
 }

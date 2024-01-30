@@ -3,10 +3,10 @@ package open.dolphin.client;
 import open.dolphin.delegater.BusinessDelegater;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.HashUtil;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.PNSTask;
+import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.IndentTableCellRenderer;
@@ -40,10 +40,8 @@ public class AddUser extends AbstractMainTool {
     private static final String ADD_USER_SUCCESS_MSG = "ユーザを登録しました。";
     private static final String DELETE_USER_SUCCESS_MSG = "ユーザを削除しました。";
     private static final String DELETE_OK_USER = "選択したユーザを削除します";
-    private static final Point DEFAULT_LOC = new Point(0, 0);
-    private static final Dimension DEFAULT_SIZE = new Dimension(600, 370);
     private final Logger logger;
-    private JFrame frame;
+    private WindowSupport<AddUser> windowSupport;
 
     public AddUser() {
         setName(TITLE);
@@ -52,9 +50,9 @@ public class AddUser extends AbstractMainTool {
 
     @Override
     public void start() {
-
         String title = ClientContext.getFrameTitle(getName());
-        frame = new JFrame(title);
+        windowSupport = new WindowSupport<>(title, this);
+        JFrame frame = windowSupport.getFrame();
         frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
@@ -77,24 +75,17 @@ public class AddUser extends AbstractMainTool {
         // Frame に加える
         frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
         frame.pack();
-
-        // putCenter で強制的に中心に置かれる
-        ComponentBoundsManager cm = new ComponentBoundsManager(frame, DEFAULT_LOC, DEFAULT_SIZE, this);
-        cm.putCenter();
-
+        windowSupport.toCenter();
         frame.setVisible(true);
     }
 
     @Override
     public void stop() {
-        frame.setVisible(false);
-        frame.dispose();
+        windowSupport.dispose();
     }
 
     public void toFront() {
-        if (frame != null) {
-            frame.toFront();
-        }
+        windowSupport.getFrame().toFront();
     }
 
     private void constrain(JPanel container, Component cmp, int x, int y,
@@ -110,18 +101,6 @@ public class AddUser extends AbstractMainTool {
         c.insets = new Insets(0, 0, 5, 7);
         ((GridBagLayout) container.getLayout()).setConstraints(cmp, c);
         container.add(cmp);
-    }
-
-    /**
-     * タイムアウト警告表示を行う.
-     */
-    private void wraningTimeOut() {
-        String message = ClientContext.getString("task.timeoutMsg1") + "\n" +
-            ClientContext.getString("task.timeoutMsg1");
-        JOptionPane.showMessageDialog(frame,
-            message,
-            ClientContext.getFrameTitle(getName()),
-            JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -287,13 +266,13 @@ public class AddUser extends AbstractMainTool {
                 return;
             }
 
-            boolean nameEmpty = facilityName.getText().trim().equals("");
-            boolean zip1Empty = zipField1.getText().trim().equals("");
-            boolean zip2Empty = zipField2.getText().trim().equals("");
-            boolean addressEmpty = addressField.getText().trim().equals("");
-            boolean areaEmpty = areaField.getText().trim().equals("");
-            boolean cityEmpty = cityField.getText().trim().equals("");
-            boolean numberEmpty = numberField.getText().trim().equals("");
+            boolean nameEmpty = facilityName.getText().isBlank();
+            boolean zip1Empty = zipField1.getText().isBlank();
+            boolean zip2Empty = zipField2.getText().isBlank();
+            boolean addressEmpty = addressField.getText().isBlank();
+            boolean areaEmpty = areaField.getText().isBlank();
+            boolean cityEmpty = cityField.getText().isBlank();
+            boolean numberEmpty = numberField.getText().isBlank();
 
             if (nameEmpty && zip1Empty && zip2Empty && addressEmpty
                     && areaEmpty && cityEmpty && numberEmpty) {
@@ -331,20 +310,20 @@ public class AddUser extends AbstractMainTool {
 
             // 施設名
             String val = facilityName.getText().trim();
-            if (!val.equals("")) {
+            if (!val.isEmpty()) {
                 facility.setFacilityName(val);
             }
 
             // 郵便番号
             val = zipField1.getText().trim();
             String val2 = zipField2.getText().trim();
-            if ((!val.equals("")) && (!val2.equals(""))) {
+            if ((!val.isEmpty()) && (!val2.isEmpty())) {
                 facility.setZipCode(val + "-" + val2);
             }
 
             // 住所
             val = addressField.getText().trim();
-            if (!val.equals("")) {
+            if (!val.isEmpty()) {
                 facility.setAddress(val);
             }
 
@@ -352,13 +331,13 @@ public class AddUser extends AbstractMainTool {
             val = areaField.getText().trim();
             val2 = cityField.getText().trim();
             String val3 = numberField.getText().trim();
-            if ((!val.equals("")) && (!val2.equals("")) && (!val3.equals(""))) {
+            if ((!val.isEmpty()) && (!val2.isEmpty()) && (!val3.isEmpty())) {
                 facility.setTelephone(val + "-" + val2 + "-" + val3);
             }
 
             // URL
             val = urlField.getText().trim();
-            if (!val.equals("")) {
+            if (!val.isEmpty()) {
                 facility.setUrl(val);
             }
 
@@ -373,7 +352,7 @@ public class AddUser extends AbstractMainTool {
             String updateMsg = ClientContext.getString("task.default.updateMessage");
             String message = null;
 
-            PNSTask<Boolean> task = new PNSTask<>(frame, message, updateMsg, maxEstimation) {
+            PNSTask<Boolean> task = new PNSTask<>(windowSupport.getFrame(), message, updateMsg, maxEstimation) {
                 @Override
                 protected Boolean doInBackground() {
                     logger.debug("updateUser doInBackground");
@@ -385,12 +364,12 @@ public class AddUser extends AbstractMainTool {
                 protected void succeeded(Boolean result) {
                     logger.debug("updateUser succeeded");
                     if (result) {
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(windowSupport.getFrame(),
                             FACILITY_SUCCESS_MSG,
                             ClientContext.getFrameTitle(getName()),
                             JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(windowSupport.getFrame(),
                             udl.getErrorMessage(),
                             ClientContext.getFrameTitle(getName()),
                             JOptionPane.WARNING_MESSAGE);
@@ -448,7 +427,7 @@ public class AddUser extends AbstractMainTool {
                     }
                     UserModel entry = tableModel.getObject(index);
                     if (entry != null) {
-                        controleDelete(entry);
+                        controlDelete(entry);
                     }
                 }
             });
@@ -485,7 +464,7 @@ public class AddUser extends AbstractMainTool {
          *
          * @param user UserModel
          */
-        private void controleDelete(UserModel user) {
+        private void controlDelete(UserModel user) {
             boolean isMe = user.getId() == Project.getUserModel().getId();
             deleteButton.setEnabled(!isMe);
         }
@@ -502,7 +481,7 @@ public class AddUser extends AbstractMainTool {
             String note = ClientContext.getString("task.default.searchMessage");
             String message = null;
 
-            PNSTask<List<UserModel>> task = new PNSTask<>(frame, message, note, maxEstimation) {
+            PNSTask<List<UserModel>> task = new PNSTask<>(windowSupport.getFrame(), message, note, maxEstimation) {
                 @Override
                 protected List<UserModel> doInBackground() {
                     logger.debug("getUsers doInBackground");
@@ -515,7 +494,7 @@ public class AddUser extends AbstractMainTool {
                     if (udl.getErrorCode() == BusinessDelegater.Result.NO_ERROR) {
                         tableModel.setObjectList(results);
                     } else {
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(windowSupport.getFrame(),
                             udl.getErrorMessage(),
                             ClientContext.getFrameTitle(getName()),
                             JOptionPane.WARNING_MESSAGE);
@@ -550,7 +529,7 @@ public class AddUser extends AbstractMainTool {
 
             final String deleteId = entry.getUserId();
 
-            PNSTask<List<UserModel>> task = new PNSTask<>(frame, message, note, maxEstimation) {
+            PNSTask<List<UserModel>> task = new PNSTask<>(windowSupport.getFrame(), message, note, maxEstimation) {
                 @Override
                 protected List<UserModel> doInBackground() {
                     logger.debug("deleteUser doInBackground");
@@ -566,13 +545,13 @@ public class AddUser extends AbstractMainTool {
                     logger.debug("deleteUser succeeded");
                     if (udl.getErrorCode() == BusinessDelegater.Result.NO_ERROR) {
                         tableModel.setObjectList(results);
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(windowSupport.getFrame(),
                             DELETE_USER_SUCCESS_MSG,
                             ClientContext.getFrameTitle(getName()),
                             JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(windowSupport.getFrame(),
                             udl.getErrorMessage(),
                             ClientContext.getFrameTitle(getName()),
                             JOptionPane.WARNING_MESSAGE);
@@ -808,7 +787,7 @@ public class AddUser extends AbstractMainTool {
             String addMsg = ClientContext.getString("task.default.addMessage");
             String message = null;
 
-            PNSTask<Boolean> task = new PNSTask<>(frame, message, addMsg, maxEstimation) {
+            PNSTask<Boolean> task = new PNSTask<>(windowSupport.getFrame(), message, addMsg, maxEstimation) {
                 @Override
                 protected Boolean doInBackground() {
                     logger.debug("addUserEntry doInBackground");
@@ -820,13 +799,13 @@ public class AddUser extends AbstractMainTool {
                 protected void succeeded(Boolean results) {
                     logger.debug("addUserEntry succeeded");
                     if (results) {
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(windowSupport.getFrame(),
                                 ADD_USER_SUCCESS_MSG,
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(windowSupport.getFrame(),
                                 udl.getErrorMessage(),
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.WARNING_MESSAGE);
@@ -840,7 +819,7 @@ public class AddUser extends AbstractMainTool {
         private boolean userIdOk() {
 
             String userId = uid.getText().trim();
-            if (userId.equals("")) {
+            if (userId.isEmpty()) {
                 return false;
             }
 
@@ -853,7 +832,7 @@ public class AddUser extends AbstractMainTool {
             String passwd1 = new String(userPassword1.getPassword());
             String passwd2 = new String(userPassword2.getPassword());
 
-            if (passwd1.equals("") || passwd2.equals("")) {
+            if (passwd1.isEmpty() || passwd2.isEmpty()) {
                 return false;
             }
 
@@ -874,11 +853,11 @@ public class AddUser extends AbstractMainTool {
 
             boolean userOk = userIdOk();
             boolean passwordOk = passwordOk();
-            boolean snOk = !surName.getText().trim().equals("");
-            boolean givenOk = !givenName.getText().trim().equals("");
-            boolean emailOk = !emailField.getText().trim().equals("");
+            boolean snOk = !surName.getText().isBlank();
+            boolean givenOk = !givenName.getText().isBlank();
+            boolean emailOk = !emailField.getText().isBlank();
 
-            boolean newOk = (userOk && passwordOk && snOk && givenOk && emailOk);
+            boolean newOk = userOk && passwordOk && snOk && givenOk && emailOk;
 
             if (ok != newOk) {
                 ok = newOk;

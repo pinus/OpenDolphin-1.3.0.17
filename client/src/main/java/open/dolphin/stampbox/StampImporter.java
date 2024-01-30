@@ -1,13 +1,12 @@
 package open.dolphin.stampbox;
 
 import open.dolphin.client.ClientContext;
-import open.dolphin.client.Dolphin;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.delegater.StampDelegater;
-import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.PNSTask;
+import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.PublishedTreeModel;
 import open.dolphin.infomodel.SubscribedTreeModel;
@@ -42,12 +41,10 @@ public class StampImporter {
     private static final ImageIcon HOME_ICON = GUIConst.ICON_HOME_16;
     private static final ImageIcon FLAG_ICON = GUIConst.ICON_FLAG_16;
 
-    private static final int WIDTH = 780;
-    private static final int HEIGHT = 380;
     private final StampBoxPlugin stampBox;
     private final List<Long> importedTreeList;
     private final Logger logger;
-    private JFrame frame;
+    private WindowSupport<StampImporter> windowSupport;
     //private ObjectListTable browseTable;
     private JTable table;
     private ObjectReflectTableModel<PublishedTreeModel> tableModel;
@@ -90,7 +87,7 @@ public class StampImporter {
                 if (sdl.isNoError() && result != null) {
                     // DBから取得が成功したらGUIコンポーネントを生成する
                     initComponent();
-                    if (importedTreeList != null && importedTreeList.size() > 0) {
+                    if (importedTreeList != null && !importedTreeList.isEmpty()) {
                         for (PublishedTreeModel model : result) {
                             for (Long id : importedTreeList) {
                                 if (id == model.getId()) {
@@ -102,7 +99,7 @@ public class StampImporter {
                     }
                     tableModel.setObjectList(result);
                 } else {
-                    PNSOptionPane.showMessageDialog(frame,
+                    PNSOptionPane.showMessageDialog(windowSupport.getFrame(),
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(TITLE),
                             JOptionPane.WARNING_MESSAGE);
@@ -117,7 +114,8 @@ public class StampImporter {
      * GUIコンポーネントを初期化する.
      */
     public void initComponent() {
-        frame = new JFrame(ClientContext.getFrameTitle(TITLE));
+        windowSupport = new WindowSupport<>(ClientContext.getFrameTitle(TITLE), this);
+        JFrame frame = windowSupport.getFrame();
         frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         frame.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
@@ -128,18 +126,13 @@ public class StampImporter {
                 stop();
             }
         });
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        int n = Dolphin.forWin ? 2 : 3;
-        int x = (screen.width - WIDTH) / 2;
-        int y = (screen.height - HEIGHT) / n;
-        ComponentBoundsManager cm = new ComponentBoundsManager(frame, new Point(x, y), new Dimension(WIDTH, HEIGHT), this);
-        cm.revertToPreferenceBounds();
 
         JPanel contentPane = createBrowsePane();
         contentPane.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
-
         contentPane.setOpaque(true);
         frame.setContentPane(contentPane);
+
+        windowSupport.toCenter();
         frame.setVisible(true);
     }
 
@@ -147,8 +140,7 @@ public class StampImporter {
      * 終了する.
      */
     public void stop() {
-        frame.setVisible(false);
-        frame.dispose();
+        windowSupport.dispose();
     }
 
     /**
@@ -262,7 +254,7 @@ public class StampImporter {
         int maxEstimation = 60 * 1000;
         String mmsg = "公開スタンプをインポートしています...";
         String message = "スタンプ取り込み";
-        Component c = frame;
+        Component c = windowSupport.getFrame();
 
         PNSTask<Boolean> task = new PNSTask<>(c, message, mmsg, maxEstimation) {
 
@@ -282,7 +274,7 @@ public class StampImporter {
                     tableModel.fireTableDataChanged();
 
                 } else {
-                    PNSOptionPane.showMessageDialog(frame,
+                    PNSOptionPane.showMessageDialog(windowSupport.getFrame(),
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(TITLE),
                             JOptionPane.WARNING_MESSAGE);
@@ -317,7 +309,7 @@ public class StampImporter {
         int maxEstimation = 60 * 1000;
         String mmsg = "インポート済みスタンプを削除しています...";
         String message = "スタンプ取り込み";
-        Component c = frame;
+        Component c = windowSupport.getFrame();
 
         PNSTask<Boolean> task = new PNSTask<>(c, message, mmsg, maxEstimation) {
             @Override
@@ -336,7 +328,7 @@ public class StampImporter {
                     tableModel.fireTableDataChanged();
 
                 } else {
-                    PNSOptionPane.showMessageDialog(frame,
+                    PNSOptionPane.showMessageDialog(windowSupport.getFrame(),
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(TITLE),
                             JOptionPane.WARNING_MESSAGE);

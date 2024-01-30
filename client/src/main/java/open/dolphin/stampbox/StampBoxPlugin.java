@@ -59,7 +59,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     private AbstractStampBox curBox;
     // インポートしている StampTree のリスト
     private List<Long> importedTreeList;
-    // Stampmaker ボタン
+    // StampMaker ボタン
     private JToggleButton toolBtn;
     // StampMakerPanel
     private StampMakerPanel stampMaker;
@@ -73,7 +73,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     private int stampBoxWidth;
     // StampBox 高さ
     private int stampBoxHeight;
-    // このスタンプボックスの StmpTreeModel
+    // このスタンプボックスの StampTreeModel
     private List<StampTreeBean> stampTreeModels;
     // mac でメニューが消えないようにするために使う
     private MenuSupport mediator;
@@ -192,7 +192,7 @@ public class StampBoxPlugin extends AbstractMainTool {
                 StampDelegater stampDel = new StampDelegater();
                 List<StampTreeBean> treeList = stampDel.getTrees(userPk);
                 if (!stampDel.isNoError()) {
-                    logger.error("Could't read the stamp tree");
+                    logger.error("Couldn't read the stamp tree");
                     return false;
                 }
                 logger.info("Read the user's tree successfully");
@@ -212,7 +212,7 @@ public class StampBoxPlugin extends AbstractMainTool {
                 }
                 // 新規ユーザでデータベースに個人用の StampTree が存在しなかった場合，stamptree-seed.xml から新規に作成する
                 if (!hasTree) {
-                    logger.info("New user, constract user's tree by resource");
+                    logger.info("New user, construct user's tree by resource");
                     try (
                             InputStream in = ClientContext.getResourceAsStream("stamptree-seed.xml");
                             BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
@@ -275,7 +275,7 @@ public class StampBoxPlugin extends AbstractMainTool {
 
         // mac で StampBox にもメニューバーを出す
         if (Dolphin.forMac) {
-            WindowSupport<StampBoxPlugin> windowSupport = WindowSupport.create(title, this);
+            WindowSupport<StampBoxPlugin> windowSupport = new WindowSupport<>(title, this);
             frame = windowSupport.getFrame();
             frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 105);
             frame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
@@ -579,10 +579,10 @@ public class StampBoxPlugin extends AbstractMainTool {
         // 前回終了時の位置とサイズを取得する
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         String name = this.getClass().getName();
-        int locX = prefs.getInt(name + ".stampmMaker.x", 0);
-        int locY = prefs.getInt(name + ".stampmMaker.y", 0);
-        int width = prefs.getInt(name + ".stampmMaker.width", 0);
-        int height = prefs.getInt(name + ".stampmMaker.height", 0);
+        int locX = prefs.getInt(name + ".stampMaker.x", 0);
+        int locY = prefs.getInt(name + ".stampMaker.y", 0);
+        int width = prefs.getInt(name + ".stampMaker.width", 0);
+        int height = prefs.getInt(name + ".stampMaker.height", 0);
 
         if (width == 0 || height == 0 || Math.abs(stampBoxWidth - width) < 100) {
             // センタリングする
@@ -614,10 +614,10 @@ public class StampBoxPlugin extends AbstractMainTool {
         // 現在の大きさと位置をPreferenceに保存ずる
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         String name = this.getClass().getName();
-        prefs.putInt(name + ".stampmMaker.x", frame.getLocation().x);
-        prefs.putInt(name + ".stampmMaker.y", frame.getLocation().y);
-        prefs.putInt(name + ".stampmMaker.width", frame.getWidth());
-        prefs.putInt(name + ".stampmMaker.height", frame.getHeight());
+        prefs.putInt(name + ".stampMaker.x", frame.getLocation().x);
+        prefs.putInt(name + ".stampMaker.y", frame.getLocation().y);
+        prefs.putInt(name + ".stampMaker.width", frame.getWidth());
+        prefs.putInt(name + ".stampMaker.height", frame.getHeight());
 
         stampMaker.close();
         stampMaker.removePropertyChangeListener(StampMakerPanel.EDITOR_VALUE_PROP, editorValueListener);
@@ -730,7 +730,7 @@ public class StampBoxPlugin extends AbstractMainTool {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         String name = (StampBoxPlugin.this).getClass().getName();
 
-        // StampMeker modeで終了した場合，
+        // StampMaker modeで終了した場合，
         // 次回起動時に通常モードの位置と大きさで表示するため
         if (editing) {
             prefs.putInt(name + "_x", stampBoxLoc.x);
@@ -827,7 +827,7 @@ public class StampBoxPlugin extends AbstractMainTool {
     }
 
     /**
-     * Currentボックスの P 関連Staptreeを返す.
+     * Currentボックスの P 関連 StampTree を返す.
      *
      * @return StampTreeのリスト
      */

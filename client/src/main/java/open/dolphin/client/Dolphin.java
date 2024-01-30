@@ -229,7 +229,7 @@ public class Dolphin implements MainWindow {
         // WindowSupport を生成する この時点で Frame,WindowMenu を持つMenuBar が生成されている
         String title = Dolphin.forWin ? "" : ClientContext.getFrameTitle(windowTitle);
         // System.out.println(title);
-        windowSupport = WindowSupport.create(title, this);
+        windowSupport = new WindowSupport(title, this);
         PNSFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
         //myFrame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
         //myFrame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );

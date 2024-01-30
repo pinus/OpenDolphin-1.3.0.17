@@ -1,9 +1,6 @@
 package open.dolphin.helper;
 
-import open.dolphin.client.Chart;
-import open.dolphin.client.ChartImpl;
-import open.dolphin.client.EditorFrame;
-import open.dolphin.client.GUIConst;
+import open.dolphin.client.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSFrame;
 import org.slf4j.LoggerFactory;
@@ -23,7 +20,6 @@ import java.util.prefs.Preferences;
 
 /**
  * Window Menu をサポートするためのクラス.
- * Factory method で WindowMenu をもつ JFrame を生成する.
  *
  * @author Minagawa, Kazushi
  * @author pns
@@ -56,13 +52,32 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     private boolean moved, resized;
     private Timer timer;
 
-    // プライベートコンストラクタ
-    private WindowSupport(PNSFrame frame, JMenuBar menuBar, JMenu windowMenu, Action windowAction, T content) {
-        this.frame = frame;
-        this.menuBar = menuBar;
-        this.windowMenu = windowMenu;
-        this.windowAction = windowAction;
+    public WindowSupport(String title, T content) {
         this.content = content;
+
+        // フレームを生成する
+        frame = new PNSFrame(title);
+        frame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+
+        // メニューバーを生成する
+        menuBar = new JMenuBar();
+        frame.setJMenuBar(menuBar);
+
+        // Window メニューを生成する
+        windowMenu = new JMenu(WINDOW_MENU_NAME);
+        menuBar.add(windowMenu);
+        // インスペクタを整列するアクションだけはあらかじめ入れておく
+        // こうしておかないと，１回 window メニューを開かないと accelerator が効かないことになる
+        windowMenu.add(new ArrangeInspectorAction());
+
+        // Windowメニューのアクション
+        // 選択されたらフレームを前面にする
+        windowAction = new AbstractAction(title) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.toFront();
+            }
+        };
 
         // bounds manager
         String key = content.getClass().getName();
@@ -76,52 +91,14 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         pW = pref.getInt(keyW, 1280);
         pH = pref.getInt(keyH, 760);
         frame.setBounds(pX, pY, pW, pH);
-        logger.info(String.format("bounds loaded %s %d %d %d %d", key, pX, pY, pW, pH));
-
-        // インスペクタを整列するアクションだけはあらかじめ入れておく
-        // こうしておかないと，１回 window メニューを開かないと accelerator が効かないことになる
-        windowMenu.add(new ArrangeInspectorAction());
-    }
-
-    /**
-     * WindowSupport を生成する.
-     *
-     * @param title   フレームタイトル
-     * @param content 内容
-     * @return WindowSupport
-     */
-    public static <K> WindowSupport<K> create(String title, K content) {
-        // フレームを生成する
-        final PNSFrame f = new PNSFrame(title);
-        f.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-
-        // メニューバーを生成する
-        JMenuBar mBar = new JMenuBar();
-        f.setJMenuBar(mBar);
-
-        // Window メニューを生成する
-        JMenu wMenu = new JMenu(WINDOW_MENU_NAME);
-        mBar.add(wMenu);
-
-        // Windowメニューのアクション
-        // 選択されたらフレームを前面にする
-        Action wAction = new AbstractAction(title) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                f.toFront();
-            }
-        };
-
-        // インスタンスを生成する
-        final WindowSupport<K> windowSupport = new WindowSupport<>(f, mBar, wMenu, wAction, content);
-        allWindows.add(windowSupport);
-        logger.info(content.getClass().getName() + " created " + allWindows.size());
+        //logger.info(String.format("bounds loaded %s %d %d %d %d", key, pX, pY, pW, pH));
 
         // リスナ
-        f.addComponentListener(windowSupport);
-        wMenu.addMenuListener(windowSupport);
+        frame.addComponentListener(this);
+        windowMenu.addMenuListener(this);
 
-        return windowSupport;
+        allWindows.add(this);
+        //logger.info(content.getClass().getName() + " created " + allWindows.size());
     }
 
     /**
@@ -230,8 +207,8 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
             moved = false;
             resized = false;
             timer = null;
-            logger.info(String.format("bounds saved %s %d %d %d %d", content.getClass().getName(), r.x, r.y, r.width, r.height));
-            logger.info(String.format("bounds previous %s %d %d %d %d", content.getClass().getName(), pX, pY, pW, pH));
+            //logger.info(String.format("bounds saved %s %d %d %d %d", content.getClass().getName(), r.x, r.y, r.width, r.height));
+            //logger.info(String.format("bounds previous %s %d %d %d %d", content.getClass().getName(), pX, pY, pW, pH));
         }
     }
 
@@ -250,8 +227,9 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     @Override
     public void componentMoved(ComponentEvent e) {
         if (!moved) {
-            pX = frame.getX();
-            pY = frame.getY();
+            // この時点で、frame は既に少し動いている
+            pX = pref.getInt(keyX, 100);
+            pY = pref.getInt(keyY, 50);
         }
         moved = true;
         restartTimer();
@@ -260,8 +238,8 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     @Override
     public void componentResized(ComponentEvent e) {
         if (!resized) {
-            pW = frame.getWidth();
-            pH = frame.getHeight();
+            pW = pref.getInt(keyW, 1280);
+            pH = pref.getInt(keyH, 760);
         }
         resized = true;
         restartTimer();
@@ -281,6 +259,17 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
 
     @Override
     public void componentHidden(ComponentEvent e) {
+    }
+
+    /**
+     * target frame を画面中央に設定する.
+     */
+    public void toCenter() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension size = frame.getSize();
+        int x = (screenSize.width - size.width) / 2;
+        int y = (screenSize.height - size.height) / (Dolphin.forMac? 3:2);
+        frame.setBounds(x, y, size.width, size.height);
     }
 
     /**

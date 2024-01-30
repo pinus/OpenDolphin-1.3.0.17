@@ -6,10 +6,10 @@ import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.delegater.StampDelegater;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.helper.StampTreeUtils;
 import open.dolphin.helper.PNSTask;
+import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSOptionPane;
@@ -23,10 +23,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * StampTreePublisher.
@@ -34,14 +32,11 @@ import java.util.StringTokenizer;
  * @author Kazushi, Minagawa
  */
 public class StampPublisher {
-
-    private static final int WIDTH = 858;
-    private static final int HEIGHT = 477;
     private final StampBoxPlugin stampBox;
     private final String title = "スタンプ公開";
     private final Logger logger;
-    private JFrame dialog;
-    private JLabel infoLable;
+    private WindowSupport<StampPublisher> windowSupport;
+    private JLabel infoLabel;
     private JLabel instLabel;
     private JLabel publishedDate;
     private JTextField stampBoxName;
@@ -49,7 +44,7 @@ public class StampPublisher {
     private JTextField contact;
     private JTextField description;
     private JRadioButton local;
-    private JRadioButton publc;
+    private JRadioButton global;
     private JButton publish;
     private JButton cancel;
     private JButton cancelPublish;
@@ -66,8 +61,8 @@ public class StampPublisher {
     }
 
     public void start() {
-
-        dialog = new JFrame(ClientContext.getFrameTitle(title));
+        windowSupport = new WindowSupport<>(ClientContext.getFrameTitle(title), this);
+        JFrame dialog = windowSupport.getFrame();
         dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         dialog.setIconImage(GUIConst.ICON_DOLPHIN.getImage());
 
@@ -78,24 +73,18 @@ public class StampPublisher {
                 stop();
             }
         });
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        int n = Dolphin.forWin ? 2 : 3;
-        int x = (screen.width - WIDTH) / 2;
-        int y = (screen.height - HEIGHT) / n;
-        ComponentBoundsManager cm = new ComponentBoundsManager(dialog, new Point(x, y), new Dimension(WIDTH, HEIGHT), this);
-        cm.revertToPreferenceBounds();
 
         JPanel contentPane = createContentPane();
         contentPane.setOpaque(true);
         dialog.setContentPane(contentPane);
+        windowSupport.toCenter();
 
         stampBox.getFrame().getGlassPane().setVisible(true);
         dialog.setVisible(true);
     }
 
     public void stop() {
-        dialog.setVisible(false);
-        dialog.dispose();
+        windowSupport.dispose();
         stampBox.getFrame().getGlassPane().setVisible(false);
     }
 
@@ -104,7 +93,7 @@ public class StampPublisher {
         JPanel contentPane = new JPanel();
 
         // GUIコンポーネントを生成する
-        infoLable = new JLabel(GUIConst.ICON_INFORMATION_16);
+        infoLabel = new JLabel(GUIConst.ICON_INFORMATION_16);
         instLabel = new JLabel("");
         instLabel.setFont(new Font("Dialog", Font.PLAIN, ClientContext.getInt("waitingList.state.font.size")));
         publishedDate = new JLabel("");
@@ -114,7 +103,7 @@ public class StampPublisher {
         contact = GUIFactory.createTextField(30, null, null, null);
         description = GUIFactory.createTextField(30, null, null, null);
         local = new JRadioButton(IInfoModel.PUBLISH_TREE_LOCAL);
-        publc = new JRadioButton(IInfoModel.PUBLISH_TREE_PUBLIC);
+        global = new JRadioButton(IInfoModel.PUBLISH_TREE_PUBLIC);
         publish = new JButton("");
         publish.setEnabled(false);
         cancelPublish = new JButton("公開を止める");
@@ -138,13 +127,13 @@ public class StampPublisher {
         categoryPanel.add(category);
 
         // 公開先RadioButtonパネル
-        JPanel radioPanel = GUIFactory.createRadioPanel(new JRadioButton[]{local, publc});
+        JPanel radioPanel = GUIFactory.createRadioPanel(new JRadioButton[]{local, global});
 
         // 属性設定パネル
         GridBagBuilder gbl = new GridBagBuilder("スタンプ公開設定");
 
         int y = 0;
-        gbl.add(infoLable, 0, y, GridBagConstraints.EAST);
+        gbl.add(infoLabel, 0, y, GridBagConstraints.EAST);
         gbl.add(instLabel, 1, y, GridBagConstraints.WEST);
 
         y++;
@@ -198,18 +187,18 @@ public class StampPublisher {
         contentPane.setBorder(BorderFactory.createEmptyBorder(12, 12, 11, 11));
 
         // PublishState に応じて振り分ける
-        StampTreeBean stmpTree = stampBox.getUserStampBox().getStampTreeModel();
+        StampTreeBean stampTree = stampBox.getUserStampBox().getStampTreeModel();
         FacilityModel facility = Project.getUserModel().getFacilityModel();
         String facilityId = facility.getFacilityId();
-        long treeId = stmpTree.getId();
-        String publishTypeStr = stmpTree.getPublishType();
+        long treeId = stampTree.getId();
+        String publishTypeStr = stampTree.getPublishType();
 
         if (treeId == 0L && publishTypeStr == null) {
-            // Stamptree非保存（最初のログイン時）
+            // StampTree非保存（最初のログイン時）
             publishState = PublishedState.NONE;
 
         } else if (treeId != 0L && publishTypeStr == null) {
-            // 保存されているStamptreeで非公開のケース
+            // 保存されているStampTreeで非公開のケース
             publishState = PublishedState.SAVED_NONE;
 
         } else if (treeId != 0L && publishTypeStr.equals(facilityId)) {
@@ -234,15 +223,15 @@ public class StampPublisher {
             }
             case LOCAL -> {
                 instLabel.setText("このスタンプは院内に公開されています。");
-                stampBoxName.setText(stmpTree.getName());
+                stampBoxName.setText(stampTree.getName());
                 local.setSelected(true);
-                publc.setSelected(false);
+                global.setSelected(false);
                 publishType = PublishType.TT_LOCAL;
 
                 //
                 // Publish している Entity をチェックする
                 //
-                String published = ((PersonalTreeModel) stmpTree).getPublished();
+                String published = ((PersonalTreeModel) stampTree).getPublished();
                 if (published != null) {
                     StringTokenizer st = new StringTokenizer(published, ",");
                     while (st.hasMoreTokens()) {
@@ -256,32 +245,31 @@ public class StampPublisher {
                     }
                 }
 
-                category.setSelectedItem(stmpTree.getCategory());
-                partyName.setText(stmpTree.getPartyName());
-                contact.setText(stmpTree.getUrl());
-                description.setText(stmpTree.getDescription());
-                StringBuilder sb = new StringBuilder();
-                sb.append(ModelUtils.getDateAsString(stmpTree.getPublishedDate()));
-                sb.append("  最終更新日( ");
-                sb.append(ModelUtils.getDateAsString(stmpTree.getLastUpdated()));
-                sb.append(" )");
-                publishedDate.setText(sb.toString());
+                category.setSelectedItem(stampTree.getCategory());
+                partyName.setText(stampTree.getPartyName());
+                contact.setText(stampTree.getUrl());
+                description.setText(stampTree.getDescription());
+                String timeStamp = ModelUtils.getDateAsString(stampTree.getPublishedDate()) +
+                    "  最終更新日( " +
+                    ModelUtils.getDateAsString(stampTree.getLastUpdated()) +
+                    " )";
+                publishedDate.setText(timeStamp);
                 publish.setText("更新する");
                 publish.setEnabled(true);
                 cancelPublish.setEnabled(true);
             }
             case GLOBAL -> {
                 instLabel.setText("このスタンプはグローバルに公開されています。");
-                stampBoxName.setText(stmpTree.getName());
+                stampBoxName.setText(stampTree.getName());
                 local.setSelected(false);
-                publc.setSelected(true);
-                category.setSelectedItem(stmpTree.getCategory());
-                partyName.setText(stmpTree.getPartyName());
-                contact.setText(stmpTree.getUrl());
-                description.setText(stmpTree.getDescription());
+                global.setSelected(true);
+                category.setSelectedItem(stampTree.getCategory());
+                partyName.setText(stampTree.getPartyName());
+                contact.setText(stampTree.getUrl());
+                description.setText(stampTree.getDescription());
                 publishType = PublishType.TT_PUBLIC;
 
-                String published = ((PersonalTreeModel) stmpTree).getPublished();
+                String published = ((PersonalTreeModel) stampTree).getPublished();
                 if (published != null) {
                     StringTokenizer st = new StringTokenizer(published, ",");
                     while (st.hasMoreTokens()) {
@@ -295,12 +283,11 @@ public class StampPublisher {
                     }
                 }
 
-                StringBuilder sb = new StringBuilder();
-                sb.append(ModelUtils.getDateAsString(stmpTree.getPublishedDate()));
-                sb.append("  最終更新日( ");
-                sb.append(ModelUtils.getDateAsString(stmpTree.getLastUpdated()));
-                sb.append(" )");
-                publishedDate.setText(sb.toString());
+                String timeStamp = ModelUtils.getDateAsString(stampTree.getPublishedDate()) +
+                    "  最終更新日( " +
+                    ModelUtils.getDateAsString(stampTree.getLastUpdated()) +
+                    " )";
+                publishedDate.setText(timeStamp);
                 publish.setText("更新する");
                 publish.setEnabled(true);
                 cancelPublish.setEnabled(true);
@@ -318,10 +305,10 @@ public class StampPublisher {
         // RadioButton
         ButtonGroup bg = new ButtonGroup();
         bg.add(local);
-        bg.add(publc);
+        bg.add(global);
         PublishTypeListener pl = new PublishTypeListener();
         local.addActionListener(pl);
-        publc.addActionListener(pl);
+        global.addActionListener(pl);
 
         // CheckBox listener
         ActionListener cbListener = this::checkCheckBox;
@@ -355,7 +342,7 @@ public class StampPublisher {
                 // 対応するEntity名を取得する
                 String entity = IInfoModel.STAMP_ENTITIES[i];
 
-                // StampBox からEmtityに対応するStampTreeを得る
+                // StampBox からEntityに対応するStampTreeを得る
                 StampTree st = stampBox.getStampTreeFromUserBox(entity);
 
                 // 公開リストに加える
@@ -382,7 +369,7 @@ public class StampPublisher {
 
         // 公開情報を設定する
         personalTree.setName(stampBoxName.getText().trim());
-        String pubType = publc.isSelected() ? IInfoModel.PUBLISHED_TYPE_GLOBAL : Project.getUserModel().getFacilityModel().getFacilityId();
+        String pubType = global.isSelected() ? IInfoModel.PUBLISHED_TYPE_GLOBAL : Project.getUserModel().getFacilityModel().getFacilityId();
         personalTree.setPublishType(pubType);
         personalTree.setCategory((String) category.getSelectedItem());
         personalTree.setPartyName(partyName.getText().trim());
@@ -405,7 +392,7 @@ public class StampPublisher {
 
         String message = "スタンプ公開";
         String note = "公開しています...";
-        Component c = dialog;
+        Component c = windowSupport.getFrame();
 
         PNSTask<Boolean> task = new PNSTask<>(c, message, note, maxEstimation) {
             @Override
@@ -426,14 +413,14 @@ public class StampPublisher {
                 logger.debug("Task succeeded");
 
                 if (succeeded) {
-                    PNSOptionPane.showMessageDialog(dialog,
+                    PNSOptionPane.showMessageDialog(windowSupport.getFrame(),
                             "スタンプを公開しました。",
                             ClientContext.getFrameTitle(title),
                             JOptionPane.INFORMATION_MESSAGE);
                     stop();
 
                 } else {
-                    PNSOptionPane.showMessageDialog(dialog,
+                    PNSOptionPane.showMessageDialog(windowSupport.getFrame(),
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(title),
                             JOptionPane.WARNING_MESSAGE);
@@ -462,7 +449,7 @@ public class StampPublisher {
         box.add(p2);
         box.setBorder(BorderFactory.createEmptyBorder(0, 0, 11, 11));
 
-        int option = PNSOptionPane.showConfirmDialog(dialog,
+        int option = PNSOptionPane.showConfirmDialog(windowSupport.getFrame(),
                 new Object[]{box},
                 ClientContext.getFrameTitle(title),
                 JOptionPane.YES_NO_OPTION,
@@ -478,16 +465,16 @@ public class StampPublisher {
         String treeXml = StampTreeUtils.xmlEncode(list);
 
         // 個人用の PersonalTreeModel にXMLをセットする
-        final PersonalTreeModel stmpTree = (PersonalTreeModel) stampBox.getUserStampBox().getStampTreeModel();
+        final PersonalTreeModel stampTree = (PersonalTreeModel) stampBox.getUserStampBox().getStampTreeModel();
 
         // 公開データをクリアする
-        stmpTree.setTreeXml(treeXml);
-        stmpTree.setPublishType(null);
-        stmpTree.setPublishedDate(null);
-        stmpTree.setLastUpdated(null);
-        stmpTree.setCategory(null);
-        stmpTree.setName(ClientContext.getString("stampTree.personal.box.name"));
-        stmpTree.setDescription(ClientContext.getString("stampTree.personal.box.tooltip"));
+        stampTree.setTreeXml(treeXml);
+        stampTree.setPublishType(null);
+        stampTree.setPublishedDate(null);
+        stampTree.setLastUpdated(null);
+        stampTree.setCategory(null);
+        stampTree.setName(ClientContext.getString("stampTree.personal.box.name"));
+        stampTree.setDescription(ClientContext.getString("stampTree.personal.box.tooltip"));
 
         sdl = new StampDelegater();
 
@@ -496,12 +483,12 @@ public class StampPublisher {
 
         String message = "スタンプ公開";
         String note = "公開を取り消しています...";
-        Component c = dialog;
+        Component c = windowSupport.getFrame();
 
         PNSTask<Boolean> task = new PNSTask<>(c, message, note, maxEstimation) {
             @Override
             protected Boolean doInBackground() {
-                sdl.cancelPublishedTree(stmpTree);
+                sdl.cancelPublishedTree(stampTree);
                 return sdl.isNoError();
             }
 
@@ -510,14 +497,14 @@ public class StampPublisher {
                 logger.debug("Task succeeded");
 
                 if (succeeded) {
-                    PNSOptionPane.showMessageDialog(dialog,
+                    PNSOptionPane.showMessageDialog(windowSupport.getFrame(),
                             "公開を取り消しました。",
                             ClientContext.getFrameTitle(title),
                             JOptionPane.INFORMATION_MESSAGE);
                     stop();
 
                 } else {
-                    PNSOptionPane.showMessageDialog(dialog,
+                    PNSOptionPane.showMessageDialog(windowSupport.getFrame(),
                             sdl.getErrorMessage(),
                             ClientContext.getFrameTitle(title),
                             JOptionPane.WARNING_MESSAGE);
@@ -546,53 +533,33 @@ public class StampPublisher {
     }
 
     private void checkButton() {
+        boolean stampNameOk = !stampBoxName.getText().isBlank();
+        boolean partyNameOk = !partyName.getText().isBlank();
+        boolean descriptionOk = ! description.getText().isBlank();
+        boolean checkOk = Arrays.stream(entities).anyMatch(JCheckBox::isSelected);
 
         switch (publishType) {
-            case TT_NONE:
-                break;
-
-            case TT_LOCAL:
-                boolean stampNameOk = !stampBoxName.getText().trim().equals("");
-                boolean partyNameOk = !partyName.getText().trim().equals("");
-                boolean descriptionOk = !description.getText().trim().equals("");
-                boolean checkOk = false;
-                for (JCheckBox cb : entities) {
-                    if (cb.isSelected()) {
-                        checkOk = true;
-                        break;
-                    }
-                }
-                boolean newOk = (stampNameOk && partyNameOk && descriptionOk && checkOk);
+            case TT_LOCAL -> {
+                boolean newOk = stampNameOk && partyNameOk && descriptionOk && checkOk;
                 if (newOk != okState) {
                     okState = newOk;
                     publish.setEnabled(okState);
                 }
-                break;
-
-            case TT_PUBLIC:
-                stampNameOk = !stampBoxName.getText().trim().equals("");
-                partyNameOk = !partyName.getText().trim().equals("");
-                boolean urlOk = !contact.getText().trim().equals("");
-                descriptionOk = !description.getText().trim().equals("");
-                checkOk = false;
-                for (JCheckBox cb : entities) {
-                    if (cb.isSelected()) {
-                        checkOk = true;
-                        break;
-                    }
-                }
-                newOk = (stampNameOk && partyNameOk && urlOk && descriptionOk && checkOk);
+            }
+            case TT_PUBLIC -> {
+                boolean urlOk = !contact.getText().isBlank();
+                boolean newOk = stampNameOk && partyNameOk && descriptionOk && checkOk && urlOk;
                 if (newOk != okState) {
                     okState = newOk;
                     publish.setEnabled(okState);
                 }
-                break;
+            }
         }
     }
 
-    private enum PublishedState {NONE, SAVED_NONE, LOCAL, GLOBAL}
+    private enum PublishedState { NONE, SAVED_NONE, LOCAL, GLOBAL }
 
-    private enum PublishType {TT_NONE, TT_LOCAL, TT_PUBLIC}
+    private enum PublishType { TT_NONE, TT_LOCAL, TT_PUBLIC }
 
     private class PublishTypeListener implements ActionListener {
 
@@ -601,7 +568,7 @@ public class StampPublisher {
             if (local.isSelected()) {
                 publishType = PublishType.TT_LOCAL;
                 category.setSelectedIndex(ClientContext.getInt("stamp.publish.categories.localItem")); //8
-            } else if (publc.isSelected()) {
+            } else if (global.isSelected()) {
                 publishType = PublishType.TT_PUBLIC;
             }
             checkButton();

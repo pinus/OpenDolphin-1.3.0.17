@@ -3,9 +3,9 @@ package open.dolphin.client;
 import open.dolphin.delegater.DolphinClientContext;
 import open.dolphin.delegater.UserDelegater;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.HashUtil;
 import open.dolphin.helper.PNSTask;
+import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.DepartmentModel;
 import open.dolphin.infomodel.LicenseModel;
 import open.dolphin.infomodel.RoleModel;
@@ -48,7 +48,7 @@ public class ChangePassword extends AbstractMainTool {
     private static final String SUCCESS_MESSAGE = "ユーザ情報を変更しました。";
     private static final String DUMMY_PASSWORD = "";
     private final Logger logger;
-    private JFrame frame;
+    private WindowSupport windowSupport;
     private JButton okButton;
 
     public ChangePassword() {
@@ -61,7 +61,8 @@ public class ChangePassword extends AbstractMainTool {
 
         // Super Class で Frame を初期化する
         String title = ClientContext.getFrameTitle(getName());
-        frame = new JFrame(title);
+        windowSupport = new WindowSupport(title, this);
+        JFrame frame = windowSupport.getFrame();
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -69,26 +70,23 @@ public class ChangePassword extends AbstractMainTool {
                 stop();
             }
         });
-        ComponentBoundsManager cm = new ComponentBoundsManager(frame, DEFAULT_LOC, DEFAULT_SIZE, this);
-        cm.putCenter();
 
         ChangePasswordPanel cp = new ChangePasswordPanel();
         cp.get();
         frame.getContentPane().add(cp, BorderLayout.CENTER);
         frame.getRootPane().setDefaultButton(okButton);
+
+        windowSupport.toCenter();
         frame.setVisible(true);
     }
 
     @Override
     public void stop() {
-        frame.setVisible(false);
-        frame.dispose();
+        windowSupport.dispose();
     }
 
     public void toFront() {
-        if (frame != null) {
-            frame.toFront();
-        }
+        windowSupport.getFrame().toFront();
     }
 
     /**
@@ -427,7 +425,7 @@ public class ChangePassword extends AbstractMainTool {
             int delay = ClientContext.getInt("task.default.delay");
             String message = null;
 
-            PNSTask<Boolean> task = new PNSTask<>(frame, message, PROGRESS_NOTE, maxEstimation) {
+            PNSTask<Boolean> task = new PNSTask<>(windowSupport.getFrame(), message, PROGRESS_NOTE, maxEstimation) {
                 @Override
                 protected Boolean doInBackground() {
                     logger.debug("ChangePassword doInBackground");
@@ -456,12 +454,12 @@ public class ChangePassword extends AbstractMainTool {
                         String pk = principal.getFacilityId() + ":" + principal.getUserId();
                         DolphinClientContext.configure(hostAddress, pk, password);
 
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(windowSupport.getFrame(),
                             SUCCESS_MESSAGE,
                             ClientContext.getFrameTitle(getName()),
                             JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(windowSupport.getFrame(),
                             udl.getErrorMessage(),
                             ClientContext.getFrameTitle(getName()),
                             JOptionPane.WARNING_MESSAGE);

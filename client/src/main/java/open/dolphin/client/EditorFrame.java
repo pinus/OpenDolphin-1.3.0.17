@@ -1,6 +1,5 @@
 package open.dolphin.client;
 
-import open.dolphin.helper.ComponentBoundsManager;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DocumentHistory;
@@ -397,7 +396,7 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
                 getPatient().getKanaName().replace("　", " "),
                 getPatient().getPatientId());
 
-        windowSupport = WindowSupport.create(title, this);
+        windowSupport = new WindowSupport<>(title, this);
         JMenuBar myMenuBar = windowSupport.getMenuBar();
 
         PNSFrame frame = getFrame();
@@ -488,14 +487,6 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
         // active window がリストの最初に来るように制御する
         //
         frame.addWindowListener(this);
-
-        // Frame の大きさをストレージからロードする
-        Point defaultLocation = new Point(5, 20);
-        Dimension defaultSize = new Dimension(724, 740);
-
-        ComponentBoundsManager manager = new ComponentBoundsManager(frame, defaultLocation, defaultSize, this);
-        manager.revertToPreferenceBounds();
-
         frame.setVisible(true);
 
         // 先頭を表示
