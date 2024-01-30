@@ -217,19 +217,11 @@ public class Dolphin implements MainWindow {
         /*
          * メインウインドウ作成と表示
          */
-        // 設定に必要な定数をコンテキストから取得する
-        String windowTitle = ClientContext.getString("title");
-        Rectangle setBounds = new Rectangle(0, 0, 1000, 690);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int defaultX = (screenSize.width - setBounds.width) / 2;
-        int defaultY = (screenSize.height - setBounds.height) / 2;
-        int defaultWidth = 666;
-        int defaultHeight = 678;
-
         // WindowSupport を生成する この時点で Frame,WindowMenu を持つMenuBar が生成されている
+        String windowTitle = ClientContext.getString("title");
         String title = Dolphin.forWin ? "" : ClientContext.getFrameTitle(windowTitle);
         // System.out.println(title);
-        windowSupport = new WindowSupport(title, this);
+        windowSupport = new WindowSupport<>(title, this);
         PNSFrame myFrame = windowSupport.getFrame();        // MainWindow の JFrame
         //myFrame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
         //myFrame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
@@ -237,8 +229,6 @@ public class Dolphin implements MainWindow {
         JMenuBar myMenuBar = windowSupport.getMenuBar();    // MainWindow の JMenuBar
 
         // Windowにこのクラス固有の設定をする
-        Point loc = new Point(defaultX, defaultY);
-        Dimension size = new Dimension(defaultWidth, defaultHeight);
         myFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -294,7 +284,7 @@ public class Dolphin implements MainWindow {
             mediator.addChain(selected);
         });
 
-        // StaeMagrを使用してメインウインドウの状態を制御する
+        // StateMagrを使用してメインウインドウの状態を制御する
         stateMgr = new StateManager();
         stateMgr.processLogin(true);
 
@@ -416,7 +406,7 @@ public class Dolphin implements MainWindow {
      * desktop PreferencesHandler  から呼ばれる.
      */
     public void doPreference() {
-        setKarteEnviroment();
+        setKarteEnvironment();
     }
 
     /**
@@ -451,7 +441,7 @@ public class Dolphin implements MainWindow {
     /**
      * MainTool の StoppingTask を集めた Callable リストを生成する.
      *
-     * @return 作った Callabel のリスト
+     * @return 作った Callable のリスト
      */
     private List<Callable<Boolean>> getStoppingTask() {
 
@@ -523,7 +513,7 @@ public class Dolphin implements MainWindow {
     /**
      * カルテの環境設定を行う. MenuSupport から reflection で呼ばれる.
      */
-    public void setKarteEnviroment() {
+    public void setKarteEnvironment() {
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         ProjectSettingDialog sd = new ProjectSettingDialog(focusManager.getActiveWindow());
         sd.addValidListener(this::controlService);

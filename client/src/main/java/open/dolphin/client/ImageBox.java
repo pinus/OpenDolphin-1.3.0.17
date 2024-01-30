@@ -27,8 +27,6 @@ public class ImageBox extends AbstractMainTool {
     private static final int DEFAULT_COLUMN_COUNT = 3;
     private static final int DEFAULT_IMAGE_WIDTH = 120;
     private static final int DEFAULT_IMAGE_HEIGHT = 120;
-    private static final Point DEFAULT_LOC = new Point(537, 22);
-    private static final Dimension DEFAULT_SIZE = new Dimension(406, 587);
     private static final String[] DEFAULT_IMAGE_SUFFIX = {".jpg"};
     private static final int TIMER_DELAY = 200;        // 200 msec 毎にチェック
     private static final int MAX_ESTIMATION = 5000;        // 全体の見積もり時間
@@ -158,7 +156,7 @@ public class ImageBox extends AbstractMainTool {
 
         // mac で SchemaBox にもメニューバーを出す
         if (Dolphin.forMac) {
-            WindowSupport<ImageBox> windowSupport = new WindowSupport(title, this);
+            WindowSupport<ImageBox> windowSupport = new WindowSupport<>(title, this);
             frame = windowSupport.getFrame();
             javax.swing.JMenuBar myMenuBar = windowSupport.getMenuBar();
             mediator = new MenuSupport(this);
