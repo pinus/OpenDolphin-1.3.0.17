@@ -3,6 +3,7 @@ package open.dolphin.helper;
 import open.dolphin.client.*;
 import open.dolphin.project.Project;
 import open.dolphin.ui.PNSFrame;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -48,7 +49,8 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     // component bounds manager
     final private Preferences pref;
     final private String keyX, keyY, keyW, keyH; // preference keys
-    private int pX, pY, pW, pH; // bounds before moving
+    final private Deque<Rectangle> undoHistory; // bounds history
+    final private RevertBoundsAction revertBoundsAction;
     private boolean moved, resized;
     private Timer timer;
 
@@ -86,12 +88,11 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         keyW = key + "_width";
         keyH = key + "_height";
         pref = Preferences.userNodeForPackage(content.getClass());
-        pX = pref.getInt(keyX, 100);
-        pY = pref.getInt(keyY, 50);
-        pW = pref.getInt(keyW, 1280);
-        pH = pref.getInt(keyH, 760);
-        frame.setBounds(pX, pY, pW, pH);
-        //logger.info(String.format("bounds loaded %s %d %d %d %d", key, pX, pY, pW, pH));
+        undoHistory = new UndoHistory();
+        revertBoundsAction = new RevertBoundsAction();
+        revertBoundsAction.setEnabled(false);
+        frame.setBounds(pref.getInt(keyX, 100), pref.getInt(keyY, 50), pref.getInt(keyW, 1280), pref.getInt(keyH, 760));
+        //logger.info(key + ":" + frame.getBounds());
 
         // リスナ
         frame.addComponentListener(this);
@@ -172,6 +173,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
      * 終了処理
      */
     public void dispose() {
+        pref.remove(keyX); pref.remove(keyY); pref.remove(keyW); pref.remove(keyH);
         allWindows.remove(this);
         windowMenu.removeMenuListener(this);
         menuBar.setVisible(false);
@@ -184,7 +186,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
         long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
         logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
-        logger.info(content.getClass().getName() + " removed " + allWindows.size());
+        logger.info(content.getClass().getName() + " removed " + allWindows.size() + "(" + Window.getOwnerlessWindows().length + ")");
     }
 
     /**
@@ -208,7 +210,6 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
             resized = false;
             timer = null;
             //logger.info(String.format("bounds saved %s %d %d %d %d", content.getClass().getName(), r.x, r.y, r.width, r.height));
-            //logger.info(String.format("bounds previous %s %d %d %d %d", content.getClass().getName(), pX, pY, pW, pH));
         }
     }
 
@@ -228,8 +229,8 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     public void componentMoved(ComponentEvent e) {
         if (!moved) {
             // この時点で、frame は既に少し動いている
-            pX = pref.getInt(keyX, 100);
-            pY = pref.getInt(keyY, 50);
+            undoHistory.addLast(
+                new Rectangle(pref.getInt(keyX, 100), pref.getInt(keyY, 50), pref.getInt(keyW, 1280), pref.getInt(keyH, 760)));
         }
         moved = true;
         restartTimer();
@@ -238,8 +239,8 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     @Override
     public void componentResized(ComponentEvent e) {
         if (!resized) {
-            pW = pref.getInt(keyW, 1280);
-            pH = pref.getInt(keyH, 760);
+            undoHistory.addLast(
+                new Rectangle(pref.getInt(keyX, 100), pref.getInt(keyY, 50), pref.getInt(keyW, 1280), pref.getInt(keyH, 760)));
         }
         resized = true;
         restartTimer();
@@ -285,7 +286,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         int count = 0;
 
         // undo resize or move
-        wm.add(new RevertBoundsAction());
+        wm.add(revertBoundsAction);
 
         // まず，カルテとインスペクタ以外
         for (WindowSupport<?> ws : allWindows) {
@@ -333,19 +334,44 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     }
 
     /**
-     * ウインドウの大きさ・位置変更を、元に戻す action.
+     * ウインドウの大きさ・位置変更 undo のための deque.
+     */
+    private class UndoHistory extends ArrayDeque<Rectangle> {
+        @Override
+        public void addLast(@NotNull Rectangle r) {
+            if (!frame.getBounds().equals(r)) {
+                super.addLast(r);
+                checkState();
+            }
+        }
+        @NotNull
+        @Override
+        public Rectangle removeLast() {
+            Rectangle r = super.removeLast();
+            checkState();
+            return r;
+        }
+        private void checkState() {
+            revertBoundsAction.setEnabled(!this.isEmpty());
+        }
+    }
+
+    /**
+     * ウインドウの大きさ・位置変更 undo action.
      */
     private class RevertBoundsAction extends AbstractAction {
         public RevertBoundsAction() {
-            putValue(Action.NAME, "ウインドウの位置を元に戻す");
+            putValue(Action.NAME, "ウインドウの位置を戻す");
         }
         @Override
         public void actionPerformed(ActionEvent e) {
             int x = frame.getX(), y = frame.getY(), width = frame.getWidth(), height = frame.getHeight();
-            moved = x != pX || y != pY;
-            resized = width != pW || height != pH;
-            frame.setBounds(pX, pY, pW, pH);
-            pX = x; pY = y; pW = width; pH = height;
+            if (!undoHistory.isEmpty()) {
+                Rectangle last = undoHistory.removeLast();
+                moved = x != last.x || y != last.y;
+                resized = width != last.width || height != last.height;
+                frame.setBounds(last);
+            }
         }
     }
 

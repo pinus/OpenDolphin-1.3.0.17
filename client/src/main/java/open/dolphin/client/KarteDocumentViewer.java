@@ -184,7 +184,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     }
 
     /**
-     * 選択されているKarteViwerを返す.
+     * 選択されているKarteViewerを返す.
      *
      * @return 選択されているKarteViwer
      */
@@ -204,11 +204,11 @@ public class KarteDocumentViewer extends AbstractChartDocument {
     }
 
     /**
-     * マウスクリック(選択)されたKarteViwerをselectedKarteに設定する.
+     * マウスクリック(選択)されたKarteViewerをselectedKarteに設定する.
      * 他のカルテが選択されている場合はそれを解除する.
-     * StateMgrを Haskarte State にする.
+     * StateMgrを HasKarte State にする.
      *
-     * @param view 選択されたKarteViwer
+     * @param view 選択されたKarteViewer
      */
     public void setSelectedKarte(KarteViewer2 view) {
 
@@ -219,7 +219,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
         //
         if (selectedKarte != old) {
             if (selectedKarte != null) {
-                karteList.forEach((karte) -> karte.setSelected(false));
+                karteList.forEach(karte -> karte.setSelected(false));
                 selectedKarte.setSelected(true);
                 stateMgr.processCleanEvent();
 
@@ -366,7 +366,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
                         public void mouseClicked(MouseEvent e) {
                             int cnt = e.getClickCount();
                             if (cnt == 2) {
-                                // 選択した Karte を EditoFrame で開く
+                                // 選択した Karte を EditorFrame で開く
                                 setSelectedKarte(karteViewer);
                                 openKarte();
                             } else if (cnt == 1) {
@@ -453,7 +453,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
 
         // インスペクタに表示されているカルテをまとめて印刷する.
         // ブザイクなんだけど，あまり使わない機能なのでこれでヨシとする masuda
-        // modifyed by pns
+        // modified by pns
         // 背景色が緑だとインクがもったいないので白にする. 選択も解除しておく.
         karteList.forEach((kv) -> {
             //kv.panel2.setBorder(BorderFactory.createEmptyBorder());
