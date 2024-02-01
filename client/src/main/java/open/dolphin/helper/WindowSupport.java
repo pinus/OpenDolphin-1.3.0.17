@@ -173,7 +173,6 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
      * 終了処理
      */
     public void dispose() {
-        pref.remove(keyX); pref.remove(keyY); pref.remove(keyW); pref.remove(keyH);
         allWindows.remove(this);
         windowMenu.removeMenuListener(this);
         menuBar.setVisible(false);
