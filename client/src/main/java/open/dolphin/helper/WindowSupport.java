@@ -50,8 +50,9 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     final private Preferences pref;
     final private String keyX, keyY, keyW, keyH; // preference keys
     final private Deque<Rectangle> undoHistory; // bounds history
+    private Rectangle prevBounds;
     final private RevertBoundsAction revertBoundsAction;
-    private boolean moved, resized;
+    private boolean boundChanged;
     private Timer timer;
 
     public WindowSupport(String title, T content) {
@@ -68,9 +69,10 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         // Window メニューを生成する
         windowMenu = new JMenu(WINDOW_MENU_NAME);
         menuBar.add(windowMenu);
-        // インスペクタを整列するアクションだけはあらかじめ入れておく
+
         // こうしておかないと，１回 window メニューを開かないと accelerator が効かないことになる
         windowMenu.add(new ArrangeInspectorAction());
+        windowMenu.add(new RevertBoundsAction());
 
         // Windowメニューのアクション
         // 選択されたらフレームを前面にする
@@ -89,9 +91,10 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         keyH = key + "_height";
         pref = Preferences.userNodeForPackage(content.getClass());
         undoHistory = new UndoHistory();
+        prevBounds = new Rectangle(pref.getInt(keyX, 100), pref.getInt(keyY, 50), pref.getInt(keyW, 1280), pref.getInt(keyH, 760));
         revertBoundsAction = new RevertBoundsAction();
         revertBoundsAction.setEnabled(false);
-        frame.setBounds(pref.getInt(keyX, 100), pref.getInt(keyY, 50), pref.getInt(keyW, 1280), pref.getInt(keyH, 760));
+        frame.setBounds(prevBounds);
         //logger.info(key + ":" + frame.getBounds());
 
         // リスナ
@@ -173,6 +176,14 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
      * 終了処理
      */
     public void dispose() {
+        // bounds 記録
+        Rectangle r = frame.getBounds();
+        pref.putInt(keyX, r.x);
+        pref.putInt(keyY, r.y);
+        pref.putInt(keyW, r.width);
+        pref.putInt(keyH, r.height);
+
+        // リソース解放
         allWindows.remove(this);
         windowMenu.removeMenuListener(this);
         menuBar.setVisible(false);
@@ -180,7 +191,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         frame.setVisible(false);
         frame.dispose();
 
-        // メモリ状況ログ
+        // 状況ログ
         long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
         long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
         long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
@@ -194,21 +205,12 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     private class FlushTask extends TimerTask {
         @Override
         public void run() {
-            timer = null;
-
-            Rectangle r = frame.getBounds();
-            if (moved) {
-                pref.putInt(keyX, r.x);
-                pref.putInt(keyY, r.y);
+            if (boundChanged) {
+                prevBounds = new Rectangle(frame.getBounds());
             }
-            if (resized) {
-                pref.putInt(keyW, r.width);
-                pref.putInt(keyH, r.height);
-            }
-            moved = false;
-            resized = false;
+            boundChanged = false;
             timer = null;
-            //logger.info(String.format("bounds saved %s %d %d %d %d", content.getClass().getName(), r.x, r.y, r.width, r.height));
+            //logger.info(content.getClass().getName() + ":: " + frame.getBounds());
         }
     }
 
@@ -226,23 +228,17 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
 
     @Override
     public void componentMoved(ComponentEvent e) {
-        if (!moved) {
+        if (!boundChanged) {
             // この時点で、frame は既に少し動いている
-            undoHistory.addLast(
-                new Rectangle(pref.getInt(keyX, 100), pref.getInt(keyY, 50), pref.getInt(keyW, 1280), pref.getInt(keyH, 760)));
+            undoHistory.addLast(new Rectangle(prevBounds));
         }
-        moved = true;
+        boundChanged = true;
         restartTimer();
     }
-
+    
     @Override
     public void componentResized(ComponentEvent e) {
-        if (!resized) {
-            undoHistory.addLast(
-                new Rectangle(pref.getInt(keyX, 100), pref.getInt(keyY, 50), pref.getInt(keyW, 1280), pref.getInt(keyH, 760)));
-        }
-        resized = true;
-        restartTimer();
+        componentMoved(e);
     }
 
     @Override
@@ -361,15 +357,12 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     private class RevertBoundsAction extends AbstractAction {
         public RevertBoundsAction() {
             putValue(Action.NAME, "ウインドウの位置を戻す");
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("shift meta UNDERSCORE"));
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            int x = frame.getX(), y = frame.getY(), width = frame.getWidth(), height = frame.getHeight();
             if (!undoHistory.isEmpty()) {
-                Rectangle last = undoHistory.removeLast();
-                moved = x != last.x || y != last.y;
-                resized = width != last.width || height != last.height;
-                frame.setBounds(last);
+                frame.setBounds(undoHistory.removeLast());
             }
         }
     }
