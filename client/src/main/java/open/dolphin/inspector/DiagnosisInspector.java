@@ -524,14 +524,13 @@ public class DiagnosisInspector implements IInspector {
         @Override
         public void paintComponent(Graphics graphics) {
             super.paintComponent(graphics);
-            Graphics2D g = (Graphics2D) graphics.create();
+            Graphics2D g = (Graphics2D) graphics;
 
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             g.setColor(Color.WHITE);
             // Retina 対応
             //g.drawLine(0, getHeight()-1, getWidth(), getHeight()-1);
             g.drawLine(0, getHeight(), getWidth(), getHeight());
-            g.dispose();
         }
     }
 
@@ -585,8 +584,8 @@ public class DiagnosisInspector implements IInspector {
         @Override
         public void paintBorder(Graphics graphics) {
             super.paintBorder(graphics);
+            Graphics2D g = (Graphics2D) graphics;
             if (showFeedback) {
-                Graphics2D g = (Graphics2D) graphics.create();
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 // cut and try
@@ -595,10 +594,9 @@ public class DiagnosisInspector implements IInspector {
                 int width = getWidth() - 2 * x - 1;
                 int height = getHeight() - y;
                 PNSBorder.drawSelectedBlueRoundRect(this, g, x, y, width, height, 10, 10);
-                g.dispose();
             }
-            graphics.setColor(IInspector.BORDER_COLOR);
-            graphics.drawLine(getWidth() - 1, 0, getWidth() - 1, getHeight() - 1);
+            g.setColor(IInspector.BORDER_COLOR);
+            g.drawLine(getWidth() - 1, 0, getWidth() - 1, getHeight() - 1);
         }
     }
 }

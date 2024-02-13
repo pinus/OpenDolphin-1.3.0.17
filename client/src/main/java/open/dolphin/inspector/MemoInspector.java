@@ -306,9 +306,8 @@ public class MemoInspector implements IInspector {
         }
 
         @Override
-        public void paintComponent(Graphics graphics) {
-            super.paintComponent(graphics);
-            Graphics g = graphics.create();
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
             if (shouldAlert) {
                 g.setColor(ALERT_BACK_COLOR);
                 g.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 3, 3);
@@ -321,7 +320,6 @@ public class MemoInspector implements IInspector {
                 g.setColor(Color.WHITE);
                 g.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 3, 3);
             }
-            g.dispose();
         }
     }
 }

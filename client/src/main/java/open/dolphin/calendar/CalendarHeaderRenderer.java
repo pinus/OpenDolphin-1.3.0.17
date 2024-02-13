@@ -10,7 +10,7 @@ import java.awt.*;
  * @author pns
  */
 public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
-    
+
     private static final Color BACKGROUND = new Color(240, 240, 240);
     private static final Color BORDER = Color.LIGHT_GRAY;
 
@@ -56,21 +56,13 @@ public class CalendarHeaderRenderer extends DefaultTableCellRenderer {
 
     // バックグランドにグラデーションをつける
     @Override
-    public void paintComponent(Graphics graphics) {
+    public void paintComponent(Graphics g) {
         // フラットなバックグランド
-        Graphics g = graphics.create();
         g.setColor(BACKGROUND);
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(BORDER);
         g.drawLine(0, getHeight() - 1, getWidth() - 1, getHeight() - 1);
-        g.dispose();
 
-//        for (int y=0; y<getHeight();y++) {
-//            Graphics g = graphics.create();
-//            g.setColor(BGCOL[y]);
-//            g.drawLine(0, y, getWidth()-1, y);
-//            g.dispose();
-//        }
-        super.paintComponent(graphics);
+        super.paintComponent(g);
     }
 }

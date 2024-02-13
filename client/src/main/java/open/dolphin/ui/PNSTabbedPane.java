@@ -540,7 +540,7 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
         @Override
         public void paintComponent(Graphics graphics) {
             //super.paintComponent(graphics);
-            Graphics2D g = (Graphics2D) graphics.create();
+            Graphics2D g = (Graphics2D) graphics;
             int w = this.getWidth();
             int h = this.getHeight();
 
@@ -587,8 +587,6 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
             }
 
             g.drawString(name, (w - strWidth) / 2, (h + fm.getHeight()) / 2 - fm.getDescent());
-
-            g.dispose();
         }
 
         private void renderButton(Graphics2D g, int w, int h, Color frameColor, Color fillColor) {
@@ -947,14 +945,11 @@ public class PNSTabbedPane extends JPanel implements ChangeListener {
 
         JPanel p = new JPanel(new BorderLayout());
         JPanel p1 = new JPanel() {
-
             @Override
-            public void paintComponent(Graphics grahics) {
-                super.paintComponent(grahics);
-                Graphics g = grahics.create();
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
                 g.setColor(Color.GRAY);
                 g.drawLine(0, 0, getWidth(), 0);
-                g.dispose();
             }
         };
         p1.setPreferredSize(new Dimension(200, 100));

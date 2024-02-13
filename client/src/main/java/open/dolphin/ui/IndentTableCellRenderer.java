@@ -87,15 +87,12 @@ public class IndentTableCellRenderer extends DefaultTableCellRenderer {
     /**
      * Show holizontal grid (Retina 対応)
      *
-     * @param graphics Graphics
+     * @param g Graphics
      */
     @Override
-    public void paint(Graphics graphics) {
-        Graphics2D g = (Graphics2D) graphics.create();
+    public void paint(Graphics g) {
         super.paint(g);
-
         g.setColor(Color.WHITE);
         g.drawLine(0, getHeight(), getWidth(), getHeight());
-        g.dispose();
     }
 }

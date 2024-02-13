@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
  * @author pns
  */
 public class PNSTexturedBorder extends AbstractBorder {
-    
+
     private final BufferedImage image;
     private final Insets insets;
 
@@ -25,13 +25,11 @@ public class PNSTexturedBorder extends AbstractBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        Graphics2D g2d = (Graphics2D) g.create();
+        Graphics2D g2d = (Graphics2D) g;
 
         TexturePaint paint = new TexturePaint(image, new Rectangle2D.Double(0, 0, image.getWidth(), image.getHeight()));
         g2d.setPaint(paint);
         g2d.fillRect(x, y, width, height);
-
-        g2d.dispose();
     }
 
     @Override

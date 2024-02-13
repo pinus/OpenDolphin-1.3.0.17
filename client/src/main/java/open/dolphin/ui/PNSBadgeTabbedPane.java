@@ -44,7 +44,7 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
     @Override
     public void paintButtonPanel(Graphics graphics) {
         if (badgeNumber > 0) {
-            Graphics2D g = (Graphics2D) graphics.create();
+            Graphics2D g = (Graphics2D) graphics;
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             // 円
@@ -65,8 +65,6 @@ public class PNSBadgeTabbedPane extends PNSTabbedPane {
             int strWidth = fm.stringWidth(num);
 
             g.drawString(num, center.x - strWidth / 2, center.y + fm.getHeight() / 2 - fm.getDescent());
-
-            g.dispose();
         }
     }
 

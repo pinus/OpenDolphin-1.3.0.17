@@ -24,11 +24,8 @@ public class PNSGroupBoxBorder extends AbstractBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        Graphics2D g2d = (Graphics2D) g.create();
-
-
+        Graphics2D g2d = (Graphics2D) g;
         BufferedImage buf = ImageHelper.imageToBufferedImage(image);
-
         RectangleGenerator src = new RectangleGenerator(0, 0, buf.getWidth(), buf.getHeight(), insets);
         RectangleGenerator dist = new RectangleGenerator(x, y, width, height, insets);
 

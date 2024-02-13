@@ -783,7 +783,7 @@ public class WaitingListImpl extends AbstractMainComponent {
          */
         @Override
         public void paint(Graphics graphics) {
-            Graphics2D g = (Graphics2D) graphics.create();
+            Graphics2D g = (Graphics2D) graphics;
             super.paint(graphics);
             if (horizontalGrid) {
                 g.setColor(Color.WHITE);
@@ -798,7 +798,6 @@ public class WaitingListImpl extends AbstractMainComponent {
                 g.setColor(markingColor);
                 g.fillRect(0, 0, 6, getHeight());
             }
-            g.dispose();
         }
 
         /**

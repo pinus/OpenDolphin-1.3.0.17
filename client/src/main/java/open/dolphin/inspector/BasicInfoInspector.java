@@ -284,7 +284,7 @@ public class BasicInfoInspector implements IInspector {
 
         @Override
         public void paintBorder(Component c, Graphics graphics, int x, int y, int width, int height) {
-            Graphics2D g = (Graphics2D) graphics.create();
+            Graphics2D g = (Graphics2D) graphics;
             if (Dolphin.forMac) {
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             }
@@ -310,8 +310,6 @@ public class BasicInfoInspector implements IInspector {
                 g.drawLine(0, 0, r, 0);
                 g.drawLine(0, height - 1, r, height - 1);
             }
-
-            g.dispose();
         }
 
         @Override

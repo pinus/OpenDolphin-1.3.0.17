@@ -402,14 +402,12 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
 
     @Override
     public void paintComponent(Graphics graphics) {
-
         super.paintComponent(graphics);
-
         if (data == null) {
             return;
         }
 
-        Graphics2D g = (Graphics2D) graphics.create();
+        Graphics2D g = (Graphics2D) graphics;
         Object aliasing = antiAliasing ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF;
         Object textAl = textAntiAliasing ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aliasing);
@@ -425,7 +423,6 @@ public class LaboTestGraph extends JPanel implements ComponentListener {
             drawRelativeCoordinate(g);
             drawData(g);
         }
-        g.dispose();
     }
 
     // ---------------------------------------------------------------------------------------------

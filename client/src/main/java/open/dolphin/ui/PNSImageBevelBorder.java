@@ -34,8 +34,7 @@ public class PNSImageBevelBorder extends AbstractBorder {
         if (image == null) {
             return;
         }
-
-        Graphics2D g = (Graphics2D) gr.create();
+        Graphics2D g = (Graphics2D) gr;
 
         int top = imageInsets.top;
         int left = imageInsets.left;
@@ -77,7 +76,5 @@ public class PNSImageBevelBorder extends AbstractBorder {
         paint = new TexturePaint(subImg, new Rectangle(x + width - right, y + top, right, imgHeight - top - bottom));
         g.setPaint(paint);
         g.fillRect(x + width - right, y + top, right, height - top - bottom);
-
-        g.dispose();
     }
 }

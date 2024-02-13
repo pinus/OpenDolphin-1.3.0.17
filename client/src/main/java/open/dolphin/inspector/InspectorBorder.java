@@ -35,7 +35,7 @@ public class InspectorBorder extends AbstractBorder {
     public void paintBorder(Component c, Graphics graphics, int x, int y, int width, int height) {
         insets = title == null ? BORDER_INSETS : BORDER_INSETS_W_TITLE;
 
-        Graphics2D g = (Graphics2D) graphics.create();
+        Graphics2D g = (Graphics2D) graphics;
 
         // Background
         g.setColor(IInspector.BACKGROUND);
@@ -58,8 +58,6 @@ public class InspectorBorder extends AbstractBorder {
             }
             g.drawString(title, insets.left + indent, g.getFontMetrics().getAscent());
         }
-
-        g.dispose();
     }
 
     @Override

@@ -126,19 +126,18 @@ public class PNSScrollPane extends JScrollPane implements MouseListener, MouseMo
     public void paint(Graphics g) {
         //showFrameRate();
         super.paint(g);
+        Graphics2D g2d = (Graphics2D) g;
 
         if (isOvershootImgPrepared) g.drawImage(overshootImg, 0, 0, null);
 
-        if (!isClassicScrollBar) showScrollBar((Graphics2D) g);
+        if (!isClassicScrollBar) showScrollBar(g2d);
 
         // Drop の際に，feedback を出す
         if (showDropFeedback) {
-            Graphics2D g2d = (Graphics2D) g.create();
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
             // cut and try
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             PNSBorder.drawSelectedBlueRoundRect(this, g2d, 0, 0, getWidth(), getHeight(), 6, 6);
-            g2d.dispose();
         }
     }
 

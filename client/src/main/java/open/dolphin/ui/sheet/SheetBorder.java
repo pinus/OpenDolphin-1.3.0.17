@@ -16,7 +16,7 @@ public class SheetBorder extends AbstractBorder {
 
     @Override
     public void paintBorder(Component c, Graphics gr, int x, int y, int width, int height) {
-        Graphics2D g = (Graphics2D) gr.create();
+        Graphics2D g = (Graphics2D) gr;
 
         // Shadow
         g.setColor(SHADOW_COLOR_L);
@@ -33,8 +33,6 @@ public class SheetBorder extends AbstractBorder {
         // Background
         g.setColor(BACKGROUND);
         g.fillRoundRect(SHADOW_WIDTH, SHADOW_WIDTH, width - SHADOW_WIDTH * 2, height - SHADOW_WIDTH * 2, ARC, ARC);
-
-        g.dispose();
     }
 
     @Override

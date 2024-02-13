@@ -1520,15 +1520,13 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         /**
          * Retina 対応 - show holizontal grid
          *
-         * @param graphics Graphics
+         * @param g Graphics
          */
         @Override
-        public void paint(Graphics graphics) {
-            Graphics2D g = (Graphics2D) graphics.create();
-            super.paint(graphics);
+        public void paint(Graphics g) {
+            super.paint(g);
             g.setColor(Color.WHITE);
             g.drawLine(0, getHeight(), getWidth(), getHeight());
-            g.dispose();
         }
 
         @Override

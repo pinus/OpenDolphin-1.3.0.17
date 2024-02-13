@@ -14,7 +14,6 @@ import java.awt.image.BufferedImage;
  * @author pns
  */
 public class PNSRoundedTextureBorder extends AbstractBorder {
-    
     private static final Color EDGE_COLOR = new Color(200, 200, 200);
     private final ImageIcon image;
     private final Insets insets;
@@ -26,7 +25,7 @@ public class PNSRoundedTextureBorder extends AbstractBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        Graphics2D g2d = (Graphics2D) g.create();
+        Graphics2D g2d = (Graphics2D) g;
 
         BufferedImage buf = ImageHelper.imageToBufferedImage(image);
         TexturePaint paint = new TexturePaint(buf, new Rectangle2D.Double(0, 0, buf.getWidth(), buf.getHeight()));

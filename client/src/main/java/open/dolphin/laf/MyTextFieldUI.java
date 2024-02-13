@@ -54,7 +54,7 @@ public class MyTextFieldUI extends BasicTextFieldUI {
 
     @Override
     public void paintSafely(Graphics graphics) {
-        Graphics2D g = (Graphics2D) graphics.create();
+        Graphics2D g = (Graphics2D) graphics;
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -71,7 +71,6 @@ public class MyTextFieldUI extends BasicTextFieldUI {
         g.setColor(tf.getBackground());
         g.fillRoundRect(3, 3, tf.getWidth() - 6, tf.getHeight() - 6, 5, 5);
 
-        g.dispose();
         super.paintSafely(graphics);
     }
 }

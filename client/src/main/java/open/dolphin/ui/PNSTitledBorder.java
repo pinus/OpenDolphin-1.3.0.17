@@ -57,7 +57,7 @@ public class PNSTitledBorder extends AbstractBorder {
 
     @Override
     public void paintBorder(Component c, Graphics graphics, int x, int y, int width, int height) {
-        Graphics2D g = (Graphics2D) graphics.create();
+        Graphics2D g = (Graphics2D) graphics;
 
         // Title
         g.setFont(font);
@@ -69,8 +69,6 @@ public class PNSTitledBorder extends AbstractBorder {
 
         // Content
         contentBorder.paintBorder(c, g, x, y + borderInsets.top - DEFAULT_INSET, width, height - fontHeight - SPACING);
-
-        g.dispose();
     }
 
     @Override

@@ -118,8 +118,7 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
 
     @Override
     public void paintComponent(Graphics graphics) {
-
-        Graphics2D g = (Graphics2D) graphics.create();
+        Graphics2D g = (Graphics2D) graphics;
 
         double dx = size.getWidth() * 2;
         double offsetX = size.getWidth();
@@ -156,6 +155,5 @@ public class ColorChooserComp extends JComponent implements MouseListener, Mouse
             //g2.fill(body);
             //}
         }
-        g.dispose();
     }
 }

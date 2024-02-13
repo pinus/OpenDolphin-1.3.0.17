@@ -91,7 +91,7 @@ public class CompletableJTextFieldWithLabel extends CompletableJTextField {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        Graphics2D g = (Graphics2D) graphics.create();
+        Graphics2D g = (Graphics2D) graphics;
         if (Dolphin.forMac) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
@@ -116,8 +116,6 @@ public class CompletableJTextFieldWithLabel extends CompletableJTextField {
             // 右端のクリアボタン（X マーク）
             g.drawImage(clearButton, null, getWidth() - 22, verticalCentering);
         }
-
-        g.dispose();
     }
 
     public static void main(String[] arg) {
