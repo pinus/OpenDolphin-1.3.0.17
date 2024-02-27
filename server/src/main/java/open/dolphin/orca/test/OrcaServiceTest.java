@@ -128,7 +128,8 @@ public class OrcaServiceTest {
     }
 
     private void getDrugHistory(OrcaServiceDao orcaService) throws ReflectiveOperationException {
-        List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "030308");
+        // 040910 40896 040123 039328 038030 036311 034890 034889 034374 031015 023148 022024 011832
+        List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "040123");
         //List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "008617");
         //List<OnshiYakuzai> onshiYakuzai = (List<OnshiYakuzai>) invoke(orcaService, "getDrugHistory", "012773");
 

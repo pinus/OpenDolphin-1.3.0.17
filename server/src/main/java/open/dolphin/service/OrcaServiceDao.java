@@ -664,58 +664,50 @@ public class OrcaServiceDao {
      * @return List of Onshi Yakuzai
      */
     public List<OnshiYakuzai> getDrugHistory(String ptnum) {
-        String sql = "select sryym, hospcd, hospname, chozaicd, chozainame, chozai_seqnum, chozai_kbn, shoho_seqnum, shoho_kbn, ptid "
+        String sql = "select hospcd, hospname, chozaicd, chozainame, chozai_seqnum, chozai_kbn, shoho_seqnum, shoho_kbn, tbl_uuid "
             + "from tbl_onshi_yakuzai_main "
             + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
 
-        // String.valueOf(ptid) + srymm をキーとして facility を保持する map
+        // tableUuid をキーとして facility を保持する map
         HashMap<String, List<Facility>> facilities = new HashMap<>();
 
         OrcaDbConnection con = dao.getConnection(rs -> {
             while (rs.next()) {
-                String sryym = rs.getString(1);
-                String hospcd = rs.getString(2);
-                String hospname = rs.getString(3);
-                String chozaicd = rs.getString(4);
-                String chozainame = rs.getString(5);
-                int chozaiSeqnum = rs.getInt(6);
-                String chozaiKbn = rs.getString(7);
-                int shohoSeqnum = rs.getInt(8);
-                String shohoKbn = rs.getString(9);
-                int ptid = rs.getInt(10);
+                String hospcd = rs.getString(1);
+                String hospname = rs.getString(2);
+                String chozaicd = rs.getString(3);
+                String chozainame = rs.getString(4);
+                int chozaiSeqnum = rs.getInt(5);
+                String chozaiKbn = rs.getString(6);
+                int shohoSeqnum = rs.getInt(7);
+                String shohoKbn = rs.getString(8);
+                String tableUuid = rs.getString(9);
 
-                String key = String.valueOf(ptid) + sryym;
-                List<Facility> facilityList = facilities.get(key);
-                if (Objects.isNull(facilityList)) { facilityList = new ArrayList<>(); }
+                Facility chozai = new Facility();
+                chozai.setId(chozaiSeqnum);
+                chozai.setMe(chozaiKbn == "1");
+                // hospname, hospcode が入力されていないことがある
+                if (!hospname.isEmpty()) { chozai.setFacilityName(hospname); }
+                if (!hospcd.isEmpty()) { chozai.setFacilityCode(hospcd); }
 
-                // seqnum !=0 を id として, facility beans を作る
-                // chozaiSequnum は hospNameに対応, shohoSeqnum は chozaiName に対応している
-                if (chozaiSeqnum != 0 && facilityList.stream().noneMatch(f -> f.getId() == chozaiSeqnum)) {
-                    Facility facility = new Facility();
-                    facility.setId(chozaiSeqnum);
-                    facility.setMe(chozaiKbn == "1");
-                    // hospname, hospcode が入力されていないことがある
-                    if (!StringUtils.isEmpty(hospname))  { facility.setFacilityName(hospname); }
-                    if (!StringUtils.isEmpty(hospcd)) { facility.setFacilityCode(hospcd); }
-                    facilityList.add(facility);
-                    facilities.put(key, facilityList);
-                }
-                if (shohoSeqnum != 0 && facilityList.stream().noneMatch(f -> f.getId() == shohoSeqnum)) {
-                    Facility facility = new Facility();
-                    facility.setId(shohoSeqnum);
-                    facility.setMe(shohoKbn == "1");
-                    if (!StringUtils.isEmpty(chozainame)) { facility.setFacilityName(chozainame); }
-                    if (!StringUtils.isEmpty(chozaicd)) { facility.setFacilityCode(chozaicd); }
-                    facilityList.add(facility);
-                    facilities.put(key, facilityList);
-                }
+                Facility shoho = new Facility();
+                shoho.setId(shohoSeqnum);
+                shoho.setMe(shohoKbn == "1");
+                if (!chozainame.isEmpty()) { shoho.setFacilityName(chozainame); }
+                if (!chozaicd.isEmpty()) { shoho.setFacilityCode(chozaicd); }
+
+                // tbl_uuid はおそらく一意なので、かならず要素は2個になる
+                List<Facility> facilityList = new ArrayList<>(2);
+                facilityList.add(chozai);
+                facilityList.add(shoho);
+                facilities.put(tableUuid, facilityList);
             }
         });
 
         con.setParam(1, ptnum);
         con.executeQuery(sql);
 
-        sql = "select sryym, srydd, shoho_hakkoymd, rennum, yohocd, yohoname, shiji, srycd, yakuzainame, taniname, suryo, yoryo, kaisu, chozai_seqnum, shoho_seqnum, ptid "
+        sql = "select sryym, srydd, shoho_hakkoymd, rennum, yohocd, yohoname, shiji, srycd, yakuzainame, taniname, suryo, yoryo, kaisu, chozai_seqnum, shoho_seqnum, ptid, tbl_uuid "
             + "from tbl_onshi_yakuzai_sub "
             + "where ptid = (select ptid from tbl_ptnum where ptnum = ?)";
 
@@ -730,7 +722,7 @@ public class OrcaServiceDao {
                 onshiYakuzai.setRennum(rs.getInt(4)); // 明細毎の連番
                 onshiYakuzai.setYohocd(rs.getString(5)); // 3桁の用法コード: 別表12 外用剤は 900
                 onshiYakuzai.setYohoname(rs.getString(6)); // 用法名称: 外用剤の場合空欄
-                onshiYakuzai.setShiji(rs.getString(7)); // 特別指示: 外用回数、部位
+                onshiYakuzai.setShiji(rs.getString(7)); // 特別指示: 外用回数、部位yak
                 onshiYakuzai.setSrycd(rs.getString(8)); // 医薬品コード
                 onshiYakuzai.setYakuzainame(rs.getString(9)); // 薬剤名
                 onshiYakuzai.setTaniname(rs.getString(10)); // 単位名
@@ -740,16 +732,12 @@ public class OrcaServiceDao {
                 int chozaiSeqnum = rs.getInt(14);
                 int shohoSeqnum = rs.getInt(15);
                 int ptid = rs.getInt(16);
+                String tableUuid = rs.getString(17);
 
-                // facility beans から facility name を取得
-                // chozaiSequnum は hospNameに対応, shohoSeqnum は chozaiName に対応している
-                String key = String.valueOf(ptid) + sryym;
-                List<Facility> facilityList = facilities.get(key);
-                Optional<Facility> chozai = facilityList.stream().filter(f -> f.getId() == chozaiSeqnum).findAny();
-                onshiYakuzai.setHosp(chozai.isPresent()? chozai.get() : new Facility());
-                Optional<Facility> shoho = facilityList.stream().filter(f -> f.getId() == shohoSeqnum).findAny();
-                onshiYakuzai.setChozai(shoho.isPresent()? shoho.get() : new Facility());
-
+                // tableUuid を使って, 医院, 薬局名を取得
+                List<Facility> facilityList = facilities.get(tableUuid);
+                onshiYakuzai.setHosp(facilityList.get(0)); // chozai = 医院
+                onshiYakuzai.setChozai(facilityList.get(1)); // shoho = 薬局
                 bundle.add(onshiYakuzai);
             }
         });
