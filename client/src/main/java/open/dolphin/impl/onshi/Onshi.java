@@ -75,6 +75,7 @@ public class Onshi extends AbstractChartDocument {
                 e.setTabIndex(5);
                 e.setBadgeNumber(badgeNum);
                 ((ChartImpl) getContext()).setBadge(e);
+                loadDrugHistoryButton.doClick();
             }
         };
         task.execute();
@@ -116,7 +117,7 @@ public class Onshi extends AbstractChartDocument {
                     String yakuzainame = o.getYakuzainame();
                     sb.append(String.format("    %s ", yakuzainame));
                     String suryo = Float.toString(o.getSuryo()).replaceAll(".0$", "");
-                    if (o.getYohoname().equals("")) {
+                    if (o.getYohoname().isEmpty()) {
                         // 外用剤
                         sb.append(String.format("%s%s %s\n", suryo, o.getTaniname(), o.getShiji()));
                     } else {
