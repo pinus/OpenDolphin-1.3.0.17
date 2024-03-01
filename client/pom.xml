@@ -27,7 +27,7 @@
         <buildDate>${maven.build.timestamp}</buildDate>
         <!-- バージョニングに使う日付のフォーマット -->
         <timestamp>${maven.build.timestamp}</timestamp>
-        <maven.build.timestamp.format>MM.dd.yyyy.HHmm</maven.build.timestamp.format>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     </properties>
 
     <profiles>
@@ -93,6 +93,7 @@
                 <java.jpackage.resource.dir>${basedir}/resources-win</java.jpackage.resource.dir>
                 <java.jpackage.type>msi</java.jpackage.type>
                 <java.gc.log></java.gc.log>
+                <maven.build.timestamp.format>MM.dd.yyyy.HHmm</maven.build.timestamp.format>
             </properties>
         </profile>
     </profiles>
