@@ -20,13 +20,25 @@ import java.util.Properties;
 public class OrcaHostInfo {
     private static final OrcaHostInfo ORCA_HOST_INFO = new OrcaHostInfo();
     private static final String ORCA_HOST_INFO_FILE = "orca.host.info";
-
     private final Logger logger = Logger.getLogger(OrcaHostInfo.class);
 
     /**
      * 取得した ORCA 情報.
      */
     private HostData hostData;
+
+    /**
+     * orca or webOrca?
+     */
+    private boolean isWebOrca = false;
+
+    public void setWebOrca(boolean b) {
+        isWebOrca = b;
+    }
+
+    public boolean isWebOrca() {
+         return isWebOrca;
+    }
 
     /**
      * OrcaHostInfo.
@@ -49,7 +61,6 @@ public class OrcaHostInfo {
 
         // ORCA が立ち上がるまで待つ
         int retry = 0;
-        URI uri = getOrcaApiUri(OrcaApiUrl.PATIENTGETV2);
         Authenticator.setDefault(new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -60,13 +71,15 @@ public class OrcaHostInfo {
         });
         while (true) {
             try {
+                URI uri = getOrcaApiUri(OrcaApiUrl.PATIENTGETV2);
                 URLConnection con = uri.toURL().openConnection();
                 try (InputStream in = con.getInputStream()) {
                 }
-                logger.info("ORCA server responded.");
+                logger.info("ORCA server responded. WebOrca:" + isWebOrca);
                 break;
 
             } catch (IOException ex) {
+                setWebOrca(!isWebOrca);
                 logger.info(ex.getMessage() + ", retrying: " + ++retry);
                 try {
                     Thread.sleep(5000);
@@ -129,7 +142,7 @@ public class OrcaHostInfo {
      */
     public URI getOrcaApiUri(String url) {
         try {
-            return new URI(String.format("http://%s:8000%s", getHost(), url));
+            return new URI(String.format("http://%s:8000%s%s", getHost(), isWebOrca? "/api":"", url));
 
         } catch (URISyntaxException ex) {
             ex.printStackTrace(System.err);
