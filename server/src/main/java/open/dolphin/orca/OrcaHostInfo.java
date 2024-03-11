@@ -157,7 +157,9 @@ public class OrcaHostInfo {
      * @return URI
      */
     public URI getPushApiUri() {
-        String url = String.format("ws://%s:9400/ws", getHost());
+        String url = isWebOrca?
+            String.format("ws://%s:8000/ws", getHost())
+            : String.format("ws://%s:9400/ws", getHost());
         return URI.create(url);
     }
 
