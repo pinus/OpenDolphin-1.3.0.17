@@ -278,7 +278,8 @@ public class CalendarSettingPanel extends AbstractSettingPanel {
 
         @Override
         protected void failed(Throwable cause) {
-            logger.error("failed " + cause);
+            logger.info("failed " + cause);
+            cause.printStackTrace(System.err);
             showMessage("データ取得に失敗しました", PNSOptionPane.ERROR_MESSAGE);
         }
 
