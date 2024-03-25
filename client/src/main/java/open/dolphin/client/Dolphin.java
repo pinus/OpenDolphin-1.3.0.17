@@ -365,7 +365,7 @@ public class Dolphin implements MainWindow {
      */
     @Override
     public void openKarte(PatientVisitModel pvt) {
-        logger.info("openKarte");
+        //logger.info("openKarte");
         ChartImpl chart = new ChartImpl();
         chart.setPvtListener(getPlugin(WaitingListImpl.class)::updateState);
         chart.setContext(this);

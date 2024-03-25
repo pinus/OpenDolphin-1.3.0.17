@@ -192,18 +192,17 @@ public class MenuSupport implements MenuListener {
      * @return メソッドが実行された時 true
      */
     public boolean sendToChain(String method) {
-        logger.debug(String.format("MenuSupport: sendToChain: %s: [0]=%s, [1]=%s,[2]=%s", method, chains[0], chains[1], chains[2]));
+        //logger.info(String.format("sendToChain: %s: [0]=%s, [1]=%s,[2]=%s,[3]=%s", method, chains[0], chains[1], chains[2], chains[3]));
 
         boolean handled = false;
 
-        for (Object target : chains) {
-
-            if (target != null) {
+        for (int i=0; i < chains.length; i++) {
+            if (chains[i] != null) {
                 try {
-                    Method mth = target.getClass().getMethod(method, (Class[]) null);
-                    // System.out.println("invoked: " + target.getClass() + "#" + method);
-                    mth.invoke(target, (Object[]) null);
+                    Method mth = chains[i].getClass().getMethod(method, (Class[]) null);
+                    mth.invoke(chains[i], (Object[]) null);
                     handled = true;
+                    logger.info("invoked: " + i + ":" + chains[i].getClass() + "#" + method);
                     break;
 
                 } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) {

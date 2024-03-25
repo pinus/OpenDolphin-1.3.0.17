@@ -411,6 +411,9 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             double fixedIncrement = 2.0 * Math.PI / barsCount;
             AffineTransform toCircle = AffineTransform.getRotateInstance(fixedIncrement, center.getX(), center.getY());
 
+            Window parent = SwingUtilities.getWindowAncestor(BlockGlass2.this);
+            //logger.info(rampUp? "rumpup:" : "rumpdown:" + " parent = " + ((JFrame)parent).getTitle());
+
             /* initial delay */
             if (rampUp) {
                 try {
@@ -434,7 +437,6 @@ public class BlockGlass2 extends JComponent implements MouseListener {
 
             while (!Thread.interrupted()) {
                 // visible でないのに animation が続くのを防ぐ安全装置
-                Window parent = SwingUtilities.getWindowAncestor(BlockGlass2.this);
                 if (parent == null || !parent.isVisible()) {
                     interrupt();
                     break;

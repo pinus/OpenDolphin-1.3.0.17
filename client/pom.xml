@@ -16,7 +16,7 @@
 
         <!-- versions -->
         <java.version>17</java.version>
-        <version.openjfx>21</version.openjfx>
+        <version.openjfx>17</version.openjfx>
         <version.jakarta.platform>10.0.0</version.jakarta.platform>
         <version.org.jboss.resteasy>6.2.3.Final</version.org.jboss.resteasy>
         <version.org.hibernate>6.1.5.Final</version.org.hibernate>
@@ -38,13 +38,10 @@
             </activation>
             <properties>
                 <jfx.platform>mac-aarch64</jfx.platform>
-                <java.bin.dir>/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin</java.bin.dir>
+                <java.module.path>${java.home}/jmods</java.module.path>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre</java.jre.dir>
-                <java.jlink>${java.bin.dir}/jlink</java.jlink>
-                <java.jpackage>${java.bin.dir}/jpackage</java.jpackage>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
-                <java.gc.log>file=${user.home}/Library/Logs/jvm-gc.log:utctime,pid:filecount=3,filesize=1m</java.gc.log>
             </properties>
         </profile>
 
@@ -55,13 +52,10 @@
             </activation>
             <properties>
                 <jfx.platform>mac-aarch64</jfx.platform>
-                <java.bin.dir>/Library/Java/JavaVirtualMachines/graalvm-jdk-17.0.10+11.1/Contents/Home/bin</java.bin.dir>
+                <java.module.path>/Library/Java/JavaVirtualMachines/graalvm-jdk-17.0.10+11.1/Contents/Home/jmods</java.module.path>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre-graal</java.jre.dir>
-                <java.jlink>${java.bin.dir}/jlink</java.jlink>
-                <java.jpackage>${java.bin.dir}/jpackage</java.jpackage>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
-                <java.gc.log>file=${user.home}/Library/Logs/jvm-gc.log:utctime,pid:filecount=3,filesize=1m</java.gc.log>
             </properties>
         </profile>
 
@@ -72,13 +66,10 @@
             </activation>
             <properties>
                 <jfx.platform>mac</jfx.platform>
-                <java.bin.dir>/Library/Java/JavaVirtualMachines/jdk-17.0.7-x64.jdk/Contents/Home/bin</java.bin.dir>
-                <java.jre.dir>${basedir}/appRuntimeImage/jre-x86</java.jre.dir>
-                <java.jlink>${java.bin.dir}/jlink</java.jlink>
-                <java.jpackage>${java.bin.dir}/jpackage</java.jpackage>
+                <java.module.path>${java.home}/jmods</java.module.path>
+                <java.jre.dir>${basedir}/appRuntimeImage/jre-x64</java.jre.dir>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
-                <java.gc.log></java.gc.log>
             </properties>
         </profile>
 
@@ -87,12 +78,9 @@
             <properties>
                 <jfx.platform>win</jfx.platform>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre</java.jre.dir>
-                <java.jlink>${java.home}/bin/jlink.exe</java.jlink>
-                <java.jpackage>${java.home}/bin/jpackage.exe</java.jpackage>
                 <java.jpackage.icon>${basedir}/icons/OpenDolphin-ICO.ico</java.jpackage.icon>
                 <java.jpackage.resource.dir>${basedir}/resources-win</java.jpackage.resource.dir>
                 <java.jpackage.type>msi</java.jpackage.type>
-                <java.gc.log></java.gc.log>
                 <maven.build.timestamp.format>MM.dd.yyyy.HHmm</maven.build.timestamp.format>
             </properties>
         </profile>
@@ -179,7 +167,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.9</version>
+            <version>1.4.14</version>
         </dependency>
         <dependency>
             <groupId>com.j2html</groupId>
@@ -260,11 +248,12 @@
                             <target>
                                 <echo>making jre using jlink</echo>
                                 <delete dir="${java.jre.dir}" />
-                                <exec executable="${java.jlink}">
+                                <exec executable="${java.home}/bin/jlink">
                                     <arg value="--no-header-files" />
                                     <arg value="--no-man-pages" />
                                     <arg value="--strip-debug" />
                                     <arg value="--compress=2" />
+                                    <arg line="--module-path ${java.module.path}" />
                                     <arg line="--add-modules java.base,java.desktop,java.datatransfer,java.naming,java.prefs,java.xml,java.management,jdk.unsupported" />
                                     <arg line="--output ${java.jre.dir}" />
                                 </exec>
@@ -281,6 +270,7 @@
                         </goals>
                         <configuration>
                             <target>
+                                <!-- cross-platform packaging not supported -->
                                 <echo>making dist folder using jpackage</echo>
                                 <delete dir="${workdir}" />
                                 <copy tofile="${workdir}/opendolphin.jar">
@@ -291,7 +281,7 @@
                                 </copy>
 
                                 <delete dir="${distdir}" />
-                                <exec executable="${java.jpackage}">
+                                <exec executable="${java.home}/bin/jpackage">
                                     <arg line="-n OpenDolphin" />
                                     <arg line="--app-version ${buildDate}" />
                                     <arg line="--type ${java.jpackage.type}" />

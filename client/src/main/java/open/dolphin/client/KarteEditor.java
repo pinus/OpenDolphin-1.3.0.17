@@ -479,6 +479,9 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             return;
         }
 
+        // この先、メニューショートカット受け付けない
+        getContext().getFrame().getJMenuBar().setEnabled(false);
+
         // 文書末の余分な改行文字を削除する by masuda-senesi
         KarteStyledDocument doc = (KarteStyledDocument) soaPane.getTextPane().getDocument();
         doc.removeExtraCr();
@@ -550,6 +553,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                             errMsg,
                             ClientContext.getFrameTitle(title),
                             JOptionPane.WARNING_MESSAGE);
+                    getContext().getFrame().getJMenuBar().setEnabled(true);
                 }
             }
         };
@@ -785,7 +789,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
             // 全角を Kill する
             if (bean.getModel() instanceof BundleMed med) {
                 ClaimItem[] items = med.getClaimItem();
-                if (items != null && items.length > 0) {
+                if (items != null) {
                     for (ClaimItem item : items) {
                         String num = item.getNumber();
                         if (num != null) {
@@ -801,7 +805,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel {
                 }
             } else if (bean.getModel() instanceof ClaimBundle bundle) {
                 ClaimItem[] items = bundle.getClaimItem();
-                if (items != null && items.length > 0) {
+                if (items != null) {
                     for (ClaimItem item : items) {
                         String num = item.getNumber();
                         if (num != null) {
