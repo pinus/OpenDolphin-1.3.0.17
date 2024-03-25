@@ -1,15 +1,14 @@
 package open.dolphin.inspector;
 
 import open.dolphin.calendar.CalendarPanel;
-import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.helper.ImageHelper;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.AllergyModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.Focuser;
+import open.dolphin.ui.PNSButton;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +29,8 @@ public class AllergyEditor {
     private static AllergyEditor editor;
     private AllergyModel model;
     private final JDialog dialog;
-    private final JButton addBtn;
-    private final JButton clearBtn;
+    private final PNSButton addBtn;
+    private final PNSButton clearBtn;
     private JTextField factorFld;
     private JTextField identifiedFld;
     private JTextField memoFld;
@@ -83,11 +82,11 @@ public class AllergyEditor {
         view.add(causePanel); view.add(memoPanel); view.add(datePanel);
 
         // compose dialog
-        addBtn = new JButton("OK");
+        addBtn = new PNSButton("OK");
         addBtn.addActionListener(e -> add());
         addBtn.setEnabled(false);
 
-        clearBtn = new JButton("クリア");
+        clearBtn = new PNSButton("クリア");
         clearBtn.addActionListener(e -> clear());
         clearBtn.setEnabled(false);
 
@@ -153,7 +152,7 @@ public class AllergyEditor {
         String factor = factorFld.getText().trim();
         String date = identifiedFld.getText().trim();
 
-        boolean newOk = !factor.equals("") && !date.equals("");
+        boolean newOk = !factor.isEmpty() && !date.isEmpty();
 
         if (ok != newOk) {
             ok = newOk;
@@ -170,7 +169,7 @@ public class AllergyEditor {
         model.setFactor(factorFld.getText().trim());
         model.setSeverity((String) reactionCombo.getSelectedItem());
         String memo = memoFld.getText().trim();
-        if (!memo.equals("")) {
+        if (!memo.isEmpty()) {
             model.setMemo(memo);
         }
         String dateStr = identifiedFld.getText().trim();

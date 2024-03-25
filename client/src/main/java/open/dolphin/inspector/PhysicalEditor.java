@@ -5,11 +5,11 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyDocumentListener;
-import open.dolphin.helper.ImageHelper;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.PhysicalModel;
 import open.dolphin.infomodel.SimpleDate;
 import open.dolphin.ui.Focuser;
+import open.dolphin.ui.PNSButton;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -27,8 +27,8 @@ public class PhysicalEditor {
     private static PhysicalEditor editor;
     private PhysicalModel model;
     private final JDialog dialog;
-    private final JButton addBtn;
-    private final JButton clearBtn;
+    private final PNSButton addBtn;
+    private final PNSButton clearBtn;
     private javax.swing.JTextField heightFld;
     private javax.swing.JTextField identifiedFld;
     private javax.swing.JTextField weightFld;
@@ -64,11 +64,11 @@ public class PhysicalEditor {
         view.add(heightLbl); view.add(heightFld); view.add(Box.createHorizontalStrut(20));
         view.add(dateLbl); view.add(identifiedFld);
 
-        addBtn = new JButton("追加");
+        addBtn = new PNSButton("追加");
         addBtn.addActionListener(e -> add());
         addBtn.setEnabled(false);
 
-        clearBtn = new JButton("クリア");
+        clearBtn = new PNSButton("クリア");
         clearBtn.addActionListener(e -> clear());
         clearBtn.setEnabled(false);
 
@@ -131,7 +131,7 @@ public class PhysicalEditor {
         String weight = weightFld.getText().trim();
         String dateStr = identifiedFld.getText().trim();
 
-        boolean newOk = !(height.equals("") && weight.equals("")) && !dateStr.equals("");
+        boolean newOk = !(height.isEmpty() && weight.isEmpty()) && !dateStr.isEmpty();
 
         if (ok != newOk) {
             ok = newOk;
@@ -148,8 +148,8 @@ public class PhysicalEditor {
         String h = heightFld.getText().trim();
         String w = weightFld.getText().trim();
 
-        if (!h.equals("")) { model.setHeight(h); }
-        if (!w.equals("")) { model.setWeight(w); }
+        if (!h.isEmpty()) { model.setHeight(h); }
+        if (!w.isEmpty()) { model.setWeight(w); }
 
         // 同定日
         String dateStr = identifiedFld.getText().trim();
