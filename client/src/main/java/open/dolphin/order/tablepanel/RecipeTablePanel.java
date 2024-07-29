@@ -27,7 +27,7 @@ public class RecipeTablePanel extends ItemTablePanel {
 
     private static final ImageIcon INFO_BUTTON_IMAGE = GUIConst.ICON_INFORMATION_16;
     private static final String ADMIN_MARK = "[用法] ";
-    private static final String REG_ADMIN_MARK = "[用法] ";
+    private static final String REG_ADMIN_MARK = "\\[用法\\] *";
     private static final String LABEL_TEXT_IN_MED = "院内";
     private static final String LABEL_TEXT_OUT_MED = "院外";
     private static final String IN_MEDICINE = "院内処方";

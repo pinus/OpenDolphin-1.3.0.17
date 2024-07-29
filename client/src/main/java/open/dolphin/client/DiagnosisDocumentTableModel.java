@@ -123,6 +123,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                         // rd 書き換え
                         rd.setDiagnosis(newDiag.getDiagnosisDesc());
                         rd.setDiagnosisCode(newDiag.getDiagnosisCode());
+                        rd.setStatus(newDiag.getStatus()); // 移行病名を修正したら status を戻す必要あり
                         update(row, rd);
                     }
                 }

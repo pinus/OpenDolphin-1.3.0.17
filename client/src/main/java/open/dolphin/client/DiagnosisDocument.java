@@ -1218,8 +1218,6 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
             @Override
             protected Boolean doInBackground() {
-                boolean found = false;
-
                 // 病名コードを切り出して（接頭語，接尾語は捨てる）コードのリストを作る
                 // 重複は不要なので，HashSet を使う
                 List<String> codeSet = new ArrayList<>();

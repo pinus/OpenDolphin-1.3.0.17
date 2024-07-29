@@ -52,7 +52,7 @@
             </activation>
             <properties>
                 <jfx.platform>mac-aarch64</jfx.platform>
-                <java.module.path>/Library/Java/JavaVirtualMachines/graalvm-jdk-17.0.10+11.1/Contents/Home/jmods</java.module.path>
+                <java.module.path>/Library/Java/JavaVirtualMachines/graalvm-jdk-17/Contents/Home/jmods</java.module.path>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre-graal</java.jre.dir>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
                 <java.jpackage.type>dmg</java.jpackage.type>
