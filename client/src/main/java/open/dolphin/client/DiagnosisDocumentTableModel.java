@@ -112,7 +112,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
         }
 
         switch (col) {
-            case DiagnosisDocument.DIAGNOSIS_COL:
+            case DiagnosisDocument.DIAGNOSIS_COL -> {
                 // JTextField から入ってきた String 分は無視
                 if (value instanceof DiagnosisLiteModel newDiag) {
                     // 変更されていたら更新する
@@ -126,9 +126,9 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                         update(row, rd);
                     }
                 }
-                break;
+            }
 
-            case DiagnosisDocument.CATEGORY_COL:
+            case DiagnosisDocument.CATEGORY_COL -> {
                 // JComboBox から選択
                 String saveCategory = rd.getCategory();
                 DiagnosisCategoryModel dcm = (DiagnosisCategoryModel) value;
@@ -161,68 +161,68 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                         update(row, rd);
                     }
                 }
-                break;
+            }
 
-            case DiagnosisDocument.OUTCOME_COL:
+            case DiagnosisDocument.OUTCOME_COL -> {
                 // JComboBox から選択
                 String saveOutcome = rd.getOutcome();
                 DiagnosisOutcomeModel dom = (DiagnosisOutcomeModel) value;
-                test = dom.getOutcome();
+                String test = dom.getOutcome();
                 test = test != null && (!test.isEmpty()) ? test : null;
-                    if (test != null) {
-                        if (Objects.isNull(saveOutcome) || !saveOutcome.equals(test)) {
-                            // undo 用に保存
-                            offerQueue(undoMap, rd);
-                            rd.setOutcome(dom.getOutcome());
-                            rd.setOutcomeDesc(dom.getOutcomeDesc());
-                            rd.setOutcomeCodeSys(dom.getOutcomeCodeSys());
-                            // 疾患終了日を入れる
-                            if (Project.getPreferences().getBoolean("autoOutcomeInput", false)) {
-                                String val = rd.getEndDate();
-                                if (StringUtils.isEmpty(val)) {
-                                    outcomeGenerator.setParams(rd, lastVisit);
-                                    if (dom.getOutcome().equals(DiagnosisOutcome.fullyRecovered.name())) {
-                                        // 終了の場合
-                                        rd.setEndDate(outcomeGenerator.standard());
-                                    } else if (dom.getOutcome().equals(DiagnosisOutcome.pause.name())) {
-                                        // 中止の場合
-                                        rd.setEndDate(outcomeGenerator.special());
-                                    }
+                if (test != null) {
+                    if (Objects.isNull(saveOutcome) || !saveOutcome.equals(test)) {
+                        // undo 用に保存
+                        offerQueue(undoMap, rd);
+                        rd.setOutcome(dom.getOutcome());
+                        rd.setOutcomeDesc(dom.getOutcomeDesc());
+                        rd.setOutcomeCodeSys(dom.getOutcomeCodeSys());
+                        // 疾患終了日を入れる
+                        if (Project.getPreferences().getBoolean("autoOutcomeInput", false)) {
+                            String val = rd.getEndDate();
+                            if (StringUtils.isEmpty(val)) {
+                                outcomeGenerator.setParams(rd, lastVisit);
+                                if (dom.getOutcome().equals(DiagnosisOutcome.fullyRecovered.name())) {
+                                    // 終了の場合
+                                    rd.setEndDate(outcomeGenerator.standard());
+                                } else if (dom.getOutcome().equals(DiagnosisOutcome.pause.name())) {
+                                    // 中止の場合
+                                    rd.setEndDate(outcomeGenerator.special());
                                 }
                             }
-                            update(row, rd);
                         }
-                    } else {
-                        // 転帰が消去された場合は新規病名として登録し直すことにした
-                        RegisteredDiagnosisModel newRd = new RegisteredDiagnosisModel();
-                        newRd.setDiagnosis(rd.getDiagnosis());
-                        newRd.setDiagnosisCode(rd.getDiagnosisCode());
-                        newRd.setDiagnosisCodeSystem(rd.getDiagnosisCodeSystem());
-                        newRd.setCategory(rd.getCategory());
-                        newRd.setCategoryDesc(rd.getCategoryDesc());
-                        newRd.setCategoryCodeSys(rd.getCategoryCodeSys());
-
-                        insert(newRd);
+                        update(row, rd);
                     }
-                break;
+                } else {
+                    // 転帰が消去された場合は新規病名として登録し直すことにした
+                    RegisteredDiagnosisModel newRd = new RegisteredDiagnosisModel();
+                    newRd.setDiagnosis(rd.getDiagnosis());
+                    newRd.setDiagnosisCode(rd.getDiagnosisCode());
+                    newRd.setDiagnosisCodeSystem(rd.getDiagnosisCodeSystem());
+                    newRd.setCategory(rd.getCategory());
+                    newRd.setCategoryDesc(rd.getCategoryDesc());
+                    newRd.setCategoryCodeSys(rd.getCategoryCodeSys());
 
-            case DiagnosisDocument.START_DATE_COL:
+                    insert(newRd);
+                }
+            }
+
+            case DiagnosisDocument.START_DATE_COL -> {
                 String strVal = (String) value;
-                test = rd.getStartDate();
+                String test = rd.getStartDate();
                 if (test == null || !test.equals(strVal)) {
                     rd.setStartDate(strVal);
                     update(row, rd);
                 }
-                break;
+            }
 
-            case DiagnosisDocument.END_DATE_COL:
-                strVal = (String) value;
-                test = rd.getEndDate();
+            case DiagnosisDocument.END_DATE_COL -> {
+                String strVal = (String) value;
+                String test = rd.getEndDate();
                 if (test == null || !test.equals(strVal)) {
                     rd.setEndDate(strVal);
                     update(row, rd);
                 }
-                break;
+            }
         }
     }
 
