@@ -46,7 +46,8 @@ public class PNSOptionPane extends JOptionPane {
     private static void forMac(JDialog dialog, String title) {
         dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
         dialog.getRootPane().putClientProperty("apple.awt.fullWindowContent", Boolean.TRUE);
-        JLabel titleLabel = new JLabel(title);
+        JLabel titleLabel = new JLabel();
+        //titleLabel.setText(title);
         JPanel titlePanel = new JPanel();
         titlePanel.setPreferredSize(new Dimension(100, 28));
         titlePanel.add(titleLabel);

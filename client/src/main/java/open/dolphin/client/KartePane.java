@@ -14,6 +14,7 @@ import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.ui.Focuser;
+import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.sheet.JSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -875,17 +876,13 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
             Icon icon = entry.getImageIcon();
             width = icon.getIconWidth();
             height = icon.getIconHeight();
-            if (width > maxImageWidth || height > maxImageHeight) {
-                if (pref.getBoolean("showImageSizeMessage", true)) {
-                    ok = showMaxSizeMessage();
-                }
-                //showMetaDataMessage();
-                //ok = false;
-            }
-        } else if (width > maxImageWidth || height > maxImageHeight) {
+        }
+        if (width > maxImageWidth || height > maxImageHeight) {
             if (pref.getBoolean("showImageSizeMessage", true)) {
                 ok = showMaxSizeMessage();
             }
+            //showMetaDataMessage();
+            //ok = false;
         }
 
         if (!ok) {
@@ -938,6 +935,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
                         editor.setSchema(schema);
                         editor.setEditable(true);
                         editor.addPropertyChangeListener(KartePane.this);
+                        IMEControl.off();
                         editor.start();
                     });
                 }
@@ -1069,7 +1067,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
      * @param sh 削除するスタンプのホルダリスト
      */
     public void removeStamp(StampHolder[] sh) {
-        if (sh != null && sh.length > 0) {
+        if (sh != null) {
             for (StampHolder h : sh) {
                 removeStamp(h);
             }
@@ -1091,7 +1089,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
      * @param sh 削除するシェーマのホルダリスト
      */
     public void removeSchema(SchemaHolder[] sh) {
-        if (sh != null && sh.length > 0) {
+        if (sh != null) {
             for (SchemaHolder h : sh) {
                 removeSchema(h);
             }
