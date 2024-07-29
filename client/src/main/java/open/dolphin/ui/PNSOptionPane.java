@@ -1,5 +1,7 @@
 package open.dolphin.ui;
 
+import open.dolphin.client.Dolphin;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
@@ -25,7 +27,9 @@ public class PNSOptionPane extends JOptionPane {
     public static void showMessageDialog(Component parentComponent, Object message, String title, int messageType, Icon icon) {
         JOptionPane pane = new PNSOptionPane(message, messageType, DEFAULT_OPTION);
         JDialog dialog = new JDialog();
-        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
+        if (Dolphin.forMac) { forMac(dialog, title); }
+        else { dialog.setTitle(title); }
+
         pane.addPropertyChangeListener(e -> {
             if (VALUE_PROPERTY.equals(e.getPropertyName())) {
                 dialog.setVisible(false);
@@ -33,11 +37,20 @@ public class PNSOptionPane extends JOptionPane {
             }
         });
         dialog.setModal(true);
-        dialog.setTitle(title);
-        dialog.add(pane);
+        dialog.add(pane, BorderLayout.CENTER);
         dialog.pack();
         dialog.setLocationRelativeTo(parentComponent);
         dialog.setVisible(true);
+    }
+
+    private static void forMac(JDialog dialog, String title) {
+        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
+        dialog.getRootPane().putClientProperty("apple.awt.fullWindowContent", Boolean.TRUE);
+        JLabel titleLabel = new JLabel(title);
+        JPanel titlePanel = new JPanel();
+        titlePanel.setPreferredSize(new Dimension(100, 28));
+        titlePanel.add(titleLabel);
+        dialog.add(titlePanel, BorderLayout.NORTH);
     }
 
     public static int showConfirmDialog(Component parentComponent, Object message, String title, int optionType, int messageType) {
@@ -51,7 +64,8 @@ public class PNSOptionPane extends JOptionPane {
     public static int showOptionDialog(Component parentComponent, Object message, String title, int optionType, int messageType, Icon icon, Object[] options, Object initialValue) {
         JOptionPane pane = new PNSOptionPane(message, messageType, optionType, icon, options, initialValue);
         JDialog dialog = new JDialog();
-        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
+        if (Dolphin.forMac) { forMac(dialog, title); }
+        else { dialog.setTitle(title); }
 
         pane.addPropertyChangeListener(e -> {
             if (VALUE_PROPERTY.equals(e.getPropertyName())) {
@@ -60,8 +74,7 @@ public class PNSOptionPane extends JOptionPane {
             }
         });
         dialog.setModal(true);
-        dialog.setTitle(title);
-        dialog.add(pane);
+        dialog.add(pane, BorderLayout.CENTER);
         dialog.pack();
         dialog.setLocationRelativeTo(parentComponent);
         dialog.setVisible(true);
