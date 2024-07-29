@@ -1063,7 +1063,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         boolean go = true;
 
         // addedDiagnosis の処理
-        if (addedDiagnosis.size() > 0) {
+        if (!addedDiagnosis.isEmpty()) {
 
             for (RegisteredDiagnosisModel rd : addedDiagnosis) {
 
@@ -1099,7 +1099,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         }
 
         // updatedDiagnosis の処理
-        if (updatedDiagnosis.size() > 0) {
+        if (!updatedDiagnosis.isEmpty()) {
 
             for (RegisteredDiagnosisModel rd : updatedDiagnosis) {
 
@@ -1164,7 +1164,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 logger.debug("getDiagnosisHistory succeeded");
                 // if (list == null) { list = new ArrayList<>(); } // null にはならない
 
-                if (ddl.isNoError() && list.size() > 0) {
+                if (ddl.isNoError() && !list.isEmpty()) {
                     if (ascend) {
                         list.sort(Comparator.naturalOrder());
                     } else {
@@ -1172,7 +1172,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                     }
                 }
                 // addedDiagnosis がある場合は list に追加
-                if (addedDiagnosis.size() > 0) {
+                if (!addedDiagnosis.isEmpty()) {
                     if (ascend) {
                         addedDiagnosis.addAll(list);
                     } else {
@@ -1443,7 +1443,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             logger.debug("doInBackground");
 
             // 更新する
-            if (updatedDiagnosis.size() > 0) {
+            if (!updatedDiagnosis.isEmpty()) {
                 logger.debug("ddl.updateDiagnosis");
                 ddl.updateDiagnosis(updatedDiagnosis);
             }
@@ -1451,7 +1451,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             List<Long> result = null;
 
             // 保存する
-            if (addedDiagnosis.size() > 0) {
+            if (!addedDiagnosis.isEmpty()) {
                 logger.debug("ddl.putDiagnosis");
                 result = ddl.putDiagnosis(addedDiagnosis);
                 // 割り当てられた id が result に帰ってくる
@@ -1468,13 +1468,13 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             }
 
             // 削除する：削除は removeDiagnosis(List<Long>id)
-            if (deletedDiagnosis.size() > 0) {
+            if (!deletedDiagnosis.isEmpty()) {
                 logger.debug("ddl.removeDiagnosis");
                 // rd のリストから，id のリストを作成（id=0 はローカルだけなので無視）
                 List<Long> list = new ArrayList<>();
                 deletedDiagnosis.stream().filter(rd -> rd.getId() != 0).forEach(rd -> list.add(rd.getId()));
 
-                if (list.size() > 0) {
+                if (!list.isEmpty()) {
                     ddl.removeDiagnosis(list);
                 }
             }
@@ -1598,7 +1598,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 if (value instanceof String) {
                     comp.setText("  " + value);
                 } else {
-                    comp.setText("  " + value.toString());
+                    comp.setText("  " + value);
                 }
             } else {
                 comp.setText("");

@@ -26,7 +26,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     // undo/redo 用 map（rd ごとに queue を作っておく）
     private final Map<Integer, Deque<DiagnosisLiteModel>> undoMap = new HashMap<>();
     private final Map<Integer, Deque<DiagnosisLiteModel>> redoMap = new HashMap<>();
-    private DiagnosisOutcomeGenerator outcomeGenerator = new DiagnosisOutcomeGenerator();
+    private final DiagnosisOutcomeGenerator outcomeGenerator = new DiagnosisOutcomeGenerator();
     private DiagnosisDocumentTable diagTable;
     private LastVisit lastVisit;
 
@@ -114,8 +114,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
         switch (col) {
             case DiagnosisDocument.DIAGNOSIS_COL:
                 // JTextField から入ってきた String 分は無視
-                if (value instanceof DiagnosisLiteModel) {
-                    DiagnosisLiteModel newDiag = (DiagnosisLiteModel) value;
+                if (value instanceof DiagnosisLiteModel newDiag) {
                     // 変更されていたら更新する
                     if (!rd.getDiagnosis().equals(newDiag.getDiagnosisDesc()) || !rd.getDiagnosisCode().equals(newDiag.getDiagnosisDesc())) {
                         // undo 用に保存
@@ -134,7 +133,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                 String saveCategory = rd.getCategory();
                 DiagnosisCategoryModel dcm = (DiagnosisCategoryModel) value;
                 String test = dcm.getDiagnosisCategory();
-                test = test != null && (!test.equals("")) ? test : null;
+                test = test != null && (!test.isEmpty()) ? test : null;
                 if (saveCategory != null) {
                     if (test != null) {
                         if (!test.equals(saveCategory)) {
@@ -169,7 +168,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
                 String saveOutcome = rd.getOutcome();
                 DiagnosisOutcomeModel dom = (DiagnosisOutcomeModel) value;
                 test = dom.getOutcome();
-                test = test != null && (!test.equals("")) ? test : null;
+                test = test != null && (!test.isEmpty()) ? test : null;
                     if (test != null) {
                         if (Objects.isNull(saveOutcome) || !saveOutcome.equals(test)) {
                             // undo 用に保存
@@ -230,8 +229,8 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     /**
      * DiagnosisDocument の propertyChange を呼び出す
      *
-     * @param row
-     * @param rd
+     * @param row row
+     * @param rd RegisteredDiagnosisModel
      */
     private void update(int row, RegisteredDiagnosisModel rd) {
         fireTableRowsUpdated(row, row);
@@ -241,7 +240,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     /**
      * DiagnosisDocument の insertDiagnosis を呼び出す
      *
-     * @param rd
+     * @param rd RegisteredDiagnosisModel
      */
     private void insert(RegisteredDiagnosisModel rd) {
         boundSupport.firePropertyChange(DiagnosisDocument.ADD_ADDED_LIST, "oldValue", rd);
@@ -250,7 +249,7 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     /**
      * 加えられた病名を undo で delete するために undo queue に deleted recored を積む
      *
-     * @param rd
+     * @param rd RegisteredDiagnosisModel
      */
     private void addDeletedRecordForUndo(RegisteredDiagnosisModel rd) {
         String org = rd.getStatus();
@@ -262,8 +261,8 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     /**
      * 加えられた病名は undo で delete されるようにする
      *
-     * @param row
-     * @param rd
+     * @param row row
+     * @param rd RegisteredDiagnosisModel
      */
     @Override
     public void insertRow(int row, RegisteredDiagnosisModel rd) {
@@ -325,8 +324,8 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
      * Queue にためる
      * id は system hash を使う（厳密に一意ではないが重なる可能性はほとんど無い）
      *
-     * @param dequeMap
-     * @param rd
+     * @param dequeMap map
+     * @param rd RegisteredDiagnosisModel
      */
     private void offerQueue(Map<Integer, Deque<DiagnosisLiteModel>> dequeMap, RegisteredDiagnosisModel rd) {
         int id = System.identityHashCode(rd);
@@ -343,9 +342,9 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     /**
      * Queue から取り出す　成功：true　取り出すもの無し：false
      *
-     * @param dequeMap
-     * @param rd
-     * @return
+     * @param dequeMap map
+     * @param rd RegisteredDiagnosisModel
+     * @return PollResult
      */
     private PollResult pollQueue(Map<Integer, Deque<DiagnosisLiteModel>> dequeMap, RegisteredDiagnosisModel rd) {
         Deque<DiagnosisLiteModel> dq = dequeMap.get(System.identityHashCode(rd));
@@ -362,8 +361,8 @@ public class DiagnosisDocumentTableModel extends ObjectReflectTableModel<Registe
     /**
      * Queue に積んだ分を取り消す
      *
-     * @param dequeMap
-     * @param rd
+     * @param dequeMap map
+     * @param rd RegisteredDiagnosisModel
      */
     private void cancelOffer(Map<Integer, Deque<DiagnosisLiteModel>> dequeMap, RegisteredDiagnosisModel rd) {
         Deque<DiagnosisLiteModel> dq = dequeMap.get(System.identityHashCode(rd));
