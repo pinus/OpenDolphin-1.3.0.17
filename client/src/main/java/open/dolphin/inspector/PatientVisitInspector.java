@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class PatientVisitInspector implements IInspector {
     /**
      * PatientVisitInspector を生成する.
      *
-     * @param parent
+     * @param parent parent inspector
      */
     public PatientVisitInspector(PatientInspector parent) {
         context = parent.getContext();
@@ -75,6 +76,13 @@ public class PatientVisitInspector implements IInspector {
         int year = tableModel.getYear();
         int month = tableModel.getMonth();
         titleText = String.format("%s %d年%d月", CATEGORY.title(), year, month + 1);
+
+        // 月の第1週だった場合、2週戻す、第2週だった場合、1週戻す
+        Calendar today = Calendar.getInstance();
+        int wom = today.get(Calendar.WEEK_OF_MONTH);
+        for (int i=wom; i<3; i++) {
+            tableModel.previousWeek();
+        }
     }
 
     @Override
@@ -106,7 +114,7 @@ public class PatientVisitInspector implements IInspector {
     /**
      * タイトルに年月をつけたボーダーを返す.
      *
-     * @return
+     * @return border
      */
     @Override
     public Border getBorder() {
@@ -117,7 +125,7 @@ public class PatientVisitInspector implements IInspector {
     /**
      * CalendarPanel から月変更の通知を受ける.
      *
-     * @param date
+     * @param date date
      */
     public void calendarUpdated(SimpleDate date) {
         if (border != null) {
