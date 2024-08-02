@@ -1,20 +1,22 @@
 package open.dolphin.ui;
 
 import open.dolphin.client.Dolphin;
+import open.dolphin.client.GUIConst;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Objects;
 
 /**
  * PNSButton を使った JOptionPane.
  */
 public class PNSOptionPane extends JOptionPane {
-
-    static final String ok = "OK";
-    static final String cancel = "Cancel";
-    static final String yes = "はい";
-    static final String no = "いいえ";
+    private static final String ok = "OK";
+    private static final String cancel = "Cancel";
+    private static final String yes = "はい";
+    private static final String no = "いいえ";
 
     public static void showMessageDialog(Component parentComponent, Object message) {
         showMessageDialog(parentComponent, message, UIManager.getString("OptionPane.messageDialogTitle"), INFORMATION_MESSAGE);
@@ -44,13 +46,35 @@ public class PNSOptionPane extends JOptionPane {
     }
 
     private static void forMac(JDialog dialog, String title) {
-        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", Boolean.TRUE);
-        dialog.getRootPane().putClientProperty("apple.awt.fullWindowContent", Boolean.TRUE);
-        JLabel titleLabel = new JLabel();
-        //titleLabel.setText(title);
+        dialog.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+        dialog.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+        dialog.getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
+
+        JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
+        titleLabel.setFont(GUIConst.TITLE_BAR_FONT);
+
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                titleLabel.setForeground(GUIConst.TITLE_BAR_ACTIVE_COLOR);
+            }
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                titleLabel.setForeground(GUIConst.TITLE_BAR_INACTIVE_COLOR);
+            }
+            @Override
+            public void windowOpened(WindowEvent e) { windowActivated(e); }
+        });
+
         JPanel titlePanel = new JPanel();
-        titlePanel.setPreferredSize(new Dimension(100, 28));
+        titlePanel.setPreferredSize(new Dimension(1,26));
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
+        titlePanel.add(Box.createHorizontalGlue());
+        titlePanel.add(Box.createHorizontalStrut(68));
         titlePanel.add(titleLabel);
+        titlePanel.add(Box.createHorizontalStrut(68));
+        titlePanel.add(Box.createHorizontalGlue());
+
         dialog.add(titlePanel, BorderLayout.NORTH);
     }
 

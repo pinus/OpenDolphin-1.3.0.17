@@ -192,7 +192,8 @@ public class LoginDialog {
      * @param msg 表示するメッセージ
      */
     private void showMessageDialog(String msg) {
-        String title = view.getTitle();
+        //String title = view.getTitle();
+        String title = "Host: " + Project.getHostAddress();
 
         PNSOptionPane.showMessageDialog(view, msg, title, JOptionPane.WARNING_MESSAGE);
         EventQueue.invokeLater(() -> {

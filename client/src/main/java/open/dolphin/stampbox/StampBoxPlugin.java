@@ -13,7 +13,6 @@ import open.dolphin.ui.PNSFrame;
 import open.dolphin.ui.PNSSafeToggleButton;
 import open.dolphin.ui.PNSTabbedPane;
 import open.dolphin.ui.sheet.JSheet;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +43,9 @@ public class StampBoxPlugin extends AbstractMainTool {
     private static final String NAME = "スタンプ箱";
 
     // frameのデフォルトの大きさ及びタイトル
-    private final int DEFAULT_WIDTH = 320;
-    private final int DEFAULT_HEIGHT = 690;
-    private final int IMPORT_TREE_OFFSET = 1;
+    private final static int DEFAULT_WIDTH = 320;
+    private final static int DEFAULT_HEIGHT = 690;
+    private final static int IMPORT_TREE_OFFSET = 1;
     // Logger
     private final Logger logger;
     // StampBox の JFrame
@@ -85,6 +84,9 @@ public class StampBoxPlugin extends AbstractMainTool {
     private StampBoxExtraMenu extraMenu;
     // collapseAll ボタン
     private JButton collapseBtn;
+    // title ラベル
+    private JLabel titleLabel;
+    // 編集ロック
     private boolean isLocked = true;
 
     public StampBoxPlugin() {
@@ -117,7 +119,8 @@ public class StampBoxPlugin extends AbstractMainTool {
                 // stamp maker が起動していたらタイトルを右の方に出す
                 spaces = (int) ((frame.getWidth() - stampBoxWidth) * 0.27f);
             }
-            frame.setTitle(StringUtils.repeat(' ', spaces) + "⚠️" + getCurrentBox().getInfo());
+            //frame.setTitle(StringUtils.repeat(' ', spaces) + "⚠️" + getCurrentBox().getInfo());
+            frame.setTitle("⚠ " + getCurrentBox().getInfo());
         }
     }
 
@@ -279,6 +282,7 @@ public class StampBoxPlugin extends AbstractMainTool {
             frame = windowSupport.getFrame();
             frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 105);
             frame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+            frame.getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
             javax.swing.JMenuBar myMenuBar = windowSupport.getMenuBar();
             mediator = new MenuSupport(this);
             MenuFactory appMenu = new MenuFactory();
@@ -440,6 +444,9 @@ public class StampBoxPlugin extends AbstractMainTool {
             tree.collapseAll();
         });
 
+        // title ラベル
+        titleLabel = frame.getTitleLabel();
+
         //
         // レイアウトする
         //
@@ -448,7 +455,12 @@ public class StampBoxPlugin extends AbstractMainTool {
         mainPanel.add(parentBox, BorderLayout.CENTER);
 
         PNSFrame.CommandPanel comPanel = frame.getCommandPanel();
-        comPanel.setPanelHeight(24);
+        comPanel.setPanelHeight(28);
+        if (Dolphin.forMac) {
+            comPanel.addSpace(16+12+ 16+4+ 16+4+ 16+4); // ツールの分だけ左にスペース
+            comPanel.addGlue();
+            comPanel.add(titleLabel);
+        }
         comPanel.addGlue();
         comPanel.add(toolBtn);
         comPanel.addSpace(12);

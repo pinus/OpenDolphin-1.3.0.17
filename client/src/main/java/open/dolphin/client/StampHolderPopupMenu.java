@@ -1,6 +1,7 @@
 package open.dolphin.client;
 
 import open.dolphin.helper.DailyDoseStringTool;
+import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.BundleMed;
 import open.dolphin.infomodel.ClaimItem;
 import open.dolphin.infomodel.ModuleModel;
@@ -527,6 +528,7 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
             final JTextField tf = new JTextField(10);
             tf.setPreferredSize(new Dimension(100, 26));
+            tf.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(tf));
             IMEControl.on(tf);
 
             JDialog dialog = new JDialog();

@@ -5,6 +5,9 @@ import open.dolphin.client.GUIConst;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Objects;
 
 /**
  * ３段構造フレーム
@@ -21,6 +24,9 @@ import java.awt.*;
  * @author pns
  */
 public class PNSFrame extends JFrame {
+    // "apple.awt.windowTitleVisible" = false で JLabel をウインドウタイトルとして使う場合
+    private JLabel titleLabel;
+
     // Panels
     private CommandPanel commandPanel;
     private MainPanel mainPanel;
@@ -44,6 +50,22 @@ public class PNSFrame extends JFrame {
         setGlassPane(new BlockGlass2());
 
         if (Dolphin.forWin) { setIconImage(GUIConst.ICON_DOLPHIN.getImage()); }
+        if (Dolphin.forMac) {
+            titleLabel = new JLabel();
+            titleLabel.setFont(GUIConst.TITLE_BAR_FONT);
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowActivated(WindowEvent e) {
+                    titleLabel.setForeground(GUIConst.TITLE_BAR_ACTIVE_COLOR);
+                }
+                @Override
+                public void windowDeactivated(WindowEvent e) {
+                    titleLabel.setForeground(GUIConst.TITLE_BAR_INACTIVE_COLOR);
+                }
+                @Override
+                public void windowOpened(WindowEvent e) { windowActivated(e); }
+            });
+        }
 
         // コマンドパネル
         if (commandPanelNeeded) { commandPanel = new CommandPanel(); }
@@ -149,10 +171,23 @@ public class PNSFrame extends JFrame {
         }
     }
 
+    @Override
+    public void setTitle(String title) {
+        if (Objects.nonNull(titleLabel)) {
+            titleLabel.setText(title);
+        }
+        super.setTitle(title);
+    }
+
+    public JLabel getTitleLabel() { return titleLabel; }
+
     public static void main(String[] argv) {
         open.dolphin.client.ClientContext.setClientContextStub(new open.dolphin.client.ClientContextStub());
 
         PNSFrame f = new PNSFrame();
+        f.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+        f.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+        f.getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
         f.setSize(600, 700);
 
         f.setTitle("テスト〜タイトル");
@@ -188,7 +223,6 @@ public class PNSFrame extends JFrame {
         f.setVisible(true);
         Component bg = f.getGlassPane();
         bg.setVisible(true);
-        try { Thread.sleep(3000); } catch (Exception e) {}
         bg.setVisible(false);
     }
 }
