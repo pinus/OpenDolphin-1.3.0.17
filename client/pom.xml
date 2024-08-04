@@ -13,6 +13,7 @@
         <targetdir>${basedir}/target</targetdir>
         <distdir>${basedir}/target/dist</distdir>
         <workdir>${basedir}/target/tmp</workdir><property name="targetdir" value="" />
+        <hydraulic.conveyor>/Applications/Conveyor.app/Contents/MacOS/conveyor</hydraulic.conveyor>
 
         <!-- versions -->
         <java.version>17</java.version>
@@ -38,6 +39,8 @@
             </activation>
             <properties>
                 <jfx.platform>mac-aarch64</jfx.platform>
+                <hydraulic.conveyor.machine>mac.aarch64</hydraulic.conveyor.machine>
+                <hydraulic.convayor.target>mac-app</hydraulic.convayor.target>
                 <java.module.path>${java.home}/jmods</java.module.path>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre</java.jre.dir>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
@@ -52,6 +55,8 @@
             </activation>
             <properties>
                 <jfx.platform>mac-aarch64</jfx.platform>
+                <hydraulic.conveyor.machine>mac.aarch64</hydraulic.conveyor.machine>
+                <hydraulic.convayor.target>mac-app</hydraulic.convayor.target>
                 <java.module.path>/Library/Java/JavaVirtualMachines/graalvm-jdk-17/Contents/Home/jmods</java.module.path>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre-graal</java.jre.dir>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
@@ -77,6 +82,8 @@
             <id>win</id>
             <properties>
                 <jfx.platform>win</jfx.platform>
+                <hydraulic.conveyor.machine>windows.amd64</hydraulic.conveyor.machine>
+                <hydraulic.convayor.target>windows-msix</hydraulic.convayor.target>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre</java.jre.dir>
                 <java.jpackage.icon>${basedir}/icons/OpenDolphin-ICO.ico</java.jpackage.icon>
                 <java.jpackage.resource.dir>${basedir}/resources-win</java.jpackage.resource.dir>
@@ -293,6 +300,45 @@
                                     <arg line="--java-options --add-opens=java.desktop/javax.swing.undo=ALL-UNNAMED" />
                                     <arg line="--java-options -XX:+UseZGC" />
                                     <arg line="--java-options -Dopen.dolphin.build.timestamp=${buildDate}" />
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+
+                    <!-- make conveyor antrun:run@conveyor -->
+                    <execution>
+                        <id>conveyor</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo>make app with hydraulic conveyor</echo>
+                                <exec executable="${hydraulic.conveyor}">
+                                    <arg line="-KbuildDate=${buildDate}" />
+                                    <arg line="-Kapp.machines=${hydraulic.conveyor.machine}" />
+                                    <arg line="make ${hydraulic.convayor.target}" />
+                                    <arg line="--overwrite" />
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+
+                    <!-- make conveyor antrun:run@conveyor-site -->
+                    <execution>
+                        <id>conveyor-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo>make site with hydraulic conveyor</echo>
+                                <exec executable="${hydraulic.conveyor}">
+                                    <arg line="-KbuildDate=${buildDate}" />
+                                    <arg line="make site" />
+                                    <arg line="--overwrite" />
                                 </exec>
                             </target>
                         </configuration>
