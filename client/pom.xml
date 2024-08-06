@@ -14,6 +14,7 @@
         <distdir>${basedir}/target/dist</distdir>
         <workdir>${basedir}/target/tmp</workdir><property name="targetdir" value="" />
         <hydraulic.conveyor>/Applications/Conveyor.app/Contents/MacOS/conveyor</hydraulic.conveyor>
+        <hydraulic.conveyor.output.dir>${basedir}/output</hydraulic.conveyor.output.dir>
 
         <!-- versions -->
         <java.version>17</java.version>
@@ -271,10 +272,6 @@
                     <!-- make dist folder antrun:run@dist -->
                     <execution>
                         <id>dist</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                         <configuration>
                             <target>
                                 <!-- cross-platform packaging not supported -->
@@ -308,37 +305,36 @@
                     <!-- make conveyor antrun:run@conveyor -->
                     <execution>
                         <id>conveyor</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                         <configuration>
                             <target>
                                 <echo>make app with hydraulic conveyor</echo>
+                                <delete dir="${hydraulic.conveyor.output.dir}" />
                                 <exec executable="${hydraulic.conveyor}">
                                     <arg line="-KbuildDate=${buildDate}" />
                                     <arg line="-Kapp.machines=${hydraulic.conveyor.machine}" />
                                     <arg line="make ${hydraulic.convayor.target}" />
-                                    <arg line="--overwrite" />
                                 </exec>
+                                <zip destfile="${hydraulic.conveyor.output.dir}/OpenDolphin-${buildDate}.zip"
+                                    bsedir="${hydraulic.conveyor.output.dir}"
+                                    includes="${hydraulic.conveyor.output.dir}/OpenDolphin.app"/>
                             </target>
                         </configuration>
                     </execution>
 
-                    <!-- make conveyor antrun:run@conveyor-site -->
+                    <!-- make conveyor site by mvn site -->
                     <execution>
                         <id>conveyor-site</id>
-                        <phase>package</phase>
+                        <phase>site</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
                             <target>
                                 <echo>make site with hydraulic conveyor</echo>
+                                <delete dir="${hydraulic.conveyor.output.dir}" />
                                 <exec executable="${hydraulic.conveyor}">
                                     <arg line="-KbuildDate=${buildDate}" />
                                     <arg line="make site" />
-                                    <arg line="--overwrite" />
                                 </exec>
                             </target>
                         </configuration>
