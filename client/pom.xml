@@ -314,9 +314,11 @@
                                     <arg line="-Kapp.machines=${hydraulic.conveyor.machine}" />
                                     <arg line="make ${hydraulic.convayor.target}" />
                                 </exec>
-                                <zip destfile="${hydraulic.conveyor.output.dir}/OpenDolphin-${buildDate}.zip"
-                                    bsedir="${hydraulic.conveyor.output.dir}"
-                                    includes="${hydraulic.conveyor.output.dir}/OpenDolphin.app"/>
+                                <exec executable="tar">
+                                    <arg line="czf ${hydraulic.conveyor.output.dir}/OpenDolphin-${buildDate}.tgz" />
+                                    <arg line="-C ${hydraulic.conveyor.output.dir}" />
+                                    <arg line="OpenDolphin.app" />
+                                </exec>
                             </target>
                         </configuration>
                     </execution>
