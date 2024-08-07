@@ -34,7 +34,7 @@
 
     <profiles>
         <profile>
-            <id>mac-arm64</id>
+            <id>mac-aarch64</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -66,12 +66,14 @@
         </profile>
 
         <profile>
-            <id>mac-x64</id>
+            <id>mac-amd64</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <jfx.platform>mac</jfx.platform>
+                <hydraulic.conveyor.machine>mac.amd64</hydraulic.conveyor.machine>
+                <hydraulic.convayor.target>mac-app</hydraulic.convayor.target>
                 <java.module.path>${java.home}/jmods</java.module.path>
                 <java.jre.dir>${basedir}/appRuntimeImage/jre-x64</java.jre.dir>
                 <java.jpackage.resource.dir>${basedir}/resources</java.jpackage.resource.dir>
