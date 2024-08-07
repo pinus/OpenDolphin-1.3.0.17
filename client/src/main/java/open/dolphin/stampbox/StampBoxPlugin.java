@@ -276,10 +276,13 @@ public class StampBoxPlugin extends AbstractMainTool {
         int width = DEFAULT_WIDTH;
         int height = DEFAULT_HEIGHT;
 
+        WindowSupport<StampBoxPlugin> windowSupport = new WindowSupport<>(title, this);
+        frame = windowSupport.getFrame();
+        frame.removeStatusPanel();
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
         // mac で StampBox にもメニューバーを出す
         if (Dolphin.forMac) {
-            WindowSupport<StampBoxPlugin> windowSupport = new WindowSupport<>(title, this);
-            frame = windowSupport.getFrame();
             frame.getRootPane().putClientProperty(WindowSupport.MENUBAR_HEIGHT_OFFSET_PROP, 105);
             frame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
             frame.getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
@@ -301,13 +304,7 @@ public class StampBoxPlugin extends AbstractMainTool {
                 GUIConst.ACTION_REDO
             };
             mediator.enableMenus(enables);
-
-        } else {
-            frame = new PNSFrame(title);
         }
-        frame.removeStatusPanel();
-
-        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         //
         // 全体のボックスを生成する

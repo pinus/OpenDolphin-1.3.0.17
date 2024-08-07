@@ -154,10 +154,21 @@ public class ImageBox extends AbstractMainTool {
         //refreshBtn.setToolTipText("シェーマリストを更新します");
         //JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
+        WindowSupport<ImageBox> windowSupport = new WindowSupport<>(title, this);
+        frame = windowSupport.getFrame();
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                processWindowClosing();
+            }
+        });
+        // command panel, status panel は使わない
+        frame.removeCommandPanel();
+        frame.removeStatusPanel();
+
         // mac で SchemaBox にもメニューバーを出す
         if (Dolphin.forMac) {
-            WindowSupport<ImageBox> windowSupport = new WindowSupport<>(title, this);
-            frame = windowSupport.getFrame();
             javax.swing.JMenuBar myMenuBar = windowSupport.getMenuBar();
             mediator = new MenuSupport(this);
             MenuFactory appMenu = new MenuFactory();
@@ -174,21 +185,8 @@ public class ImageBox extends AbstractMainTool {
                     GUIConst.ACTION_SHOW_PATIENT_SEARCH
             };
             mediator.enableMenus(enables);
-        } else {
-            frame = new PNSFrame(title);
         }
 
-        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                processWindowClosing();
-            }
-        });
-
-        // command panel, status panel は使わない
-        frame.removeCommandPanel();
-        frame.removeStatusPanel();
         // MainPanel に TabbedPane を挿入
         PNSFrame.MainPanel mainPanel = frame.getMainPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
