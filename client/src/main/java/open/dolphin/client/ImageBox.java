@@ -159,9 +159,7 @@ public class ImageBox extends AbstractMainTool {
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e) {
-                processWindowClosing();
-            }
+            public void windowClosing(WindowEvent e) { stop(); }
         });
         // command panel, status panel は使わない
         frame.removeCommandPanel();
@@ -219,10 +217,6 @@ public class ImageBox extends AbstractMainTool {
     private File[] listDirectories(File dir) {
         DirectoryFilter filter = new DirectoryFilter();
         return dir.listFiles(filter);
-    }
-
-    public void processWindowClosing() {
-        stop();
     }
 
     /**

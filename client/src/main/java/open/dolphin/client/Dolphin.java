@@ -503,9 +503,12 @@ public class Dolphin implements MainWindow {
             providers.values().forEach(MainTool::stop);
         }
 
-        if (windowSupport != null) {
-            windowSupport.dispose();
+        // WindowSupport.dispose で位置と大きさが保存される
+        while (!WindowSupport.getAllWindows().isEmpty()) {
+            logger.info("Disposing " + WindowSupport.getAllWindows().get(0).getFrame().getTitle());
+            WindowSupport.getAllWindows().get(0).dispose();
         }
+
         logger.info("アプリケーションを終了します");
         System.exit(0);
     }
