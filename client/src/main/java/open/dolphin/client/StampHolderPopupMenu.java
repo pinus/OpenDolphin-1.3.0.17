@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -557,11 +559,15 @@ public class StampHolderPopupMenu extends JPopupMenu {
             addBtn.addActionListener(evt -> btnAction.accept(0));
             overwriteBtn.addActionListener(evt -> btnAction.accept(1));
             cancelBtn.addActionListener(evt -> btnAction.accept(2));
-            dialog.getRootPane().getActionMap().put("cancel", new AbstractAction() {
+            tf.addKeyListener(new KeyListener() {
                 @Override
-                public void actionPerformed(ActionEvent e) {
-                    btnAction.accept(-1);
+                public void keyTyped(KeyEvent e) {}
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { btnAction.accept(-1); }
                 }
+                @Override
+                public void keyReleased(KeyEvent e) {}
             });
 
             dialog.setModal(true);
