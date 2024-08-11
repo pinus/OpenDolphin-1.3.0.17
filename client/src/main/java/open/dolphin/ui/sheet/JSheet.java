@@ -30,6 +30,8 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
     private Window owner;
     // 表示する JOptionPane / JFileChooser を入れる JPanel
     private JComponent sourcePane;
+    // sourcePane を作るための JDialog
+    private JDialog sourceDialog;
     // JSheet の ContentPane
     private JPanel content;
     // glass pane
@@ -47,7 +49,6 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
     private long animationStart;
 
     private SheetListener sheetListener;
-    private Component parentComponent;
     private Component focusOwner;
 
     private final Logger logger = LoggerFactory.getLogger(JSheet.class);
@@ -75,7 +76,6 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
         Window owner = JOptionPane.getFrameForComponent(parentComponent);
         JSheet js = new JSheet(owner);
         js.setSourceDialog(dialog);
-        js.setParentComponent(parentComponent);
 
         if (pane.getInitialValue() instanceof JButton b) {
             js.getRootPane().setDefaultButton(b);
@@ -97,7 +97,6 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
     public static void showSheet(JOptionPane pane, Component parentComponent, SheetListener listener) {
         JSheet js = createDialog(pane, parentComponent);
         js.addSheetListener(listener);
-        js.setParentComponent(parentComponent);
         js.setVisible(true);
     }
 
@@ -127,7 +126,6 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
         JSheet js = new JSheet(owner);
         js.setSourceDialog(dialog);
         js.addSheetListener(listener);
-        js.setParentComponent(parentComponent);
         js.setVisible(true);
     }
 
@@ -308,20 +306,12 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
     }
 
     /**
-     * Parent をセットする.
-     *
-     * @param c parent component
-     */
-    public void setParentComponent(Component c) {
-        parentComponent = c;
-    }
-
-    /**
      * ソースとなる Dialog をセットしてリスナを付ける.
      *
      * @param dialog JDialog
      */
     public void setSourceDialog(JDialog dialog) {
+        sourceDialog = dialog;
         sourcePane = (JComponent) dialog.getContentPane();
         connectListeners(sourcePane.getComponent(0)); // JOptionPane or JFileChooser
         setTransparent(sourcePane);
@@ -543,6 +533,8 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
                     content.removeAll();
                     super.setVisible(false);
                     dispose();
+                    sourceDialog.dispose();
+                    sourceDialog = null;
                 }
             }
         }
