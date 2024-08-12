@@ -37,7 +37,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
 
     // Window support が提供するスタッフ
     // フレーム
-    final private PNSFrame frame;
+    private PNSFrame frame;
     // メニューバー
     final private JMenuBar menuBar;
     // ウインドウメニュー
@@ -176,6 +176,14 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
      * 終了処理
      */
     public void dispose() {
+        if (Objects.nonNull(timer)) {
+            timer.cancel();
+            timer.purge();
+            timer = null;
+        }
+        frame.removeComponentListener(WindowSupport.this);
+        windowMenu.removeMenuListener(WindowSupport.this);
+
         // bounds 記録
         Rectangle r = frame.getBounds();
         pref.putInt(keyX, r.x);
@@ -184,19 +192,26 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         pref.putInt(keyH, r.height);
 
         // リソース解放
-        allWindows.remove(this);
-        windowMenu.removeMenuListener(this);
+        allWindows.remove(WindowSupport.this);
         menuBar.setVisible(false);
-        frame.removeComponentListener(this);
         frame.setVisible(false);
         frame.dispose();
+        frame = null;
 
         // 状況ログ
-        long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
-        long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
-        long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
-        logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
-        logger.info(content.getClass().getName() + " removed " + allWindows.size() + "(" + Window.getOwnerlessWindows().length + ")");
+        SwingUtilities.invokeLater(() -> {
+            long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
+            long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
+            long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
+            logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
+            logger.info(content.getClass().getName() + " removed " + allWindows.size() + "(" + Window.getOwnerlessWindows().length + ")");
+            int count = 0;
+            for (Window  w : Window.getOwnerlessWindows()) {
+                if (w instanceof PNSFrame f) {
+                    logger.info(++count + ":" + f.getTitle());
+                }
+            }
+        });
     }
 
     /**
@@ -235,7 +250,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         boundChanged = true;
         restartTimer();
     }
-    
+
     @Override
     public void componentResized(ComponentEvent e) {
         componentMoved(e);

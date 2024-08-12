@@ -532,9 +532,9 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
                 } else {
                     content.removeAll();
                     super.setVisible(false);
-                    dispose();
                     sourceDialog.dispose();
                     sourceDialog = null;
+                    dispose();
                 }
             }
         }
