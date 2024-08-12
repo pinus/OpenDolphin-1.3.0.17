@@ -297,7 +297,6 @@
                                     <arg line="--runtime-image ${java.jre.dir}" />
                                     <arg line="--resource-dir ${java.jpackage.resource.dir}" />?
                                     <arg line="--java-options --add-opens=java.desktop/javax.swing.undo=ALL-UNNAMED" />
-                                    <arg line="--java-options -XX:+UseZGC" />
                                     <arg line="--java-options -Dopen.dolphin.build.timestamp=${buildDate}" />
                                 </exec>
                             </target>
