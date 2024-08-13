@@ -75,6 +75,7 @@ public final class ClientContextStub {
     private void logStartupInformation() {
         logger.info("起動時刻 = " + DateFormat.getDateTimeInstance().format(new Date()));
         logger.info("os.name = " + System.getProperty("os.name"));
+        logger.info("os.arch = " + System.getProperty("os.arch"));
         logger.info("java.version = " + System.getProperty("java.version"));
         logger.info("java.vm.version = " + System.getProperty("java.vm.version"));
         logger.info("javafx.version = " + com.sun.javafx.runtime.VersionInfo.getRuntimeVersion());

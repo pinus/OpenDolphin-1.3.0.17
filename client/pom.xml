@@ -162,6 +162,12 @@
         <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${version.openjfx}</version>
+            <classifier>${jfx.platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${version.openjfx}</version>
             <classifier>${jfx.platform}</classifier>
@@ -315,6 +321,15 @@
                                     <arg line="-Kapp.machines=${hydraulic.conveyor.machine}" />
                                     <arg line="make ${hydraulic.convayor.target}" />
                                 </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>tar</id>
+                        <configuration>
+                            <target>
+                                <echo>make tar</echo>
                                 <exec executable="tar">
                                     <arg line="czf ${hydraulic.conveyor.output.dir}/OpenDolphin-${buildDate}.tgz" />
                                     <arg line="-C ${hydraulic.conveyor.output.dir}" />
@@ -337,7 +352,7 @@
                                 <delete dir="${hydraulic.conveyor.output.dir}" />
                                 <exec executable="${hydraulic.conveyor}">
                                     <arg line="-KbuildDate=${buildDate}" />
-                                    <arg line="make site" />
+                                    <arg line="make copied-site" />
                                 </exec>
                             </target>
                         </configuration>
