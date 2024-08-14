@@ -43,8 +43,10 @@ public final class StringTool {
 
     private static final char ZENKAKU_KATAKANA_LAST_CHAR = ZENKAKU_KATAKANA[ZENKAKU_KATAKANA.length - 1];
 
-    private StringTool() {
-    }
+    // 正規表現で使用される特殊文字
+    private static final String[] REGEXP_SPECIAL_CHAR = {"\\", ".", "(", ")", "[", "]", "{", "}", "^", "$", "|", "?", "*", "+", "-"};
+
+    private StringTool() {}
 
     /**
      * 文字 c がカタカナかどうか. 長音記号はカタカナに含む.
@@ -341,5 +343,23 @@ public final class StringTool {
      */
     public static boolean isEmpty(String str) {
         return Objects.isNull(str) || str.length() == 0;
+    }
+
+    /**
+     * 正規表現の特殊文字をエスケープして返す.
+     * @param s オリジナル文字列
+     * @return エスケープした文字列
+     */
+    public static String escapeRegex(String s) {
+        // 特殊文字をエスケープ
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            String toAppend = String.valueOf(c);
+            for (String regChars : REGEXP_SPECIAL_CHAR) {
+                toAppend = toAppend.replace(regChars, "\\" + regChars);
+            }
+            sb.append(toAppend);
+        }
+        return sb.toString();
     }
 }

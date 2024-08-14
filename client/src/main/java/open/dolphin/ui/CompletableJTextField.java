@@ -1,6 +1,7 @@
 package open.dolphin.ui;
 
 import open.dolphin.client.Dolphin;
+import open.dolphin.helper.StringTool;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -261,7 +262,7 @@ public class CompletableJTextField extends JTextField
             }
         } else {
             // リストが表示されていないとき，下キーで候補を全部出す
-            if (keyCode == KeyEvent.VK_DOWN && getText().length() < 1 && !getCompletions().isEmpty()) {
+            if (keyCode == KeyEvent.VK_DOWN && getText().isEmpty() && !getCompletions().isEmpty()) {
                 completer.showAll();
             }
         }
@@ -349,7 +350,8 @@ public class CompletableJTextField extends JTextField
             completionListModel.clear();
             //System.out.println("buildPopup for " + completions.size() + " completions");
             //pattern = Pattern.compile(getText() + ".*");
-            pattern = Pattern.compile(getText() + ".+");
+            String text = StringTool.escapeRegex(getText());
+            pattern = Pattern.compile(text + ".+");
 
             for (String s : completions) {
                 if (pattern.matcher(s).matches()) {
@@ -373,7 +375,7 @@ public class CompletableJTextField extends JTextField
                 return;
             }
 
-            if (getText().length() < 1) {
+            if (getText().isEmpty()) {
                 listWindow.setVisible(false);
                 return;
             }
