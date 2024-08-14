@@ -3,6 +3,7 @@ package open.dolphin.impl.psearch;
 import open.dolphin.delegater.PatientDelegater;
 import open.dolphin.dto.PatientSearchSpec;
 import open.dolphin.helper.PNSTask;
+import open.dolphin.helper.StringTool;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.ui.ObjectReflectTableModel;
 import open.dolphin.dto.PatientSearchSpec.SEARCH;
@@ -54,7 +55,17 @@ class FindTask extends PNSTask<Collection<PatientModel>> {
         spec.setNarrowingIds(ids);
 
         PatientDelegater pdl = new PatientDelegater();
-        List<PatientModel> pm = pdl.getPatients(spec);
+        List<PatientModel> pm = new ArrayList<>();
+
+        // ショウジもシヨウジも検索できるようにする
+        if (spec.getType() == SEARCH.KANA) {
+            for (String name : StringTool.swapSmallKana(spec.getName())) {
+                spec.setName(name);
+                pm.addAll(pdl.getPatients(spec));
+            }
+        } else {
+            pm = pdl.getPatients(spec);
+        }
 
         // カルテ検索で薬の名前を検索すると、カナなので患者名と判断することになる
         // 検索結果が 0 だったら，full text search に切り替えることにする

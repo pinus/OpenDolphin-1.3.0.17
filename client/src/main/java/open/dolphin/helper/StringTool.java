@@ -10,16 +10,16 @@ import java.util.Objects;
  */
 public final class StringTool {
 
-    private static final Character[] HIRAGANA = {'ぁ', 'ゟ'};
-    private static final Character[] KATAKANA = {'ァ', 'ヾ'};
+    private static final char[] HIRAGANA = {'ぁ', 'ゟ'};
+    private static final char[] KATAKANA = {'ァ', 'ヾ'};
 
-    private static final Character[] ZENKAKU_UPPER = {'Ａ', 'Ｚ'};
-    private static final Character[] ZENKAKU_LOWER = {'ａ', 'ｚ'};
-    private static final Character[] ZENKAKU_NUMBER = {'０', '９'};
+    private static final char[] ZENKAKU_UPPER = {'Ａ', 'Ｚ'};
+    private static final char[] ZENKAKU_LOWER = {'ａ', 'ｚ'};
+    private static final char[] ZENKAKU_NUMBER = {'０', '９'};
 
-    private static final Character[] HANKAKU_UPPER = {'A', 'Z'};
-    private static final Character[] HANKAKU_LOWER = {'a', 'z'};
-    private static final Character[] HANKAKU_NUMBER = {'0', '9'};
+    private static final char[] HANKAKU_UPPER = {'A', 'Z'};
+    private static final char[] HANKAKU_LOWER = {'a', 'z'};
+    private static final char[] HANKAKU_NUMBER = {'0', '9'};
 
     private static final char[] ZENKAKU_KATAKANA = {'ァ', 'ア', 'ィ', 'イ', 'ゥ',
             'ウ', 'ェ', 'エ', 'ォ', 'オ', 'カ', 'ガ', 'キ', 'ギ', 'ク', 'グ', 'ケ', 'ゲ',
@@ -40,11 +40,14 @@ public final class StringTool {
             "ﾜ", "ｲ", "ｴ", "ｦ", "ﾝ", "ｳﾞ", "ｶ", "ｹ"};
 
     private static final char ZENKAKU_KATAKANA_FIRST_CHAR = ZENKAKU_KATAKANA[0];
-
     private static final char ZENKAKU_KATAKANA_LAST_CHAR = ZENKAKU_KATAKANA[ZENKAKU_KATAKANA.length - 1];
 
     // 正規表現で使用される特殊文字
-    private static final String[] REGEXP_SPECIAL_CHAR = {"\\", ".", "(", ")", "[", "]", "{", "}", "^", "$", "|", "?", "*", "+", "-"};
+    private static final char[] REGEXP_SPECIAL_CHAR = {'\\', '.', '(', ')', '[', ']', '{', '}', '^', '$', '|', '?', '*', '+', '-'};
+
+    // 促音拗音
+    private static final char[] SMALL_KANA = {'ぁ', 'あ', 'ぃ', 'い', 'ぅ', 'う', 'ぇ', 'え', 'ぉ', 'お', 'っ', 'つ', 'ゃ', 'や', 'ゅ', 'ゆ', 'ょ', 'よ', 'ゎ', 'わ',
+        'ァ', 'ア', 'ィ', 'イ', 'ゥ', 'ウ', 'ェ', 'エ', 'ォ', 'オ', 'ッ', 'ツ', 'ャ', 'ヤ', 'ュ', 'ユ', 'ョ', 'ヨ', 'ヮ', 'ワ'};
 
     private StringTool() {}
 
@@ -342,7 +345,7 @@ public final class StringTool {
      * @return null or "" で空と判断
      */
     public static boolean isEmpty(String str) {
-        return Objects.isNull(str) || str.length() == 0;
+        return Objects.isNull(str) || str.isEmpty();
     }
 
     /**
@@ -351,15 +354,63 @@ public final class StringTool {
      * @return エスケープした文字列
      */
     public static String escapeRegex(String s) {
-        // 特殊文字をエスケープ
         StringBuilder sb = new StringBuilder();
         for (char c : s.toCharArray()) {
             String toAppend = String.valueOf(c);
-            for (String regChars : REGEXP_SPECIAL_CHAR) {
-                toAppend = toAppend.replace(regChars, "\\" + regChars);
+            for (int i=0; i<REGEXP_SPECIAL_CHAR.length; i++) {
+                if (c == REGEXP_SPECIAL_CHAR[i]) {
+                    toAppend = "\\" + c;
+                    break;
+                }
             }
             sb.append(toAppend);
         }
         return sb.toString();
+    }
+
+    /**
+     * ショウジさんがシヨウジさんになってたりするのを吸収する目的で.
+     * カナの大小の組合せの可能性を数え上げて返す.
+     * @param s ソース文字列
+     * @return ありうるパターン
+     */
+    public static String[] swapSmallKana(String s) {
+        int count = 0;
+        char[] target = s.toCharArray();
+        int[] strPos = new int[s.length()];
+        int[] kanaPos = new int[SMALL_KANA.length];
+
+        for (int spos=0; spos<target.length; spos++) {
+            for (int kpos=0; kpos<SMALL_KANA.length; kpos++) {
+                if (target[spos] == SMALL_KANA[kpos]) {
+                    strPos[count] = spos;
+                    kanaPos[count] =kpos;
+                    count++;
+                }
+            }
+        }
+        int totalPatterns = (int)Math.pow(2,count);
+        String[] ret = new String[totalPatterns];
+        for (int i=0; i < totalPatterns; i++) {
+            for (int j=0; j<count; j++) {
+                int bit = (i >> j) & 1;
+                if (bit == 0) {
+                    // 小さくする
+                    target[strPos[j]] = kanaPos[j] % 2 == 0? SMALL_KANA[kanaPos[j]] : SMALL_KANA[kanaPos[j]-1];
+                } else {
+                    // 大きくする
+                    target[strPos[j]] = kanaPos[j] % 2 == 0? SMALL_KANA[kanaPos[j]+1] : SMALL_KANA[kanaPos[j]];
+                }
+            }
+            ret[i] = new String(target);
+        }
+        return ret;
+    }
+
+    public static void main(String[] arg) {
+        String[] ret = swapSmallKana("ショウジ");
+        for (String s : ret) {
+            System.out.println(s);
+        }
     }
 }
