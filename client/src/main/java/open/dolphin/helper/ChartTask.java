@@ -2,6 +2,7 @@ package open.dolphin.helper;
 
 import open.dolphin.client.Chart;
 import java.beans.PropertyChangeListener;
+import java.util.Objects;
 
 /**
  * ChartTask - database task for chart.
@@ -26,12 +27,16 @@ public abstract class ChartTask<T> extends PNSTask<T> implements PropertyChangeL
     private class Blocker implements PNSTask.InputBlocker {
         @Override
         public void block() {
-            context.getDocumentHistory().blockHistoryTable(true);
+            if (Objects.nonNull(context.getFrame())) {
+                context.getDocumentHistory().blockHistoryTable(true);
+            }
         }
 
         @Override
         public void unblock() {
-            context.getDocumentHistory().blockHistoryTable(false);
+            if (Objects.nonNull(context.getFrame())) {
+                context.getDocumentHistory().blockHistoryTable(false);
+            }
         }
     }
 }
