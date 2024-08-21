@@ -584,6 +584,7 @@ public class KarteDocumentViewer extends AbstractChartDocument {
      * 表示されているカルテを CLAIM 送信する.
      */
     public void sendClaim() {
+        logger.info("sendClaim() called");
         Frame parent = getContext().getFrame();
         if (JSheet.isAlreadyShown(parent)) {
             logger.info("sendClaim() modal dialog already shown");

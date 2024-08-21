@@ -199,19 +199,19 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         frame = null;
 
         // 状況ログ
-        SwingUtilities.invokeLater(() -> {
-            long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
-            long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
-            long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
-            logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
-            logger.info(content.getClass().getName() + " removed " + allWindows.size() + "(" + Window.getOwnerlessWindows().length + ")");
-            int count = 0;
-            for (Window  w : Window.getOwnerlessWindows()) {
-                if (w instanceof PNSFrame f) {
-                    logger.info(++count + ":" + f.getTitle());
-                }
-            }
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
+//            long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
+//            long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
+//            logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
+//            logger.info(content.getClass().getName() + " removed " + allWindows.size() + "(" + Window.getOwnerlessWindows().length + ")");
+//            int count = 0;
+//            for (Window  w : Window.getOwnerlessWindows()) {
+//                if (w instanceof PNSFrame f) {
+//                    logger.info(++count + ":" + f.getTitle());
+//                }
+//            }
+//        });
     }
 
     /**
