@@ -8,7 +8,7 @@ import open.dolphin.event.BadgeEvent;
 import open.dolphin.event.ProxyAction;
 import open.dolphin.helper.PNSTriple;
 import open.dolphin.helper.ScriptExecutor;
-import open.dolphin.helper.WindowSupport;
+import open.dolphin.helper.WindowHolder;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.KarteState;
 import open.dolphin.infomodel.PatientVisitModel;
@@ -572,7 +572,7 @@ public class WaitingListImpl extends AbstractMainComponent {
 
         return () -> {
             // 開いているカルテを調べる
-            WindowSupport.getAllCharts().stream()
+            WindowHolder.allCharts().stream()
                     .map(ChartImpl::getPatientVisit)
                     .filter(pvt -> pvt.getPvtDate() != null) // 今日の受診と関係あるカルテのみ選択
                     .forEach(pvt -> {

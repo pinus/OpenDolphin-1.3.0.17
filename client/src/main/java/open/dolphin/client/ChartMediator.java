@@ -1,7 +1,7 @@
 package open.dolphin.client;
 
 import open.dolphin.helper.MenuSupport;
-import open.dolphin.helper.WindowSupport;
+import open.dolphin.helper.WindowHolder;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
 import open.dolphin.stampbox.*;
@@ -717,7 +717,7 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
     }
 
     public void searchStamp() {
-        ChartImpl chart = WindowSupport.getAllCharts().stream().filter(c -> c.getFrame().isActive()).findAny().orElse(null);
+        ChartImpl chart = WindowHolder.allCharts().stream().filter(c -> c.getFrame().isActive()).findAny().orElse(null);
         if (Objects.nonNull(chart)) {
             ChartSearchPanel panel = chart.getChartSearchPanel();
             panel.show(ChartSearchPanel.Card.STAMP);
@@ -725,7 +725,7 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
             return;
         }
 
-        EditorFrame frame = WindowSupport.getAllEditorFrames().stream().filter(f -> f.getFrame().isActive()).findAny().orElse(null);
+        EditorFrame frame = WindowHolder.allEditorFrames().stream().filter(f -> f.getFrame().isActive()).findAny().orElse(null);
         if (Objects.nonNull(frame)) {
             Focuser.requestFocus(frame.getChartToolBar().getStampSearchField());
         }

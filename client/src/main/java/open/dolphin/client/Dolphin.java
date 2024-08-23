@@ -427,7 +427,7 @@ public class Dolphin implements MainWindow {
 
         // 未保存のカルテがある場合は警告しリターンする
         // カルテを保存または破棄してから再度実行する
-        for (WindowSupport<?> ws : WindowSupport.getAllWindows()) {
+        for (WindowSupport<?> ws : WindowHolder.allWindowSupports()) {
             if (ws.getContent() instanceof Chart chart) {
                 if (chart.isDirty()) {
                     dirtyChart = chart;
@@ -504,8 +504,7 @@ public class Dolphin implements MainWindow {
         }
 
         // WindowSupport.dispose で位置と大きさが保存される
-        List<WindowSupport> toDispose = new ArrayList<>();
-        toDispose.addAll(WindowSupport.getAllWindows());
+        List<WindowSupport<?>> toDispose = new ArrayList<>(WindowHolder.allWindowSupports());
         toDispose.stream().forEach(WindowSupport::dispose);
 
         logger.info("アプリケーションを終了します");
@@ -546,7 +545,7 @@ public class Dolphin implements MainWindow {
         }
 
         // dirty でない EditorFrame が開いている可能性がある
-        WindowSupport.getAllEditorFrames().forEach(EditorFrame::close);
+        WindowHolder.allEditorFrames().forEach(EditorFrame::close);
 
         // MainTool で getStoppingTask を override するとここで呼ばれる
         final List<Callable<Boolean>> tasks = getStoppingTask();

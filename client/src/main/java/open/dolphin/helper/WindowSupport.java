@@ -28,7 +28,6 @@ import java.util.prefs.Preferences;
 public class WindowSupport<T> implements MenuListener, ComponentListener {
     // frame を整列させるときの初期位置と移動幅
     final public static int INITIAL_X = 256, INITIAL_Y = 40, INITIAL_DX = 96, INITIAL_DY = 48;
-    final private static List<WindowSupport<?>> allWindows = new ArrayList<>();
     final private static String WINDOW_MENU_NAME = "ウインドウ";
     // メニューバーの増えた分の高さをセットするプロパティ名
     final public static String MENUBAR_HEIGHT_OFFSET_PROP = "menubar.height.offset";
@@ -102,8 +101,8 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         frame.addComponentListener(this);
         windowMenu.addMenuListener(this);
 
-        allWindows.add(this);
-        //logMemory(content.getClass().getName() + " created no." + allWindows.size());
+        WindowHolder.add(this);
+        logMemory(content.getClass().getName() + " created no." + WindowHolder.size());
     }
 
     /**
@@ -113,46 +112,6 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
      */
     public T getContent() {
         return content;
-    }
-
-    /**
-     * List of all WindowSupport instances.
-     *
-     * @return unmodifiableList
-     */
-    public static List<WindowSupport<?>> getAllWindows() {
-        return Collections.unmodifiableList(allWindows);
-    }
-
-    /**
-     * List of all EditorFrame instances.
-     *
-     * @return 存在しない場合、size 0 で、null にはならない
-     */
-    public static List<EditorFrame> getAllEditorFrames() {
-        return getAllWindows().stream()
-            .map(WindowSupport::getContent).filter(EditorFrame.class::isInstance).map(EditorFrame.class::cast).toList();
-    }
-
-    /**
-     * List of all ChartImpl instances.
-     *
-     * @return 存在しない場合、size 0 で、null にはならない
-     */
-    public static List<ChartImpl> getAllCharts() {
-        return getAllWindows().stream()
-            .map(WindowSupport::getContent).filter(ChartImpl.class::isInstance).map(ChartImpl.class::cast).toList();
-    }
-
-    /**
-     * 指定された WindowSupport を先頭に移動する.
-     *
-     * @param windowSupport 先頭に移動する WindowSupport
-     */
-    public static void toTop(WindowSupport<?> windowSupport) {
-        if (allWindows.remove(windowSupport)) {
-            allWindows.add(0, windowSupport);
-        }
     }
 
     /**
@@ -193,7 +152,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         pref.putInt(keyH, r.height);
 
         // リソース解放
-        allWindows.remove(WindowSupport.this);
+        WindowHolder.remove(this);
         menuBar.setVisible(false);
         frame.setVisible(false);
         frame.dispose();
@@ -202,9 +161,13 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         windowMenu = null;
         menuBar = null;
         frame = null;
-        //logMemory(content.getClass().getName() + " closed");
+        logMemory(content.getClass().getName() + " closed");
     }
 
+    /**
+     * show memory status.
+     * @param message additional message to show
+     */
     private void logMemory(String message) {
         long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
         long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
@@ -296,15 +259,16 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         // undo resize or move
         wm.add(revertBoundsAction);
 
+        List<WindowSupport<?>> allWindows = WindowHolder.allWindowSupports();
         // まず，カルテとインスペクタ以外
-        for (WindowSupport<?> ws : allWindows) {
+        for (WindowSupport<?> ws :  allWindows) {
             if (!(ws.getContent() instanceof Chart)) {
                 wm.add(ws.windowAction);
                 count++;
             }
         }
         // カルテ，インスペクタが開いていない場合はリターン
-        if (allWindows.size() == count) { return; }
+        if (WindowHolder.size() == count) { return; }
 
         count = 0;
         wm.addSeparator();
@@ -404,7 +368,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
             int height = 0;
 
             JFrame f;
-            for (WindowSupport<?> ws : allWindows) {
+            for (WindowSupport<?> ws : WindowHolder.allWindowSupports()) {
                 f = ws.getFrame();
                 if (f.getTitle().contains("インスペクタ")) {
                     if (width == 0) {
@@ -416,6 +380,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
 
                     f.setBounds(x, y, width, height);
                     f.toFront();
+
                     x += diffX;
                     y += diffY;
                 }

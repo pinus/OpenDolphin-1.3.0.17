@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.helper.WindowHolder;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.infomodel.*;
 import open.dolphin.inspector.DocumentHistory;
@@ -70,7 +71,7 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
      */
     public static void toFront(PatientModel patient) {
         if (Objects.nonNull(patient)) {
-            WindowSupport.getAllEditorFrames().stream()
+            WindowHolder.allEditorFrames().stream()
                 .filter(chart -> Objects.nonNull(chart.getPatient()) && chart.getPatient().getId() == patient.getId())
                 .findAny().ifPresent(chart -> chart.getFrame().toFront());
         }
@@ -527,7 +528,7 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
     @Override
     public void windowActivated(WindowEvent e) {
         // 順番処理，新しいものをトップに置く
-        WindowSupport.toTop(windowSupport);
+        WindowHolder.toTop(windowSupport);
     }
 
     @Override

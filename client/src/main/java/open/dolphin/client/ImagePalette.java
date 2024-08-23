@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.dnd.ImageEntryTransferHandler;
 import open.dolphin.helper.MouseHelper;
-import open.dolphin.helper.WindowSupport;
+import open.dolphin.helper.WindowHolder;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.ui.PNSScrollPane;
 
@@ -144,7 +144,7 @@ public class ImagePalette extends JPanel {
                     int col = imageTable.getSelectedColumn();
                     ImageEntry entry = (ImageEntry) imageTable.getModel().getValueAt(row, col);
 
-                    List<EditorFrame> allFrames = WindowSupport.getAllEditorFrames();
+                    List<EditorFrame> allFrames = WindowHolder.allEditorFrames();
                     if (!allFrames.isEmpty()) {
                         EditorFrame frame = allFrames.get(0);
                         KartePane pane = frame.getEditor().getSOAPane();

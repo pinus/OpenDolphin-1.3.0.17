@@ -112,7 +112,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     @Override
     public void windowActivated(WindowEvent e) {
         // allCharts の順番処理. activate されたらトップに置く.
-        WindowSupport.toTop(windowSupport);
+        WindowHolder.toTop(windowSupport);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
      */
     public static void toFront(PatientModel patient) {
         if (Objects.nonNull(patient)) {
-            WindowSupport.getAllCharts().stream()
+            WindowHolder.allCharts().stream()
                 .filter(chart -> Objects.nonNull(chart.getPatient()) && chart.getPatient().getId() == patient.getId())
                 .findAny().ifPresent(chart -> chart.getFrame().toFront());
         }
@@ -1376,7 +1376,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     public void close() {
 
         // この患者の EditorFrame が開いたままなら，閉じる努力をする. EditorFame 保存がキャンセルされたらあきらめる.
-        List<EditorFrame> editorFrames = WindowSupport.getAllEditorFrames();
+        List<EditorFrame> editorFrames = WindowHolder.allEditorFrames();
         if (!editorFrames.isEmpty()) {
             String patientId = this.getKarte().getPatient().getPatientId();
             for (Chart chart : editorFrames) {
@@ -1384,7 +1384,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
                 if (patientId.equals(id)) {
                     chart.close();
 
-                    if (WindowSupport.getAllEditorFrames().contains(chart)) {
+                    if (WindowHolder.allEditorFrames().contains(chart)) {
                         // EditorFrame が消えていないと言うことは，キャンセルされたと言うこと. この場合，chart 終了もキャンセル.
                         // logger.info("ChartImpl#close : canceled");
                         return;
@@ -1470,7 +1470,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
             return false;
         }
         long baseDocPk = baseDocumentModel.getDocInfo().getDocPk();
-        for (EditorFrame frame : WindowSupport.getAllEditorFrames()) {
+        for (EditorFrame frame : WindowHolder.allEditorFrames()) {
             long parentDocPk = frame.getParentDocPk();
             if (baseDocPk == parentDocPk) {
                 // parentPkが同じEditorFrameがある場合はFrameをtoFrontする
@@ -1490,7 +1490,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
      */
     private boolean toFrontNewKarteIfPresent() {
         String patientId = this.getKarte().getPatient().getPatientId();
-        for (EditorFrame ef : WindowSupport.getAllEditorFrames()) {
+        for (EditorFrame ef : WindowHolder.allEditorFrames()) {
             // 新規カルテだとDocInfoのstatusは"N"
             String status = ef.getDocInfoStatus();
             String id = ef.getKarte().getPatient().getPatientId();

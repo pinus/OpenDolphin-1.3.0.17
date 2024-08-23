@@ -2,7 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.delegater.PatientDelegater;
 import open.dolphin.delegater.PvtDelegater;
-import open.dolphin.helper.WindowSupport;
+import open.dolphin.helper.WindowHolder;
 import open.dolphin.infomodel.KarteState;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.infomodel.PatientVisitModel;
@@ -230,7 +230,7 @@ public abstract class AbstractMainComponent extends MouseAdapter implements Main
      */
     public boolean isKarteOpened(PatientModel patient) {
         return Objects.nonNull(patient)
-            && WindowSupport.getAllCharts().stream().anyMatch(chart ->
+            && WindowHolder.allCharts().stream().anyMatch(chart ->
                 Objects.nonNull(chart.getPatient()) && chart.getPatient().getId() == patient.getId());
     }
 

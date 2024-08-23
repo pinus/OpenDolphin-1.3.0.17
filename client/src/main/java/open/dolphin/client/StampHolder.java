@@ -4,7 +4,7 @@ import open.dolphin.event.ProxyAction;
 import open.dolphin.event.ProxyActionListener;
 import open.dolphin.helper.HtmlHelper;
 import open.dolphin.helper.StringTool;
-import open.dolphin.helper.WindowSupport;
+import open.dolphin.helper.WindowHolder;
 import open.dolphin.infomodel.*;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.StampEditorDialog;
@@ -53,7 +53,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
     // スタンプの簡易表示
     private boolean simplify = false;
     // Logger
-    private Logger logger = LoggerFactory.getLogger(StampHolder.class);
+    private Logger logger;
 
     public StampHolder(final KartePane kartePane, final ModuleModel model) {
         super(kartePane);
@@ -61,6 +61,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
         this.kartePane = kartePane;
         stamp = model;
         hints = new StampRenderingHints();
+        logger =  LoggerFactory.getLogger(StampHolder.class);
         initialize();
     }
 
@@ -361,7 +362,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
 
         } else {
             // ダブルクリックで EditorFrame に入力
-            List<EditorFrame> allFrames = WindowSupport.getAllEditorFrames();
+            List<EditorFrame> allFrames = WindowHolder.allEditorFrames();
             if (!allFrames.isEmpty()) {
                 EditorFrame frame = allFrames.get(0);
                 if (this.isEditable()) {
