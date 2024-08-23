@@ -26,12 +26,10 @@ import java.util.prefs.Preferences;
  * @author pns
  */
 public class WindowSupport<T> implements MenuListener, ComponentListener {
-    final static Logger logger = LoggerFactory.getLogger(WindowSupport.class);
-
     // frame を整列させるときの初期位置と移動幅
     final public static int INITIAL_X = 256, INITIAL_Y = 40, INITIAL_DX = 96, INITIAL_DY = 48;
     final private static List<WindowSupport<?>> allWindows = new ArrayList<>();
-    private static final String WINDOW_MENU_NAME = "ウインドウ";
+    final private static String WINDOW_MENU_NAME = "ウインドウ";
     // メニューバーの増えた分の高さをセットするプロパティ名
     final public static String MENUBAR_HEIGHT_OFFSET_PROP = "menubar.height.offset";
 
@@ -39,9 +37,9 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     // フレーム
     private PNSFrame frame;
     // メニューバー
-    final private JMenuBar menuBar;
+    private JMenuBar menuBar;
     // ウインドウメニュー
-    final private JMenu windowMenu;
+    private JMenu windowMenu;
     // Window Action
     final private Action windowAction;
     // 内容 Dolphin (MainWindow), ChartImpl, EditorFrame, etc
@@ -55,7 +53,10 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     private boolean boundChanged;
     private Timer timer;
 
+    final Logger logger;
+
     public WindowSupport(String title, T content) {
+        logger = LoggerFactory.getLogger(WindowSupport.class);
         this.content = content;
 
         // フレームを生成する
@@ -102,7 +103,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         windowMenu.addMenuListener(this);
 
         allWindows.add(this);
-        //logger.info(content.getClass().getName() + " created " + allWindows.size());
+        //logMemory(content.getClass().getName() + " created no." + allWindows.size());
     }
 
     /**
@@ -196,22 +197,19 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         menuBar.setVisible(false);
         frame.setVisible(false);
         frame.dispose();
-        frame = null;
 
-        // 状況ログ
-//        SwingUtilities.invokeLater(() -> {
-//            long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
-//            long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
-//            long totalMemory = Runtime.getRuntime().totalMemory() / 1048576L;
-//            logger.info(String.format("free/max/total %d/%d/%d MB", freeMemory, maxMemory, totalMemory));
-//            logger.info(content.getClass().getName() + " removed " + allWindows.size() + "(" + Window.getOwnerlessWindows().length + ")");
-//            int count = 0;
-//            for (Window  w : Window.getOwnerlessWindows()) {
-//                if (w instanceof PNSFrame f) {
-//                    logger.info(++count + ":" + f.getTitle());
-//                }
-//            }
-//        });
+        // null to the swing
+        windowMenu = null;
+        menuBar = null;
+        frame = null;
+        //logMemory(content.getClass().getName() + " closed");
+    }
+
+    private void logMemory(String message) {
+        long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
+        long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
+        logger.info(message);
+        logger.info(String.format("free/max %d/%d MB (%d)", freeMemory, maxMemory, Window.getOwnerlessWindows().length));
     }
 
     /**
