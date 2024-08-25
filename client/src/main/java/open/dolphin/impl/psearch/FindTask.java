@@ -19,7 +19,6 @@ import java.util.*;
  * @author pns
  */
 class FindTask extends PNSTask<Collection<PatientModel>> {
-
     private final PatientSearchPanel view;
     private final ObjectReflectTableModel<PatientModel> tableModel;
     private final PatientSearchSpec spec;
@@ -114,12 +113,9 @@ class FindTask extends PNSTask<Collection<PatientModel>> {
      * table に result をセットする.
      */
     protected void setResult() {
-
         tableModel.setObjectList(result);
-
         // 件数表示
-        int cnt = result != null ? result.size() : 0;
-        String cntStr = String.valueOf(cnt);
-        view.getCntLbl().setText(cntStr + " 件");
+        int cnt = Objects.nonNull(result)? result.size() : 0;
+        view.showCount(cnt);
     }
 }

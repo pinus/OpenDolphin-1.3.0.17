@@ -300,6 +300,8 @@ public class PatientSearchImpl extends AbstractMainComponent {
                         patients[i] = tableModel.getObject(rows[i]);
                     }
                     setSelectedPatinet(patients);
+                    // 選択件数表示
+                    view.showCount(table.getRowCount(), rows.length);
                 }
             }
         });

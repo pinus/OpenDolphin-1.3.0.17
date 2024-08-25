@@ -23,7 +23,6 @@ import java.util.List;
  * @author pns
  */
 public class PatientSearchPanel extends MainComponentPanel {
-
     // command panel
     private CompletableSearchField keywordFld;
     private JCheckBoxMenuItem narrowingSearchCb;
@@ -158,5 +157,15 @@ public class PatientSearchPanel extends MainComponentPanel {
 
     public JCheckBoxMenuItem getNarrowingSearchCb() {
         return narrowingSearchCb;
+    }
+
+    public void showCount(int count) { showCount(count, 0); }
+
+    public void showCount(int count, int selected) {
+        if (selected > 1) {
+            cntLbl.setText(String.format("%d 件 (%d)", count, selected));
+        } else {
+            cntLbl.setText(count + " 件");
+        }
     }
 }
