@@ -20,8 +20,6 @@ import java.awt.event.MouseEvent;
  * @author pns
  */
 public class WaitingListPanel extends MainComponentPanel {
-    private static final Logger logger = LoggerFactory.getLogger(WaitingListPanel.class);
-
     // アイコン
     private static final ImageIcon KUTU_ICON = GUIConst.ICON_ARROW_CIRCULAR_ALT1_16;
     // Font
@@ -58,7 +56,6 @@ public class WaitingListPanel extends MainComponentPanel {
     }
 
     private void initComponents() {
-
         CommandPanel comPanel = getCommandPanel();
         remove(comPanel);
 

@@ -48,7 +48,7 @@ public class ChangePassword extends AbstractMainTool {
     private static final String SUCCESS_MESSAGE = "ユーザ情報を変更しました。";
     private static final String DUMMY_PASSWORD = "";
     private final Logger logger;
-    private WindowSupport windowSupport;
+    private WindowSupport<ChangePassword> windowSupport;
     private JButton okButton;
 
     public ChangePassword() {
@@ -61,7 +61,7 @@ public class ChangePassword extends AbstractMainTool {
 
         // Super Class で Frame を初期化する
         String title = ClientContext.getFrameTitle(getName());
-        windowSupport = new WindowSupport(title, this);
+        windowSupport = new WindowSupport<>(title, this);
         JFrame frame = windowSupport.getFrame();
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
