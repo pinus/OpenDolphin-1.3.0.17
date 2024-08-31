@@ -102,7 +102,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
         windowMenu.addMenuListener(this);
 
         WindowHolder.add(this);
-        logMemory(content.getClass().getName() + " created no." + WindowHolder.size());
+        //logMemory(content.getClass().getName() + " created no." + WindowHolder.size());
     }
 
     /**
