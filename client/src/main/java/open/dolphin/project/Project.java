@@ -90,6 +90,10 @@ public class Project {
     // ATOK 文字種切換キー
     public static final String ATOK_TO_EIJI_KEY = "atok.to.eiji.key";
     public static final String ATOK_TO_HIRAGANA_KEY = "atok.to.hiragana.key";
+    public static final String ATOK_JAPANESE_KEY = "atok.japanese.key";
+    public static final String ATOK_KATAKANA_KEY = "atok.katakana.key";
+    public static final String ATOK_ROMAN_KEY = "atok.roman.key";
+
     private static ProjectStub stub;
 
     public Project() {

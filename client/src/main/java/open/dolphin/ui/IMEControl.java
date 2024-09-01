@@ -1,6 +1,8 @@
 package open.dolphin.ui;
 
+import open.dolphin.client.Dolphin;
 import open.dolphin.helper.ScriptExecutor;
+import open.dolphin.project.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.prefs.Preferences;
 
 /**
  * Mac で IME on/off を切り替える.
@@ -28,8 +31,8 @@ public class IMEControl {
     private final static boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
     //private final static int toEijiKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F12);
     //private final static int toHiraganaKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F13);
-    private final static String JAPANESE = "com.justsystems.inputmethod.atok33.Japanese";
-    private final static String ROMAN = "com.justsystems.inputmethod.atok33.Roman";
+    private final static String JAPANESE = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_JAPANESE_KEY, "com.justsystems.inputmethod.atok34.Japanese");
+    private final static String ROMAN = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_ROMAN_KEY, "com.justsystems.inputmethod.atok34.Roman");
 
     /**
      * IME-off. Shift-Control-C で英字 -> F12

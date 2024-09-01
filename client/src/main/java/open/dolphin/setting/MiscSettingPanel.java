@@ -9,7 +9,6 @@ import open.dolphin.project.Project;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.prefs.Preferences;
 
 /**
@@ -35,9 +34,9 @@ public class MiscSettingPanel extends AbstractSettingPanel {
     // コンソールのログ出力
     private JCheckBox redirectBox;
 
-    // ATOK 文字種切換キー登録
-    private JComboBox<String> toHiraganaCombo;
-    private JComboBox<String> toEijiCombo;
+    // im-select の inputSourceID 設定
+    private JTextField japaneseId;
+    private JTextField romanId;
 
     public MiscSettingPanel() {
         init();
@@ -124,18 +123,16 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         gbb.add(redirectBox, 0, 0, 1, 1, GridBagConstraints.EAST);
         JPanel redirectPanel = gbb.getProduct();
 
-        // ATOK の【ひらがな入力文字種(あ)】と【英字入力(A)】に割り当てたキーを設定
-        String[] key = { "F12", "F13", "F14", "F15"};
-        toEijiCombo = new JComboBox<>(key);
-        toHiraganaCombo = new JComboBox<>(key);
-        JLabel toEijiLabel = new JLabel("英字入力(A)", SwingConstants.RIGHT);
-        JLabel toHiraganaLabel = new JLabel("ひらがな入力文字種(あ)", SwingConstants.RIGHT);
-
-        gbb = new GridBagBuilder("ATOK の文字種切換キー [設定反映に再起動が必要]");
-        gbb.add(toEijiLabel, 0, 0, 1, 1, GridBagConstraints.EAST);
-        gbb.add(toEijiCombo, 1, 0, 1, 1, GridBagConstraints.WEST);
-        gbb.add(toHiraganaLabel, 0, 1, 1, 1, GridBagConstraints.EAST);
-        gbb.add(toHiraganaCombo, 1, 1, 1, 1, GridBagConstraints.WEST);
+        // im-select の inputSourceID の設定
+        gbb = new GridBagBuilder("inputSourceID for im-select");
+        JLabel japaneseLbl = new JLabel("ひらがな");
+        JLabel romanLbl = new JLabel("英字");
+        japaneseId = new JTextField(40);
+        romanId = new JTextField(40);
+        gbb.add(japaneseLbl, 0,0,1,1, GridBagConstraints.WEST);
+        gbb.add(japaneseId,0,1,1,1, GridBagConstraints.WEST);
+        gbb.add(romanLbl, 0,2,1,1, GridBagConstraints.WEST);
+        gbb.add(romanId,0,3,1,1, GridBagConstraints.WEST);
         JPanel atokPanel = gbb.getProduct();
 
         // 全体のレイアウト
@@ -145,24 +142,6 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         getUI().add(atokPanel);
         getUI().add(Box.createVerticalStrut(100));
         getUI().add(Box.createVerticalGlue());
-    }
-
-    private static int toKeyCode(String key) {
-        return switch (key) {
-            case "F12" -> KeyEvent.VK_F12;
-            case "F13" -> KeyEvent.VK_F13;
-            case "F14" -> KeyEvent.VK_F14;
-            default -> KeyEvent.VK_F15;
-        };
-    }
-
-    private static String toKeyCodeString(int key) {
-        return switch (key) {
-            case KeyEvent.VK_F12 -> "F12";
-            case KeyEvent.VK_F13 -> "F13";
-            case KeyEvent.VK_F14 -> "F14";
-            default -> "F15";
-        };
     }
 
     private void bindModelToView() {
@@ -177,10 +156,10 @@ public class MiscSettingPanel extends AbstractSettingPanel {
 
         redirectBox.setSelected(Preferences.userNodeForPackage(Dolphin.class).getBoolean(Project.REDIRECT_CONSOLE, false));
 
-        int toEijiCode = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F15);
-        int toHiraganaCode = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F14);
-        toEijiCombo.getModel().setSelectedItem(toKeyCodeString(toEijiCode));
-        toHiraganaCombo.getModel().setSelectedItem(toKeyCodeString(toHiraganaCode));
+        String japanese = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_JAPANESE_KEY, "com.justsystems.inputmethod.atok34.Japanese");
+        String roman = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_ROMAN_KEY, "com.justsystems.inputmethod.atok34.Roman");
+        japaneseId.setText(japanese);
+        romanId.setText(roman);
     }
 
     @Override
@@ -199,10 +178,7 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         prefs.putInt(Project.ARRANGE_INSPECTOR_DY, Integer.parseInt(diffY.getText()));
 
         Preferences.userNodeForPackage(Dolphin.class).putBoolean(Project.REDIRECT_CONSOLE, redirectBox.isSelected());
-
-        String toEijiString = (String) toEijiCombo.getSelectedItem();
-        String toHiraganaString = (String) toHiraganaCombo.getSelectedItem();
-        Preferences.userNodeForPackage(Dolphin.class).putInt(Project.ATOK_TO_EIJI_KEY, toKeyCode(toEijiString));
-        Preferences.userNodeForPackage(Dolphin.class).putInt(Project.ATOK_TO_HIRAGANA_KEY, toKeyCode(toHiraganaString));
+        Preferences.userNodeForPackage(Dolphin.class).put(Project.ATOK_JAPANESE_KEY, japaneseId.getText());
+        Preferences.userNodeForPackage(Dolphin.class).put(Project.ATOK_ROMAN_KEY, romanId.getText());
     }
 }
