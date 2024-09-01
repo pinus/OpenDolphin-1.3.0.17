@@ -21,7 +21,7 @@ import java.util.prefs.Preferences;
  * <li>ver 4: enableInputMethod(true/false) バージョン: short-cut が効かなくなったり不安定
  * <li>ver 5: Robot version 復活. 物理キーが押されていると誤動作するのでキー入力でフォーカスが当たるところには使えない
  * <li>ver 6: key combination での robot 入力うまくいかず, F12, F13 キーで切り替えるように ATOK 側で設定することにした
- * <li>ver 7: <a href="https://github.com/daipeihust/im-select">im-select</a> 呼び出し法
+ * <li>ver 7: im-select 呼び出し法 (https://github.com/daipeihust/im-select)
  * </ul>
  *
  * @author pns
@@ -29,42 +29,26 @@ import java.util.prefs.Preferences;
 public class IMEControl {
     private final static Logger logger = LoggerFactory.getLogger(IMEControl.class);
     private final static boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
-    //private final static int toEijiKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F12);
-    //private final static int toHiraganaKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F13);
     private final static String JAPANESE = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_JAPANESE_KEY, "com.justsystems.inputmethod.atok34.Japanese");
     private final static String ROMAN = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_ROMAN_KEY, "com.justsystems.inputmethod.atok34.Roman");
 
     /**
-     * IME-off. Shift-Control-C で英字 -> F12
+     * IME-off.
      */
     public static void off() {
         if (isMac) {
             logger.info("atok eiji mode");
-            //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_C);
-            //type(toEijiKey);
             ScriptExecutor.imSelect(ROMAN);
         }
     }
 
     /**
-     * IME-on. Shift-Control-Z でひらがな -> F13
+     * IME-on.
      */
     public static void on() {
         if (isMac) {
             logger.info("atok hiragana mode");
-            //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_Z);
-            //type(toHiraganaKey);
             ScriptExecutor.imSelect(JAPANESE);
-        }
-    }
-
-    private static void type(int... keys) {
-        try {
-            Robot robot = new Robot();
-            for (int i = 0; i < keys.length; i++) { robot.keyPress(keys[i]); }
-            for (int i = keys.length -1 ; i >= 0; i--) { robot.keyRelease(keys[i]); }
-        } catch (AWTException e) {
-            logger.error(e.getMessage());
         }
     }
 
