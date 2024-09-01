@@ -88,7 +88,7 @@ public class ScriptExecutor {
      * com.justsystems.inputmethod.atok33.{Roman,Japanese,Japanese.Katakana}
      */
     public static void imSelect(String inputSourceID) {
-        executeShellScript("im-select", inputSourceID);
+        executeShellScript("/usr/local/bin/im-select", inputSourceID);
     }
 
     /**
