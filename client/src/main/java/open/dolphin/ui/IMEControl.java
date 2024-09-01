@@ -1,7 +1,6 @@
 package open.dolphin.ui;
 
-import open.dolphin.client.Dolphin;
-import open.dolphin.project.Project;
+import open.dolphin.helper.ScriptExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,8 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
-import java.util.prefs.Preferences;
 
 /**
  * Mac で IME on/off を切り替える.
@@ -21,6 +18,7 @@ import java.util.prefs.Preferences;
  * <li>ver 4: enableInputMethod(true/false) バージョン: short-cut が効かなくなったり不安定
  * <li>ver 5: Robot version 復活. 物理キーが押されていると誤動作するのでキー入力でフォーカスが当たるところには使えない
  * <li>ver 6: key combination での robot 入力うまくいかず, F12, F13 キーで切り替えるように ATOK 側で設定することにした
+ * <li>ver 7: <a href="https://github.com/daipeihust/im-select">im-select</a> 呼び出し法
  * </ul>
  *
  * @author pns
@@ -28,8 +26,10 @@ import java.util.prefs.Preferences;
 public class IMEControl {
     private final static Logger logger = LoggerFactory.getLogger(IMEControl.class);
     private final static boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
-    private final static int toEijiKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F12);
-    private final static int toHiraganaKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F13);
+    //private final static int toEijiKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F12);
+    //private final static int toHiraganaKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F13);
+    private final static String JAPANESE = "com.justsystems.inputmethod.atok33.Japanese";
+    private final static String ROMAN = "com.justsystems.inputmethod.atok33.Roman";
 
     /**
      * IME-off. Shift-Control-C で英字 -> F12
@@ -38,7 +38,8 @@ public class IMEControl {
         if (isMac) {
             logger.info("atok eiji mode");
             //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_C);
-            type(toEijiKey);
+            //type(toEijiKey);
+            ScriptExecutor.imSelect(ROMAN);
         }
     }
 
@@ -49,7 +50,8 @@ public class IMEControl {
         if (isMac) {
             logger.info("atok hiragana mode");
             //type(KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_Z);
-            type(toHiraganaKey);
+            //type(toHiraganaKey);
+            ScriptExecutor.imSelect(JAPANESE);
         }
     }
 

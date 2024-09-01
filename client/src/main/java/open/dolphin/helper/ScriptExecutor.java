@@ -47,7 +47,7 @@ public class ScriptExecutor {
     public static void displayNotification(String message, String title, String subtitle) {
         if (Dolphin.forMac) {
             String script = String.format(DISPLAY_NOTIFICATION_SCRIPT, message, title, subtitle);
-            executeShellScript(new String[]{"osascript", "-e", script});
+            executeShellScript("osascript", "-e", script);
         }
     }
 
@@ -58,7 +58,7 @@ public class ScriptExecutor {
      */
     public static void openPatientFolder(final String path) {
         if (Dolphin.forWin) {
-            executeShellScript(new String[]{"explorer", path});
+            executeShellScript("explorer", path);
         } else {
             // スクリプトに path を設定
             OPEN_PATIENT_FOLDER_SCRIPT[1] = "set targetFolder to " + QUOTE + path + QUOTE + " as POSIX file";
@@ -73,11 +73,22 @@ public class ScriptExecutor {
      */
     public static void quickLook(String path) {
         if (Dolphin.forWin) {
-            executeShellScript(new String[]{"explorer", path});
+            executeShellScript("explorer", path);
         } else {
-            String[] command = {"qlmanage", "-p", path};
-            executeShellScript(command);
+            executeShellScript("qlmanage", "-p", path);
         }
+    }
+
+    /**
+     * im-select を使って input method を切り替える.
+     * https://github.com/daipeihust/im-select
+     * curl -Ls https://raw.githubusercontent.com/daipeihust/im-select/master/install_mac.sh | sh
+     * @param inputSourceID 切り替えるID
+     * com.apple.keylayout.{US,USExtended},
+     * com.justsystems.inputmethod.atok33.{Roman,Japanese,Japanese.Katakana}
+     */
+    public static void imSelect(String inputSourceID) {
+        executeShellScript("im-select", inputSourceID);
     }
 
     /**
@@ -85,7 +96,7 @@ public class ScriptExecutor {
      *
      * @param command Shell commands in a string array
      */
-    private static void executeShellScript(String[] command) {
+    private static void executeShellScript(String... command) {
         Thread t = new Thread(() -> {
             try {
                 Runtime.getRuntime().exec(command).waitFor();
@@ -102,7 +113,7 @@ public class ScriptExecutor {
      * @param command Commands in a string array
      * @return outPut Result strings in List
      */
-    public static List<String> executeShellScriptWithResponce(String[] command) {
+    public static List<String> executeShellScriptWithResponce(String... command) {
         List<String> output = new ArrayList<>();
 
         try {
@@ -128,7 +139,7 @@ public class ScriptExecutor {
      *
      * @param script Arrays of script
      */
-    public static void executeAppleScript(String[] script) {
+    public static void executeAppleScript(String... script) {
         List<String> codes = new ArrayList<>();
         codes.add("osascript");
         Arrays.stream(script).forEach(line -> {
@@ -147,6 +158,7 @@ public class ScriptExecutor {
         //ExecuteScript.restartAtok24();
         //System.out.println(ScriptExecutor.getAtok24MemSize());
         //ScriptExecutor.setImeOff();
-        ScriptExecutor.displayNotification("message", "title", "subtitle");
+        //ScriptExecutor.displayNotification("message", "title", "subtitle");
+        imSelect("com.apple.keylayout.USExtended");
     }
 }

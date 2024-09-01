@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import open.dolphin.helper.ImageHelper;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.SchemaModel;
+import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
             }
             setIcon(ImageHelper.adjustImageSize(icon, initialSize));
             imgRatio = getIcon().getIconWidth() / (float) icon.getIconWidth();
-            logger.debug("initial img ratio = " + imgRatio);
+            //logger.debug("initial img ratio = " + imgRatio);
 
             JTextPane pane = kartePane.getTextPane();
             if (pane != null) {
@@ -84,7 +85,7 @@ public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
         Dimension ret = null;
 
         String size = ImageHelper.extractMetadata(bytes, "DSIZ");
-        logger.debug("display size = " + size);
+        //logger.debug("display size = " + size);
         if (Objects.nonNull(size)) {
             String[] split = size.split("x");
             if (split.length == 2) {
@@ -167,7 +168,7 @@ public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
 
     @Override
     public void setSelected(boolean selected) {
-        logger.debug("SchemaHolder setSelected " + selected);
+        //logger.debug("SchemaHolder setSelected " + selected);
 
         if (selected ^ this.selected) {
             setBorder(selected ? MY_SELECTED_BORDER : MY_CLEAR_BORDER);
@@ -220,6 +221,7 @@ public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
                 editor.setSchema(toEdit);
                 editor.setEditable(kartePane.getTextPane().isEditable());
                 editor.addPropertyChangeListener(SchemaHolder.this);
+                IMEControl.off();
                 editor.start();
             });
 
