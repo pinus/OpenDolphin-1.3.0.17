@@ -530,10 +530,13 @@ public class JSheet extends JWindow implements ActionListener, MouseListener {
                 if (animationDirection == INCOMING) {
                     finishShowingSheet();
                 } else {
+                    animationTimer.removeActionListener(this);
+                    animationTimer = null;
                     content.removeAll();
                     super.setVisible(false);
                     sourceDialog.dispose();
                     sourceDialog = null;
+
                     dispose();
                 }
             }

@@ -384,7 +384,7 @@ public final class StringTool {
             for (int kpos=0; kpos<SMALL_KANA.length; kpos++) {
                 if (target[spos] == SMALL_KANA[kpos]) {
                     strPos[count] = spos;
-                    kanaPos[count] =kpos;
+                    kanaPos[count] = kpos;
                     count++;
                 }
             }
