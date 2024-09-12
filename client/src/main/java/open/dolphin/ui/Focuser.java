@@ -32,24 +32,22 @@ import java.awt.*;
  */
 public class Focuser {
     private static final Logger logger = LoggerFactory.getLogger(Focuser.class);
-    private static Component component;
-
     //private static List<StackTraceElement> stackTrace;
 
     public static void requestFocus(Component c) {
         //stackTrace = StackTracer.getTrace();
-
-        component = c;
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
-        SwingUtilities.invokeLater(Focuser::request);
+        Component owner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner();
+        if (!c.equals(owner)) {
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
+            SwingUtilities.invokeLater(() -> request(c));
+        }
     }
 
-    private static void request() {
+    private static void request(Component component) {
         boolean succeeded = component.requestFocusInWindow();
-
         if (!succeeded) {
             // stackTrace.stream().map(e -> e.toString()).forEach(System.out::println);
-            logger.info(component.getClass().toString() + ": request focus failed");
+            logger.info(component.getClass() + ": request focus failed");
         }
     }
 }

@@ -4,10 +4,7 @@ import open.dolphin.calendar.CalendarPanel;
 import open.dolphin.client.MainComponentPanel;
 import open.dolphin.helper.PNSPair;
 import open.dolphin.helper.TextComponentUndoManager;
-import open.dolphin.ui.CompletableSearchField;
-import open.dolphin.ui.Focuser;
-import open.dolphin.ui.PNSScrollPane;
-import open.dolphin.ui.StatusPanel;
+import open.dolphin.ui.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,6 +88,7 @@ public class PatientSearchPanel extends MainComponentPanel {
         keywordFld.setLabel("患者検索");
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
 
+        IMEControl.offIfFocusLost(keywordFld);
         keywordFld.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

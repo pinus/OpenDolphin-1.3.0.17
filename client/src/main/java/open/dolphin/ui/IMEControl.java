@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.prefs.Preferences;
 
 /**
@@ -58,9 +58,11 @@ public class IMEControl {
      * @param c component to add focus listener
      */
     public static void off(final Component c) {
-        c.addFocusListener(new FocusAdapter() {
+        c.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) { off(); }
+            @Override
+            public void focusLost(FocusEvent e) { onLeaving(e.getSource()); }
         });
     }
 
@@ -70,10 +72,35 @@ public class IMEControl {
      * @param c component to add focus listener
      */
     public static void on(final Component c) {
-        c.addFocusListener(new FocusAdapter() {
+        c.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) { on(); }
+            @Override
+            public void focusLost(FocusEvent e) { onLeaving(e.getSource()); }
         });
+    }
+
+    /**
+     * IME-off on leaving.
+     *
+     * @param c component to add focus listener
+     */
+    public static void offIfFocusLost(final Component c) {
+        c.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) { onLeaving(e.getSource()); }
+        });
+    }
+
+    /**
+     * ATOK ひらがなモードのまま離れると, 変換ウインドウが変なところに出るの対策.
+     *
+     * @param source ATOK off したい source
+     */
+    private static void onLeaving(Object source) {
+        if (source instanceof JComponent comp && comp.isVisible()) { off(); }
     }
 
     public static void main(String[] argv) {

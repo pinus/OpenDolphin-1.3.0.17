@@ -2,6 +2,7 @@ package open.dolphin.client;
 
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.ui.CompletableSearchField;
+import open.dolphin.ui.IMEControl;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -17,13 +18,15 @@ import java.util.prefs.Preferences;
 public class ChartSearchPanel extends JPanel {
     public enum Card {STAMP, KARTE}
 
-    private ChartImpl chart;
-    private CardLayout card;
+    private final ChartImpl chart;
+    private final CardLayout card;
     private CompletableSearchField stampSearchField;
     private CompletableSearchField karteSearchField;
 
     private FindAndView findAndView;
     private JPanel scrollerPanel;
+
+    private String presentCardName;
 
     public ChartSearchPanel(ChartImpl ctx) {
         chart = ctx;
@@ -39,12 +42,14 @@ public class ChartSearchPanel extends JPanel {
         stampSearchField.setPreferredSize(new Dimension(300, 26)); // width は JTextField の columns が優先される
         stampSearchField.setLabel("病名検索");
         stampSearchField.setPreferences(Preferences.userNodeForPackage(ChartToolBar.class).node(ChartImpl.class.getName()));
+        IMEControl.on(stampSearchField);
 
         karteSearchField = new CompletableSearchField(15);
         karteSearchField.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(karteSearchField));
         karteSearchField.setPreferredSize(new Dimension(300, 26)); // width は JTextField の columns が優先される
         karteSearchField.setLabel("カルテ検索");
         karteSearchField.setPreferences(Preferences.userNodeForPackage(KarteDocumentViewer.class).node(KarteDocumentViewer.class.getName()));
+        IMEControl.on(karteSearchField);
 
         add(stampSearchField, Card.STAMP.name());
         add(karteSearchField, Card.KARTE.name());
@@ -96,26 +101,29 @@ public class ChartSearchPanel extends JPanel {
      * @param c ChartSearchPanel.Card.STAMP で病名, KARTE でカルテ検索
      */
     public void show(Card c) {
-        card.show(this, c.name());
+        if (!c.name().equals(presentCardName)) {
+            presentCardName = c.name();
+            card.show(this, c.name());
 
-        // 間違って入力した場合のフォローとして, 入力済みのテキストを保持する
-        if (c.equals(Card.STAMP)) {
-            setText(stampSearchField, karteSearchField);
-        } else {
-            setText(karteSearchField, stampSearchField);
+            // 間違って入力した場合のフォローとして, 入力済みのテキストを保持する
+            if (c.equals(Card.STAMP)) {
+                setText(stampSearchField, karteSearchField);
+            } else {
+                setText(karteSearchField, stampSearchField);
+            }
         }
     }
 
     // 切換時に視覚効果
     private void setText(JTextField toShow, JTextField toHide) {
-        if (Objects.isNull(toHide.getText()) || "".equals(toHide.getText().trim())) { return; }
-
-        SwingUtilities.invokeLater(() -> {
-            toShow.setText("");
-            try { Thread.sleep(100); } catch (InterruptedException e) {}
-            toShow.setText(toHide.getText());
-            toHide.setText("");
-        });
+        if (Objects.nonNull(toHide.getText()) && !toHide.getText().trim().isEmpty()) {
+            SwingUtilities.invokeLater(() -> {
+                toShow.setText("");
+                try { Thread.sleep(100); } catch (InterruptedException e) {}
+                toShow.setText(toHide.getText());
+                toHide.setText("");
+            });
+        }
     }
 
     public CompletableSearchField getStampSearchField() {

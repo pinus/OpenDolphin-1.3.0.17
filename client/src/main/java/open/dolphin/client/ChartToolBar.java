@@ -24,7 +24,7 @@ import java.util.prefs.Preferences;
  * @author pns
  */
 public class ChartToolBar extends JToolBar {
-    
+
     private final EditorFrame editorFrame;
     private final ChartMediator mediator;
     private final Preferences prefs;
@@ -389,25 +389,21 @@ public class ChartToolBar extends JToolBar {
         stampSearchField.setPreferences(prefs);
         stampSearchField.putClientProperty("Quaqua.TextField.style", "search");
         stampSearchField.setPreferredSize(new Dimension(10, 26));
+        IMEControl.on(stampSearchField);
+
         stampSearchField.addActionListener(e -> {
             String text = stampSearchField.getText();
 
-            if (text != null && !text.equals("")) {
+            if (text != null && !text.isEmpty()) {
                 String pattern = ".*" + stampSearchField.getText() + ".*";
 
                 JPopupMenu popup = mediator.createAllStampPopup(pattern, ev -> {
 
-                    JComponent c = null;
-                    switch (ev.getEntity()) {
-                        case IInfoModel.ENTITY_DIAGNOSIS:
-                            c = ((ChartImpl) editorFrame.getChart()).getDiagnosisDocument().getDiagnosisTable();
-                            break;
-
-                        case IInfoModel.ENTITY_TEXT:
-                            c = mediator.getCurrentComponent();
-                            break;
-
-                        default:
+                    JComponent c = switch (ev.getEntity()) {
+                        case IInfoModel.ENTITY_DIAGNOSIS ->
+                            ((ChartImpl) editorFrame.getChart()).getDiagnosisDocument().getDiagnosisTable();
+                        case IInfoModel.ENTITY_TEXT -> mediator.getCurrentComponent();
+                        default ->
 //                        case IInfoModel.ENTITY_PATH:
 //                        case IInfoModel.ENTITY_GENERAL_ORDER:
 //                        case IInfoModel.ENTITY_OTHER_ORDER:
@@ -421,9 +417,8 @@ public class ChartToolBar extends JToolBar {
 //                        case IInfoModel.ENTITY_MED_ORDER:
 //                        case IInfoModel.ENTITY_BASE_CHARGE_ORDER:
 //                        case IInfoModel.ENTITY_INSTRACTION_CHARGE_ORDER:
-                            c = editorFrame.getEditor().getPPane().getTextPane();
-                            break;
-                    }
+                            editorFrame.getEditor().getPPane().getTextPane();
+                    };
 
                     if (Objects.nonNull(c)) {
                         TransferHandler handler = c.getTransferHandler();
