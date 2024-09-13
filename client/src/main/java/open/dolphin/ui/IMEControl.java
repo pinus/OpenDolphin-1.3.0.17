@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,7 +29,7 @@ import java.util.prefs.Preferences;
  *
  * @author pns
  */
-public class IMEControl implements PropertyChangeListener {
+public class IMEControl {
     private final static String JAPANESE = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_JAPANESE_KEY, "com.justsystems.inputmethod.atok34.Japanese");
     private final static String ROMAN = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_ROMAN_KEY, "com.justsystems.inputmethod.atok34.Roman");
 
@@ -40,23 +38,18 @@ public class IMEControl implements PropertyChangeListener {
     private final Logger logger = LoggerFactory.getLogger(IMEControl.class);
 
     public IMEControl() {
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(this);
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        if ("permanentFocusOwner".equals(e.getPropertyName())) {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("permanentFocusOwner", e -> {
             if (Objects.nonNull(e.getNewValue())) {
                 if (e.getNewValue() instanceof JPasswordField) {
                     toSet = ROMAN;
                 } else if (e.getNewValue() instanceof JTextComponent c) {
-                    toSet = Objects.nonNull(c.getClientProperty(Project.ATOK_ROMAN_KEY))? ROMAN : JAPANESE;
+                    toSet = Objects.nonNull(c.getClientProperty(Project.ATOK_ROMAN_KEY)) ? ROMAN : JAPANESE;
                 } else {
                     toSet = ROMAN;
                 }
                 restartTimer();
             }
-        }
+        });
     }
 
     /**
