@@ -2,7 +2,6 @@ package open.dolphin.client;
 
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.ui.CompletableSearchField;
-import open.dolphin.ui.IMEControl;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -42,14 +41,12 @@ public class ChartSearchPanel extends JPanel {
         stampSearchField.setPreferredSize(new Dimension(300, 26)); // width は JTextField の columns が優先される
         stampSearchField.setLabel("病名検索");
         stampSearchField.setPreferences(Preferences.userNodeForPackage(ChartToolBar.class).node(ChartImpl.class.getName()));
-        IMEControl.on(stampSearchField);
 
         karteSearchField = new CompletableSearchField(15);
         karteSearchField.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(karteSearchField));
         karteSearchField.setPreferredSize(new Dimension(300, 26)); // width は JTextField の columns が優先される
         karteSearchField.setLabel("カルテ検索");
         karteSearchField.setPreferences(Preferences.userNodeForPackage(KarteDocumentViewer.class).node(KarteDocumentViewer.class.getName()));
-        IMEControl.on(karteSearchField);
 
         add(stampSearchField, Card.STAMP.name());
         add(karteSearchField, Card.KARTE.name());

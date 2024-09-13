@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import open.dolphin.helper.ImageHelper;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.SchemaModel;
-import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
@@ -221,7 +220,6 @@ public final class SchemaHolder extends AbstractComponentHolder<SchemaModel> {
                 editor.setSchema(toEdit);
                 editor.setEditable(kartePane.getTextPane().isEditable());
                 editor.addPropertyChangeListener(SchemaHolder.this);
-                IMEControl.off();
                 editor.start();
             });
 

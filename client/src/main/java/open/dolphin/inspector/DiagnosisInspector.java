@@ -5,7 +5,6 @@ import open.dolphin.dnd.DiagnosisInspectorTransferHandler;
 import open.dolphin.helper.MenuActionManager;
 import open.dolphin.helper.MenuActionManager.MenuAction;
 import open.dolphin.infomodel.RegisteredDiagnosisModel;
-import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBorder;
 import open.dolphin.ui.PNSScrollPane;
 import open.dolphin.util.ModelUtils;
@@ -99,7 +98,6 @@ public class DiagnosisInspector implements IInspector {
             @Override
             public void focusGained(FocusEvent e) {
                 diagList.repaint();
-                IMEControl.off();
             }
             @Override
             public void focusLost(FocusEvent e) {

@@ -10,7 +10,6 @@ import open.dolphin.orca.ClaimConst;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.project.Project;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSBorderFactory;
 import open.dolphin.util.ModelUtils;
 import org.slf4j.Logger;
@@ -144,6 +143,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
 
             // text field を作って, 最初の1文字を入力する
             JTextField tf = new JTextField(3);
+            tf.putClientProperty(Project.ATOK_ROMAN_KEY, true);
             tf.setText(String.valueOf(e.getKeyChar()));
 
             // enter key でスタンプの数量を変更する
@@ -228,7 +228,6 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
         map.get(GUIConst.ACTION_PASTE).setEnabled(false);
 
         setSelected(true);
-        IMEControl.off();
     }
 
     /**

@@ -23,6 +23,9 @@ public class SettingForMac {
         // com.apple.eawt.Application の設定
         setMacApplication(context);
 
+        // IME の制御
+        new IMEControl();
+
         // laf replacement
         UIManager.put("TextFieldUI", MyTextFieldUI.class.getName());
         UIManager.put("PasswordFieldUI", MyPasswordFieldUI.class.getName());

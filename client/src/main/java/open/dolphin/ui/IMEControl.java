@@ -2,15 +2,18 @@ package open.dolphin.ui;
 
 import open.dolphin.client.Dolphin;
 import open.dolphin.helper.ScriptExecutor;
-import open.dolphin.helper.StackTracer;
 import open.dolphin.project.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
 /**
@@ -23,76 +26,76 @@ import java.util.prefs.Preferences;
  * <li>ver 5: Robot version 復活. 物理キーが押されていると誤動作するのでキー入力でフォーカスが当たるところには使えない
  * <li>ver 6: key combination での robot 入力うまくいかず, F12, F13 キーで切り替えるように ATOK 側で設定することにした
  * <li>ver 7: im-select 呼び出し法 (https://github.com/daipeihust/im-select)
+ * <li>ver 8: FocusManger で一元管理バージョン
  * </ul>
  *
  * @author pns
  */
-public class IMEControl {
-    private final static Logger logger = LoggerFactory.getLogger(IMEControl.class);
-    private final static boolean isMac = System.getProperty("os.name").toLowerCase().startsWith("mac");
+public class IMEControl implements PropertyChangeListener {
     private final static String JAPANESE = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_JAPANESE_KEY, "com.justsystems.inputmethod.atok34.Japanese");
     private final static String ROMAN = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_ROMAN_KEY, "com.justsystems.inputmethod.atok34.Roman");
 
-    /**
-     * IME-off.
-     */
-    public static void off() {
-        if (isMac) {
-            logger.info("atok eiji mode");
-            ScriptExecutor.imSelect(ROMAN);
+    private String toSet = ROMAN;
+    private Timer timer;
+    private final Logger logger = LoggerFactory.getLogger(IMEControl.class);
+
+    public IMEControl() {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(this);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent e) {
+        if ("permanentFocusOwner".equals(e.getPropertyName())) {
+            if (Objects.nonNull(e.getNewValue())) {
+                if (e.getNewValue() instanceof JPasswordField) {
+                    toSet = ROMAN;
+                } else if (e.getNewValue() instanceof JTextComponent c) {
+                    toSet = Objects.nonNull(c.getClientProperty(Project.ATOK_ROMAN_KEY))? ROMAN : JAPANESE;
+                } else {
+                    toSet = ROMAN;
+                }
+                restartTimer();
+            }
         }
     }
 
     /**
-     * IME-on.
+     * Do IME on/off.
      */
-    public static void on() {
-        if (isMac) {
-            logger.info("atok hiragana mode");
-            ScriptExecutor.imSelect(JAPANESE);
+    private class FlushTask extends TimerTask {
+        @Override
+        public void run() {
+            ScriptExecutor.imSelect(toSet);
+            timer = null;
         }
     }
 
     /**
-     * IME-off when focused.
-     *
-     * @param c component to add focus listener
+     * 200 msec 以内の変更は記録しない処理.
      */
-    public static void off(final Component c) {
-        c.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) { off(); }
-            @Override
-            public void focusLost(FocusEvent e) {}
-        });
-    }
-
-    /**
-     * IME-on when focused.
-     *
-     * @param c component to add focus listener
-     */
-    public static void on(final Component c) {
-        c.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) { on(); }
-            @Override
-            public void focusLost(FocusEvent e) {}
-        });
+    private void restartTimer() {
+        if (Objects.nonNull(timer)) {
+            timer.cancel();
+            timer.purge();
+        }
+        timer = new Timer();
+        timer.schedule(new FlushTask(), 200);
     }
 
     public static void main(String[] argv) {
+        new IMEControl();
 
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JLabel l1 = new JLabel("TF1");
         JLabel l2 = new JLabel("TF2");
+        JLabel l3 = new JLabel("TF3");
 
         JTextField tf1 = new JTextField(30);
-        on(tf1);
-        JTextField tf2 = new JTextField(30);
-        off(tf2);
+        JPasswordField tf2 = new JPasswordField(30);
+        JTextField tf3 = new JTextField(30);
+        tf3.putClientProperty(Project.ATOK_ROMAN_KEY, true);
 
         JPanel p1 = new JPanel();
         p1.setLayout(new BoxLayout(p1, BoxLayout.X_AXIS));
@@ -102,10 +105,15 @@ public class IMEControl {
         p2.setLayout(new BoxLayout(p2, BoxLayout.X_AXIS));
         p2.add(l2);
         p2.add(tf2);
+        JPanel p3 = new JPanel();
+        p3.setLayout(new BoxLayout(p3, BoxLayout.X_AXIS));
+        p3.add(l3);
+        p3.add(tf3);
 
         f.getRootPane().setLayout(new BoxLayout(f.getRootPane(), BoxLayout.Y_AXIS));
         f.getRootPane().add(p1);
         f.getRootPane().add(p2);
+        f.getRootPane().add(p3);
         f.pack();
         f.setLocation(200,100);
         f.setVisible(true);

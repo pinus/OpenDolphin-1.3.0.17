@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Script でいろいろする.
@@ -97,14 +98,11 @@ public class ScriptExecutor {
      * @param command Shell commands in a string array
      */
     private static void executeShellScript(String... command) {
-        Thread t = new Thread(() -> {
-            try {
-                Runtime.getRuntime().exec(command).waitFor();
-            } catch (IOException | InterruptedException ex) {
-                System.out.println("ExecuteScript.java: " + ex);
-            }
-        });
-        t.start();
+        try {
+            Runtime.getRuntime().exec(command).waitFor(500, TimeUnit.MILLISECONDS);
+        } catch (IOException | InterruptedException ex) {
+            System.out.println("ExecuteScript.java: " + ex);
+        }
     }
 
     /**

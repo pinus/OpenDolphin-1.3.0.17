@@ -7,7 +7,6 @@ import open.dolphin.infomodel.ClaimItem;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.orca.ClaimConst;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.PNSButton;
 import open.dolphin.ui.PNSOptionPane;
 import open.dolphin.util.ModelUtils;
@@ -531,7 +530,6 @@ public class StampHolderPopupMenu extends JPopupMenu {
             final JTextField tf = new JTextField(10);
             tf.setPreferredSize(new Dimension(100, 26));
             tf.getDocument().addUndoableEditListener(TextComponentUndoManager.createManager(tf));
-            IMEControl.on(tf);
 
             JDialog dialog = new JDialog();
             dialog.getRootPane().getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), "cancel");

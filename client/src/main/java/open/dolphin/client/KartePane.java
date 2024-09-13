@@ -14,7 +14,6 @@ import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.StampEditorDialog;
 import open.dolphin.ui.Focuser;
-import open.dolphin.ui.IMEControl;
 import open.dolphin.ui.sheet.JSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -935,7 +934,6 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
                         editor.setSchema(schema);
                         editor.setEditable(true);
                         editor.addPropertyChangeListener(KartePane.this);
-                        IMEControl.off();
                         editor.start();
                     });
                 }

@@ -1,6 +1,7 @@
 package open.dolphin.impl.login;
 
 import open.dolphin.client.GUIConst;
+import open.dolphin.project.Project;
 import open.dolphin.ui.CompletableJTextField;
 import open.dolphin.ui.CompletableJTextFieldWithLabel;
 import open.dolphin.ui.JPasswordFieldWithLabel;
@@ -68,11 +69,13 @@ public class LoginView extends JFrame {
         hostField.setLabel("サーバ");
         hostField.setIcon(GUIConst.ICON_SERVER_16);
         hostField.setPreferences(Preferences.userNodeForPackage(getClass()));
+        hostField.putClientProperty(Project.ATOK_ROMAN_KEY, true);
 
         userIdField = new CompletableJTextFieldWithLabel(TEXT_LENGTH);
         userIdField.setLabel("ユーザ");
         userIdField.setIcon(GUIConst.ICON_USER_16);
         userIdField.setPreferences(Preferences.userNodeForPackage(getClass()));
+        userIdField.putClientProperty(Project.ATOK_ROMAN_KEY, true);
 
         passwordField = new JPasswordFieldWithLabel(TEXT_LENGTH);
         passwordField.setLabel("パスワード");

@@ -232,6 +232,7 @@ public class ItemTablePanel extends JPanel {
             TableColumn column = table.getColumnModel().getColumn(i);
 
             JTextField tf = new JTextField();
+            tf.putClientProperty(Project.ATOK_ROMAN_KEY, true);
             DefaultCellEditor de = new PNSCellEditor(tf);
             int ccts = Project.getPreferences().getInt("order.table.clickCountToStart", 1);
             de.setClickCountToStart(ccts);
@@ -752,7 +753,7 @@ public class ItemTablePanel extends JPanel {
             case ClaimConst.SYUGI:
                 // 材料及び薬剤の場合は数量1を設定する
                 //item.setNumber(DEFAULT_NUMBER);
-                if (textVal.equals("") || textVal.equals(DEFAULT_STAMP_NAME)) {
+                if (textVal.isEmpty() || textVal.equals(DEFAULT_STAMP_NAME)) {
                     // 手技の場合はスタンプ名フィールドに名前を設定する
                     stampNameField.setText(item.getName());
                 }
@@ -810,7 +811,7 @@ public class ItemTablePanel extends JPanel {
 
         // スタンプ名を設定する
         String text = stampNameField.getText().trim();
-        if (!text.equals("")) {
+        if (!text.isEmpty()) {
             moduleInfo.setStampName(text);
         } else {
             moduleInfo.setStampName(DEFAULT_STAMP_NAME);
@@ -880,7 +881,7 @@ public class ItemTablePanel extends JPanel {
                 String number = mItem.getNumber();
                 if (number != null) {
                     number = number.trim();
-                    if (!number.equals("")) {
+                    if (!number.isEmpty()) {
                         number = StringTool.toHankakuNumber(number);
                         item.setNumber(number);
                         item.setUnit(mItem.getUnit());
@@ -894,7 +895,7 @@ public class ItemTablePanel extends JPanel {
 
         // バンドルメモ
         String memo = commentField.getText();
-        if (!memo.equals("")) {
+        if (!memo.isEmpty()) {
             bundle.setMemo(memo);
         }
 
@@ -937,7 +938,7 @@ public class ItemTablePanel extends JPanel {
         // スタンプ名がエディタから発行の場合はデフォルトの名称にする
         if (!serialized && stampName.startsWith(FROM_EDITOR_STAMP_NAME)) {
             stampName = DEFAULT_STAMP_NAME;
-        } else if (stampName.equals("")) {
+        } else if (stampName.isEmpty()) {
             stampName = DEFAULT_STAMP_NAME;
         }
         stampNameField.setText(stampName);
@@ -971,7 +972,7 @@ public class ItemTablePanel extends JPanel {
             mItem.setCode(item.getCode());
 
             val = item.getNumber();
-            if (val != null && (!val.equals(""))) {
+            if (val != null && (!val.isEmpty())) {
                 val = StringTool.toHankakuNumber(val.trim());
                 mItem.setNumber(val);
                 val = item.getUnit();
@@ -991,7 +992,7 @@ public class ItemTablePanel extends JPanel {
         }
 
         String number = bundle.getBundleNumber();
-        if (number != null && (!number.equals(""))) {
+        if (number != null && (!number.isEmpty())) {
             number = StringTool.toHankakuNumber(number);
             numberCombo.setSelectedItem(number);
         }
@@ -1033,8 +1034,7 @@ public class ItemTablePanel extends JPanel {
 
     // number が正しく入っている必要がある
     private boolean isNumberOk() {
-        for (Object i : tableModel.getObjectList()) {
-            MasterItem mItem = (MasterItem) i;
+        for (MasterItem mItem : tableModel.getObjectList()) {
 
             // コードが 84xxxxxxx, 85xxxxxxx コメントの場合，number にパラメータを入れるので，number チェックしない
             if (mItem.getCode().startsWith("84") || mItem.getCode().startsWith("85")) {
@@ -1045,7 +1045,7 @@ public class ItemTablePanel extends JPanel {
             // 手技の場合
             if (mItem.getClassCode() == ClaimConst.SYUGI) {
                 // null "" ok
-                if (mItem.getNumber() == null || mItem.getNumber().equals("")) {
+                if (mItem.getNumber() == null || mItem.getNumber().isEmpty()) {
                     continue;
                 } else if (!isNumber(mItem.getNumber())) {
                     return false;
