@@ -88,7 +88,6 @@ public class PatientSearchPanel extends MainComponentPanel {
         keywordFld.setLabel("患者検索");
         keywordFld.putClientProperty("Quaqua.TextField.style", "search");
 
-        IMEControl.offIfFocusLost(keywordFld);
         keywordFld.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

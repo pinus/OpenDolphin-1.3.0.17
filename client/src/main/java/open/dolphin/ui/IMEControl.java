@@ -2,6 +2,7 @@ package open.dolphin.ui;
 
 import open.dolphin.client.Dolphin;
 import open.dolphin.helper.ScriptExecutor;
+import open.dolphin.helper.StackTracer;
 import open.dolphin.project.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +63,7 @@ public class IMEControl {
             @Override
             public void focusGained(FocusEvent e) { off(); }
             @Override
-            public void focusLost(FocusEvent e) { onLeaving(e.getSource()); }
+            public void focusLost(FocusEvent e) {}
         });
     }
 
@@ -76,31 +77,8 @@ public class IMEControl {
             @Override
             public void focusGained(FocusEvent e) { on(); }
             @Override
-            public void focusLost(FocusEvent e) { onLeaving(e.getSource()); }
+            public void focusLost(FocusEvent e) {}
         });
-    }
-
-    /**
-     * IME-off on leaving.
-     *
-     * @param c component to add focus listener
-     */
-    public static void offIfFocusLost(final Component c) {
-        c.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {}
-            @Override
-            public void focusLost(FocusEvent e) { onLeaving(e.getSource()); }
-        });
-    }
-
-    /**
-     * ATOK ひらがなモードのまま離れると, 変換ウインドウが変なところに出るの対策.
-     *
-     * @param source ATOK off したい source
-     */
-    private static void onLeaving(Object source) {
-        if (source instanceof JComponent comp && comp.isVisible()) { off(); }
     }
 
     public static void main(String[] argv) {
