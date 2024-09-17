@@ -1,6 +1,7 @@
 package open.dolphin.client;
 
 import open.dolphin.helper.TextComponentUndoManager;
+import open.dolphin.project.Project;
 import open.dolphin.ui.CompletableSearchField;
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,6 +68,8 @@ public class ChartSearchPanel extends JPanel {
                 });
 
                 if (popup.getComponentCount() != 0) {
+                    // 直後のショートカット入力で　ATOK ウインドウが出ないように
+                    stampSearchField.putClientProperty(Project.ATOK_ROMAN_KEY, true);
                     popup.show(stampSearchField,0, stampSearchField.getHeight());
                 }
             }

@@ -39,15 +39,13 @@ public class IMEControl {
             if (Objects.nonNull(e.getNewValue())) {
                 if (e.getNewValue() instanceof JPasswordField) {
                     toSet = ROMAN;
-                    logger.info("eiji mode - password");
                 } else if (e.getNewValue() instanceof JTextComponent c) {
                     toSet = Objects.nonNull(c.getClientProperty(Project.ATOK_ROMAN_KEY)) ? ROMAN : JAPANESE;
-                    logger.info("hiragana mode");
                 } else {
                     toSet = ROMAN;
-                    logger.info("eiji mode");
                 }
                 ScriptExecutor.imSelect(toSet);
+                logger.info(toSet.replaceFirst("^.*\\.", ""));
             }
         });
     }

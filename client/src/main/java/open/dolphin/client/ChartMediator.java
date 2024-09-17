@@ -721,6 +721,7 @@ public final class ChartMediator extends MenuSupport implements PropertyChangeLi
         if (Objects.nonNull(chart)) {
             ChartSearchPanel panel = chart.getChartSearchPanel();
             panel.show(ChartSearchPanel.Card.STAMP);
+            panel.getStampSearchField().putClientProperty(Project.ATOK_ROMAN_KEY, null); // ChartSearchPanel may put true
             Focuser.requestFocus(panel.getStampSearchField());
             return;
         }

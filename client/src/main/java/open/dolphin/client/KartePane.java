@@ -13,7 +13,6 @@ import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.impl.scheam.SchemaEditorImpl;
 import open.dolphin.infomodel.*;
 import open.dolphin.order.StampEditorDialog;
-import open.dolphin.ui.Focuser;
 import open.dolphin.ui.sheet.JSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseEvent;
@@ -361,11 +359,11 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
         }
 
         // カーソル移動で Component 部に来たら, Component にフォーカスする
-        if (!newSelection) {
-            KarteStyledDocument doc = getDocument();
-            Component c = StyleConstants.getComponent(doc.getCharacterElement(e.getDot()).getAttributes());
-            if (Objects.nonNull(c)) { Focuser.requestFocus(c); }
-        }
+//        if (!newSelection) {
+//            KarteStyledDocument doc = getDocument();
+//            Component c = StyleConstants.getComponent(doc.getCharacterElement(e.getDot()).getAttributes());
+//            if (Objects.nonNull(c)) { Focuser.requestFocus(c); }
+//        }
     }
 
     /**
@@ -753,7 +751,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
                     logger.info("text stamp");
                     // テキストは toString したものを流す
                     list.stream().map(StampModel::getStamp).filter(Objects::nonNull)
-                        .map(model -> model.toString() + "\n").forEach(KartePane.this::insertTextStamp);
+                        .map(model -> model + "\n").forEach(KartePane.this::insertTextStamp);
 
                 } else {
                     List<ModuleModel> duplicateCheckList = new ArrayList<>();
