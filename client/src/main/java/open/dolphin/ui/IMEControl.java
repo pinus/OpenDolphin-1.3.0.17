@@ -10,8 +10,6 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
 /**
@@ -34,7 +32,6 @@ public class IMEControl {
     private final static String ROMAN = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_ROMAN_KEY, "com.justsystems.inputmethod.atok34.Roman");
 
     private String toSet = ROMAN;
-    private Timer timer;
     private final Logger logger = LoggerFactory.getLogger(IMEControl.class);
 
     public IMEControl() {
@@ -42,37 +39,17 @@ public class IMEControl {
             if (Objects.nonNull(e.getNewValue())) {
                 if (e.getNewValue() instanceof JPasswordField) {
                     toSet = ROMAN;
+                    logger.info("eiji mode - password");
                 } else if (e.getNewValue() instanceof JTextComponent c) {
                     toSet = Objects.nonNull(c.getClientProperty(Project.ATOK_ROMAN_KEY)) ? ROMAN : JAPANESE;
+                    logger.info("hiragana mode");
                 } else {
                     toSet = ROMAN;
+                    logger.info("eiji mode");
                 }
-                restartTimer();
+                ScriptExecutor.imSelect(toSet);
             }
         });
-    }
-
-    /**
-     * Do IME on/off.
-     */
-    private class FlushTask extends TimerTask {
-        @Override
-        public void run() {
-            ScriptExecutor.imSelect(toSet);
-            timer = null;
-        }
-    }
-
-    /**
-     * 200 msec 以内の変更は記録しない処理.
-     */
-    private void restartTimer() {
-        if (Objects.nonNull(timer)) {
-            timer.cancel();
-            timer.purge();
-        }
-        timer = new Timer();
-        timer.schedule(new FlushTask(), 200);
     }
 
     public static void main(String[] argv) {
