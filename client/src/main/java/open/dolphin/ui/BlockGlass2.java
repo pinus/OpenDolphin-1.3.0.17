@@ -236,8 +236,13 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      */
     @Override
     public void setVisible(boolean visible) {
-        if (visible) { start(); }
-        else { stop(); }
+        synchronized (this) {
+            if (visible) {
+                start();
+            } else {
+                stop();
+            }
+        }
     }
 
     /**
@@ -245,7 +250,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      * Ticker visibility can be controlled by the client property blockglass.show.ticker.
      * This method handles the visibility of the glass pane.
      */
-    public void start() {
+    private void start() {
         super.setVisible(true);
         showTicker = getClientProperty("blockglass.show.ticker") instanceof Boolean b ? b : true;
         addMouseListener(this);
@@ -263,7 +268,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      * of the circular shape and then by fading out the veil.
      * This methods sets the panel invisible at the end.
      */
-    public void stop() {
+    private void stop() {
         if (animationThread != null && animator.rampUp) {
             animationThread.interrupt();
             animator = new Animator(false);
@@ -412,7 +417,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             AffineTransform toCircle = AffineTransform.getRotateInstance(fixedIncrement, center.getX(), center.getY());
 
             Window parent = SwingUtilities.getWindowAncestor(BlockGlass2.this);
-            //logger.info(rampUp? "rumpup:" : "rumpdown:" + " parent = " + ((JFrame)parent).getTitle());
+            logger.info((rampUp? "rumpup:" : "rumpdown:") + " parent = " + ((JFrame)parent).getTitle());
 
             /* initial delay */
             if (rampUp) {
@@ -421,8 +426,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
                 } catch (InterruptedException ie) {
                     started = false;
                     repaint();
-                    BlockGlass2.super.setVisible(false);
-                    removeMouseListener(BlockGlass2.this);
+                    interrupt();
                     return;
                 }
             }
@@ -482,9 +486,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             if (!rampUp) {
                 started = false;
                 repaint();
-
-                BlockGlass2.super.setVisible(false);
-                removeMouseListener(BlockGlass2.this);
+                interrupt();
             }
         }
     }
