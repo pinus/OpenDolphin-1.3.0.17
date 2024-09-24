@@ -109,9 +109,10 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        super.keyPressed(e);
-
-        if (Character.isDigit(e.getKeyChar())) {
+        if (!Character.isDigit(e.getKeyChar())) {
+            super.keyPressed(e);
+            
+        } else  {
             //
             // 数字キー入力処理編集は editable でないと意味が無い
             //
