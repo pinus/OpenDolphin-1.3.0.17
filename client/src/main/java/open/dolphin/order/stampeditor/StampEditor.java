@@ -42,21 +42,14 @@ public class StampEditor extends JPanel implements IStampEditor {
 
         // フォーカス処理: tab で search field -> search panel -> table panel の順番にフォーカス移動する
         setFocusTraversalPolicyProvider(true);
+        setFocusCycleRoot(true);
         setFocusTraversalPolicy(new FocusTraversalPolicy() {
             @Override
             public Component getComponentAfter(Container aContainer, Component aComponent) {
                 switch (Objects.isNull(aComponent.getName()) ? "" : aComponent.getName()) {
-                    case StampEditor.MASTER_SEARCH_FIELD:
-                        getMasterSearchPanel().requestFocusOnTable();
-                        break;
-
-                    case StampEditor.MASTER_TABLE:
-                        getTablePanel().requestFocusOnTable();
-                        break;
-
-                    default:
-                        enter();
-                        break;
+                    case StampEditor.MASTER_SEARCH_FIELD -> getMasterSearchPanel().requestFocusOnTable();
+                    case StampEditor.MASTER_TABLE -> getTablePanel().requestFocusOnTable();
+                    default -> enter();
                 }
                 return null;
             }
@@ -64,17 +57,9 @@ public class StampEditor extends JPanel implements IStampEditor {
             @Override
             public Component getComponentBefore(Container aContainer, Component aComponent) {
                 switch (Objects.isNull(aComponent.getName()) ? "" : aComponent.getName()) {
-                    case StampEditor.MASTER_SEARCH_FIELD:
-                        getTablePanel().requestFocusOnTable();
-                        break;
-
-                    case StampEditor.ITEM_TABLE:
-                        getMasterSearchPanel().requestFocusOnTable();
-                        break;
-
-                    default:
-                        enter();
-                        break;
+                    case StampEditor.MASTER_SEARCH_FIELD -> getTablePanel().requestFocusOnTable();
+                    case StampEditor.ITEM_TABLE -> getMasterSearchPanel().requestFocusOnTable();
+                    default -> enter();
                 }
                 return null;
             }
@@ -241,10 +226,9 @@ public class StampEditor extends JPanel implements IStampEditor {
 
     @Override
     public void setTitle(String title) {
-        String buf = title +
+        this.title =  title +
             ClientContext.getString("application.title.editorText") +
             ClientContext.getString("application.title.separator") +
             ClientContext.getString("application.title");
-        this.title = buf;
     }
 }

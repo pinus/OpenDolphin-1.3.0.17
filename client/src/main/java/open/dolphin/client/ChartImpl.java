@@ -499,55 +499,57 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
             @Override
             public Component getDefaultComponent(Container aContainer) {
                 // 最初にフォーカスを取る component
-                return getDocumentHistory().getDocumentHistoryTable();
+                //return getDocumentHistory().getDocumentHistoryTable(); // 予想外に呼ばれる？
+                return null;
+            }
+
+            private void focusToCategory(String category) {
+                if (InspectorCategory.病名.name().equals(category)) {
+                    JTextArea memoArea = inspector.getMemoInspector().getMemoArea();
+                    memoArea.select(0,0);
+
+                    JList<RegisteredDiagnosisModel> list = inspector.getDiagnosisInspector().getList();
+                    // Diagnosis リストがあるばあいは Diagnosis, なければスキップして DocumentHistory へ
+                    if (list.getModel().getSize() > 0) {
+                        // 選択がない場合は選択してフォーカス
+                        if (list.getSelectedIndex() < 0) { list.setSelectedIndex(0); }
+                        Focuser.requestFocus(list);
+                    } else {
+                        Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
+                    }
+                } else if (InspectorCategory.メモ.name().equals(category)) {
+                    // toMemo
+                    JTextArea memoArea = inspector.getMemoInspector().getMemoArea();
+                    memoArea.selectAll();
+                    Focuser.requestFocus(memoArea);
+                } else if (InspectorCategory.文書履歴.name().equals(category)) {
+                    // toDocumentHistory
+                    Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
+                }
+            }
+
+            private void doFocusCycle(String aComponent, String... order) {
+                for (int i=0; i<order.length; i++) {
+                    if (order[i].equals(aComponent)) { focusToCategory(order[(i+1) % order.length]); break; }
+                }
             }
 
             @Override
             public Component getComponentAfter(Container aContainer, Component aComponent) {
-                if (InspectorCategory.メモ.name().equals(aComponent.getName())) {
-                    JList<RegisteredDiagnosisModel> list = inspector.getDiagnosisInspector().getList();
-                    if (list.getModel().getSize() == 0) {
-                        // リストが空なら document history へ
-                        Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
-                    } else {
-                        // 選択がない場合は選択してフォーカス
-                        if (list.getSelectedIndex() < 0) { list.setSelectedIndex(0); }
-                        Focuser.requestFocus(list);
-                    }
-
-                } else if (InspectorCategory.文書履歴.name().equals(aComponent.getName())) {
-                    JTextArea memoArea = inspector.getMemoInspector().getMemoArea();
-                    memoArea.selectAll();
-                    Focuser.requestFocus(memoArea);
-
-                } else {
-                    Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
-                }
+                doFocusCycle(aComponent.getName(),
+                    InspectorCategory.メモ.name(),
+                    InspectorCategory.病名.name(),
+                    InspectorCategory.文書履歴.name());
                 return null;
             }
 
             @Override
             public Component getComponentBefore(Container aContainer, Component aComponent) {
-                if (InspectorCategory.病名.name().equals(aComponent.getName())) {
-                    JTextArea memoArea = inspector.getMemoInspector().getMemoArea();
-                    memoArea.selectAll();
-                    Focuser.requestFocus(memoArea);
-
-                } else if (InspectorCategory.文書履歴.name().equals(aComponent.getName())) {
-                    JList<RegisteredDiagnosisModel> list = inspector.getDiagnosisInspector().getList();
-                    if (list.getModel().getSize() == 0) {
-                        // リストが空なら document history へ
-                        Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
-                    } else {
-                        // 選択がない場合は選択してフォーカス
-                        if (list.getSelectedIndex() < 0) { list.setSelectedIndex(0); }
-                        Focuser.requestFocus(list);
-                    }
-
-                } else {
-                    Focuser.requestFocus(inspector.getDocumentHistory().getDocumentHistoryTable());
-                }
-                return inspector.getMemoInspector().getPanel();
+                doFocusCycle(aComponent.getName(),
+                    InspectorCategory.文書履歴.name(),
+                    InspectorCategory.病名.name(),
+                    InspectorCategory.メモ.name());
+                return null;
             }
 
             @Override
@@ -662,6 +664,8 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
         }
 
         frame.setVisible(true);
+        // FocusTraversalPolicy#getDefaultComponent がうまくいかないため
+        Focuser.requestFocus(getDocumentHistory().getDocumentHistoryTable());
 
         // command ctrl F で検索フィールドにフォーカスする裏コマンド
         if (Dolphin.forMac) {
