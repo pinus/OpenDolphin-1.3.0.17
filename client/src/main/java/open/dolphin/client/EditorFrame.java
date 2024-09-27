@@ -540,6 +540,7 @@ public class EditorFrame extends AbstractMainTool implements Chart, WindowListen
     @Override
     public void stop() {
         realChart.getFrame().toFront();
+        realChart.enter();
         getFrame().removeWindowListener(this);
         mediator.dispose();
         editor.stop();

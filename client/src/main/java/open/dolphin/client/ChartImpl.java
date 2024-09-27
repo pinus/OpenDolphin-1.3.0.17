@@ -664,8 +664,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
         }
 
         frame.setVisible(true);
-        // FocusTraversalPolicy#getDefaultComponent がうまくいかないため
-        Focuser.requestFocus(getDocumentHistory().getDocumentHistoryTable());
 
         // command ctrl F で検索フィールドにフォーカスする裏コマンド
         if (Dolphin.forMac) {
@@ -674,6 +672,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
             im.put(KeyStroke.getKeyStroke("meta ctrl F"), GUIConst.ACTION_SEARCH_STAMP);
             am.put(GUIConst.ACTION_SEARCH_STAMP, new ProxyAction(mediator::searchStamp));
         }
+        enter();
     }
 
     /**
@@ -683,6 +682,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
     public void enter() {
         logger.info("enter()");
         stateMgr.controlMenu();
+        Focuser.requestFocus(getDocumentHistory().getDocumentHistoryTable());
     }
 
     /**
