@@ -285,12 +285,14 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      * This methods sets the panel invisible at the end.
      */
     public void interrupt() {
-        logger.info("interrupted");
-        if (animationThread != null) {
-            animationThread.interrupt();
-            animationThread = null;
-            removeMouseListener(this);
-            super.setVisible(false);
+        synchronized (this) {
+            logger.info("interrupted");
+            if (animationThread != null) {
+                animationThread.interrupt();
+                animationThread = null;
+                removeMouseListener(this);
+                super.setVisible(false);
+            }
         }
     }
 

@@ -3,7 +3,6 @@ package open.dolphin.ui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -39,7 +38,8 @@ public class Focuser {
         Component owner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner();
         if (!c.equals(owner)) {
             KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
-            SwingUtilities.invokeLater(() -> request(c));
+            request(c);
+            //SwingUtilities.invokeLater(() -> request(c));
         }
     }
 
