@@ -202,7 +202,7 @@ public class MenuSupport implements MenuListener {
                     Method mth = chains[i].getClass().getMethod(method, (Class[]) null);
                     mth.invoke(chains[i], (Object[]) null);
                     handled = true;
-                    logger.info("invoked: " + i + ":" + chains[i].getClass() + "#" + method);
+                    //logger.info("invoked: " + i + ":" + chains[i].getClass() + "#" + method);
                     break;
 
                 } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) {

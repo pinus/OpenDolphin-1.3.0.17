@@ -171,7 +171,7 @@ public class WindowSupport<T> implements MenuListener, ComponentListener {
     private void logMemory(String message) {
         long freeMemory = Runtime.getRuntime().freeMemory() / 1048576L;
         long maxMemory = Runtime.getRuntime().maxMemory() / 1048576L;
-        logger.info(message);
+        //logger.info(message);
         logger.info(String.format("free/max %d/%d MB (%d)", freeMemory, maxMemory, Window.getOwnerlessWindows().length));
     }
 

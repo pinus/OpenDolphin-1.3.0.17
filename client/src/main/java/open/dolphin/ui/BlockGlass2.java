@@ -286,13 +286,14 @@ public class BlockGlass2 extends JComponent implements MouseListener {
      */
     public void interrupt() {
         synchronized (this) {
-            logger.info("interrupted");
             if (animationThread != null) {
+                //logger.info("interrupted:" + System.identityHashCode(animationThread));
+                //StackTracer.showTrace(3);
                 animationThread.interrupt();
                 animationThread = null;
-                removeMouseListener(this);
-                super.setVisible(false);
             }
+            removeMouseListener(this);
+            super.setVisible(false);
         }
     }
 
@@ -419,7 +420,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
             AffineTransform toCircle = AffineTransform.getRotateInstance(fixedIncrement, center.getX(), center.getY());
 
             Window parent = SwingUtilities.getWindowAncestor(BlockGlass2.this);
-            logger.info((rampUp? "rumpup:" : "rumpdown:") + " parent = " + ((JFrame)parent).getTitle());
+            //logger.info((rampUp? "rumpup:" : "rumpdown:") + " parent = " + ((JFrame)parent).getTitle());
 
             /* initial delay */
             if (rampUp) {
