@@ -93,7 +93,7 @@ public class ScriptExecutor {
         if (!inputSourceID.equals(present.get(0))) {
             System.out.println(inputSourceID.replaceFirst("^.*\\.", ""));
             executeShellScript("/usr/local/bin/im-select", inputSourceID);
-            imSelect(inputSourceID);
+            //imSelect(inputSourceID);
         }
     }
 

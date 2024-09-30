@@ -45,6 +45,8 @@ public class IMEControl {
                     toSet = ROMAN;
                 }
                 ScriptExecutor.imSelect(toSet);
+                // protect time
+                try { Thread.sleep(50); } catch (Exception ex) {}
             }
         });
     }
