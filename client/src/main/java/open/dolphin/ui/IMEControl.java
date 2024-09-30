@@ -45,9 +45,6 @@ public class IMEControl {
                     toSet = ROMAN;
                 }
                 ScriptExecutor.imSelect(toSet);
-                logger.info(toSet.replaceFirst("^.*\\.", ""));
-                // protect time test
-                try { Thread.sleep(50); } catch (Exception ex) {}
             }
         });
     }

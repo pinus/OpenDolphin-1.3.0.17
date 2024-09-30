@@ -34,8 +34,6 @@ public abstract class AbstractComponentHolder<T> extends JLabel
     private static final KeyStroke SHIFT_TAB = KeyStroke.getKeyStroke("shift TAB");
     private static final KeyStroke CTRL_ENTER = KeyStroke.getKeyStroke("ctrl ENTER");
     private static final KeyStroke SPACE = KeyStroke.getKeyStroke("SPACE");
-    private final static int toEijiKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_EIJI_KEY, KeyEvent.VK_F15);
-    private final static int toHiraganaKey = Preferences.userNodeForPackage(Dolphin.class).getInt(Project.ATOK_TO_HIRAGANA_KEY, KeyEvent.VK_F14);
 
     // 親の KartePane
     private final KartePane kartePane;
@@ -110,9 +108,8 @@ public abstract class AbstractComponentHolder<T> extends JLabel
                 10, this.getHeight(), 0, true, 0);
             maybeShowPopup(me);
 
-        } else if (e.getKeyCode() != toEijiKey && e.getKeyCode() != toHiraganaKey
-                && !e.isControlDown() && !e.isMetaDown() && !e.isShiftDown() && !e.isAltDown()) {
-            // ATOK 制御用のキーと modifier キー以外は JTextPane に送る
+        } else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN
+            || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
             JTextPane pane = kartePane.getTextPane();
             pane.requestFocusInWindow();
             pane.dispatchEvent(e);

@@ -89,7 +89,12 @@ public class ScriptExecutor {
      * com.justsystems.inputmethod.atok33.{Roman,Japanese,Japanese.Katakana}
      */
     public static void imSelect(String inputSourceID) {
-        executeShellScript("/usr/local/bin/im-select", inputSourceID);
+        List<String> present = executeShellScriptWithResponce("/usr/local/bin/im-select");
+        if (!inputSourceID.equals(present.get(0))) {
+            System.out.println(inputSourceID.replaceFirst("^.*\\.", ""));
+            executeShellScript("/usr/local/bin/im-select", inputSourceID);
+            imSelect(inputSourceID);
+        }
     }
 
     /**
