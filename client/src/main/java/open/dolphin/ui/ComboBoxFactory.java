@@ -109,7 +109,8 @@ public class ComboBoxFactory {
                 new PNSPair<>("内服その他(400)", "0010004"), new PNSPair<>("頓用等(500)", "0010005"),
                 new PNSPair<>("外用等(600)", "0010006"), new PNSPair<>("点眼等(700)", "0010007"),
                 new PNSPair<>("部位等(800)", "0010008"), new PNSPair<>("全て", "001"),
-                new PNSPair<>("コメント", "810000001"), new PNSPair<>("一般名記載", "099209908")
+                new PNSPair<>("コメント", "810000001"), new PNSPair<>("一般名記載", "099209908"),
+                new PNSPair<>("先発医薬品患者希望", "099209909")
         );
     }
 

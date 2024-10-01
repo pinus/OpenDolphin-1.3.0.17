@@ -680,7 +680,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel, Wi
      */
     @Override
     public void enter() {
-        logger.info("enter()");
+        //logger.info("enter()");
         stateMgr.controlMenu();
         Focuser.requestFocus(getDocumentHistory().getDocumentHistoryTable());
     }

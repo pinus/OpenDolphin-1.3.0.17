@@ -45,9 +45,9 @@ public class Focuser {
 
     private static void request(Component component) {
         boolean succeeded = component.requestFocusInWindow();
-        if (!succeeded) {
+        //if (!succeeded) {
             // stackTrace.stream().map(e -> e.toString()).forEach(System.out::println);
-            logger.info(component.getClass() + ": request focus failed");
-        }
+        //    logger.info(component.getClass() + ": request focus failed");
+        //}
     }
 }

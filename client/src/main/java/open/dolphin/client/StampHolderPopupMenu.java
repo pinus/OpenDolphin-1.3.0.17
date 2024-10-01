@@ -85,8 +85,9 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
         // コメント追加
         add(new PutCommentAction());
-        // 一般名処方
-        add(new PutGenericNameAction());
+        // 一般名処方/先発医薬品患者希望
+        add(new PutGenericNameAction(true));
+        add(new PutGenericNameAction(false));
         addSeparator();
 
         // 処方日数メニュー
@@ -126,8 +127,9 @@ public class StampHolderPopupMenu extends JPopupMenu {
         add(new PutCommentAction());
         // 外用剤の部位メニュー
         add(new PutRegionAction());
-        // 一般名処方
-        add(new PutGenericNameAction());
+        // 一般名処方/先発医薬品患者希望
+        add(new PutGenericNameAction(true));
+        add(new PutGenericNameAction(false));
 
         addSeparator();
 
@@ -632,25 +634,31 @@ public class StampHolderPopupMenu extends JPopupMenu {
     }
 
     /**
-     * 一般名記載コメントをつけるアクション.
+     * 一般名記載/先発医薬品患者希望コメントをつけるアクション.
      */
     private class PutGenericNameAction extends AbstractAction {
+        private String IPPANMEI = "一般名記載";
+        private String IPPANMEI_CODE = "099209908";
+        private String SENPATSUKIBO = "先発医薬品患者希望";
+        private String SENPATSUKIBO_CODE = "099209909";
+        private boolean generic;
 
-        public PutGenericNameAction() {
-            putValue(AbstractAction.NAME, "一般名記載");
+        public PutGenericNameAction(boolean generic) {
+            this.generic = generic;
+            putValue(AbstractAction.NAME, generic? IPPANMEI : SENPATSUKIBO);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            // 一般名処方 ClaimItem を作る
-            ClaimItem generic = new ClaimItem();
-            generic.setClassCode("2");
-            generic.setClassCodeSystem("Claim003");
-            generic.setCode("099209908");
-            generic.setName("一般名記載");
-            generic.setNumber(".");
-            generic.setNumberCode(ClaimConst.YAKUZAI_TOYORYO); // = "10"
-            generic.setNumberCodeSystem("Claim004");
+            // 一般名処方/先発医薬品患者希望 ClaimItem を作る
+            ClaimItem item = new ClaimItem();
+            item.setClassCode("2");
+            item.setClassCodeSystem("Claim003");
+            item.setCode(generic? IPPANMEI_CODE : SENPATSUKIBO_CODE);
+            item.setName(generic? IPPANMEI : SENPATSUKIBO);
+            item.setNumber(".");
+            item.setNumberCode(ClaimConst.YAKUZAI_TOYORYO); // = "10"
+            item.setNumberCodeSystem("Claim004");
 
             // 新たなスタンプ作成
             BundleMed srcBundle = (BundleMed) ctx.getModel().getModel();
@@ -659,16 +667,14 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
             List<ClaimItem> list = new ArrayList<>();
 
-            // 薬の後に一般名処方を入れる
+            // 薬の後に一般名処方/先発医薬品患者希望を入れる
             for (int i=0; i<srcBundle.getClaimItem().length; i++) {
                 ClaimItem src = srcBundle.getClaimItem()[i];
-                list.add(ModelUtils.clone(src));
+                if (!src.getName().equals(IPPANMEI) && !src.getName().equals(SENPATSUKIBO)) {
+                    list.add(ModelUtils.clone(src));
+                }
                 if (src.getCode().startsWith("6")) {
-                    // 次の項目に一般名処方が入っていなかったら入れる
-                    if (i == srcBundle.getClaimItem().length - 1
-                        || !srcBundle.getClaimItem()[i+1].getName().equals(generic.getName())) {
-                        list.add(generic);
-                    }
+                        list.add(item);
                 }
             }
 
