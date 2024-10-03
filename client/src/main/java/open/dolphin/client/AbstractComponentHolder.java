@@ -1,7 +1,6 @@
 package open.dolphin.client;
 
 import open.dolphin.helper.MouseHelper;
-import open.dolphin.project.Project;
 import open.dolphin.ui.Focuser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import javax.swing.text.Position;
 import javax.swing.undo.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.prefs.Preferences;
 
 /**
  * ComponentHolder. StampHolder と SchemaHolder.
@@ -109,7 +107,8 @@ public abstract class AbstractComponentHolder<T> extends JLabel
             maybeShowPopup(me);
 
         } else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN
-            || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT
+            || e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER) {
             JTextPane pane = kartePane.getTextPane();
             pane.requestFocusInWindow();
             pane.dispatchEvent(e);

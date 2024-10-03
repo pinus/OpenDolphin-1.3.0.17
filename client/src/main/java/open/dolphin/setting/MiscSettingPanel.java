@@ -6,6 +6,8 @@ import open.dolphin.client.GUIFactory;
 import open.dolphin.helper.GridBagBuilder;
 import open.dolphin.helper.WindowSupport;
 import open.dolphin.project.Project;
+import open.dolphin.ui.CompletableJTextField;
+import open.dolphin.ui.IMEControl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,8 +37,8 @@ public class MiscSettingPanel extends AbstractSettingPanel {
     private JCheckBox redirectBox;
 
     // im-select の inputSourceID 設定
-    private JTextField japaneseId;
-    private JTextField romanId;
+    private CompletableJTextField japaneseId;
+    private CompletableJTextField romanId;
 
     public MiscSettingPanel() {
         init();
@@ -127,8 +129,10 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         gbb = new GridBagBuilder("inputSourceID for im-select");
         JLabel japaneseLbl = new JLabel("ひらがな");
         JLabel romanLbl = new JLabel("英字");
-        japaneseId = new JTextField(40);
-        romanId = new JTextField(40);
+        japaneseId = new CompletableJTextField(40);
+        romanId = new CompletableJTextField(40);
+        japaneseId.setPreferences(Preferences.userRoot().node(getClass() + "j"));
+        romanId.setPreferences(Preferences.userRoot().node(getClass() + "r"));
         gbb.add(japaneseLbl, 0,0,1,1, GridBagConstraints.WEST);
         gbb.add(japaneseId,0,1,1,1, GridBagConstraints.WEST);
         gbb.add(romanLbl, 0,2,1,1, GridBagConstraints.WEST);
@@ -178,7 +182,9 @@ public class MiscSettingPanel extends AbstractSettingPanel {
         prefs.putInt(Project.ARRANGE_INSPECTOR_DY, Integer.parseInt(diffY.getText()));
 
         Preferences.userNodeForPackage(Dolphin.class).putBoolean(Project.REDIRECT_CONSOLE, redirectBox.isSelected());
+
         Preferences.userNodeForPackage(Dolphin.class).put(Project.ATOK_JAPANESE_KEY, japaneseId.getText());
         Preferences.userNodeForPackage(Dolphin.class).put(Project.ATOK_ROMAN_KEY, romanId.getText());
+        IMEControl.reload();
     }
 }

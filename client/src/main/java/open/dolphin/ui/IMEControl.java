@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Objects;
 import java.util.prefs.Preferences;
 
@@ -28,8 +30,8 @@ import java.util.prefs.Preferences;
  * @author pns
  */
 public class IMEControl {
-    private final static String JAPANESE = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_JAPANESE_KEY, "com.justsystems.inputmethod.atok34.Japanese");
-    private final static String ROMAN = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_ROMAN_KEY, "com.justsystems.inputmethod.atok34.Roman");
+    private static String JAPANESE = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_JAPANESE_KEY, "com.justsystems.inputmethod.atok34.Japanese");
+    private static String ROMAN = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_ROMAN_KEY, "com.justsystems.inputmethod.atok34.Roman");
 
     private String toSet = ROMAN;
     private final Logger logger = LoggerFactory.getLogger(IMEControl.class);
@@ -45,10 +47,13 @@ public class IMEControl {
                     toSet = ROMAN;
                 }
                 ScriptExecutor.imSelect(toSet);
-                // protect time
-                try { Thread.sleep(50); } catch (Exception ex) {}
             }
         });
+    }
+
+    public static void reload() {
+        JAPANESE = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_JAPANESE_KEY, "com.justsystems.inputmethod.atok34.Japanese");
+        ROMAN = Preferences.userNodeForPackage(Dolphin.class).get(Project.ATOK_ROMAN_KEY, "com.justsystems.inputmethod.atok34.Roman");
     }
 
     public static void main(String[] argv) {

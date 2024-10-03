@@ -68,13 +68,13 @@ public class LoginView extends JFrame {
         hostField = new CompletableJTextFieldWithLabel(TEXT_LENGTH);
         hostField.setLabel("サーバ");
         hostField.setIcon(GUIConst.ICON_SERVER_16);
-        hostField.setPreferences(Preferences.userNodeForPackage(getClass()));
+        hostField.setPreferences(Preferences.userRoot().node(getClass() + "s"));
         hostField.putClientProperty(Project.ATOK_ROMAN_KEY, true);
 
         userIdField = new CompletableJTextFieldWithLabel(TEXT_LENGTH);
         userIdField.setLabel("ユーザ");
         userIdField.setIcon(GUIConst.ICON_USER_16);
-        userIdField.setPreferences(Preferences.userNodeForPackage(getClass()));
+        userIdField.setPreferences(Preferences.userRoot().node(getClass() + "u"));
         userIdField.putClientProperty(Project.ATOK_ROMAN_KEY, true);
 
         passwordField = new JPasswordFieldWithLabel(TEXT_LENGTH);
