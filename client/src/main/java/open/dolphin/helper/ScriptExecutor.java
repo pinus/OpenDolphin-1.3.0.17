@@ -89,8 +89,19 @@ public class ScriptExecutor {
      * com.justsystems.inputmethod.atok33.{Roman,Japanese,Japanese.Katakana}
      */
     public static void imSelect(String inputSourceID) {
-        System.out.println(inputSourceID.replaceFirst("^.*\\.", ""));
-        executeShellScript("/usr/local/bin/im-select", inputSourceID);
+        if (!StringTool.isEmpty(inputSourceID)) {
+            //System.out.println(inputSourceID.replaceFirst("^.*\\.", ""));
+            executeShellScript("/usr/local/bin/im-select", inputSourceID);
+        }
+    }
+
+    /**
+     * 現在の input method を返す.
+     *
+     * @return current input method
+     */
+    public static String currentIm() {
+        return ScriptExecutor.executeShellScriptWithResponce("/usr/local/bin/im-select").get(0);
     }
 
     /**

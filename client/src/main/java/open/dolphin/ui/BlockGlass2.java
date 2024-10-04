@@ -446,7 +446,7 @@ public class BlockGlass2 extends JComponent implements MouseListener {
                 // visible でないのに animation が続くのを防ぐ安全装置
                 if (parent == null || !parent.isVisible()) {
                     interrupt();
-                    break;
+                    return;
                 }
 
                 if (!inRamp) {
