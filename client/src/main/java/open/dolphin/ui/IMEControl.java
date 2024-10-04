@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Objects;
 import java.util.prefs.Preferences;
 
