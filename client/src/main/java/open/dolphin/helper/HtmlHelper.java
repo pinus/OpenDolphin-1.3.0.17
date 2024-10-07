@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,7 +61,7 @@ public class HtmlHelper {
             ),
             // 項目部分 列数=5
             table().attr(BORDER, 0).attr(CELLPADDING, 1).attr(CELLSPACING, 0).attr(WIDTH, hints.getWidth()).with(
-                each(Arrays.stream(bundleMedTr(bundle.getClaimItem(), hints.getWidth(), hints.getCommentColorAs16String()))),
+                each(Arrays.stream(bundleMedTr(bundle.getClaimItem(), hints))),
                 // 用法部分
                 adminTr(bundle, hints)
             )
@@ -94,18 +92,23 @@ public class HtmlHelper {
      * ClaimItem の TR タグを作る. (列数=5)
      *
      * @param items array of ClaimItem
-     * @param width width
-     * @param color color
+     * @param hints StampRenderingHints
      * @return array of TR Tags
      */
-    public static Tag[] bundleMedTr(ClaimItem[] items, int width, String color) {
+    public static Tag[] bundleMedTr(ClaimItem[] items, StampRenderingHints hints) {
         List<Tag> trs = new ArrayList<>();
 
         for (ClaimItem item : items) {
             if (item.getCode().matches("810000001")) {
                 trs.add(tr().with(
                     td("　").attr(WIDTH, MARKER_WIDTH),
-                    td().with(tag(FONT).attr(COLOR, color).withText(item.getName())))); // 列数分用意しなくても大丈夫
+                    td().with(tag(FONT).attr(COLOR, hints.getCommentColorAs16String()).withText(item.getName())))); // 列数分用意しなくても大丈夫
+
+            } else if (item.getCode().matches("099209909") // 先発医薬品患者希望
+                || item.getCode().matches("099209908")) { // 一般名記載
+                trs.add(tr().with(
+                    td("　").attr(WIDTH, MARKER_WIDTH),
+                    td().with(tag(FONT).attr(COLOR, hints.getGenericColorAs16String()).withText(item.getName())))); // 列数分用意しなくても大丈夫
 
             } else if (item.getCode().matches("008[0-9]{6}") // コメントコード 008xxxxxx
                 || item.getCode().startsWith("8") // コメントコード 8xxxxxxxx

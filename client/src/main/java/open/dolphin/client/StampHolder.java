@@ -34,9 +34,10 @@ import java.util.Objects;
  */
 public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
     public static final String STAMP_MODIFIED = "stampModified";
-        private static final Color FOREGROUND = new Color(20, 20, 140);
+    private static final Color FOREGROUND = new Color(20, 20, 140);
     private static final Color BACKGROUND = new Color(0, 0, 0, 0);
-    private static final Color COMMENT_COLOR = new Color(120, 20, 140);
+    private static final Color GENERIC_COLOR = new Color(120, 20, 140);
+    private static final Color COMMENT_COLOR = new Color(40, 100, 20);
     private static final Border MY_SELECTED_BORDER = PNSBorderFactory.createSelectedBorder();
     private static final Border MY_CLEAR_BORDER = PNSBorderFactory.createClearBorder();
     private static final int MARGIN = 24; // JTextPane より MARGIN 分だけ小さくする
@@ -74,6 +75,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
 
         // コメント用の色をセット
         hints.setCommentColor(COMMENT_COLOR);
+        hints.setGenericColor(GENERIC_COLOR);
 
         // 幅が決定していれば hint にセットして描画, 未定ならパスして HierarchyBoundsListener に任せる
         if (kartePane.getTextPane().getWidth() > 1) { listener.repaintStamp(); }
@@ -111,7 +113,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
     public void keyPressed(KeyEvent e) {
         if (!Character.isDigit(e.getKeyChar())) {
             super.keyPressed(e);
-            
+
         } else  {
             //
             // 数字キー入力処理編集は editable でないと意味が無い
