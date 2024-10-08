@@ -1,6 +1,5 @@
 package open.dolphin.service;
 
-import open.dolphin.JsonConverter;
 import open.dolphin.dto.DiagnosisSearchSpec;
 import open.dolphin.dto.OrcaEntry;
 import open.dolphin.dto.PatientVisitSpec;
@@ -19,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -833,5 +833,32 @@ public class OrcaServiceDao {
         con.executeQuery(sql);
 
         return !jisshiymd.isEmpty();
+    }
+
+    /**
+     * 長期収載品選定療養区分を返す. コラム名は cyokisenteikbn であることに注意.
+     * ０：「1」及び「２」以外の医薬品
+     * １：対象医薬品（医療上必要があると認める場合等）
+     * ２：対象医薬品（患者希望）
+     *
+     * @param srycd 対象医薬品の診療行為コード
+     * @return 選定療養区分
+     */
+    public int getChokisenteikbn(String srycd) {
+        String sql = "select cyokisenteikbn, yukoedymd from tbl_tensu where srycd = ?";
+        int ret[] = new int[1];
+        OrcaDbConnection con = dao.getConnection(rs -> {
+            while (rs.next()) {
+                String yukoedymd = rs.getString(2);
+                if (yukoedymd.compareTo(today) >= 0) {
+                    ret[0] = rs.getInt(1);
+                    break;
+                }
+            }
+        });
+        con.setParam(1, srycd);
+        con.executeQuery(sql);
+
+        return ret[0];
     }
 }

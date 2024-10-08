@@ -206,4 +206,14 @@ public interface OrcaService {
     @POST
     @Path("hasKenshin")
     public boolean hasKenshin(String ptnum);
+
+    /**
+     * 長期収載品選定療養区分を返す.
+     *
+     * @param srycd 対象医薬品の診療行為コード
+     * @return 選定療養区分
+     */
+    @POST
+    @Path("getChokisenteikbn")
+    public int getChokisenteikbn(String srycd);
 }

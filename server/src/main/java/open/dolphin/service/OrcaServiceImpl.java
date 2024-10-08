@@ -103,4 +103,7 @@ public class OrcaServiceImpl implements OrcaService {
 
     @Override
     public boolean hasKenshin(String ptnum) { return dao.hasKenshin(ptnum); }
+
+    @Override
+    public int getChokisenteikbn(String srycd) { return dao.getChokisenteikbn(srycd); }
 }

@@ -214,28 +214,22 @@ public class OrcaServiceTest {
         System.out.println("has kensihin = " + hasKenshin);
     }
 
+    private void getChokisenteikbn(OrcaServiceDao orcaService) {
+        int hirudoido = orcaService.getChokisenteikbn("620009046");
+        System.out.println("chokisenteikbn = " + hirudoido);
+        int heparin = orcaService.getChokisenteikbn("622332500");
+        System.out.println("chokisenteikbn = " + heparin);
+    }
+
     private void executeTest() throws ReflectiveOperationException {
         OrcaServiceApi api = new OrcaServiceApi();
         OrcaServiceDao dao = new OrcaServiceDao();
 
         lap = System.currentTimeMillis();
 
-        //getWksryact(api); wrap = showWrap(wrap);
-        //getWksryact(dao); wrap = showWrap(wrap);
-        //getSyskanri(api); wrap = showWrap(wrap);
-        //getSyskanri(dao); wrap = showWrap(wrap);
-        //findTensu(dao); wrap = showWrap(wrap);
-        getDrugHistory(dao);
-        //hasDrugHistory(dao);
-        //getKenshin(dao);
-        //hasKenshin(dao);
+        getChokisenteikbn(dao);
+
         lap = showLap(lap);
-        //getOrcaInputCdList(api); wrap = showWrap(wrap);
-        //getOrcaInputCdList(dao); wrap = showWrap(wrap);
-        //getOrcaDisease(api); wrap = showWrap(wrap);
-        //getOrcaDisease(dao); wrap = showWrap(wrap);
-        //sendDoc(api); wrap = showWrap(wrap);
-        //sendDiag(api); wrap = showWrap(wrap);
     }
 
     private Object invoke(Object obj, String methodName, Object param) throws ReflectiveOperationException {
