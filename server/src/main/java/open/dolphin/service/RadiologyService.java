@@ -22,18 +22,18 @@ import java.util.List;
 public interface RadiologyService {
 
     /**
-     * @param from
+     * @param from date from
      * @return 該当マスタのコレクション
      */
     @Path("getRadiologyMethod")
     @POST
-    public List<RadiologyMethodValue> getRadiologyMethod(String from);
+    List<RadiologyMethodValue> getRadiologyMethod(String from);
 
     /**
-     * @param hierarchyCode
+     * @param hierarchyCode hierarchy code
      * @return 該当マスタのコレクション
      */
     @Path("getRadiologyComment")
     @POST
-    public List<RadiologyMethodValue> getRadiologyComment(String hierarchyCode);
+    List<RadiologyMethodValue> getRadiologyComment(String hierarchyCode);
 }

@@ -31,7 +31,7 @@ public interface PatientService {
      */
     @Path("getPatients")
     @POST
-    public List<PatientModel> getPatientList(PatientSearchSpec spec);
+    List<PatientModel> getPatientList(PatientSearchSpec spec);
 
     /**
      * 健康保険情報を取得する.
@@ -41,7 +41,7 @@ public interface PatientService {
      */
     @Path("getHealthInsuranceList")
     @POST
-    public List<PVTHealthInsuranceModel> getHealthInsuranceList(Long patientPk);
+    List<PVTHealthInsuranceModel> getHealthInsuranceList(Long patientPk);
 
     /**
      * 患者ID("000001")を指定して患者オブジェクトを返す.
@@ -51,7 +51,7 @@ public interface PatientService {
      */
     @Path("getPatient")
     @POST
-    public PatientModel getPatient(String patientId);
+    PatientModel getPatient(String patientId);
 
     /**
      * 患者を登録する.
@@ -61,7 +61,7 @@ public interface PatientService {
      */
     @Path("addPatient")
     @POST
-    public Long addPatient(PatientModel patient);
+    Long addPatient(PatientModel patient);
 
     /**
      * 患者情報を更新する.
@@ -71,5 +71,5 @@ public interface PatientService {
      */
     @Path("update")
     @POST
-    public int update(PatientModel patient);
+    int update(PatientModel patient);
 }

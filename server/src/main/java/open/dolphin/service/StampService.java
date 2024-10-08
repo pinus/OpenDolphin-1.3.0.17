@@ -26,57 +26,57 @@ public interface StampService {
 
     @Path("putTree")
     @POST
-    public long putTree(PersonalTreeModel model);
+    long putTree(PersonalTreeModel model);
 
     @Path("getTree")
     @POST
-    public PersonalTreeModel getTree(Long userPk);
+    PersonalTreeModel getTree(Long userPk);
 
     @Path("getSubscribedTreeList")
     @POST
-    public List<PublishedTreeModel> getSubscribedTreeList(Long userPk);
+    List<PublishedTreeModel> getSubscribedTreeList(Long userPk);
 
     @Path("publishTree")
     @POST
-    public int publishTree(PublishedTreeModel model);
+    int publishTree(PublishedTreeModel model);
 
     @Path("cancelPublishedTree")
     @POST
-    public int cancelPublishedTree(PersonalTreeModel model);
+    int cancelPublishedTree(PersonalTreeModel model);
 
     @Path("getPublishedTreeList")
     @POST
-    public List<PublishedTreeModel> getPublishedTreeList();
+    List<PublishedTreeModel> getPublishedTreeList();
 
     @Path("subscribeTreeList")
     @POST
-    public List<Long> subscribeTreeList(List<SubscribedTreeModel> addList);
+    List<Long> subscribeTreeList(List<SubscribedTreeModel> addList);
 
     @Path("unsubscribeTreeList")
     @POST
-    public int unsubscribeTreeList(List<SubscribedTreeModel> removeList);
+    int unsubscribeTreeList(List<SubscribedTreeModel> removeList);
 
     @Path("putStamp")
     @POST
-    public String putStamp(StampModel model);
+    String putStamp(StampModel model);
 
     @Path("putStampList")
     @POST
-    public List<String> putStampList(List<StampModel> list);
+    List<String> putStampList(List<StampModel> list);
 
     @Path("getStamp")
     @POST
-    public StampModel getStamp(String stampId);
+    StampModel getStamp(String stampId);
 
     @Path("getStampList")
     @POST
-    public List<StampModel> getStampList(List<String> ids);
+    List<StampModel> getStampList(List<String> ids);
 
     @Path("removeStamp")
     @POST
-    public int removeStamp(String stampId);
+    int removeStamp(String stampId);
 
     @Path("removeStampList")
     @POST
-    public int removeStampList(List<String> ids);
+    int removeStampList(List<String> ids);
 }

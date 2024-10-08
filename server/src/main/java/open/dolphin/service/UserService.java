@@ -28,7 +28,7 @@ public interface UserService {
     @POST
     @Path("addUser")
     @RolesAllowed("admin")
-    public int addUser(UserModel add);
+    int addUser(UserModel add);
 
     /**
      * Userを検索する。
@@ -39,7 +39,7 @@ public interface UserService {
     @POST
     @Path("getUser")
     @RolesAllowed("user")
-    public UserModel getUser(String userId);
+    UserModel getUser(String userId);
 
     /**
      * 施設内の全Userを取得する。
@@ -49,7 +49,7 @@ public interface UserService {
     @POST
     @Path("getAllUser")
     @RolesAllowed("admin")
-    public List<UserModel> getAllUser();
+    List<UserModel> getAllUser();
 
     /**
      * User情報(パスワード等)を更新する。
@@ -60,7 +60,7 @@ public interface UserService {
     @POST
     @Path("updateUser")
     @RolesAllowed("user")
-    public int updateUser(UserModel userModel);
+    int updateUser(UserModel userModel);
 
     /**
      * Userを削除する。
@@ -71,16 +71,16 @@ public interface UserService {
     @POST
     @Path("removeUser")
     @RolesAllowed("admin")
-    public int removeUser(String removeId);
+    int removeUser(String removeId);
 
     /**
      * 施設情報を更新する。
      *
      * @param userModel 更新する UserModel
-     * @return
+     * @return number of updated
      */
     @POST
     @Path("updateFacility")
     @RolesAllowed("admin")
-    public int updateFacility(UserModel userModel);
+    int updateFacility(UserModel userModel);
 }

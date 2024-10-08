@@ -37,7 +37,7 @@ public interface OrcaService {
      */
     @POST
     @Path("getWksryact")
-    public Wksryact getWksryact(PatientVisitSpec spec);
+    Wksryact getWksryact(PatientVisitSpec spec);
 
     /**
      * 中途終了患者情報が存在するかどうか.
@@ -47,7 +47,7 @@ public interface OrcaService {
      */
     @POST
     @Path("existsOrcaWorkingData")
-    public boolean existsOrcaWorkingData(String ptId);
+    boolean existsOrcaWorkingData(String ptId);
 
     /**
      * 職員情報.
@@ -56,7 +56,7 @@ public interface OrcaService {
      */
     @POST
     @Path("getSyskanri")
-    public List<Syskanri> getSyskanri();
+    List<Syskanri> getSyskanri();
 
     /**
      * TBL_TENSU からキーワードを検索.
@@ -66,7 +66,7 @@ public interface OrcaService {
      */
     @POST
     @Path("findTensu")
-    public List<OrcaEntry> findTensu(String keyword);
+    List<OrcaEntry> findTensu(String keyword);
 
     /**
      * TBL_BYOMEI からキーワードを検索.
@@ -76,7 +76,7 @@ public interface OrcaService {
      */
     @POST
     @Path("findDiagnosisByKeyword")
-    public List<OrcaEntry> findDiagnosisByKeyword(String keyword);
+    List<OrcaEntry> findDiagnosisByKeyword(String keyword);
 
     /**
      * TBL_BYOMEI から病名コードのリストに対応する病名を検索.
@@ -86,7 +86,7 @@ public interface OrcaService {
      */
     @POST
     @Path("findDiagnosisByCodes")
-    public List<OrcaEntry> findDiagnosisByCodes(List<String> srycds);
+    List<OrcaEntry> findDiagnosisByCodes(List<String> srycds);
 
     /**
      * 移行病名を調べる.
@@ -96,7 +96,7 @@ public interface OrcaService {
      */
     @POST
     @Path("findIkouByomei")
-    public List<String> findIkouByomei(List<String> srycds);
+    List<String> findIkouByomei(List<String> srycds);
 
     /**
      * TBL_INPUTCD を検索して入力セット（約束処方、診療セット）のリストを返す.
@@ -105,7 +105,7 @@ public interface OrcaService {
      */
     @POST
     @Path("getOrcaInputCdList")
-    public List<ModuleInfoBean> getOrcaInputCdList();
+    List<ModuleInfoBean> getOrcaInputCdList();
 
     /**
      * StampInfo を元に TBL_INPUTSET，TBL_TENSU を検索してスタンプの実体を作る
@@ -115,7 +115,7 @@ public interface OrcaService {
      */
     @POST
     @Path("getStamp")
-    public List<ModuleModel> getStamp(ModuleInfoBean stampInfo);
+    List<ModuleModel> getStamp(ModuleInfoBean stampInfo);
 
     /**
      * TBL_PTBYOMEI を検索して RegisteredDiagnosisModel を作る
@@ -125,7 +125,7 @@ public interface OrcaService {
      */
     @POST
     @Path("getOrcaDisease")
-    public List<RegisteredDiagnosisModel> getOrcaDisease(DiagnosisSearchSpec spec);
+    List<RegisteredDiagnosisModel> getOrcaDisease(DiagnosisSearchSpec spec);
 
     /**
      * DocumentModel から中途終了データ作成 (medicalmodv2).
@@ -135,7 +135,7 @@ public interface OrcaService {
      */
     @POST
     @Path("sendDocument")
-    public ApiResult sendDocument(DocumentModel document);
+    ApiResult sendDocument(DocumentModel document);
 
     /**
      * medicalmodv2 で ORCA に病名を送る.
@@ -145,7 +145,7 @@ public interface OrcaService {
      */
     @POST
     @Path("sendDiagnoses")
-    public ApiResult sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses);
+    ApiResult sendDiagnoses(List<RegisteredDiagnosisModel> diagnoses);
 
     /**
      * subjectivesv2 で ORCA に症状詳記を送る.
@@ -155,7 +155,7 @@ public interface OrcaService {
      */
     @POST
     @Path("sendSubjectives")
-    public ApiResult sendSubjectives(SubjectivesSpec spec);
+    ApiResult sendSubjectives(SubjectivesSpec spec);
 
     /**
      * subjectiveslstv2 で ORCA から症状詳記の一覧を得る.
@@ -165,47 +165,47 @@ public interface OrcaService {
      */
     @POST
     @Path("getSubjectives")
-    public List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec);
+    List<SubjectivesSpec> getSubjectives(SubjectivesSpec spec);
 
     /**
      * TBL_ONSHI_YAKUZAI_SUB から資格確認薬剤情報を得る.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return List of OnshiYakuzai
      */
     @POST
     @Path("getDrugHistory")
-    public List<OnshiYakuzai> getDrugHistory(String ptnum);
+    List<OnshiYakuzai> getDrugHistory(String ptnum);
 
     /**
      * TBL_ONSHI_YAKUZAI_SUB に資格確認薬剤情報があるかどうかを返す.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return has drug history or not
      */
     @POST
     @Path("hasDrugHistory")
-    public boolean hasDrugHistory(String ptnum);
+    boolean hasDrugHistory(String ptnum);
 
     /**
      * TBL_ONSHI_KENSHIN_SUB から資格確認特定健診情報を得る.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return List of Onshi Kenshin
      */
     @POST
     @Path("getKenshin")
-    public List<OnshiKenshin> getKenshin(String ptnum);
+    List<OnshiKenshin> getKenshin(String ptnum);
 
     /**
      * TBL_ONSHI_KENSHIN_SUB に資格確認特定健診情報があるかどうかを返す.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return has kenshin or not
      */
     @POST
     @Path("hasKenshin")
-    public boolean hasKenshin(String ptnum);
+    boolean hasKenshin(String ptnum);
 
     /**
      * 長期収載品選定療養区分を返す.
@@ -215,5 +215,5 @@ public interface OrcaService {
      */
     @POST
     @Path("getChokisenteikbn")
-    public int getChokisenteikbn(String srycd);
+    int getChokisenteikbn(String srycd);
 }

@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -32,8 +31,8 @@ public class OrcaServiceDao {
     // ORCA 形式の今日の日付
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
     String today = dtf.format(LocalDate.now());
-    private OrcaDao dao = OrcaDao.getInstance();
-    private Logger logger = Logger.getLogger(OrcaServiceApi.class);
+    final private OrcaDao dao = OrcaDao.getInstance();
+    final private Logger logger = Logger.getLogger(OrcaServiceApi.class);
 
     /**
      * 中途終了患者情報.
@@ -638,7 +637,7 @@ public class OrcaServiceDao {
                 List<String> cds = new ArrayList<>();
                 for (int i = 6; i <= 25; i++) {
                     String c = rs.getString(i);
-                    if (Objects.nonNull(c) && !c.equals("")) {
+                    if (Objects.nonNull(c) && !c.isEmpty()) {
                         cds.add(c.replace("ZZZ", ""));
                     }
                 }
@@ -660,7 +659,7 @@ public class OrcaServiceDao {
      * 資格確認薬剤情報格納.
      * TBL_ONSHI_YAKUZAI_SUB 資格確認薬剤情報格納副テーブル.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return List of Onshi Yakuzai
      */
     public List<OnshiYakuzai> getDrugHistory(String ptnum) {
@@ -685,14 +684,14 @@ public class OrcaServiceDao {
 
                 Facility chozai = new Facility();
                 chozai.setId(chozaiSeqnum);
-                chozai.setMe(chozaiKbn == "1");
+                chozai.setMe("1".equals(chozaiKbn));
                 // hospname, hospcode が入力されていないことがある
                 if (!hospname.isEmpty()) { chozai.setFacilityName(hospname); }
                 if (!hospcd.isEmpty()) { chozai.setFacilityCode(hospcd); }
 
                 Facility shoho = new Facility();
                 shoho.setId(shohoSeqnum);
-                shoho.setMe(shohoKbn == "1");
+                shoho.setMe("1".equals(shohoKbn));
                 if (!chozainame.isEmpty()) { shoho.setFacilityName(chozainame); }
                 if (!chozaicd.isEmpty()) { shoho.setFacilityCode(chozaicd); }
 
@@ -745,10 +744,10 @@ public class OrcaServiceDao {
         con.executeQuery(sql);
 
         // sort
-        Collections.sort(bundle, (o1, o2) -> {
+        bundle.sort((o1, o2) -> {
             int date = o1.getIsoDate().compareTo(o2.getIsoDate());
             int rennum = o1.getRennum() - o2.getRennum();
-            return date == 0? rennum : date;
+            return date == 0 ? rennum : date;
         });
 
         return bundle;
@@ -757,7 +756,7 @@ public class OrcaServiceDao {
     /**
      * 資格確認薬剤情報の有無の確認.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return has Onshi Yakuzai data or not
      */
     public boolean hasDrugHistory(String ptnum) {
@@ -778,7 +777,7 @@ public class OrcaServiceDao {
      * 資格確認特定健診情報格納.
      * TBL_ONSHI_KENSHIN_SUB 資格確認特定健診情報格納副テーブル.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return List of Onshi Kenshin
      */
     public List<OnshiKenshin> getKenshin(String ptnum) {
@@ -806,10 +805,10 @@ public class OrcaServiceDao {
         con.executeQuery(sql);
 
         // sort
-        Collections.sort(bundle, (o1, o2) -> {
+        bundle.sort((o1, o2) -> {
             int date = o1.getIsoDate().compareTo(o2.getIsoDate());
             int rennum = o1.getRennum() - o2.getRennum();
-            return date == 0? rennum : date;
+            return date == 0 ? rennum : date;
         });
 
         return bundle;
@@ -818,7 +817,7 @@ public class OrcaServiceDao {
     /**
      * 資格確認特定健診情報の有無の確認.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return has Onshi Kenshin or not
      */
     public boolean hasKenshin(String ptnum) {
@@ -846,7 +845,7 @@ public class OrcaServiceDao {
      */
     public int getChokisenteikbn(String srycd) {
         String sql = "select cyokisenteikbn, yukoedymd from tbl_tensu where srycd = ?";
-        int ret[] = new int[1];
+        int[] ret = new int[1];
         OrcaDbConnection con = dao.getConnection(rs -> {
             while (rs.next()) {
                 String yukoedymd = rs.getString(2);

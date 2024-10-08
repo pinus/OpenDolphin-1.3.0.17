@@ -32,7 +32,7 @@ public interface PvtService {
      */
     @Path("addPvt")
     @POST
-    public int addPvt(PatientVisitModel pvt);
+    int addPvt(PatientVisitModel pvt);
 
     /**
      * 既存の pvt を update する.
@@ -42,7 +42,7 @@ public interface PvtService {
      */
     @Path("updatePvt")
     @POST
-    public int updatePvt(PatientVisitModel pvt);
+    int updatePvt(PatientVisitModel pvt);
 
     /**
      * 患者来院情報 pvt のリストを取得する.
@@ -52,7 +52,7 @@ public interface PvtService {
      */
     @Path("getPvtList")
     @POST
-    public List<PatientVisitModel> getPvtList(PatientVisitSpec spec);
+    List<PatientVisitModel> getPvtList(PatientVisitSpec spec);
 
     /**
      * 来院情報を削除する.
@@ -62,7 +62,7 @@ public interface PvtService {
      */
     @Path("removePvt")
     @POST
-    public int removePvt(Long id);
+    int removePvt(Long id);
 
     /**
      * 今日の pvt の state だけもってくる.
@@ -71,7 +71,7 @@ public interface PvtService {
      */
     @Path("getPvtStateList")
     @POST
-    public List<PvtStateSpec> getPvtStateList();
+    List<PvtStateSpec> getPvtStateList();
 
     /**
      * 特定の pvt の state だけ持ってくる.
@@ -81,7 +81,7 @@ public interface PvtService {
      */
     @Path("getPvtState")
     @POST
-    public int getPvtState(Long id);
+    int getPvtState(Long id);
 
     /**
      * PatientModel patient の今日の pvt をもってくる.
@@ -91,5 +91,5 @@ public interface PvtService {
      */
     @Path("getPvtOfPatient")
     @POST
-    public List<PatientVisitModel> getPvtOf(PatientModel patient);
+    List<PatientVisitModel> getPvtOf(PatientModel patient);
 }

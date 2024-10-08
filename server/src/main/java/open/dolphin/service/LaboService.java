@@ -25,11 +25,11 @@ public interface LaboService {
      * LaboModuleを保存する。
      *
      * @param laboModuleValue LaboModuleValue
-     * @return
+     * @return PatientModel
      */
     @Path("putLaboModule")
     @POST
-    public PatientModel putLaboModule(LaboModuleValue laboModuleValue);
+    PatientModel putLaboModule(LaboModuleValue laboModuleValue);
 
     /**
      * 患者の検体検査モジュールを取得する。
@@ -39,5 +39,5 @@ public interface LaboService {
      */
     @Path("getLaboModules")
     @POST
-    public List<LaboModuleValue> getLaboModuleList(LaboSearchSpec spec);
+    List<LaboModuleValue> getLaboModuleList(LaboSearchSpec spec);
 }

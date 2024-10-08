@@ -31,47 +31,47 @@ public interface KarteService {
      */
     @POST
     @Path("getKarte")
-    public KarteBean getKarte(KarteBeanSpec spec);
+    KarteBean getKarte(KarteBeanSpec spec);
 
     /**
      * KarteId から 関連する AllergyModel のリストを返す.
      *
-     * @param karteId
-     * @return
+     * @param karteId karte id
+     * @return list of AllergyModel
      */
     @POST
     @Path("getAllergyList")
-    public List<AllergyModel> getAllergyList(Long karteId);
+    List<AllergyModel> getAllergyList(Long karteId);
 
     /**
      * KarteId から関連する PhysicalModel のリストを返す.
      *
-     * @param karteId
-     * @return
+     * @param karteId karte id
+     * @return list of PhysicalModel
      */
     @POST
     @Path("getPhysicalList")
-    public List<PhysicalModel> getPhysicalList(Long karteId);
+    List<PhysicalModel> getPhysicalList(Long karteId);
 
     /**
      * PatientId, fromDate から関連する PatientVisitModel.pvtDate のリストを返す.
      *
-     * @param spec
-     * @return
+     * @param spec spec
+     * @return list of pvt
      */
     @POST
     @Path("getPvtList")
-    public List<String> getPvtList(KarteBeanSpec spec);
+    List<String> getPvtList(KarteBeanSpec spec);
 
     /**
      * KarteId から関連する PatientMemoModel を返す.
      *
-     * @param karteId
-     * @return
+     * @param karteId karte id
+     * @return PatientMemoModel
      */
     @POST
     @Path("getPatientMemo")
-    public PatientMemoModel getPatientMemo(Long karteId);
+    PatientMemoModel getPatientMemo(Long karteId);
 
     /**
      * 文書履歴エントリを取得する.
@@ -81,7 +81,7 @@ public interface KarteService {
      */
     @POST
     @Path("getDocInfoList")
-    public List<DocInfoModel> getDocInfoList(DocumentSearchSpec spec);
+    List<DocInfoModel> getDocInfoList(DocumentSearchSpec spec);
 
     /**
      * 文書(DocumentModel Object)を取得する.
@@ -91,7 +91,7 @@ public interface KarteService {
      */
     @POST
     @Path("getDocumentList")
-    public List<DocumentModel> getDocumentList(List<Long> ids);
+    List<DocumentModel> getDocumentList(List<Long> ids);
 
     /**
      * ドキュメント DocumentModel オブジェクトを保存する.
@@ -101,7 +101,7 @@ public interface KarteService {
      */
     @POST
     @Path("addDocument")
-    public long addDocument(DocumentModel document);
+    long addDocument(DocumentModel document);
 
     /**
      * ドキュメントを論理削除する.
@@ -111,17 +111,17 @@ public interface KarteService {
      */
     @POST
     @Path("deleteDocument")
-    public int deleteDocument(Long pk);
+    int deleteDocument(Long pk);
 
     /**
      * ドキュメントのタイトルを変更する.
      *
-     * @param spec
+     * @param spec spec
      * @return 変更した件数
      */
     @POST
     @Path("updateTitle")
-    public int updateTitle(DocumentTitleSpec spec);
+    int updateTitle(DocumentTitleSpec spec);
 
     /**
      * ModuleModelエントリを取得する.
@@ -131,17 +131,17 @@ public interface KarteService {
      */
     @POST
     @Path("getModuleList")
-    public List<List<ModuleModel>> getModuleList(ModuleSearchSpec spec);
+    List<List<ModuleModel>> getModuleList(ModuleSearchSpec spec);
 
     /**
      * SchemaModelエントリを取得する.
      *
-     * @param spec
+     * @param spec spec
      * @return SchemaModelエントリの配列
      */
     @POST
     @Path("getImageList")
-    public List<List<SchemaModel>> getImageList(ImageSearchSpec spec);
+    List<List<SchemaModel>> getImageList(ImageSearchSpec spec);
 
     /**
      * 画像を取得する.
@@ -151,7 +151,7 @@ public interface KarteService {
      */
     @POST
     @Path("getImage")
-    public SchemaModel getImage(Long id);
+    SchemaModel getImage(Long id);
 
     /**
      * 傷病名リストを取得する.
@@ -161,7 +161,7 @@ public interface KarteService {
      */
     @POST
     @Path("getDiagnosisList")
-    public List<RegisteredDiagnosisModel> getDiagnosisList(DiagnosisSearchSpec spec);
+    List<RegisteredDiagnosisModel> getDiagnosisList(DiagnosisSearchSpec spec);
 
     /**
      * 傷病名を追加する.
@@ -171,17 +171,17 @@ public interface KarteService {
      */
     @POST
     @Path("addDiagnosisList")
-    public List<Long> addDiagnosisList(List<RegisteredDiagnosisModel> addList);
+    List<Long> addDiagnosisList(List<RegisteredDiagnosisModel> addList);
 
     /**
      * 傷病名を更新する.
      *
-     * @param updateList
+     * @param updateList update list
      * @return 更新数
      */
     @POST
     @Path("updateDiagnosisList")
-    public int updateDiagnosisList(List<RegisteredDiagnosisModel> updateList);
+    int updateDiagnosisList(List<RegisteredDiagnosisModel> updateList);
 
     /**
      * 傷病名を削除する.
@@ -191,7 +191,7 @@ public interface KarteService {
      */
     @POST
     @Path("removeDiagnosisList")
-    public int removeDiagnosisList(List<Long> removeList);
+    int removeDiagnosisList(List<Long> removeList);
 
     /**
      * Observationを取得する.
@@ -201,7 +201,7 @@ public interface KarteService {
      */
     @POST
     @Path("getObservationList")
-    public List<ObservationModel> getObservationList(ObservationSearchSpec spec);
+    List<ObservationModel> getObservationList(ObservationSearchSpec spec);
 
     /**
      * Observationを追加する.
@@ -211,7 +211,7 @@ public interface KarteService {
      */
     @POST
     @Path("addObservationList")
-    public List<Long> addObservationList(List<ObservationModel> observations);
+    List<Long> addObservationList(List<ObservationModel> observations);
 
     /**
      * Observationを更新する.
@@ -221,7 +221,7 @@ public interface KarteService {
      */
     @POST
     @Path("updateObservationList")
-    public int updateObservationList(List<ObservationModel> observations);
+    int updateObservationList(List<ObservationModel> observations);
 
     /**
      * Observationを削除する.
@@ -231,27 +231,27 @@ public interface KarteService {
      */
     @POST
     @Path("removeObservationList")
-    public int removeObservationList(List<Long> observations);
+    int removeObservationList(List<Long> observations);
 
     /**
      * 患者メモを更新する.
      *
      * @param memo 更新するメモ
-     * @return
+     * @return number of updated
      */
     @POST
     @Path("updatePatientMemo")
-    public int updatePatientMemo(PatientMemoModel memo);
+    int updatePatientMemo(PatientMemoModel memo);
 
     /**
      * 予約を保存、更新、削除する.
      *
      * @param spec 予約情報の DTO
-     * @return
+     * @return number of updated
      */
     @POST
     @Path("putAppointment")
-    public int putAppointment(AppointSpec spec);
+    int putAppointment(AppointSpec spec);
 
     /**
      * 予約を検索する.
@@ -261,6 +261,6 @@ public interface KarteService {
      */
     @POST
     @Path("getAppointmentList")
-    public List<List<AppointmentModel>> getAppointmentList(ModuleSearchSpec spec);
+    List<List<AppointmentModel>> getAppointmentList(ModuleSearchSpec spec);
 
 }

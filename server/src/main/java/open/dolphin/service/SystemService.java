@@ -25,16 +25,16 @@ public interface SystemService {
      */
     @POST
     @Path("addFacilityAdmin")
-    public void addFacilityAdmin(UserModel user);
+    void addFacilityAdmin(UserModel user);
 
     /**
      * 放射線メソッドマスタを登録する。
      *
-     * @param c
+     * @param c RadiologyMethodValue
      */
     @POST
     @Path("putRadMethodMaster")
-    public void putRadMethodMaster(List<RadiologyMethodValue> c);
+    void putRadMethodMaster(List<RadiologyMethodValue> c);
 
     /**
      * 通信を確認する。
@@ -43,5 +43,5 @@ public interface SystemService {
      */
     @GET
     @Path("hello")
-    public String hello();
+    String hello();
 }

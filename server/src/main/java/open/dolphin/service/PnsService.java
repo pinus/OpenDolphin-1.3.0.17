@@ -18,17 +18,17 @@ public interface PnsService {
 
     @Path("peekKarte")
     @POST
-    public List<ModuleModel> peekKarte(Long patientId);
+    List<ModuleModel> peekKarte(Long patientId);
 
     @Path("getCalendarData")
     @GET
-    public String[][] getCalendarData();
+    String[][] getCalendarData();
 
     @Path("saveCalendarData")
     @POST
-    public void saveCalendarData(String[][] data);
+    void saveCalendarData(String[][] data);
 
     @Path("makeInitialIndex")
     @POST
-    public void makeInitialIndex();
+    void makeInitialIndex();
 }
