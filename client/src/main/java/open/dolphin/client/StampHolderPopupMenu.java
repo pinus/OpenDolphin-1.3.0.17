@@ -1,5 +1,6 @@
 package open.dolphin.client;
 
+import open.dolphin.delegater.OrcaDelegater;
 import open.dolphin.helper.DailyDoseStringTool;
 import open.dolphin.helper.TextComponentUndoManager;
 import open.dolphin.infomodel.BundleMed;
@@ -668,13 +669,22 @@ public class StampHolderPopupMenu extends JPopupMenu {
             List<ClaimItem> list = new ArrayList<>();
 
             // 薬の後に一般名処方/先発医薬品患者希望を入れる
+            OrcaDelegater orca = new OrcaDelegater();
             for (int i=0; i<srcBundle.getClaimItem().length; i++) {
                 ClaimItem src = srcBundle.getClaimItem()[i];
                 if (!src.getName().equals(IPPANMEI) && !src.getName().equals(SENPATSUKIBO)) {
                     list.add(ModelUtils.clone(src));
                 }
                 if (src.getCode().startsWith("6")) {
+                    if (generic) {
                         list.add(item);
+                    } else {
+                        if (orca.getChokisenteikbn(src.getCode()) == 1) {
+                            list.add(item);
+                        } else {
+                            PNSOptionPane.showMessageDialog(ctx, "対象医薬品ではありません", "", PNSOptionPane.WARNING_MESSAGE);
+                        }
+                    }
                 }
             }
 

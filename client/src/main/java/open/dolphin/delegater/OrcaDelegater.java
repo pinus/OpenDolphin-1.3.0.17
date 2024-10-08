@@ -225,7 +225,7 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
     /**
      * TBL_ONSHI_YAKUZAI_SUB から資格確認薬剤情報を得る.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return List of Onshi Yakuzai
      */
     public List<OnshiYakuzai> getDrugHistory(String ptnum) { return getService().getDrugHistory(ptnum); }
@@ -233,7 +233,7 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
     /**
      * TBL_ONSHI_YAKUZAI_SUB に資格確認薬剤情報があるかどうかを返す.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return has drug history or not
      */
     public boolean hasDrugHistory(String ptnum) { return getService().hasDrugHistory(ptnum); }
@@ -241,7 +241,7 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
     /**
      * TBL_ONSHI_KENSHIN_SUB から資格確認特定健診情報を得る.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return List of Onshi Kenshin
      */
     public List<OnshiKenshin> getKenshin(String ptnum) { return getService().getKenshin(ptnum); }
@@ -249,8 +249,19 @@ public class OrcaDelegater extends BusinessDelegater<OrcaService> {
     /**
      * TBL_ONSHI_KENSHIN_SUB に資格確認特定健診情報があるかどうかを返す.
      *
-     * @param ptnum
+     * @param ptnum patient num
      * @return has onshi kenshin or not
      */
     public boolean hasKenshin(String ptnum) { return getService().hasKenshin(ptnum); }
+
+    /**
+     * 長期収載品選定療養区分を返す.
+     * ０：「1」及び「２」以外の医薬品
+     * １：対象医薬品（医療上必要があると認める場合等）
+     * ２：対象医薬品（患者希望）
+     *
+     * @param srycd 対象医薬品の診療行為コード
+     * @return 選定療養区分
+     */
+    public int getChokisenteikbn(String srycd) { return getService().getChokisenteikbn(srycd); }
 }

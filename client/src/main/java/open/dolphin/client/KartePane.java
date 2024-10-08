@@ -383,6 +383,7 @@ public class KartePane implements KarteComposite<JTextPane>, DocumentListener, M
         pane.getDocument().removeUndoableEditListener(undoManager);
         pane.removeMouseListener(this);
         pane.removeCaretListener(this);
+        pane.putClientProperty("kartePane", null);
 
         try {
             KarteStyledDocument doc = getDocument();
