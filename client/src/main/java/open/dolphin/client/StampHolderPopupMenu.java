@@ -29,7 +29,7 @@ import java.util.function.Consumer;
  * @author pns
  */
 public class StampHolderPopupMenu extends JPopupMenu {
-        private final Logger logger = LoggerFactory.getLogger(StampHolderPopupMenu.class);
+    private final Logger logger = LoggerFactory.getLogger(StampHolderPopupMenu.class);
 
     /**
      * メニューに載せる処方日数のリスト
@@ -43,6 +43,21 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
     public StampHolderPopupMenu(StampHolder ctx) {
         this.ctx = ctx;
+        addPropertyChangeListener(ctx);
+    }
+
+    /**
+     * 一般名記載 action を直接呼ぶ入り口
+     */
+    public void putGeneric() {
+        new PutGenericNameAction(true).actionPerformed(null);
+    }
+
+    /**
+     * コメント入力 action を直接呼ぶ入り口
+     */
+    public void putComment() {
+        new PutCommentAction().actionPerformed(null);
     }
 
     /**
@@ -69,7 +84,6 @@ public class StampHolderPopupMenu extends JPopupMenu {
 
         if (ClaimConst.RECEIPT_CODE_NAIYO.equals(bundle.getClassCode()) ||
                 ClaimConst.RECEIPT_CODE_TONYO.equals(bundle.getClassCode())) {
-
             // 内服薬用の変更メニューを加える
             addBundleChangeMenu();
 
@@ -679,10 +693,12 @@ public class StampHolderPopupMenu extends JPopupMenu {
                     if (generic) {
                         list.add(item);
                     } else {
-                        if (orca.getChokisenteikbn(src.getCode()) == 1) {
-                            list.add(item);
-                        } else {
-                            PNSOptionPane.showMessageDialog(ctx, "対象医薬品ではありません", "", PNSOptionPane.WARNING_MESSAGE);
+                        switch (orca.getChokisenteikbn((src.getCode()))) {
+                            case 1 -> list.add(item);
+                            case 2 ->
+                                PNSOptionPane.showMessageDialog(ctx, "設定済みです", "先発医薬品患者希望", PNSOptionPane.WARNING_MESSAGE);
+                            default ->
+                                PNSOptionPane.showMessageDialog(ctx, "対象医薬品ではありません", "先発医薬品患者希望", PNSOptionPane.WARNING_MESSAGE);
                         }
                     }
                 }

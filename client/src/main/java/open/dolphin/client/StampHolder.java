@@ -43,6 +43,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
     private static final int MARGIN = 24; // JTextPane より MARGIN 分だけ小さくする
 
     private final KartePane kartePane;
+    private StampHolderPopupMenu popup;
     private ModuleModel stamp;
     private StampRenderingHints hints;
     private boolean selected;
@@ -105,19 +106,26 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
     }
 
     /**
-     * 数字キーでスタンプ数量を変更する.
+     * StampHolder 選択時のショートカットキー.
      *
      * @param e KeyEvent
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        if (!Character.isDigit(e.getKeyChar())) {
-            super.keyPressed(e);
-
-        } else  {
-            //
-            // 数字キー入力処理編集は editable でないと意味が無い
-            //
+        if (e.getKeyChar() == 'i') {
+            // i キーで一般名記載追加
+            if (kartePane.getTextPane().isEditable()) {
+                popup = new StampHolderPopupMenu(this);
+                popup.putGeneric();
+            }
+        } else if (e.getKeyChar() == 'c') {
+            // c キーでコメント入力
+            if (kartePane.getTextPane().isEditable()) {
+                popup = new StampHolderPopupMenu(this);
+                popup.putComment();
+            }
+        } else if (Character.isDigit(e.getKeyChar())) {
+            // 数字キーで用量, 日数変更
             if (!kartePane.getTextPane().isEditable()
                 || !StampHolder.this.isEditable()
                 || !(stamp.getModel() instanceof BundleMed)) { return; }
@@ -126,7 +134,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
             Color lightGray = new Color(238, 238, 238);
             Color origColor;
 
-            // 数字キー入力のための minimal な dialog を作る
+            // 数字キー入力のための minimal な modal dialog を作る
             JDialog dialog = new JDialog((Frame) null, true);
             dialog.setUndecorated(true);
             dialog.setBackground(translucent);
@@ -212,8 +220,12 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
             int dispX = stampLocation.x + (stampSize.width - dialogSize.width) / 2;
             int dispY = stampLocation.y + (stampSize.height - dialogSize.height) / 2;
             dialog.setLocation(dispX, dispY);
-
             dialog.setVisible(true);
+            // ↑ modal なので, ここで止まる
+            dialog.dispose();
+
+        } else {
+            super.keyPressed(e);
         }
     }
 
@@ -250,8 +262,7 @@ public final class StampHolder extends AbstractComponentHolder<ModuleModel> {
      */
     @Override
     public void maybeShowPopup(MouseEvent e) {
-        StampHolderPopupMenu popup = new StampHolderPopupMenu(this);
-        popup.addPropertyChangeListener(this);
+        popup = new StampHolderPopupMenu(this);
 
         // 内服薬の場合は処方日数，外用剤の場合は処方量を選択するポップアップを作成
         if (kartePane.getTextPane().isEditable() &&
